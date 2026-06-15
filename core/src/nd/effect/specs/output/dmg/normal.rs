@@ -227,7 +227,6 @@ fn get_ftr_abil_kamikaze(
     item_uid: UItemId,
     effect: &REffect,
 ) -> Option<Output<DmgKinds<PValue>>> {
-    let delay = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let mut dmg = get_dmg_values(
         ctx,
         calc,
@@ -246,7 +245,10 @@ fn get_ftr_abil_kamikaze(
         dmg.kinetic *= dmg_mult;
         dmg.explosive *= dmg_mult;
     }
-    Some(Output::Simple(OutputSimple { instance: dmg, delay }))
+    Some(Output::Simple(OutputSimple {
+        instance: dmg,
+        delay: PValue::ZERO,
+    }))
 }
 
 fn get_dmg_values_standard(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<DmgKinds<PValue>> {

@@ -377,34 +377,19 @@ def test_time(client, consts):
     assert api_fighter_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fighter_dmg_rearm.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
-    # Verification - time just before kamikaze ability end of cycle
+    # Verification - kamikaze ability seems to have 0 damage delay (when shadows do not bug out), so
+    # check that damage is applied immediately
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=9))]))).dmg.one()
-    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
-    api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=9))]))).dmg.one()
-    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
-    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(time_options=StatTimeSim(time=9))]))).dmg.one()
-    assert api_fighter_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_fighter_dmg_stats.volley == [0, 0, 0, 0]
-    # Verification - time just after kamikaze ability end of cycle
-    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=11))]))).dmg.one()
-    assert api_fleet_dmg_stats.dps == [
-        approx(27272.727273), approx(27272.727273), approx(27272.727273), approx(27272.727273)]
+        dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=1))]))).dmg.one()
+    assert api_fleet_dmg_stats.dps == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fleet_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=11))]))).dmg.one()
-    assert api_fit_dmg_stats.dps == [
-        approx(27272.727273), approx(27272.727273), approx(27272.727273), approx(27272.727273)]
+        dmg=(True, [StatsOptionFitDmg(time_options=StatTimeSim(time=1))]))).dmg.one()
+    assert api_fit_dmg_stats.dps == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fit_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(time_options=StatTimeSim(time=11))]))).dmg.one()
-    assert api_fighter_dmg_stats.dps == [
-        approx(27272.727273), approx(27272.727273), approx(27272.727273), approx(27272.727273)]
+        dmg=(True, [StatsOptionItemDmg(time_options=StatTimeSim(time=1))]))).dmg.one()
+    assert api_fighter_dmg_stats.dps == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fighter_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     # Verification - random time deep in the future, numbers between different modes should still
     # match, and dps should be close to "infinite" one
