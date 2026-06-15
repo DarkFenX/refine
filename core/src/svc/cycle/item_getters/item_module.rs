@@ -465,6 +465,7 @@ struct SoftDts {
     reload: CycleSoftDtFull,
 }
 impl SoftDts {
+    // Produce soft downtime for non-reload cycle and reload cycle at once
     fn new_for_module(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
         let axt = module.get_axt().unwrap();
         let mut soft_dt_regular = None;
@@ -472,6 +473,7 @@ impl SoftDts {
             duration: get_reload_duration(ctx, calc, item_uid),
             reasons: CycleSoftDtReasons { reload: true },
         };
+        // Disallowed repeats affect only non-reload cycle soft downtime
         if axt.specs_disallow_repeats
             && is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_repeating_activation).unwrap_or(false)
         {
@@ -480,6 +482,9 @@ impl SoftDts {
                 reasons: CycleSoftDtReasons { reload: false },
             });
         }
+        // Reactivation delay affects non-reload cycle soft downtime only if it exists (i.e.
+        // auto-repeats are not allowed) and if it is longer than already set duration. If it is
+        // longer than reload duration, it extends reload soft downtime as well.
         if axt.specs_reactivation_delay {
             let reactivation_delay = PValue::from_value_clamped(
                 calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)

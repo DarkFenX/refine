@@ -52,9 +52,9 @@ fn mk_mobility_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) ->
 }
 
 fn mk_resist_modifier(affector_attr_id: AAttrId, affectee_attr_id: AAttrId) -> AEffectModifier {
+    // As of 2026-06-15, PreMul is used, according to FC Kestrel
     AEffectModifier {
         strength: AEffectModStrength::Attr(affector_attr_id),
-        // As of 2026-06-15, PreMul is used, according to FC Kestrel
         op: AOp::PreMul,
         affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Item),
         affectee_attr_id,
