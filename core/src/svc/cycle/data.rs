@@ -45,37 +45,18 @@ pub(in crate::svc) struct CycleSoftDtFull {
     pub(in crate::svc) duration: PValue,
     pub(in crate::svc) reasons: CycleSoftDtReasons,
 }
-impl CycleSoftDtFull {
-    pub(super) fn try_new(
-        duration: PValue,
-        cooldown: bool,
-        reload: bool,
-        non_repeating: bool,
-        pre_rearm_idle: bool,
-    ) -> Option<Self> {
-        let reasons = CycleSoftDtReasons::try_new(cooldown, reload, non_repeating, pre_rearm_idle)?;
-        Some(Self { duration, reasons })
-    }
-}
 #[derive(Copy, Clone)]
 pub(in crate::svc) struct CycleSoftDtReasons {
+    // There are actually many more reasons for soft downtime to be created, but since they were not
+    // used by anything, they were removed. Full list of reasons:
+    // - non-repeating: used for effects which cannot be auto-repeated (some modules like titan DDs, fighter abilities
+    //   limited by charge count);
+    // - reactivation delay: used on modules when repeating cycle sequence is broken;
+    // - reload: module reloads only; fighter rearms are considered as a hard downtime;
+    // - cooldown: fighter ability cooldowns which happen after every cycle;
+    // - pre-rearm idle: when there is some time, but too little to fit even partial cycle before fighter rearm, that
+    //   time is considered as pre-rearm-idling.
     pub(in crate::svc) reload: bool,
-}
-impl CycleSoftDtReasons {
-    // Soft downtime reasons affect if soft downtime will be created, but not all of them are stored
-    // (since some of those are not used anywhere). Full list of reasons is here:
-    // - cooldown: module reactivation delays & ability cooldowns
-    // - reload: module reloads only; fighter rearms are considered as a hard downtime
-    // - non-repeating: used for effects which cannot be auto-repeated (some modules like titan DDs,
-    //   fighter abilities limited by charge count)
-    // - pre-rearm idle: when there is some time, but too little to fit even partial cycle before
-    //   fighter rearm, that time is considered as pre-rearm-idling
-    fn try_new(cooldown: bool, reload: bool, non_repeating: bool, pre_rearm_idle: bool) -> Option<Self> {
-        match cooldown || reload || non_repeating || pre_rearm_idle {
-            true => Some(Self { reload }),
-            false => None,
-        }
-    }
 }
 
 // Info about cycle sequence hard downtime (during which effects cannot apply their instances)

@@ -1,5 +1,5 @@
 pub(in crate::svc) use data::{
-    CSeqHardDtFull, CycleActive, CycleDataFull, CycleSoftDtFull, GetDuration, GetMainDuration,
+    CSeqHardDtFull, CycleActive, CycleDataFull, CycleSoftDtFull, CycleSoftDtReasons, GetDuration, GetMainDuration,
 };
 pub(crate) use item_getters::CseqMap;
 pub(in crate::svc) use item_getters::{CycleOptionsSim, CyclingOptions, get_item_cseq_map};

@@ -3,7 +3,6 @@ use super::{
     shared::{CyclingOptions, SelfKillerEffectInfo, SelfKillerItemInfo},
 };
 use crate::{
-    def::SERVER_TICK_S,
     misc::{InfCount, OptionalReload},
     nd::{NEffectChargeDepl, NEffectChargeDeplCrystal},
     num::{Count, PValue, UnitInterval, Value},
@@ -12,7 +11,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            CSeqHardDtFull, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
+            CSeqHardDtFull, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull, CycleSoftDtReasons,
             effect_charge_info::{
                 get_eci_autocharge, get_eci_charge_rate, get_eci_crystal, get_eci_uncharged, get_eci_undepletable,
             },
@@ -127,13 +126,6 @@ fn fill_module_effect_info(
         );
         return;
     }
-    let cooldown_duration = PValue::from_value_clamped(
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
-            .unwrap()
-            / Value::THOUSAND,
-    );
-    // Decide if interruptions happen every cycle based on reactivation delay value
-    let sdtr_cooldown = cooldown_duration > PValue::FLOAT_TOLERANCE;
     let sim_options = match options {
         CyclingOptions::Sim(sim_options) => sim_options,
         // If burst cycle mode was requested, just assume first cycle is the "most charged", and
@@ -147,7 +139,7 @@ fn fill_module_effect_info(
                             duration: active_duration,
                             chargedness: charge_info.get_first_cycle_chargedness(),
                         },
-                        soft_dt: CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false),
+                        soft_dt: CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module),
                     },
                     hard_dt: None,
                 }),
@@ -166,7 +158,7 @@ fn fill_module_effect_info(
                             duration: active_duration,
                             chargedness: Some(UnitInterval::ONE),
                         },
-                        soft_dt: CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false),
+                        soft_dt: CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module),
                     },
                     hard_dt: None,
                 }),
@@ -188,36 +180,20 @@ fn fill_module_effect_info(
                     duration: active_duration,
                     chargedness: None,
                 },
-                soft_dt: CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false),
+                soft_dt: CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module),
             },
             hard_dt: None,
         }),
         // Only partially charged, has to reload every cycle
-        (false, true, false) => part_r(
-            ctx,
-            calc,
-            item_uid,
-            active_duration,
-            cooldown_duration,
-            sdtr_cooldown,
-            charge_info.part_charged,
-        ),
+        (false, true, false) => part_r(ctx, calc, item_uid, module, active_duration, charge_info.part_charged),
         // Only partially charged cycle, but can cycle without charges
         (false, true, true) => match ctx
             .u_data
             .get_item_optional_reload(item_uid, sim_options.optional_reloads)
         {
-            OptionalReload::OnEmpty => part_r(
-                ctx,
-                calc,
-                item_uid,
-                active_duration,
-                cooldown_duration,
-                sdtr_cooldown,
-                charge_info.part_charged,
-            ),
+            OptionalReload::OnEmpty => part_r(ctx, calc, item_uid, module, active_duration, charge_info.part_charged),
             OptionalReload::Disabled => {
-                let soft_dt = CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false);
+                let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
                 CycleSeq::LimInf(CSeqLimInf {
                     p1_data: CycleDataFull {
                         active: CycleActive {
@@ -238,31 +214,15 @@ fn fill_module_effect_info(
             }
         },
         // Only fully charged, has to reload after charges are out
-        (true, false, false) => full_r(
-            ctx,
-            calc,
-            item_uid,
-            active_duration,
-            cooldown_duration,
-            sdtr_cooldown,
-            full_count,
-        ),
+        (true, false, false) => full_r(ctx, calc, item_uid, module, active_duration, full_count),
         // Only fully charged, but can cycle without charges
         (true, false, true) => match ctx
             .u_data
             .get_item_optional_reload(item_uid, sim_options.optional_reloads)
         {
-            OptionalReload::OnEmpty => full_r(
-                ctx,
-                calc,
-                item_uid,
-                active_duration,
-                cooldown_duration,
-                sdtr_cooldown,
-                full_count,
-            ),
+            OptionalReload::OnEmpty => full_r(ctx, calc, item_uid, module, active_duration, full_count),
             OptionalReload::Disabled => {
-                let soft_dt = CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false);
+                let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
                 CycleSeq::LimInf(CSeqLimInf {
                     p1_data: CycleDataFull {
                         active: CycleActive {
@@ -287,9 +247,8 @@ fn fill_module_effect_info(
             ctx,
             calc,
             item_uid,
+            module,
             active_duration,
-            cooldown_duration,
-            sdtr_cooldown,
             full_count,
             charge_info.part_charged,
         ),
@@ -303,14 +262,13 @@ fn fill_module_effect_info(
                     ctx,
                     calc,
                     item_uid,
+                    module,
                     active_duration,
-                    cooldown_duration,
-                    sdtr_cooldown,
                     full_count,
                     charge_info.part_charged,
                 ),
                 OptionalReload::Disabled => {
-                    let soft_dt = CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false);
+                    let soft_dt = CycleSoftDtFull::try_new_for_module_regular(ctx, calc, item_uid, module);
                     CycleSeq::LimSinInf(CSeqLimSinInf {
                         p1_data: CycleDataFull {
                             active: CycleActive {
@@ -345,7 +303,7 @@ fn fill_module_effect_info(
 fn get_reload_duration(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     // All reloads can't take less than server tick realistically. E.g. lasers have almost 0 reload
     // duration but take 1-2 seconds to reload in EVE
-    PValue::from_f64_unchecked(SERVER_TICK_S).max_value(
+    PValue::SERVER_TICK_S.max_value(
         calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().reload_time, Value::ZERO)
             .unwrap()
             / Value::THOUSAND,
@@ -356,9 +314,8 @@ fn part_r(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
+    module: &UModule,
     active_duration: PValue,
-    cooldown_duration: PValue,
-    sdtr_cooldown: bool,
     chargedness: Option<UnitInterval>,
 ) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     CycleSeq::LoopSin(CSeqLoopSin {
@@ -367,13 +324,7 @@ fn part_r(
                 duration: active_duration,
                 chargedness,
             },
-            soft_dt: CycleSoftDtFull::try_new(
-                get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
-                sdtr_cooldown,
-                true,
-                false,
-                false,
-            ),
+            soft_dt: Some(CycleSoftDtFull::new_for_module_reload(ctx, calc, item_uid, module)),
         },
         hard_dt: None,
     })
@@ -383,9 +334,8 @@ fn full_r(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
+    module: &UModule,
     active_duration: PValue,
-    cooldown_duration: PValue,
-    sdtr_cooldown: bool,
     full_count: Count,
 ) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
     match full_count {
@@ -395,40 +345,31 @@ fn full_r(
                     duration: active_duration,
                     chargedness: Some(UnitInterval::ONE),
                 },
-                soft_dt: CycleSoftDtFull::try_new(
-                    get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
-                    sdtr_cooldown,
-                    true,
-                    false,
-                    false,
-                ),
+                soft_dt: Some(CycleSoftDtFull::new_for_module_reload(ctx, calc, item_uid, module)),
             },
             hard_dt: None,
         }),
-        _ => CycleSeq::LoopLimSin(CSeqLoopLimSin {
-            p1_data: CycleDataFull {
-                active: CycleActive {
-                    duration: active_duration,
-                    chargedness: Some(UnitInterval::ONE),
+        _ => {
+            let soft_dts = SoftDts::new_for_module(ctx, calc, item_uid, module);
+            CycleSeq::LoopLimSin(CSeqLoopLimSin {
+                p1_data: CycleDataFull {
+                    active: CycleActive {
+                        duration: active_duration,
+                        chargedness: Some(UnitInterval::ONE),
+                    },
+                    soft_dt: soft_dts.regular,
                 },
-                soft_dt: CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false),
-            },
-            p1_repeat_count: full_count - Count::ONE,
-            p2_data: CycleDataFull {
-                active: CycleActive {
-                    duration: active_duration,
-                    chargedness: Some(UnitInterval::ONE),
+                p1_repeat_count: full_count - Count::ONE,
+                p2_data: CycleDataFull {
+                    active: CycleActive {
+                        duration: active_duration,
+                        chargedness: Some(UnitInterval::ONE),
+                    },
+                    soft_dt: Some(soft_dts.reload),
                 },
-                soft_dt: CycleSoftDtFull::try_new(
-                    get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
-                    sdtr_cooldown,
-                    true,
-                    false,
-                    false,
-                ),
-            },
-            hard_dt: None,
-        }),
+                hard_dt: None,
+            })
+        }
     }
 }
 
@@ -436,19 +377,19 @@ fn both_r(
     ctx: SvcCtx,
     calc: &mut Calc,
     item_uid: UItemId,
+    module: &UModule,
     active_duration: PValue,
-    cooldown_duration: PValue,
-    sdtr_cooldown: bool,
     full_count: Count,
     chargedness: Option<UnitInterval>,
 ) -> CycleSeq<CycleDataFull, CSeqHardDtFull> {
+    let soft_dts = SoftDts::new_for_module(ctx, calc, item_uid, module);
     CycleSeq::LoopLimSin(CSeqLoopLimSin {
         p1_data: CycleDataFull {
             active: CycleActive {
                 duration: active_duration,
                 chargedness: Some(UnitInterval::ONE),
             },
-            soft_dt: CycleSoftDtFull::try_new(cooldown_duration, sdtr_cooldown, false, false, false),
+            soft_dt: soft_dts.regular,
         },
         p1_repeat_count: full_count,
         p2_data: CycleDataFull {
@@ -456,56 +397,107 @@ fn both_r(
                 duration: active_duration,
                 chargedness,
             },
-            soft_dt: CycleSoftDtFull::try_new(
-                get_reload_duration(ctx, calc, item_uid).max(cooldown_duration),
-                sdtr_cooldown,
-                true,
-                false,
-                false,
-            ),
+            soft_dt: Some(soft_dts.reload),
         },
         hard_dt: None,
     })
 }
 
-struct SoftDtCdInfo {
-    duration: PValue,
-    reason_cooldown: bool,
-    reason_non_repeating: bool,
-}
-impl SoftDtCdInfo {
-    fn new_for_regular_cycles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
-        let item_axt = module.get_axt().unwrap();
-        // If auto-repeats are allowed - neither extra delay for activation, nor reactivation delay
-        // are added (reactivation delay is added only when cycle sequence is due to any reason)
-        if !(item_axt.specs_disallow_repeats
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Soft downtime constructors
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CycleSoftDtFull {
+    fn try_new_for_module_regular(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Option<Self> {
+        let axt = module.get_axt().unwrap();
+        // If auto-repeats are allowed - there should be no downtime for non-reload cycles (since
+        // reactivation delay kicks in only when cycling stops, as seen on e.g. cynos/cloaks)
+        if !(axt.specs_disallow_repeats
             && is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_repeating_activation).unwrap_or(false))
         {
-            return Self {
-                duration: PValue::ZERO,
-                reason_cooldown: false,
-                reason_non_repeating: false,
-            };
+            return None;
         }
         // If auto-repeats are not allowed, but there is no reactivation delay - set downtime
         // duration to one tick. Tested on Singularity on 2026-06-14 by using direct DD on random
         // capitals (DD cycle duration 252 seconds, damage intervals were 253 seconds)
-        if !item_axt.specs_reactivation_delay {
-            return Self {
-                duration: PValue::SERVER_TICK_S,
-                reason_cooldown: false,
-                reason_non_repeating: true,
-            };
+        let mut total_duration = PValue::SERVER_TICK_S;
+        if !axt.specs_reactivation_delay {
+            return Some(Self {
+                duration: total_duration,
+                reasons: CycleSoftDtReasons { reload: false },
+            });
         }
         let reactivation_delay = PValue::from_value_clamped(
             calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                 .unwrap()
                 / Value::THOUSAND,
         );
+        if reactivation_delay > total_duration {
+            total_duration = reactivation_delay;
+        }
+        Some(Self {
+            duration: total_duration,
+            reasons: CycleSoftDtReasons { reload: false },
+        })
+    }
+    fn new_for_module_reload(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
+        let axt = module.get_axt().unwrap();
+        let mut total_duration = get_reload_duration(ctx, calc, item_uid);
+        // When item reloads, reactivation delay always kicks in, if set
+        if axt.specs_reactivation_delay {
+            let reactivation_delay = PValue::from_value_clamped(
+                calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
+                    .unwrap()
+                    / Value::THOUSAND,
+            );
+            if reactivation_delay > total_duration {
+                total_duration = reactivation_delay;
+            }
+        }
         Self {
-            duration: reactivation_delay.max(PValue::SERVER_TICK_S),
-            reason_cooldown: reactivation_delay > PValue::FLOAT_TOLERANCE,
-            reason_non_repeating: true,
+            duration: total_duration,
+            reasons: CycleSoftDtReasons { reload: true },
+        }
+    }
+}
+
+struct SoftDts {
+    regular: Option<CycleSoftDtFull>,
+    reload: CycleSoftDtFull,
+}
+impl SoftDts {
+    fn new_for_module(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
+        let axt = module.get_axt().unwrap();
+        let mut soft_dt_regular = None;
+        let mut soft_dt_reload = CycleSoftDtFull {
+            duration: get_reload_duration(ctx, calc, item_uid),
+            reasons: CycleSoftDtReasons { reload: true },
+        };
+        if axt.specs_disallow_repeats
+            && is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_repeating_activation).unwrap_or(false)
+        {
+            soft_dt_regular = Some(CycleSoftDtFull {
+                duration: PValue::SERVER_TICK_S,
+                reasons: CycleSoftDtReasons { reload: false },
+            });
+        }
+        if axt.specs_reactivation_delay {
+            let reactivation_delay = PValue::from_value_clamped(
+                calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
+                    .unwrap()
+                    / Value::THOUSAND,
+            );
+            if reactivation_delay > soft_dt_reload.duration {
+                soft_dt_reload.duration = reactivation_delay;
+            }
+            if let Some(soft_dt_regular) = soft_dt_regular.as_mut()
+                && reactivation_delay > soft_dt_regular.duration
+            {
+                soft_dt_regular.duration = reactivation_delay;
+            }
+        }
+        Self {
+            regular: soft_dt_regular,
+            reload: soft_dt_reload,
         }
     }
 }

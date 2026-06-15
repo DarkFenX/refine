@@ -10,7 +10,8 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{
-            CSeqHardDtFull, CSeqLim, CSeqLoopLimSin, CSeqLoopSin, CycleActive, CycleDataFull, CycleSeq, CycleSoftDtFull,
+            CSeqHardDtFull, CSeqLim, CSeqLoopLimSin, CSeqLoopSin, CycleActive, CycleDataFull, CycleSeq,
+            CycleSoftDtFull, CycleSoftDtReasons,
         },
         funcs,
     },
@@ -55,9 +56,8 @@ struct EffectInfo {
     active_duration: PValue,
     // Counting from end of active duration
     cooldown_duration: PValue,
-    // Soft downtime reasons
-    sdtr_cooldown: bool,
-    sdtr_non_repeating: bool,
+    // Does effect have a soft downtime due to cooldowns or non-repeating activations
+    sdt_cd_nr: bool,
     charge_count: Option<Count>,
     charge_rearm_duration: PValue,
 }
@@ -88,16 +88,14 @@ fn get_effect_info(
     // For fighter abilities, cooldown starts as soon as effect starts cycling. It typically is
     // longer than duration, but data format does not guarantee that
     let cooldown_duration = PValue::from_value_clamped(effect_data.cooldown_s - active_duration);
-    // Assume any cooldown interrupts cycling, even if it shorter than ability cycle
-    let sdtr_cooldown = effect_data.cooldown_s > PValue::ZERO;
-    // Any abilities which have charges cannot be auto-repeated
-    let sdtr_non_repeating = effect_data.charge_count.is_some();
+    // Assume any cooldown interrupts cycling, even if it shorter than ability cycle, and that any
+    // abilities which have limited charge count also do
+    let sdt_cd_nr = (effect_data.cooldown_s > PValue::ZERO) || effect_data.charge_count.is_some();
     Some(EffectInfo {
         kills_item: effect.kills_item,
         active_duration,
         cooldown_duration,
-        sdtr_cooldown,
-        sdtr_non_repeating,
+        sdt_cd_nr,
         charge_count: effect_data.charge_count,
         charge_rearm_duration: effect_data.charge_reload_duration,
     })
@@ -508,14 +506,14 @@ impl CycleSoftDtFull {
     // For fighters, having auto-repeats disabled does not seem to introduce any delays. Tested on
     // Singularity on 2026-06-14 by using secondary ability on Templar I's secondary ability, its
     // volleys arrived at the same interval as ability duration (14 seconds)
-    fn try_new_for_fighter(effect_info: &EffectInfo, duration: PValue, pre_rearm_idle: bool) -> Option<Self> {
-        Self::try_new(
-            duration,
-            effect_info.sdtr_cooldown,
-            false,
-            effect_info.sdtr_non_repeating,
-            pre_rearm_idle,
-        )
+    fn try_new_for_fighter(effect_info: &EffectInfo, duration: PValue, sdt_pre_rearm_idle: bool) -> Option<Self> {
+        match effect_info.sdt_cd_nr || sdt_pre_rearm_idle {
+            true => Some(Self {
+                duration,
+                reasons: CycleSoftDtReasons { reload: false },
+            }),
+            false => None,
+        }
     }
 }
 
