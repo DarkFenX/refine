@@ -6,7 +6,6 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        funcs,
         output::{Output, OutputComplex, OutputSimple},
     },
     ud::UItemId,
@@ -38,7 +37,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-        effect: &REffect,
+        _effect: &REffect,
         _xargs: Self::XArgs,
     ) -> Option<Output<Self::Instance>> {
         match self {
@@ -52,7 +51,7 @@ impl NEffectOutputGetter for NEffectDmgOutputGetter {
             Self::Bomb => get_bomb(ctx, calc, item_uid),
             Self::FtrAbilAttackM => get_ftr_abil_attack_m(ctx, calc, item_uid),
             Self::FtrAbilMissiles => get_ftr_abil_missiles(ctx, calc, item_uid),
-            Self::FtrAbilKamikaze => get_ftr_abil_kamikaze(ctx, calc, item_uid, effect),
+            Self::FtrAbilKamikaze => get_ftr_abil_kamikaze(ctx, calc, item_uid),
         }
     }
 }
@@ -221,12 +220,7 @@ fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
     }))
 }
 
-fn get_ftr_abil_kamikaze(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    item_uid: UItemId,
-    effect: &REffect,
-) -> Option<Output<DmgKinds<PValue>>> {
+fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let mut dmg = get_dmg_values(
         ctx,
         calc,

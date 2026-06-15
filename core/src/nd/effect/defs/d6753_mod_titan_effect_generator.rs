@@ -1,5 +1,8 @@
 use crate::{
-    ad::{AAttrId, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId, AItemListId},
+    ad::{
+        AAttrId, AEffect, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId,
+        AItemListId,
+    },
     nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
 };
 
@@ -15,10 +18,21 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             }),
             ..
         }),
+        adg_update_effect_fn: Some(update_effect),
         proj_mod: Some(NEffectProjModSpec {
             proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
             ..
         }),
         ..
     }
+}
+
+fn update_effect(a_effect: &mut AEffect) {
+    // Phenoms do not keep aggression though whole duration, but apply aggression only on initial
+    // burst. Probably because of that, effect is not marked as offensive, even if aggression is
+    // applied.
+    if a_effect.is_offense {
+        tracing::info!("effect {EFFECT_AID}: titan phenom effect is already marked as offensive");
+    }
+    a_effect.is_offense = true;
 }
