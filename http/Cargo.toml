@@ -9,7 +9,7 @@ rc = { package = "refine-core", path = "../core" }
 redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http"] }
 radc = { package = "refine-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.9", features = ["query"] }
-chrono = ">=0.4.44"
+chrono = ">=0.4.45"
 config = { version = ">=0.15.23", features = ["toml"] }
 educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
 itertools = ">=0.14.0"
@@ -23,8 +23,8 @@ tokio-rayon = ">=2.1.0"
 tower = ">=0.5.3"
 tower-http = { version = ">=0.6.11", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
-time = { version = ">=0.3.47", features = ["macros"] }
+time = { version = ">=0.3.49", features = ["macros"] }
 tracing = ">=0.1.44"
 tracing-appender = ">=0.2.5"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
-uuid = { version = ">=1.23.2", features = ["v4", "fast-rng"] }
+uuid = { version = ">=1.23.3", features = ["v4", "fast-rng"] }

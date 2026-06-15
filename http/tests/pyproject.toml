@@ -5,7 +5,7 @@ description = "Tests for refine HTTP interface"
 requires-python = ">=3.14"
 dependencies = [
     "psutil>=7.2.2",
-    "pytest>=9.0.3",
+    "pytest>=9.1.0",
     "pytest-httpserver>=1.1.5",
     "requests>=2.34.2",
 ]
