@@ -7,6 +7,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import sys
 from pathlib import Path
 
@@ -23,6 +24,16 @@ OP_MAP = {
     5: 'PostDiv',
     6: 'PostPercent',
     7: 'PostAssign'}
+
+EFF_CAT_MAP = {
+    0: 'Passive',
+    1: 'Active',
+    2: 'Target',
+    3: 'Area',
+    4: 'Online',
+    5: 'Overload',
+    6: 'Dungeon',
+    7: 'System'}
 
 class StaticData:
 
@@ -116,7 +127,19 @@ def get_effect_id(effect_arg: str) -> int:
     return effect_id
 
 
-def expand_mod_ids(modifier_info: dict):
+def expand_effect_ids(effect_info: dict):
+    if cat := effect_info.get('effectCategory'):
+        if cat in EFF_CAT_MAP:
+            effect_info['effectCategory'] = f'{cat} {EFF_CAT_MAP[cat]}'
+    for key in effect_info:
+        if re.match('.*[Aa]ttributeID', key):
+            attr_id = effect_info[key]
+            if attr_id is not None:
+                if attr_name := StaticData.get_attr_name_by_id(attr_id=attr_id):
+                    effect_info[key] = f'{attr_id} {attr_name}'
+
+
+def expand_modifier_ids(modifier_info: dict):
     if group_id := modifier_info.get('groupID'):
         if group_name := StaticData.get_group_name_by_id(group_id=group_id):
             modifier_info['groupID'] = f'{group_id} {group_name}'
@@ -144,8 +167,10 @@ if __name__ == '__main__':
     args = parser.parse_args()
 
     effect_id = get_effect_id(args.effect)
-    effect_data = StaticData.get_effect_entry(effect_id)
-    for modifier_info in effect_data.get('modifierInfo', ()):
-        expand_mod_ids(modifier_info=modifier_info)
+    effect_info = StaticData.get_effect_entry(effect_id)
 
-    print(json.dumps(effect_data, indent=2))
+    expand_effect_ids(effect_info=effect_info)
+    for modifier_info in effect_info.get('modifierInfo', ()):
+        expand_modifier_ids(modifier_info=modifier_info)
+
+    print(json.dumps(effect_info, indent=2))
