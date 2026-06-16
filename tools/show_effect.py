@@ -37,11 +37,11 @@ EFF_CAT_MAP = {
 
 class StaticData:
 
-    _type_id_name_map = None
-    _group_id_name_map = None
-    _attr_id_name_map = None
-    _effect_id_name_map = None
-    _effect_name_id_map = None
+    _type_id_name_map: dict[int, str] | None = None
+    _group_id_name_map: dict[int, str] | None = None
+    _attr_id_name_map: dict[int, str] | None = None
+    _effect_id_name_map: dict[int, str] | None = None
+    _effect_name_id_map: dict[str, int] | None = None
 
     @classmethod
     def check_effect_id(cls, effect_id: int) -> bool:
@@ -80,38 +80,37 @@ class StaticData:
 
     @classmethod
     def __ensure_types_loaded(cls) -> None:
-        type_id_name_map = {}
-        with (PHOBOS_BASE_PATH / 'fsd_built' / 'types.json').open() as f:
-            for entry in json.load(f).values():
-                type_id_name_map[entry['typeID']] = entry['typeName']
-        cls._type_id_name_map = type_id_name_map
+        if cls._type_id_name_map is None:
+            cls._type_id_name_map = {}
+            with (PHOBOS_BASE_PATH / 'fsd_built' / 'types.json').open() as f:
+                for entry in json.load(f).values():
+                    cls._type_id_name_map[entry['typeID']] = entry['typeName']
 
     @classmethod
     def __ensure_groups_loaded(cls) -> None:
-        group_id_name_map = {}
-        with (PHOBOS_BASE_PATH / 'fsd_built' / 'groups.json').open() as f:
-            for entry in json.load(f).values():
-                group_id_name_map[entry['groupID']] = entry['groupName']
-        cls._group_id_name_map = group_id_name_map
+        if cls._group_id_name_map is None:
+            cls._group_id_name_map = {}
+            with (PHOBOS_BASE_PATH / 'fsd_built' / 'groups.json').open() as f:
+                for entry in json.load(f).values():
+                    cls._group_id_name_map[entry['groupID']] = entry['groupName']
 
     @classmethod
     def __ensure_attrs_loaded(cls) -> None:
-        attr_id_name_map = {}
-        with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
-            for entry in json.load(f).values():
-                attr_id_name_map[entry['attributeID']] = entry['name']
-        cls._attr_id_name_map = attr_id_name_map
+        if cls._attr_id_name_map is None:
+            cls._attr_id_name_map = {}
+            with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
+                for entry in json.load(f).values():
+                    cls._attr_id_name_map[entry['attributeID']] = entry['name']
 
     @classmethod
     def __ensure_effects_loaded(cls) -> None:
-        effect_id_name_map = {}
-        effect_name_id_map = {}
-        with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaeffects.json').open() as f:
-            for entry in json.load(f).values():
-                effect_id_name_map[entry['effectID']] = entry['effectName']
-                effect_name_id_map[entry['effectName']] = entry['effectID']
-        cls._effect_id_name_map = effect_id_name_map
-        cls._effect_name_id_map = effect_name_id_map
+        if cls._effect_id_name_map is None or cls._effect_name_id_map is None:
+            cls._effect_id_name_map = {}
+            cls._effect_name_id_map = {}
+            with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaeffects.json').open() as f:
+                for entry in json.load(f).values():
+                    cls._effect_id_name_map[entry['effectID']] = entry['effectName']
+                    cls._effect_name_id_map[entry['effectName']] = entry['effectID']
 
 
 def get_effect_id(effect_arg: str) -> int:
