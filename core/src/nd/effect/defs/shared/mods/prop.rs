@@ -1,4 +1,3 @@
-use super::cloak::mk_cannot_cloak_mod_hardcoded;
 use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectLocation, AEffectModStrength, AEffectModifier, AOp, AValue};
 
 pub(in crate::nd::effect::defs) fn mk_prop_mass_mod() -> AEffectModifier {
@@ -30,8 +29,6 @@ pub(in crate::nd::effect::defs) fn mk_mjd_mods() -> impl ExactSizeIterator<Item 
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::SIG_RADIUS,
         },
-        // Disable cloak
-        mk_cannot_cloak_mod_hardcoded(),
         // Disable warping
         AEffectModifier {
             strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
@@ -52,13 +49,6 @@ pub(in crate::nd::effect::defs) fn mk_mjd_mods() -> impl ExactSizeIterator<Item 
             op: AOp::Add,
             affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
             affectee_attr_id: AAttrId::DISALLOW_DOCKING,
-        },
-        // Disable wormhole jumping
-        AEffectModifier {
-            strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
-            op: AOp::Add,
-            affectee_filter: AEffectAffecteeFilter::Direct(AEffectLocation::Ship),
-            affectee_attr_id: AAttrId::DISALLOW_WORMHOLE_JUMPING,
         },
     ]
     .into_iter()

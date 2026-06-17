@@ -1,7 +1,7 @@
 use super::shared::mk_mjd_mods;
 use crate::{
     ad::{AEffect, AEffectId},
-    nd::NEffect,
+    nd::{NEffect, NEffectDuration},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::MICRO_JUMP_PORTAL_DRIVE;
@@ -10,6 +10,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
+        disallows_cloak: Some(NEffectDuration::Effect),
+        disallows_jump_wh: Some(NEffectDuration::Effect),
         ..
     }
 }

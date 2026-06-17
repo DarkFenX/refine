@@ -9,7 +9,7 @@ pub(crate) use buff::{N_BUFF_MAP, NBuff};
 pub(crate) use effect::{
     N_EFFECT_MAP, NEffect, NEffectBreacherAmount, NEffectBreacherOutputGetter, NEffectCharge, NEffectChargeDepl,
     NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc, NEffectChargeMultGetter, NEffectDmgKind,
-    NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm, NEffectEcmAmount, NEffectEcmChecker,
+    NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectDuration, NEffectEcm, NEffectEcmAmount, NEffectEcmChecker,
     NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectMiningAmount,
     NEffectMiningChecker, NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut, NEffectNeutChecker,
     NEffectNeutKind, NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec,

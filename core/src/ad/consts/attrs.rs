@@ -375,6 +375,5 @@ impl AAttrId {
     // Library-specific attributes
     pub(crate) const WARP_BUBBLE_STRENGTH: Self = Self::Custom(ACustomAttrId::from_i32(1));
     pub(crate) const DISALLOW_WARPING: Self = Self::Custom(ACustomAttrId::from_i32(2));
-    pub(crate) const DISALLOW_WORMHOLE_JUMPING: Self = Self::Custom(ACustomAttrId::from_i32(3));
-    pub(crate) const DISALLOW_DRIVE_JUMPING_ONLY: Self = Self::Custom(ACustomAttrId::from_i32(4));
+    pub(crate) const DISALLOW_DRIVE_JUMPING_ONLY: Self = Self::Custom(ACustomAttrId::from_i32(3));
 }

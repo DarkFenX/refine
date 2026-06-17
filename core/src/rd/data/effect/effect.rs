@@ -5,9 +5,9 @@ use crate::{
         NEffectGeneralOutputGetter,
     },
     rd::{
-        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectEcm, REffectId,
-        REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
-        REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
+        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectDuration, REffectEcm,
+        REffectId, REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec,
+        REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -25,8 +25,9 @@ pub(crate) struct REffect {
     pub(crate) state: RState,
     pub(crate) charge: Option<REffectCharge>,
     pub(crate) buff: Option<REffectBuff>,
-    pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) modifiers: Vec<REffectModifier>,
+    pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
+    pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) stopped_effect_rids: Vec<REffectId>,
     pub(crate) aggro: Option<AEffectAggroDuration>,
     pub(crate) is_assist: bool,
@@ -35,9 +36,10 @@ pub(crate) struct REffect {
     pub(crate) banned_in_lowsec: bool,
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) cloaks_carrier: bool,
+    pub(crate) disallows_cloak: Option<REffectDuration>,
+    pub(crate) disallows_jump_wh: Option<REffectDuration>,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
-    pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
     // References to attributes which are used to describe some effect properties
     pub(crate) discharge_attr_rid: Option<RAttrId>,
     pub(crate) duration_attr_rid: Option<RAttrId>,
@@ -113,6 +115,7 @@ impl REffect {
             rid: effect_rid,
             category: a_effect.category,
             state,
+            calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
             aggro: match state == RState::Active {
                 true => a_effect.aggro,
                 false => None,
@@ -124,22 +127,23 @@ impl REffect {
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
-            calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             // Fields which depend on data not available during instantiation
-            modifiers: Default::default(),
-            stopped_effect_rids: Default::default(),
-            buff: Default::default(),
             charge: Default::default(),
+            buff: Default::default(),
+            modifiers: Default::default(),
             projectee_filter: Default::default(),
-            spool_attr_rids: Default::default(),
+            stopped_effect_rids: Default::default(),
+            disallows_cloak: Default::default(),
+            disallows_jump_wh: Default::default(),
+            is_active_with_duration: Default::default(),
             discharge_attr_rid: Default::default(),
             duration_attr_rid: Default::default(),
             range_attr_rid: Default::default(),
             falloff_attr_rid: Default::default(),
             track_attr_rid: Default::default(),
             chance_attr_rid: Default::default(),
-            is_active_with_duration: Default::default(),
+            spool_attr_rids: Default::default(),
             proj_mod: Default::default(),
             normal_dmg: Default::default(),
             breacher_dmg: Default::default(),
@@ -172,6 +176,18 @@ impl REffect {
         self.buff = a_effect.buff.as_ref().and_then(|a_effect_buff| {
             REffectBuff::try_from_a_buff(a_effect_buff, item_list_aid_rid_map, attr_aid_rid_map, buff_aid_rid_map)
         });
+        self.modifiers.extend(
+            a_effect
+                .modifiers
+                .iter()
+                .filter_map(|a_effect_mod| REffectModifier::try_from_a_effect_mod(a_effect_mod, attr_aid_rid_map)),
+        );
+        self.stopped_effect_rids.extend(
+            a_effect
+                .stopped_effect_ids
+                .iter()
+                .filter_map(|effect_aid| effect_aid_rid_map.get(effect_aid)),
+        );
         self.discharge_attr_rid = a_effect
             .discharge_attr_id
             .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid))
@@ -194,18 +210,6 @@ impl REffect {
             .chance_attr_id
             .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid))
             .copied();
-        self.modifiers.extend(
-            a_effect
-                .modifiers
-                .iter()
-                .filter_map(|a_effect_mod| REffectModifier::try_from_a_effect_mod(a_effect_mod, attr_aid_rid_map)),
-        );
-        self.stopped_effect_rids.extend(
-            a_effect
-                .stopped_effect_ids
-                .iter()
-                .filter_map(|effect_aid| effect_aid_rid_map.get(effect_aid)),
-        );
         if let Some(n_effect) = N_EFFECT_MAP.get(&a_effect.id) {
             self.charge = n_effect
                 .charge
@@ -218,6 +222,14 @@ impl REffect {
                     attr_aid_rid_map,
                 )
             });
+            self.disallows_cloak = n_effect
+                .disallows_cloak
+                .as_ref()
+                .and_then(|n_duration| REffectDuration::try_from_n_effect_duration(n_duration, attr_aid_rid_map));
+            self.disallows_jump_wh = n_effect
+                .disallows_jump_wh
+                .as_ref()
+                .and_then(|n_duration| REffectDuration::try_from_n_effect_duration(n_duration, attr_aid_rid_map));
             self.spool_attr_rids = n_effect
                 .spool_attrs
                 .as_ref()

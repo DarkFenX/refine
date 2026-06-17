@@ -33,7 +33,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         self.vast
-            .get_stat_item_can_jump_wormhole(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+            .get_stat_item_can_jump_wormhole(SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
     pub(crate) fn get_stat_item_can_jump_drive(
         &mut self,

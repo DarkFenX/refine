@@ -167,8 +167,10 @@ pub(in crate::svc) struct VastFitData {
         RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     pub(in crate::svc::vast) cap_nosfs: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
-    // Stats-related - misc
-    pub(in crate::svc::vast) aggro_effects: RSet<EffectSpec>,
+    // Stats-related - effect-based restrictions
+    pub(in crate::svc::vast) effects_aggro: RSet<EffectSpec>,
+    pub(in crate::svc::vast) effects_disallow_cloak: RSet<EffectSpec>,
+    pub(in crate::svc::vast) effects_disallow_jump_wh: RSet<EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -271,8 +273,10 @@ impl VastFitData {
             // Stats-related - cap
             cap_consumers: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
-            // Stats-related - misc
-            aggro_effects: RSet::new(),
+            // Stats-related - effect-based restrictions
+            effects_aggro: RSet::new(),
+            effects_disallow_cloak: RSet::new(),
+            effects_disallow_jump_wh: RSet::new(),
         }
     }
 }

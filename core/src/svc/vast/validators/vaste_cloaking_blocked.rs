@@ -19,8 +19,7 @@ impl VastFitData {
         calc: &mut Calc,
         fit: &UFit,
     ) -> bool {
-        if !self.mods_active_cloaks.is_empty() && !can_fit_activate_cloaks(ctx, calc, fit.ship, self.mods_fitted_cloaks)
-        {
+        if !self.mods_active_cloaks.is_empty() && !self.can_fit_activate_cloaks(ctx, calc, fit.ship) {
             for espec in self.mods_active_cloaks.iter() {
                 if !kfs.contains(&espec.item_uid) {
                     return false;
@@ -38,8 +37,7 @@ impl VastFitData {
         fit: &UFit,
     ) -> Option<ValCloakingBlockedFail> {
         let mut module_ids = RSet::new();
-        if !self.mods_active_cloaks.is_empty() && !can_fit_activate_cloaks(ctx, calc, fit.ship, self.mods_fitted_cloaks)
-        {
+        if !self.mods_active_cloaks.is_empty() && !self.can_fit_activate_cloaks(ctx, calc, fit.ship) {
             for espec in self.mods_active_cloaks.iter() {
                 if !kfs.contains(&espec.item_uid) {
                     module_ids.insert(ctx.u_data.items.xid_by_iid(espec.item_uid));
@@ -53,18 +51,21 @@ impl VastFitData {
             }),
         }
     }
-}
-
-fn can_fit_activate_cloaks(ctx: SvcCtx, calc: &mut Calc, ship_uid: Option<UItemId>, fitted_cloaks: Count) -> bool {
-    if fitted_cloaks > Count::ONE {
-        return false;
+    // Shared
+    fn can_fit_activate_cloaks(&self, ctx: SvcCtx, calc: &mut Calc, ship_uid: Option<UItemId>) -> bool {
+        if self.mods_fitted_cloaks > Count::ONE {
+            return false;
+        }
+        if !self.effects_disallow_cloak.is_empty() {
+            return false;
+        }
+        if let Some(ship_uid) = ship_uid
+            && !can_ship_cloak(ctx, calc, ship_uid)
+        {
+            return false;
+        }
+        true
     }
-    if let Some(ship_uid) = ship_uid
-        && !can_ship_cloak(ctx, calc, ship_uid)
-    {
-        return false;
-    }
-    true
 }
 
 fn can_ship_cloak(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId) -> bool {

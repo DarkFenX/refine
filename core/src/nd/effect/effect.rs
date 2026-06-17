@@ -1,8 +1,8 @@
 use crate::{
     ad::{AEffect, AEffectBuff, AEffectId, AItem, AItemId},
     nd::{
-        NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectEcm,
-        NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjModSpec,
+        NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectDuration,
+        NEffectEcm, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjModSpec,
         NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
     },
     svc::calc::CalcCustomModifier,
@@ -27,6 +27,8 @@ pub(crate) struct NEffect {
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) cloaks_carrier: bool = false,
+    pub(crate) disallows_cloak: Option<NEffectDuration> = None,
+    pub(crate) disallows_jump_wh: Option<NEffectDuration> = None,
     pub(crate) kills_item: bool = false,
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization ran during runtime in calculator service

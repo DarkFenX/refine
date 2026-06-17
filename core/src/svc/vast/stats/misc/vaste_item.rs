@@ -86,7 +86,6 @@ impl Vast {
     pub(in crate::svc) fn get_stat_item_can_jump_wormhole(
         &self,
         ctx: SvcCtx,
-        calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<bool, StatItemCheckError> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
@@ -96,10 +95,8 @@ impl Vast {
         if ship.get_disallowed_in_wspace() == Some(true) {
             return Ok(false);
         }
-        let wh_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_wormhole_jumping, Value::ZERO)
-            .unwrap();
-        if wh_status > Value::FLOAT_TOLERANCE {
+        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+        if !fit_data.effects_disallow_jump_wh.is_empty() {
             return Ok(false);
         }
         Ok(true)
@@ -197,7 +194,7 @@ impl Vast {
         // - standard warp scram status attribute
         // - standard tether status attribute
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
-        if !fit_data.aggro_effects.is_empty() {
+        if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
         }
         if fit_data.get_launched_drone_count() > Count::ZERO || fit_data.get_launched_fighter_count() > Count::ZERO {
@@ -218,6 +215,6 @@ impl Vast {
         Ok(true)
     }
     fn is_fit_aggroed(&self, fit_uid: UFitId) -> bool {
-        !self.fit_datas.get(&fit_uid).unwrap().aggro_effects.is_empty()
+        !self.fit_datas.get(&fit_uid).unwrap().effects_aggro.is_empty()
     }
 }

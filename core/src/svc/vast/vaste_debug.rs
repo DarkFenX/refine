@@ -545,9 +545,15 @@ impl VastFitData {
             }
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
-        // Stats-related - misc
+        // Stats-related - effect-based restrictions
         ////////////////////////////////////////////////////////////////////////////////////////////
-        for espec in self.aggro_effects.iter() {
+        for espec in self.effects_aggro.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        for espec in self.effects_disallow_cloak.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        for espec in self.effects_disallow_jump_wh.iter() {
             espec.consistency_check(u_data, true)?;
         }
         Ok(())
