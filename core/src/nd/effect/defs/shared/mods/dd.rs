@@ -1,8 +1,4 @@
-use super::cloak::mk_cannot_cloak_mod_hardcoded;
-use crate::ad::{
-    AAttrId, ABuffId, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectModStrength, AEffectModifier,
-    AValue,
-};
+use crate::ad::{AAttrId, ABuffId, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectModStrength, AValue};
 
 pub(in crate::nd::effect::defs) fn make_dd_self_debuffs() -> impl ExactSizeIterator<Item = AEffectBuffFull> {
     [
@@ -42,10 +38,4 @@ pub(in crate::nd::effect::defs) fn make_dd_self_debuffs() -> impl ExactSizeItera
         },
     ]
     .into_iter()
-}
-
-pub(in crate::nd::effect::defs) fn make_burst_proj_self_mods() -> impl ExactSizeIterator<Item = AEffectModifier> {
-    // Burst projectors stop only cloaking for the duration of the module, the rest is either
-    // blocked by aggro, or not blocked altogether
-    std::iter::once(mk_cannot_cloak_mod_hardcoded())
 }
