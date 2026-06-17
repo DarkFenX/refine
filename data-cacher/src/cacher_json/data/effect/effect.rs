@@ -1,4 +1,4 @@
-use super::{super::shared::CState, buff::CEffectBuffInfo, modifier::CEffectModifier};
+use super::{super::shared::CState, buff::CEffectBuffInfo, duration::CEffectAggroDuration, modifier::CEffectModifier};
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -11,6 +11,7 @@ pub(in crate::cacher_json::data) struct CEffect {
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     stopped_effect_ids: Vec<rc::ad::AEffectId>,
     buff: Option<CEffectBuffInfo>,
+    aggro: Option<CEffectAggroDuration>,
     is_assist: bool,
     is_offense: bool,
     banned_in_hisec: bool,
@@ -43,6 +44,7 @@ impl CEffect {
             modifiers: a_effect.modifiers.iter().map(CEffectModifier::from_adapted).collect(),
             stopped_effect_ids: a_effect.stopped_effect_ids.iter().copied().collect(),
             buff: a_effect.buff.as_ref().map(CEffectBuffInfo::from_adapted),
+            aggro: a_effect.aggro.as_ref().map(CEffectAggroDuration::from_adapted),
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
             banned_in_hisec: a_effect.banned_in_hisec,
@@ -64,6 +66,7 @@ impl CEffect {
             modifiers: self.modifiers.into_iter().map(|c_mod| c_mod.into_adapted()).collect(),
             stopped_effect_ids: self.stopped_effect_ids.into_iter().collect(),
             buff: self.buff.map(|c_buff| c_buff.into_adapted()),
+            aggro: self.aggro.map(|c_aggro| c_aggro.into_adapted()),
             is_assist: self.is_assist,
             is_offense: self.is_offense,
             banned_in_hisec: self.banned_in_hisec,

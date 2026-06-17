@@ -1,7 +1,8 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation, AEffectModStrength,
-        AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId, AItemId, AModifierSrq, AOp, AState,
+        AAttrId, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectCatId, AEffectId, AEffectLocation,
+        AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId, AItemId,
+        AModifierSrq, AOp, AState,
         generator::{GSupport, get_abil_effect},
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
@@ -40,6 +41,10 @@ pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, 
             modifiers: AEffectModifiers::new(),
             stopped_effect_ids: AEffectStopIds::new(),
             buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
+            aggro: match e_effect.is_offensive {
+                true => Some(AEffectAggroDuration::Effect),
+                false => None,
+            },
             is_assist: e_effect.is_assistance,
             is_offense: e_effect.is_offensive,
             banned_in_hisec: false,

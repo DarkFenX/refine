@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
+    ad::{AAttrId, ABuffId, AEffect, AEffectAggroDuration, AEffectCatId, AEffectId, AItemListId},
     nd::{
         N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
         NEffectGeneralOutputGetter,
@@ -28,6 +28,7 @@ pub(crate) struct REffect {
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) modifiers: Vec<REffectModifier>,
     pub(crate) stopped_effect_rids: Vec<REffectId>,
+    pub(crate) aggro: Option<AEffectAggroDuration>,
     pub(crate) is_assist: bool,
     pub(crate) is_offense: bool,
     pub(crate) banned_in_hisec: bool,
@@ -112,6 +113,10 @@ impl REffect {
             rid: effect_rid,
             category: a_effect.category,
             state,
+            aggro: match state == RState::Active {
+                true => a_effect.aggro,
+                false => None,
+            },
             is_assist: a_effect.is_assist && state == RState::Active,
             is_offense: a_effect.is_offense && state == RState::Active,
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,

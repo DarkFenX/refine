@@ -1,4 +1,6 @@
-use crate::ad::{AAttrId, AEffectBuff, AEffectCatId, AEffectId, AEffectModifiers, AEffectStopIds, AState};
+use crate::ad::{
+    AAttrId, AEffectAggroDuration, AEffectBuff, AEffectCatId, AEffectId, AEffectModifiers, AEffectStopIds, AState,
+};
 
 pub struct AEffect {
     pub id: AEffectId,
@@ -7,6 +9,7 @@ pub struct AEffect {
     pub modifiers: AEffectModifiers = AEffectModifiers::new(),
     pub stopped_effect_ids: AEffectStopIds = AEffectStopIds::new(),
     pub buff: Option<AEffectBuff> = None,
+    pub aggro: Option<AEffectAggroDuration> = None,
     pub is_assist: bool = false,
     pub is_offense: bool = false,
     pub banned_in_hisec: bool = false,

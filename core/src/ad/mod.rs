@@ -8,12 +8,13 @@ pub use cacher::AdaptedDataCacher;
 pub use data::{
     AAbil, AAbilId, AAbils, AAttr, AAttrId, AAttrs, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier,
     ABuffModifiers, ABuffs, ACount, ACustomAttrId, ACustomBuffId, ACustomEffectId, ACustomItemListId, AData,
-    ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration,
-    AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
-    AEffectModifiers, AEffectStopIds, AEffects, AEveAttrId, AEveBuffId, AEveItemListId, AItem, AItemAbils, AItemAttr,
-    AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect, AItemEffectData, AItemEffects, AItemGrpId, AItemId,
-    AItemList, AItemListId, AItemListItemIds, AItemLists, AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta,
-    AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv, AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
+    ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectBuff, AEffectBuffAttrMerge,
+    AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId, AEffectLocation,
+    AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AEveAttrId, AEveBuffId,
+    AEveItemListId, AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect,
+    AItemEffectData, AItemEffects, AItemGrpId, AItemId, AItemList, AItemListId, AItemListItemIds, AItemLists,
+    AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv,
+    AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
 };
 pub(crate) use generator::generate_adapted_data;
 pub use result::AResult;
