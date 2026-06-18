@@ -9,7 +9,7 @@ rc = { package = "refine-core", path = "../../core" }
 redh = { package = "refine-edh", path = "../../data-handler", features = ["phb-file"] }
 radc = { package = "refine-adc", path = "../../data-cacher", features = ["json-zfile"] }
 chrono = ">=0.4.45"
-itertools = ">=0.14.0"
+itertools = ">=0.15.0"
 time = { version = ">=0.3.49", features = ["macros"] }
 tracing = ">=0.1.44"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
