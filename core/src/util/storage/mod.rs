@@ -1,18 +1,7 @@
 pub(crate) use arena::{ArenaId, ArenaPrm, ArenaSec, ArenaSecUnchecked};
-pub(crate) use map::{CMap, RMap};
-pub(crate) use map_map::RMapRMap;
-pub(crate) use map_map_map::RMapRMapRMap;
-pub(crate) use map_set::{RMapRSet, extend_vec_from_map_set_l1};
-pub(crate) use map_vec::RMapVec;
-pub(crate) use set::RSet;
-pub(crate) use set_ordered::ROrdSet;
+pub(crate) use hash::{
+    CMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet, RSet, extend_vec_from_map_set_l1,
+};
 
 mod arena;
-mod map;
-mod map_map;
-mod map_map_map;
-mod map_map_set;
-mod map_set;
-mod map_vec;
-mod set;
-mod set_ordered;
+mod hash;
