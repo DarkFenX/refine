@@ -11,7 +11,7 @@ impl Vast {
         if !item.is_loaded() {
             match item.get_fit_uid() {
                 Some(fit_uid) => {
-                    let fit_data = self.get_fit_data_mut(&fit_uid);
+                    let fit_data = self.get_fit_data_mut(fit_uid);
                     fit_data.not_loaded.insert(item_uid);
                 }
                 None => {
@@ -21,7 +21,7 @@ impl Vast {
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
-            let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
+            let fit_data = self.get_fit_data_mut(skill.get_fit_uid());
             for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_aid()) {
                 // If a skill is being added, then all items are in skill-to-item map should have a
                 // missing entry
@@ -49,7 +49,7 @@ impl Vast {
         if !item.is_loaded() {
             match item.get_fit_uid() {
                 Some(fit_uid) => {
-                    let fit_data = self.get_fit_data_mut(&fit_uid);
+                    let fit_data = self.get_fit_data_mut(fit_uid);
                     fit_data.not_loaded.remove(&item_uid);
                 }
                 None => {
@@ -59,7 +59,7 @@ impl Vast {
         }
         if let UItem::Skill(skill) = item {
             // Go through all items which need this skill and update their missing skills
-            let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
+            let fit_data = self.get_fit_data_mut(skill.get_fit_uid());
             for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_aid()) {
                 match fit_data.srqs_missing.entry(other_item_uid) {
                     Entry::Occupied(mut missing_skills_entry) => {

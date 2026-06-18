@@ -47,7 +47,7 @@ impl Vast {
         // Local reps
         let (local_shield, local_armor, local_hull) = match item {
             UItem::Ship(u_ship) => {
-                let fit_data = self.get_fit_data(&u_ship.get_fit_uid());
+                let fit_data = self.get_fit_data(u_ship.get_fit_uid());
                 let local_shield = get_local_rps(reuse_cseq_map, ctx, calc, time_options, &fit_data.lr_shield);
                 let local_armor = get_local_rps(reuse_cseq_map, ctx, calc, time_options, &fit_data.lr_armor);
                 let local_hull = get_local_rps(reuse_cseq_map, ctx, calc, time_options, &fit_data.lr_hull);

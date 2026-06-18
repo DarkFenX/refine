@@ -42,7 +42,7 @@ impl Vast {
             false => Some(PValue::from_value_clamped(recharge_time_ms / Value::THOUSAND)),
         };
         let start_cap = max_cap * cap_perc.into_pvalue();
-        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+        let fit_data = self.fit_datas.get(ship.get_fit_uid());
         let events = prepare_events(
             reuse_cseq_map,
             ctx,

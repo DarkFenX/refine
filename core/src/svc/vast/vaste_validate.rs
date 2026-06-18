@@ -53,7 +53,7 @@ impl Vast {
         options: &ValOptionsInt,
     ) -> bool {
         let fit = ctx.u_data.fits.get(fit_uid);
-        let fit_data = self.get_fit_data_mut(&fit_uid);
+        let fit_data = self.get_fit_data_mut(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be. This order was chosen to optimize for market
@@ -472,7 +472,7 @@ impl Vast {
         options: &ValOptionsInt,
     ) -> ValResultFit {
         let fit = ctx.u_data.fits.get(fit_uid);
-        let fit_data = self.get_fit_data_mut(&fit_uid);
+        let fit_data = self.get_fit_data_mut(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit::new();
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

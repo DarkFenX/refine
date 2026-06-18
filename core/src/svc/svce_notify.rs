@@ -13,7 +13,7 @@ impl Svc {
     }
     pub(crate) fn notify_fit_removed(&mut self, fit_uid: UFitId) {
         self.calc.fit_removed(fit_uid);
-        self.vast.fit_removed(&fit_uid);
+        self.vast.fit_removed(fit_uid);
     }
     pub(crate) fn notify_fit_added_to_fleet(&mut self, u_data: &UData, fleet: &UFleet, fit_uid: UFitId) {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);

@@ -35,7 +35,7 @@ impl Vast {
         let mut ice = NEffectMiningAmount::new();
         let mut gas = NEffectMiningAmount::new();
         for fit_uid in fit_uids {
-            let fit_data = self.get_fit_data(&fit_uid);
+            let fit_data = self.get_fit_data(fit_uid);
             ore += get_mps(
                 reuse_cseq_map,
                 ctx,
@@ -80,7 +80,7 @@ impl Vast {
         time_options: StatTimeOptions,
         mission_ore: bool,
     ) -> StatMining {
-        let fit_data = self.get_fit_data(&fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         let base_xargs = NEffectMiningXargs { mission_ore };
         StatMining {
             ore: StatMiningEntry::from_effect_amount(get_mps(

@@ -17,7 +17,7 @@ impl Vast {
         projectee_item: &UItem,
     ) {
         if let Some(projector_fit_uid) = projector_item.get_fit_uid() {
-            let projector_fit_data = self.fit_datas.get_mut(&projector_fit_uid).unwrap();
+            let projector_fit_data = self.fit_datas.get_mut(projector_fit_uid);
             let projector_espec = EffectSpec::new(projector_uid, effect.rid);
             if effect.projectee_filter.is_some()
                 && let Some(effect_data) = projector_item.get_effects().unwrap().get(&effect.rid)
@@ -53,7 +53,7 @@ impl Vast {
             && !effect.stopped_effect_rids.is_empty()
             && effect.category == AEffectCatId::TARGET
         {
-            let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_uid).unwrap();
+            let projectee_fit_data = self.fit_datas.get_mut(projectee_fit_uid);
             let stopper = EffectSpec::new(projector_uid, effect.rid);
             for stop_effect_rid in effect.stopped_effect_rids.iter() {
                 let stopped = EffectSpec::new(projectee_uid, *stop_effect_rid);
@@ -115,7 +115,7 @@ impl Vast {
         projectee_item: &UItem,
     ) {
         if let Some(projector_fit_uid) = projector_item.get_fit_uid() {
-            let projector_fit_data = self.fit_datas.get_mut(&projector_fit_uid).unwrap();
+            let projector_fit_data = self.fit_datas.get_mut(projector_fit_uid);
             let projector_espec = EffectSpec::new(projector_uid, effect.rid);
             if effect.projectee_filter.is_some() {
                 projector_fit_data
@@ -148,7 +148,7 @@ impl Vast {
             && !effect.stopped_effect_rids.is_empty()
             && effect.category == AEffectCatId::TARGET
         {
-            let projectee_fit_data = self.fit_datas.get_mut(&projectee_fit_uid).unwrap();
+            let projectee_fit_data = self.fit_datas.get_mut(projectee_fit_uid);
             let stopper = EffectSpec::new(projector_uid, effect.rid);
             for stop_effect_rid in effect.stopped_effect_rids.iter() {
                 let stopped = EffectSpec::new(projectee_uid, *stop_effect_rid);

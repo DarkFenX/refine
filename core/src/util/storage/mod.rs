@@ -5,6 +5,7 @@ pub(crate) use map_set::{RMapRSet, extend_vec_from_map_set_l1};
 pub(crate) use map_vec::RMapVec;
 pub(crate) use set::RSet;
 pub(crate) use set_ordered::ROrdSet;
+pub(crate) use slab_secondary::SlabSecondary;
 
 mod map;
 mod map_map;
@@ -14,3 +15,4 @@ mod map_set;
 mod map_vec;
 mod set;
 mod set_ordered;
+mod slab_secondary;

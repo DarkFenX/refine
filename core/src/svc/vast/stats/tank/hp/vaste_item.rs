@@ -55,7 +55,7 @@ impl Vast {
         // Local ancillary repairs
         let (local_asb, local_aar) = match item {
             UItem::Ship(u_ship) => {
-                let fit_data = self.get_fit_data(&u_ship.get_fit_uid());
+                let fit_data = self.get_fit_data(u_ship.get_fit_uid());
                 let local_asb = get_local_ancil_hp(reuse_cseq_map, ctx, calc, &fit_data.lr_shield_limitable);
                 let local_aar = get_local_ancil_hp(reuse_cseq_map, ctx, calc, &fit_data.lr_armor_limitable);
                 (local_asb, local_aar)

@@ -34,7 +34,7 @@ impl Vast {
                     StatOutRepItemKinds::all_enabled(),
                     time_options,
                     projectee_uid,
-                    &self.get_fit_data(&fit_uid).out_cap,
+                    &self.get_fit_data(fit_uid).out_cap,
                 )
             })
             .sum()
@@ -48,7 +48,7 @@ impl Vast {
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> PValue {
-        let fit_data = self.get_fit_data(&fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         get_ocps(
             reuse_cseq_map,
             ctx,

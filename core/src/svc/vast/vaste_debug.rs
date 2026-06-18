@@ -7,7 +7,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for (&fit_uid, fit_data) in self.fit_datas.iter() {
+        for (fit_uid, fit_data) in self.fit_datas.iter() {
             fit_uid.consistency_check(u_data)?;
             fit_data.consistency_check(u_data, fit_uid)?;
         }

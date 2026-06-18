@@ -30,7 +30,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
         for fit_uid in fit_uids {
-            let fit_data = self.get_fit_data(&fit_uid);
+            let fit_data = self.get_fit_data(fit_uid);
             fit_data.fill_stat_dmg_normal(
                 reuse_cseq_map,
                 ctx,
@@ -81,7 +81,7 @@ impl Vast {
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new();
         for fit_uid in fit_uids {
-            let fit_data = self.get_fit_data(&fit_uid);
+            let fit_data = self.get_fit_data(fit_uid);
             fit_data.fill_stat_dmg_normal(
                 reuse_cseq_map,
                 ctx,
@@ -131,7 +131,7 @@ impl Vast {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
-        let fit_data = self.get_fit_data(&fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         fit_data.fill_stat_dmg_normal(
             reuse_cseq_map,
             ctx,
@@ -180,7 +180,7 @@ impl Vast {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new();
-        let fit_data = self.get_fit_data(&fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         fit_data.fill_stat_dmg_normal(
             reuse_cseq_map,
             ctx,

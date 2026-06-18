@@ -8,7 +8,7 @@ use crate::{
 
 impl Vast {
     pub(in crate::svc) fn skill_level_changed(&mut self, u_data: &UData, skill: &USkill) {
-        let fit_data = self.get_fit_data_mut(&skill.get_fit_uid());
+        let fit_data = self.get_fit_data_mut(skill.get_fit_uid());
         for &other_item_uid in fit_data.srqs_skill_item_map.get(&skill.get_type_aid()) {
             match fit_data.srqs_missing.entry(other_item_uid) {
                 Entry::Occupied(mut missing_skills_entry) => {
@@ -68,7 +68,7 @@ impl Vast {
         }
     }
     pub(in crate::svc) fn fighter_count_changed(&mut self, fighter_uid: UItemId, fighter: &UFighter) {
-        let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
+        let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
         let fighter_axt = fighter.get_axt().unwrap();
         let count = fighter.get_count_info().unwrap();
         fit_data

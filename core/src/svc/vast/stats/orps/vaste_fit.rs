@@ -31,7 +31,7 @@ impl Vast {
         let mut armor = PValue::ZERO;
         let mut hull = PValue::ZERO;
         for fit_uid in fit_uids {
-            let fit_data = self.get_fit_data(&fit_uid);
+            let fit_data = self.get_fit_data(fit_uid);
             shield += get_orps(
                 reuse_cseq_map,
                 ctx,
@@ -72,7 +72,7 @@ impl Vast {
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> StatOutReps {
-        let fit_data = self.get_fit_data(&fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         StatOutReps {
             shield: get_orps(
                 reuse_cseq_map,

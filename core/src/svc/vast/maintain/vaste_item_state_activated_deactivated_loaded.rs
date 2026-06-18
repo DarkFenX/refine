@@ -12,14 +12,14 @@ impl Vast {
                 if let UItem::Rig(rig) = item
                     && let Some(val) = rig.get_axt().unwrap().calibration_use
                 {
-                    let fit_data = self.get_fit_data_mut(&rig.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(rig.get_fit_uid());
                     fit_data.rigs_offline_calibration.insert(item_uid, val);
                 }
             }
             RState::Online => match item {
                 UItem::Fighter(fighter) => {
                     let item_axt = fighter.get_axt().unwrap();
-                    let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
                     if item_axt.is_light_fighter {
                         fit_data.light_fighters_online.insert(item_uid);
                     }
@@ -40,7 +40,7 @@ impl Vast {
                     }
                 }
                 UItem::Module(module) => {
-                    let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     fit_data.mods_svcs_online.insert(item_uid);
                     if let Some(item_grp_aid) = module.get_val_online_group_id() {
@@ -67,7 +67,7 @@ impl Vast {
                     }
                 }
                 UItem::Service(service) => {
-                    let fit_data = self.get_fit_data_mut(&service.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(service.get_fit_uid());
                     let item_axt = service.get_axt().unwrap();
                     fit_data.mods_svcs_online.insert(item_uid);
                     if let Some(item_grp_aid) = service.get_val_online_group_id() {
@@ -90,12 +90,12 @@ impl Vast {
                 UItem::Charge(charge) => {
                     let item_axt = charge.get_axt().unwrap();
                     if item_axt.sec_zone_limitable {
-                        let fit_data = self.get_fit_data_mut(&charge.get_fit_uid());
+                        let fit_data = self.get_fit_data_mut(charge.get_fit_uid());
                         fit_data.sec_zone_active.insert(item_uid);
                     }
                 }
                 UItem::Module(module) => {
-                    let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     if let Some(item_grp_aid) = module.get_val_active_group_id() {
                         fit_data.mods_max_group_active_all.add_entry(item_grp_aid, item_uid);
@@ -127,7 +127,7 @@ impl Vast {
             },
             RState::Overload => {
                 if let UItem::Module(module) = item {
-                    let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     match module.get_max_state().unwrap() {
                         RState::Offline | RState::Online => {
@@ -156,14 +156,14 @@ impl Vast {
         match a_state {
             RState::Offline => {
                 if let UItem::Rig(rig) = item {
-                    let fit_data = self.get_fit_data_mut(&rig.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(rig.get_fit_uid());
                     fit_data.rigs_offline_calibration.remove(item_uid);
                 }
             }
             RState::Online => match item {
                 UItem::Fighter(fighter) => {
                     let item_axt = fighter.get_axt().unwrap();
-                    let fit_data = self.get_fit_data_mut(&fighter.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(fighter.get_fit_uid());
                     if item_axt.is_light_fighter {
                         fit_data.light_fighters_online.remove(item_uid);
                     }
@@ -184,7 +184,7 @@ impl Vast {
                     }
                 }
                 UItem::Module(module) => {
-                    let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     fit_data.mods_svcs_online.remove(item_uid);
                     if let Some(item_grp_aid) = module.get_val_online_group_id() {
@@ -201,7 +201,7 @@ impl Vast {
                     }
                 }
                 UItem::Service(service) => {
-                    let fit_data = self.get_fit_data_mut(&service.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(service.get_fit_uid());
                     let item_axt = service.get_axt().unwrap();
                     fit_data.mods_svcs_online.remove(item_uid);
                     if let Some(item_grp_aid) = service.get_val_online_group_id() {
@@ -218,11 +218,11 @@ impl Vast {
             },
             RState::Active => match item {
                 UItem::Charge(charge) => {
-                    let fit_data = self.get_fit_data_mut(&charge.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(charge.get_fit_uid());
                     fit_data.sec_zone_active.remove(item_uid);
                 }
                 UItem::Module(module) => {
-                    let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     if let Some(item_grp_aid) = module.get_val_active_group_id() {
                         fit_data.mods_max_group_active_all.remove_entry(item_grp_aid, item_uid);
@@ -248,7 +248,7 @@ impl Vast {
             },
             RState::Overload => {
                 if let UItem::Module(module) = item {
-                    let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                    let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                     let item_axt = module.get_axt().unwrap();
                     match module.get_max_state().unwrap() {
                         RState::Offline | RState::Online => {

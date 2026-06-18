@@ -15,7 +15,7 @@ impl Vast {
         let Some(fit_uid) = item.get_fit_uid() else {
             return;
         };
-        let fit_data = self.get_fit_data_mut(&fit_uid);
+        let fit_data = self.get_fit_data_mut(fit_uid);
         // Skill requirements
         if let Some(a_srqs) = item.get_effective_skill_reqs()
             && !a_srqs.is_empty()
@@ -330,7 +330,7 @@ impl Vast {
         let Some(fit_uid) = item.get_fit_uid() else {
             return;
         };
-        let fit_data = self.get_fit_data_mut(&fit_uid);
+        let fit_data = self.get_fit_data_mut(fit_uid);
         // Skill requirements
         if let Some(a_srqs) = item.get_effective_skill_reqs()
             && !a_srqs.is_empty()

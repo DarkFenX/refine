@@ -12,13 +12,13 @@ use crate::{
         validators::EffectSecZoneInfo,
     },
     ud::{UFitId, UItemId},
-    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet},
+    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SlabSecondary},
 };
 
 // Vast stands for VAlidation and STats.
 #[derive(Clone)]
 pub(in crate::svc) struct Vast {
-    pub(in crate::svc::vast) fit_datas: RMap<UFitId, VastFitData>,
+    pub(in crate::svc::vast) fit_datas: SlabSecondary<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Stats-related - incoming remote reps
     pub(in crate::svc::vast) irr_shield:
@@ -43,7 +43,7 @@ pub(in crate::svc) struct Vast {
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
-            fit_datas: RMap::new(),
+            fit_datas: SlabSecondary::new(),
             not_loaded: RSet::new(),
             irr_shield: RMapRMapRMap::new(),
             irr_shield_limitable: RMapRMapRMap::new(),
@@ -55,11 +55,11 @@ impl Vast {
             in_ecm: RMapRMapRMap::new(),
         }
     }
-    pub(in crate::svc) fn get_fit_data(&self, fit_uid: &UFitId) -> &VastFitData {
-        self.fit_datas.get(fit_uid).unwrap()
+    pub(in crate::svc) fn get_fit_data(&self, fit_uid: UFitId) -> &VastFitData {
+        self.fit_datas.get(fit_uid)
     }
-    pub(in crate::svc::vast) fn get_fit_data_mut(&mut self, fit_uid: &UFitId) -> &mut VastFitData {
-        self.fit_datas.get_mut(fit_uid).unwrap()
+    pub(in crate::svc::vast) fn get_fit_data_mut(&mut self, fit_uid: UFitId) -> &mut VastFitData {
+        self.fit_datas.get_mut(fit_uid)
     }
 }
 
