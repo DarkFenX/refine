@@ -6,7 +6,7 @@
 //!   resources when they are needed. Some of the data could've been calculated on cache generation
 //!   and persisted, but it makes cache handler more complex;
 //! - Combining adapted and hardcoded data (as well as derived from both of those) under one roof;
-//! - Remapping some IDs to slab keys for faster access to some entity types.
+//! - Remapping some IDs to arena-alike storage IDs for faster access to some entity types.
 
 use data::RData;
 pub(crate) use data::{

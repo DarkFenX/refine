@@ -1,15 +1,11 @@
-use std::sync::Arc;
-
-use slab::Slab;
-
 use crate::{
     ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
     num::{SkillLevel, Value},
     rd::{
-        RAttrConsts, RAttrId, REffect, REffectConsts, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData,
-        RItemListId, RShipKind, RState,
+        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId,
+        RShipKind, RState, RcEffect,
     },
-    util::{LibGetId, RMap},
+    util::{ArenaPrm, LibGetId, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -91,7 +87,7 @@ impl RItem {
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
-        r_effects: &Slab<Arc<REffect>>,
+        r_effects: &ArenaPrm<REffectId, RcEffect>,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
         for a_item_attr in a_item.attrs.iter() {
@@ -121,7 +117,7 @@ impl RItem {
                 .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
         );
         for &effect_rid in self.effects.keys() {
-            let r_effect = r_effects.get(effect_rid.into_usize()).unwrap();
+            let r_effect = r_effects.get(effect_rid).unwrap();
             if let Some(opc_spec) = r_effect.cap_consume {
                 self.cap_consumers.push(RItemCapConsumer { effect_rid, opc_spec })
             }

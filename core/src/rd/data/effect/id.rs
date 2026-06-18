@@ -1,14 +1,13 @@
+use crate::util::ArenaId;
+
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Default)]
 pub(crate) struct REffectId(usize);
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl REffectId {
-    pub(in crate::rd) fn from_usize(id: usize) -> Self {
-        Self(id)
+impl ArenaId for REffectId {
+    fn new(index: usize) -> Self {
+        Self(index)
     }
-    pub(in crate::rd) fn into_usize(self) -> usize {
+    fn index(self) -> usize {
         self.0
     }
 }

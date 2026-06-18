@@ -4,14 +4,14 @@ use super::shared::ArenaId;
 
 // This secondary container assumes that code using it ensures that entities behind passed IDs exist
 #[derive(Clone)]
-pub(crate) struct ArenaSecondary<I, V>
+pub(crate) struct ArenaSec<I, V>
 where
     I: ArenaId,
     V: Clone,
 {
     data: SecondaryMap<I, Option<V>>,
 }
-impl<I, V> ArenaSecondary<I, V>
+impl<I, V> ArenaSec<I, V>
 where
     I: ArenaId,
     V: Clone,
