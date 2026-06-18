@@ -1,13 +1,13 @@
 use crate::{
-    ad::{AAttrId, ABuffId, AEffect, AEffectAggroDuration, AEffectCatId, AEffectId, AItemListId},
+    ad::{AAttrId, ABuffId, AEffect, AEffectCatId, AEffectId, AItemListId},
     nd::{
         N_EFFECT_MAP, NEffectBreacherOutputGetter, NEffectDmgKindGetter, NEffectDmgOutputGetter,
         NEffectGeneralOutputGetter,
     },
     rd::{
-        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectDuration, REffectEcm,
-        REffectId, REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec,
-        REffectProjOpcSpec, REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
+        RAttrId, RBuffId, REffectBuff, REffectBuffScope, REffectCharge, REffectChargeLoc, REffectEcm, REffectId,
+        REffectLocalOpcSpec, REffectMining, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec,
+        REffectProjecteeFilter, REffectSpoolAttrs, RItem, RItemListId, RState,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -29,15 +29,15 @@ pub(crate) struct REffect {
     pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) stopped_effect_rids: Vec<REffectId>,
-    pub(crate) aggro: Option<AEffectAggroDuration>,
+    pub(crate) aggro: bool,
     pub(crate) is_assist: bool,
     pub(crate) is_offense: bool,
     pub(crate) banned_in_hisec: bool,
     pub(crate) banned_in_lowsec: bool,
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) cloaks_carrier: bool,
-    pub(crate) disallows_cloak: Option<REffectDuration>,
-    pub(crate) disallows_jump_wh: Option<REffectDuration>,
+    pub(crate) disallows_cloak: bool,
+    pub(crate) disallows_jump_wh: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
     // References to attributes which are used to describe some effect properties
@@ -116,16 +116,19 @@ impl REffect {
             category: a_effect.category,
             state,
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
-            aggro: match state == RState::Active {
-                true => a_effect.aggro,
-                false => None,
-            },
+            aggro: a_effect.aggro.is_some() && state == RState::Active,
             is_assist: a_effect.is_assist && state == RState::Active,
             is_offense: a_effect.is_offense && state == RState::Active,
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
+            disallows_cloak: n_effect
+                .map(|n| n.disallows_cloak.is_some() && state == RState::Active)
+                .unwrap_or(false),
+            disallows_jump_wh: n_effect
+                .map(|n| n.disallows_jump_wh.is_some() && state == RState::Active)
+                .unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             // Fields which depend on data not available during instantiation
@@ -134,8 +137,6 @@ impl REffect {
             modifiers: Default::default(),
             projectee_filter: Default::default(),
             stopped_effect_rids: Default::default(),
-            disallows_cloak: Default::default(),
-            disallows_jump_wh: Default::default(),
             is_active_with_duration: Default::default(),
             discharge_attr_rid: Default::default(),
             duration_attr_rid: Default::default(),
@@ -222,14 +223,6 @@ impl REffect {
                     attr_aid_rid_map,
                 )
             });
-            self.disallows_cloak = n_effect
-                .disallows_cloak
-                .as_ref()
-                .and_then(|n_duration| REffectDuration::try_from_n_effect_duration(n_duration, attr_aid_rid_map));
-            self.disallows_jump_wh = n_effect
-                .disallows_jump_wh
-                .as_ref()
-                .and_then(|n_duration| REffectDuration::try_from_n_effect_duration(n_duration, attr_aid_rid_map));
             self.spool_attr_rids = n_effect
                 .spool_attrs
                 .as_ref()

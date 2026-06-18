@@ -111,13 +111,13 @@ impl Vast {
                             .mods_active_cloaks
                             .insert(EffectSpec::new(item_uid, effect.rid));
                     }
-                    if effect.disallows_cloak.is_some() {
+                    if effect.disallows_cloak {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
                             .effects_disallow_cloak
                             .insert(EffectSpec::new(item_uid, effect.rid));
                     }
-                    if effect.disallows_jump_wh.is_some() {
+                    if effect.disallows_jump_wh {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
                             .effects_disallow_jump_wh
@@ -228,13 +228,13 @@ impl Vast {
                             .mods_active_cloaks
                             .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
-                    if effect.disallows_cloak.is_some() {
+                    if effect.disallows_cloak {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
                             .effects_disallow_cloak
                             .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
-                    if effect.disallows_jump_wh.is_some() {
+                    if effect.disallows_jump_wh {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
                             .effects_disallow_jump_wh
@@ -246,13 +246,13 @@ impl Vast {
         }
     }
     fn handle_aggro_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if effect.aggro.is_some() {
+        if effect.aggro {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.effects_aggro.insert(EffectSpec::new(item_uid, effect.rid));
         }
     }
     fn handle_aggro_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: &UFitId) {
-        if effect.aggro.is_some() {
+        if effect.aggro {
             let fit_data = self.get_fit_data_mut(fit_uid);
             fit_data.effects_aggro.remove(&EffectSpec::new(item_uid, effect.rid));
         }
