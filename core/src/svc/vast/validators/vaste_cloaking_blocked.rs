@@ -40,7 +40,7 @@ impl VastFitData {
         if !self.mods_active_cloaks.is_empty() && !self.can_fit_activate_cloaks(ctx, calc, fit.ship) {
             for espec in self.mods_active_cloaks.iter() {
                 if !kfs.contains(&espec.item_uid) {
-                    module_ids.insert(ctx.u_data.items.xid_by_iid(espec.item_uid));
+                    module_ids.insert(ctx.u_data.items.ext_id_by_int_id(espec.item_uid));
                 }
             }
         }

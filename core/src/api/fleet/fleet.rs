@@ -30,5 +30,5 @@ impl<'a> FleetMut<'a> {
 }
 
 fn get_fleet_id(sol: &SolarSystem, fleet_uid: UFleetId) -> FleetId {
-    sol.u_data.fleets.xid_by_iid(fleet_uid)
+    sol.u_data.fleets.ext_id_by_int_id(fleet_uid)
 }

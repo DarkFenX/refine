@@ -11,7 +11,7 @@ impl SolarSystem {
         if !u_module.get_projs().contains(&projectee_uid) {
             return Err(ProjFoundError {
                 projector_item_id: u_module.get_item_id(),
-                projectee_item_id: self.u_data.items.xid_by_iid(projectee_uid),
+                projectee_item_id: self.u_data.items.ext_id_by_int_id(projectee_uid),
             });
         };
         let charge_uid = u_module.get_charge_uid();

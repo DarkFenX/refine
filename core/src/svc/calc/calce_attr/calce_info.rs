@@ -132,7 +132,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_str: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.xid_by_iid(item_uid),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                         attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
                     }],
                 })
@@ -153,7 +153,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_str: limiter_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.xid_by_iid(item_uid),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                         attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
                     }],
                 })
@@ -203,7 +203,7 @@ impl Calc {
                     stacking_mult: None,
                     applied_str: security_full_val.dogma,
                     affectors: vec![Affector {
-                        item_id: ctx.u_data.items.xid_by_iid(item_uid),
+                        item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
                         attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(security_attr_rid).aid)),
                     }],
                 });

@@ -41,7 +41,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
     let mutation_cache = u_item.get_mutation_data().unwrap().get_cache().unwrap();
     if !mutation_cache.get_r_mutator().attr_mods.contains_key(&attr_rid) {
         return Err(ItemMAttrMutatorError {
-            item_id: sol.u_data.items.xid_by_iid(item_uid),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
             attr_id: AttrId::from_aid(*attr_aid),
             mutator_type_id: ItemTypeId::from_aid(mutation_cache.get_r_mutator().id),
         }
@@ -49,7 +49,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
     };
     if !u_item.get_attrs().unwrap().contains_key(&attr_rid) {
         return Err(ItemMAttrValueError {
-            item_id: sol.u_data.items.xid_by_iid(item_uid),
+            item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
             attr_id: AttrId::from_aid(*attr_aid),
         }
         .into());

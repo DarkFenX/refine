@@ -37,7 +37,7 @@ impl VastFitData {
             .mods_state
             .iter()
             .filter(|(module_uid, _)| !kfs.contains(module_uid))
-            .map(|(module_uid, module_info)| (ctx.u_data.items.xid_by_iid(*module_uid), *module_info))
+            .map(|(module_uid, module_info)| (ctx.u_data.items.ext_id_by_int_id(*module_uid), *module_info))
             .collect();
         match modules.is_empty() {
             true => None,

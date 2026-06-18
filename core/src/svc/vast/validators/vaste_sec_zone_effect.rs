@@ -113,7 +113,7 @@ fn add_fail_entry(
     effect_rid: REffectId,
     sec_zone_info: &EffectSecZoneInfo,
 ) {
-    let item_id = u_data.items.xid_by_iid(item_uid);
+    let item_id = u_data.items.ext_id_by_int_id(item_uid);
     let effect_id = EffectId::from_aid(u_data.src.get_effect_by_rid(effect_rid).aid);
     let mut allowed_zones = Vec::new();
     if !sec_zone_info.banned_in_hisec {

@@ -2,19 +2,18 @@ use std::{hash::Hash, marker::PhantomData};
 
 use slab::Slab;
 
-use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, RMap};
+use crate::util::{ArenaId, LibDefault, LibGetId, LibIncrement, LibNamed, RMap};
 
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
     pub(super) data: Slab<T>,
-    pub(super) xid_to_slab_key: RMap<ExtId, usize>,
-    phantom_iid: PhantomData<IntId>,
-    phantom_error: PhantomData<Err>,
+    pub(super) ext_id_to_index: RMap<ExtId, usize>,
+    phantom: PhantomData<(IntId, Err)>,
 }
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where
     T: LibGetId<ExtId> + LibNamed,
-    IntId: Copy + From<usize> + Into<usize>,
+    IntId: ArenaId,
     ExtId: Copy + Eq + Hash + LibDefault + LibIncrement,
     Err: From<ExtId>,
 {
@@ -22,68 +21,69 @@ where
         Self {
             counter: ExtId::lib_default(),
             data: Slab::with_capacity(capacity),
-            xid_to_slab_key: RMap::with_capacity(capacity),
-            phantom_iid: PhantomData,
-            phantom_error: PhantomData,
+            ext_id_to_index: RMap::with_capacity(capacity),
+            phantom: PhantomData,
         }
     }
     pub(crate) fn alloc_id(&mut self) -> ExtId {
         let start = self.counter;
-        while self.xid_to_slab_key.contains_key(&self.counter) {
+        while self.ext_id_to_index.contains_key(&self.counter) {
             self.counter.lib_increment();
             if start == self.counter {
                 panic!("ran out of {} ID space", T::lib_get_name());
             }
         }
-        let xid = self.counter;
+        let ext_id = self.counter;
         self.counter.lib_increment();
-        xid
+        ext_id
     }
     pub(crate) fn add(&mut self, entity: T) -> IntId {
-        let xid = entity.lib_get_id();
-        let slab_key = self.data.insert(entity);
-        self.xid_to_slab_key.insert(xid, slab_key);
-        slab_key.into()
+        let ext_id = entity.lib_get_id();
+        let index = self.data.insert(entity);
+        self.ext_id_to_index.insert(ext_id, index);
+        IntId::new(index)
     }
-    pub(crate) fn iid_by_xid(&self, xid: &ExtId) -> Option<IntId> {
-        self.xid_to_slab_key.get(xid).map(|&key| key.into())
+    pub(crate) fn int_id_by_ext_id(&self, ext_id: &ExtId) -> Option<IntId> {
+        self.ext_id_to_index.get(ext_id).map(|&index| IntId::new(index))
     }
-    pub(crate) fn iid_by_xid_err(&self, xid: &ExtId) -> Result<IntId, Err> {
-        match self.xid_to_slab_key.get(xid) {
-            Some(&slab_key) => Ok(slab_key.into()),
-            None => Err(Err::from(*xid)),
+    pub(crate) fn int_id_by_ext_id_err(&self, ext_id: &ExtId) -> Result<IntId, Err> {
+        match self.ext_id_to_index.get(ext_id) {
+            Some(&index) => Ok(IntId::new(index)),
+            None => Err(Err::from(*ext_id)),
         }
     }
-    pub(crate) fn xid_by_iid(&self, iid: IntId) -> ExtId {
-        self.get(iid).lib_get_id()
+    pub(crate) fn ext_id_by_int_id(&self, int_id: IntId) -> ExtId {
+        self.get(int_id).lib_get_id()
     }
-    pub(crate) fn try_get(&self, iid: IntId) -> Option<&T> {
-        self.data.get(iid.into())
+    pub(crate) fn try_get(&self, int_id: IntId) -> Option<&T> {
+        self.data.get(int_id.index())
     }
-    pub(crate) fn get(&self, iid: IntId) -> &T {
+    pub(crate) fn get(&self, int_id: IntId) -> &T {
         // Internal IDs are supposed to be valid throughout whole lib, so just unwrap
-        self.data.get(iid.into()).unwrap()
+        self.data.get(int_id.index()).unwrap()
     }
-    pub(crate) fn get_mut(&mut self, iid: IntId) -> &mut T {
+    pub(crate) fn get_mut(&mut self, int_id: IntId) -> &mut T {
         // Internal IDs are supposed to be valid throughout whole lib, so just unwrap
-        self.data.get_mut(iid.into()).unwrap()
+        self.data.get_mut(int_id.index()).unwrap()
     }
-    pub(crate) fn remove(&mut self, iid: IntId) -> T {
-        // Keys are supposed to be valid throughout whole lib, so use non-try removal
-        let entity = self.data.remove(iid.into());
-        self.xid_to_slab_key.remove(&entity.lib_get_id());
+    pub(crate) fn remove(&mut self, int_id: IntId) -> T {
+        // Internal IDs are supposed to be valid throughout whole lib, so use non-try removal
+        let entity = self.data.remove(int_id.index());
+        self.ext_id_to_index.remove(&entity.lib_get_id());
         entity
     }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (IntId, &T)> {
-        self.xid_to_slab_key
+        self.ext_id_to_index
             .values()
-            .map(|&slab_key| (slab_key.into(), self.data.get(slab_key).unwrap()))
+            .map(|&index| (IntId::new(index), self.data.get(index).unwrap()))
     }
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = IntId> {
-        self.xid_to_slab_key.values().map(|&key| key.into())
+        self.ext_id_to_index.values().map(|&index| IntId::new(index))
     }
     pub(crate) fn values(&self) -> impl ExactSizeIterator<Item = &T> {
-        self.xid_to_slab_key.values().map(|&key| self.data.get(key).unwrap())
+        self.ext_id_to_index
+            .values()
+            .map(|&index| self.data.get(index).unwrap())
     }
     pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut T> {
         self.data.iter_mut().map(|(_, entity)| entity)
@@ -101,9 +101,8 @@ where
         Self {
             counter: self.counter,
             data: self.data.clone(),
-            xid_to_slab_key: self.xid_to_slab_key.clone(),
-            phantom_iid: PhantomData,
-            phantom_error: PhantomData,
+            ext_id_to_index: self.ext_id_to_index.clone(),
+            phantom: PhantomData,
         }
     }
 }

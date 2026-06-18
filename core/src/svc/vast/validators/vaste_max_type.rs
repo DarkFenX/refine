@@ -50,7 +50,7 @@ impl VastFitData {
                             items: HashMap::new(),
                         })
                         .items
-                        .insert(ctx.u_data.items.xid_by_iid(*item_uid), allowed);
+                        .insert(ctx.u_data.items.ext_id_by_int_id(*item_uid), allowed);
                 }
             }
         }

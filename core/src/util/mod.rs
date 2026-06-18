@@ -8,7 +8,8 @@ pub(crate) use func::vec_push_opt;
 pub(crate) use iter_peek_prefetch::PrefetchPeekable;
 pub(crate) use state::{State3, State4, State5};
 pub(crate) use storage::{
-    CMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet, RSet, SlabSecondary, extend_vec_from_map_set_l1,
+    ArenaId, ArenaSecondary, CMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet, RSet,
+    extend_vec_from_map_set_l1,
 };
 pub(crate) use str_err::StrMsgError;
 pub(crate) use traits::{LibConverter, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};

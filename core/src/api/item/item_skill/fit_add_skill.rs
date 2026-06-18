@@ -31,7 +31,7 @@ impl SolarSystem {
             Entry::Occupied(entry) => Err(SkillEveTypeError {
                 type_id: ItemTypeId::from_aid(type_aid),
                 fit_id: fit.id,
-                item_id: self.u_data.items.xid_by_iid(entry.get().skill_uid),
+                item_id: self.u_data.items.ext_id_by_int_id(entry.get().skill_uid),
             }),
         }
     }

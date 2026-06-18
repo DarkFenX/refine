@@ -8,6 +8,7 @@ license = "LGPL-3.0-or-later"
 
 [dependencies]
 angle-sc = ">=1.1.5"
+cranelift-entity = ">=0.132.2"
 derive_more = { version = ">=2.1.1", features = ["display", "from_str"] }
 either = ">=0.16.0"
 indexmap = ">=2.14.0"

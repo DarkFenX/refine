@@ -133,7 +133,7 @@ impl UData {
         }
     }
     pub(crate) fn get_projectee_uid(&self, projectee_item_id: &ItemId) -> Result<UItemId, ProjecteeUidError> {
-        let projectee_uid = self.items.iid_by_xid_err(projectee_item_id)?;
+        let projectee_uid = self.items.int_id_by_ext_id_err(projectee_item_id)?;
         let projectee_u_item = self.items.get(projectee_uid);
         if projectee_u_item.get_direct_physics().is_none() {
             return Err(ItemReceiveProjError {

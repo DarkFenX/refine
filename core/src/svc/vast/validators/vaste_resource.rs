@@ -285,7 +285,7 @@ fn validate_verbose_fitting(
             .unwrap();
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
-            users.insert(ctx.u_data.items.xid_by_iid(item_uid), item_use);
+            users.insert(ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
         }
     }
     if users.is_empty() {
@@ -315,7 +315,7 @@ fn validate_verbose_other(
     for (item_uid, item_use) in items {
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
-            users.insert(ctx.u_data.items.xid_by_iid(item_uid), item_use);
+            users.insert(ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
         }
     }
     if users.is_empty() {

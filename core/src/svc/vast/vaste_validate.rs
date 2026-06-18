@@ -36,7 +36,7 @@ impl Vast {
         for &fit_uid in options.fit_uids.iter() {
             let fit_result = self.validate_fit_verbose(ctx, calc, fit_uid, &options.options);
             if !fit_result.all_passed() {
-                let fit_id = ctx.u_data.fits.xid_by_iid(fit_uid);
+                let fit_id = ctx.u_data.fits.ext_id_by_int_id(fit_uid);
                 sol_result.fits.insert(fit_id, fit_result);
             }
         }

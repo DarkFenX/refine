@@ -7,12 +7,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_fighter(&self, item_id: &ItemId) -> Result<Fighter<'_>, GetFighterError> {
-        let fighter_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        let fighter_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(fighter_uid).dc_fighter()?;
         Ok(Fighter::new(self, fighter_uid))
     }
     pub fn get_fighter_mut(&mut self, item_id: &ItemId) -> Result<FighterMut<'_>, GetFighterError> {
-        let fighter_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        let fighter_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(fighter_uid).dc_fighter()?;
         Ok(FighterMut::new(self, fighter_uid))
     }

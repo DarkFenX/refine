@@ -11,7 +11,7 @@ impl<'a> FitMut<'a> {
     pub(super) fn get_character_for_stats(&mut self) -> Result<CharacterMut<'_>, FitHasCharacterError> {
         let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
             return Err(FitHasCharacterError {
-                fit_id: self.sol.u_data.fits.xid_by_iid(self.uid),
+                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
         Ok(CharacterMut::new(self.sol, char_uid))
@@ -19,7 +19,7 @@ impl<'a> FitMut<'a> {
     pub(super) fn get_ship_for_stats(&mut self) -> Result<ShipMut<'_>, FitHasShipError> {
         let Some(ship_uid) = self.sol.u_data.fits.get(self.uid).ship else {
             return Err(FitHasShipError {
-                fit_id: self.sol.u_data.fits.xid_by_iid(self.uid),
+                fit_id: self.sol.u_data.fits.ext_id_by_int_id(self.uid),
             });
         };
         Ok(ShipMut::new(self.sol, ship_uid))

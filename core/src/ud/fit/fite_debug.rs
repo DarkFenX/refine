@@ -6,7 +6,7 @@ use crate::{
 
 impl UFit {
     pub(in crate::ud) fn consistency_check(&self, u_data: &UData, seen_item_uids: &mut Vec<UItemId>) -> DebugResult {
-        let Some(fit_uid) = u_data.fits.iid_by_xid(&self.id) else {
+        let Some(fit_uid) = u_data.fits.int_id_by_ext_id(&self.id) else {
             return Err(Default::default());
         };
         // If fleet is defined, it should exist and refer fit back

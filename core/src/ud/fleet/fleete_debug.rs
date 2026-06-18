@@ -5,7 +5,7 @@ use crate::{
 
 impl UFleet {
     pub(in crate::ud) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        let Some(fleet_uid) = u_data.fleets.iid_by_xid(&self.id) else {
+        let Some(fleet_uid) = u_data.fleets.int_id_by_ext_id(&self.id) else {
             return Err(Default::default());
         };
         // Every fit referenced by the fleet should exist, and refer back to the fleet

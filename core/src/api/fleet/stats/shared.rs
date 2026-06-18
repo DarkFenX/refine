@@ -9,7 +9,7 @@ impl<'a> FleetMut<'a> {
         &self,
         projectee_item_id: &ItemId,
     ) -> Result<UItemId, FleetStatAppliedError> {
-        let projectee_uid = self.sol.u_data.items.iid_by_xid_err(projectee_item_id)?;
+        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         let projectee_u_item = self.sol.u_data.items.get(projectee_uid);
         if projectee_u_item.get_direct_physics().is_none() {
             return Err(ItemReceiveProjError {

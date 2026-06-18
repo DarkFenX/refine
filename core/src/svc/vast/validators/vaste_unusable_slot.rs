@@ -256,7 +256,7 @@ fn validate_verbose(
     }
     let users: Vec<_> = users
         .difference(kfs)
-        .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
+        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
         .collect();
     match users.is_empty() {
         true => None,

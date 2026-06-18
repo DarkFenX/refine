@@ -7,12 +7,12 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_module(&self, item_id: &ItemId) -> Result<Module<'_>, GetModuleError> {
-        let module_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        let module_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(module_uid).dc_module()?;
         Ok(Module::new(self, module_uid))
     }
     pub fn get_module_mut(&mut self, item_id: &ItemId) -> Result<ModuleMut<'_>, GetModuleError> {
-        let module_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        let module_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(module_uid).dc_module()?;
         Ok(ModuleMut::new(self, module_uid))
     }

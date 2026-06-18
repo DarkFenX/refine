@@ -25,7 +25,7 @@ use crate::{
 #[allow(private_bounds)]
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
-        self.get_sol().u_data.items.xid_by_iid(self.get_uid())
+        self.get_sol().u_data.items.ext_id_by_int_id(self.get_uid())
     }
     fn get_type_id(&self) -> ItemTypeId {
         let type_aid = self.get_sol().u_data.items.get(self.get_uid()).get_type_aid();
@@ -39,7 +39,7 @@ pub trait ItemCommon: ItemSealed {
             (Some(effects), Some(reffs)) => (effects.keys(), reffs),
             _ => {
                 return Err(ItemLoadedError {
-                    item_id: sol.u_data.items.xid_by_iid(item_uid),
+                    item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
                 }
                 .into());
             }
@@ -66,7 +66,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.internal_get_item_attr(item_uid, attr_rid) {
             Ok(calc_vals) => Ok(AttrVals::from_calc_attr_vals(calc_vals)),
             Err(error) => Err(ItemLoadedError {
-                item_id: self.get_sol().u_data.items.xid_by_iid(error.item_uid),
+                item_id: self.get_sol().u_data.items.ext_id_by_int_id(error.item_uid),
             }
             .into()),
         }
@@ -82,7 +82,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 )
             })),
             Err(error) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.xid_by_iid(error.item_uid),
+                item_id: sol.u_data.items.ext_id_by_int_id(error.item_uid),
             }
             .into()),
         }
@@ -95,7 +95,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_mods(&sol.u_data, item_uid) {
             Ok(mods_iter) => Ok(mods_iter),
             Err(err) => Err(ItemLoadedError {
-                item_id: sol.u_data.items.xid_by_iid(err.item_uid),
+                item_id: sol.u_data.items.ext_id_by_int_id(err.item_uid),
             }
             .into()),
         }

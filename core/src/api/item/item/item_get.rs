@@ -12,7 +12,7 @@ use crate::{
 
 impl SolarSystem {
     pub fn get_item(&self, item_id: &ItemId) -> Result<Item<'_>, GetItemError> {
-        let item_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item(item_uid))
     }
     pub(in crate::api) fn internal_get_item(&self, item_uid: UItemId) -> Item<'_> {
@@ -38,7 +38,7 @@ impl SolarSystem {
         }
     }
     pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut<'_>, GetItemError> {
-        let item_uid = self.u_data.items.iid_by_xid_err(item_id)?;
+        let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_uid))
     }
     pub(in crate::api) fn internal_get_item_mut(&mut self, item_uid: UItemId) -> ItemMut<'_> {

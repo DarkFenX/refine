@@ -37,7 +37,7 @@ impl VastFitData {
             .filter(|(drone_uid, _)| !kfs.contains(drone_uid))
             .map(|(drone_uid, drone_group_aid)| {
                 (
-                    ctx.u_data.items.xid_by_iid(*drone_uid),
+                    ctx.u_data.items.ext_id_by_int_id(*drone_uid),
                     ItemGrpId::from_aid(*drone_group_aid),
                 )
             })

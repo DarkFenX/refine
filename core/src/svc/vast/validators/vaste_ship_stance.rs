@@ -38,7 +38,7 @@ impl VastFitData {
         let stance_uid = fit.stance?;
         let Some(ship) = ship else {
             return Some(ValShipStanceFail {
-                stance_item_id: ctx.u_data.items.xid_by_iid(stance_uid),
+                stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
             });
         };
         if stanceable_matcher(ship) {
@@ -48,7 +48,7 @@ impl VastFitData {
             return None;
         }
         Some(ValShipStanceFail {
-            stance_item_id: ctx.u_data.items.xid_by_iid(stance_uid),
+            stance_item_id: ctx.u_data.items.ext_id_by_int_id(stance_uid),
         })
     }
 }

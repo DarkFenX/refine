@@ -18,7 +18,7 @@ impl<'a> FitMut<'a> {
         let u_fit = self.sol.u_data.fits.get(self.uid);
         let ship_uid = u_fit.ship.unwrap();
         let char_uid = u_fit.character.unwrap();
-        let projectee_item_uid = self.sol.u_data.items.iid_by_xid(&projectee_item_id).unwrap();
+        let projectee_item_uid = self.sol.u_data.items.int_id_by_ext_id(&projectee_item_id).unwrap();
         let time_burst = StatTimeOptions::Burst(StatTimeOptionsBurst { spool: None });
         let time_sim_inf = StatTimeOptions::Sim(StatTimeOptionsSim {
             time: None,

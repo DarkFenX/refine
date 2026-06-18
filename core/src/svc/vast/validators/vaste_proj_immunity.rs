@@ -92,12 +92,12 @@ impl VastFitData {
             if REffectResist::get_mult_by_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO)
                 && projector_especs.len() > 0
             {
-                let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_aspec.item_uid);
+                let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_aspec.item_uid);
                 for projector_espec in projector_especs {
                     if kfs.contains(&projector_espec.item_uid) {
                         continue;
                     }
-                    let projector_item_id = ctx.u_data.items.xid_by_iid(projector_espec.item_uid);
+                    let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_uid);
                     let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
                     if !projectee_item_ids.contains(&projectee_item_id) {
                         projectee_item_ids.push(projectee_item_id)
@@ -148,12 +148,12 @@ fn validate_verbose(
     let mut items = HashMap::new();
     for (&projectee_uid, projector_especs) in blockable.iter() {
         if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) && projector_especs.len() > 0 {
-            let projectee_item_id = ctx.u_data.items.xid_by_iid(projectee_uid);
+            let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_uid);
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_uid) {
                     continue;
                 }
-                let projector_item_id = ctx.u_data.items.xid_by_iid(projector_espec.item_uid);
+                let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_uid);
                 let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
                 if !projectee_item_ids.contains(&projectee_item_id) {
                     projectee_item_ids.push(projectee_item_id)

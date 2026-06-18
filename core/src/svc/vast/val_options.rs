@@ -457,7 +457,7 @@ impl ValOptionsSolInt {
             fit_uids: pub_sol_opts
                 .fit_ids
                 .iter()
-                .filter_map(|fit_id| sol.u_data.fits.iid_by_xid(fit_id))
+                .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
                 .unique()
                 .collect(),
         }
@@ -646,7 +646,7 @@ impl ValOptionInt {
                 kfs: pub_opt
                     .kfs
                     .iter()
-                    .filter_map(|item_id| sol.u_data.items.iid_by_xid(item_id))
+                    .filter_map(|item_id| sol.u_data.items.int_id_by_ext_id(item_id))
                     .unique()
                     .collect(),
             }),

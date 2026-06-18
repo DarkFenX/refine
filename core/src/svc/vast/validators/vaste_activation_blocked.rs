@@ -37,7 +37,7 @@ impl VastFitData {
         if let Some(block_attr_rid) = ctx.ac().activation_blocked {
             for item_uid in self.mods_active.iter() {
                 if is_attr_flag_set(ctx, calc, *item_uid, block_attr_rid).unwrap_or(false) && !kfs.contains(item_uid) {
-                    module_ids.push(ctx.u_data.items.xid_by_iid(*item_uid));
+                    module_ids.push(ctx.u_data.items.ext_id_by_int_id(*item_uid));
                 }
             }
         }

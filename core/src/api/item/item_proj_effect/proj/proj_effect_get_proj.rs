@@ -28,7 +28,7 @@ fn get_projectee_uid(
     projector_uid: UItemId,
     projectee_item_id: &ItemId,
 ) -> Result<UItemId, GetProjError> {
-    let projectee_uid = sol.u_data.items.iid_by_xid_err(projectee_item_id)?;
+    let projectee_uid = sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
     match sol
         .u_data
         .items
@@ -39,7 +39,7 @@ fn get_projectee_uid(
     {
         true => Ok(projectee_uid),
         false => Err(ProjFoundError {
-            projector_item_id: sol.u_data.items.xid_by_iid(projector_uid),
+            projector_item_id: sol.u_data.items.ext_id_by_int_id(projector_uid),
             projectee_item_id: *projectee_item_id,
         }
         .into()),

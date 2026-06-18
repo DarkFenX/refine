@@ -61,7 +61,7 @@ fn validate_slot_index_verbose(
         if users.len() >= 2 {
             let users: Vec<_> = users
                 .filter(|item_uid| !kfs.contains(item_uid))
-                .map(|item_uid| ctx.u_data.items.xid_by_iid(*item_uid))
+                .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
                 .collect();
             if !users.is_empty() {
                 slot_users.insert(*a_slot, users);

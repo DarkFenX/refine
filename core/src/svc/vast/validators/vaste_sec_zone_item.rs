@@ -271,7 +271,7 @@ fn flags_check_verbose(
                 .iter()
                 .map(|&item_uid| {
                     (
-                        ctx.u_data.items.xid_by_iid(item_uid),
+                        ctx.u_data.items.ext_id_by_int_id(item_uid),
                         get_allowed_sec_zones(ctx, calc, item_uid, items_wspace_banned),
                     )
                 })
@@ -348,7 +348,7 @@ fn class_check_verbose(
         .filter(|(item_uid, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_uid))
         .map(|(&item_uid, &item_sec_class)| {
             (
-                ctx.u_data.items.xid_by_iid(item_uid),
+                ctx.u_data.items.ext_id_by_int_id(item_uid),
                 class_to_allowed_zones(item_sec_class),
             )
         })

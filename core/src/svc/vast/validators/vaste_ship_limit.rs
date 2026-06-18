@@ -97,7 +97,7 @@ impl VastFitData {
                 continue;
             }
             mismatches.insert(
-                ctx.u_data.items.xid_by_iid(*limited_item_uid),
+                ctx.u_data.items.ext_id_by_int_id(*limited_item_uid),
                 ValShipLimitItemInfo::from_r_item_ship_limit(ship_limit),
             );
         }

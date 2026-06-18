@@ -61,7 +61,7 @@ impl SolarSystem {
 
 impl<'a> ModuleMut<'a> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProjMut<'_>, AddProjError> {
-        let projectee_uid = self.sol.u_data.items.iid_by_xid_err(projectee_item_id)?;
+        let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_module_proj(self.uid, projectee_uid)?;
         Ok(RangedProjMut::new(self.sol, self.uid, projectee_uid))
     }
