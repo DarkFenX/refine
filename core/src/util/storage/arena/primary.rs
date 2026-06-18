@@ -2,10 +2,8 @@ use slab::Slab;
 
 use super::shared::ArenaId;
 
-pub(crate) struct ArenaPrm<I, V>
-where
-    I: ArenaId,
-{
+#[derive(Clone)]
+pub(crate) struct ArenaPrm<I, V> {
     data: Slab<V>,
     phantom: std::marker::PhantomData<I>,
 }
@@ -22,11 +20,29 @@ where
     pub(crate) fn get(&self, id: I) -> Option<&V> {
         self.data.get(id.index())
     }
-    pub(crate) fn values_mut(&mut self) -> impl Iterator<Item = &mut V> {
+    pub(crate) fn get_mut(&mut self, id: I) -> Option<&mut V> {
+        self.data.get_mut(id.index())
+    }
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (I, &V)> {
+        self.data.iter().map(|(index, value)| (I::new(index), value))
+    }
+    pub(crate) fn iter_mut(&mut self) -> impl ExactSizeIterator<Item = (I, &mut V)> {
+        self.data.iter_mut().map(|(index, value)| (I::new(index), value))
+    }
+    pub(crate) fn values_mut(&mut self) -> impl ExactSizeIterator<Item = &mut V> {
         self.data.iter_mut().map(|v| v.1)
+    }
+    pub(crate) fn insert(&mut self, value: V) -> I {
+        I::new(self.data.insert(value))
     }
     pub(crate) fn vacant_entry(&mut self) -> VacantEntry<'_, I, V> {
         VacantEntry::new(self.data.vacant_entry())
+    }
+    pub(crate) fn remove(&mut self, id: I) -> V {
+        self.data.remove(id.index())
+    }
+    pub(crate) fn len(&self) -> usize {
+        self.data.len()
     }
 }
 
