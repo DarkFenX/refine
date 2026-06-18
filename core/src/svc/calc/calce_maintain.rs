@@ -99,7 +99,7 @@ impl Calc {
             }
         }
         self.deps.remove_item(item_uid);
-        self.attrs.item_unloaded(&item_uid);
+        self.attrs.item_unloaded(item_uid);
     }
     pub(in crate::svc) fn effects_started(
         &mut self,
@@ -131,7 +131,7 @@ impl Calc {
         effects: &[RcEffect],
     ) {
         // Notify RAH sim
-        self.rah_effects_stopped(ctx, &item_uid, item, effects);
+        self.rah_effects_stopped(ctx, item_uid, item, effects);
         // Notify core calc services
         let mut reuse_rmods = Vec::new();
         let mut reuse_items = Vec::new();
@@ -248,7 +248,7 @@ impl Calc {
         // modifier on module. User data gets references between charge and module set right away,
         // but calculator registers module before charge, and attempts to clear charge attributes.
         // Due to cases like this, we cannot just unwrap item attribute data.
-        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(&aspec.item_uid) {
+        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(aspec.item_uid) {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). Removing attribute forces
             // recalculation
@@ -271,7 +271,7 @@ impl Calc {
         // Almost-copy of force recalc method without attribute removal. When something that
         // installed a postprocessing function thinks its output can change, it can let calc service
         // know about it via this method.
-        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(&aspec.item_uid) {
+        if let Some(item_attr_data) = self.attrs.get_item_attr_data_mut(aspec.item_uid) {
             // No value calculated before that - there are no dependents to clear (dependents always
             // request dependencies while calculating their values). In this case we do not remove
             // attribute, because only postprocessing output is supposed to change

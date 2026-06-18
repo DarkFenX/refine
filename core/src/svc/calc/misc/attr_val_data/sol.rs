@@ -2,22 +2,22 @@ use super::data::ItemAttrData;
 use crate::{
     svc::calc::ItemAttrPostproc,
     ud::{UData, UItem, UItemId},
-    util::RMap,
+    util::ArenaSec,
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
-    pub(super) data: RMap<UItemId, ItemAttrData>,
+    pub(super) data: ArenaSec<UItemId, ItemAttrData>,
 }
 impl AttrValData {
     pub(in crate::svc::calc) fn new() -> Self {
-        Self { data: RMap::new() }
+        Self { data: ArenaSec::new() }
     }
     // Query methods
-    pub(in crate::svc::calc) fn get_item_attr_data(&self, item_uid: &UItemId) -> Option<&ItemAttrData> {
+    pub(in crate::svc::calc) fn get_item_attr_data(&self, item_uid: UItemId) -> Option<&ItemAttrData> {
         self.data.get(item_uid)
     }
-    pub(in crate::svc::calc) fn get_item_attr_data_mut(&mut self, item_uid: &UItemId) -> Option<&mut ItemAttrData> {
+    pub(in crate::svc::calc) fn get_item_attr_data_mut(&mut self, item_uid: UItemId) -> Option<&mut ItemAttrData> {
         self.data.get_mut(item_uid)
     }
     // Modification methods
@@ -37,7 +37,7 @@ impl AttrValData {
         }
         self.data.insert(item_uid, item_data);
     }
-    pub(in crate::svc::calc) fn item_unloaded(&mut self, item_uid: &UItemId) {
+    pub(in crate::svc::calc) fn item_unloaded(&mut self, item_uid: UItemId) {
         self.data.remove(item_uid);
     }
 }

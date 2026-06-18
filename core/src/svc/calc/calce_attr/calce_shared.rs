@@ -13,7 +13,7 @@ impl Calc {
     pub(super) fn get_item_data_with_err(&self, item_uid: UItemId) -> Result<&ItemAttrData, UItemLoadedError> {
         // All loaded items have attribute map created for them
         self.attrs
-            .get_item_attr_data(&item_uid)
+            .get_item_attr_data(item_uid)
             .ok_or(UItemLoadedError { item_uid })
     }
     pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {

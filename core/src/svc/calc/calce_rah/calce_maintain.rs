@@ -50,7 +50,7 @@ impl Calc {
             self.rah.by_fit.add_entry(fit_uid, item_uid);
             // Add postprocessors
             let attr_consts = ctx.ac();
-            let item_attr_data = self.attrs.get_item_attr_data_mut(&item_uid).unwrap();
+            let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
             if let Some(em_attr_rid) = attr_consts.armor_em_dmg_resonance {
                 item_attr_data.reg_postproc(em_attr_rid, ItemAttrPostproc::RahEm);
             }
@@ -68,7 +68,7 @@ impl Calc {
     pub(in crate::svc::calc) fn rah_effects_stopped(
         &mut self,
         ctx: SvcCtx,
-        item_uid: &UItemId,
+        item_uid: UItemId,
         item: &UItem,
         effects: &[RcEffect],
     ) {
@@ -96,8 +96,8 @@ impl Calc {
                 item_attr_data.unreg_postproc(expl_attr_rid);
             }
             // Remove sim data for RAH being stopped
-            self.rah.resonances.remove(item_uid);
-            self.rah.by_fit.remove_entry(fit_uid, item_uid);
+            self.rah.resonances.remove(&item_uid);
+            self.rah.by_fit.remove_entry(fit_uid, &item_uid);
             // Clear sim data for other RAHs on the same fit
             self.clear_fit_rah_results(ctx, fit_uid);
         }

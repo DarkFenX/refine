@@ -165,7 +165,7 @@ impl Calc {
         // Post-dogma calculations
         let extra_attr_info = accumulator.apply_extra_mods(dogma_attr_info);
         // Custom post-processing functions - since infos are not cached, it's fine to have it here
-        match self.attrs.get_item_attr_data(&item_uid).unwrap().get(&attr_rid) {
+        match self.attrs.get_item_attr_data(item_uid).unwrap().get(&attr_rid) {
             Some(attr_entry) if let Some(postproc) = attr_entry.postproc => {
                 postproc.info(self, ctx, item_uid, extra_attr_info)
             }

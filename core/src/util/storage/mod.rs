@@ -1,4 +1,4 @@
-pub(crate) use arena::{ArenaId, ArenaPrm, ArenaSecUnchecked};
+pub(crate) use arena::{ArenaId, ArenaPrm, ArenaSec, ArenaSecUnchecked};
 pub(crate) use map::{CMap, RMap};
 pub(crate) use map_map::RMapRMap;
 pub(crate) use map_map_map::RMapRMapRMap;

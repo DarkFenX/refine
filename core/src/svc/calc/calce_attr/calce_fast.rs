@@ -148,7 +148,7 @@ impl Calc {
         }
         // If it is not cached, calculate and cache it
         let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
-        let item_attr_data = self.attrs.get_item_attr_data_mut(&item_uid).unwrap();
+        let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
         if let Some(postproc) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
             cval = postproc.fast(self, ctx, item_uid, cval);
         }
@@ -176,7 +176,7 @@ impl Calc {
         }
         // If it is not cached, calculate and cache it
         let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
-        let item_attr_data = self.attrs.get_item_attr_data_mut(&item_uid).unwrap();
+        let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
         if let Some(postproc) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
             cval = postproc.fast(self, ctx, item_uid, cval);
         }
@@ -189,7 +189,7 @@ impl Calc {
         attr_rid: Option<RAttrId>,
     ) -> Option<CalcAttrVals> {
         let attr_rid = attr_rid?;
-        let item_attr_data = self.attrs.get_item_attr_data(&item_uid)?;
+        let item_attr_data = self.attrs.get_item_attr_data(item_uid)?;
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
         {
@@ -197,7 +197,7 @@ impl Calc {
         }
         let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
         self.attrs
-            .get_item_attr_data_mut(&item_uid)
+            .get_item_attr_data_mut(item_uid)
             .unwrap()
             .set_value_and_get_pp(attr_rid, cval);
         Some(cval)
