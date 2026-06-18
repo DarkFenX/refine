@@ -16,6 +16,7 @@ def test_module_mjd(client, consts):
         defeff_id=eve_mjd_effect_id)
     eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
     eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
+    eve_fighter_id = client.mk_eve_fighter()
     eve_ship_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 165})
     client.create_sources()
     api_sol = client.create_sol()
@@ -23,7 +24,9 @@ def test_module_mjd(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_mjd_id, state=consts.ApiModuleState.active)
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
-    # Verification
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification - MJD stops lots of things on ship itself, but does not prevent warps of fit
+    # fighters
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         sig_radius=True,
@@ -42,6 +45,8 @@ def test_module_mjd(client, consts):
     assert api_ship_stats.can_dock_station is False
     assert api_ship_stats.can_dock_citadel is False
     assert api_ship_stats.can_tether is True
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_fighter_stats.can_warp is True
 
 
 def test_module_mjfg(client, consts):
@@ -69,6 +74,7 @@ def test_module_mjfg(client, consts):
         defeff_id=eve_mjd_cap_effect_id)
     eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
     eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
+    eve_fighter_id = client.mk_eve_fighter()
     eve_ship_id = client.mk_eve_ship(attrs={eve_sig_radius_attr_id: 165})
     client.create_sources()
     api_sol = client.create_sol()
@@ -77,7 +83,9 @@ def test_module_mjfg(client, consts):
     api_mjd_subcap = api_fit.add_module(type_id=eve_mjd_subcap_id, state=consts.ApiModuleState.active)
     api_mjd_cap = api_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.online)
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
-    # Verification
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
+    # Verification - MJFGs stop lots of things on ship itself, but does not prevent warps of fit
+    # fighters
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         sig_radius=True,
@@ -96,6 +104,8 @@ def test_module_mjfg(client, consts):
     assert api_ship_stats.can_dock_station is False
     assert api_ship_stats.can_dock_citadel is False
     assert api_ship_stats.can_tether is False
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_fighter_stats.can_warp is True
     # Action
     api_mjd_subcap.change_module(state=consts.ApiModuleState.online)
     api_mjd_cap.change_module(state=consts.ApiModuleState.active)
@@ -118,6 +128,8 @@ def test_module_mjfg(client, consts):
     assert api_ship_stats.can_dock_station is False
     assert api_ship_stats.can_dock_citadel is False
     assert api_ship_stats.can_tether is False
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
+    assert api_fighter_stats.can_warp is True
 
 
 def test_fighter_mjd(client, consts):
@@ -127,7 +139,7 @@ def test_fighter_mjd(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
     eve_mjd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.ftr_abil_mjd, cat_id=consts.EveEffCat.active)
     eve_mjd_abil_id = client.mk_eve_abil(id_=consts.EveAbil.mjd)
-    eve_fighter_id = client.mk_eve_item(
+    eve_fighter_id = client.mk_eve_fighter(
         attrs={eve_sig_radius_attr_id: 120, eve_sig_radius_bonus_attr_id: 150},
         eff_ids=[eve_mjd_effect_id],
         abils=[client.mk_eve_item_abil(id_=eve_mjd_abil_id)])
