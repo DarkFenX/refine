@@ -47,7 +47,7 @@ def run_config(run_tmp_folder: Path) -> ConfigInfo:
     return build_config(config_path=config_path, port=port, log_folder=run_tmp_folder)
 
 
-@pytest.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session', autouse=True)  # noqa: RUF076
 def refine_server(
         pytestconfig: pytest.Config,
         run_config: ConfigInfo,
