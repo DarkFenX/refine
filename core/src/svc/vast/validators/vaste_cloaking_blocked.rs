@@ -56,7 +56,7 @@ impl VastFitData {
         if self.mods_fitted_cloaks > Count::ONE {
             return false;
         }
-        if !self.effects_disallow_cloak.is_empty() {
+        if !self.mod_effects_disallow_cloak.is_empty() {
             return false;
         }
         if let Some(ship_uid) = ship_uid

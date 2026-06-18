@@ -550,10 +550,22 @@ impl VastFitData {
         for espec in self.effects_aggro.iter() {
             espec.consistency_check(u_data, true)?;
         }
-        for espec in self.effects_disallow_cloak.iter() {
+        for espec in self.mod_effects_disallow_cloak.iter() {
             espec.consistency_check(u_data, true)?;
         }
-        for espec in self.effects_disallow_jump_wh.iter() {
+        for espec in self.mod_effects_disallow_warp.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        for espec in self.mod_effects_disallow_jump_gate.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        for espec in self.mod_effects_disallow_jump_wh.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        for espec in self.mod_effects_disallow_jump_drive.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
+        for espec in self.mod_effects_disallow_dock.iter() {
             espec.consistency_check(u_data, true)?;
         }
         Ok(())

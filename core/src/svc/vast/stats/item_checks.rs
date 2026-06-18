@@ -54,7 +54,7 @@ pub(super) fn check_fighter_ship(u_data: &UData, item_uid: UItemId) -> Result<()
     }
 }
 
-pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_uid: UItemId) -> Result<(), StatItemCheckError> {
+pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_uid: UItemId) -> Result<&UItem, StatItemCheckError> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Fighter(fighter) => fighter.is_loaded(),
@@ -65,7 +65,7 @@ pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_uid: UItemId) ->
         _ => return Err(UItemKindVsStatError { item_uid }.into()),
     };
     match is_loaded {
-        true => Ok(()),
+        true => Ok(item),
         false => Err(UItemLoadedError { item_uid }.into()),
     }
 }

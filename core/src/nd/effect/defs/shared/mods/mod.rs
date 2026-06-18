@@ -4,7 +4,7 @@ pub(in crate::nd::effect::defs) use cloak::{
 pub(in crate::nd::effect::defs) use damp::add_damp_mods;
 pub(in crate::nd::effect::defs) use dd::make_dd_self_debuffs;
 pub(in crate::nd::effect::defs) use misc::mk_disallow_assistance_mod_transfer;
-pub(in crate::nd::effect::defs) use prop::{mk_mjd_mods, mk_mwd_sig_mod, mk_prop_mass_mod};
+pub(in crate::nd::effect::defs) use prop::{mk_mjd_sig_mod, mk_mwd_sig_mod, mk_prop_mass_mod};
 pub(in crate::nd::effect::defs) use subsystem::mk_subsystem_mod;
 pub(in crate::nd::effect::defs) use tackle::{add_web_mods, mk_bubble_buff};
 pub(in crate::nd::effect::defs) use tp::add_tp_mods;

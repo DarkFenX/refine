@@ -28,7 +28,11 @@ pub(crate) struct NEffect {
     pub(crate) ignore_offmod_immunity: bool = false,
     pub(crate) cloaks_carrier: bool = false,
     pub(crate) disallows_cloak: Option<NEffectDuration> = None,
+    pub(crate) disallows_warp: Option<NEffectDuration> = None,
+    pub(crate) disallows_jump_gate: Option<NEffectDuration> = None,
     pub(crate) disallows_jump_wh: Option<NEffectDuration> = None,
+    pub(crate) disallows_jump_drive: Option<NEffectDuration> = None,
+    pub(crate) disallows_dock: Option<NEffectDuration> = None,
     pub(crate) kills_item: bool = false,
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization ran during runtime in calculator service

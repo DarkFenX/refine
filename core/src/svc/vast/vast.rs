@@ -169,8 +169,12 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     // Stats-related - effect-based restrictions
     pub(in crate::svc::vast) effects_aggro: RSet<EffectSpec>,
-    pub(in crate::svc::vast) effects_disallow_cloak: RSet<EffectSpec>,
-    pub(in crate::svc::vast) effects_disallow_jump_wh: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_cloak: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_warp: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_jump_gate: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_jump_wh: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_jump_drive: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_dock: RSet<EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -275,8 +279,12 @@ impl VastFitData {
             cap_injects: RMapRMap::new(),
             // Stats-related - effect-based restrictions
             effects_aggro: RSet::new(),
-            effects_disallow_cloak: RSet::new(),
-            effects_disallow_jump_wh: RSet::new(),
+            mod_effects_disallow_cloak: RSet::new(),
+            mod_effects_disallow_warp: RSet::new(),
+            mod_effects_disallow_jump_gate: RSet::new(),
+            mod_effects_disallow_jump_wh: RSet::new(),
+            mod_effects_disallow_jump_drive: RSet::new(),
+            mod_effects_disallow_dock: RSet::new(),
         }
     }
 }

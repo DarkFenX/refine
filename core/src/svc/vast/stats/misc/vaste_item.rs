@@ -9,7 +9,7 @@ use crate::{
             stats::item_checks::{check_character, check_fighter_ship_no_struct, check_ship_no_struct},
         },
     },
-    ud::{UFitId, UItemId},
+    ud::{UItem, UItemId},
 };
 
 impl Vast {
@@ -25,15 +25,17 @@ impl Vast {
         Ok(PValue::from_value_clamped(drone_control_range))
     }
     pub(in crate::svc) fn get_stat_item_can_warp(
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<bool, StatItemCheckError> {
-        check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
+        let item = check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         // Warping is blocked by either of:
-        // - standard warp scram status attribute
-        // - custom warp status attribute
+        // - standard warp scram status attribute (points, HIC scripted points)
+        // - custom warp status attribute (bubbles)
         // - having no max velocity
+        // - having any modules with effects which disable warp, if stat is fetched for a ship
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
             .unwrap();
@@ -45,6 +47,12 @@ impl Vast {
             && max_speed < Value::FLOAT_TOLERANCE
         {
             return Ok(false);
+        }
+        if let UItem::Ship(ship) = item {
+            let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+            if !fit_data.mod_effects_disallow_warp.is_empty() {
+                return Ok(false);
+            }
         }
         let warp_jump_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping, Value::ZERO)
@@ -66,7 +74,12 @@ impl Vast {
         // - standard gate scram status attribute (scripted HIC ray)
         // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
         //   jumps)
-        if self.is_fit_aggroed(ship.get_fit_uid()) {
+        // - having any modules with effects which disable gate jumping
+        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+        if !fit_data.effects_aggro.is_empty() {
+            return Ok(false);
+        }
+        if !fit_data.mod_effects_disallow_jump_gate.is_empty() {
             return Ok(false);
         }
         let gate_status = calc
@@ -91,27 +104,33 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)
-        // - custom WH jump status attribute (MJDs, sieges)
+        // - having any modules with effects which disable WH jumping (MJDs, sieges)
         if ship.get_disallowed_in_wspace() == Some(true) {
             return Ok(false);
         }
         let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
-        if !fit_data.effects_disallow_jump_wh.is_empty() {
+        if !fit_data.mod_effects_disallow_jump_wh.is_empty() {
             return Ok(false);
         }
         Ok(true)
     }
     pub(in crate::svc) fn get_stat_item_can_jump_drive(
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
     ) -> Result<bool, StatItemCheckError> {
-        check_ship_no_struct(ctx.u_data, item_uid)?;
+        let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Jumping (with a jump drive) is blocked by either of:
-        // - standard warp scram status attribute
+        // - standard warp scram status attribute (points, HIC scripted points)
         // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
         //   jumps)
         // - custom drive jump status attribute (bubbles)
+        // - having any modules with effects which disable drive jumping (MJDs)
+        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+        if !fit_data.mod_effects_disallow_jump_drive.is_empty() {
+            return Ok(false);
+        }
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
             .unwrap();
@@ -142,7 +161,12 @@ impl Vast {
         // Station docking is blocked by either of:
         // - having any aggro effects active
         // - standard dock status attribute (scripted HIC ray)
-        if self.is_fit_aggroed(ship.get_fit_uid()) {
+        // - having any modules with effects which disable docking (MJDs)
+        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+        if !fit_data.effects_aggro.is_empty() {
+            return Ok(false);
+        }
+        if !fit_data.mod_effects_disallow_dock.is_empty() {
             return Ok(false);
         }
         let dock_status = calc
@@ -164,7 +188,12 @@ impl Vast {
         // - having any aggro effects active
         // - standard warp scram status attribute
         // - standard dock status attribute (scripted HIC ray)
-        if self.is_fit_aggroed(ship.get_fit_uid()) {
+        // - having any modules with effects which disable docking (MJDs)
+        let fit_data = self.fit_datas.get(&ship.get_fit_uid()).unwrap();
+        if !fit_data.effects_aggro.is_empty() {
+            return Ok(false);
+        }
+        if !fit_data.mod_effects_disallow_dock.is_empty() {
             return Ok(false);
         }
         let warp_status = calc
@@ -213,8 +242,5 @@ impl Vast {
             return Ok(false);
         }
         Ok(true)
-    }
-    fn is_fit_aggroed(&self, fit_uid: UFitId) -> bool {
-        !self.fit_datas.get(&fit_uid).unwrap().effects_aggro.is_empty()
     }
 }

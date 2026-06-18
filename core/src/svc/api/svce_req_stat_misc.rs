@@ -17,7 +17,8 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<bool, StatItemCheckError> {
-        Vast::get_stat_item_can_warp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        self.vast
+            .get_stat_item_can_warp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_jump_gate(
         &mut self,
@@ -40,7 +41,8 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
     ) -> Result<bool, StatItemCheckError> {
-        Vast::get_stat_item_can_jump_drive(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+        self.vast
+            .get_stat_item_can_jump_drive(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_dock_station(
         &mut self,

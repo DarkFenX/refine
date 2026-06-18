@@ -114,13 +114,37 @@ impl Vast {
                     if effect.disallows_cloak {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
-                            .effects_disallow_cloak
+                            .mod_effects_disallow_cloak
+                            .insert(EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_warp {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_warp
+                            .insert(EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_jump_gate {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_jump_gate
                             .insert(EffectSpec::new(item_uid, effect.rid));
                     }
                     if effect.disallows_jump_wh {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
-                            .effects_disallow_jump_wh
+                            .mod_effects_disallow_jump_wh
+                            .insert(EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_jump_drive {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_jump_drive
+                            .insert(EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_dock {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_dock
                             .insert(EffectSpec::new(item_uid, effect.rid));
                     }
                 }
@@ -231,13 +255,37 @@ impl Vast {
                     if effect.disallows_cloak {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
-                            .effects_disallow_cloak
+                            .mod_effects_disallow_cloak
+                            .remove(&EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_warp {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_warp
+                            .remove(&EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_jump_gate {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_jump_gate
                             .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
                     if effect.disallows_jump_wh {
                         let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
                         fit_data
-                            .effects_disallow_jump_wh
+                            .mod_effects_disallow_jump_wh
+                            .remove(&EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_jump_drive {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_jump_drive
+                            .remove(&EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_dock {
+                        let fit_data = self.get_fit_data_mut(&module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_dock
                             .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
                 }

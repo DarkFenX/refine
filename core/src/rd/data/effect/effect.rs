@@ -37,7 +37,11 @@ pub(crate) struct REffect {
     pub(crate) ignore_offmod_immunity: bool,
     pub(crate) cloaks_carrier: bool,
     pub(crate) disallows_cloak: bool,
+    pub(crate) disallows_warp: bool,
+    pub(crate) disallows_jump_gate: bool,
     pub(crate) disallows_jump_wh: bool,
+    pub(crate) disallows_jump_drive: bool,
+    pub(crate) disallows_dock: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
     // References to attributes which are used to describe some effect properties
@@ -126,8 +130,20 @@ impl REffect {
             disallows_cloak: n_effect
                 .map(|n| n.disallows_cloak.is_some() && state == RState::Active)
                 .unwrap_or(false),
+            disallows_warp: n_effect
+                .map(|n| n.disallows_warp.is_some() && state == RState::Active)
+                .unwrap_or(false),
+            disallows_jump_gate: n_effect
+                .map(|n| n.disallows_jump_gate.is_some() && state == RState::Active)
+                .unwrap_or(false),
             disallows_jump_wh: n_effect
                 .map(|n| n.disallows_jump_wh.is_some() && state == RState::Active)
+                .unwrap_or(false),
+            disallows_jump_drive: n_effect
+                .map(|n| n.disallows_jump_drive.is_some() && state == RState::Active)
+                .unwrap_or(false),
+            disallows_dock: n_effect
+                .map(|n| n.disallows_dock.is_some() && state == RState::Active)
                 .unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),

@@ -1,4 +1,4 @@
-use super::shared::mk_mjd_mods;
+use super::shared::mk_mjd_sig_mod;
 use crate::{
     ad::{AEffect, AEffectId},
     nd::{NEffect, NEffectDuration},
@@ -11,7 +11,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         disallows_cloak: Some(NEffectDuration::Effect),
+        disallows_warp: Some(NEffectDuration::Effect),
+        disallows_jump_gate: Some(NEffectDuration::Effect),
         disallows_jump_wh: Some(NEffectDuration::Effect),
+        disallows_jump_drive: Some(NEffectDuration::Effect),
+        disallows_dock: Some(NEffectDuration::Effect),
         ..
     }
 }
@@ -21,5 +25,5 @@ fn update_effect(a_effect: &mut AEffect) {
         tracing::info!("effect {EFFECT_AID}: MJD effect has modifiers, overwriting them");
         a_effect.modifiers.clear();
     }
-    a_effect.modifiers.extend(mk_mjd_mods());
+    a_effect.modifiers.insert(mk_mjd_sig_mod());
 }
