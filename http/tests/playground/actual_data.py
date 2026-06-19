@@ -380,8 +380,10 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     api_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_fit.set_ship(type_id=37605, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Minokawa
-    api_siege = api_fit.add_module(type_id=4294, state=consts.ApiModuleState.online)  # Triage Module II
+    api_fit.set_ship(type_id=28606)  # Orca
+    api_siege = api_fit.add_module(type_id=58950, state=consts.ApiModuleState.online)  # Large Industrial Core II
+    # api_fit.set_ship(type_id=28352)  # Rorqual
+    # api_siege = api_fit.add_module(type_id=42890, state=consts.ApiModuleState.online)  # Capital Industrial Core II
     api_fit.add_module(type_id=11577, state=consts.ApiModuleState.active)  # Improved Cloak
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
@@ -414,7 +416,7 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
         can_tether=True))
     assert api_fit_stats.can_warp is False
     assert api_fit_stats.can_jump_gate is False
-    assert api_fit_stats.can_jump_wormhole is True
+    assert api_fit_stats.can_jump_wormhole is False
     assert api_fit_stats.can_jump_drive is False
     assert api_fit_stats.can_dock_station is False
     assert api_fit_stats.can_dock_citadel is False

@@ -36,6 +36,12 @@ impl Vast {
         // - custom warp status attribute (bubbles)
         // - having no max velocity
         // - having any modules with effects which disable warp, if stat is fetched for a ship
+        if let UItem::Ship(ship) = item {
+            let fit_data = self.get_fit_data(ship.get_fit_uid());
+            if !fit_data.mod_effects_disallow_warp.is_empty() {
+                return Ok(false);
+            }
+        }
         let warp_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
             .unwrap();
@@ -47,12 +53,6 @@ impl Vast {
             && max_speed < Value::FLOAT_TOLERANCE
         {
             return Ok(false);
-        }
-        if let UItem::Ship(ship) = item {
-            let fit_data = self.get_fit_data(ship.get_fit_uid());
-            if !fit_data.mod_effects_disallow_warp.is_empty() {
-                return Ok(false);
-            }
         }
         let warp_jump_status = calc
             .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping, Value::ZERO)

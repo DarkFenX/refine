@@ -1,7 +1,6 @@
-use super::shared::mk_cannot_cloak_mod_hardcoded;
 use crate::{
-    ad::{AEffect, AEffectId},
-    nd::NEffect,
+    ad::AEffectId,
+    nd::{NEffect, NEffectDuration},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::INDUSTRIAL_CORE_EFFECT2;
@@ -9,13 +8,9 @@ const EFFECT_AID: AEffectId = AEffectId::INDUSTRIAL_CORE_EFFECT2;
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
-        adg_update_effect_fn: Some(update_effect),
+        // Capital industrial core has no modifiers which disallow cloaking, but still disallows it,
+        // as tested on Singularity on 2026-06-14.
+        disallows_cloak: Some(NEffectDuration::Effect),
         ..
     }
-}
-
-fn update_effect(a_effect: &mut AEffect) {
-    // Tested on 2026-04-07 on thunderdome, rorqual can't cloak with industrial core running, and
-    // there are no attributes and modifiers to transfer either of no-cloak attributes to ship
-    a_effect.modifiers.insert(mk_cannot_cloak_mod_hardcoded());
 }
