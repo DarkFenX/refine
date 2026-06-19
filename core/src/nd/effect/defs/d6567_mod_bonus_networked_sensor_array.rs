@@ -1,7 +1,6 @@
-use super::shared::mk_cannot_cloak_mod_transfer;
 use crate::{
-    ad::{AEffect, AEffectId},
-    nd::NEffect,
+    ad::AEffectId,
+    nd::{NEffect, NEffectDuration},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY;
@@ -9,12 +8,9 @@ const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY;
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
-        adg_update_effect_fn: Some(update_effect),
+        // Tested on 2026-06-13 on Singularity, supercarrier can't cloak despite NSA having no
+        // modifiers to transfer the cloak attribute
+        disallows_cloak: Some(NEffectDuration::Effect),
         ..
     }
-}
-
-fn update_effect(a_effect: &mut AEffect) {
-    // Not tested, assumed to work similar to integrated sensor array
-    a_effect.modifiers.insert(mk_cannot_cloak_mod_transfer());
 }
