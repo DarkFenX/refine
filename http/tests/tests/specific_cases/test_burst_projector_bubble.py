@@ -1,24 +1,19 @@
 from fw.api import ItemStatsOptions, ValOptions
 
 
-def test_self_effect(client, consts):
-    client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
-    eve_projector_effect_id = client.mk_eve_effect(
+def test_self_effect_stats(client, consts):
+    eve_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.doomsday_aoe_bubble,
         cat_id=consts.EveEffCat.active,
         is_offensive=True)
-    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
-    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
-    eve_projector_id = client.mk_eve_item(eff_ids=[eve_projector_effect_id], defeff_id=eve_projector_effect_id)
+    eve_projector_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_projector = api_fit.add_module(type_id=eve_projector_id, state=consts.ApiModuleState.online)
-    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_projector = api_fit.add_module(type_id=eve_projector_id, state=consts.ApiModuleState.online)
     # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         can_warp=True,
         can_jump_gate=True,
@@ -36,9 +31,8 @@ def test_self_effect(client, consts):
     assert api_ship_stats.can_tether is True
     # Action
     api_projector.change_module(state=consts.ApiModuleState.active)
-    # Verification - burst projectors seem to have normal restrictions from aggression, plus cloaks
-    # cannot be used while projector is cycling. Tested on Singularity on 2026-06-13.
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Verification - burst projectors seem to have normal restrictions from aggression and not much
+    # else
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         can_warp=True,
         can_jump_gate=True,
@@ -54,6 +48,30 @@ def test_self_effect(client, consts):
     assert api_ship_stats.can_dock_station is False
     assert api_ship_stats.can_dock_citadel is False
     assert api_ship_stats.can_tether is False
+
+
+def test_self_effect_cloak(client, consts):
+    eve_projector_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.doomsday_aoe_bubble,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
+    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
+    eve_projector_id = client.mk_eve_item(eff_ids=[eve_projector_effect_id], defeff_id=eve_projector_effect_id)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_projector = api_fit.add_module(type_id=eve_projector_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification - cloaks cannot be used while projector is cycling. Tested on Singularity on
+    # 2026-06-13.
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_projector.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
 
 
 def test_remote_effect(client, consts):
