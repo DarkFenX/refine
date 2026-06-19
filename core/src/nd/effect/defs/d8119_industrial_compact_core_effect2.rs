@@ -1,8 +1,7 @@
 use crate::{
-    ad::{AEffectId},
-    nd::NEffect,
+    ad::AEffectId,
+    nd::{NEffect, NEffectDuration},
 };
-use crate::nd::NEffectDuration;
 
 const EFFECT_AID: AEffectId = AEffectId::INDUSTRIAL_COMPACT_CORE_EFFECT2;
 
