@@ -380,8 +380,8 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     api_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_fit.set_ship(type_id=52907, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Zirnitra
-    api_siege = api_fit.add_module(type_id=4292, state=consts.ApiModuleState.online)  # Siege Module II
+    api_fit.set_ship(type_id=37605, coordinates=(0, 0, 0), movement=(0, 0, 0))  # Minokawa
+    api_siege = api_fit.add_module(type_id=4294, state=consts.ApiModuleState.online)  # Triage Module II
     api_fit.add_module(type_id=11577, state=consts.ApiModuleState.active)  # Improved Cloak
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True

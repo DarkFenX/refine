@@ -9,7 +9,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         // Siege module has no modifiers which disallow cloaking, but still disallows cloaking, as
-        // tested on Singularity on 2026-06-13.
+        // tested on Singularity on 2026-06-14.
         disallows_cloak: Some(NEffectDuration::Effect),
         ..
     }

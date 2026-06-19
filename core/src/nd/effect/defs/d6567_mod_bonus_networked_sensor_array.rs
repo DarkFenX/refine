@@ -8,7 +8,7 @@ const EFFECT_AID: AEffectId = AEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY;
 pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
-        // Tested on 2026-06-13 on Singularity, supercarrier can't cloak despite NSA having no
+        // Tested on 2026-06-14 on Singularity, supercarrier can't cloak despite NSA having no
         // modifiers to transfer the cloak attribute
         disallows_cloak: Some(NEffectDuration::Effect),
         ..
