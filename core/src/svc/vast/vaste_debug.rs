@@ -568,6 +568,9 @@ impl VastFitData {
         for espec in self.mod_effects_disallow_dock.iter() {
             espec.consistency_check(u_data, true)?;
         }
+        for espec in self.mod_effects_disallow_tether.iter() {
+            espec.consistency_check(u_data, true)?;
+        }
         Ok(())
     }
 }

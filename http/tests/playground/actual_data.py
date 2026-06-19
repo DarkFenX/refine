@@ -380,9 +380,8 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     api_fit.set_character(type_id=1373)
     for eve_skill_id in get_skill_type_ids():
         api_fit.add_skill(type_id=eve_skill_id, level=5)
-    api_fit.set_ship(type_id=28659)  # Paladin
-    api_siege = api_fit.add_module(type_id=33400, state=consts.ApiModuleState.online)  # Bastion I
-    api_fit.add_module(type_id=11577, state=consts.ApiModuleState.active)  # Improved Cloak
+    api_fit.set_ship(type_id=42245)  # Rabisu
+    api_fit.add_module(type_id=20563, state=consts.ApiModuleState.active)  # Smokescreen Cloak
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
@@ -394,27 +393,8 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
         can_dock_citadel=True,
         can_tether=True))
     assert api_fit_stats.can_warp is True
-    assert api_fit_stats.can_jump_gate is True
-    assert api_fit_stats.can_jump_wormhole is True
-    assert api_fit_stats.can_jump_drive is True
-    assert api_fit_stats.can_dock_station is True
-    assert api_fit_stats.can_dock_citadel is True
-    assert api_fit_stats.can_tether is True
-    # Action
-    api_siege.change_module(state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        can_warp=True,
-        can_jump_gate=True,
-        can_jump_wormhole=True,
-        can_jump_drive=True,
-        can_dock_station=True,
-        can_dock_citadel=True,
-        can_tether=True))
-    assert api_fit_stats.can_warp is False
     assert api_fit_stats.can_jump_gate is False
-    assert api_fit_stats.can_jump_wormhole is True
+    assert api_fit_stats.can_jump_wormhole is False
     assert api_fit_stats.can_jump_drive is False
     assert api_fit_stats.can_dock_station is False
     assert api_fit_stats.can_dock_citadel is False

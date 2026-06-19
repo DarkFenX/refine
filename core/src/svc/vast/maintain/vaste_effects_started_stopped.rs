@@ -147,6 +147,12 @@ impl Vast {
                             .mod_effects_disallow_dock
                             .insert(EffectSpec::new(item_uid, effect.rid));
                     }
+                    if effect.disallows_tether {
+                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_tether
+                            .insert(EffectSpec::new(item_uid, effect.rid));
+                    }
                 }
             }
             _ => (),
@@ -286,6 +292,12 @@ impl Vast {
                         let fit_data = self.get_fit_data_mut(module.get_fit_uid());
                         fit_data
                             .mod_effects_disallow_dock
+                            .remove(&EffectSpec::new(item_uid, effect.rid));
+                    }
+                    if effect.disallows_tether {
+                        let fit_data = self.get_fit_data_mut(module.get_fit_uid());
+                        fit_data
+                            .mod_effects_disallow_tether
                             .remove(&EffectSpec::new(item_uid, effect.rid));
                     }
                 }

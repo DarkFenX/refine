@@ -35,7 +35,8 @@ impl Vast {
         // - standard warp scram status attribute (points, HIC scripted points)
         // - custom warp status attribute (bubbles)
         // - having no max velocity
-        // - having any modules with effects which disable warp, if stat is fetched for a ship
+        // - having any modules with effects which disable warp, if stat is fetched for a ship (non-covops
+        //   cloaks)
         if let UItem::Ship(ship) = item {
             let fit_data = self.get_fit_data(ship.get_fit_uid());
             if !fit_data.mod_effects_disallow_warp.is_empty() {
@@ -104,7 +105,7 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)
-        // - having any modules with effects which disable WH jumping (MJDs, sieges)
+        // - having any modules with effects which disable WH jumping (cloaks, MJDs, sieges)
         if ship.get_disallowed_in_wspace() == Some(true) {
             return Ok(false);
         }
@@ -126,7 +127,7 @@ impl Vast {
         // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
         //   jumps)
         // - custom drive jump status attribute (bubbles)
-        // - having any modules with effects which disable drive jumping (MJDs)
+        // - having any modules with effects which disable drive jumping (cloaks, MJDs)
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.mod_effects_disallow_jump_drive.is_empty() {
             return Ok(false);
@@ -161,7 +162,7 @@ impl Vast {
         // Station docking is blocked by either of:
         // - having any aggro effects active
         // - standard dock status attribute (scripted HIC ray)
-        // - having any modules with effects which disable docking (MJDs)
+        // - having any modules with effects which disable docking (cloaks, MJDs)
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
@@ -188,7 +189,7 @@ impl Vast {
         // - having any aggro effects active
         // - standard warp scram status attribute
         // - standard dock status attribute (scripted HIC ray)
-        // - having any modules with effects which disable docking (MJDs)
+        // - having any modules with effects which disable docking (cloaks, MJDs)
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
@@ -222,8 +223,12 @@ impl Vast {
         // - any drones or fighters being outside
         // - standard warp scram status attribute
         // - standard tether status attribute
+        // - having any modules with effects which disable tethering (cloaks)
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
+            return Ok(false);
+        }
+        if !fit_data.mod_effects_disallow_tether.is_empty() {
             return Ok(false);
         }
         if fit_data.get_launched_drone_count() > Count::ZERO || fit_data.get_launched_fighter_count() > Count::ZERO {

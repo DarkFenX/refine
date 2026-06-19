@@ -175,6 +175,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mod_effects_disallow_jump_wh: RSet<EffectSpec>,
     pub(in crate::svc::vast) mod_effects_disallow_jump_drive: RSet<EffectSpec>,
     pub(in crate::svc::vast) mod_effects_disallow_dock: RSet<EffectSpec>,
+    pub(in crate::svc::vast) mod_effects_disallow_tether: RSet<EffectSpec>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -285,6 +286,7 @@ impl VastFitData {
             mod_effects_disallow_jump_wh: RSet::new(),
             mod_effects_disallow_jump_drive: RSet::new(),
             mod_effects_disallow_dock: RSet::new(),
+            mod_effects_disallow_tether: RSet::new(),
         }
     }
 }

@@ -42,6 +42,7 @@ pub(crate) struct REffect {
     pub(crate) disallows_jump_wh: bool,
     pub(crate) disallows_jump_drive: bool,
     pub(crate) disallows_dock: bool,
+    pub(crate) disallows_tether: bool,
     pub(crate) kills_item: bool,
     pub(crate) is_active_with_duration: bool,
     // References to attributes which are used to describe some effect properties
@@ -144,6 +145,9 @@ impl REffect {
                 .unwrap_or(false),
             disallows_dock: n_effect
                 .map(|n| n.disallows_dock.is_some() && state == RState::Active)
+                .unwrap_or(false),
+            disallows_tether: n_effect
+                .map(|n| n.disallows_tether.is_some() && state == RState::Active)
                 .unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
