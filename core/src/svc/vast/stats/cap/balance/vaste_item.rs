@@ -29,7 +29,7 @@ impl Vast {
         time_options: StatTimeOptions,
     ) -> Result<Value, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         let mut balance = Value::ZERO;
         if let StatCapBlcRegen::Enabled(regen_options) = src_kinds.regen {
             balance += get_cap_regen(ctx, calc, item_uid, regen_options.cap_perc);

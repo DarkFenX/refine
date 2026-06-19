@@ -49,7 +49,7 @@ impl Vast {
             return Ok(false);
         }
         if let UItem::Ship(ship) = item {
-            let fit_data = self.fit_datas.get(ship.get_fit_uid());
+            let fit_data = self.get_fit_data(ship.get_fit_uid());
             if !fit_data.mod_effects_disallow_warp.is_empty() {
                 return Ok(false);
             }
@@ -75,7 +75,7 @@ impl Vast {
         // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
         //   jumps)
         // - having any modules with effects which disable gate jumping
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
         }
@@ -108,7 +108,7 @@ impl Vast {
         if ship.get_disallowed_in_wspace() == Some(true) {
             return Ok(false);
         }
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.mod_effects_disallow_jump_wh.is_empty() {
             return Ok(false);
         }
@@ -127,7 +127,7 @@ impl Vast {
         //   jumps)
         // - custom drive jump status attribute (bubbles)
         // - having any modules with effects which disable drive jumping (MJDs)
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.mod_effects_disallow_jump_drive.is_empty() {
             return Ok(false);
         }
@@ -162,7 +162,7 @@ impl Vast {
         // - having any aggro effects active
         // - standard dock status attribute (scripted HIC ray)
         // - having any modules with effects which disable docking (MJDs)
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
         }
@@ -189,7 +189,7 @@ impl Vast {
         // - standard warp scram status attribute
         // - standard dock status attribute (scripted HIC ray)
         // - having any modules with effects which disable docking (MJDs)
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
         }
@@ -222,7 +222,7 @@ impl Vast {
         // - any drones or fighters being outside
         // - standard warp scram status attribute
         // - standard tether status attribute
-        let fit_data = self.fit_datas.get(ship.get_fit_uid());
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_aggro.is_empty() {
             return Ok(false);
         }

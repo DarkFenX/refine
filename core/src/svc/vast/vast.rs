@@ -18,7 +18,7 @@ use crate::{
 // Vast stands for VAlidation and STats.
 #[derive(Clone)]
 pub(in crate::svc) struct Vast {
-    pub(in crate::svc::vast) fit_datas: ArenaSecUnchecked<UFitId, VastFitData>,
+    pub(super) fit_datas: ArenaSecUnchecked<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Stats-related - incoming remote reps
     pub(in crate::svc::vast) irr_shield:
