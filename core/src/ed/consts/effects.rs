@@ -33,6 +33,7 @@ impl EEffectId {
     pub(crate) const JUMP_PORTAL_GENERATION: Self = Self::from_i32(2152);
     pub(crate) const RIG_SLOT: Self = Self::from_i32(2663);
     pub(crate) const MINING_CLOUDS: Self = Self::from_i32(2726);
+    pub(crate) const CYNOSURAL_GENERATION: Self = Self::from_i32(2857);
     pub(crate) const BOMB_LAUNCHING: Self = Self::from_i32(2971);
     pub(crate) const JUMP_PORTAL_GENERATION_BO: Self = Self::from_i32(3674);
     pub(crate) const HARDPOINT_MODIFIER_EFFECT: Self = Self::from_i32(3773);

@@ -36,6 +36,7 @@ impl AEffectId {
     pub(crate) const JUMP_PORTAL_GENERATION: Self = Self::from_eid(EEffectId::JUMP_PORTAL_GENERATION);
     pub(crate) const RIG_SLOT: Self = Self::from_eid(EEffectId::RIG_SLOT);
     pub(crate) const MINING_CLOUDS: Self = Self::from_eid(EEffectId::MINING_CLOUDS);
+    pub(crate) const CYNOSURAL_GENERATION: Self = Self::from_eid(EEffectId::CYNOSURAL_GENERATION);
     pub(crate) const BOMB_LAUNCHING: Self = Self::from_eid(EEffectId::BOMB_LAUNCHING);
     pub(crate) const JUMP_PORTAL_GENERATION_BO: Self = Self::from_eid(EEffectId::JUMP_PORTAL_GENERATION_BO);
     pub(crate) const HARDPOINT_MODIFIER_EFFECT: Self = Self::from_eid(EEffectId::HARDPOINT_MODIFIER_EFFECT);

@@ -47,6 +47,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d1851_self_rof::mk_n_effect(),
         defs::d2152_jump_portal_generation::mk_n_effect(),
         defs::d2726_mining_clouds::mk_n_effect(),
+        defs::d2857_cynosural_generation::mk_n_effect(),
         defs::d2971_bomb_launching::mk_n_effect(),
         defs::d3380_warp_disrupt_sphere::mk_n_effect(),
         defs::d3674_jump_portal_generation_bo::mk_n_effect(),
