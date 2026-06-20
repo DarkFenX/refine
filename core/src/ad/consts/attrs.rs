@@ -358,6 +358,7 @@ impl AAttrId {
     pub(crate) const REP_MULT_BONUS_PER_CYCLE: Self = Self::from_eid(EAttrId::REP_MULT_BONUS_PER_CYCLE);
     pub(crate) const REP_MULT_BONUS_MAX: Self = Self::from_eid(EAttrId::REP_MULT_BONUS_MAX);
     pub(crate) const ECM_JAM_DURATION: Self = Self::from_eid(EAttrId::ECM_JAM_DURATION);
+    pub(crate) const STABILIZE_CLOAK_DURATION: Self = Self::from_eid(EAttrId::STABILIZE_CLOAK_DURATION);
     pub(crate) const MINING_WASTED_VOLUME_MULT: Self = Self::from_eid(EAttrId::MINING_WASTED_VOLUME_MULT);
     pub(crate) const MINING_WASTE_PROBABILITY: Self = Self::from_eid(EAttrId::MINING_WASTE_PROBABILITY);
     pub(crate) const DOOMSDAY_APPLIED_DBUFF_DURATION: Self = Self::from_eid(EAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION);

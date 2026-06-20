@@ -1,5 +1,5 @@
 pub(in crate::nd::effect::defs) use cloak::{
-    mk_cannot_cloak_mod_hardcoded, mk_cannot_cloak_mod_transfer, mk_disallow_cloak_buff,
+    mk_cannot_cloak_mod_hardcoded, mk_cannot_cloak_mod_transfer, mk_disallow_cloak_buff, mk_stabilize_cloak_buff,
 };
 pub(in crate::nd::effect::defs) use damp::add_damp_mods;
 pub(in crate::nd::effect::defs) use dd::make_dd_self_debuffs;

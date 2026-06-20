@@ -326,6 +326,7 @@ impl EAttrId {
     pub(crate) const REP_MULT_BONUS_PER_CYCLE: Self = Self::from_i32(2796);
     pub(crate) const REP_MULT_BONUS_MAX: Self = Self::from_i32(2797);
     pub(crate) const ECM_JAM_DURATION: Self = Self::from_i32(2822);
+    pub(crate) const STABILIZE_CLOAK_DURATION: Self = Self::from_i32(3118);
     pub(crate) const MINING_WASTED_VOLUME_MULT: Self = Self::from_i32(3153);
     pub(crate) const MINING_WASTE_PROBABILITY: Self = Self::from_i32(3154);
     pub(crate) const DOOMSDAY_APPLIED_DBUFF_DURATION: Self = Self::from_i32(5412);

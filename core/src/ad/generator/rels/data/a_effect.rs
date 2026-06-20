@@ -70,6 +70,7 @@ impl AEffectBuffDuration {
     fn get_attr_eid(&self) -> Option<EAttrId> {
         match self {
             Self::Effect => None,
+            Self::AttrS(attr_aid) => attr_aid.dc_eve(),
             Self::AttrMs(attr_aid) => attr_aid.dc_eve(),
         }
     }

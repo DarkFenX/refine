@@ -30,6 +30,7 @@ impl ABuffId {
     pub(crate) const PANIC_DRONE_DMG_PENALTY: Self = Self::from_eid(EBuffId::PANIC_DRONE_DMG_PENALTY);
     pub(crate) const PANIC_DISALLOW_WEAPONS: Self = Self::from_eid(EBuffId::PANIC_DISALLOW_WEAPONS);
     pub(crate) const PANIC_DISALLOW_ENTOSIS: Self = Self::from_eid(EBuffId::PANIC_DISALLOW_ENTOSIS);
+    pub(crate) const CLOAK_STABILIZATION: Self = Self::from_eid(EBuffId::CLOAK_STABILIZATION);
     pub(crate) const REMOTE_REPAIR_IMPEDANCE: Self = Self::from_eid(EBuffId::REMOTE_REPAIR_IMPEDANCE);
     pub(crate) const SOV_SMOD_SHIELD_HITPOINT_BONUS: Self = Self::from_eid(EBuffId::SOV_SMOD_SHIELD_HITPOINT_BONUS);
     pub(crate) const SOV_SMOD_CAPACITOR_CAPACITY_BONUS: Self =

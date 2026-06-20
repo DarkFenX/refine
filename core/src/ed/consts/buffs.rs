@@ -24,6 +24,7 @@ impl EBuffId {
     pub(crate) const PANIC_DRONE_DMG_PENALTY: Self = Self::from_i32(58);
     pub(crate) const PANIC_DISALLOW_WEAPONS: Self = Self::from_i32(59);
     pub(crate) const PANIC_DISALLOW_ENTOSIS: Self = Self::from_i32(61);
+    pub(crate) const CLOAK_STABILIZATION: Self = Self::from_i32(2113);
     pub(crate) const REMOTE_REPAIR_IMPEDANCE: Self = Self::from_i32(2201);
     pub(crate) const SOV_SMOD_SHIELD_HITPOINT_BONUS: Self = Self::from_i32(2433);
     pub(crate) const SOV_SMOD_CAPACITOR_CAPACITY_BONUS: Self = Self::from_i32(2434);

@@ -4,7 +4,8 @@ pub(in crate::nd::effect::defs) use missile_dmg_self_srq::missile_dmg_self_srq_u
 pub(in crate::nd::effect::defs) use mods::{
     add_damp_mods, add_gd_mods, add_td_mods, add_tp_mods, add_wd_mods, add_web_mods, make_dd_self_debuffs,
     mk_bubble_buff, mk_cannot_cloak_mod_hardcoded, mk_cannot_cloak_mod_transfer, mk_disallow_assistance_mod_transfer,
-    mk_disallow_cloak_buff, mk_mjd_sig_mod, mk_mwd_sig_mod, mk_prop_mass_mod, mk_subsystem_mod,
+    mk_disallow_cloak_buff, mk_mjd_sig_mod, mk_mwd_sig_mod, mk_prop_mass_mod, mk_stabilize_cloak_buff,
+    mk_subsystem_mod,
 };
 
 mod aoe_dd_warmup_neut;

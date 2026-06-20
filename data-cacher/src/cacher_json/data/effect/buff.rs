@@ -26,7 +26,8 @@ struct CEffectBuffFull {
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
 enum CEffectBuffDuration {
-    None,
+    Effect,
+    AttrS(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
     AttrMs(#[serde_as(as = "serde_with::DisplayFromStr")] rc::ad::AAttrId),
 }
 
@@ -101,13 +102,15 @@ impl CEffectBuffFull {
 impl CEffectBuffDuration {
     fn from_adapted(a_buff_duration: &rc::ad::AEffectBuffDuration) -> Self {
         match a_buff_duration {
-            rc::ad::AEffectBuffDuration::Effect => Self::None,
+            rc::ad::AEffectBuffDuration::Effect => Self::Effect,
+            rc::ad::AEffectBuffDuration::AttrS(attr_id) => Self::AttrS(*attr_id),
             rc::ad::AEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
         }
     }
     fn into_adapted(self) -> rc::ad::AEffectBuffDuration {
         match self {
-            Self::None => rc::ad::AEffectBuffDuration::Effect,
+            Self::Effect => rc::ad::AEffectBuffDuration::Effect,
+            Self::AttrS(attr_id) => rc::ad::AEffectBuffDuration::AttrS(attr_id),
             Self::AttrMs(attr_id) => rc::ad::AEffectBuffDuration::AttrMs(attr_id),
         }
     }

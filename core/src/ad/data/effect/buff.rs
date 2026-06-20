@@ -23,6 +23,7 @@ pub struct AEffectBuffFull {
 #[derive(Copy, Clone)]
 pub enum AEffectBuffDuration {
     Effect,
+    AttrS(AAttrId),
     AttrMs(AAttrId),
 }
 
