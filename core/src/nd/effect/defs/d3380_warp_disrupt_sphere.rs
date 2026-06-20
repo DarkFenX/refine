@@ -37,13 +37,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
                     strength: AEffectModStrength::Attr(AAttrId::WARP_BUBBLE_STRENGTH),
-                    duration: AEffectBuffDuration::None,
+                    duration: AEffectBuffDuration::Effect,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_WARP_JUMP,
                     strength: AEffectModStrength::Attr(AAttrId::WARP_BUBBLE_STRENGTH),
-                    duration: AEffectBuffDuration::None,
+                    duration: AEffectBuffDuration::Effect,
                     scope: AEffectBuffScope::Carrier,
                 },
             ],

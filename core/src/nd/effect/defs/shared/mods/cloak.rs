@@ -28,7 +28,7 @@ pub(in crate::nd::effect::defs) fn mk_disallow_cloak_buff() -> AEffectBuffFull {
     AEffectBuffFull {
         buff_id: ABuffId::DISALLOW_CLOAK,
         strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
-        duration: AEffectBuffDuration::None,
+        duration: AEffectBuffDuration::Effect,
         scope: AEffectBuffScope::Carrier,
     }
 }

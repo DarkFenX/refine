@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_buff: Some(AEffectBuff {
             attr_merge: Some(AEffectBuffAttrMerge {
-                duration: AEffectBuffDuration::None,
+                duration: AEffectBuffDuration::Effect,
                 scope: AEffectBuffScope::Projected(AItemListId::SHIPS_DRONES_FIGHTERS_ENTITIES),
             }),
             ..

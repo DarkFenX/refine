@@ -101,13 +101,13 @@ impl CEffectBuffFull {
 impl CEffectBuffDuration {
     fn from_adapted(a_buff_duration: &rc::ad::AEffectBuffDuration) -> Self {
         match a_buff_duration {
-            rc::ad::AEffectBuffDuration::None => Self::None,
+            rc::ad::AEffectBuffDuration::Effect => Self::None,
             rc::ad::AEffectBuffDuration::AttrMs(attr_id) => Self::AttrMs(*attr_id),
         }
     }
     fn into_adapted(self) -> rc::ad::AEffectBuffDuration {
         match self {
-            Self::None => rc::ad::AEffectBuffDuration::None,
+            Self::None => rc::ad::AEffectBuffDuration::Effect,
             Self::AttrMs(attr_id) => rc::ad::AEffectBuffDuration::AttrMs(attr_id),
         }
     }

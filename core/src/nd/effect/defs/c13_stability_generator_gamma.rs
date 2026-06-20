@@ -32,19 +32,19 @@ fn make_effect() -> AEffect {
                 AEffectBuffFull {
                     buff_id: ABuffId::SOV_SMOD_SHIELD_HITPOINT_BONUS,
                     strength: AEffectModStrength::Hardcoded(AValue::from_f64(5.0)),
-                    duration: AEffectBuffDuration::None,
+                    duration: AEffectBuffDuration::Effect,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::SOV_SMOD_SHIELD_BOOSTER_BONUS,
                     strength: AEffectModStrength::Hardcoded(AValue::from_f64(5.0)),
-                    duration: AEffectBuffDuration::None,
+                    duration: AEffectBuffDuration::Effect,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
                 AEffectBuffFull {
                     buff_id: ABuffId::SOV_SMOD_CAPACITOR_CAPACITY_BONUS,
                     strength: AEffectModStrength::Hardcoded(AValue::from_f64(10.0)),
-                    duration: AEffectBuffDuration::None,
+                    duration: AEffectBuffDuration::Effect,
                     scope: AEffectBuffScope::Projected(AItemListId::SHIPS),
                 },
             ],

@@ -35,7 +35,7 @@ fn make_effect() -> AEffect {
         range_attr_id: Some(AAttrId::WARP_SCRAMBLE_RANGE),
         buff: Some(AEffectBuff {
             full: vec![
-                mk_bubble_buff(AEffectBuffDuration::None),
+                mk_bubble_buff(AEffectBuffDuration::AttrMs(AAttrId::EXPLOSION_DELAY)),
                 // Bubble prevents dictor from tethering as long as it's up
                 AEffectBuffFull {
                     buff_id: ABuffId::DISALLOW_TETHER,

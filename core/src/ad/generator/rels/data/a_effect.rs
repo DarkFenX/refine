@@ -69,7 +69,7 @@ impl AEffectModStrength {
 impl AEffectBuffDuration {
     fn get_attr_eid(&self) -> Option<EAttrId> {
         match self {
-            Self::None => None,
+            Self::Effect => None,
             Self::AttrMs(attr_aid) => attr_aid.dc_eve(),
         }
     }
