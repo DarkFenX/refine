@@ -3,7 +3,7 @@ use crate::{
     nd::{
         NEffectBreacherOutputGetter, NEffectCharge, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectDuration,
         NEffectEcm, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectNeut, NEffectProjModSpec,
-        NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs,
+        NEffectProjOpcSpec, NEffectProjecteeFilter, NEffectSpoolAttrs, NEffectTime,
     },
     svc::calc::CalcCustomModifier,
     util::RMap,
@@ -34,7 +34,7 @@ pub(crate) struct NEffect {
     pub(crate) disallows_jump_drive: Option<NEffectDuration> = None,
     pub(crate) disallows_dock: Option<NEffectDuration> = None,
     pub(crate) disallows_tether: Option<NEffectDuration> = None,
-    pub(crate) kills_item: bool = false,
+    pub(crate) kills_item: Option<NEffectTime> = None,
     pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
     // Effect modifier customization ran during runtime in calculator service
     pub(crate) calc_custom_mod: Option<CalcCustomModifier> = None,

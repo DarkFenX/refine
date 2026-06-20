@@ -149,7 +149,7 @@ impl REffect {
             disallows_tether: n_effect
                 .map(|n| n.disallows_tether.is_some() && state == RState::Active)
                 .unwrap_or(false),
-            kills_item: n_effect.map(|n| n.kills_item).unwrap_or(false),
+            kills_item: n_effect.map(|n| n.kills_item.is_some()).unwrap_or(false),
             dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             // Fields which depend on data not available during instantiation
             charge: Default::default(),

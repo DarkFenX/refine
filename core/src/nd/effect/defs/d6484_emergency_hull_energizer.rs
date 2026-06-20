@@ -2,7 +2,7 @@ use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
     },
-    nd::NEffect,
+    nd::{NEffect, NEffectTime},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::EMERGENCY_HULL_ENERGIZER;
@@ -11,7 +11,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
-        kills_item: true,
+        kills_item: Some(NEffectTime::CycleEnd),
         ..
     }
 }

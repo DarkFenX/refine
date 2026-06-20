@@ -2,7 +2,6 @@ pub(crate) use charge::{
     NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeDeplCrystal, NEffectChargeLoc,
 };
 pub(crate) use container::N_EFFECT_MAP;
-pub(crate) use duration::NEffectDuration;
 pub(crate) use effect::NEffect;
 pub(crate) use projectee_filter::NEffectProjecteeFilter;
 pub(crate) use specs::{
@@ -13,12 +12,13 @@ pub(crate) use specs::{
     NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec, NEffectResist,
 };
 pub(crate) use spool::NEffectSpoolAttrs;
+pub(crate) use time::{NEffectDuration, NEffectTime};
 
 mod charge;
 mod container;
 mod defs;
-mod duration;
 mod effect;
 mod projectee_filter;
 mod specs;
 mod spool;
+mod time;

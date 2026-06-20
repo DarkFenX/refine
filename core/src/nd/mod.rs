@@ -13,7 +13,7 @@ pub(crate) use effect::{
     NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectMiningAmount,
     NEffectMiningChecker, NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut, NEffectNeutChecker,
     NEffectNeutKind, NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec,
-    NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs,
+    NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs, NEffectTime,
 };
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 
