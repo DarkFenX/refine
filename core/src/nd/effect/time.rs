@@ -1,4 +1,4 @@
-use crate::{ad::AAttrId, num::PValue};
+use crate::num::PValue;
 
 // Time relatively effect cycle start when some event happens
 pub(crate) enum NEffectTime {
@@ -12,6 +12,4 @@ pub(crate) enum NEffectTime {
 pub(crate) enum NEffectDuration {
     // Impactful as long as effect is in active duration of its cycle
     Effect,
-    // Impactful for duration in milliseconds, amount is specified as value of on-item attribute
-    AttrMs(AAttrId),
 }
