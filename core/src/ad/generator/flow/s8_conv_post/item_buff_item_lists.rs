@@ -6,7 +6,7 @@ use crate::{
     util::RSet,
 };
 
-const LENGTH_THRESHOLD: usize = 5;
+const MAX_ALLOWED_LENGTH: usize = 5;
 
 pub(in crate::ad::generator::flow::s8_conv_post) fn fill_buff_item_lists(a_data: &mut AData) {
     // Collect item lists which are used in buffs
@@ -60,13 +60,13 @@ pub(in crate::ad::generator::flow::s8_conv_post) fn fill_buff_item_lists(a_data:
     // - possibly change how calculator processes type list checks when working on buffs.
     // Ships are excluded mostly because performance when adding/removing ships does not matter
     // much. 5 is an arbitrary threshold, need to reassess different approaches once it is reached.
-    if proj_max_len >= LENGTH_THRESHOLD {
+    if proj_max_len >= MAX_ALLOWED_LENGTH {
         tracing::warn!(
             "max count of item list IDs involved in projected buffs is {}",
             proj_max_len
         );
     }
-    if fleet_max_len >= LENGTH_THRESHOLD {
+    if fleet_max_len >= MAX_ALLOWED_LENGTH {
         tracing::warn!(
             "max count of item list IDs involved in fleet buffs is {}",
             fleet_max_len
