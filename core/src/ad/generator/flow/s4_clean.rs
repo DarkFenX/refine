@@ -135,10 +135,7 @@ fn restore_hardcoded_item_lists(alive: &mut EData, trash: &mut EData) {
 // Cyclic restoration functions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
-    let mut item_ids = RSet::new();
-    for item in alive.items.data.iter() {
-        item_ids.insert(item.id);
-    }
+    let item_ids: RSet<_> = alive.items.data.iter().map(|v| v.id).collect();
     // We need the data which describes our items directly, so some FKs are avoided deliberately.
     // For instance, having an item-attribute mapping entry restored just because its value refers
     // some item which is already "alive" is undesired.
