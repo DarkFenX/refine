@@ -10,13 +10,9 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HChangeBoosterCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<bool>,
-    #[serde(default)]
     side_effects: Option<HSideEffectMap>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeBoosterCmd {
