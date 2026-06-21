@@ -11,7 +11,7 @@ use crate::{
             },
         },
     },
-    ud::{UFitId, UFwEffect, UItemId, UShip},
+    ud::{UData, UFitId, UFwEffect, UItemId, UShip},
 };
 
 impl StandardRegister {
@@ -37,7 +37,7 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_rid)) => {
                 let fit_uid = fw_effect.get_fit_uid();
-                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
+                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
@@ -49,7 +49,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_rid), item_grp_id) => {
                 let fit_uid = fw_effect.get_fit_uid();
-                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
+                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
@@ -61,7 +61,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid) => {
                 let fit_uid = fw_effect.get_fit_uid();
-                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
+                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
@@ -100,7 +100,7 @@ impl StandardRegister {
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_rid)) => {
                 let fit_uid = fw_effect.get_fit_uid();
-                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
+                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
@@ -111,7 +111,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocGrp(Location::ItemList(item_list_rid), item_grp_id) => {
                 let fit_uid = fw_effect.get_fit_uid();
-                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
+                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
@@ -122,7 +122,7 @@ impl StandardRegister {
             }
             AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid) => {
                 let fit_uid = fw_effect.get_fit_uid();
-                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx, fit_uid, &item_list_rid)
+                if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
@@ -239,14 +239,14 @@ impl StandardRegister {
     }
 }
 
-fn is_fit_ship_on_proj_item_list<'u>(
-    ctx: SvcCtx<'u, '_>,
+fn is_fit_ship_on_proj_item_list<'a>(
+    u_data: &'a UData,
     fit_uid: UFitId,
     item_list_rid: &RItemListId,
-) -> Option<(UItemId, &'u UShip)> {
-    let fit = ctx.u_data.fits.get(fit_uid);
+) -> Option<(UItemId, &'a UShip)> {
+    let fit = u_data.fits.get(fit_uid);
     let ship_uid = fit.ship?;
-    let ship = ctx.u_data.items.get(ship_uid).dc_ship().unwrap();
+    let ship = u_data.items.get(ship_uid).dc_ship().unwrap();
     match ship.get_proj_buff_item_lists()?.contains(item_list_rid) {
         true => Some((ship_uid, ship)),
         false => None,
