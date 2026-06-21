@@ -2,7 +2,10 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    cmd::{
+        HItemIdsResp, change_item,
+        shared::{HEffectModeMap, apply_effect_modes, get_primary_fit},
+    },
     shared::HServiceState,
     util::HExecError,
 };
@@ -11,6 +14,7 @@ use crate::{
 pub(crate) struct HAddServiceCmd {
     type_id: i32,
     state: HServiceState,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HAddServiceCmd {
     pub(in crate::cmd) fn execute(
@@ -21,7 +25,8 @@ impl HAddServiceCmd {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_state = self.state.into_core();
-        let core_service = core_fit.add_service(core_type_id, core_state);
+        let mut core_service = core_fit.add_service(core_type_id, core_state);
+        apply_effect_modes(&mut core_service, &self.effect_modes);
         Ok(HItemIdsResp::from_core_service(core_service))
     }
 }

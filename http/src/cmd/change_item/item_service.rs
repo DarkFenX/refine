@@ -11,11 +11,8 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HChangeServiceCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<HServiceState>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeServiceCmd {

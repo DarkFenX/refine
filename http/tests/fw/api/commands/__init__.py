@@ -22,3 +22,11 @@ from .item_rig import (
     SolRigAddCmd,
     SolRigChangeCmd,
 )
+from .item_service import (
+    FitServiceAddCmd,
+    FitServiceChangeCmd,
+    ItemServiceAddCmd,
+    ItemServiceChangeCmd,
+    SolServiceAddCmd,
+    SolServiceChangeCmd,
+)

@@ -7,6 +7,8 @@ from fw.api.commands import (
     ItemImplantChangeCmd,
     ItemRigAddCmd,
     ItemRigChangeCmd,
+    ItemServiceAddCmd,
+    ItemServiceChangeCmd,
 )
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
@@ -558,14 +560,17 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: ApiServiceState,
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='service',
-            sol_id=sol_id,
+        body = ItemServiceAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     def change_service_request(
@@ -577,13 +582,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='service',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemServiceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     # Ship methods

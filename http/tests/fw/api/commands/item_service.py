@@ -5,22 +5,20 @@ from fw.util import Absent, conditional_insert
 from .base import Command
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiEffMode
+    from fw.consts import ApiEffMode, ApiServiceState
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseBoosterCmd(Command):
+class BaseServiceCmd(Command):
 
     type_id: int | type[Absent] = Absent
-    state: bool | type[Absent] = Absent
-    side_effects: dict[str, bool] | type[Absent] = Absent
+    state: ApiServiceState | type[Absent] = Absent
     effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent
 
     def serialize(self) -> dict:
-        body = {'type': 'booster'}
+        body = {'type': 'service'}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['side_effects'], value=self.side_effects)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
 
@@ -29,12 +27,12 @@ class BaseBoosterCmd(Command):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterAddCmd(BaseBoosterCmd):
+class FitServiceAddCmd(BaseServiceCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemBoosterAddCmd(FitBoosterAddCmd):
+class ItemServiceAddCmd(FitServiceAddCmd):
 
     fit_id: str
 
@@ -45,7 +43,7 @@ class ItemBoosterAddCmd(FitBoosterAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterAddCmd(ItemBoosterAddCmd):
+class SolServiceAddCmd(ItemServiceAddCmd):
     ...
 
 
@@ -53,12 +51,12 @@ class SolBoosterAddCmd(ItemBoosterAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemBoosterChangeCmd(BaseBoosterCmd):
+class ItemServiceChangeCmd(BaseServiceCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterChangeCmd(ItemBoosterChangeCmd):
+class FitServiceChangeCmd(ItemServiceChangeCmd):
 
     item_id: str
 
@@ -69,5 +67,5 @@ class FitBoosterChangeCmd(ItemBoosterChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterChangeCmd(FitBoosterChangeCmd):
+class SolServiceChangeCmd(FitServiceChangeCmd):
     ...

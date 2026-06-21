@@ -13,7 +13,7 @@ class BaseImplantCmd(Command):
 
     type_id: int | type[Absent] = Absent
     state: bool | type[Absent] = Absent
-    effect_modes: dict[str, ApiEffMode] | type[Absent]
+    effect_modes: dict[str, ApiEffMode] | type[Absent] = Absent
 
     def serialize(self) -> dict:
         body = {'type': 'implant'}
