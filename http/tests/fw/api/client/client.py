@@ -6,4 +6,4 @@ from .src import ApiClientSrc
 
 
 class ApiClient(ApiClientFit, ApiClientFleet, ApiClientItem, ApiClientSol, ApiClientSrc):
-    pass
+    ...

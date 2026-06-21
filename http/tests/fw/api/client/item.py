@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import ItemChangeBoosterCmd
+from fw.api.commands import ItemAddBoosterCmd, ItemChangeBoosterCmd
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -98,12 +98,11 @@ class ApiClientItem(ApiClientBase):
             side_effects: dict[str, bool] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {
-            'type': 'booster',
-            'fit_id': fit_id,
-            'type_id': type_id}
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['side_effects'], value=side_effects)
+        body = ItemAddBoosterCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            side_effects=side_effects).serialize()
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(

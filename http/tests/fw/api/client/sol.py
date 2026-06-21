@@ -22,7 +22,7 @@ if typing.TYPE_CHECKING:
 
 
 class ApiSolCheckError(Exception):
-    pass
+    ...
 
 
 class ApiClientSol(ApiClientBase, eve.EveDataManager):

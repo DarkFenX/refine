@@ -1,1 +1,8 @@
-from .item_booster import FitChangeBoosterCmd, ItemChangeBoosterCmd, SolChangeBoosterCmd
+from .item_booster import (
+    FitAddBoosterCmd,
+    FitChangeBoosterCmd,
+    ItemAddBoosterCmd,
+    ItemChangeBoosterCmd,
+    SolAddBoosterCmd,
+    SolChangeBoosterCmd,
+)

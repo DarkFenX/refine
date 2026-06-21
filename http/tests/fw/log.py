@@ -16,11 +16,11 @@ if typing.TYPE_CHECKING:
 
 
 class ParseError(Exception):
-    pass
+    ...
 
 
 class LogEntryNotFoundError(Exception):
-    pass
+    ...
 
 
 @unique
