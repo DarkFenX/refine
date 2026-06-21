@@ -3,7 +3,7 @@ use crate::{
         GSupport,
         rels::{KeyDb, KeyPart},
     },
-    ed::{EBuffId, EData, EDataCont, EItemCatId, EItemGrpId, EItemListId},
+    ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
     util::{LibNamed, RSet, StrMsgError},
 };
 
@@ -78,14 +78,35 @@ fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
     let mut grps = vec![
         EItemGrpId::CHARACTER,
         EItemGrpId::EFFECT_BEACON,
+        EItemGrpId::DESTRUCTIBLE_EFFECT_BEACON,
+        EItemGrpId::TEMPORARY_COLLIDABLE_STRUCTURES,
+        EItemGrpId::ABYSSAL_HAZARDS,
         EItemGrpId::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES,
     ];
+    // Some useful items are hard to pick apart from others; for example, abyssal weathers belong to
+    // 2 separate groups (non-interactable objects and massive environments), with both groups
+    // including lots of items useless for the lib. Just rely on effects to restore those.
+    let effs = [
+        EEffectId::WEATHER_ELECTRIC_STORM,
+        EEffectId::WEATHER_INFERNAL,
+        EEffectId::WEATHER_CAUSTIC_TOXIN,
+        EEffectId::WEATHER_XENON_GAS,
+        EEffectId::WEATHER_DARKNESS,
+        EEffectId::AOE_BEACON_PULSE_01,
+    ];
+    // Items included directly, for cases when there is no easy other way to include them
+    let mut items = vec![EItemId::WEAPON_OVERCHARGE_PYLON];
     for (&grp, cat) in g_supp.grp_cat_map.iter() {
         if cats.contains(cat) {
             grps.push(grp);
         }
     }
-    move_data(&mut trash.items, &mut alive.items, |v| grps.contains(&v.group_id));
+    for eff in effs {
+        items.extend(g_supp.eff_item_map.get(&eff).copied())
+    }
+    move_data(&mut trash.items, &mut alive.items, |v| {
+        items.contains(&v.id) || grps.contains(&v.group_id)
+    });
 }
 
 fn restore_attrs(alive: &mut EData, trash: &mut EData) {

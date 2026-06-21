@@ -1,14 +1,15 @@
 use crate::{
     ad::{AAttr, ABuff, AEffect, AEffectBuff},
-    ed::{EAttrId, EAttrUnitId, EData, EEffectId, EItemCatId, EItemGrpId},
+    ed::{EAttrId, EAttrUnitId, EData, EEffectId, EItemCatId, EItemGrpId, EItemId},
     nd::{N_ATTR_MAP, N_BUFF_MAP, N_EFFECT_MAP},
-    util::RMap,
+    util::{RMap, RMapRSet},
 };
 
 /// Container for auxiliary data.
 pub(in crate::ad::generator) struct GSupport {
     pub(in crate::ad::generator) grp_cat_map: RMap<EItemGrpId, EItemCatId>,
     pub(in crate::ad::generator) attr_unit_map: RMap<EAttrId, EAttrUnitId>,
+    pub(in crate::ad::generator) eff_item_map: RMapRSet<EEffectId, EItemId>,
     pub(in crate::ad::generator) eff_buff_map: RMap<EEffectId, AEffectBuff>,
     // Standalone containers are for entities which do not exist in data yet, but will be put into
     // it later
@@ -21,6 +22,7 @@ impl GSupport {
         Self {
             grp_cat_map: RMap::new(),
             attr_unit_map: RMap::new(),
+            eff_item_map: RMapRSet::new(),
             eff_buff_map: RMap::new(),
             standalone_attrs: Vec::new(),
             standalone_effects: Vec::new(),
@@ -28,12 +30,13 @@ impl GSupport {
         }
     }
     pub(in crate::ad::generator) fn fill(&mut self, e_data: &EData) {
-        self.fill_grp_cat_map(e_data);
+        self.fill_group_categories(e_data);
         self.fill_attr_units(e_data);
+        self.fill_effect_items(e_data);
         self.fill_effect_buff_data();
         self.fill_standalone_data();
     }
-    fn fill_grp_cat_map(&mut self, e_data: &EData) {
+    fn fill_group_categories(&mut self, e_data: &EData) {
         for grp in e_data.groups.data.iter() {
             self.grp_cat_map.insert(grp.id, grp.category_id);
         }
@@ -43,6 +46,11 @@ impl GSupport {
             if let Some(unit) = attr.unit_id {
                 self.attr_unit_map.insert(attr.id, unit);
             }
+        }
+    }
+    fn fill_effect_items(&mut self, e_data: &EData) {
+        for item_effect in e_data.item_effects.data.iter() {
+            self.eff_item_map.add_entry(item_effect.effect_id, item_effect.item_id);
         }
     }
     fn fill_effect_buff_data(&mut self) {

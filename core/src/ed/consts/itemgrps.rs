@@ -17,5 +17,8 @@ impl EItemGrpId {
     pub(crate) const EXPEDITION_FRIGATE: Self = Self::from_i32(1283);
     pub(crate) const SHIP_MODIFIER: Self = Self::from_i32(1306);
     pub(crate) const GUIDED_BOMB: Self = Self::from_i32(1548);
+    pub(crate) const ABYSSAL_HAZARDS: Self = Self::from_i32(1971);
+    pub(crate) const DESTRUCTIBLE_EFFECT_BEACON: Self = Self::from_i32(4033);
+    pub(crate) const TEMPORARY_COLLIDABLE_STRUCTURES: Self = Self::from_i32(4073);
     pub(crate) const SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES: Self = Self::from_i32(4839);
 }

@@ -28,6 +28,7 @@ impl EItemId {
     pub(crate) const HECATE_DEFENSE_MODE: Self = Self::from_i32(35686);
     pub(crate) const HECATE_PROPULSION_MODE: Self = Self::from_i32(35687);
     pub(crate) const HECATE_SHARPSHOOTER_MODE: Self = Self::from_i32(35688);
+    pub(crate) const WEAPON_OVERCHARGE_PYLON: Self = Self::from_i32(52700);
     pub(crate) const STASIS_WEBIFICATION_PROBE: Self = Self::from_i32(56748);
     pub(crate) const CAPITAL_MICRO_JUMP_DRIVE_OPERATION: Self = Self::from_i32(83464);
     pub(crate) const GAMMA_STABILITY_GENERATOR: Self = Self::from_i32(87815);
