@@ -1,5 +1,3 @@
-use itertools::Itertools;
-
 use crate::{
     ad::generator::{
         GSupport,
@@ -38,8 +36,8 @@ fn move_data<T, F>(src_cont: &mut EDataCont<T>, dst_cont: &mut EDataCont<T>, fil
 where
     F: FnMut(&mut T) -> bool,
 {
-    let drained = src_cont.data.extract_if(.., filter).collect_vec();
-    let changes = !drained.is_empty();
+    let mut drained = src_cont.data.extract_if(.., filter).peekable();
+    let changes = drained.peek().is_some();
     dst_cont.data.extend(drained);
     changes
 }
