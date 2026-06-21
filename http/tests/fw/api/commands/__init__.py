@@ -14,3 +14,11 @@ from .item_implant import (
     SolImplantAddCmd,
     SolImplantChangeCmd,
 )
+from .item_rig import (
+    FitRigAddCmd,
+    FitRigChangeCmd,
+    ItemRigAddCmd,
+    ItemRigChangeCmd,
+    SolRigAddCmd,
+    SolRigChangeCmd,
+)

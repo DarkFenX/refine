@@ -2,7 +2,10 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    cmd::{
+        HItemIdsResp, change_item,
+        shared::{HEffectModeMap, apply_effect_modes, get_primary_fit},
+    },
     util::HExecError,
 };
 
@@ -10,6 +13,7 @@ use crate::{
 pub(crate) struct HAddRigCmd {
     type_id: i32,
     state: Option<bool>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HAddRigCmd {
     pub(in crate::cmd) fn execute(
@@ -23,6 +27,7 @@ impl HAddRigCmd {
         if let Some(state) = self.state {
             core_rig.set_state(state);
         }
+        apply_effect_modes(&mut core_rig, &self.effect_modes);
         Ok(HItemIdsResp::from_core_rig(core_rig))
     }
 }

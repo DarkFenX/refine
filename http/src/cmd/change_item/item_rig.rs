@@ -10,11 +10,8 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HChangeRigCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<bool>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeRigCmd {
