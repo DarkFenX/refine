@@ -150,15 +150,16 @@ fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
         item_ids.contains(&v.item_id)
     }) || move_data(&mut trash.item_abils, &mut alive.item_abils, |v| {
         item_ids.contains(&v.item_id)
-    }) || move_data(&mut trash.space_comps, &mut alive.space_comps, |v| {
-        item_ids.contains(&v.item_id) || v.has_buffs()
-    }) || move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
-        item_ids.contains(&v.item_id)
-    }) || move_data(&mut trash.muta_items, &mut alive.muta_items, |v| {
-        item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
-    }) || move_data(&mut trash.muta_attrs, &mut alive.muta_attrs, |v| {
-        item_ids.contains(&v.muta_id)
-    })
+    }) || move_data(&mut trash.space_comps, &mut alive.space_comps, |v| v.has_buffs())
+        || move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
+            item_ids.contains(&v.item_id)
+        })
+        || move_data(&mut trash.muta_items, &mut alive.muta_items, |v| {
+            item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
+        })
+        || move_data(&mut trash.muta_attrs, &mut alive.muta_attrs, |v| {
+            item_ids.contains(&v.muta_id)
+        })
 }
 
 fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> bool {
