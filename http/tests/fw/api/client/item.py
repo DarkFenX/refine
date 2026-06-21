@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import ItemAddBoosterCmd, ItemChangeBoosterCmd
+from fw.api.commands import ItemBoosterAddCmd, ItemBoosterChangeCmd, ItemImplantAddCmd, ItemImplantChangeCmd
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -96,13 +96,15 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             state: bool | type[Absent],
             side_effects: dict[str, bool] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemAddBoosterCmd(
+        body = ItemBoosterAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            side_effects=side_effects).serialize()
+            side_effects=side_effects,
+            effect_modes=effect_modes).serialize()
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -119,12 +121,14 @@ class ApiClientItem(ApiClientBase):
             type_id: int | type[Absent],
             state: bool | type[Absent],
             side_effects: dict[str, bool] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemChangeBoosterCmd(
+        body = ItemBoosterChangeCmd(
             type_id=type_id,
             state=state,
-            side_effects=side_effects).serialize()
+            side_effects=side_effects,
+            effect_modes=effect_modes).serialize()
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -364,15 +368,22 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='implant',
-            sol_id=sol_id,
+        body = ItemImplantAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            item_info_mode=item_info_mode)
+            effect_modes=effect_modes).serialize()
+        params = {}
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/item',
+            params=params,
+            json=body)
 
     def change_implant_request(
             self, *,
@@ -383,14 +394,18 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='implant',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemImplantChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
-            item_info_mode=item_info_mode)
+            effect_modes=effect_modes).serialize()
+        params = {}
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
+            params=params,
+            json=body)
 
     # Module methods
     def add_mod_request(

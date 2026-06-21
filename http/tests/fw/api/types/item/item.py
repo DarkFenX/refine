@@ -127,6 +127,7 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: bool | type[Absent] = Absent,
             side_effects: dict[int | str, bool] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
@@ -137,6 +138,7 @@ class Item(AttrDict):
             type_id=type_id,
             state=state,
             side_effects=process_effect_map_request(effect_map=side_effects),
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
