@@ -1,5 +1,6 @@
 import typing
 
+from fw.api.commands import ItemChangeBoosterCmd
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -73,7 +74,7 @@ class ApiClientItem(ApiClientBase):
     def change_autocharge_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
@@ -115,16 +116,16 @@ class ApiClientItem(ApiClientBase):
     def change_booster_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             side_effects: dict[str, bool] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'booster'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['side_effects'], value=side_effects)
+        body = ItemChangeBoosterCmd(
+            type_id=type_id,
+            state=state,
+            side_effects=side_effects).serialize()
         params = {}
         conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
@@ -154,7 +155,7 @@ class ApiClientItem(ApiClientBase):
     def change_character_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -173,7 +174,7 @@ class ApiClientItem(ApiClientBase):
     def change_charge_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -222,7 +223,7 @@ class ApiClientItem(ApiClientBase):
     def change_drone_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             mutation: MutaAdd | MutaChange | type[Absent] | None,
@@ -289,7 +290,7 @@ class ApiClientItem(ApiClientBase):
     def change_fighter_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: ApiMinionState | type[Absent],
             count: int | type[Absent] | None,
@@ -342,7 +343,7 @@ class ApiClientItem(ApiClientBase):
     def change_fw_effect_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -377,7 +378,7 @@ class ApiClientItem(ApiClientBase):
     def change_implant_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -483,7 +484,7 @@ class ApiClientItem(ApiClientBase):
     def change_proj_effect_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             add_projs: list[str] | type[Absent],
@@ -524,7 +525,7 @@ class ApiClientItem(ApiClientBase):
     def change_rig_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -559,7 +560,7 @@ class ApiClientItem(ApiClientBase):
     def change_service_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: ApiServiceState | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -604,7 +605,7 @@ class ApiClientItem(ApiClientBase):
     def change_ship_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
@@ -696,7 +697,7 @@ class ApiClientItem(ApiClientBase):
     def change_stance_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -731,7 +732,7 @@ class ApiClientItem(ApiClientBase):
     def change_subsystem_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -768,7 +769,7 @@ class ApiClientItem(ApiClientBase):
     def change_sw_effect_request(
             self, *,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
@@ -811,7 +812,7 @@ class ApiClientItem(ApiClientBase):
             self, *,
             cmd_name: str,
             sol_id: str,
-            item_id: int,
+            item_id: str,
             type_id: int | type[Absent],
             state: bool | str | type[Absent],
             effect_modes: dict[str, ApiEffMode] | type[Absent],
