@@ -23,6 +23,9 @@ pub(crate) struct RItem {
     pub(crate) srqs: RMap<AItemId, SkillLevel>,
     pub(crate) max_state: RState,
     pub(crate) ship_kind: Option<RShipKind>,
+    // Buff item list IDs are intentionally vectors: they are used for iteration, and for membership
+    // checks. For cases where it matters (e.g. non-ship items) those do not have more than a couple
+    // of entries, so are faster than sets.
     pub(crate) proj_buff_item_list_rids: Vec<RItemListId>,
     pub(crate) fleet_buff_item_list_rids: Vec<RItemListId>,
     pub(crate) val_fitted_group_id: Option<AItemGrpId>,
