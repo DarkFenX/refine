@@ -1,3 +1,8 @@
+from .item_autocharge import (
+    FitAutochargeChangeCmd,
+    ItemAutochargeChangeCmd,
+    SolAutochargeChangeCmd,
+)
 from .item_booster import (
     FitBoosterAddCmd,
     FitBoosterChangeCmd,
@@ -5,6 +10,11 @@ from .item_booster import (
     ItemBoosterChangeCmd,
     SolBoosterAddCmd,
     SolBoosterChangeCmd,
+)
+from .item_charge import (
+    FitChargeChangeCmd,
+    ItemChargeChangeCmd,
+    SolChargeChangeCmd,
 )
 from .item_drone import (
     FitDroneAddCmd,

@@ -1,8 +1,10 @@
 import typing
 
 from fw.api.commands import (
+    ItemAutochargeChangeCmd,
     ItemBoosterAddCmd,
     ItemBoosterChangeCmd,
+    ItemChargeChangeCmd,
     ItemDroneAddCmd,
     ItemDroneChangeCmd,
     ItemFighterAddCmd,
@@ -104,13 +106,13 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='autocharge',
+        body = ItemAutochargeChangeCmd(
+            state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            type_id=Absent,
-            state=state,
-            effect_modes=effect_modes,
+            body=body,
             item_info_mode=item_info_mode)
 
     # Booster methods
@@ -201,13 +203,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='charge',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemChargeChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     # Drone methods
