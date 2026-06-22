@@ -10,13 +10,9 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HChangeSkillCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     level: Option<i32>,
-    #[serde(default)]
     state: Option<bool>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeSkillCmd {

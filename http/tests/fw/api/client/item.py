@@ -9,6 +9,10 @@ from fw.api.commands import (
     ItemRigChangeCmd,
     ItemServiceAddCmd,
     ItemServiceChangeCmd,
+    ItemSkillAddCmd,
+    ItemSkillChangeCmd,
+    ItemSubsystemAddCmd,
+    ItemSubsystemChangeCmd,
 )
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
@@ -653,22 +657,19 @@ class ApiClientItem(ApiClientBase):
             type_id: int,
             level: int,
             state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {
-            'type': 'skill',
-            'fit_id': fit_id,
-            'type_id': type_id,
-            'level': level}
-        conditional_insert(container=body, path=['state'], value=state)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemSkillAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            level=level,
+            state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_skill_request(
             self, *,
@@ -680,19 +681,16 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'skill'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['level'], value=level)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
+        body = ItemSkillChangeCmd(
+            type_id=type_id,
+            level=level,
+            state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     # Stance methods
     def set_stance_request(
@@ -736,14 +734,17 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='subsystem',
-            sol_id=sol_id,
+        body = ItemSubsystemAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     def change_subsystem_request(
@@ -755,13 +756,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='subsystem',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemSubsystemChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     # System-wide effect methods

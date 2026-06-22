@@ -30,3 +30,19 @@ from .item_service import (
     SolServiceAddCmd,
     SolServiceChangeCmd,
 )
+from .item_skill import (
+    FitSkillAddCmd,
+    FitSkillChangeCmd,
+    ItemSkillAddCmd,
+    ItemSkillChangeCmd,
+    SolSkillAddCmd,
+    SolSkillChangeCmd,
+)
+from .item_subsystem import (
+    FitSubsystemAddCmd,
+    FitSubsystemChangeCmd,
+    ItemSubsystemAddCmd,
+    ItemSubsystemChangeCmd,
+    SolSubsystemAddCmd,
+    SolSubsystemChangeCmd,
+)
