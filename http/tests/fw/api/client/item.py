@@ -1,6 +1,7 @@
 import typing
 
 from fw.api.commands import (
+    BaseCommand,
     ItemAutochargeChangeCmd,
     ItemBoosterAddCmd,
     ItemBoosterChangeCmd,
@@ -112,13 +113,13 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemAutochargeChangeCmd(
+        command = ItemAutochargeChangeCmd(
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Booster methods
@@ -132,15 +133,15 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemBoosterAddCmd(
+        command = ItemBoosterAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
             side_effects=side_effects,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_booster_request(
@@ -153,15 +154,15 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemBoosterChangeCmd(
+        command = ItemBoosterChangeCmd(
             type_id=type_id,
             state=state,
             side_effects=side_effects,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Character methods
@@ -174,14 +175,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemCharacterSetCmd(
+        command = ItemCharacterSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_character_request(
@@ -193,14 +194,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemCharacterChangeCmd(
+        command = ItemCharacterChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Charge methods
@@ -213,14 +214,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemChargeChangeCmd(
+        command = ItemChargeChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Drone methods
@@ -238,7 +239,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemDroneAddCmd(
+        command = ItemDroneAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -247,10 +248,10 @@ class ApiClientItem(ApiClientBase):
             projs=projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_drone_request(
@@ -268,7 +269,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemDroneChangeCmd(
+        command = ItemDroneChangeCmd(
             type_id=type_id,
             state=state,
             mutation=mutation,
@@ -277,11 +278,11 @@ class ApiClientItem(ApiClientBase):
             rm_projs=rm_projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Fighter methods
@@ -300,7 +301,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemFighterAddCmd(
+        command = ItemFighterAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -310,10 +311,10 @@ class ApiClientItem(ApiClientBase):
             projs=projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_fighter_request(
@@ -332,7 +333,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemFighterChangeCmd(
+        command = ItemFighterChangeCmd(
             type_id=type_id,
             state=state,
             count=count,
@@ -342,11 +343,11 @@ class ApiClientItem(ApiClientBase):
             rm_projs=rm_projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Fit-wide effect methods
@@ -359,14 +360,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemFwEffectAddCmd(
+        command = ItemFwEffectAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_fw_effect_request(
@@ -378,14 +379,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemFwEffectChangeCmd(
+        command = ItemFwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Implant methods
@@ -398,14 +399,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemImplantAddCmd(
+        command = ItemImplantAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_implant_request(
@@ -417,14 +418,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemImplantChangeCmd(
+        command = ItemImplantChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Module methods
@@ -444,7 +445,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemModuleAddCmd(
+        command = ItemModuleAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             rack=rack,
@@ -455,10 +456,10 @@ class ApiClientItem(ApiClientBase):
             spool=spool,
             optional_reload=optional_reload,
             projs=projs,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_mod_request(
@@ -476,7 +477,7 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemModuleChangeCmd(
+        command = ItemModuleChangeCmd(
             type_id=type_id,
             state=state,
             mutation=mutation,
@@ -485,11 +486,11 @@ class ApiClientItem(ApiClientBase):
             optional_reload=optional_reload,
             add_projs=add_projs,
             rm_projs=rm_projs,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Projected effect methods
@@ -502,14 +503,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemProjEffectAddCmd(
+        command = ItemProjEffectAddCmd(
             type_id=type_id,
             state=state,
             projs=projs,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_proj_effect_request(
@@ -523,16 +524,16 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemProjEffectChangeCmd(
+        command = ItemProjEffectChangeCmd(
             type_id=type_id,
             state=state,
             add_projs=add_projs,
             rm_projs=rm_projs,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Rig methods
@@ -545,14 +546,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemRigAddCmd(
+        command = ItemRigAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_rig_request(
@@ -564,14 +565,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemRigChangeCmd(
+        command = ItemRigChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Service methods
@@ -584,14 +585,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemServiceAddCmd(
+        command = ItemServiceAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_service_request(
@@ -603,14 +604,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemServiceChangeCmd(
+        command = ItemServiceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Ship methods
@@ -625,16 +626,16 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemShipSetCmd(
+        command = ItemShipSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_ship_request(
@@ -648,16 +649,16 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemShipChangeCmd(
+        command = ItemShipChangeCmd(
             type_id=type_id,
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Skill methods
@@ -671,15 +672,15 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemSkillAddCmd(
+        command = ItemSkillAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_skill_request(
@@ -692,15 +693,15 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemSkillChangeCmd(
+        command = ItemSkillChangeCmd(
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Stance methods
@@ -713,14 +714,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemStanceSetCmd(
+        command = ItemStanceSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_stance_request(
@@ -732,14 +733,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemStanceChangeCmd(
+        command = ItemStanceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Subsystem methods
@@ -752,14 +753,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemSubsystemAddCmd(
+        command = ItemSubsystemAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_subsystem_request(
@@ -771,14 +772,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemSubsystemChangeCmd(
+        command = ItemSubsystemChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # System-wide effect methods
@@ -790,13 +791,13 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemSwEffectAddCmd(
+        command = ItemSwEffectAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__add_item_request(
             sol_id=sol_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     def change_sw_effect_request(
@@ -808,21 +809,21 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = ItemSwEffectChangeCmd(
+        command = ItemSwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes).serialize()
+            effect_modes=effect_modes)
         return self.__change_item_request(
             sol_id=sol_id,
             item_id=item_id,
-            body=body,
+            command=command,
             item_info_mode=item_info_mode)
 
     # Auxiliary methods
     def __add_item_request(
             self, *,
             sol_id: str,
-            body: dict,
+            command: BaseCommand,
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
@@ -832,13 +833,13 @@ class ApiClientItem(ApiClientBase):
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/item',
             params=params,
-            json=body)
+            json=command.serialize())
 
     def __change_item_request(
             self, *,
             sol_id: str,
             item_id: str,
-            body: dict,
+            command: BaseCommand,
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
@@ -848,4 +849,4 @@ class ApiClientItem(ApiClientBase):
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
             params=params,
-            json=body)
+            json=command.serialize())
