@@ -577,10 +577,13 @@ class Fit(AttrDict):
             self, *,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
+            status_code: int = 200,
     ) -> FitCmdCtx:
         return FitCmdCtx(
             client=self._client,
+            fit=self,
             sol_id=self._sol_id,
             fit_id=self.id,
             fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode)
+            item_info_mode=item_info_mode,
+            status_code=status_code)

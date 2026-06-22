@@ -6,11 +6,11 @@ from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
-    from typing_extensions import Self
 
     from fw.api import ApiClient
     from fw.api.commands import BaseCommand
     from fw.consts import ApiEffMode, ApiFitInfoMode, ApiItemInfoMode
+    from .fit import Fit
 
 
 class FitCmdCtx:
@@ -18,19 +18,23 @@ class FitCmdCtx:
     def __init__(
             self, *,
             client: ApiClient,
+            fit: Fit,
             sol_id: str,
             fit_id: str,
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
+            status_code: int,
     ) -> None:
         self._client = client
+        self._fit = fit
         self._sol_id = sol_id
         self._fit_id = fit_id
         self._fit_info_mode = fit_info_mode
         self._item_info_mode = item_info_mode
+        self._status_code = status_code
         self._commands: list[BaseCommand] = []
 
-    def __enter__(self) -> Self:
+    def __enter__(self) -> typing.Self:
         return self
 
     def __exit__(
@@ -39,12 +43,17 @@ class FitCmdCtx:
             exc_val: BaseException | None,
             exc_tb: TracebackType | None,
     ) -> None:
-        self._client.execute_fit_commands(
+        resp = self._client.execute_fit_commands(
             sol_id=self._sol_id,
             fit_id=self._fit_id,
             commands=self._commands,
             fit_info_mode=self._fit_info_mode,
-            item_info_mode=self._item_info_mode)
+            item_info_mode=self._item_info_mode).send()
+        self._client.check_sol(sol_id=self._sol_id)
+        resp.check(status_code=self._status_code)
+        if resp.status_code == 200:
+            self._fit._data = resp.json()['fit']
+        return None
 
     def add_booster(
             self, *,
