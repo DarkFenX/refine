@@ -39,9 +39,9 @@ def process_muta_add_request(*, mutation: MutaAdd | type[Absent]) -> MutaAdd | t
 
 def process_muta_change_request(
         *,
-        mutation: MutaAdd | MutaChange | type[Absent],
+        mutation: MutaAdd | MutaChange | type[Absent] | None,
 ) -> MutaAdd | MutaChange | type[Absent]:
-    if mutation is Absent:
+    if mutation is None or mutation is Absent:
         return mutation
     if isinstance(mutation, dict):
         return _cast_map(data=mutation)

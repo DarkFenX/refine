@@ -6,6 +6,14 @@ from .item_booster import (
     SolBoosterAddCmd,
     SolBoosterChangeCmd,
 )
+from .item_drone import (
+    FitDroneAddCmd,
+    FitDroneChangeCmd,
+    ItemDroneAddCmd,
+    ItemDroneChangeCmd,
+    SolDroneAddCmd,
+    SolDroneChangeCmd,
+)
 from .item_implant import (
     FitImplantAddCmd,
     FitImplantChangeCmd,

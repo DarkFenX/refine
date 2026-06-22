@@ -3,6 +3,8 @@ import typing
 from fw.api.commands import (
     ItemBoosterAddCmd,
     ItemBoosterChangeCmd,
+    ItemDroneAddCmd,
+    ItemDroneChangeCmd,
     ItemImplantAddCmd,
     ItemImplantChangeCmd,
     ItemRigAddCmd,
@@ -207,27 +209,26 @@ class ApiClientItem(ApiClientBase):
             state: ApiMinionState,
             mutation: MutaAdd | type[Absent],
             npc_prop: ApiNpcProp | type[Absent],
+            projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {
-            'type': 'drone',
-            'fit_id': fit_id,
-            'type_id': type_id,
-            'state': state}
-        conditional_insert(container=body, path=['mutation'], value=mutation)
-        conditional_insert(container=body, path=['npc_prop'], value=npc_prop)
-        conditional_insert(container=body, path=['coordinates'], value=coordinates)
-        conditional_insert(container=body, path=['movement'], value=movement)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemDroneAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            mutation=mutation,
+            npc_prop=npc_prop,
+            projs=projs,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_drone_request(
             self, *,
@@ -244,24 +245,21 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'drone'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['mutation'], value=mutation)
-        conditional_insert(container=body, path=['npc_prop'], value=npc_prop)
-        conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
-        conditional_insert(container=body, path=['coordinates'], value=coordinates)
-        conditional_insert(container=body, path=['movement'], value=movement)
-        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
+        body = ItemDroneChangeCmd(
+            type_id=type_id,
+            state=state,
+            mutation=mutation,
+            npc_prop=npc_prop,
+            add_projs=add_projs,
+            rm_projs=rm_projs,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     # Fighter methods
     def add_fighter_request(

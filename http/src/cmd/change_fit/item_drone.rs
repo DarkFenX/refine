@@ -4,20 +4,25 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
+        shared::{HEffectModeMap, HMutationOnAdd, apply_effect_modes, apply_mattrs_on_add, get_primary_fit},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::HExecError,
 };
 
+#[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HAddDroneCmd {
     type_id: i32,
     state: HMinionState,
     mutation: Option<HMutationOnAdd>,
     npc_prop: Option<HNpcProp>,
+    #[serde_as(as = "Vec<DisplayFromStr>")]
+    #[serde(default)]
+    projs: Vec<rc::ItemId>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HAddDroneCmd {
     pub(in crate::cmd) fn execute(
@@ -48,6 +53,14 @@ impl HAddDroneCmd {
         if let Some(h_npc_prop) = self.npc_prop {
             core_drone.set_npc_prop(Some(h_npc_prop.into_core()))
         }
+        for projectee_item_id in self.projs.iter() {
+            core_drone.add_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+            })?;
+        }
+        apply_effect_modes(&mut core_drone, &self.effect_modes);
         Ok(HItemIdsResp::from_core_drone(core_drone))
     }
 }

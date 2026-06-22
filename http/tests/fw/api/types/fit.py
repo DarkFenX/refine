@@ -265,8 +265,10 @@ class Fit(AttrDict):
             state: ApiMinionState = ApiMinionState.in_bay,
             mutation: MutaAdd | type[Absent] = Absent,
             npc_prop: ApiNpcProp | type[Absent] = Absent,
+            projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -277,8 +279,10 @@ class Fit(AttrDict):
             state=state,
             mutation=process_muta_add_request(mutation=mutation),
             npc_prop=npc_prop,
+            projs=projs,
             coordinates=coordinates,
             movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
