@@ -3,7 +3,10 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    cmd::{
+        HItemIdsResp, change_item,
+        shared::{HEffectModeMap, get_primary_fit},
+    },
     util::HExecError,
 };
 
@@ -14,6 +17,7 @@ use crate::{
 pub(crate) struct HSetCharacterCmd {
     type_id: i32,
     state: Option<bool>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HSetCharacterCmd {
     pub(in crate::cmd) fn execute(
@@ -25,6 +29,9 @@ impl HSetCharacterCmd {
         let mut core_character = core_fit.set_character(rc::ItemTypeId::from_i32(self.type_id));
         if let Some(state) = self.state {
             core_character.set_state(state);
+        }
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_character);
         }
         Ok(HItemIdsResp::from_core_character(core_character))
     }

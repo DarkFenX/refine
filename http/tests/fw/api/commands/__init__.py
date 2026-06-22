@@ -12,6 +12,18 @@ from .item_booster import (
     SolBoosterAddCmd,
     SolBoosterChangeCmd,
 )
+from .item_character import (
+    FitCharacterChangeViaFitIdCmd,
+    FitCharacterChangeViaItemIdCmd,
+    FitCharacterSetCmd,
+    FitCharacterUnsetCmd,
+    ItemCharacterChangeCmd,
+    ItemCharacterSetCmd,
+    SolCharacterChangeViaFitIdCmd,
+    SolCharacterChangeViaItemIdCmd,
+    SolCharacterSetCmd,
+    SolCharacterUnsetCmd,
+)
 from .item_charge import (
     FitChargeChangeCmd,
     ItemChargeChangeCmd,
@@ -86,8 +98,8 @@ from .item_ship import (
     FitShipUnsetCmd,
     ItemShipChangeCmd,
     ItemShipSetCmd,
-    SolShipChangeViaItemIdCmd,
     SolShipChangeViaFitIdCmd,
+    SolShipChangeViaItemIdCmd,
     SolShipSetCmd,
     SolShipUnsetCmd,
 )
@@ -98,6 +110,18 @@ from .item_skill import (
     ItemSkillChangeCmd,
     SolSkillAddCmd,
     SolSkillChangeCmd,
+)
+from .item_stance import (
+    FitStanceChangeViaFitIdCmd,
+    FitStanceChangeViaItemIdCmd,
+    FitStanceSetCmd,
+    FitStanceUnsetCmd,
+    ItemStanceChangeCmd,
+    ItemStanceSetCmd,
+    SolStanceChangeViaFitIdCmd,
+    SolStanceChangeViaItemIdCmd,
+    SolStanceSetCmd,
+    SolStanceUnsetCmd,
 )
 from .item_subsystem import (
     FitSubsystemAddCmd,

@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import BaseCommand, FitShipUnsetCmd
+from fw.api.commands import BaseCommand, FitCharacterUnsetCmd, FitShipUnsetCmd, FitStanceUnsetCmd
 from fw.api.types import ValOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -147,10 +147,11 @@ class ApiClientFit(ApiClientBase):
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__simple_remove_fit_item_request(
-            cmd_name='unset_character',
+        command = FitCharacterUnsetCmd()
+        return self.__change_fit_request(
             sol_id=sol_id,
             fit_id=fit_id,
+            command=command,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
@@ -176,32 +177,13 @@ class ApiClientFit(ApiClientBase):
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__simple_remove_fit_item_request(
-            cmd_name='unset_stance',
+        command = FitStanceUnsetCmd()
+        return self.__change_fit_request(
             sol_id=sol_id,
             fit_id=fit_id,
+            command=command,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
-
-    # TODO: remove after commands are used
-    def __simple_remove_fit_item_request(
-            self, *,
-            cmd_name: str,
-            sol_id: str,
-            fit_id: str,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = {'type': cmd_name}
-        params = {}
-        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
-            params=params,
-            json={'commands': [command]})
 
     def __change_fit_request(
             self, *,

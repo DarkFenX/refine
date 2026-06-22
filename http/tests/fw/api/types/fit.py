@@ -226,6 +226,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -234,6 +235,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -514,6 +516,7 @@ class Fit(AttrDict):
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -522,6 +525,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

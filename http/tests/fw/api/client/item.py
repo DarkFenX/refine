@@ -4,6 +4,8 @@ from fw.api.commands import (
     ItemAutochargeChangeCmd,
     ItemBoosterAddCmd,
     ItemBoosterChangeCmd,
+    ItemCharacterChangeCmd,
+    ItemCharacterSetCmd,
     ItemChargeChangeCmd,
     ItemDroneAddCmd,
     ItemDroneChangeCmd,
@@ -25,6 +27,8 @@ from fw.api.commands import (
     ItemShipSetCmd,
     ItemSkillAddCmd,
     ItemSkillChangeCmd,
+    ItemStanceChangeCmd,
+    ItemStanceSetCmd,
     ItemSubsystemAddCmd,
     ItemSubsystemChangeCmd,
     ItemSwEffectAddCmd,
@@ -167,14 +171,17 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='character',
-            sol_id=sol_id,
+        body = ItemCharacterSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     def change_character_request(
@@ -186,13 +193,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='character',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemCharacterChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     # Charge methods
@@ -702,14 +710,17 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__add_simple_item_request(
-            cmd_name='stance',
-            sol_id=sol_id,
+        body = ItemStanceSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     def change_stance_request(
@@ -721,13 +732,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='stance',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemStanceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     # Subsystem methods
@@ -807,53 +819,6 @@ class ApiClientItem(ApiClientBase):
             item_info_mode=item_info_mode)
 
     # Auxiliary methods
-    # TODO: remove first 2 ones after command refactor is done
-    def __add_simple_item_request(
-            self, *,
-            cmd_name: str,
-            sol_id: str,
-            fit_id: str,
-            type_id: int,
-            state: bool | str | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {
-            'type': cmd_name,
-            'fit_id': fit_id,
-            'type_id': type_id}
-        conditional_insert(container=body, path=['state'], value=state)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
-
-    def __change_simple_item_request(
-            self, *,
-            cmd_name: str,
-            sol_id: str,
-            item_id: str,
-            type_id: int | type[Absent],
-            state: bool | str | type[Absent],
-            effect_modes: dict[str, ApiEffMode] | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        body = {'type': cmd_name}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
-
     def __add_item_request(
             self, *,
             sol_id: str,
