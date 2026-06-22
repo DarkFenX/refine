@@ -28,7 +28,7 @@ class BaseProjEffectCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemProjEffectAddCmd(BaseProjEffectCmd):
+class BaseProjEffectAddCmd(BaseProjEffectCmd):
 
     projs: list[str] | type[Absent]
 
@@ -39,7 +39,12 @@ class ItemProjEffectAddCmd(BaseProjEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolProjEffectAddCmd(ItemProjEffectAddCmd):
+class ItemProjEffectAddCmd(BaseProjEffectAddCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolProjEffectAddCmd(BaseProjEffectAddCmd):
     ...
 
 
@@ -47,7 +52,7 @@ class SolProjEffectAddCmd(ItemProjEffectAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemProjEffectChangeCmd(BaseProjEffectCmd):
+class BaseProjEffectChangeCmd(BaseProjEffectCmd):
 
     add_projs: list[str] | type[Absent]
     rm_projs: list[str] | type[Absent]
@@ -60,5 +65,10 @@ class ItemProjEffectChangeCmd(BaseProjEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolProjEffectChangeCmd(ItemProjEffectChangeCmd):
+class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
     ...

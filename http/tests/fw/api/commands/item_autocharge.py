@@ -31,7 +31,7 @@ class ItemAutochargeChangeCmd(BaseAutochargeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitAutochargeChangeCmd(ItemAutochargeChangeCmd):
+class FitAutochargeChangeCmd(BaseAutochargeCmd):
 
     item_id: str
 
@@ -42,5 +42,11 @@ class FitAutochargeChangeCmd(ItemAutochargeChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolAutochargeChangeCmd(FitAutochargeChangeCmd):
-    ...
+class SolAutochargeChangeCmd(BaseAutochargeCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

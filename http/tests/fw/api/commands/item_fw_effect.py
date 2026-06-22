@@ -28,12 +28,7 @@ class BaseFwEffectCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitFwEffectAddCmd(BaseFwEffectCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemFwEffectAddCmd(FitFwEffectAddCmd):
+class ItemFwEffectAddCmd(BaseFwEffectCmd):
 
     fit_id: str
 
@@ -44,8 +39,19 @@ class ItemFwEffectAddCmd(FitFwEffectAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFwEffectAddCmd(ItemFwEffectAddCmd):
+class FitFwEffectAddCmd(BaseFwEffectCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolFwEffectAddCmd(BaseFwEffectCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -57,7 +63,7 @@ class ItemFwEffectChangeCmd(BaseFwEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFwEffectChangeCmd(ItemFwEffectChangeCmd):
+class FitFwEffectChangeCmd(BaseFwEffectCmd):
 
     item_id: str
 
@@ -68,5 +74,11 @@ class FitFwEffectChangeCmd(ItemFwEffectChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFwEffectChangeCmd(FitFwEffectChangeCmd):
-    ...
+class SolFwEffectChangeCmd(BaseFwEffectCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

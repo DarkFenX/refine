@@ -108,7 +108,7 @@ class SolShipChangeViaFitIdCmd(BaseShipCmd):
 # Unsetting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitShipUnsetCmd(BaseCommand):
+class BaseShipUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
@@ -116,9 +116,16 @@ class FitShipUnsetCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipUnsetCmd(BaseCommand):
+class FitShipUnsetCmd(BaseShipUnsetCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolShipUnsetCmd(BaseShipUnsetCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
-        return {'type': 'unset_ship', 'fit_id': self.fit_id}
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body

@@ -104,7 +104,7 @@ class SolStanceChangeViaFitIdCmd(BaseStanceCmd):
 # Unsetting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitStanceUnsetCmd(BaseCommand):
+class BaseStanceUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
@@ -112,9 +112,16 @@ class FitStanceUnsetCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolStanceUnsetCmd(BaseCommand):
+class FitStanceUnsetCmd(BaseStanceUnsetCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolStanceUnsetCmd(BaseStanceUnsetCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
-        return {'type': 'unset_stance', 'fit_id': self.fit_id}
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body

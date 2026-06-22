@@ -38,7 +38,7 @@ class BaseFighterCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitFighterAddCmd(BaseFighterCmd):
+class BaseFighterAddCmd(BaseFighterCmd):
 
     projs: list[str] | type[Absent]
 
@@ -49,7 +49,7 @@ class FitFighterAddCmd(BaseFighterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemFighterAddCmd(FitFighterAddCmd):
+class ItemFighterAddCmd(BaseFighterAddCmd):
 
     fit_id: str
 
@@ -60,15 +60,26 @@ class ItemFighterAddCmd(FitFighterAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFighterAddCmd(ItemFighterAddCmd):
+class FitFighterAddCmd(BaseFighterAddCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolFighterAddCmd(BaseFighterAddCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemFighterChangeCmd(BaseFighterCmd):
+class BaseFighterChangeCmd(BaseFighterCmd):
 
     add_projs: list[str] | type[Absent]
     rm_projs: list[str] | type[Absent]
@@ -81,7 +92,12 @@ class ItemFighterChangeCmd(BaseFighterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFighterChangeCmd(ItemFighterChangeCmd):
+class ItemFighterChangeCmd(BaseFighterChangeCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitFighterChangeCmd(BaseFighterChangeCmd):
 
     item_id: str
 
@@ -92,5 +108,11 @@ class FitFighterChangeCmd(ItemFighterChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFighterChangeCmd(FitFighterChangeCmd):
-    ...
+class SolFighterChangeCmd(BaseFighterChangeCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

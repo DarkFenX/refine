@@ -28,12 +28,7 @@ class BaseServiceCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitServiceAddCmd(BaseServiceCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemServiceAddCmd(FitServiceAddCmd):
+class ItemServiceAddCmd(BaseServiceCmd):
 
     fit_id: str
 
@@ -44,8 +39,19 @@ class ItemServiceAddCmd(FitServiceAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolServiceAddCmd(ItemServiceAddCmd):
+class FitServiceAddCmd(BaseServiceCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolServiceAddCmd(BaseServiceCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -57,7 +63,7 @@ class ItemServiceChangeCmd(BaseServiceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitServiceChangeCmd(ItemServiceChangeCmd):
+class FitServiceChangeCmd(BaseServiceCmd):
 
     item_id: str
 
@@ -68,5 +74,11 @@ class FitServiceChangeCmd(ItemServiceChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolServiceChangeCmd(FitServiceChangeCmd):
-    ...
+class SolServiceChangeCmd(BaseServiceCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

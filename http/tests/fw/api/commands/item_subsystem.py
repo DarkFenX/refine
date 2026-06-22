@@ -28,12 +28,7 @@ class BaseSubsystemCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitSubsystemAddCmd(BaseSubsystemCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemSubsystemAddCmd(FitSubsystemAddCmd):
+class ItemSubsystemAddCmd(BaseSubsystemCmd):
 
     fit_id: str
 
@@ -44,8 +39,19 @@ class ItemSubsystemAddCmd(FitSubsystemAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSubsystemAddCmd(ItemSubsystemAddCmd):
+class FitSubsystemAddCmd(BaseSubsystemCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolSubsystemAddCmd(BaseSubsystemCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -57,7 +63,7 @@ class ItemSubsystemChangeCmd(BaseSubsystemCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSubsystemChangeCmd(ItemSubsystemChangeCmd):
+class FitSubsystemChangeCmd(BaseSubsystemCmd):
 
     item_id: str
 
@@ -68,5 +74,11 @@ class FitSubsystemChangeCmd(ItemSubsystemChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSubsystemChangeCmd(FitSubsystemChangeCmd):
-    ...
+class SolSubsystemChangeCmd(BaseSubsystemCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

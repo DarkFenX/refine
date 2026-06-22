@@ -30,12 +30,7 @@ class BaseSkillCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitSkillAddCmd(BaseSkillCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemSkillAddCmd(FitSkillAddCmd):
+class ItemSkillAddCmd(BaseSkillCmd):
 
     fit_id: str
 
@@ -46,8 +41,19 @@ class ItemSkillAddCmd(FitSkillAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSkillAddCmd(ItemSkillAddCmd):
+class FitSkillAddCmd(BaseSkillCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolSkillAddCmd(BaseSkillCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -59,7 +65,7 @@ class ItemSkillChangeCmd(BaseSkillCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSkillChangeCmd(ItemSkillChangeCmd):
+class FitSkillChangeCmd(BaseSkillCmd):
 
     item_id: str
 
@@ -70,5 +76,11 @@ class FitSkillChangeCmd(ItemSkillChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSkillChangeCmd(FitSkillChangeCmd):
-    ...
+class SolSkillChangeCmd(BaseSkillCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

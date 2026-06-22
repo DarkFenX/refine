@@ -34,7 +34,7 @@ class BaseDroneCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitDroneAddCmd(BaseDroneCmd):
+class BaseDroneAddCmd(BaseDroneCmd):
 
     mutation: MutaAdd | type[Absent]
     projs: list[str] | type[Absent]
@@ -47,7 +47,7 @@ class FitDroneAddCmd(BaseDroneCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemDroneAddCmd(FitDroneAddCmd):
+class ItemDroneAddCmd(BaseDroneAddCmd):
 
     fit_id: str
 
@@ -58,15 +58,26 @@ class ItemDroneAddCmd(FitDroneAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolDroneAddCmd(ItemDroneAddCmd):
+class FitDroneAddCmd(BaseDroneAddCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolDroneAddCmd(BaseDroneAddCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemDroneChangeCmd(BaseDroneCmd):
+class BaseDroneChangeCmd(BaseDroneCmd):
 
     mutation: MutaAdd | MutaChange | type[Absent] | None
     add_projs: list[str] | type[Absent]
@@ -81,7 +92,12 @@ class ItemDroneChangeCmd(BaseDroneCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitDroneChangeCmd(ItemDroneChangeCmd):
+class ItemDroneChangeCmd(BaseDroneChangeCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitDroneChangeCmd(BaseDroneChangeCmd):
 
     item_id: str
 
@@ -92,5 +108,11 @@ class FitDroneChangeCmd(ItemDroneChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolDroneChangeCmd(FitDroneChangeCmd):
-    ...
+class SolDroneChangeCmd(BaseDroneChangeCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

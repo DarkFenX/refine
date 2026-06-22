@@ -28,12 +28,7 @@ class BaseImplantCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitImplantAddCmd(BaseImplantCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemImplantAddCmd(FitImplantAddCmd):
+class ItemImplantAddCmd(BaseImplantCmd):
 
     fit_id: str
 
@@ -44,8 +39,19 @@ class ItemImplantAddCmd(FitImplantAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolImplantAddCmd(ItemImplantAddCmd):
+class FitImplantAddCmd(BaseImplantCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolImplantAddCmd(BaseImplantCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -57,7 +63,7 @@ class ItemImplantChangeCmd(BaseImplantCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitImplantChangeCmd(ItemImplantChangeCmd):
+class FitImplantChangeCmd(BaseImplantCmd):
 
     item_id: str
 
@@ -68,5 +74,11 @@ class FitImplantChangeCmd(ItemImplantChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolImplantChangeCmd(FitImplantChangeCmd):
-    ...
+class SolImplantChangeCmd(BaseImplantCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

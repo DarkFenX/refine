@@ -28,12 +28,7 @@ class BaseRigCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitRigAddCmd(BaseRigCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemRigAddCmd(FitRigAddCmd):
+class ItemRigAddCmd(BaseRigCmd):
 
     fit_id: str
 
@@ -44,8 +39,19 @@ class ItemRigAddCmd(FitRigAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolRigAddCmd(ItemRigAddCmd):
+class FitRigAddCmd(BaseRigCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolRigAddCmd(BaseRigCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -57,7 +63,7 @@ class ItemRigChangeCmd(BaseRigCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitRigChangeCmd(ItemRigChangeCmd):
+class FitRigChangeCmd(BaseRigCmd):
 
     item_id: str
 
@@ -68,5 +74,11 @@ class FitRigChangeCmd(ItemRigChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolRigChangeCmd(FitRigChangeCmd):
-    ...
+class SolRigChangeCmd(BaseRigCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

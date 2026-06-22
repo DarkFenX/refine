@@ -33,7 +33,7 @@ class BaseModuleCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitModuleAddCmd(BaseModuleCmd):
+class BaseModuleAddCmd(BaseModuleCmd):
 
     rack: ApiRack
     add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent]
@@ -50,7 +50,7 @@ class FitModuleAddCmd(BaseModuleCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemModuleAddCmd(FitModuleAddCmd):
+class ItemModuleAddCmd(BaseModuleAddCmd):
 
     fit_id: str
 
@@ -61,15 +61,26 @@ class ItemModuleAddCmd(FitModuleAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolModuleAddCmd(ItemModuleAddCmd):
+class FitModuleAddCmd(BaseModuleAddCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolModuleAddCmd(BaseModuleAddCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemModuleChangeCmd(BaseModuleCmd):
+class BaseModuleChangeCmd(BaseModuleCmd):
 
     mutation: MutaAdd | MutaChange | type[Absent] | None
     add_projs: list[str] | type[Absent]
@@ -84,7 +95,12 @@ class ItemModuleChangeCmd(BaseModuleCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitModuleChangeCmd(ItemModuleChangeCmd):
+class ItemModuleChangeCmd(BaseModuleChangeCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitModuleChangeCmd(BaseModuleChangeCmd):
 
     item_id: str
 
@@ -95,5 +111,11 @@ class FitModuleChangeCmd(ItemModuleChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolModuleChangeCmd(FitModuleChangeCmd):
-    ...
+class SolModuleChangeCmd(BaseModuleChangeCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body

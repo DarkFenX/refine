@@ -30,12 +30,7 @@ class BaseBoosterCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterAddCmd(BaseBoosterCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemBoosterAddCmd(FitBoosterAddCmd):
+class ItemBoosterAddCmd(BaseBoosterCmd):
 
     fit_id: str
 
@@ -46,8 +41,19 @@ class ItemBoosterAddCmd(FitBoosterAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterAddCmd(ItemBoosterAddCmd):
+class FitBoosterAddCmd(BaseBoosterCmd):
     ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolBoosterAddCmd(BaseBoosterCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
+        return body
 
 
 ####################################################################################################
@@ -59,7 +65,7 @@ class ItemBoosterChangeCmd(BaseBoosterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterChangeCmd(ItemBoosterChangeCmd):
+class FitBoosterChangeCmd(BaseBoosterCmd):
 
     item_id: str
 
@@ -70,5 +76,11 @@ class FitBoosterChangeCmd(ItemBoosterChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterChangeCmd(FitBoosterChangeCmd):
-    ...
+class SolBoosterChangeCmd(BaseBoosterCmd):
+
+    item_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['item_id'] = self.item_id
+        return body
