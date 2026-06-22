@@ -43,7 +43,7 @@ class FitCmdCtx:
             exc_val: BaseException | None,
             exc_tb: TracebackType | None,
     ) -> None:
-        resp = self._client.execute_fit_commands(
+        resp = self._client._execute_fit_commands(  # noqa: SLF001
             sol_id=self._sol_id,
             fit_id=self._fit_id,
             commands=self._commands,
@@ -52,8 +52,7 @@ class FitCmdCtx:
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=self._status_code)
         if resp.status_code == 200:
-            self._fit._data = resp.json()['fit']
-        return None
+            self._fit._data = resp.json()['fit']  # noqa: SLF001
 
     def add_booster(
             self, *,

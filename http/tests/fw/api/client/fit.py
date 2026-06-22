@@ -149,7 +149,7 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = FitCharacterUnsetCmd()
-        return self.execute_fit_commands(
+        return self._execute_fit_commands(
             sol_id=sol_id,
             fit_id=fit_id,
             commands=[command],
@@ -164,7 +164,7 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = FitShipUnsetCmd()
-        return self.execute_fit_commands(
+        return self._execute_fit_commands(
             sol_id=sol_id,
             fit_id=fit_id,
             commands=[command],
@@ -179,14 +179,14 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = FitStanceUnsetCmd()
-        return self.execute_fit_commands(
+        return self._execute_fit_commands(
             sol_id=sol_id,
             fit_id=fit_id,
             commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
-    def execute_fit_commands(
+    def _execute_fit_commands(
             self, *,
             sol_id: str,
             fit_id: str,
