@@ -42,8 +42,8 @@ impl HAddFighterCmd {
             let fighter_count_override = rc::FighterCount::from_u32_checked(count)?;
             core_fighter.set_count_override(Some(fighter_count_override));
         }
-        if let Some(abilities) = self.abilities.as_ref() {
-            abilities.apply(&mut core_fighter);
+        if let Some(h_abilities) = self.abilities.as_ref() {
+            h_abilities.apply(&mut core_fighter);
         }
         if let Some(h_rearm_minion) = self.rearm_minion {
             core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core()));
@@ -55,8 +55,8 @@ impl HAddFighterCmd {
                 rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
             })?;
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_fighter);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_fighter);
         }
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }

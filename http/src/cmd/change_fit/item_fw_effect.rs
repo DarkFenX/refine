@@ -2,7 +2,10 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    cmd::{
+        HItemIdsResp, change_item,
+        shared::{HEffectModeMap, get_primary_fit},
+    },
     util::HExecError,
 };
 
@@ -10,6 +13,7 @@ use crate::{
 pub(crate) struct HAddFwEffectCmd {
     type_id: i32,
     state: Option<bool>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HAddFwEffectCmd {
     pub(in crate::cmd) fn execute(
@@ -22,6 +26,9 @@ impl HAddFwEffectCmd {
         let mut core_fw_effect = core_fit.add_fw_effect(core_type_id);
         if let Some(state) = self.state {
             core_fw_effect.set_state(state);
+        }
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_fw_effect);
         }
         Ok(HItemIdsResp::from_core_fw_effect(core_fw_effect))
     }

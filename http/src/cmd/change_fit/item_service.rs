@@ -26,8 +26,8 @@ impl HAddServiceCmd {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_state = self.state.into_core();
         let mut core_service = core_fit.add_service(core_type_id, core_state);
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_service);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_service);
         }
         Ok(HItemIdsResp::from_core_service(core_service))
     }

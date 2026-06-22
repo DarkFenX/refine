@@ -125,8 +125,8 @@ impl HChangeModuleCmd {
                 })?
                 .remove();
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_module);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_module);
         }
         Ok(HItemIdsResp::from_core_module(core_module))
     }

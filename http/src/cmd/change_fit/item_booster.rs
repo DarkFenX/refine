@@ -27,11 +27,11 @@ impl HAddBoosterCmd {
         if let Some(state) = self.state {
             core_booster.set_state(state);
         }
-        if let Some(side_effects) = self.side_effects.as_ref() {
-            side_effects.apply(&mut core_booster);
+        if let Some(h_side_effects) = self.side_effects.as_ref() {
+            h_side_effects.apply(&mut core_booster);
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_booster);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_booster);
         }
         Ok(HItemIdsResp::from_core_booster(core_booster))
     }

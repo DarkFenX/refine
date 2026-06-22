@@ -56,8 +56,8 @@ impl HChangeFighterCmd {
             }
             TriStateField::Absent => (),
         }
-        if let Some(abilities) = self.abilities.as_ref() {
-            abilities.apply(&mut core_fighter);
+        if let Some(h_abilities) = self.abilities.as_ref() {
+            h_abilities.apply(&mut core_fighter);
         }
         match self.rearm_minion {
             TriStateField::Value(h_rearm_minion) => core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core())),
@@ -86,8 +86,8 @@ impl HChangeFighterCmd {
         if let Some(movement) = self.movement {
             core_fighter.set_movement(movement.into_core());
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_fighter);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_fighter);
         }
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }

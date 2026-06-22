@@ -22,6 +22,14 @@ from .item_fighter import (
     SolFighterAddCmd,
     SolFighterChangeCmd,
 )
+from .item_fw_effect import (
+    FitFwEffectAddCmd,
+    FitFwEffectChangeCmd,
+    ItemFwEffectAddCmd,
+    ItemFwEffectChangeCmd,
+    SolFwEffectAddCmd,
+    SolFwEffectChangeCmd,
+)
 from .item_implant import (
     FitImplantAddCmd,
     FitImplantChangeCmd,

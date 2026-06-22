@@ -60,8 +60,8 @@ impl HAddDroneCmd {
                 rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
             })?;
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_drone);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_drone);
         }
         Ok(HItemIdsResp::from_core_drone(core_drone))
     }

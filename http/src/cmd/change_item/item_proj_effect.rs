@@ -57,8 +57,8 @@ impl HChangeProjEffectCmd {
                 })?
                 .remove();
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_proj_effect);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_proj_effect);
         }
         Ok(HItemIdsResp::from_core_proj_effect(core_proj_effect))
     }

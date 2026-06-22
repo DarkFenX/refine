@@ -31,8 +31,8 @@ impl HChangeChargeCmd {
         if let Some(state) = self.state {
             core_charge.set_state(state);
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_charge);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_charge);
         }
         Ok(HItemIdsResp::from_core_charge(core_charge))
     }

@@ -29,8 +29,8 @@ impl HChangeServiceCmd {
         if let Some(state) = self.state {
             core_service.set_state(state.into_core());
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_service);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_service);
         }
         Ok(HItemIdsResp::from_core_service(core_service))
     }

@@ -31,8 +31,8 @@ impl HChangeSwEffectCmd {
         if let Some(state) = self.state {
             core_sw_effect.set_state(state);
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_sw_effect);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_sw_effect);
         }
         Ok(HItemIdsResp::from_core_sw_effect(core_sw_effect))
     }

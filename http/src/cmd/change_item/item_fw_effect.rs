@@ -7,11 +7,8 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HChangeFwEffectCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<bool>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeFwEffectCmd {
@@ -31,8 +28,8 @@ impl HChangeFwEffectCmd {
         if let Some(state) = self.state {
             core_fw_effect.set_state(state);
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(&mut core_fw_effect);
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_fw_effect);
         }
         Ok(HItemIdsResp::from_core_fw_effect(core_fw_effect))
     }
