@@ -45,6 +45,9 @@ class FitCmdCtx:
             exc_val: BaseException | None,
             exc_tb: TracebackType | None,
     ) -> None:
+        # Clear temporary data first, it better be cleaned if anything fails
+        for entity_data in self._ret_datas.values():
+            entity_data.clear()
         resp = self._client._execute_fit_commands(  # noqa: SLF001
             sol_id=self._sol_id,
             fit_id=self._fit_id,
@@ -53,14 +56,16 @@ class FitCmdCtx:
             item_info_mode=self._item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=self._status_code)
+        # In case of successful response, update entity data
         if resp.status_code == 200:
             resp_data = resp.json()
+            # Fit which initiated the command chain
             self._fit._data = resp_data['fit']  # noqa: SLF001
+            # Update IDs in all the entities which were created by the commands
             for i, cmd_result in enumerate(resp_data['cmd_results']):
                 if i not in self._ret_datas:
                     continue
                 entity_data = self._ret_datas[i]
-                entity_data.clear()
                 if 'id' in cmd_result:
                     entity_data['id'] = cmd_result['id']
                 if 'charge_id' in cmd_result:
