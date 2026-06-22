@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HAddMode, HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
+        shared::{HAddMode, HMutationOnAdd, get_primary_fit},
     },
     shared::{HModRack, HModuleState, HOptionalReload, HSpool},
     util::HExecError,
@@ -43,7 +43,7 @@ impl HAddModuleCmd {
                 HMutationOnAdd::Full(h_full_mutation) => {
                     let core_mutator_id = rc::ItemTypeId::from_i32(h_full_mutation.mutator_id);
                     let core_mutation = core_module.mutate(core_mutator_id).unwrap();
-                    apply_mattrs_on_add(core_mutation, h_full_mutation);
+                    h_full_mutation.apply_attrs_on_add(core_mutation);
                 }
             }
         }

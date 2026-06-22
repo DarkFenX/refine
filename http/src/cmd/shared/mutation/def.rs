@@ -11,12 +11,11 @@ pub(in crate::cmd) enum HMutationOnAdd {
     Full(HItemMutationFull),
 }
 
-#[serde_as]
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub(in crate::cmd) enum HMutationOnChange {
     Mutator(i32),
-    Attrs(#[serde_as(as = "Map<DisplayFromStr, _>")] Vec<(rc::AttrId, Option<HItemAttrMutationValue>)>),
+    Attrs(HItemMutationAttrChange),
     MutatorAndAttrs(HItemMutationFull),
 }
 
@@ -27,29 +26,36 @@ pub(in crate::cmd) struct HItemMutationFull {
     #[serde_as(as = "Option<Map<DisplayFromStr, _>>")]
     pub(in crate::cmd) attrs: Option<Vec<(rc::AttrId, HItemAttrMutationValue)>>,
 }
-
-pub(in crate::cmd) fn apply_mattrs_on_add(mut core_mutation: rc::MutationMut, h_full_mutation: &HItemMutationFull) {
-    if let Some(attr_mutations) = &h_full_mutation.attrs {
-        for (attr_id, h_value) in attr_mutations {
-            match h_value {
-                HItemAttrMutationValue::Absolute(value) => apply_absolute(&mut core_mutation, *attr_id, *value),
-                HItemAttrMutationValue::Roll(roll) => apply_roll(&mut core_mutation, *attr_id, *roll),
+impl HItemMutationFull {
+    pub(in crate::cmd) fn apply_attrs_on_add(&self, mut core_mutation: rc::MutationMut) {
+        if let Some(attr_mutations) = self.attrs.as_ref() {
+            for (attr_id, h_value) in attr_mutations {
+                match h_value {
+                    HItemAttrMutationValue::Absolute(value) => apply_absolute(&mut core_mutation, *attr_id, *value),
+                    HItemAttrMutationValue::Roll(roll) => apply_roll(&mut core_mutation, *attr_id, *roll),
+                }
             }
         }
     }
 }
 
-pub(in crate::cmd) fn apply_mattrs_on_change(
-    mut core_mutation: rc::MutationMut,
-    h_changed_attrs: &[(rc::AttrId, Option<HItemAttrMutationValue>)],
-) {
-    for (attr_id, h_value) in h_changed_attrs {
-        match h_value {
-            Some(HItemAttrMutationValue::Absolute(value)) => apply_absolute(&mut core_mutation, *attr_id, *value),
-            Some(HItemAttrMutationValue::Roll(roll)) => apply_roll(&mut core_mutation, *attr_id, *roll),
-            None => {
-                if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
-                    core_raw_mattr.remove();
+#[serde_as]
+#[derive(Deserialize)]
+#[serde(transparent)]
+pub(in crate::cmd) struct HItemMutationAttrChange {
+    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    pub(in crate::cmd) data: Vec<(rc::AttrId, Option<HItemAttrMutationValue>)>,
+}
+impl HItemMutationAttrChange {
+    pub(in crate::cmd) fn apply(&self, mut core_mutation: rc::MutationMut) {
+        for (attr_id, h_value) in self.data.iter() {
+            match h_value {
+                Some(HItemAttrMutationValue::Absolute(value)) => apply_absolute(&mut core_mutation, *attr_id, *value),
+                Some(HItemAttrMutationValue::Roll(roll)) => apply_roll(&mut core_mutation, *attr_id, *roll),
+                None => {
+                    if let Ok(core_raw_mattr) = core_mutation.get_raw_mattr_mut(*attr_id) {
+                        core_raw_mattr.remove();
+                    }
                 }
             }
         }

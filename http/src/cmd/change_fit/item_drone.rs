@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HEffectModeMap, HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
+        shared::{HEffectModeMap, HMutationOnAdd, get_primary_fit},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::HExecError,
@@ -46,7 +46,7 @@ impl HAddDroneCmd {
                 HMutationOnAdd::Full(h_full_mutation) => {
                     let core_mutator_id = rc::ItemTypeId::from_i32(h_full_mutation.mutator_id);
                     let core_mutation = core_drone.mutate(core_mutator_id).unwrap();
-                    apply_mattrs_on_add(core_mutation, h_full_mutation);
+                    h_full_mutation.apply_attrs_on_add(core_mutation);
                 }
             }
         }

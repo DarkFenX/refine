@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HMutationOnChange, apply_mattrs_on_add, apply_mattrs_on_change},
+        shared::{HEffectModeMap, HMutationOnChange},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::{HExecError, TriStateField},
@@ -61,16 +61,16 @@ impl HChangeDroneCmd {
                     let Some(core_mutation) = core_drone.get_mutation_mut() else {
                         return Err(HExecError::MutationNotSet(*item_id));
                     };
-                    apply_mattrs_on_change(core_mutation, h_attr_mutations);
+                    h_attr_mutations.apply(core_mutation);
                 }
                 // Mutates item, or overwrites mutation, if it was set
-                HMutationOnChange::MutatorAndAttrs(mutation) => {
+                HMutationOnChange::MutatorAndAttrs(h_full_mutation) => {
                     if let Some(core_mutation) = core_drone.get_mutation_mut() {
                         core_mutation.remove();
                     }
-                    let core_mutator_id = rc::ItemTypeId::from_i32(mutation.mutator_id);
+                    let core_mutator_id = rc::ItemTypeId::from_i32(h_full_mutation.mutator_id);
                     let core_mutation = core_drone.mutate(core_mutator_id).unwrap();
-                    apply_mattrs_on_add(core_mutation, mutation);
+                    h_full_mutation.apply_attrs_on_add(core_mutation);
                 }
             },
             TriStateField::None => {
