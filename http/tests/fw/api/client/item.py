@@ -1,7 +1,6 @@
 import typing
 
 from fw.api.commands import (
-    BaseCommand,
     ItemAutochargeChangeCmd,
     ItemBoosterAddCmd,
     ItemBoosterChangeCmd,
@@ -42,6 +41,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import MutaAdd, MutaChange
+    from fw.api.commands import BaseCommand
     from fw.consts import (
         ApiEffMode,
         ApiItemInfoMode,

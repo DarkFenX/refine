@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import BaseCommand, FitCharacterUnsetCmd, FitShipUnsetCmd, FitStanceUnsetCmd
+from fw.api.commands import FitCharacterUnsetCmd, FitShipUnsetCmd, FitStanceUnsetCmd
 from fw.api.types import ValOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -8,6 +8,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import DpsProfile
+    from fw.api.commands import BaseCommand
     from fw.api.types import FitStatsOptions
     from fw.consts import ApiFitInfoMode, ApiItemInfoMode, ApiValInfoMode
 
@@ -148,10 +149,10 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = FitCharacterUnsetCmd()
-        return self.__change_fit_request(
+        return self.execute_fit_commands(
             sol_id=sol_id,
             fit_id=fit_id,
-            command=command,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
@@ -163,10 +164,10 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = FitShipUnsetCmd()
-        return self.__change_fit_request(
+        return self.execute_fit_commands(
             sol_id=sol_id,
             fit_id=fit_id,
-            command=command,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
@@ -178,18 +179,18 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         command = FitStanceUnsetCmd()
-        return self.__change_fit_request(
+        return self.execute_fit_commands(
             sol_id=sol_id,
             fit_id=fit_id,
-            command=command,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode)
 
-    def __change_fit_request(
+    def execute_fit_commands(
             self, *,
             sol_id: str,
             fit_id: str,
-            command: BaseCommand,
+            commands: list[BaseCommand],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -201,4 +202,4 @@ class ApiClientFit(ApiClientBase):
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params,
-            json={'commands': [command.serialize()]})
+            json={'commands': [c.serialize() for c in commands]})

@@ -1,6 +1,10 @@
 import typing
 
+from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
+from fw.api.types.item import Item
+from fw.api.types.stats import FitStats
+from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import (
     ApiFitInfoMode,
     ApiItemInfoMode,
@@ -13,18 +17,15 @@ from fw.consts import (
     ApiValInfoMode,
 )
 from fw.util import Absent, AttrDict, AttrHookDef, is_subset
-from .dmg_types import DmgTypes
-from .item import Item
-from .stats import FitStats
-from .validation import FitValResult, SolValResult
+from .cmd_ctx import FitCmdCtx
 
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile, MutaAdd
+    from fw.api.types.stats import FitStatsOptions
+    from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
     from fw.response import Response
-    from .stats import FitStatsOptions
-    from .validation import ValOptions
 
 
 class Fit(AttrDict):
@@ -571,3 +572,15 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
+
+    def commands(
+            self, *,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
+    ) -> FitCmdCtx:
+        return FitCmdCtx(
+            client=self._client,
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode)
