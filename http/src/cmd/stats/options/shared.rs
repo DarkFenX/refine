@@ -13,17 +13,13 @@ pub(in crate::cmd) enum HStatTimeOptions {
 
 #[derive(Copy, Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatTimeOptionsBurst {
-    #[serde(default)]
     pub(in crate::cmd) spool: Option<HSpool>,
 }
 
 #[derive(Copy, Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatTimeOptionsSim {
-    #[serde(default)]
     pub(in crate::cmd) time: Option<f64>,
-    #[serde(default)]
     pub(in crate::cmd) optional_reloads: Option<HOptionalReload>,
-    #[serde(default)]
     pub(in crate::cmd) rearm_minions: Option<HRearmMinion>,
 }
 

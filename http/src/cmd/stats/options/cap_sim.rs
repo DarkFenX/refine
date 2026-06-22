@@ -10,7 +10,6 @@ pub(in crate::cmd) struct HStatOptionCapSim {
     #[serde(default = "default_one")]
     #[educe(Default = 1)]
     pub(in crate::cmd) cap_perc: f64,
-    #[serde(default)]
     pub(in crate::cmd) optional_reloads: Option<HOptionalReload>,
     #[serde(default)]
     pub(in crate::cmd) stagger: HStatOptionCapSimStagger,
