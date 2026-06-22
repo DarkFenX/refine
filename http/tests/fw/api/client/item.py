@@ -5,6 +5,8 @@ from fw.api.commands import (
     ItemBoosterChangeCmd,
     ItemDroneAddCmd,
     ItemDroneChangeCmd,
+    ItemFighterAddCmd,
+    ItemFighterChangeCmd,
     ItemImplantAddCmd,
     ItemImplantChangeCmd,
     ItemRigAddCmd,
@@ -271,28 +273,27 @@ class ApiClientItem(ApiClientBase):
             count: int | type[Absent] | None,
             abilities: dict[int, bool] | type[Absent],
             rearm_minion: ApiRearmMinion | type[Absent],
+            projs: list[str] | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {
-            'type': 'fighter',
-            'fit_id': fit_id,
-            'type_id': type_id,
-            'state': state}
-        conditional_insert(container=body, path=['count'], value=count)
-        conditional_insert(container=body, path=['abilities'], value=abilities)
-        conditional_insert(container=body, path=['rearm_minion'], value=rearm_minion)
-        conditional_insert(container=body, path=['coordinates'], value=coordinates)
-        conditional_insert(container=body, path=['movement'], value=movement)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemFighterAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            count=count,
+            abilities=abilities,
+            rearm_minion=rearm_minion,
+            projs=projs,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_fighter_request(
             self, *,
@@ -310,25 +311,22 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'fighter'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['count'], value=count)
-        conditional_insert(container=body, path=['abilities'], value=abilities)
-        conditional_insert(container=body, path=['rearm_minion'], value=rearm_minion)
-        conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
-        conditional_insert(container=body, path=['coordinates'], value=coordinates)
-        conditional_insert(container=body, path=['movement'], value=movement)
-        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
+        body = ItemFighterChangeCmd(
+            type_id=type_id,
+            state=state,
+            count=count,
+            abilities=abilities,
+            rearm_minion=rearm_minion,
+            add_projs=add_projs,
+            rm_projs=rm_projs,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     # Fit-wide effect methods
     def add_fw_effect_request(

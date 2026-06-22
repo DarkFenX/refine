@@ -13,13 +13,10 @@ use crate::{
 #[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HChangeFighterCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<HMinionState>,
     #[serde(default)]
     count: TriStateField<u32>,
-    #[serde(default)]
     abilities: Option<HAbilityMap>,
     #[serde(default)]
     rearm_minion: TriStateField<HRearmMinion>,
@@ -29,11 +26,8 @@ pub(crate) struct HChangeFighterCmd {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
-    #[serde(default)]
     coordinates: Option<HCoordinates>,
-    #[serde(default)]
     movement: Option<HMovement>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeFighterCmd {

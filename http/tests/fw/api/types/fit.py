@@ -297,8 +297,10 @@ class Fit(AttrDict):
             count: int | type[Absent] = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
             rearm_minion: ApiRearmMinion | type[Absent] = Absent,
+            projs: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -310,8 +312,10 @@ class Fit(AttrDict):
             count=count,
             abilities=abilities,
             rearm_minion=rearm_minion,
+            projs=projs,
             coordinates=coordinates,
             movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

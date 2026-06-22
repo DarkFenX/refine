@@ -14,6 +14,14 @@ from .item_drone import (
     SolDroneAddCmd,
     SolDroneChangeCmd,
 )
+from .item_fighter import (
+    FitFighterAddCmd,
+    FitFighterChangeCmd,
+    ItemFighterAddCmd,
+    ItemFighterChangeCmd,
+    SolFighterAddCmd,
+    SolFighterChangeCmd,
+)
 from .item_implant import (
     FitImplantAddCmd,
     FitImplantChangeCmd,

@@ -4,12 +4,13 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HAbilityMap, apply_abilities, get_primary_fit},
+        shared::{HAbilityMap, HEffectModeMap, apply_abilities, apply_effect_modes, get_primary_fit},
     },
     shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::HExecError,
 };
 
+#[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HAddFighterCmd {
     type_id: i32,
@@ -17,8 +18,12 @@ pub(crate) struct HAddFighterCmd {
     count: Option<u32>,
     abilities: Option<HAbilityMap>,
     rearm_minion: Option<HRearmMinion>,
+    #[serde_as(as = "Vec<DisplayFromStr>")]
+    #[serde(default)]
+    projs: Vec<rc::ItemId>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HAddFighterCmd {
     pub(in crate::cmd) fn execute(
@@ -41,6 +46,14 @@ impl HAddFighterCmd {
         if let Some(h_rearm_minion) = self.rearm_minion {
             core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core()));
         }
+        for projectee_item_id in self.projs.iter() {
+            core_fighter.add_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+            })?;
+        }
+        apply_effect_modes(&mut core_fighter, &self.effect_modes);
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }
 }
