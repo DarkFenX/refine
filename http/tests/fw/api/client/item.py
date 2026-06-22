@@ -78,10 +78,10 @@ class ApiClientItem(ApiClientBase):
             self, *,
             sol_id: str,
             item_id: str,
-            mode: ApiModRmMode | type[Absent],
+            rm_mode: ApiModRmMode | type[Absent],
     ) -> Request:
         body = {}
-        conditional_insert(container=body, path=['rm_mode'], value=mode)
+        conditional_insert(container=body, path=['rm_mode'], value=rm_mode)
         kwargs = {'method': 'DELETE', 'url': f'{self._base_url}/sol/{sol_id}/item/{item_id}'}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header

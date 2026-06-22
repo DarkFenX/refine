@@ -238,18 +238,18 @@ def test_remove_remove(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 5
     # Action
-    api_module2.remove(mode=consts.ApiModRmMode.remove)
+    api_module2.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id, None, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module3.update().pos == 4
     # Action
-    api_module3.remove(mode=consts.ApiModRmMode.remove)
+    api_module3.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id]
     assert api_module1.update().pos == 1
     # Action
-    api_module1.remove(mode=consts.ApiModRmMode.remove)
+    api_module1.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
     api_fit.update()
     with check_no_field():
@@ -280,18 +280,18 @@ def test_remove_free(client, consts):
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 5
     # Action
-    api_module2.remove(mode=consts.ApiModRmMode.free)
+    api_module2.remove(rm_mode=consts.ApiModRmMode.free)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id, None, None, None, api_module3.id]
     assert api_module1.update().pos == 1
     assert api_module3.update().pos == 5
     # Action
-    api_module3.remove(mode=consts.ApiModRmMode.free)
+    api_module3.remove(rm_mode=consts.ApiModRmMode.free)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [None, api_module1.id]
     assert api_module1.update().pos == 1
     # Action
-    api_module1.remove(mode=consts.ApiModRmMode.free)
+    api_module1.remove(rm_mode=consts.ApiModRmMode.free)
     # Verification
     api_fit.update()
     with check_no_field():

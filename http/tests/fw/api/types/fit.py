@@ -192,10 +192,10 @@ class Fit(AttrDict):
     def remove_item(
             self, *,
             item_id: str,
-            mode: ApiModRmMode | type[Absent] = Absent,
+            rm_mode: ApiModRmMode | type[Absent] = Absent,
             status_code: int = 204,
     ) -> None:
-        resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id, mode=mode).send()
+        resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id, rm_mode=rm_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
 
