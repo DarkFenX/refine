@@ -241,13 +241,13 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
-    def remove_character(
+    def unset_character(
             self, *,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.remove_fit_character_request(
+        resp = self._client.unset_fit_character_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             fit_info_mode=fit_info_mode,
@@ -449,6 +449,7 @@ class Fit(AttrDict):
             state: bool | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -459,6 +460,7 @@ class Fit(AttrDict):
             state=state,
             coordinates=coordinates,
             movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -466,13 +468,13 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
-    def remove_ship(
+    def unset_ship(
             self, *,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.remove_fit_ship_request(
+        resp = self._client.unset_fit_ship_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             fit_info_mode=fit_info_mode,
@@ -527,13 +529,13 @@ class Fit(AttrDict):
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
 
-    def remove_stance(
+    def unset_stance(
             self, *,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.remove_fit_stance_request(
+        resp = self._client.unset_fit_stance_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             fit_info_mode=fit_info_mode,

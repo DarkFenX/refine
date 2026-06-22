@@ -1,3 +1,4 @@
+from .base import BaseCommand
 from .item_autocharge import (
     FitAutochargeChangeCmd,
     ItemAutochargeChangeCmd,
@@ -77,6 +78,18 @@ from .item_service import (
     ItemServiceChangeCmd,
     SolServiceAddCmd,
     SolServiceChangeCmd,
+)
+from .item_ship import (
+    FitShipChangeViaFitIdCmd,
+    FitShipChangeViaItemIdCmd,
+    FitShipSetCmd,
+    FitShipUnsetCmd,
+    ItemShipChangeCmd,
+    ItemShipSetCmd,
+    SolShipChangeViaItemIdCmd,
+    SolShipChangeViaFitIdCmd,
+    SolShipSetCmd,
+    SolShipUnsetCmd,
 )
 from .item_skill import (
     FitSkillAddCmd,

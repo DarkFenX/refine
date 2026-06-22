@@ -76,7 +76,7 @@ def test_replace_root(client, consts):
     api_drone = api_fit2.add_drone(type_id=eve_drone_id)
     api_module.change_module(add_projs=[api_ship.id])
     assert api_drone.update().attrs[eve_attr2_id].modified == approx(96)
-    api_fit2.remove_character()
+    api_fit2.unset_character()
     assert api_drone.update().attrs[eve_attr2_id].modified == approx(96)
     api_fit2.set_character(type_id=eve_char_id)
     assert api_drone.update().attrs[eve_attr2_id].modified == approx(96)

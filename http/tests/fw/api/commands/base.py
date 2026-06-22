@@ -1,7 +1,7 @@
 from abc import ABC, abstractmethod
 
 
-class Command(ABC):
+class BaseCommand(ABC):
 
     @abstractmethod
     def serialize(self) -> dict:

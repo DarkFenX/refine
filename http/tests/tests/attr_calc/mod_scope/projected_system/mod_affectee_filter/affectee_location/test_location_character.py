@@ -128,7 +128,7 @@ def test_replace_root(client, consts):
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
     assert api_implant.update().attrs[eve_affectee_attr_id].modified == approx(120)
-    api_fit.remove_character()
+    api_fit.unset_character()
     assert api_implant.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_fit.set_character(type_id=eve_char_id)
     assert api_implant.update().attrs[eve_affectee_attr_id].modified == approx(120)

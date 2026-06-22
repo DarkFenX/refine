@@ -6,6 +6,9 @@ use crate::{
     util::HExecError,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setting
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HSetCharacterCmd {
@@ -35,6 +38,9 @@ impl HChangeCharacterCmd {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Changing
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Deserialize)]
 pub(crate) struct HChangeCharacterViaItemIdCmd {
     #[serde(flatten)]
@@ -60,15 +66,18 @@ impl HChangeCharacterViaFitIdCmd {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Removing
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[serde_as]
 #[derive(Deserialize)]
-pub(crate) struct HRemoveCharacterCmd {
+pub(crate) struct HUnsetCharacterCmd {
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     #[serde(flatten)]
-    fit_cmd: change_fit::HRemoveCharacterCmd,
+    fit_cmd: change_fit::HUnsetCharacterCmd,
 }
-impl HRemoveCharacterCmd {
+impl HUnsetCharacterCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), HExecError> {
         self.fit_cmd.execute(core_sol, &self.fit_id)
     }

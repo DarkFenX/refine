@@ -2,7 +2,7 @@ import dataclasses
 import typing
 
 from fw.util import conditional_insert
-from .base import Command
+from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseRigCmd(Command):
+class BaseRigCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]

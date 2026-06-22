@@ -3,17 +3,24 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HItemIdsResp, change_item, shared::get_primary_fit},
+    cmd::{
+        HItemIdsResp, change_item,
+        shared::{HEffectModeMap, get_primary_fit},
+    },
     shared::{HCoordinates, HMovement},
     util::HExecError,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Setting
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Deserialize)]
 pub(crate) struct HSetShipCmd {
     type_id: i32,
     state: Option<bool>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HSetShipCmd {
     pub(in crate::cmd) fn execute(
@@ -31,10 +38,16 @@ impl HSetShipCmd {
         if let Some(state) = self.state {
             core_ship.set_state(state);
         }
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_ship);
+        }
         Ok(HItemIdsResp::from_core_ship(core_ship))
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Changing
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Deserialize)]
 #[serde(untagged)]
 pub(crate) enum HChangeShipCmd {
@@ -88,9 +101,12 @@ impl HChangeShipViaFitIdCmd {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Unsetting
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Deserialize)]
-pub(crate) struct HRemoveShipCmd;
-impl HRemoveShipCmd {
+pub(crate) struct HUnsetShipCmd;
+impl HUnsetShipCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         if let Some(core_ship) = core_fit.get_ship_mut() {

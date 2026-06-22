@@ -21,6 +21,8 @@ from fw.api.commands import (
     ItemRigChangeCmd,
     ItemServiceAddCmd,
     ItemServiceChangeCmd,
+    ItemShipChangeCmd,
+    ItemShipSetCmd,
     ItemSkillAddCmd,
     ItemSkillChangeCmd,
     ItemSubsystemAddCmd,
@@ -612,23 +614,20 @@ class ApiClientItem(ApiClientBase):
             state: bool | type[Absent],
             coordinates: tuple[float, float, float] | type[Absent],
             movement: tuple[float, float, float] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {
-            'type': 'ship',
-            'fit_id': fit_id,
-            'type_id': type_id}
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['coordinates'], value=coordinates)
-        conditional_insert(container=body, path=['movement'], value=movement)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemShipSetCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_ship_request(
             self, *,
@@ -641,20 +640,17 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'ship'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['coordinates'], value=coordinates)
-        conditional_insert(container=body, path=['movement'], value=movement)
-        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
+        body = ItemShipChangeCmd(
+            type_id=type_id,
+            state=state,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     # Skill methods
     def add_skill_request(

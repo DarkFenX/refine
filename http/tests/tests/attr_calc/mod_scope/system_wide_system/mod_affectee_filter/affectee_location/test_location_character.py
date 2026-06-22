@@ -72,7 +72,7 @@ def test_replace_root(client, consts):
     api_affectee_item = api_fit.add_implant(type_id=eve_affectee_item_id)
     api_sol.add_sw_effect(type_id=eve_affector_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
-    api_fit.remove_character()
+    api_fit.unset_character()
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_fit.set_character(type_id=eve_char_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(120)

@@ -89,7 +89,7 @@ def test_ship_add_set_remove(client, consts):
     assert api_val.passed is False
     assert api_val.details.drone_group == ([eve_group2_id], {api_drone.id: eve_group3_id})
     # Action
-    api_fit.remove_ship()
+    api_fit.unset_ship()
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True

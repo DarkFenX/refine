@@ -45,7 +45,7 @@ def test_ship_kind_switching(client, consts):
         api_struct_rig.id: consts.ApiValShipType.structure,
         api_struct_service.id: consts.ApiValShipType.structure}
     # Action
-    api_fit.remove_ship()
+    api_fit.unset_ship()
     # Verification
     api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=True))
     assert api_val.passed is True

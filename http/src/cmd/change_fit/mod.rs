@@ -2,8 +2,8 @@ pub(in crate::cmd) use fit::HChangeFitCmd;
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};
 pub(in crate::cmd) use item_character::{
-    HChangeCharacterCmd, HChangeCharacterViaFitIdCmd, HChangeCharacterViaItemIdCmd, HRemoveCharacterCmd,
-    HSetCharacterCmd,
+    HChangeCharacterCmd, HChangeCharacterViaFitIdCmd, HChangeCharacterViaItemIdCmd, HSetCharacterCmd,
+    HUnsetCharacterCmd,
 };
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
 pub(in crate::cmd) use item_drone::{HAddDroneCmd, HChangeDroneCmd};
@@ -14,11 +14,11 @@ pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use item_service::{HAddServiceCmd, HChangeServiceCmd};
 pub(in crate::cmd) use item_ship::{
-    HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HRemoveShipCmd, HSetShipCmd,
+    HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd, HUnsetShipCmd,
 };
 pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{
-    HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HRemoveStanceCmd, HSetStanceCmd,
+    HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd, HUnsetStanceCmd,
 };
 pub(in crate::cmd) use item_subsystem::{HAddSubsystemCmd, HChangeSubsystemCmd};
 pub(crate) use main::HChangeFitCommand;

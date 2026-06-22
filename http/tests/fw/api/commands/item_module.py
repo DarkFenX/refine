@@ -2,7 +2,7 @@ import dataclasses
 import typing
 
 from fw.util import Absent, conditional_insert
-from .base import Command
+from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import MutaAdd, MutaChange
@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleCmd(Command):
+class BaseModuleCmd(BaseCommand):
     type_id: int | type[Absent]
     state: ApiModuleState | type[Absent]
     charge_type_id: int | type[Absent] | None

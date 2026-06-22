@@ -8,15 +8,10 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HChangeShipCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<bool>,
-    #[serde(default)]
     coordinates: Option<HCoordinates>,
-    #[serde(default)]
     movement: Option<HMovement>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeShipCmd {

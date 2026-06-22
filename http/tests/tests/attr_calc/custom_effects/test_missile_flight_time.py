@@ -248,7 +248,7 @@ def test_modifier_ship_change(client, consts):
     # Verification
     assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(14000)
     # Action
-    api_fit.remove_ship()
+    api_fit.unset_ship()
     # Verification
     assert api_module.update().charge.attrs[eve_flight_time_attr_id].modified == approx(10000)
     # Action
