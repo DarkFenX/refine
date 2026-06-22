@@ -1,6 +1,7 @@
 import typing
 
 from fw.api.commands import FitBoosterAddCmd
+from fw.api.types.item import Item
 from fw.api.types.helpers import process_effect_map_request
 from fw.util import Absent
 
@@ -60,10 +61,11 @@ class FitCmdCtx:
             state: bool | type[Absent] = Absent,
             side_effects: dict[int | str, bool] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
-    ) -> None:
+    ) -> Item:
         command = FitBoosterAddCmd(
             type_id=type_id,
             state=state,
             side_effects=process_effect_map_request(effect_map=side_effects),
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
+        return Item(client=self._client, data={}, sol_id=self._sol_id)
