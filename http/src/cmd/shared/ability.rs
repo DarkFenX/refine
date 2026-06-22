@@ -8,11 +8,10 @@ pub(in crate::cmd) struct HAbilityMap {
     #[serde_as(as = "Map<DisplayFromStr, _>")]
     states: Vec<(i32, bool)>,
 }
-
-pub(in crate::cmd) fn apply_abilities(core_fighter: &mut rc::FighterMut, abilities: &Option<HAbilityMap>) {
-    if let Some(abilities) = abilities {
+impl HAbilityMap {
+    pub(in crate::cmd) fn apply(&self, core_fighter: &mut rc::FighterMut) {
         // Apply state changes only to existing abilities, ignore the rest
-        for (abil_id, new_state) in abilities.states.iter() {
+        for (abil_id, new_state) in self.states.iter() {
             if let Ok(mut core_ability) = core_fighter.get_ability_mut(&rc::AbilId::from_i32(*abil_id)) {
                 core_ability.set_state(*new_state);
             }

@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HItemIdsResp,
-        shared::{HEffectModeMap, apply_effect_modes},
-    },
+    cmd::{HItemIdsResp, shared::HEffectModeMap},
     util::HExecError,
 };
 
@@ -38,7 +35,9 @@ impl HChangeSkillCmd {
         if let Some(state) = self.state {
             core_skill.set_state(state);
         }
-        apply_effect_modes(&mut core_skill, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_skill);
+        }
         Ok(HItemIdsResp::from_core_skill(core_skill))
     }
 }

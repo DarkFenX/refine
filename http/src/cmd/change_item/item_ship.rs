@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HItemIdsResp,
-        shared::{HEffectModeMap, apply_effect_modes},
-    },
+    cmd::{HItemIdsResp, shared::HEffectModeMap},
     shared::{HCoordinates, HMovement},
     util::HExecError,
 };
@@ -45,7 +42,9 @@ impl HChangeShipCmd {
         if let Some(movement) = self.movement {
             core_ship.set_movement(movement.into_core());
         }
-        apply_effect_modes(&mut core_ship, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_ship);
+        }
         Ok(HItemIdsResp::from_core_ship(core_ship))
     }
 }

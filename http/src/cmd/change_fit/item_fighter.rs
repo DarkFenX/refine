@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HAbilityMap, HEffectModeMap, apply_abilities, apply_effect_modes, get_primary_fit},
+        shared::{HAbilityMap, HEffectModeMap, get_primary_fit},
     },
     shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::HExecError,
@@ -42,7 +42,9 @@ impl HAddFighterCmd {
             let fighter_count_override = rc::FighterCount::from_u32_checked(count)?;
             core_fighter.set_count_override(Some(fighter_count_override));
         }
-        apply_abilities(&mut core_fighter, &self.abilities);
+        if let Some(abilities) = self.abilities.as_ref() {
+            abilities.apply(&mut core_fighter);
+        }
         if let Some(h_rearm_minion) = self.rearm_minion {
             core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core()));
         }
@@ -53,7 +55,9 @@ impl HAddFighterCmd {
                 rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
             })?;
         }
-        apply_effect_modes(&mut core_fighter, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_fighter);
+        }
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }
 }

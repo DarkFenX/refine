@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HEffectModeMap, HMutationOnAdd, apply_effect_modes, apply_mattrs_on_add, get_primary_fit},
+        shared::{HEffectModeMap, HMutationOnAdd, apply_mattrs_on_add, get_primary_fit},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::HExecError,
@@ -60,7 +60,9 @@ impl HAddDroneCmd {
                 rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
             })?;
         }
-        apply_effect_modes(&mut core_drone, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_drone);
+        }
         Ok(HItemIdsResp::from_core_drone(core_drone))
     }
 }

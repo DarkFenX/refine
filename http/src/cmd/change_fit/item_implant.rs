@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HEffectModeMap, apply_effect_modes, get_primary_fit},
+        shared::{HEffectModeMap, get_primary_fit},
     },
     util::HExecError,
 };
@@ -27,7 +27,9 @@ impl HAddImplantCmd {
         if let Some(state) = self.state {
             core_implant.set_state(state);
         }
-        apply_effect_modes(&mut core_implant, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_implant);
+        }
         Ok(HItemIdsResp::from_core_implant(core_implant))
     }
 }

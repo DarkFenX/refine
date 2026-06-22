@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HAbilityMap, HEffectModeMap, apply_abilities, apply_effect_modes},
+        shared::{HAbilityMap, HEffectModeMap},
     },
     shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::{HExecError, TriStateField},
@@ -56,7 +56,9 @@ impl HChangeFighterCmd {
             }
             TriStateField::Absent => (),
         }
-        apply_abilities(&mut core_fighter, &self.abilities);
+        if let Some(abilities) = self.abilities.as_ref() {
+            abilities.apply(&mut core_fighter);
+        }
         match self.rearm_minion {
             TriStateField::Value(h_rearm_minion) => core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core())),
             TriStateField::None => core_fighter.set_rearm_minion(None),
@@ -84,7 +86,9 @@ impl HChangeFighterCmd {
         if let Some(movement) = self.movement {
             core_fighter.set_movement(movement.into_core());
         }
-        apply_effect_modes(&mut core_fighter, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_fighter);
+        }
         Ok(HItemIdsResp::from_core_fighter(core_fighter))
     }
 }

@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HItemIdsResp,
-        shared::{HEffectModeMap, apply_effect_modes},
-    },
+    cmd::{HItemIdsResp, shared::HEffectModeMap},
     shared::HServiceState,
     util::HExecError,
 };
@@ -32,7 +29,9 @@ impl HChangeServiceCmd {
         if let Some(state) = self.state {
             core_service.set_state(state.into_core());
         }
-        apply_effect_modes(&mut core_service, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_service);
+        }
         Ok(HItemIdsResp::from_core_service(core_service))
     }
 }

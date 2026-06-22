@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HEffectModeMap, apply_effect_modes, get_primary_fit},
+        shared::{HEffectModeMap, get_primary_fit},
     },
     util::HExecError,
 };
@@ -27,7 +27,9 @@ impl HAddRigCmd {
         if let Some(state) = self.state {
             core_rig.set_state(state);
         }
-        apply_effect_modes(&mut core_rig, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_rig);
+        }
         Ok(HItemIdsResp::from_core_rig(core_rig))
     }
 }

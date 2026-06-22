@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HEffectModeMap, apply_effect_modes, get_primary_fit},
+        shared::{HEffectModeMap, get_primary_fit},
     },
     shared::HServiceState,
     util::HExecError,
@@ -26,7 +26,9 @@ impl HAddServiceCmd {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_state = self.state.into_core();
         let mut core_service = core_fit.add_service(core_type_id, core_state);
-        apply_effect_modes(&mut core_service, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_service);
+        }
         Ok(HItemIdsResp::from_core_service(core_service))
     }
 }

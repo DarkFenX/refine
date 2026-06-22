@@ -3,7 +3,7 @@ use serde::Deserialize;
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HSideEffectMap, apply_effect_modes, apply_side_effects},
+        shared::{HEffectModeMap, HSideEffectMap},
     },
     util::HExecError,
 };
@@ -32,8 +32,12 @@ impl HChangeBoosterCmd {
         if let Some(state) = self.state {
             core_booster.set_state(state);
         }
-        apply_side_effects(&mut core_booster, &self.side_effects);
-        apply_effect_modes(&mut core_booster, &self.effect_modes);
+        if let Some(side_effects) = self.side_effects.as_ref() {
+            side_effects.apply(&mut core_booster);
+        }
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_booster);
+        }
         Ok(HItemIdsResp::from_core_booster(core_booster))
     }
 }

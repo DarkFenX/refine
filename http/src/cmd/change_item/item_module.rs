@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HMutationOnChange, apply_effect_modes, apply_mattrs_on_add, apply_mattrs_on_change},
+        shared::{HEffectModeMap, HMutationOnChange, apply_mattrs_on_add, apply_mattrs_on_change},
     },
     shared::{HModuleState, HOptionalReload, HSpool},
     util::{HExecError, TriStateField},
@@ -125,7 +125,9 @@ impl HChangeModuleCmd {
                 })?
                 .remove();
         }
-        apply_effect_modes(&mut core_module, &self.effect_modes);
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_module);
+        }
         Ok(HItemIdsResp::from_core_module(core_module))
     }
 }

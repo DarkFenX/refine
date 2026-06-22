@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HEffectModeMap, HSideEffectMap, apply_effect_modes, apply_side_effects, get_primary_fit},
+        shared::{HEffectModeMap, HSideEffectMap, get_primary_fit},
     },
     util::HExecError,
 };
@@ -27,8 +27,12 @@ impl HAddBoosterCmd {
         if let Some(state) = self.state {
             core_booster.set_state(state);
         }
-        apply_side_effects(&mut core_booster, &self.side_effects);
-        apply_effect_modes(&mut core_booster, &self.effect_modes);
+        if let Some(side_effects) = self.side_effects.as_ref() {
+            side_effects.apply(&mut core_booster);
+        }
+        if let Some(effect_modes) = self.effect_modes.as_ref() {
+            effect_modes.apply(&mut core_booster);
+        }
         Ok(HItemIdsResp::from_core_booster(core_booster))
     }
 }
