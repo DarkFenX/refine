@@ -11,6 +11,8 @@ from fw.api.commands import (
     ItemFwEffectChangeCmd,
     ItemImplantAddCmd,
     ItemImplantChangeCmd,
+    ItemModuleAddCmd,
+    ItemModuleChangeCmd,
     ItemRigAddCmd,
     ItemRigChangeCmd,
     ItemServiceAddCmd,
@@ -415,33 +417,32 @@ class ApiClientItem(ApiClientBase):
             fit_id: str,
             type_id: int,
             rack: ApiRack,
+            add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
             state: ApiModuleState,
             mutation: MutaAdd | type[Absent],
             charge_type_id: int | type[Absent],
             spool: str | type[Absent],
             optional_reload: ApiOptionalReload | type[Absent],
-            mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent],
+            projs: list[str] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {
-            'type': 'module',
-            'fit_id': fit_id,
-            'rack': rack,
-            'type_id': type_id,
-            'state': state}
-        conditional_insert(container=body, path=['mutation'], value=mutation)
-        conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
-        conditional_insert(container=body, path=['spool'], value=spool)
-        conditional_insert(container=body, path=['optional_reload'], value=optional_reload)
-        conditional_insert(container=body, path=['add_mode'], value=mode)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemModuleAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            rack=rack,
+            add_mode=add_mode,
+            state=state,
+            mutation=mutation,
+            charge_type_id=charge_type_id,
+            spool=spool,
+            optional_reload=optional_reload,
+            projs=projs,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_mod_request(
             self, *,
@@ -458,24 +459,21 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'module'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['mutation'], value=mutation)
-        conditional_insert(container=body, path=['charge_type_id'], value=charge_type_id)
-        conditional_insert(container=body, path=['spool'], value=spool)
-        conditional_insert(container=body, path=['optional_reload'], value=optional_reload)
-        conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
-        conditional_insert(container=body, path=['effect_modes'], value=effect_modes)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
+        body = ItemModuleChangeCmd(
+            type_id=type_id,
+            state=state,
+            mutation=mutation,
+            charge_type_id=charge_type_id,
+            spool=spool,
+            optional_reload=optional_reload,
+            add_projs=add_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     # Projected effect methods
     def add_proj_effect_request(

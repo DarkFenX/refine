@@ -90,7 +90,7 @@ def test_holes(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.insert: 5})
+        add_mode={consts.ApiModAddMode.insert: 5})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (6, 3)
@@ -104,7 +104,7 @@ def test_holes(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.insert: 2})
+        add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (7, 3)
@@ -156,7 +156,7 @@ def test_known_failures(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.replace: 0})
+        add_mode={consts.ApiModAddMode.replace: 0})
     # Verification - check case with KF specified, but used <= max being true
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (1, 3)
@@ -169,7 +169,7 @@ def test_known_failures(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.replace: 2})
+        add_mode={consts.ApiModAddMode.replace: 2})
     # Verification - check case with KF specified, but used <= max being true
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (3, 3)
@@ -182,7 +182,7 @@ def test_known_failures(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.replace: 6})
+        add_mode={consts.ApiModAddMode.replace: 6})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (7, 3)
@@ -200,7 +200,7 @@ def test_known_failures(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.replace: 4})
+        add_mode={consts.ApiModAddMode.replace: 4})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (7, 3)
@@ -228,7 +228,7 @@ def test_known_failures(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.replace: 1})
+        add_mode={consts.ApiModAddMode.replace: 1})
     # Verification - module has been added within slot limit, so it does not trigger anything
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (7, 3)
@@ -241,7 +241,7 @@ def test_known_failures(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.mid,
         state=consts.ApiModuleState.offline,
-        mode={consts.ApiModAddMode.replace: 3})
+        add_mode={consts.ApiModAddMode.replace: 3})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots == (7, 3)

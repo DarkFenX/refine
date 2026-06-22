@@ -11,6 +11,13 @@ pub(crate) enum TriStateField<T> {
     Absent,
 }
 impl<T> TriStateField<T> {
+    pub(crate) fn as_ref(&self) -> TriStateField<&T> {
+        match *self {
+            Self::Value(ref x) => TriStateField::Value(x),
+            Self::None => TriStateField::None,
+            Self::Absent => TriStateField::Absent,
+        }
+    }
     pub(crate) fn is_absent(&self) -> bool {
         matches!(self, Self::Absent)
     }

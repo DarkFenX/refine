@@ -38,6 +38,14 @@ from .item_implant import (
     SolImplantAddCmd,
     SolImplantChangeCmd,
 )
+from .item_module import (
+    FitModuleAddCmd,
+    FitModuleChangeCmd,
+    ItemModuleAddCmd,
+    ItemModuleChangeCmd,
+    SolModuleAddCmd,
+    SolModuleChangeCmd,
+)
 from .item_rig import (
     FitRigAddCmd,
     FitRigChangeCmd,

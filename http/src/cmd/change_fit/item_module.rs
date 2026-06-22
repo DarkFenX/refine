@@ -4,12 +4,13 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp, change_item,
-        shared::{HAddMode, HMutationOnAdd, get_primary_fit},
+        shared::{HAddMode, HEffectModeMap, HMutationOnAdd, get_primary_fit},
     },
     shared::{HModRack, HModuleState, HOptionalReload, HSpool},
     util::HExecError,
 };
 
+#[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HAddModuleCmd {
     rack: HModRack,
@@ -20,6 +21,10 @@ pub(crate) struct HAddModuleCmd {
     charge_type_id: Option<i32>,
     spool: Option<HSpool>,
     optional_reload: Option<HOptionalReload>,
+    #[serde_as(as = "Vec<DisplayFromStr>")]
+    #[serde(default)]
+    projs: Vec<rc::ItemId>,
+    effect_modes: Option<HEffectModeMap>,
 }
 impl HAddModuleCmd {
     pub(in crate::cmd) fn execute(
@@ -56,6 +61,16 @@ impl HAddModuleCmd {
         }
         if let Some(h_optional_reload) = self.optional_reload {
             core_module.set_optional_reload(Some(h_optional_reload.into_core()));
+        }
+        for projectee_item_id in self.projs.iter() {
+            core_module.add_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+            })?;
+        }
+        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+            h_effect_modes.apply(&mut core_module);
         }
         Ok(HItemIdsResp::from_core_module(core_module))
     }

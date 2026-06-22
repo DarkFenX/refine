@@ -13,9 +13,7 @@ use crate::{
 #[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HChangeModuleCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<HModuleState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
@@ -31,7 +29,6 @@ pub(crate) struct HChangeModuleCmd {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeModuleCmd {
@@ -51,7 +48,7 @@ impl HChangeModuleCmd {
         if let Some(state) = &self.state {
             core_module.set_state(state.into_core());
         }
-        match &self.mutation {
+        match self.mutation.as_ref() {
             TriStateField::Value(mutation) => match mutation {
                 // Mutates item or updates existing mutation
                 HMutationOnChange::Mutator(mutator_id) => {
@@ -86,9 +83,9 @@ impl HChangeModuleCmd {
             }
             TriStateField::Absent => (),
         }
-        match &self.charge_type_id {
+        match self.charge_type_id {
             TriStateField::Value(charge_type_id) => {
-                let core_charge_type_id = rc::ItemTypeId::from_i32(*charge_type_id);
+                let core_charge_type_id = rc::ItemTypeId::from_i32(charge_type_id);
                 core_module.set_charge_type_id(core_charge_type_id);
             }
             TriStateField::None => match core_module.get_charge_mut() {
