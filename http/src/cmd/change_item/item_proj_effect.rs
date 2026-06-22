@@ -9,9 +9,7 @@ use crate::{
 #[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HChangeProjEffectCmd {
-    #[serde(default)]
     type_id: Option<i32>,
-    #[serde(default)]
     state: Option<bool>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
@@ -19,7 +17,6 @@ pub(crate) struct HChangeProjEffectCmd {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_projs: Vec<rc::ItemId>,
-    #[serde(default)]
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeProjEffectCmd {

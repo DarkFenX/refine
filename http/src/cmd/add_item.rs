@@ -36,7 +36,7 @@ impl HAddItemCommand {
             Self::FwEffect(cmd) => cmd.execute(core_sol),
             Self::Implant(cmd) => cmd.execute(core_sol),
             Self::Module(cmd) => cmd.execute(core_sol),
-            Self::ProjEffect(cmd) => Ok(cmd.execute(core_sol)),
+            Self::ProjEffect(cmd) => cmd.execute(core_sol),
             Self::Rig(cmd) => cmd.execute(core_sol),
             Self::Service(cmd) => cmd.execute(core_sol),
             Self::Ship(cmd) => cmd.execute(core_sol),

@@ -128,7 +128,7 @@ impl HChangeSolCommand {
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - projected effect
-            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol).into()),
+            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),

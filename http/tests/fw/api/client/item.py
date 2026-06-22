@@ -13,6 +13,8 @@ from fw.api.commands import (
     ItemImplantChangeCmd,
     ItemModuleAddCmd,
     ItemModuleChangeCmd,
+    ItemProjEffectAddCmd,
+    ItemProjEffectChangeCmd,
     ItemRigAddCmd,
     ItemRigChangeCmd,
     ItemServiceAddCmd,
@@ -21,6 +23,8 @@ from fw.api.commands import (
     ItemSkillChangeCmd,
     ItemSubsystemAddCmd,
     ItemSubsystemChangeCmd,
+    ItemSwEffectAddCmd,
+    ItemSwEffectChangeCmd,
 )
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
@@ -481,18 +485,19 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             type_id: int,
             state: bool | type[Absent],
+            projs: list[str] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'proj_effect', 'type_id': type_id}
-        conditional_insert(container=body, path=['state'], value=state)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemProjEffectAddCmd(
+            type_id=type_id,
+            state=state,
+            projs=projs,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_proj_effect_request(
             self, *,
@@ -502,21 +507,20 @@ class ApiClientItem(ApiClientBase):
             state: bool | type[Absent],
             add_projs: list[str] | type[Absent],
             rm_projs: list[str] | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'proj_effect'}
-        conditional_insert(container=body, path=['type_id'], value=type_id)
-        conditional_insert(container=body, path=['state'], value=state)
-        conditional_insert(container=body, path=['add_projs'], value=add_projs)
-        conditional_insert(container=body, path=['rm_projs'], value=rm_projs)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/item/{item_id}',
-            params=params,
-            json=body)
+        body = ItemProjEffectChangeCmd(
+            type_id=type_id,
+            state=state,
+            add_projs=add_projs,
+            rm_projs=rm_projs,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     # Rig methods
     def add_rig_request(
@@ -772,18 +776,17 @@ class ApiClientItem(ApiClientBase):
             sol_id: str,
             type_id: int,
             state: bool | type[Absent],
+            effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        body = {'type': 'sw_effect', 'type_id': type_id}
-        conditional_insert(container=body, path=['state'], value=state)
-        params = {}
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/item',
-            params=params,
-            json=body)
+        body = ItemSwEffectAddCmd(
+            type_id=type_id,
+            state=state,
+            effect_modes=effect_modes).serialize()
+        return self.__add_item_request(
+            sol_id=sol_id,
+            body=body,
+            item_info_mode=item_info_mode)
 
     def change_sw_effect_request(
             self, *,
@@ -794,13 +797,14 @@ class ApiClientItem(ApiClientBase):
             effect_modes: dict[str, ApiEffMode] | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
-        return self.__change_simple_item_request(
-            cmd_name='sw_effect',
-            sol_id=sol_id,
-            item_id=item_id,
+        body = ItemSwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=effect_modes,
+            effect_modes=effect_modes).serialize()
+        return self.__change_item_request(
+            sol_id=sol_id,
+            item_id=item_id,
+            body=body,
             item_info_mode=item_info_mode)
 
     # Auxiliary methods

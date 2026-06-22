@@ -1,5 +1,6 @@
 import typing
 
+from fw.api.types.helpers import process_effect_map_request
 from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
 from .dmg_types import DmgTypes
@@ -12,7 +13,7 @@ if typing.TYPE_CHECKING:
     from fw import eve
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile
-    from fw.consts import ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
+    from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
     from .validation import ValOptions
 
@@ -275,6 +276,8 @@ class SolarSystem(AttrDict):
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
+            projs: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -282,6 +285,8 @@ class SolarSystem(AttrDict):
             sol_id=self.id,
             type_id=type_id,
             state=state,
+            projs=projs,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self.check()
         resp.check(status_code=status_code)
@@ -293,6 +298,7 @@ class SolarSystem(AttrDict):
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
@@ -300,6 +306,7 @@ class SolarSystem(AttrDict):
             sol_id=self.id,
             type_id=type_id,
             state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes),
             item_info_mode=item_info_mode).send()
         self.check()
         resp.check(status_code=status_code)

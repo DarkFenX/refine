@@ -46,6 +46,12 @@ from .item_module import (
     SolModuleAddCmd,
     SolModuleChangeCmd,
 )
+from .item_proj_effect import (
+    ItemProjEffectAddCmd,
+    ItemProjEffectChangeCmd,
+    SolProjEffectAddCmd,
+    SolProjEffectChangeCmd,
+)
 from .item_rig import (
     FitRigAddCmd,
     FitRigChangeCmd,
@@ -77,4 +83,10 @@ from .item_subsystem import (
     ItemSubsystemChangeCmd,
     SolSubsystemAddCmd,
     SolSubsystemChangeCmd,
+)
+from .item_sw_effect import (
+    ItemSwEffectAddCmd,
+    ItemSwEffectChangeCmd,
+    SolSwEffectAddCmd,
+    SolSwEffectChangeCmd,
 )
