@@ -42,7 +42,55 @@ impl HSolarSystemInner {
     pub(crate) fn last_accessed(&self) -> &chrono::DateTime<chrono::Utc> {
         &self.accessed
     }
-    // Solar system methods
+    fn touch(&mut self) {
+        self.accessed = chrono::Utc::now();
+    }
+    fn take_sol(&mut self) -> Result<Box<rc::SolarSystem>, HBrError> {
+        match self.core_sol.take() {
+            Some(core_sol) => Ok(core_sol),
+            None => {
+                self.touch();
+                Err(HBrError::NoCoreSol)
+            }
+        }
+    }
+    fn put_sol_back(&mut self, core_sol: Box<rc::SolarSystem>) {
+        self.core_sol = Some(core_sol);
+        self.touch();
+    }
+    fn str_to_fit_id(&mut self, id: &str) -> Result<rc::FitId, HBrError> {
+        match id.parse() {
+            Ok(i) => Ok(i),
+            Err(_) => {
+                self.touch();
+                Err(HBrError::FitIdCastFailed(id.to_string()))
+            }
+        }
+    }
+    fn str_to_fleet_id(&mut self, id: &str) -> Result<rc::FleetId, HBrError> {
+        match id.parse() {
+            Ok(i) => Ok(i),
+            Err(_) => {
+                self.touch();
+                Err(HBrError::FleetIdCastFailed(id.to_string()))
+            }
+        }
+    }
+    fn str_to_item_id(&mut self, id: &str) -> Result<rc::ItemId, HBrError> {
+        match id.parse() {
+            Ok(i) => Ok(i),
+            Err(_) => {
+                self.touch();
+                Err(HBrError::ItemIdCastFailed(id.to_string()))
+            }
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Solar system methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSolarSystemInner {
     /// Non-fallible
     #[tracing::instrument(name = "sol-sol-get", level = "trace", skip_all)]
     pub(crate) async fn get_sol(
@@ -137,7 +185,33 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         Ok(info)
     }
-    // Fleet methods
+    /// Non-fallible
+    #[tracing::instrument(name = "sol-sol-val", level = "trace", skip_all)]
+    pub(crate) async fn validate_sol(
+        &mut self,
+        tpool: &HThreadPool,
+        command: HValidateSolCmd,
+        valid_mode: HValidInfoMode,
+    ) -> Result<HSolValResult, HBrError> {
+        let mut core_sol = self.take_sol()?;
+        let sync_span = tracing::trace_span!("sync");
+        let (core_sol, result) = tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let result = command.execute(&mut core_sol, valid_mode);
+                (core_sol, result)
+            })
+            .await;
+        self.put_sol_back(core_sol);
+        Ok(result)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fleet methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSolarSystemInner {
     /// Non-fallible
     #[tracing::instrument(name = "sol-fleet-get", level = "trace", skip_all)]
     pub(crate) async fn get_fleet(
@@ -274,7 +348,12 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         result
     }
-    // Fit methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSolarSystemInner {
     /// Non-fallible
     #[tracing::instrument(name = "sol-fit-get", level = "trace", skip_all)]
     pub(crate) async fn get_fit(
@@ -417,27 +496,6 @@ impl HSolarSystemInner {
         result
     }
     /// Non-fallible
-    #[tracing::instrument(name = "sol-sol-val", level = "trace", skip_all)]
-    pub(crate) async fn validate_sol(
-        &mut self,
-        tpool: &HThreadPool,
-        command: HValidateSolCmd,
-        valid_mode: HValidInfoMode,
-    ) -> Result<HSolValResult, HBrError> {
-        let mut core_sol = self.take_sol()?;
-        let sync_span = tracing::trace_span!("sync");
-        let (core_sol, result) = tpool
-            .standard
-            .spawn_fifo_async(move || {
-                let _sg = sync_span.enter();
-                let result = command.execute(&mut core_sol, valid_mode);
-                (core_sol, result)
-            })
-            .await;
-        self.put_sol_back(core_sol);
-        Ok(result)
-    }
-    /// Non-fallible
     #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
     pub(crate) async fn validate_fit(
         &mut self,
@@ -485,7 +543,12 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol_bak);
         result
     }
-    // Item methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSolarSystemInner {
     /// Non-fallible
     #[tracing::instrument(name = "sol-item-get", level = "trace", skip_all)]
     pub(crate) async fn get_item(
@@ -640,7 +703,12 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         result
     }
-    // Development-related methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Development-related methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSolarSystemInner {
     /// Non-fallible
     #[tracing::instrument(name = "sol-dev-check", level = "trace", skip_all)]
     pub(crate) async fn dev_consistency_check(&mut self, tpool: &HThreadPool) -> Result<bool, HBrError> {
@@ -715,49 +783,5 @@ impl HSolarSystemInner {
             .await;
         self.put_sol_back(core_sol);
         Ok(())
-    }
-    // Helper methods
-    fn take_sol(&mut self) -> Result<Box<rc::SolarSystem>, HBrError> {
-        match self.core_sol.take() {
-            Some(core_sol) => Ok(core_sol),
-            None => {
-                self.touch();
-                Err(HBrError::NoCoreSol)
-            }
-        }
-    }
-    fn put_sol_back(&mut self, core_sol: Box<rc::SolarSystem>) {
-        self.core_sol = Some(core_sol);
-        self.touch();
-    }
-    fn str_to_fit_id(&mut self, id: &str) -> Result<rc::FitId, HBrError> {
-        match id.parse() {
-            Ok(i) => Ok(i),
-            Err(_) => {
-                self.touch();
-                Err(HBrError::FitIdCastFailed(id.to_string()))
-            }
-        }
-    }
-    fn str_to_fleet_id(&mut self, id: &str) -> Result<rc::FleetId, HBrError> {
-        match id.parse() {
-            Ok(i) => Ok(i),
-            Err(_) => {
-                self.touch();
-                Err(HBrError::FleetIdCastFailed(id.to_string()))
-            }
-        }
-    }
-    fn str_to_item_id(&mut self, id: &str) -> Result<rc::ItemId, HBrError> {
-        match id.parse() {
-            Ok(i) => Ok(i),
-            Err(_) => {
-                self.touch();
-                Err(HBrError::ItemIdCastFailed(id.to_string()))
-            }
-        }
-    }
-    fn touch(&mut self) {
-        self.accessed = chrono::Utc::now();
     }
 }
