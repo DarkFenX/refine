@@ -301,18 +301,23 @@ impl HSolarSystemInner {
     ) -> Result<HFitInfo, HBrError> {
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, item_info) = tpool
+        let (core_sol, result) = tpool
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let cmd_resp = command.execute(&mut core_sol);
-                let mut core_fit = core_sol.get_fit_mut(&cmd_resp.id).unwrap();
-                let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);
-                (core_sol, fit_info)
+                let result = match command.execute(&mut core_sol) {
+                    Ok(cmd_resp) => {
+                        let mut core_fit = core_sol.get_fit_mut(&cmd_resp.id).unwrap();
+                        let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);
+                        Ok(fit_info)
+                    }
+                    Err(exec_error) => Err(exec_error.into()),
+                };
+                (core_sol, result)
             })
             .await;
         self.put_sol_back(core_sol);
-        Ok(item_info)
+        result
     }
     /// Fallible
     #[tracing::instrument(name = "sol-fit-chg", level = "trace", skip_all)]

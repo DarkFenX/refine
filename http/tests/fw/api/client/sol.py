@@ -263,7 +263,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             json=command)
 
     # Misc
-    def _execute_sol_commands(
+    def sol_commands_request(
             self, *,
             sol_id: str,
             commands: list[BaseCommand],

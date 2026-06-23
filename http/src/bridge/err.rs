@@ -28,8 +28,8 @@ pub(crate) enum HBrError {
     ExecBatchFailed(usize, #[source] HExecError),
 }
 impl HBrError {
-    pub(crate) fn from_exec_batch(idx: usize, error: HExecError) -> Self {
-        Self::ExecBatchFailed(idx, error)
+    pub(crate) fn from_exec_batch(index: usize, error: HExecError) -> Self {
+        Self::ExecBatchFailed(index, error)
     }
     pub(crate) fn get_code(&self) -> String {
         match self {

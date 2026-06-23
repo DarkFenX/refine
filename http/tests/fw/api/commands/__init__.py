@@ -1,4 +1,10 @@
 from .base import BaseCommand
+from .fit import (
+    FitFitChangeCmd,
+    SolFitAddCmd,
+    SolFitChangeCmd,
+    SolFitRemoveCmd,
+)
 from .item_autocharge import (
     FitAutochargeChangeCmd,
     ItemAutochargeChangeCmd,

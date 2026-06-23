@@ -1,6 +1,5 @@
 import typing
 
-from fw.api.commands import FitCharacterUnsetCmd, FitShipUnsetCmd, FitStanceUnsetCmd
 from fw.api.types import ValOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -107,30 +106,6 @@ class ApiClientFit(ApiClientBase):
             kwargs['json'] = body
         return Request(client=self, **kwargs)
 
-    def change_fit_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            fleet_id: str | type[Absent] | None,
-            sec_status: float | type[Absent],
-            rah_incoming_dps: DpsProfile | type[Absent] | None,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = {'type': 'change_fit'}
-        conditional_insert(container=command, path=['fleet_id'], value=fleet_id)
-        conditional_insert(container=command, path=['sec_status'], value=sec_status)
-        conditional_insert(container=command, path=['rah_incoming_dps'], value=rah_incoming_dps)
-        params = {}
-        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
-            params=params,
-            json={'commands': [command]})
-
     def remove_fit_request(
             self, *,
             sol_id: str,
@@ -141,52 +116,7 @@ class ApiClientFit(ApiClientBase):
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}')
 
-    def unset_fit_character_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = FitCharacterUnsetCmd()
-        return self._execute_fit_commands(
-            sol_id=sol_id,
-            fit_id=fit_id,
-            commands=[command],
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode)
-
-    def unset_fit_ship_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = FitShipUnsetCmd()
-        return self._execute_fit_commands(
-            sol_id=sol_id,
-            fit_id=fit_id,
-            commands=[command],
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode)
-
-    def unset_fit_stance_request(
-            self, *,
-            sol_id: str,
-            fit_id: str,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = FitStanceUnsetCmd()
-        return self._execute_fit_commands(
-            sol_id=sol_id,
-            fit_id=fit_id,
-            commands=[command],
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode)
-
-    def _execute_fit_commands(
+    def fit_commands_request(
             self, *,
             sol_id: str,
             fit_id: str,

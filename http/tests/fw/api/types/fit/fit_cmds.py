@@ -60,7 +60,7 @@ class FitCmdCtx:
         # Clear temporary data first, it better be cleaned if anything fails
         for entity_data in self._ret_datas.values():
             entity_data.clear()
-        resp = self._client._execute_fit_commands(  # noqa: SLF001
+        resp = self._client.fit_commands_request(
             sol_id=self._sol_id,
             fit_id=self._fit_id,
             commands=self._commands,

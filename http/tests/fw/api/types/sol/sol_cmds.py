@@ -70,7 +70,7 @@ class SolCmdCtx:
         # Clear temporary data first, it better be cleaned if anything fails
         for entity_data in self._ret_datas.values():
             entity_data.clear()
-        resp = self._client._execute_sol_commands(  # noqa: SLF001
+        resp = self._client.sol_commands_request(
             sol_id=self._sol_id,
             commands=self._commands,
             sol_info_mode=self._sol_info_mode,

@@ -1,5 +1,6 @@
 import typing
 
+from fw.api.commands import FitCharacterUnsetCmd, FitFitChangeCmd, FitShipUnsetCmd, FitStanceUnsetCmd
 from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
@@ -189,12 +190,14 @@ class Fit(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.change_fit_request(
-            sol_id=self._sol_id,
-            fit_id=self.id,
+        command = FitFitChangeCmd(
             fleet_id=fleet_id,
             sec_status=sec_status,
-            rah_incoming_dps=rah_incoming_dps,
+            rah_incoming_dps=rah_incoming_dps)
+        resp = self._client.fit_commands_request(
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -265,9 +268,11 @@ class Fit(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.unset_fit_character_request(
+        command = FitCharacterUnsetCmd()
+        resp = self._client.fit_commands_request(
             sol_id=self._sol_id,
             fit_id=self.id,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -492,9 +497,11 @@ class Fit(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.unset_fit_ship_request(
+        command = FitShipUnsetCmd()
+        resp = self._client.fit_commands_request(
             sol_id=self._sol_id,
             fit_id=self.id,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
@@ -555,9 +562,11 @@ class Fit(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Fit | None:
-        resp = self._client.unset_fit_stance_request(
+        command = FitStanceUnsetCmd()
+        resp = self._client.fit_commands_request(
             sol_id=self._sol_id,
             fit_id=self.id,
+            commands=[command],
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
