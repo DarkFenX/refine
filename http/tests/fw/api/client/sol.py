@@ -9,6 +9,7 @@ from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import DpsProfile
+    from fw.api.commands import BaseCommand
     from fw.consts import (
         ApiFitInfoMode,
         ApiFleetInfoMode,
@@ -260,3 +261,25 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             method='POST',
             url=f'{self._base_url}/sol/{sol_id}/benchmark',
             json=command)
+
+    # Misc
+    def _execute_sol_commands(
+            self, *,
+            sol_id: str,
+            commands: list[BaseCommand],
+            sol_info_mode: ApiSolInfoMode | type[Absent],
+            fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
+    ) -> Request:
+        params = {}
+        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
+        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
+        return Request(
+            client=self,
+            method='PATCH',
+            url=f'{self._base_url}/sol/{sol_id}',
+            params=params,
+            json={'commands': [c.serialize() for c in commands]})

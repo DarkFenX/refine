@@ -1,21 +1,22 @@
 import typing
 
+from fw.api.types.dmg_types import DmgTypes
+from fw.api.types.fit import Fit
+from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request
+from fw.api.types.item import Item
+from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
-from .dmg_types import DmgTypes
-from .fit import Fit
-from .fleet import Fleet
-from .item import Item
-from .validation import FitValResult, SolValResult
+from .sol_cmds import SolCmdCtx
 
 if typing.TYPE_CHECKING:
     from fw import eve
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile
+    from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
-    from .validation import ValOptions
 
 
 class SolarSystem(AttrDict):
@@ -29,6 +30,24 @@ class SolarSystem(AttrDict):
             'fleets': AttrHookDef(
                 func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]})})
         self._client = client
+
+    def commands(
+            self, *,
+            sol_info_mode: ApiSolInfoMode | type[Absent] = Absent,
+            fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
+            status_code: int = 200,
+    ) -> SolCmdCtx:
+        return SolCmdCtx(
+            client=self._client,
+            sol=self,
+            sol_id=self.id,
+            sol_info_mode=sol_info_mode,
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode,
+            status_code=status_code)
 
     def update(
             self, *,

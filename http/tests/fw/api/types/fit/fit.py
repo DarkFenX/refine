@@ -17,7 +17,7 @@ from fw.consts import (
     ApiValInfoMode,
 )
 from fw.util import Absent, AttrDict, AttrHookDef, is_subset
-from .cmd_ctx import FitCmdCtx
+from .fit_cmds import FitCmdCtx
 
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient
@@ -36,6 +36,21 @@ class Fit(AttrDict):
                 func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
         self._client = client
         self._sol_id = sol_id
+
+    def commands(
+            self, *,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
+            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
+            status_code: int = 200,
+    ) -> FitCmdCtx:
+        return FitCmdCtx(
+            client=self._client,
+            fit=self,
+            sol_id=self._sol_id,
+            fit_id=self.id,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode,
+            status_code=status_code)
 
     def update(
             self, *,
@@ -572,18 +587,3 @@ class Fit(AttrDict):
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
-
-    def commands(
-            self, *,
-            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
-            status_code: int = 200,
-    ) -> FitCmdCtx:
-        return FitCmdCtx(
-            client=self._client,
-            fit=self,
-            sol_id=self._sol_id,
-            fit_id=self.id,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode,
-            status_code=status_code)
