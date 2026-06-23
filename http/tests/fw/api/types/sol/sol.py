@@ -33,7 +33,7 @@ class SolarSystem(AttrDict):
 
     def commands(
             self, *,
-            sol_info_mode: ApiSolInfoMode | type[Absent] = Absent,
+            sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,

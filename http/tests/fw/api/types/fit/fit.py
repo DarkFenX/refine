@@ -39,7 +39,7 @@ class Fit(AttrDict):
 
     def commands(
             self, *,
-            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 200,
     ) -> FitCmdCtx:
