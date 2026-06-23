@@ -143,3 +143,4 @@ from .item_sw_effect import (
     SolSwEffectAddCmd,
     SolSwEffectChangeCmd,
 )
+from .sol import SolSolChangeCmd

@@ -1,5 +1,6 @@
 import typing
 
+from fw.api.commands import SolSolChangeCmd
 from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
@@ -112,14 +113,16 @@ class SolarSystem(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> SolarSystem:
-        resp = self._client.change_sol_request(
-            sol_id=self.id,
+        command = SolSolChangeCmd(
             sec_zone=sec_zone,
             default_incoming_dps=default_incoming_dps,
             default_spool=default_spool,
             default_npc_prop=default_npc_prop,
             default_optional_reloads=default_optional_reloads,
-            default_rearm_minions=default_rearm_minions,
+            default_rearm_minions=default_rearm_minions)
+        resp = self._client.sol_commands_request(
+            sol_id=self.id,
+            commands=[command],
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
