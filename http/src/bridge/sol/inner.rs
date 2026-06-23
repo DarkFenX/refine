@@ -735,7 +735,7 @@ impl HSolarSystemInner {
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
         let core_sol = tpool
-            .standard
+            .heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 command.execute(&mut core_sol);
@@ -755,7 +755,7 @@ impl HSolarSystemInner {
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
         let core_sol = tpool
-            .standard
+            .heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 command.execute(&mut core_sol);
