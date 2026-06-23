@@ -18,7 +18,7 @@ class BaseSkillCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'skill'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['level'], value=self.level)
         conditional_insert(container=body, path=['state'], value=self.state)

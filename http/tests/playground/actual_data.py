@@ -205,14 +205,14 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     with api_fit.commands() as api_fit_cmds:
         for eve_skill_id in get_skill_type_ids():
             api_fit_cmds.add_skill(type_id=eve_skill_id, level=5)
-    api_fit.add_implant(type_id=13231)  # TD-603
-    api_fit.add_implant(type_id=10228)  # SM-703
-    api_fit.add_implant(type_id=24663)  # Zor hyperlink
-    api_fit.add_implant(type_id=13244)  # SS-903
-    api_fit.add_implant(type_id=13219)  # LP-1003
-    api_fit.add_booster(type_id=28674)  # Synth drop
-    api_fit.add_booster(type_id=28672)  # Synth crash
-    api_fit.add_booster(type_id=45999)  # Pyro 2
+        api_fit_cmds.add_implant(type_id=13231)  # TD-603
+        api_fit_cmds.add_implant(type_id=10228)  # SM-703
+        api_fit_cmds.add_implant(type_id=24663)  # Zor hyperlink
+        api_fit_cmds.add_implant(type_id=13244)  # SS-903
+        api_fit_cmds.add_implant(type_id=13219)  # LP-1003
+        api_fit_cmds.add_booster(type_id=28674)  # Synth drop
+        api_fit_cmds.add_booster(type_id=28672)  # Synth crash
+        api_fit_cmds.add_booster(type_id=45999)  # Pyro 2
     api_fit.set_ship(type_id=32311)  # NTyphoon
     # T2 800mms with hail
     for _ in range(3):
