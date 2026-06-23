@@ -3,15 +3,17 @@ import typing
 from fw.api.commands import (
     FitBoosterAddCmd,
     FitCharacterSetCmd,
+    FitDroneAddCmd,
     FitImplantAddCmd,
     FitModuleAddCmd,
+    FitRigAddCmd,
     FitShipSetCmd,
     FitSkillAddCmd,
     FitStanceSetCmd,
 )
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
-from fw.consts import ApiModAddMode, ApiModuleState, ApiRack
+from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
@@ -20,7 +22,7 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import MutaAdd
     from fw.api.commands import BaseCommand
-    from fw.consts import ApiEffMode, ApiFitInfoMode, ApiItemInfoMode, ApiOptionalReload
+    from fw.consts import ApiEffMode, ApiFitInfoMode, ApiItemInfoMode, ApiNpcProp, ApiOptionalReload
     from .fit import Fit
 
 
@@ -118,6 +120,30 @@ class FitCmdCtx:
         self._commands.append(command)
         return self.__make_item()
 
+    # Item - drone
+    def add_drone(
+            self, *,
+            type_id: int,
+            state: ApiMinionState = ApiMinionState.in_bay,
+            mutation: MutaAdd | type[Absent] = Absent,
+            npc_prop: ApiNpcProp | type[Absent] = Absent,
+            projs: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = FitDroneAddCmd(
+            type_id=type_id,
+            state=state,
+            mutation=process_muta_add_request(mutation=mutation),
+            npc_prop=npc_prop,
+            projs=projs,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
     # Item - implant
     def add_implant(
             self, *,
@@ -156,6 +182,20 @@ class FitCmdCtx:
             spool=spool,
             optional_reload=optional_reload,
             projs=projs,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    # Item - rig
+    def add_rig(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = FitRigAddCmd(
+            type_id=type_id,
+            state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()

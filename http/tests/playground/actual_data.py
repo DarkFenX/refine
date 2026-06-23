@@ -228,27 +228,31 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
                 rack=consts.ApiRack.high,
                 state=consts.ApiModuleState.overload,
                 charge_type_id=2811)
-        api_fit_cmds.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
+        api_fit_cmds.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # 500MN
         # T2 med cap booster with navy 800
-        api_fit_cmds.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
-        api_fit_cmds.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
-        api_fit_cmds.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
-        api_fit_cmds.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DC
+        api_fit_cmds.add_module(
+            type_id=2024,
+            rack=consts.ApiRack.mid,
+            state=consts.ApiModuleState.active,
+            charge_type_id=32014)
+        api_fit_cmds.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # EM hard
+        api_fit_cmds.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Scram
+        api_fit_cmds.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # DC
         for _ in range(2):
-            api_fit_cmds.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 gyrostab
+            api_fit_cmds.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # Gyro
         for _ in range(2):
-            api_fit_cmds.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 BCS
+            api_fit_cmds.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # BCS
         api_fit_cmds.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DDA
-    api_fit.add_rig(type_id=26436)  # T2 therm rig
-    # T1 CDFEs
-    for _ in range(2):
-        api_fit.add_rig(type_id=26088)
-    # T2 ogres
-    for _ in range(5):
-        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
-    # T2 ogres
-    for _ in range(2):
-        api_fit.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
+        api_fit_cmds.add_rig(type_id=26436)  # T2 therm rig
+        # T1 CDFEs
+        for _ in range(2):
+            api_fit_cmds.add_rig(type_id=26088)
+        # T2 ogres
+        for _ in range(5):
+            api_fit_cmds.add_drone(type_id=2446, state=consts.ApiMinionState.engaging)
+        # T2 ogres
+        for _ in range(2):
+            api_fit_cmds.add_drone(type_id=2446, state=consts.ApiMinionState.in_bay)
     api_val = api_fit.validate(options=ValOptions(default=True))
     assert api_val.passed is True
     try_fit_type_ids = get_try_fit_type_ids()

@@ -17,7 +17,7 @@ class BaseRigCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'rig'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -34,13 +34,18 @@ class ItemRigAddCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'rig'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitRigAddCmd(BaseRigCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_rig'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -50,6 +55,7 @@ class SolRigAddCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_rig'
         body['fit_id'] = self.fit_id
         return body
 
@@ -59,7 +65,11 @@ class SolRigAddCmd(BaseRigCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemRigChangeCmd(BaseRigCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'rig'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,6 +79,7 @@ class FitRigChangeCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_rig'
         body['item_id'] = self.item_id
         return body
 
@@ -80,5 +91,6 @@ class SolRigChangeCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_rig'
         body['item_id'] = self.item_id
         return body

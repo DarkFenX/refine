@@ -20,7 +20,7 @@ class BaseDroneCmd(BaseCommand):
     effect_modes: dict[int | str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'drone'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['npc_prop'], value=self.npc_prop)
@@ -53,13 +53,18 @@ class ItemDroneAddCmd(BaseDroneAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'drone'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitDroneAddCmd(BaseDroneAddCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_drone'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,6 +74,7 @@ class SolDroneAddCmd(BaseDroneAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_drone'
         body['fit_id'] = self.fit_id
         return body
 
@@ -93,7 +99,11 @@ class BaseDroneChangeCmd(BaseDroneCmd):
 
 @dataclasses.dataclass(kw_only=True)
 class ItemDroneChangeCmd(BaseDroneChangeCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'drone'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -103,6 +113,7 @@ class FitDroneChangeCmd(BaseDroneChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_drone'
         body['item_id'] = self.item_id
         return body
 
@@ -114,5 +125,6 @@ class SolDroneChangeCmd(BaseDroneChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_drone'
         body['item_id'] = self.item_id
         return body
