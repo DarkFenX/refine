@@ -633,7 +633,6 @@ def test_include_charges(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - need to include charges for module to show neuts, since it's on-charge effect
     # which deals neutralizes cap. For charges, this option doesn't do anything
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [

@@ -29,7 +29,7 @@ def test_propagation(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_fit1.set_ship(type_id=eve_ship_id)
     api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fit2.set_ship(type_id=eve_ship_id)

@@ -1,5 +1,24 @@
 import typing
 
+from fw.api.commands import (
+    ItemAutochargeChangeCmd,
+    ItemBoosterChangeCmd,
+    ItemCharacterChangeCmd,
+    ItemChargeChangeCmd,
+    ItemDroneChangeCmd,
+    ItemFighterChangeCmd,
+    ItemFwEffectChangeCmd,
+    ItemImplantChangeCmd,
+    ItemModuleChangeCmd,
+    ItemProjEffectChangeCmd,
+    ItemRigChangeCmd,
+    ItemServiceChangeCmd,
+    ItemShipChangeCmd,
+    ItemSkillChangeCmd,
+    ItemStanceChangeCmd,
+    ItemSubsystemChangeCmd,
+    ItemSwEffectChangeCmd,
+)
 from fw.api.types.helpers import (
     attr_http_to_fw,
     effect_http_to_fw,
@@ -110,11 +129,13 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_autocharge_request(
+        command = ItemAutochargeChangeCmd(
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
-            state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -133,13 +154,15 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        resp = self._client.change_booster_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemBoosterChangeCmd(
             type_id=type_id,
             state=state,
             side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
@@ -156,12 +179,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_character_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemCharacterChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -178,12 +203,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_charge_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemChargeChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -206,9 +233,7 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_drone_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemDroneChangeCmd(
             type_id=type_id,
             state=state,
             mutation=process_muta_change_request(mutation=mutation),
@@ -217,7 +242,11 @@ class Item(AttrDict):
             rm_projs=rm_projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -241,9 +270,7 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_fighter_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemFighterChangeCmd(
             type_id=type_id,
             state=state,
             count=count,
@@ -253,7 +280,11 @@ class Item(AttrDict):
             rm_projs=rm_projs,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -270,12 +301,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_fw_effect_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemFwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -292,12 +325,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_implant_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemImplantChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -321,9 +356,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        resp = self._client.change_module_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemModuleChangeCmd(
             type_id=type_id,
             state=state,
             mutation=process_muta_change_request(mutation=mutation),
@@ -332,7 +365,11 @@ class Item(AttrDict):
             optional_reload=optional_reload,
             add_projs=add_projs,
             rm_projs=rm_projs,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
@@ -351,14 +388,16 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_proj_effect_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemProjEffectChangeCmd(
             type_id=type_id,
             state=state,
             add_projs=add_projs,
             rm_projs=rm_projs,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -375,12 +414,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_rig_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemRigChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -397,12 +438,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_service_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemServiceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -421,14 +464,16 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_ship_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemShipChangeCmd(
             type_id=type_id,
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -446,13 +491,15 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_skill_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemSkillChangeCmd(
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -469,12 +516,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_stance_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemStanceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -491,12 +540,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_subsystem_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemSubsystemChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
@@ -513,12 +564,14 @@ class Item(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
     ) -> Item | None:
-        resp = self._client.change_sw_effect_request(
-            sol_id=self._sol_id,
-            item_id=self.id,
+        command = ItemSwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_change_request(
+            sol_id=self._sol_id,
+            item_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)

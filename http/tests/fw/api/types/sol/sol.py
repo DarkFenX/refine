@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import SolSolChangeCmd
+from fw.api.commands import ItemProjEffectAddCmd, ItemSwEffectAddCmd, SolSolChangeCmd
 from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
@@ -309,12 +309,14 @@ class SolarSystem(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
-        resp = self._client.add_proj_effect_request(
-            sol_id=self.id,
+        command = ItemProjEffectAddCmd(
             type_id=type_id,
             state=state,
             projs=projs,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_add_request(
+            sol_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self.check()
         resp.check(status_code=status_code)
@@ -330,11 +332,13 @@ class SolarSystem(AttrDict):
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
     ) -> Item | None:
-        resp = self._client.add_sw_effect_request(
-            sol_id=self.id,
+        command = ItemSwEffectAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        resp = self._client.item_command_add_request(
+            sol_id=self.id,
+            command=command,
             item_info_mode=item_info_mode).send()
         self.check()
         resp.check(status_code=status_code)

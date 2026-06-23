@@ -63,7 +63,7 @@ def test_loaded_onlist_to_loaded_offlist_remove_fleeted(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_root = api_fit2.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -115,7 +115,7 @@ def test_loaded_onlist_to_unloaded_onlist_fleeted(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_root = api_fit2.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -171,7 +171,7 @@ def test_loaded_onlist_to_unloaded_offlist_remove_fleeted(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_root = api_fit2.set_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -223,7 +223,7 @@ def test_loaded_offlist_to_loaded_onlist_remove_fleeted(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_root = api_fit2.set_ship(type_id=eve_loaded_offlist_id)
     # Verification
@@ -273,7 +273,7 @@ def test_unloaded_onlist_to_loaded_onlist_remove_fleeted(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_root = api_fit2.set_ship(type_id=eve_unloaded_onlist_id)
     # Verification
@@ -325,7 +325,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove_fleeted(client, consts):
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
     api_fit2 = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
+    api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_root = api_fit2.set_ship(type_id=eve_unloaded_offlist_id)
     # Verification
