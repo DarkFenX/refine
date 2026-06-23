@@ -1,6 +1,13 @@
 import typing
 
-from fw.api.commands import FitBoosterAddCmd, FitImplantAddCmd, FitSkillAddCmd
+from fw.api.commands import (
+    FitBoosterAddCmd,
+    FitCharacterSetCmd,
+    FitImplantAddCmd,
+    FitShipSetCmd,
+    FitSkillAddCmd,
+    FitStanceSetCmd,
+)
 from fw.api.types.helpers import process_effect_map_request
 from fw.api.types.item import Item
 from fw.util import Absent
@@ -78,6 +85,7 @@ class FitCmdCtx:
         self._ret_datas[index] = data
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
+    # Item - booster
     def add_booster(
             self, *,
             type_id: int,
@@ -93,6 +101,21 @@ class FitCmdCtx:
         self._commands.append(command)
         return self.__make_item()
 
+    # Item - character
+    def set_character(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = FitCharacterSetCmd(
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    # Item - implant
     def add_implant(
             self, *,
             type_id: int,
@@ -106,6 +129,25 @@ class FitCmdCtx:
         self._commands.append(command)
         return self.__make_item()
 
+    # Item - ship
+    def set_ship(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = FitShipSetCmd(
+            type_id=type_id,
+            state=state,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    # Item - skill
     def add_skill(
             self, *,
             type_id: int,
@@ -116,6 +158,20 @@ class FitCmdCtx:
         command = FitSkillAddCmd(
             type_id=type_id,
             level=level,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    # Item - stance
+    def set_stance(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = FitStanceSetCmd(
+            type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)

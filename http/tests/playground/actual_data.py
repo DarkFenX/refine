@@ -201,8 +201,8 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
-    api_fit.set_character(type_id=1373)
     with api_fit.commands() as api_fit_cmds:
+        api_fit.set_character(type_id=1373)
         for eve_skill_id in get_skill_type_ids():
             api_fit_cmds.add_skill(type_id=eve_skill_id, level=5)
         api_fit_cmds.add_implant(type_id=13231)  # TD-603
@@ -213,7 +213,7 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
         api_fit_cmds.add_booster(type_id=28674)  # Synth drop
         api_fit_cmds.add_booster(type_id=28672)  # Synth crash
         api_fit_cmds.add_booster(type_id=45999)  # Pyro 2
-    api_fit.set_ship(type_id=32311)  # NTyphoon
+        api_fit_cmds.set_ship(type_id=32311)  # NTyphoon
     # T2 800mms with hail
     for _ in range(3):
         api_fit.add_module(

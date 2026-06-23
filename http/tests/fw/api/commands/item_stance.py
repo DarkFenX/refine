@@ -17,7 +17,7 @@ class BaseStanceCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'stance'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -34,13 +34,18 @@ class ItemStanceSetCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'stance'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitStanceSetCmd(BaseStanceCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'set_stance'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -50,6 +55,7 @@ class SolStanceSetCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_stance'
         body['fit_id'] = self.fit_id
         return body
 
@@ -59,7 +65,11 @@ class SolStanceSetCmd(BaseStanceCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemStanceChangeCmd(BaseStanceCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'stance'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,13 +79,18 @@ class FitStanceChangeViaItemIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_stance'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitStanceChangeViaFitIdCmd(BaseStanceCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'set_stance'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -85,6 +100,7 @@ class SolStanceChangeViaItemIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_stance'
         body['item_id'] = self.item_id
         return body
 
@@ -96,6 +112,7 @@ class SolStanceChangeViaFitIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_stance'
         body['fit_id'] = self.fit_id
         return body
 

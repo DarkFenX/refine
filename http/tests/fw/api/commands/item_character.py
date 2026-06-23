@@ -17,7 +17,7 @@ class BaseCharacterCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'character'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -34,13 +34,18 @@ class ItemCharacterSetCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'character'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitCharacterSetCmd(BaseCharacterCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'set_character'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -50,6 +55,7 @@ class SolCharacterSetCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_character'
         body['fit_id'] = self.fit_id
         return body
 
@@ -59,7 +65,11 @@ class SolCharacterSetCmd(BaseCharacterCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemCharacterChangeCmd(BaseCharacterCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'character'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,13 +79,18 @@ class FitCharacterChangeViaItemIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_character'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitCharacterChangeViaFitIdCmd(BaseCharacterCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'set_character'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -85,6 +100,7 @@ class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_character'
         body['item_id'] = self.item_id
         return body
 
@@ -96,6 +112,7 @@ class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_character'
         body['fit_id'] = self.fit_id
         return body
 

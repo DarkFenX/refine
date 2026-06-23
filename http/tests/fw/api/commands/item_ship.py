@@ -19,7 +19,7 @@ class BaseShipCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'ship'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
@@ -38,13 +38,18 @@ class ItemShipSetCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'ship'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitShipSetCmd(BaseShipCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'set_ship'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -54,6 +59,7 @@ class SolShipSetCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_ship'
         body['fit_id'] = self.fit_id
         return body
 
@@ -63,7 +69,11 @@ class SolShipSetCmd(BaseShipCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemShipChangeCmd(BaseShipCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'ship'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -73,13 +83,18 @@ class FitShipChangeViaItemIdCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_ship'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitShipChangeViaFitIdCmd(BaseShipCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'set_ship'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -89,6 +104,7 @@ class SolShipChangeViaItemIdCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_ship'
         body['item_id'] = self.item_id
         return body
 
@@ -100,6 +116,7 @@ class SolShipChangeViaFitIdCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'set_ship'
         body['fit_id'] = self.fit_id
         return body
 
