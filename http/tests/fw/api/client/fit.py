@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import RootFitAddCmd
+from fw.api.commands import FitFitAddCmd
 from fw.api.types import ValOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -93,7 +93,7 @@ class ApiClientFit(ApiClientBase):
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         # Body
-        body = RootFitAddCmd(
+        body = FitFitAddCmd(
             fleet_id=fleet_id,
             sec_status=sec_status,
             rah_incoming_dps=rah_incoming_dps).serialize()

@@ -465,5 +465,5 @@ def test_unaffected_on_fleet_add(client, consts):
     api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet.change(add_fits=[api_fit1.id])
     assert api_ship2.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
-    api_fleet.change(remove_fits=[api_fit1.id])
+    api_fleet.change(rm_fits=[api_fit1.id])
     assert api_ship2.update().attrs[eve_affectee_attr_id].modified == approx(7.5)

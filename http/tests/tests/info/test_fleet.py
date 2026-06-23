@@ -17,7 +17,7 @@ def test_fit(client):
     assert len(api_fleet.fits) == 1
     assert api_fit.id in api_fleet.fits
     # Action
-    api_fleet.change(remove_fits=[api_fit.id])
+    api_fleet.change(rm_fits=[api_fit.id])
     # Verification
     api_fleet.update()
     with check_no_field():

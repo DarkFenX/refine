@@ -1,8 +1,6 @@
-from abc import ABC, abstractmethod
 
+class BaseCommand:
 
-class BaseCommand(ABC):
-
-    @abstractmethod
-    def serialize(self) -> dict:
-        ...
+    @staticmethod
+    def serialize() -> dict:
+        return {}

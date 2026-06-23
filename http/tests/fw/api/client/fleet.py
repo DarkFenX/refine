@@ -58,12 +58,12 @@ class ApiClientFleet(ApiClientBase):
             sol_id: str,
             fleet_id: str,
             add_fits: list[str],
-            remove_fits: list[str],
+            rm_fits: list[str],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
         body = {}
         conditional_insert(container=body, path=['add_fits'], value=add_fits)
-        conditional_insert(container=body, path=['remove_fits'], value=remove_fits)
+        conditional_insert(container=body, path=['rm_fits'], value=rm_fits)
         params = {}
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
         return Request(

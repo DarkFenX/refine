@@ -21,7 +21,7 @@ class BaseSolCmd(BaseCommand):
     default_rearm_minions: ApiRearmMinion | type[Absent]
 
     def serialize(self) -> dict:
-        body = {}
+        body = super().serialize()
         conditional_insert(container=body, path=['sec_zone'], value=self.sec_zone)
         conditional_insert(container=body, path=['default_incoming_dps'], value=self.default_incoming_dps)
         conditional_insert(container=body, path=['default_spool'], value=self.default_spool)
@@ -29,6 +29,7 @@ class BaseSolCmd(BaseCommand):
         conditional_insert(container=body, path=['default_optional_reloads'], value=self.default_optional_reloads)
         conditional_insert(container=body, path=['default_rearm_minions'], value=self.default_rearm_minions)
         return body
+
 
 ####################################################################################################
 # Creating

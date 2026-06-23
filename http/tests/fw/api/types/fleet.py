@@ -36,7 +36,7 @@ class Fleet(AttrDict):
     def change(
             self, *,
             add_fits: list[str] = (),
-            remove_fits: list[str] = (),
+            rm_fits: list[str] = (),
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
             status_code: int = 200,
     ) -> Fleet | None:
@@ -44,7 +44,7 @@ class Fleet(AttrDict):
             sol_id=self._sol_id,
             fleet_id=self.id,
             add_fits=add_fits,
-            remove_fits=remove_fits,
+            rm_fits=rm_fits,
             fleet_info_mode=fleet_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code)
