@@ -17,7 +17,7 @@ class BaseFwEffectCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'fw_effect'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -34,13 +34,18 @@ class ItemFwEffectAddCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'fw_effect'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitFwEffectAddCmd(BaseFwEffectCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_fw_effect'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -50,6 +55,7 @@ class SolFwEffectAddCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_fw_effect'
         body['fit_id'] = self.fit_id
         return body
 
@@ -59,7 +65,11 @@ class SolFwEffectAddCmd(BaseFwEffectCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemFwEffectChangeCmd(BaseFwEffectCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'fw_effect'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,6 +79,7 @@ class FitFwEffectChangeCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_fw_effect'
         body['item_id'] = self.item_id
         return body
 
@@ -80,5 +91,6 @@ class SolFwEffectChangeCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_fw_effect'
         body['item_id'] = self.item_id
         return body

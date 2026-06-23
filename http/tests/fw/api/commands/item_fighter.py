@@ -22,7 +22,7 @@ class BaseFighterCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'fighter'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['count'], value=self.count)
@@ -55,13 +55,18 @@ class ItemFighterAddCmd(BaseFighterAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'fighter'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitFighterAddCmd(BaseFighterAddCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_fighter'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -71,6 +76,7 @@ class SolFighterAddCmd(BaseFighterAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_fighter'
         body['fit_id'] = self.fit_id
         return body
 
@@ -93,7 +99,11 @@ class BaseFighterChangeCmd(BaseFighterCmd):
 
 @dataclasses.dataclass(kw_only=True)
 class ItemFighterChangeCmd(BaseFighterChangeCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'fighter'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -103,6 +113,7 @@ class FitFighterChangeCmd(BaseFighterChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_fighter'
         body['item_id'] = self.item_id
         return body
 
@@ -114,5 +125,6 @@ class SolFighterChangeCmd(BaseFighterChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_fighter'
         body['item_id'] = self.item_id
         return body

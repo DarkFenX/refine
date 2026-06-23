@@ -17,7 +17,7 @@ class BaseSwEffectCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'sw_effect'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -29,12 +29,20 @@ class BaseSwEffectCmd(BaseCommand):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemSwEffectAddCmd(BaseSwEffectCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'sw_effect'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class SolSwEffectAddCmd(BaseSwEffectCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_sw_effect'
+        return body
 
 
 ####################################################################################################
@@ -42,9 +50,17 @@ class SolSwEffectAddCmd(BaseSwEffectCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemSwEffectChangeCmd(BaseSwEffectCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'sw_effect'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class SolSwEffectChangeCmd(BaseSwEffectCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'change_sw_effect'
+        return body

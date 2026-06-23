@@ -17,7 +17,7 @@ class BaseServiceCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'service'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -34,13 +34,18 @@ class ItemServiceAddCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'service'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitServiceAddCmd(BaseServiceCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_service'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -50,6 +55,7 @@ class SolServiceAddCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_service'
         body['fit_id'] = self.fit_id
         return body
 
@@ -59,7 +65,11 @@ class SolServiceAddCmd(BaseServiceCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemServiceChangeCmd(BaseServiceCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'service'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,6 +79,7 @@ class FitServiceChangeCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_service'
         body['item_id'] = self.item_id
         return body
 
@@ -80,5 +91,6 @@ class SolServiceChangeCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_service'
         body['item_id'] = self.item_id
         return body

@@ -17,7 +17,7 @@ class BaseChargeCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'charge'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -29,7 +29,11 @@ class BaseChargeCmd(BaseCommand):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemChargeChangeCmd(BaseChargeCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'charge'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -39,6 +43,7 @@ class FitChargeChangeCmd(BaseChargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_charge'
         body['item_id'] = self.item_id
         return body
 
@@ -50,5 +55,6 @@ class SolChargeChangeCmd(BaseChargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_charge'
         body['item_id'] = self.item_id
         return body

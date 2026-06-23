@@ -17,7 +17,7 @@ class BaseProjEffectCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'proj_effect'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -40,12 +40,20 @@ class BaseProjEffectAddCmd(BaseProjEffectCmd):
 
 @dataclasses.dataclass(kw_only=True)
 class ItemProjEffectAddCmd(BaseProjEffectAddCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'proj_effect'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class SolProjEffectAddCmd(BaseProjEffectAddCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_proj_effect'
+        return body
 
 
 ####################################################################################################
@@ -66,9 +74,17 @@ class BaseProjEffectChangeCmd(BaseProjEffectCmd):
 
 @dataclasses.dataclass(kw_only=True)
 class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'proj_effect'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'change_proj_effect'
+        return body

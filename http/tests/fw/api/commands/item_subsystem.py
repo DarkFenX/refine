@@ -17,7 +17,7 @@ class BaseSubsystemCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'subsystem'}
+        body = {}
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -34,13 +34,18 @@ class ItemSubsystemAddCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'subsystem'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitSubsystemAddCmd(BaseSubsystemCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_subsystem'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -50,6 +55,7 @@ class SolSubsystemAddCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_subsystem'
         body['fit_id'] = self.fit_id
         return body
 
@@ -59,7 +65,11 @@ class SolSubsystemAddCmd(BaseSubsystemCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemSubsystemChangeCmd(BaseSubsystemCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'subsystem'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -69,6 +79,7 @@ class FitSubsystemChangeCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_subsystem'
         body['item_id'] = self.item_id
         return body
 
@@ -80,5 +91,6 @@ class SolSubsystemChangeCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_subsystem'
         body['item_id'] = self.item_id
         return body

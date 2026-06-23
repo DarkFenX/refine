@@ -16,7 +16,7 @@ class BaseAutochargeCmd(BaseCommand):
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
-        body = {'type': 'autocharge'}
+        body = {}
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
@@ -27,7 +27,11 @@ class BaseAutochargeCmd(BaseCommand):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemAutochargeChangeCmd(BaseAutochargeCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'autocharge'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -37,6 +41,7 @@ class FitAutochargeChangeCmd(BaseAutochargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_autocharge'
         body['item_id'] = self.item_id
         return body
 
@@ -48,5 +53,6 @@ class SolAutochargeChangeCmd(BaseAutochargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_autocharge'
         body['item_id'] = self.item_id
         return body
