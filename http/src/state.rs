@@ -8,11 +8,11 @@ pub(crate) struct HInnerAppState {
     pub(crate) tpool: HThreadPool,
 }
 impl HInnerAppState {
-    pub(crate) fn new(cache_folder: Option<String>, std_threads: usize, heavy_threads: usize) -> Self {
+    pub(crate) fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
         Self {
             src_mgr: HSrcMgr::new(cache_folder),
             sol_mgr: HSolMgr::new(),
-            tpool: HThreadPool::new(std_threads, heavy_threads),
+            tpool: HThreadPool::new(standard_threads, heavy_threads),
         }
     }
 }

@@ -35,7 +35,7 @@ async fn main() {
     // Shared state
     let state = Arc::new(HInnerAppState::new(
         settings.cache.folder,
-        settings.server.std_threads,
+        settings.server.standard_threads,
         settings.server.heavy_threads,
     ));
 
