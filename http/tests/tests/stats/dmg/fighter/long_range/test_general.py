@@ -25,8 +25,7 @@ def test_state(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
     api_autocharge = api_fighter.autocharges[eve_basic_info.ftr_abil_bomb_effect_id]
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, approx(698.730469)]
@@ -205,8 +204,7 @@ def test_stacking(client, consts):
         type_id=eve_fighter_id,
         state=consts.ApiMinionState.engaging,
         abilities={eve_basic_info.bomb_abil_id: True})
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, approx(2224.191406)]
@@ -234,8 +232,7 @@ def test_item_kind(client, consts):
         type_id=eve_fighter_id,
         state=consts.ApiMinionState.engaging,
         abilities={eve_basic_info.bomb_abil_id: True})
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(),
@@ -330,8 +327,7 @@ def test_time(client, consts):
         type_id=eve_fighter_id,
         state=consts.ApiMinionState.engaging,
         abilities={eve_basic_info.bomb_abil_id: True})
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(time_options=StatTimeBurst())]))).dmg.one()
@@ -527,8 +523,7 @@ def test_count_override(client, consts):
         state=consts.ApiMinionState.engaging,
         abilities={eve_basic_info.bomb_abil_id: True},
         count=4)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, approx(508.486979)]
@@ -570,8 +565,7 @@ def test_autocharge_not_loaded(client, consts):
         type_id=eve_fighter_id,
         state=consts.ApiMinionState.engaging,
         abilities={eve_basic_info.atkm_abil_id: False, eve_basic_info.bomb_abil_id: True})
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]

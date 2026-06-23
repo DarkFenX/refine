@@ -58,7 +58,6 @@ class AttrHookDef:
 
     @property
     def provides_default(self) -> bool:
-        # This is confusing, but Default means lack of default value here
         return self.default() is not NoValue
 
 

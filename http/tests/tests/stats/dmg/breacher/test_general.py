@@ -25,8 +25,7 @@ def test_state(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - module is active, charge is not force-disabled, so stats are exposed without
     # extra flags
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
@@ -146,8 +145,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(),
@@ -219,8 +217,7 @@ def test_time_reload(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(time_options=StatTimeBurst()),

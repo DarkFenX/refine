@@ -20,8 +20,7 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, approx(133.25), approx(194.75), 0]
@@ -75,8 +74,7 @@ def test_stacking(client, consts):
     api_fit1.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.engaging)
     api_fit2 = api_sol.create_fit()
     api_fit2.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, approx(266.5), approx(506.5), approx(171)]
@@ -102,8 +100,7 @@ def test_item_kind(client, consts):
     api_fit = api_sol.create_fit()
     api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.engaging)
     api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(),
@@ -137,8 +134,7 @@ def test_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(time_options=StatTimeBurst())]))).dmg.one()

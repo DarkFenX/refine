@@ -27,8 +27,7 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(21)
@@ -74,8 +73,7 @@ def test_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats (first cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
@@ -148,8 +146,7 @@ def test_override(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(21)
@@ -202,8 +199,7 @@ def test_range_and_cap_limit(client, consts):
     api_src_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 20770, 0))
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification - target has high enough cap pool, so full strength is exposed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -326,8 +322,7 @@ def test_application_and_cap_limit(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id, npc_prop=consts.ApiNpcProp.cruise)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id])
     # Verification - application against ship is limited by cap pool
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
@@ -411,8 +406,7 @@ def test_resist_and_cap_limit(client, consts):
     api_src_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -460,8 +454,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
         StatsOptionFitOutNps(),
@@ -491,8 +484,7 @@ def test_zero_cycle_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0
@@ -515,8 +507,7 @@ def test_no_cycle_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0

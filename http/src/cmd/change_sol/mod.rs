@@ -1,5 +1,5 @@
 pub(in crate::cmd) use fit::{HChangeFitCmd, HDeleteFitCmd};
-pub(in crate::cmd) use fleet::{HAddFleetCmd, HChangeFleetCmd, HDeleteFleetCmd};
+pub(in crate::cmd) use fleet::{HChangeFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item::HRemoveItemCmd;
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::{HAddBoosterCmd, HChangeBoosterCmd};

@@ -8,8 +8,7 @@ def test_item_not_loaded(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0
@@ -63,8 +62,7 @@ def test_incorrect_projectee(client, consts):
     api_tgt_tmp.remove()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_implant = api_tgt_fit.add_implant(type_id=eve_implant_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
@@ -99,8 +97,7 @@ def test_not_requested(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=False))
     with check_no_field():

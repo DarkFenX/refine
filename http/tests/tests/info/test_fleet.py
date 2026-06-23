@@ -10,18 +10,17 @@ def test_fit(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet.update()
-    assert len(api_fleet.fits) == 1
-    assert api_fit.id in api_fleet.fits
+    assert len(api_fleet.fit_ids) == 1
+    assert api_fit.id in api_fleet.fit_ids
     # Action
-    api_fleet.change(rm_fits=[api_fit.id])
+    api_fleet.change(rm_fit_ids=[api_fit.id])
     # Verification
     api_fleet.update()
     with check_no_field():
-        api_fleet.fits  # noqa: B018
+        api_fleet.fit_ids  # noqa: B018
 
 
 def test_error_no_fleet_full(client, consts):

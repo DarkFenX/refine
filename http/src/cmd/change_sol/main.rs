@@ -2,9 +2,9 @@ use serde::Deserialize;
 
 use crate::{
     cmd::{
-        HAddFitCmd, HCmdResp,
+        HAddFitCmd, HAddFleetCmd, HCmdResp,
         change_sol::{
-            HAddBoosterCmd, HAddDroneCmd, HAddFighterCmd, HAddFleetCmd, HAddFwEffectCmd, HAddImplantCmd, HAddModuleCmd,
+            HAddBoosterCmd, HAddDroneCmd, HAddFighterCmd, HAddFwEffectCmd, HAddImplantCmd, HAddModuleCmd,
             HAddProjEffectCmd, HAddRigCmd, HAddServiceCmd, HAddSkillCmd, HAddSubsystemCmd, HAddSwEffectCmd,
             HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeDroneCmd,
             HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeFwEffectCmd, HChangeImplantCmd, HChangeModuleCmd,
@@ -91,7 +91,7 @@ impl HChangeSolCommand {
             #[allow(clippy::unit_arg)]
             Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
             // Fleet
-            Self::AddFleet(cmd) => Ok(cmd.execute(core_sol).into()),
+            Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Fit

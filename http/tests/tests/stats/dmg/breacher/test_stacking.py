@@ -22,8 +22,7 @@ def test_simple(client, consts):
     api_src_fit = api_sol.create_fit()
     api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
     api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     # Verification - in this case we also fetch applied stats, which show mismatch between
@@ -70,8 +69,7 @@ def test_reload_gap_realistic(client, consts):
     api_src_fit1.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
     api_src_fit2 = api_sol.create_fit()
     api_src_fit2.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit1.id, api_src_fit2.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit1.id, api_src_fit2.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     # Verification - burst stats, no reload - no gaps
@@ -179,8 +177,7 @@ def test_cycle_and_reload_gaps(client, consts):
         type_id=eve_module2_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge2_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     # Verification - burst stats, no reload - only cycle gaps. Each breacher individually covers

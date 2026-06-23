@@ -10,8 +10,7 @@ def test_fleet(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
-    api_fit = api_sol.create_fit()
-    api_fit.change(fleet_id=api_fleet.id)
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     # Verification
     assert api_fit.update().fleet == api_fleet.id
     # Action

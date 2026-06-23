@@ -32,8 +32,7 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(26.4)]
@@ -88,8 +87,7 @@ def test_stacking(client, consts):
     api_fit1.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_fit2 = api_sol.create_fit()
     api_fit2.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [approx(49.5), approx(79.2)]
@@ -120,8 +118,7 @@ def test_mission(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - default is non-mission ore, for mission ore waste is disabled
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
         StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)])))
@@ -165,8 +162,7 @@ def test_waste_chance(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [approx(16.5), approx(33)]
@@ -206,8 +202,7 @@ def test_no_waste(client, consts):
     api_fit = api_sol.create_fit()
     api_drone1 = api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.engaging)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [approx(33), approx(33)]
@@ -240,8 +235,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
         StatsOptionFitMining(),
@@ -286,8 +280,7 @@ def test_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeBurst())])))
@@ -351,8 +344,7 @@ def test_other_mining_kinds(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [0, 0]
@@ -386,8 +378,7 @@ def test_cycle_time_zero(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [0, 0]
@@ -415,8 +406,7 @@ def test_cycle_time_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [0, 0]

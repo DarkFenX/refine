@@ -38,8 +38,7 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(19.851852)]
@@ -100,8 +99,7 @@ def test_stacking(client, consts):
     api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fit2 = api_sol.create_fit()
     api_fit2.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [approx(46.111111), approx(59.555556)]
@@ -138,8 +136,7 @@ def test_mission(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - default is non-mission ore, for mission ore crit and waste are disabled
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
         StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)])))
@@ -189,8 +186,7 @@ def test_crit_chance(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [approx(51.851852), approx(19.851852)]
@@ -228,8 +224,7 @@ def test_waste_chance(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [approx(15.37037), approx(29.62963)]
@@ -278,8 +273,7 @@ def test_no_waste(client, consts):
     api_fit = api_sol.create_fit()
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [approx(30.740741), approx(29.62963)]
@@ -318,8 +312,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
         StatsOptionFitMining(),
@@ -370,8 +363,7 @@ def test_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         mps=(True, [StatsOptionFitMining(time_options=StatTimeBurst())])))
@@ -441,8 +433,7 @@ def test_other_mining_kinds(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ore == [0, 0]
@@ -482,8 +473,7 @@ def test_cycle_time_zero(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [0, 0]
@@ -517,8 +507,7 @@ def test_cycle_time_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [0, 0]
@@ -534,8 +523,7 @@ def test_item_not_loaded(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=True))
     assert api_fleet_stats.mps.one().ice == [0, 0]

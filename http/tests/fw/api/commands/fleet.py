@@ -14,11 +14,11 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(kw_only=True)
 class BaseFleetAddCmd(BaseCommand):
 
-    fits: list[str] | type[Absent]
+    fit_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['fits'], value=self.fits)
+        conditional_insert(container=body, path=['fit_ids'], value=self.fit_ids)
         return body
 
 
@@ -42,13 +42,13 @@ class SolFleetAddCmd(BaseFleetAddCmd):
 @dataclasses.dataclass(kw_only=True)
 class BaseFleetChangeCmd(BaseCommand):
 
-    add_fits: list[str] | type[Absent]
-    rm_fits: list[str] | type[Absent]
+    add_fit_ids: list[str] | type[Absent]
+    rm_fit_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['add_fits'], value=self.add_fits)
-        conditional_insert(container=body, path=['rm_fits'], value=self.rm_fits)
+        conditional_insert(container=body, path=['add_fit_ids'], value=self.add_fit_ids)
+        conditional_insert(container=body, path=['rm_fit_ids'], value=self.rm_fit_ids)
         return body
 
 

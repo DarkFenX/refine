@@ -3,7 +3,7 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HAddFitCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd,
+        HAddFitCmd, HAddFleetCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd,
         HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd,
         HGetFleetStatsCmd, HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
         get_primary_fit, get_primary_fleet,
@@ -163,26 +163,37 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         result
     }
-    /// Non-fallible
+    /// Fallible
     #[tracing::instrument(name = "sol-fleet-add", level = "trace", skip_all)]
     pub(crate) async fn add_fleet(
         &mut self,
         tpool: &HThreadPool,
+        command: HAddFleetCmd,
         fleet_mode: HFleetInfoMode,
     ) -> Result<HFleetInfo, HBrError> {
         let mut core_sol = self.take_sol()?;
+        let core_sol_backup = core_sol.clone();
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, fleet_info) = tpool
+        match tpool
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let mut core_fleet = core_sol.add_fleet();
+                let resp = command.execute(&mut core_sol).map_err(HBrError::from)?;
+                let mut core_fleet = get_primary_fleet(&mut core_sol, &resp.id).unwrap();
                 let fleet_info = HFleetInfo::from_core(&mut core_fleet, fleet_mode);
-                (core_sol, fleet_info)
+                Ok((core_sol, fleet_info))
             })
-            .await;
-        self.put_sol_back(core_sol);
-        Ok(fleet_info)
+            .await
+        {
+            Ok((core_sol, fleet_info)) => {
+                self.put_sol_back(core_sol);
+                Ok(fleet_info)
+            }
+            Err(br_err) => {
+                self.put_sol_back(core_sol_backup);
+                Err(br_err)
+            }
+        }
     }
     /// Fallible
     #[tracing::instrument(name = "sol-fleet-chg", level = "trace", skip_all)]
@@ -203,8 +214,8 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 command.execute(&mut core_sol, &fleet_id).map_err(HBrError::from)?;
                 let mut core_fleet = get_primary_fleet(&mut core_sol, &fleet_id).unwrap();
-                let info = HFleetInfo::from_core(&mut core_fleet, fleet_mode);
-                Ok((core_sol, info))
+                let fleet_info = HFleetInfo::from_core(&mut core_fleet, fleet_mode);
+                Ok((core_sol, fleet_info))
             })
             .await
         {

@@ -1,5 +1,6 @@
 import typing
 
+from fw.api.commands import FleetFleetAddCmd, FleetFleetChangeCmd
 from fw.api.types import FleetStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -43,27 +44,36 @@ class ApiClientFleet(ApiClientBase):
     def create_fleet_request(
             self, *,
             sol_id: str,
+            fit_ids: list[str] | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
+        # Body
+        body = FleetFleetAddCmd(fit_ids=fit_ids).serialize()
+        # Params
         params = {}
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/fleet',
-            params=params)
+        # Make request
+        kwargs = {
+            'method': 'POST',
+            'url': f'{self._base_url}/sol/{sol_id}/fleet',
+            'params': params}
+        # Intentionally send request without body when we don't need it, to test case when the
+        # server receives no content-type header
+        if body:
+            kwargs['json'] = body
+        return Request(client=self, **kwargs)
 
     def change_fleet_request(
             self, *,
             sol_id: str,
             fleet_id: str,
-            add_fits: list[str],
-            rm_fits: list[str],
+            add_fit_ids: list[str] | type[Absent],
+            rm_fit_ids: list[str] | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
-        body = {}
-        conditional_insert(container=body, path=['add_fits'], value=add_fits)
-        conditional_insert(container=body, path=['rm_fits'], value=rm_fits)
+        body = FleetFleetChangeCmd(
+            add_fit_ids=add_fit_ids,
+            rm_fit_ids=rm_fit_ids).serialize()
         params = {}
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
         return Request(

@@ -40,8 +40,7 @@ def test_state(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - module is active, charge is not force-disabled, so stats are exposed without
     # extra flags
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
@@ -145,8 +144,7 @@ def test_time(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats (first cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
@@ -251,8 +249,7 @@ def test_range_and_cap_limit(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -453,8 +450,7 @@ def test_application_and_cap_limit(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -536,8 +532,7 @@ def test_resist_and_cap_limit(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -595,8 +590,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
         StatsOptionFitOutNps(),
@@ -639,8 +633,7 @@ def test_include_charges(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - need to include charges for module to show neuts, since it's on-charge effect
     # which deals neutralizes cap. For charges, this option doesn't do anything
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
@@ -684,8 +677,7 @@ def test_zero_cycle_time(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0
@@ -721,8 +713,7 @@ def test_no_cycle_time(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0

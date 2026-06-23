@@ -26,8 +26,7 @@ def test_range(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_src_module_nonproj = api_src_fit.add_module(
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 3623, 0), movement=(0, 0, 0))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
@@ -124,8 +123,7 @@ def test_application(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_src_module_nonproj = api_src_fit.add_module(
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
     api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])

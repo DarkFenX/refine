@@ -29,8 +29,7 @@ def test_state(client, consts):
     api_module_normal = api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_module_ancil = api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=True))
     assert api_fleet_stats.outgoing_rps.one().shield == approx(196.65)
@@ -87,8 +86,7 @@ def test_hp_limit_and_resist(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
@@ -127,8 +125,7 @@ def test_hp_limit_and_range(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 18395, 0))
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification - range is close enough to be limited by HP
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
@@ -164,8 +161,7 @@ def test_item_kind(client, consts):
     api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=(True, [
         StatsOptionFitOutRps(),
@@ -197,8 +193,7 @@ def test_time(client, consts):
     api_module_normal = api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_module_ancil = api_fit.add_module(
         type_id=eve_module_ancil_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeBurst())])))
@@ -293,8 +288,7 @@ def test_zero_cycle_time(client, consts):
     api_module_normal = api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_module_ancil = api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=True))
     assert api_fleet_stats.outgoing_rps.one().shield == 0
@@ -319,8 +313,7 @@ def test_no_cycle_time(client, consts):
     api_module_normal = api_fit.add_module(type_id=eve_module_normal_id, state=consts.ApiModuleState.active)
     api_module_ancil = api_fit.add_module(type_id=eve_module_ancil_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=True))
     assert api_fleet_stats.outgoing_rps.one().shield == 0
@@ -342,8 +335,7 @@ def test_item_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_item_id, state=consts.ApiModuleState.active)
     api_drone = api_fit.add_drone(type_id=eve_item_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=True))
     assert api_fleet_stats.outgoing_rps.one().shield == 0

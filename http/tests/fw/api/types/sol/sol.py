@@ -229,10 +229,14 @@ class SolarSystem(AttrDict):
 
     def create_fleet(
             self, *,
+            fit_ids: list[str] | type[Absent] = Absent,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             status_code: int = 201,
     ) -> Fleet | None:
-        resp = self._client.create_fleet_request(sol_id=self.id, fleet_info_mode=fleet_info_mode).send()
+        resp = self._client.create_fleet_request(
+            sol_id=self.id,
+            fit_ids=fit_ids,
+            fleet_info_mode=fleet_info_mode).send()
         self.check()
         resp.check(status_code=status_code)
         if resp.status_code == 201:

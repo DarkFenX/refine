@@ -29,8 +29,7 @@ def test_state(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - fighter is engaging, ability is on - neut is always included in stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(49.5)
@@ -101,8 +100,7 @@ def test_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats (first cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
@@ -189,8 +187,7 @@ def test_range_and_cap_limit(client, consts):
         type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 12755, 0))
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
     # Verification - target has high enough cap pool, so full strength is exposed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -308,8 +305,7 @@ def test_resist_and_cap_limit(client, consts):
     api_src_fighter_nonproj = api_src_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_src_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -359,8 +355,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
         StatsOptionFitOutNps(),
@@ -392,8 +387,7 @@ def test_count_override(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count=2)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(33)
@@ -430,8 +424,7 @@ def test_zero_cycle_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0
@@ -456,8 +449,7 @@ def test_no_cycle_time(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == 0

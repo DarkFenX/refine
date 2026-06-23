@@ -1,4 +1,5 @@
 pub(crate) use add_fit::HAddFitCmd;
+pub(crate) use add_fleet::HAddFleetCmd;
 pub(crate) use add_item::HAddItemCommand;
 pub(crate) use add_sol::HAddSolCmd;
 pub(crate) use change_fit::HChangeFitCommand;
@@ -13,6 +14,7 @@ pub(crate) use try_fit_items::HTryFitItemsCmd;
 pub(crate) use validate::{HValidateFitCmd, HValidateSolCmd};
 
 mod add_fit;
+mod add_fleet;
 mod add_item;
 mod add_sol;
 mod change_fit;

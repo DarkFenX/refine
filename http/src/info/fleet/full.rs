@@ -9,7 +9,7 @@ pub(crate) struct HFleetInfoFull {
     id: rc::FleetId,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    fits: Vec<rc::FitId>,
+    fit_ids: Vec<rc::FitId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,7 +19,7 @@ impl HFleetInfoFull {
     pub(in crate::info::fleet) fn from_core(core_fleet: &mut rc::FleetMut) -> Self {
         Self {
             id: core_fleet.get_fleet_id(),
-            fits: core_fleet
+            fit_ids: core_fleet
                 .iter_fits_mut()
                 .map_into_iter(|core_fit| core_fit.get_fit_id())
                 .collect(),

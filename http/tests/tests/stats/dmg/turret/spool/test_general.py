@@ -27,8 +27,7 @@ def test_state(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, approx(386.525229), 0, approx(202.465596)]
@@ -86,8 +85,7 @@ def test_stacking(client, consts):
     api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge2_id)
     api_fit2 = api_sol.create_fit()
     api_fit2.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge1_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit1.id, api_fit2.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit1.id, api_fit2.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, approx(1214.793578), 0, approx(791.456422)]
@@ -112,8 +110,7 @@ def test_item_kind(client, consts):
     api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
     api_fit = api_sol.create_fit()
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(),
@@ -154,8 +151,7 @@ def test_time_burst(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
         StatsOptionFitDmg(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
@@ -243,8 +239,7 @@ def test_time_sim(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     api_module.update()
     # Verification - sim without time means that reload is considered, and number is average over
     # whole period, which includes spool
@@ -389,8 +384,7 @@ def test_charge_absent(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
@@ -417,8 +411,7 @@ def test_charge_not_loaded(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_fleet = api_sol.create_fleet()
-    api_fleet.change(add_fits=[api_fit.id])
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]

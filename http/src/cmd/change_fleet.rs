@@ -11,10 +11,10 @@ use crate::{
 pub(crate) struct HChangeFleetCmd {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    add_fits: Vec<rc::FitId>,
+    add_fit_ids: Vec<rc::FitId>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    rm_fits: Vec<rc::FitId>,
+    rm_fit_ids: Vec<rc::FitId>,
 }
 impl HChangeFleetCmd {
     pub(crate) fn execute(
@@ -23,13 +23,13 @@ impl HChangeFleetCmd {
         fleet_id: &rc::FleetId,
     ) -> Result<HFleetIdResp, HExecError> {
         let mut core_fleet = get_primary_fleet(core_sol, fleet_id)?;
-        for fit_id in self.rm_fits.iter() {
+        for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id).map_err(|error| match error {
                 rc::err::FleetRemoveFitError::FitNotFound(e) => HExecError::FitNotFoundSecondary(e),
                 rc::err::FleetRemoveFitError::FitIsNotInThisFleet(e) => HExecError::FitNotInThisFleet(e),
             })?;
         }
-        for fit_id in self.add_fits.iter() {
+        for fit_id in self.add_fit_ids.iter() {
             core_fleet.add_fit(fit_id).map_err(|error| match error {
                 rc::err::FleetAddFitError::FitNotFound(e) => HExecError::FitNotFoundSecondary(e),
                 rc::err::FleetAddFitError::FitAlreadyInThisFleet(e) => HExecError::FitAlreadyInThisFleet(e),
