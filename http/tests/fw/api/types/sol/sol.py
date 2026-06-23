@@ -261,6 +261,7 @@ class SolarSystem(AttrDict):
 
     def create_fit(
             self, *,
+            fleet_id: str | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
             rah_incoming_dps: DpsProfile | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
@@ -269,6 +270,7 @@ class SolarSystem(AttrDict):
     ) -> Fit | None:
         resp = self._client.create_fit_request(
             sol_id=self.id,
+            fleet_id=fleet_id,
             sec_status=sec_status,
             rah_incoming_dps=rah_incoming_dps,
             fit_info_mode=fit_info_mode,

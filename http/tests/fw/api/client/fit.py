@@ -1,5 +1,6 @@
 import typing
 
+from fw.api.commands import RootFitAddCmd
 from fw.api.types import ValOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -85,17 +86,22 @@ class ApiClientFit(ApiClientBase):
     def create_fit_request(
             self, *,
             sol_id: str,
+            fleet_id: str | type[Absent],
             sec_status: float | type[Absent],
             rah_incoming_dps: DpsProfile | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
+        # Body
+        body = RootFitAddCmd(
+            fleet_id=fleet_id,
+            sec_status=sec_status,
+            rah_incoming_dps=rah_incoming_dps).serialize()
+        # Params
         params = {}
         conditional_insert(container=params, path=['fit'], value=fit_info_mode)
         conditional_insert(container=params, path=['item'], value=item_info_mode)
-        body = {}
-        conditional_insert(container=body, path=['sec_status'], value=sec_status)
-        conditional_insert(container=body, path=['rah_incoming_dps'], value=rah_incoming_dps)
+        # Make request
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol/{sol_id}/fit',

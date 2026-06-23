@@ -1,6 +1,7 @@
 import typing
 
 from fw import eve
+from fw.api.commands import RootSolCreateCmd
 from fw.api.types import SolarSystem, ValOptions
 from fw.consts import ApiSolInfoMode
 from fw.request import Request
@@ -46,22 +47,27 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
+        # Body
+        src_alias = Absent
+        if data is not Absent:
+            if data is Default:
+                data = self._get_default_eve_data()
+            src_alias = data.alias
+        body = RootSolCreateCmd(
+            src_alias=src_alias,
+            sec_zone=sec_zone,
+            default_incoming_dps=default_incoming_dps,
+            default_spool=default_spool,
+            default_npc_prop=default_npc_prop,
+            default_optional_reloads=default_optional_reloads,
+            default_rearm_minions=default_rearm_minions).serialize()
+        # Params
         params = {}
         conditional_insert(container=params, path=['sol'], value=sol_info_mode)
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
         conditional_insert(container=params, path=['fit'], value=fit_info_mode)
         conditional_insert(container=params, path=['item'], value=item_info_mode)
-        body = {}
-        if data is not Absent:
-            if data is Default:
-                data = self._get_default_eve_data()
-            body['src_alias'] = data.alias
-        conditional_insert(container=body, path=['sec_zone'], value=sec_zone)
-        conditional_insert(container=body, path=['default_incoming_dps'], value=default_incoming_dps)
-        conditional_insert(container=body, path=['default_spool'], value=default_spool)
-        conditional_insert(container=body, path=['default_npc_prop'], value=default_npc_prop)
-        conditional_insert(container=body, path=['default_optional_reloads'], value=default_optional_reloads)
-        conditional_insert(container=body, path=['default_rearm_minions'], value=default_rearm_minions)
+        # Make request
         kwargs = {
             'method': 'POST',
             'url': f'{self._base_url}/sol',
@@ -185,39 +191,6 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
         for sol in self.__created_sols.copy():
             sol.remove()
 
-    def change_sol_request(
-            self, *,
-            sol_id: str,
-            sec_zone: ApiSecZone | type[Absent],
-            default_incoming_dps: DpsProfile | type[Absent],
-            default_spool: str | type[Absent],
-            default_npc_prop: ApiNpcProp | type[Absent],
-            default_optional_reloads: ApiOptionalReload | type[Absent],
-            default_rearm_minions: ApiRearmMinion | type[Absent],
-            sol_info_mode: ApiSolInfoMode | type[Absent],
-            fleet_info_mode: ApiFleetInfoMode | type[Absent],
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
-    ) -> Request:
-        command = {'type': 'change_sol'}
-        conditional_insert(container=command, path=['sec_zone'], value=sec_zone)
-        conditional_insert(container=command, path=['default_incoming_dps'], value=default_incoming_dps)
-        conditional_insert(container=command, path=['default_spool'], value=default_spool)
-        conditional_insert(container=command, path=['default_npc_prop'], value=default_npc_prop)
-        conditional_insert(container=command, path=['default_optional_reloads'], value=default_optional_reloads)
-        conditional_insert(container=command, path=['default_rearm_minions'], value=default_rearm_minions)
-        params = {}
-        conditional_insert(container=params, path=['sol'], value=sol_info_mode)
-        conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
-        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
-        conditional_insert(container=params, path=['item'], value=item_info_mode)
-        return Request(
-            client=self,
-            method='PATCH',
-            url=f'{self._base_url}/sol/{sol_id}',
-            params=params,
-            json={'commands': [command]})
-
     def validate_sol_request(
             self, *,
             sol_id: str,
@@ -243,26 +216,6 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             kwargs['json'] = body
         return Request(client=self, **kwargs)
 
-    # Development-specific requests
-    def check_sol(self, *, sol_id: str) -> None:
-        resp = self.check_sol_request(sol_id=sol_id).send()
-        if resp.status_code != 200:
-            raise ApiSolCheckError
-
-    def check_sol_request(self, *, sol_id: str) -> Request:
-        return Request(
-            client=self,
-            method='GET',
-            url=f'{self._base_url}/sol/{sol_id}/check')
-
-    def benchmark_sol_request(self, *, sol_id: str, command: dict) -> Request:
-        return Request(
-            client=self,
-            method='POST',
-            url=f'{self._base_url}/sol/{sol_id}/benchmark',
-            json=command)
-
-    # Misc
     def sol_commands_request(
             self, *,
             sol_id: str,
@@ -283,3 +236,22 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             url=f'{self._base_url}/sol/{sol_id}',
             params=params,
             json={'commands': [c.serialize() for c in commands]})
+
+    # Development-specific requests
+    def check_sol(self, *, sol_id: str) -> None:
+        resp = self.check_sol_request(sol_id=sol_id).send()
+        if resp.status_code != 200:
+            raise ApiSolCheckError
+
+    def check_sol_request(self, *, sol_id: str) -> Request:
+        return Request(
+            client=self,
+            method='GET',
+            url=f'{self._base_url}/sol/{sol_id}/check')
+
+    def benchmark_sol_request(self, *, sol_id: str, command: dict) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/benchmark',
+            json=command)

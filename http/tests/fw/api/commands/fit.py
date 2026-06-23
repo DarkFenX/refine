@@ -36,6 +36,11 @@ class SolFitAddCmd(BaseFitCmd):
         return body
 
 
+@dataclasses.dataclass(kw_only=True)
+class RootFitAddCmd(BaseFitCmd):
+    ...
+
+
 ####################################################################################################
 # Changing
 ####################################################################################################

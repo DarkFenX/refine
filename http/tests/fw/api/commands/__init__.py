@@ -1,6 +1,7 @@
 from .base import BaseCommand
 from .fit import (
     FitFitChangeCmd,
+    RootFitAddCmd,
     SolFitAddCmd,
     SolFitChangeCmd,
     SolFitRemoveCmd,
@@ -143,4 +144,7 @@ from .item_sw_effect import (
     SolSwEffectAddCmd,
     SolSwEffectChangeCmd,
 )
-from .sol import SolSolChangeCmd
+from .sol import (
+    RootSolCreateCmd,
+    SolSolChangeCmd,
+)
