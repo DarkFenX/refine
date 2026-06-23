@@ -321,7 +321,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        resp = self._client.change_mod_request(
+        resp = self._client.change_module_request(
             sol_id=self._sol_id,
             item_id=self.id,
             type_id=type_id,

@@ -214,31 +214,31 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
         api_fit_cmds.add_booster(type_id=28672)  # Synth crash
         api_fit_cmds.add_booster(type_id=45999)  # Pyro 2
         api_fit_cmds.set_ship(type_id=32311)  # NTyphoon
-    # T2 800mms with hail
-    for _ in range(3):
-        api_fit.add_module(
-            type_id=2929,
-            rack=consts.ApiRack.high,
-            state=consts.ApiModuleState.overload,
-            charge_type_id=12779)
-    # T2 torpedo launchers with thermal rages
-    for _ in range(3):
-        api_fit.add_module(
-            type_id=2420,
-            rack=consts.ApiRack.high,
-            state=consts.ApiModuleState.overload,
-            charge_type_id=2811)
-    api_fit.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
-    # T2 med cap booster with navy 800
-    api_fit.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
-    api_fit.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
-    api_fit.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
-    api_fit.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DC
-    for _ in range(2):
-        api_fit.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 gyrostab
-    for _ in range(2):
-        api_fit.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 BCS
-    api_fit.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DDA
+        # T2 800mms with hail
+        for _ in range(3):
+            api_fit_cmds.add_module(
+                type_id=2929,
+                rack=consts.ApiRack.high,
+                state=consts.ApiModuleState.overload,
+                charge_type_id=12779)
+        # T2 torpedo launchers with thermal rages
+        for _ in range(3):
+            api_fit_cmds.add_module(
+                type_id=2420,
+                rack=consts.ApiRack.high,
+                state=consts.ApiModuleState.overload,
+                charge_type_id=2811)
+        api_fit_cmds.add_module(type_id=5945, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # Enduring 500MN
+        # T2 med cap booster with navy 800
+        api_fit_cmds.add_module(type_id=2024, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active, charge_type_id=32014)
+        api_fit_cmds.add_module(type_id=2301, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 EM hardener
+        api_fit_cmds.add_module(type_id=448, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)  # T2 scram
+        api_fit_cmds.add_module(type_id=2048, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DC
+        for _ in range(2):
+            api_fit_cmds.add_module(type_id=519, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 gyrostab
+        for _ in range(2):
+            api_fit_cmds.add_module(type_id=22291, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 BCS
+        api_fit_cmds.add_module(type_id=4405, rack=consts.ApiRack.low, state=consts.ApiModuleState.online)  # T2 DDA
     api_fit.add_rig(type_id=26436)  # T2 therm rig
     # T1 CDFEs
     for _ in range(2):

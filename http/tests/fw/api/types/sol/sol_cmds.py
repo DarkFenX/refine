@@ -4,20 +4,30 @@ from fw.api.commands import (
     SolBoosterAddCmd,
     SolCharacterSetCmd,
     SolImplantAddCmd,
+    SolModuleAddCmd,
     SolShipSetCmd,
-    SolStanceSetCmd,
     SolSkillAddCmd,
+    SolStanceSetCmd,
 )
-from fw.api.types.helpers import process_effect_map_request
+from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
+from fw.consts import ApiModAddMode, ApiModuleState, ApiRack
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
+    from fw.api.aliases import MutaAdd
     from fw.api.commands import BaseCommand
-    from fw.consts import ApiEffMode, ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
+    from fw.consts import (
+        ApiEffMode,
+        ApiFitInfoMode,
+        ApiFleetInfoMode,
+        ApiItemInfoMode,
+        ApiOptionalReload,
+        ApiSolInfoMode,
+    )
     from .sol import SolarSystem
 
 
@@ -134,6 +144,36 @@ class SolCmdCtx:
             fit_id=fit_id,
             type_id=type_id,
             state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    # Item - module
+    def add_module(
+            self, *,
+            fit_id: str,
+            type_id: int,
+            rack: ApiRack = ApiRack.high,
+            add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent] = ApiModAddMode.equip,
+            state: ApiModuleState = ApiModuleState.offline,
+            mutation: MutaAdd | type[Absent] = Absent,
+            charge_type_id: int | type[Absent] = Absent,
+            spool: str | type[Absent] = Absent,
+            optional_reload: ApiOptionalReload | type[Absent] = Absent,
+            projs: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolModuleAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            rack=rack,
+            add_mode=add_mode,
+            state=state,
+            mutation=process_muta_add_request(mutation=mutation),
+            charge_type_id=charge_type_id,
+            spool=spool,
+            optional_reload=optional_reload,
+            projs=projs,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()

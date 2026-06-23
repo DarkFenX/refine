@@ -429,7 +429,7 @@ class ApiClientItem(ApiClientBase):
             item_info_mode=item_info_mode)
 
     # Module methods
-    def add_mod_request(
+    def add_module_request(
             self, *,
             sol_id: str,
             fit_id: str,
@@ -462,7 +462,7 @@ class ApiClientItem(ApiClientBase):
             command=command,
             item_info_mode=item_info_mode)
 
-    def change_mod_request(
+    def change_module_request(
             self, *,
             sol_id: str,
             item_id: str,

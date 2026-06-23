@@ -399,12 +399,12 @@ class Fit(AttrDict):
             status_code: int = 201,
             text_predicate: str | None = None,
     ) -> Item | None:
-        resp = self._client.add_mod_request(
+        resp = self._client.add_module_request(
             sol_id=self._sol_id,
             fit_id=self.id,
+            type_id=type_id,
             rack=rack,
             add_mode=add_mode,
-            type_id=type_id,
             state=state,
             mutation=process_muta_add_request(mutation=mutation),
             charge_type_id=charge_type_id,
