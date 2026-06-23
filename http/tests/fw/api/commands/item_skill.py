@@ -36,13 +36,18 @@ class ItemSkillAddCmd(BaseSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'skill'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
 class FitSkillAddCmd(BaseSkillCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'add_skill'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -52,6 +57,7 @@ class SolSkillAddCmd(BaseSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'add_skill'
         body['fit_id'] = self.fit_id
         return body
 
@@ -61,7 +67,11 @@ class SolSkillAddCmd(BaseSkillCmd):
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
 class ItemSkillChangeCmd(BaseSkillCmd):
-    ...
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'skill'
+        return body
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -71,6 +81,7 @@ class FitSkillChangeCmd(BaseSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_skill'
         body['item_id'] = self.item_id
         return body
 
@@ -82,5 +93,6 @@ class SolSkillChangeCmd(BaseSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
+        body['type'] = 'change_skill'
         body['item_id'] = self.item_id
         return body

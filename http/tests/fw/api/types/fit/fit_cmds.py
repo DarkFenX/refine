@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import FitBoosterAddCmd
+from fw.api.commands import FitBoosterAddCmd, FitSkillAddCmd
 from fw.api.types.helpers import process_effect_map_request
 from fw.api.types.item import Item
 from fw.util import Absent
@@ -89,6 +89,21 @@ class FitCmdCtx:
             type_id=type_id,
             state=state,
             side_effects=process_effect_map_request(effect_map=side_effects),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def add_skill(
+            self, *,
+            type_id: int,
+            level: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = FitSkillAddCmd(
+            type_id=type_id,
+            level=level,
+            state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()

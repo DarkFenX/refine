@@ -202,8 +202,9 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     api_fit.set_character(type_id=1373)
-    for eve_skill_id in get_skill_type_ids():
-        api_fit.add_skill(type_id=eve_skill_id, level=5)
+    with api_fit.commands() as api_fit_cmds:
+        for eve_skill_id in get_skill_type_ids():
+            api_fit_cmds.add_skill(type_id=eve_skill_id, level=5)
     api_fit.add_implant(type_id=13231)  # TD-603
     api_fit.add_implant(type_id=10228)  # SM-703
     api_fit.add_implant(type_id=24663)  # Zor hyperlink
