@@ -13,7 +13,7 @@ pub(crate) struct HProjEffectInfoPartial {
     type_id: i32,
     enabled: bool,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    projs: Vec<HProjInfo>,
+    proj_item_ids: Vec<HProjInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ impl HProjEffectInfoPartial {
             kind: "proj_effect",
             type_id: core_proj_effect.get_type_id().into_i32(),
             enabled: core_proj_effect.get_state(),
-            projs: core_proj_effect.iter_projs().map(HProjInfo::from_core).collect(),
+            proj_item_ids: core_proj_effect.iter_projs().map(HProjInfo::from_core).collect(),
         }
     }
 }
