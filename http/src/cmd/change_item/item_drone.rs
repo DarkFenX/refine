@@ -21,10 +21,10 @@ pub(crate) struct HChangeDroneCmd {
     npc_prop: TriStateField<HNpcProp>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    add_projs: Vec<rc::ItemId>,
+    add_proj_item_ids: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    rm_projs: Vec<rc::ItemId>,
+    rm_proj_item_ids: Vec<rc::ItemId>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
     effect_modes: Option<HEffectModeMap>,
@@ -86,7 +86,7 @@ impl HChangeDroneCmd {
             TriStateField::None => core_drone.set_npc_prop(None),
             TriStateField::Absent => (),
         }
-        for projectee_item_id in self.rm_projs.iter() {
+        for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_drone
                 .get_proj_mut(projectee_item_id)
                 .map_err(|error| match error {
@@ -101,7 +101,7 @@ impl HChangeDroneCmd {
         if let Some(movement) = self.movement {
             core_drone.set_movement(movement.into_core());
         }
-        for projectee_item_id in self.add_projs.iter() {
+        for projectee_item_id in self.add_proj_item_ids.iter() {
             core_drone.add_proj(projectee_item_id).map_err(|error| match error {
                 rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                 rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),

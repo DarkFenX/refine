@@ -165,7 +165,7 @@ def test_zeroed_positive_events(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_tgt_fit.add_module(type_id=eve_injector_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
-    api_src_transfer.change_module(add_projs=[api_tgt_ship.id])
+    api_src_transfer.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_options = [StatsOptionCapSim(cap_perc=0), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification - without any cap use, regen gets cap to 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
@@ -249,7 +249,7 @@ def test_zeroed_positive_events_with_self_killer(client, consts):
     api_tgt_fit.add_module(type_id=eve_injector_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_sk_module_id, state=consts.ApiModuleState.active)
-    api_src_transfer.change_module(add_projs=[api_tgt_ship.id])
+    api_src_transfer.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_options = [StatsOptionCapSim(cap_perc=0.1), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification - with the module which takes cap only once, cap gets back to 100% after module
     # stops cycling. Instability is returned only when there is not enough cap to use the module
@@ -312,7 +312,7 @@ def test_zeroed_negative_events(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_tgt_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
-    api_src_neut.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_options = [StatsOptionCapSim(cap_perc=0), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification - without any cap use, regen gets cap to 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
@@ -384,7 +384,7 @@ def test_zeroed_negative_events_with_self_killer(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_tgt_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_sk_module_id, state=consts.ApiModuleState.active)
-    api_src_neut.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_options = [StatsOptionCapSim(cap_perc=0.1), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification - with the module which takes cap only once, cap gets back to 100% after module
     # stops cycling. Instability is returned only when there is not enough cap to use the module
@@ -547,7 +547,7 @@ def test_only_transfers(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_options = [StatsOptionCapSim(cap_perc=0), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
@@ -607,7 +607,7 @@ def test_only_transfers_with_self_killer(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
     api_tgt_fit.add_module(type_id=eve_sk_module_id, state=consts.ApiModuleState.active)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_options = [StatsOptionCapSim(cap_perc=0.1), StatsOptionCapSim(cap_perc=0.3), StatsOptionCapSim(cap_perc=1)]
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))

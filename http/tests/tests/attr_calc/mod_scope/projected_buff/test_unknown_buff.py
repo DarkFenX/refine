@@ -17,7 +17,7 @@ def test_project_unproject_root(client, consts):
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_proj_effect.remove()
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(7.5)

@@ -26,9 +26,9 @@ def test_layers(client, consts):
         api_module_rsb = api_src_fit.add_module(type_id=eve_module_rsb_id, state=consts.ApiModuleState.active)
         api_module_rar = api_src_fit.add_module(type_id=eve_module_rar_id, state=consts.ApiModuleState.active)
         api_module_rhr = api_src_fit.add_module(type_id=eve_module_rhr_id, state=consts.ApiModuleState.active)
-        api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
-        api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-        api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+        api_module_rsb.change_module(add_proj_item_ids=[api_tgt_ship.id])
+        api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+        api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
 
     add_reps()
     # Verification - due to penalty formula, one rep per layer is never penalized
@@ -85,7 +85,7 @@ def test_range(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id, coordinates=(0, 0, 0))
     api_mods = [api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active) for _ in range(20)]
     for api_mod in api_mods:
-        api_mod.change_module(add_projs=[api_tgt_ship.id])
+        api_mod.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516), ANY_VALUE]
@@ -125,7 +125,7 @@ def test_resist(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mods = [api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active) for _ in range(20)]
     for api_mod in api_mods:
-        api_mod.change_module(add_projs=[api_tgt_ship.id])
+        api_mod.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, approx(42801.55642), approx(34544.40516), ANY_VALUE]
@@ -157,7 +157,7 @@ def test_spool(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for _ in range(20):
         api_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_module.change_module(add_projs=[api_tgt_ship.id])
+        api_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - as spool is increased, penalty is increased as well
     api_stat_options = [
         StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
@@ -193,7 +193,7 @@ def test_cycle_duration_rounding(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mods = [api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active) for _ in range(40)]
     for api_mod in api_mods:
-        api_mod.change_module(add_projs=[api_tgt_ship.id])
+        api_mod.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, approx(85603.11284), approx(53065.524427), ANY_VALUE]
@@ -224,7 +224,7 @@ def test_cycle_duration_sub_one(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mods = [api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active) for _ in range(40)]
     for api_mod in api_mods:
-        api_mod.change_module(add_projs=[api_tgt_ship.id])
+        api_mod.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - penalized value is not really relevant here (the lib takes non-rounded cycle
     # duration in this case), just check that nothing explodes
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
@@ -252,7 +252,7 @@ def test_cycle_duration_zero(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mods = [api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active) for _ in range(40)]
     for api_mod in api_mods:
-        api_mod.change_module(add_projs=[api_tgt_ship.id])
+        api_mod.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - the lib ignores modules with cycle duration of 0
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, 0, ANY_VALUE]

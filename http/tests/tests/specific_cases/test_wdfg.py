@@ -37,7 +37,7 @@ def test_bubble_sig_projected(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_sig_attr_id].modified == approx(100)
 
@@ -70,7 +70,7 @@ def test_warp_dscript(client, consts):
     api_src_fit.set_ship(type_id=eve_ship_id)
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification - without a script bubble disables warp and jump drive of the HIC itself and its
     # target
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -152,7 +152,7 @@ def test_warp_sscript(client, consts):
     api_src_fit.set_ship(type_id=eve_ship_id)
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification - without a script bubble still disables warp and jump drive
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -230,7 +230,7 @@ def test_gate_dscript(client, consts):
     api_src_fit.set_ship(type_id=eve_ship_id)
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -284,7 +284,7 @@ def test_gate_sscript(client, consts):
     api_src_fit.set_ship(type_id=eve_ship_id)
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -340,7 +340,7 @@ def test_block_module_mwd_dscript(client, consts):
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -396,7 +396,7 @@ def test_block_module_mwd_sscript(client, consts):
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mwd = api_tgt_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -455,7 +455,7 @@ def test_block_module_mjd_dscript(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mjd_sub = api_tgt_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
     api_mjd_cap = api_tgt_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -514,7 +514,7 @@ def test_block_module_mjd_sscript(client, consts):
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_mjd_sub = api_tgt_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
     api_mjd_cap = api_tgt_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
@@ -565,7 +565,7 @@ def test_block_fighter_mwd_mjd_dscript(client, consts):
     api_fighter.change_fighter(effect_modes={
         eve_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
         eve_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
-    api_wdfg.change_module(add_projs=[api_fighter.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_fighter.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -602,7 +602,7 @@ def test_block_fighter_mwd_mjd_sscript(client, consts):
     api_fighter.change_fighter(effect_modes={
         eve_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
         eve_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
-    api_wdfg.change_module(add_projs=[api_fighter.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_fighter.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -637,7 +637,7 @@ def test_range_bubble_vs_ship(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(24487, 0, 0))
-    api_wdfg.change_module(add_projs=[api_tgt_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
@@ -679,7 +679,7 @@ def test_range_bubble_vs_fighter(client, consts):
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0))
     api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_fighter_id, coordinates=(20122, 0, 0))
-    api_wdfg.change_module(add_projs=[api_tgt_ship.id, api_tgt_fighter.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_fighter.id])
     # Verification
     api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
     assert api_tgt_fighter_stats.can_warp is False
@@ -746,7 +746,7 @@ def test_range_dscript(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(34487, 0, 0))
-    api_wdfg.change_module(add_projs=[api_tgt_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - range should be 30k (20k base from module +50% from script), plus radii of both
     # ships
     api_tgt_stats = api_tgt_fit.get_stats(
@@ -822,7 +822,7 @@ def test_range_sscript(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(20487, 0, 0))
-    api_wdfg.change_module(add_projs=[api_tgt_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - range should be 16k (20k base from module -20% from script), plus radii of both
     # ships
     assert api_tgt_ship.update().attrs[eve_status_attr_id].modified == approx(100)
@@ -869,7 +869,7 @@ def test_assist_bubble_projected(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_projs=[api_ship.id])
+    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
 

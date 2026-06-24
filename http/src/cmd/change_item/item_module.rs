@@ -25,10 +25,10 @@ pub(crate) struct HChangeModuleCmd {
     optional_reload: TriStateField<HOptionalReload>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    add_projs: Vec<rc::ItemId>,
+    add_proj_item_ids: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    rm_projs: Vec<rc::ItemId>,
+    rm_proj_item_ids: Vec<rc::ItemId>,
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeModuleCmd {
@@ -106,14 +106,7 @@ impl HChangeModuleCmd {
             TriStateField::None => core_module.set_optional_reload(None),
             TriStateField::Absent => (),
         }
-        for projectee_item_id in self.add_projs.iter() {
-            core_module.add_proj(projectee_item_id).map_err(|error| match error {
-                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
-                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
-            })?;
-        }
-        for projectee_item_id in self.rm_projs.iter() {
+        for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_module
                 .get_proj_mut(projectee_item_id)
                 .map_err(|error| match error {
@@ -121,6 +114,13 @@ impl HChangeModuleCmd {
                     rc::err::GetRangedProjError::ProjectionNotFound(e) => HExecError::ProjectionNotFound(e),
                 })?
                 .remove();
+        }
+        for projectee_item_id in self.add_proj_item_ids.iter() {
+            core_module.add_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+            })?;
         }
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_module);

@@ -144,7 +144,7 @@ def test_switch_state_projected(client, consts):
     api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affector_fighter.update()
     assert len(api_affector_fighter.abilities) == 2

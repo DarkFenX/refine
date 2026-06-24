@@ -42,7 +42,7 @@ def test_root_loaded_onlist_to_loaded_offlist_remove(client, consts):
      api_module,
      api_rig) = setup_root_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_loaded_onlist_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -65,7 +65,7 @@ def test_root_loaded_onlist_to_unloaded_onlist_remove(client, consts):
      api_module,
      api_rig) = setup_root_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_loaded_onlist_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -88,7 +88,7 @@ def test_root_loaded_onlist_to_unloaded_offlist_remove(client, consts):
      api_module,
      api_rig) = setup_root_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_loaded_onlist_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -111,7 +111,7 @@ def test_root_loaded_offlist_to_loaded_onlist_remove(client, consts):
      api_module,
      api_rig) = setup_root_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_loaded_offlist_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
@@ -134,7 +134,7 @@ def test_root_unloaded_onlist_to_loaded_onlist_remove(client, consts):
      api_module,
      api_rig) = setup_root_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_unloaded_onlist_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
@@ -157,7 +157,7 @@ def test_root_unloaded_offlist_to_loaded_onlist_remove(client, consts):
      api_module,
      api_rig) = setup_root_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_unloaded_offlist_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
@@ -194,7 +194,7 @@ def test_child_rig(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig1_id)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action

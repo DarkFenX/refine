@@ -342,7 +342,7 @@ def test_remote_asb(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_rasb.change_module(add_projs=[api_tgt_ship.id])
+    api_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
@@ -394,7 +394,7 @@ def test_remote_aar(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_raar.change_module(add_projs=[api_tgt_ship.id])
+    api_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(ehp=(True, [
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),

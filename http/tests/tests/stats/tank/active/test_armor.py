@@ -41,10 +41,10 @@ def test_state_ship(client, consts):
     api_module_lar = api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_module_laar = api_tgt_fit.add_module(
         type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_raar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
@@ -116,10 +116,10 @@ def test_drone(client, consts):
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_drone.id])
-    api_module_raar.change_module(add_projs=[api_tgt_drone.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_drone.id])
-    api_src_drone.change_drone(add_projs=[api_tgt_drone.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_drone.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_drone.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_drone.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_drone.id])
     # Verification - local reps do not affect drones
     api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(rps=True))
     assert api_tgt_drone_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
@@ -155,10 +155,10 @@ def test_hp_limit_and_resist(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_raar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - both local reps are limited by ship HP, regular remote armor rep is resisted
     # but not limited, ancillary is boosted enough by paste to be limited despite resistance, spool
     # rep is resisted and limited, drone is just resisted
@@ -209,10 +209,10 @@ def test_hp_limit_and_range(client, consts):
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(
         type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_raar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - range completely disables drone and spool rep, the rest work the same as in the
     # resistance test
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
@@ -237,7 +237,7 @@ def test_hp_limit_and_spool(client, consts):
         type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0.5))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - at zero spool isn't limited, at on-module default of 0.5 slightly limited, at
     # max spool is limited as well
     api_stat_options = [
@@ -281,10 +281,10 @@ def test_time(client, consts):
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_module_laar = api_tgt_fit.add_module(
         type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_raar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats. For spool rep, on-module value is taken, since setting request
     # does not override it.
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
@@ -399,10 +399,10 @@ def test_zero_cycle_time(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_raar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
@@ -442,10 +442,10 @@ def test_no_cycle_time(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_laar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_raar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rsar.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]

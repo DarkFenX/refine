@@ -37,12 +37,12 @@ class BaseDroneCmd(BaseCommand):
 class BaseDroneAddCmd(BaseDroneCmd):
 
     mutation: MutaAdd | type[Absent]
-    projs: list[str] | type[Absent]
+    proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['mutation'], value=self.mutation)
-        conditional_insert(container=body, path=['projs'], value=self.projs)
+        conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
 
@@ -86,14 +86,14 @@ class SolDroneAddCmd(BaseDroneAddCmd):
 class BaseDroneChangeCmd(BaseDroneCmd):
 
     mutation: MutaAdd | MutaChange | type[Absent] | None
-    add_projs: list[str] | type[Absent]
-    rm_projs: list[str] | type[Absent]
+    add_proj_item_ids: list[str] | type[Absent]
+    rm_proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['mutation'], value=self.mutation)
-        conditional_insert(container=body, path=['add_projs'], value=self.add_projs)
-        conditional_insert(container=body, path=['rm_projs'], value=self.rm_projs)
+        conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
+        conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body
 
 

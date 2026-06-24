@@ -28,7 +28,7 @@ def test_on_effect(client, consts):
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - attribute which does not exist cannot be used to define resistances
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(200)
@@ -76,11 +76,11 @@ def test_on_affector_item(client, consts):
     api_affector_module1 = api_affector_fit.add_module(
         type_id=eve_affector_module1_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     api_affector_module2 = api_affector_fit.add_module(
         type_id=eve_affector_module2_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - attribute which does not exist cannot be used to define resistances
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(171)

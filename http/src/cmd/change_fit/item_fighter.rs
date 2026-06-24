@@ -20,7 +20,7 @@ pub(crate) struct HAddFighterCmd {
     rearm_minion: Option<HRearmMinion>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    projs: Vec<rc::ItemId>,
+    proj_item_ids: Vec<rc::ItemId>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
     effect_modes: Option<HEffectModeMap>,
@@ -48,7 +48,7 @@ impl HAddFighterCmd {
         if let Some(h_rearm_minion) = self.rearm_minion {
             core_fighter.set_rearm_minion(Some(h_rearm_minion.into_core()));
         }
-        for projectee_item_id in self.projs.iter() {
+        for projectee_item_id in self.proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id).map_err(|error| match error {
                 rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                 rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),

@@ -36,7 +36,7 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_launcher.change_module(add_projs=[api_tgt_ship.id])
+    api_src_launcher.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
@@ -46,7 +46,7 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_launcher.change_module(rm_projs=[api_tgt_ship.id])
+    api_src_launcher.change_module(rm_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
@@ -57,7 +57,7 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_launcher.change_module(add_projs=[api_tgt_ship.id])
+    api_src_launcher.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
@@ -91,19 +91,19 @@ def test_src_direct_dd(client, consts):
     api_jf = api_sol.create_fit().set_ship(type_id=eve_jf_id)
     api_other_ship1 = api_sol.create_fit().set_ship(type_id=eve_other_ship1_id)
     api_other_ship2 = api_sol.create_fit().set_ship(type_id=eve_other_ship2_id)
-    api_src_module.change_module(add_projs=[api_other_ship1.id])
+    api_src_module.change_module(add_proj_item_ids=[api_other_ship1.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_other_ship1.id]}
     # Action
-    api_src_module.change_module(add_projs=[api_cap_ship.id, api_freighter.id, api_jf.id, api_other_ship2.id])
+    api_src_module.change_module(add_proj_item_ids=[api_cap_ship.id, api_freighter.id, api_jf.id, api_other_ship2.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_module.id: [api_other_ship1.id, api_other_ship2.id]}
     # Action
-    api_src_module.change_module(rm_projs=[api_other_ship1.id, api_other_ship2.id])
+    api_src_module.change_module(rm_proj_item_ids=[api_other_ship1.id, api_other_ship2.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
@@ -127,7 +127,7 @@ def test_src_standup_vorton(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
@@ -157,7 +157,7 @@ def test_multiple_src_effects(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
@@ -212,7 +212,7 @@ def test_filter_reference_values(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - ID is resolved to lower value which is an empty list, thus check fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
@@ -254,7 +254,7 @@ def test_empty_list(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - if list is defined and fetched but is empty, validation fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False
@@ -283,7 +283,7 @@ def test_tgt_mutation(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_base_drone_id)
-    api_src_module.change_module(add_projs=[api_tgt_drone.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_drone.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
@@ -334,7 +334,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     assert api_src_module.update().attrs[eve_tgt_list_attr_id].modified == approx(eve_item_list2_id)
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
@@ -388,7 +388,7 @@ def test_src_mutation_itemlist_inherited(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
@@ -440,8 +440,8 @@ def test_known_failures(client, consts):
     api_src_item2 = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item1.change_module(add_projs=[api_tgt_item.id])
-    api_src_item2.change_module(add_projs=[api_tgt_item.id])
+    api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=(True, [api_src_item1.id])))
     assert api_val.passed is False
@@ -476,7 +476,7 @@ def test_no_attr(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - if list is defined and fetched but is empty, validation fails
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
@@ -493,7 +493,7 @@ def test_not_loaded_src(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
@@ -517,7 +517,7 @@ def test_not_loaded_tgt(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item1_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is False

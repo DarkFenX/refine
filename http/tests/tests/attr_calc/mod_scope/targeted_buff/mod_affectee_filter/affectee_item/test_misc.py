@@ -33,7 +33,7 @@ def test_propagation(client, consts):
     api_affector_fit.set_ship(type_id=eve_affector_ship_id)
     api_affectee_item = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_middle_item = api_affector_fit.add_module(type_id=eve_middle_item_id, state=consts.ApiModuleState.active)
-    api_middle_item.change_module(add_projs=[api_affectee_item.id])
+    api_middle_item.change_module(add_proj_item_ids=[api_affectee_item.id])
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(90)
     api_affector_item = api_affector_fit.add_rig(type_id=eve_affector_item_id)
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(35)

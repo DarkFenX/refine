@@ -44,11 +44,11 @@ def test_stacking(client, consts):
     api_affector_module1 = api_affector_fit.add_module(
         type_id=eve_affector_module1_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     api_affector_module2 = api_affector_fit.add_module(
         type_id=eve_affector_module2_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Second module has stronger effect after resistance, and thus is penalized less. If it was the
     # other way around, the value would've been ~359.7
     api_affectee_ship.update()

@@ -39,11 +39,11 @@ def test_proj_unproj(client, consts):
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
-    api_affector_fighter.change_fighter(rm_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(rm_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
 
@@ -77,7 +77,7 @@ def test_add_remove(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_affector_fighter1 = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_affector_fighter1.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter1.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
@@ -86,7 +86,7 @@ def test_add_remove(client, consts):
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action
     api_affector_fighter2 = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
-    api_affector_fighter2.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter2.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action
@@ -126,7 +126,7 @@ def setup_state_test(*, client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_fighter.change_fighter(add_projs=[api_ship.id])
+    api_fighter.change_fighter(add_proj_item_ids=[api_ship.id])
     api_autocharge = api_fighter.autocharges[eve_fighter_effect_id]
     return api_ship, api_fighter, api_autocharge, eve_fighter_effect_id, eve_autocharge_effect_id, eve_affectee_attr_id
 
@@ -263,7 +263,7 @@ def test_range(client, consts):
         type_id=eve_fighter_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
@@ -349,7 +349,7 @@ def test_switch_src(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_affector_fighter = api_affector_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging)
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action

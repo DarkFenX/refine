@@ -250,7 +250,7 @@ def test_range_and_cap_limit(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
@@ -451,7 +451,7 @@ def test_application_and_cap_limit(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
@@ -533,7 +533,7 @@ def test_resist_and_cap_limit(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))

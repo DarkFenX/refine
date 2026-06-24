@@ -18,7 +18,7 @@ def test_affected(client, consts):
     api_fit = api_sol.create_fit()
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_struct.id])
     assert api_struct.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -40,7 +40,7 @@ def test_unaffected_other_location(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
@@ -65,7 +65,7 @@ def test_unaffected_child(client, consts):
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_struct.id])
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
@@ -89,7 +89,7 @@ def test_unaffected_other_fit(client, consts):
     api_struct1 = api_fit1.set_ship(type_id=eve_struct_id)
     api_struct2 = api_fit2.set_ship(type_id=eve_struct_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct1.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_struct1.id])
     assert api_struct2.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
@@ -111,11 +111,11 @@ def test_replace_proj(client, consts):
     api_fit = api_sol.create_fit()
     api_struct1 = api_fit.set_ship(type_id=eve_struct1_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct1.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_struct1.id])
     assert api_struct1.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_struct2 = api_fit.set_ship(type_id=eve_struct2_id)
     assert api_struct2.update().attrs[eve_affectee_attr_id].modified == approx(50)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct2.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_struct2.id])
     assert api_struct2.update().attrs[eve_affectee_attr_id].modified == approx(60)
 
 
@@ -157,7 +157,7 @@ def test_switch_type_id_struct_to_ship_remove(client, consts):
      api_fit,
      api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_affectee_item.id])
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(60)
     # Action
@@ -179,7 +179,7 @@ def test_switch_type_id_struct_to_unknown_remove(client, consts):
      api_fit,
      api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_affectee_item.id])
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(60)
     # Action
@@ -201,7 +201,7 @@ def test_switch_type_id_struct_to_not_loaded_remove(client, consts):
      api_fit,
      api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_struct_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_affectee_item.id])
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(60)
     # Action
@@ -227,7 +227,7 @@ def test_switch_type_id_ship_to_struct_remove(client, consts):
      api_fit,
      api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_ship_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_affectee_item.id])
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
@@ -249,7 +249,7 @@ def test_switch_type_id_unknown_to_struct_remove(client, consts):
      api_fit,
      api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_unknown_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_affectee_item.id])
     # Verification
     assert api_affectee_item.update().attrs[eve_affectee_attr_id].modified == approx(25)
     # Action
@@ -271,7 +271,7 @@ def test_switch_type_id_not_loaded_to_struct_remove(client, consts):
      api_fit,
      api_proj_effect) = setup_switch_type_id_test(client=client, consts=consts)
     api_affectee_item = api_fit.set_ship(type_id=eve_affectee_not_loaded_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_affectee_item.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_affectee_item.id])
     # Verification
     api_affectee_item.update()
     with check_no_field():
@@ -310,7 +310,7 @@ def test_switch_src_to_ship(client, consts):
     api_fit = api_sol.create_fit()
     api_root = api_fit.set_ship(type_id=eve_root_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_root.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action

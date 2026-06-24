@@ -38,7 +38,7 @@ def test_resisted_value_change(client, consts):
         state=consts.ApiModuleState.active)
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id)
     api_affectee_module = api_affectee_fit.add_module(type_id=eve_affectee_module_id)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(156)
     api_affectee_rig = api_affectee_fit.add_rig(type_id=eve_affectee_rig_id)
     assert api_affectee_module.update().attrs[eve_affectee_attr_id].modified == approx(167)

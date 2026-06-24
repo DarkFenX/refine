@@ -23,7 +23,7 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 178499, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - surface-to-surface range is used, with perfect application
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()

@@ -13,10 +13,10 @@ pub(crate) struct HChangeProjEffectCmd {
     state: Option<bool>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    add_projs: Vec<rc::ItemId>,
+    add_proj_item_ids: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    rm_projs: Vec<rc::ItemId>,
+    rm_proj_item_ids: Vec<rc::ItemId>,
     effect_modes: Option<HEffectModeMap>,
 }
 impl HChangeProjEffectCmd {
@@ -36,7 +36,7 @@ impl HChangeProjEffectCmd {
         if let Some(state) = self.state {
             core_proj_effect.set_state(state);
         }
-        for projectee_item_id in self.add_projs.iter() {
+        for projectee_item_id in self.add_proj_item_ids.iter() {
             core_proj_effect
                 .add_proj(projectee_item_id)
                 .map_err(|error| match error {
@@ -45,7 +45,7 @@ impl HChangeProjEffectCmd {
                     rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
                 })?;
         }
-        for projectee_item_id in self.rm_projs.iter() {
+        for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_proj_effect
                 .get_proj_mut(projectee_item_id)
                 .map_err(|error| match error {

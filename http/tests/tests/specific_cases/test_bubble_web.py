@@ -59,7 +59,7 @@ def test_module_charge_uncharge(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
     assert api_affectee_ship_stats.speed == approx(1000)
@@ -97,7 +97,7 @@ def test_module_state_up_state_down(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.online,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
     assert api_affectee_ship_stats.speed == approx(1000)
@@ -142,7 +142,7 @@ def test_module_range(client, consts):
         charge_type_id=eve_charge_id)
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(15501, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
     assert api_affectee_ship_stats.speed == approx(1000)
@@ -183,7 +183,7 @@ def test_module_resist(client, consts):
         type_id=eve_module_id,
         charge_type_id=eve_charge_id,
         state=consts.ApiModuleState.active)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
     assert api_affectee_ship_stats.speed == approx(700)
@@ -205,7 +205,7 @@ def test_charge_proj_effect(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_charge_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     # Verification
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=True))
     assert api_ship_stats.speed == approx(600)

@@ -23,7 +23,7 @@ pub(crate) struct HAddModuleCmd {
     optional_reload: Option<HOptionalReload>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    projs: Vec<rc::ItemId>,
+    proj_item_ids: Vec<rc::ItemId>,
     effect_modes: Option<HEffectModeMap>,
 }
 impl HAddModuleCmd {
@@ -62,7 +62,7 @@ impl HAddModuleCmd {
         if let Some(h_optional_reload) = self.optional_reload {
             core_module.set_optional_reload(Some(h_optional_reload.into_core()));
         }
-        for projectee_item_id in self.projs.iter() {
+        for projectee_item_id in self.proj_item_ids.iter() {
             core_module.add_proj(projectee_item_id).map_err(|error| match error {
                 rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                 rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),

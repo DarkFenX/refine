@@ -311,7 +311,7 @@ def test_stacking(client, consts):  # noqa: ANN001, ANN201
                     rack=consts.ApiRack.mid,
                     state=consts.ApiModuleState.active,
                     charge_type_id=29011,
-                    projs=[api_male.id])
+                    proj_item_ids=[api_male.id])
     # Actual value captured ingame
     assert api_male.update().attrs[564].modified == approx(5264.18055777, accuracy=9)
 

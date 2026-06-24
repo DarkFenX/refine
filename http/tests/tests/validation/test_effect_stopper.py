@@ -28,7 +28,7 @@ def test_module_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
@@ -38,7 +38,7 @@ def test_module_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(rm_projs=[api_tgt_item.id])
+    api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -66,7 +66,7 @@ def test_drone_fighter(client, consts):
     api_src_item2 = api_src_fit.add_fighter(type_id=eve_src_item_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
-    api_src_item1.change_drone(add_projs=[api_tgt_item.id])
+    api_src_item1.change_drone(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
@@ -79,7 +79,7 @@ def test_drone_fighter(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item2.change_fighter(add_projs=[api_tgt_item.id])
+    api_src_item2.change_fighter(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
@@ -101,7 +101,7 @@ def test_proj_effect(client, consts):
     api_src_item = api_sol.add_proj_effect(type_id=eve_src_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
-    api_src_item.change_proj_effect(add_projs=[api_tgt_item.id])
+    api_src_item.change_proj_effect(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -143,8 +143,8 @@ def test_range(client, consts):
         type_id=eve_tgt_item_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0))
-    api_src_item1.change_module(add_projs=[api_tgt_item.id])
-    api_src_item2.change_module(add_projs=[api_tgt_item.id])
+    api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
@@ -206,25 +206,25 @@ def test_multiple_src_items(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item1.change_module(add_projs=[api_tgt_item.id])
+    api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
-    api_src_item2.change_module(add_projs=[api_tgt_item.id])
+    api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
-    api_src_item1.change_module(rm_projs=[api_tgt_item.id])
+    api_src_item1.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item.id: [eve_tgt_effect_id]}
     # Action
-    api_src_item2.change_module(rm_projs=[api_tgt_item.id])
+    api_src_item2.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -254,7 +254,7 @@ def test_multiple_src_effects(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False
@@ -298,7 +298,7 @@ def test_known_failures(client, consts):
     api_tgt_other = api_tgt_fit.add_implant(type_id=eve_other_id)
     api_tgt_item1 = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     api_tgt_item2 = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
-    api_src_item.change_module(add_projs=[api_tgt_item1.id, api_tgt_item2.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item1.id, api_tgt_item2.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_src_item.id])))
     assert api_val.passed is False
@@ -338,14 +338,14 @@ def test_not_loaded_src(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(rm_projs=[api_tgt_item.id])
+    api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -374,14 +374,14 @@ def test_not_loaded_tgt(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(rm_projs=[api_tgt_item.id])
+    api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
@@ -405,7 +405,7 @@ def test_criterion_effect_cat(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True

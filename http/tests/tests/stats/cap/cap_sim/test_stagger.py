@@ -59,7 +59,7 @@ def test_neuts(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for _ in range(4):
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - when neuts are applied together, they break through peak regen, but when
     # staggered, they do not
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
@@ -104,7 +104,7 @@ def test_transfers(client, consts):
     api_tgt_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
     for _ in range(2):
         api_src_module = api_src_fit.add_module(type_id=eve_transfer_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
@@ -149,7 +149,7 @@ def test_cross_group(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_consumer_id, state=consts.ApiModuleState.active)
     api_src_neut = api_src_fit.add_module(type_id=eve_neut_id, state=consts.ApiModuleState.active)
-    api_src_neut.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - neuts and cap consumers are in different stagger groups, and are not staggered
     # against each other even if their cycle parameters coincide
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
@@ -192,7 +192,7 @@ def test_different_amounts(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for eve_module_id in (eve_module1_id, eve_module2_id):
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
@@ -240,7 +240,7 @@ def test_different_delays(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for eve_module_id in (eve_neut_id, eve_nosf_id):
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - if nosf and neut were staggerable, target ship cap would've been stable. The
     # reason for that is that they have different application delays (neut is applied immediately,
     # nosf in the end of cycle), so the sim puts those into different staggering groups
@@ -277,13 +277,13 @@ def test_exceptions(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_neut1 = api_src_fit.add_module(type_id=eve_neut_id, state=consts.ApiModuleState.active)
-    api_src_neut1.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut1.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_src_neut2 = api_src_fit.add_module(type_id=eve_neut_id, state=consts.ApiModuleState.active)
-    api_src_neut2.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut2.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_src_neut3 = api_src_fit.add_module(type_id=eve_neut_id, state=consts.ApiModuleState.active)
-    api_src_neut3.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut3.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_src_neut4 = api_src_fit.add_module(type_id=eve_neut_id, state=consts.ApiModuleState.active)
-    api_src_neut4.change_module(add_projs=[api_tgt_ship.id])
+    api_src_neut4.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_options = [
         StatsOptionCapSim(stagger=(True, [])),

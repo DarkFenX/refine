@@ -26,7 +26,7 @@ def test_hp(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 14975, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - target is close enough for breacher to reach in 100% of cases, and has high
     # enough HP for absolute limit to work
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -87,7 +87,7 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14975, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in full dps range
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -165,7 +165,7 @@ def test_breacher_attr_speed_absent(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in full dps range
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -208,7 +208,7 @@ def test_breacher_attr_flight_time_absent(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in full dps range
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -263,7 +263,7 @@ def test_breacher_attr_mass_absent(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14999, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in full dps range
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -318,7 +318,7 @@ def test_breacher_attr_agility_absent(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14999, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in full dps range
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -372,7 +372,7 @@ def test_breacher_ship_not_loaded(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -404,7 +404,7 @@ def test_tgt_attr_hp_absent(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 14985, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -435,7 +435,7 @@ def test_tgt_not_loaded(client, consts):
         type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()

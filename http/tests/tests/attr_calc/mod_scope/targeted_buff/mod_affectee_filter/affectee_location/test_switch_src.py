@@ -32,7 +32,7 @@ def test_onlist_to_offlist_to_onlist(client, consts):
     api_root = api_fit2.set_ship(type_id=eve_root_id)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action

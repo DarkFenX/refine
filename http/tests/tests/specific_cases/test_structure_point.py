@@ -31,7 +31,7 @@ def test_warp_scram_status(client, consts):
     assert api_ship_stats.can_jump_drive is True
     assert api_ship_stats.can_dock_citadel is True
     # Action
-    api_point.change_module(add_projs=[api_ship.id])
+    api_point.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     assert api_ship.update().attrs[eve_status_attr_id].modified == approx(100)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
@@ -76,7 +76,7 @@ def test_module_mwd_block(client, consts):
     api_point = api_affector_fit.add_module(type_id=eve_point_id, state=consts.ApiModuleState.active)
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_mwd = api_affectee_fit.add_module(type_id=eve_mwd_id, state=consts.ApiModuleState.active)
-    api_point.change_module(add_projs=[api_ship.id])
+    api_point.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
@@ -133,7 +133,7 @@ def test_module_mjd_block(client, consts):
     api_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_mjd_sub = api_affectee_fit.add_module(type_id=eve_mjd_sub_id, state=consts.ApiModuleState.active)
     api_mjd_cap = api_affectee_fit.add_module(type_id=eve_mjd_cap_id, state=consts.ApiModuleState.active)
-    api_point.change_module(add_projs=[api_ship.id])
+    api_point.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
@@ -180,7 +180,7 @@ def test_fighter_mwd_mjd_block(client, consts):
     api_fighter.change_fighter(effect_modes={
         eve_ftr_mwd_effect_id: consts.ApiEffMode.force_run,
         eve_ftr_mjd_effect_id: consts.ApiEffMode.force_run})
-    api_point.change_module(add_projs=[api_fighter.id])
+    api_point.change_module(add_proj_item_ids=[api_fighter.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is False

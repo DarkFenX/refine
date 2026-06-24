@@ -304,7 +304,7 @@ class SolarSystem(AttrDict):
             self, *,
             type_id: int,
             state: bool | type[Absent] = Absent,
-            projs: list[str] | type[Absent] = Absent,
+            proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
@@ -312,7 +312,7 @@ class SolarSystem(AttrDict):
         command = ItemProjEffectAddCmd(
             type_id=type_id,
             state=state,
-            projs=projs,
+            proj_item_ids=proj_item_ids,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         resp = self._client.item_command_add_request(
             sol_id=self.id,

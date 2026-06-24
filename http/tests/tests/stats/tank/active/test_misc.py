@@ -60,11 +60,11 @@ def test_item_not_loaded(client, consts):
     api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lasb_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rsb.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
-    api_module_rasb.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
-    api_src_drone_shield.change_drone(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
-    api_src_drone_hull.change_drone(add_projs=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
+    api_module_rsb.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
+    api_module_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
+    api_src_drone_shield.change_drone(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
+    api_src_drone_hull.change_drone(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id, api_tgt_fighter.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True, erps=True))
     assert api_tgt_fit_stats.rps is None

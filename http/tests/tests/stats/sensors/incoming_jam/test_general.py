@@ -50,8 +50,8 @@ def test_stacking(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
-    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.0788), approx(0.0788)]
@@ -101,7 +101,7 @@ def test_sensors_zero(client, consts):
     api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [1, approx(0.25)]
@@ -144,7 +144,7 @@ def test_both_zero(client, consts):
     api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
@@ -182,7 +182,7 @@ def test_cycle_time_zero(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - stats depend on cycle info, so can't be fetched if it's not available
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
@@ -219,7 +219,7 @@ def test_cycle_time_undefined(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - stats depend on cycle info, so can't be fetched if it's not available
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
@@ -256,7 +256,7 @@ def test_not_loaded(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam is None

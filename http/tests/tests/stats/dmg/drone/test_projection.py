@@ -19,7 +19,7 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6250, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -121,7 +121,7 @@ def test_application(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0.2))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - hard to hit at close range despite low speed
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -328,7 +328,7 @@ def test_tgt_npc_prop_mode(client, consts):
         coordinates=(0, 1070, 0),
         movement=(0, 0, 0.5),
         npc_prop=consts.ApiNpcProp.cruise)
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_drone.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_drone.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)]))).dmg.one()
@@ -378,7 +378,7 @@ def test_drone_effect_range_optimal_absent(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0), movement=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 250, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -417,7 +417,7 @@ def test_drone_effect_range_falloff_absent(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0), movement=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6249, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -465,7 +465,7 @@ def test_drone_effect_tracking_absent(client, consts):
         npc_prop=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - hard to hit at close range despite low speed
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -493,7 +493,7 @@ def test_drone_attr_range_optimal_absent(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0), movement=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 250, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -532,7 +532,7 @@ def test_drone_attr_range_falloff_absent(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0), movement=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6249, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -580,7 +580,7 @@ def test_drone_attr_tracking_absent(client, consts):
         npc_prop=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - hard to hit at close range despite low speed
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -617,7 +617,7 @@ def test_drone_attr_sig_res_absent(client, consts):
         npc_prop=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -664,7 +664,7 @@ def test_drone_attr_speed_chase_absent(client, consts):
         npc_prop=consts.ApiNpcProp.chase)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6178, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -712,7 +712,7 @@ def test_tgt_attr_speed_absent(client, consts):
         npc_prop=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -759,7 +759,7 @@ def test_tgt_attr_sig_radius_absent(client, consts):
         npc_prop=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in case angular is 0 and sig radius is 0, the lib nullifies damage
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -795,7 +795,7 @@ def test_tgt_not_loaded(client, consts):
         npc_prop=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
-    api_src_drone_proj.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()

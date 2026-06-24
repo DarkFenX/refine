@@ -35,11 +35,11 @@ def test_bundled_proj_unproj(client, consts):
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
-    api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(rm_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
 
@@ -70,7 +70,7 @@ def test_bundled_remove(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
@@ -114,7 +114,7 @@ def test_charge_charge_uncharge(client, consts):
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_ship_id)
     api_affector_fit = api_sol.create_fit()
     api_affector_module = api_affector_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action
@@ -157,7 +157,7 @@ def setup_state_test(*, client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     return api_ship, api_module, api_module.charge, eve_module_effect_id, eve_charge_effect_id, eve_affectee_attr_id
 
 
@@ -288,7 +288,7 @@ def test_range(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
@@ -359,7 +359,7 @@ def test_switch_src(client, consts):
         type_id=eve_module_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1200)
     # Action
@@ -402,7 +402,7 @@ def test_non_activating(client, consts):
         type_id=eve_module1_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_id)
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action
@@ -445,7 +445,7 @@ def test_non_default_effect(client, consts):
         charge_type_id=eve_charge_id)
     api_affector_module.change_module(
         effect_modes={eve_act_effect_id: consts.ApiEffMode.force_run},
-        add_projs=[api_affectee_ship.id])
+        add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     # Action

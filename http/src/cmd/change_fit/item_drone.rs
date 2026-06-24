@@ -19,7 +19,7 @@ pub(crate) struct HAddDroneCmd {
     npc_prop: Option<HNpcProp>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    projs: Vec<rc::ItemId>,
+    proj_item_ids: Vec<rc::ItemId>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
     effect_modes: Option<HEffectModeMap>,
@@ -53,7 +53,7 @@ impl HAddDroneCmd {
         if let Some(h_npc_prop) = self.npc_prop {
             core_drone.set_npc_prop(Some(h_npc_prop.into_core()))
         }
-        for projectee_item_id in self.projs.iter() {
+        for projectee_item_id in self.proj_item_ids.iter() {
             core_drone.add_proj(projectee_item_id).map_err(|error| match error {
                 rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
                 rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),

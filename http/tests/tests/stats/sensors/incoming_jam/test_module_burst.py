@@ -46,7 +46,7 @@ def test_projection_range_and_resists(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - resist is above immunity threshold, can't jam
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
@@ -91,7 +91,7 @@ def test_time(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship2_id, coordinates=(0, 0, 0))
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats (first cycle)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeBurst())])))

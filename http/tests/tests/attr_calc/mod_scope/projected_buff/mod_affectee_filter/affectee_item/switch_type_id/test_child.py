@@ -37,7 +37,7 @@ def test_loaded_onlist_to_loaded_offlist_remove_pe_remove_child(client, consts):
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_loaded_onlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
@@ -61,7 +61,7 @@ def test_loaded_onlist_to_loaded_offlist_remove_child_remove_pe(client, consts):
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_loaded_onlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
@@ -82,7 +82,7 @@ def test_loaded_onlist_to_unloaded_onlist_remove_pe_remove_child(client, consts)
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_loaded_onlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
@@ -110,7 +110,7 @@ def test_loaded_onlist_to_unloaded_offlist_remove_child_remove_pe(client, consts
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_loaded_onlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action
@@ -133,7 +133,7 @@ def test_loaded_offlist_to_loaded_onlist_remove_pe_remove_child(client, consts):
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_loaded_offlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(5)
     # Action
@@ -157,7 +157,7 @@ def test_loaded_offlist_to_loaded_onlist_remove_child_remove_pe(client, consts):
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_loaded_offlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(5)
     # Action
@@ -178,7 +178,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove_pe_remove_child(client, consts
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_unloaded_offlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     api_child.update()
     with check_no_field():
@@ -204,7 +204,7 @@ def test_unloaded_onlist_to_loaded_onlist_remove_child_remove_pe(client, consts)
      api_fit,
      api_proj_effect) = setup_child_test(client=client, consts=consts)
     api_child = api_fit.add_drone(type_id=eve_unloaded_onlist_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_child.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_child.id])
     # Verification
     api_child.update()
     with check_no_field():

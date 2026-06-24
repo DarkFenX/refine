@@ -23,8 +23,8 @@ def test_state_ship(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_module_lhr = api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
@@ -76,8 +76,8 @@ def test_drone(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id)
-    api_module_rhr.change_module(add_projs=[api_tgt_drone.id])
-    api_src_drone.change_drone(add_projs=[api_tgt_drone.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_drone.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_drone.id])
     # Verification - local reps do not affect drones
     api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(rps=True))
     assert api_tgt_drone_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
@@ -99,8 +99,8 @@ def test_hp_limit_and_resist(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - local rep is not resisted but limited, remote hull rep is resisted and limited,
     # hull bot is resisted but not limited
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
@@ -132,8 +132,8 @@ def test_hp_limit_and_range(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(15270, 0, 0))
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - local hull rep is limited, remote hull rep is reduced and limited, hull bot is
     # reduced to 0 by range, so not limited
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
@@ -160,8 +160,8 @@ def test_time(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
@@ -206,8 +206,8 @@ def test_zero_cycle_time(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]
@@ -233,8 +233,8 @@ def test_no_cycle_time(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
-    api_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=True))
     assert api_tgt_fit_stats.rps.one().shield == [0, 0, ANY_VALUE, ANY_VALUE]

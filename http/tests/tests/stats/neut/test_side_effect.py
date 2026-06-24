@@ -227,7 +227,7 @@ def test_range(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6299, 0))
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - check that ships which hide inside attacking ship radius are still impacted
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
@@ -305,7 +305,7 @@ def test_application_and_cap_limit(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id, npc_prop=consts.ApiNpcProp.cruise)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id, api_tgt_drone.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id])
     # Verification - application against ship is limited by cap pool
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
         StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id),
@@ -392,7 +392,7 @@ def test_resist_and_cap_limit(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
-    api_src_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
         outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))

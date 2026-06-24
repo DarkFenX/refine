@@ -36,7 +36,7 @@ def test_equal(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for _ in range(4):
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         cap_sim=(True, [StatsOptionCapSim(stagger=False)])))
@@ -82,7 +82,7 @@ def test_similar(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for eve_module_id in [eve_module1_id, eve_module2_id, eve_module3_id, eve_module4_id]:
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         cap_sim=(True, [StatsOptionCapSim(stagger=False)])))
@@ -126,7 +126,7 @@ def test_different_signs(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     for eve_module_id in (eve_nosf_id, eve_transfer_id):
         api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-        api_src_module.change_module(add_projs=[api_tgt_ship.id])
+        api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - if events were merged, they'd cancel each other out, and cap stability would've
     # been at 100%. But since every 5 seconds cap is drained to 0 and then gets back to 100%, 50%
     # stability value is recorded.
@@ -182,8 +182,8 @@ def test_hard_downtime(client, consts):
         rearm_minion=consts.ApiRearmMinion.on_first_empty)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_src_fighter1.change_fighter(add_projs=[api_tgt_ship.id])
-    api_src_fighter2.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter1.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
+    api_src_fighter2.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - fighters with similar stats but different hard downtime (refuel) duration
     # shouldn't be merged. If longer duration was taken for both, cap would've been stable; if
     # shorter - it'd last about 5 minutes

@@ -20,7 +20,7 @@ def test_debuff_rr(client, consts):
     api_affector_module1 = api_affector_fit1.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
@@ -36,7 +36,7 @@ def test_debuff_rr(client, consts):
     api_affector_module2 = api_affector_fit2.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
@@ -67,7 +67,7 @@ def test_debuff_warp(client, consts):
     api_affector_module1 = api_affector_fit1.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True))
@@ -88,7 +88,7 @@ def test_debuff_warp(client, consts):
     api_affector_module2 = api_affector_fit2.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True))
@@ -127,7 +127,7 @@ def test_debuff_dock_jump(client, consts):
     api_affector_module1 = api_affector_fit1.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(
@@ -163,7 +163,7 @@ def test_debuff_dock_jump(client, consts):
     api_affector_module2 = api_affector_fit2.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(
@@ -214,7 +214,7 @@ def test_debuff_tether(client, consts):
     api_affector_module1 = api_affector_fit1.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module1.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
     assert api_affectee_fit_stats.can_tether is False
@@ -232,7 +232,7 @@ def test_debuff_tether(client, consts):
     api_affector_module2 = api_affector_fit2.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module2.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
     assert api_affectee_fit_stats.can_tether is False
@@ -265,7 +265,7 @@ def test_drone(client, consts):
     api_affector_module = api_affector_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_affector_module.change_module(add_projs=[api_affectee_drone.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_drone.id])
     # Verification
     api_affectee_drone.update()
     assert api_affectee_drone.attrs[eve_affectee_attr_id].modified == approx(0.5)
@@ -301,7 +301,7 @@ def test_range(client, consts):
         state=consts.ApiModuleState.active)
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 6999, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - within attacking ship radius
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1)
     # Action

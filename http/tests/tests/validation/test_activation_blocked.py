@@ -130,7 +130,7 @@ def test_modified(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is False

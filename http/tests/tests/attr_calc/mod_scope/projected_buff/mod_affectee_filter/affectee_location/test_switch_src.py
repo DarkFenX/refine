@@ -31,7 +31,7 @@ def test_onlist_to_offlist_to_onlist(client, consts):
     api_root = api_fit.set_ship(type_id=eve_root_id)
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_root.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(37.5)
     # Action

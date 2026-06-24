@@ -21,7 +21,7 @@ def test_state(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
@@ -67,7 +67,7 @@ def test_range(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 10269, 0))
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
@@ -104,7 +104,7 @@ def test_resist_and_limit(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship1_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == approx(60)
@@ -138,7 +138,7 @@ def test_src_kind(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_options = [
         StatsOptionCapBalance(),
@@ -169,7 +169,7 @@ def test_time(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - for cap balance default is sim with no time (looped stats)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == approx(70.2)
@@ -223,7 +223,7 @@ def test_effect_no_duration(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == 0
@@ -250,7 +250,7 @@ def test_attr_cycle_time_zero(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=True))
     assert api_tgt_fit_stats.cap_balance.one() == 0

@@ -29,7 +29,7 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 12584, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - within optimal for both abilities
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -171,7 +171,7 @@ def test_application(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - full application vs big target at 0 speed
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -302,7 +302,7 @@ def test_resist(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -372,7 +372,7 @@ def test_npc_prop_mode(client, consts):
         coordinates=(0, 0, 0),
         movement=(0, 0, 0.5),
         npc_prop=consts.ApiNpcProp.cruise)
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_drone.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_drone.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)]))).dmg.one()
@@ -432,7 +432,7 @@ def test_ftr_effect_range_optimal_absent(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 586, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in beginning of falloff for primary ability, out of range for secondary
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -481,7 +481,7 @@ def test_ftr_effect_range_falloff_absent(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 12584, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - both abilities are at full power
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -551,7 +551,7 @@ def test_ftr_attr_range_optimal_absent(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 586, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - in beginning of falloff for primary ability, out of range for secondary
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -600,7 +600,7 @@ def test_ftr_attr_range_falloff_absent(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 12584, 0), movement=(0, 0, 0))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - both abilities are at full power
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -689,7 +689,7 @@ def test_ftr_attr_exp_radius(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0.5))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -769,7 +769,7 @@ def test_ftr_attr_exp_speed(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0.5))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -884,7 +884,7 @@ def test_ftr_attr_drf(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0.5))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -964,7 +964,7 @@ def test_ftr_attr_drs(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0.5))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -1029,7 +1029,7 @@ def test_tgt_attr_speed(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_absent_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -1092,7 +1092,7 @@ def test_tgt_attr_sig_radius(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_absent_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
@@ -1151,7 +1151,7 @@ def test_tgt_not_loaded(client, consts):
         abilities={eve_basic_info.missiles_abil_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 1))
-    api_src_fighter_proj.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_fighter_proj.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fighter_proj_dmg_stats = api_src_fighter_proj.get_stats(options=ItemStatsOptions(
         dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()

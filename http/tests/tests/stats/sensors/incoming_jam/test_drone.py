@@ -49,7 +49,7 @@ def test_projection_range_and_resists(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 0, 0))
-    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - resist is above immunity threshold, can't jam
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
@@ -95,7 +95,7 @@ def test_time(client, consts):
         type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship2_id, coordinates=(0, 0, 0))
-    api_src_drone.change_drone(add_projs=[api_tgt_ship.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats (first cycle)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         incoming_jam=(True, [StatsOptionInJam(time_options=StatTimeBurst())])))

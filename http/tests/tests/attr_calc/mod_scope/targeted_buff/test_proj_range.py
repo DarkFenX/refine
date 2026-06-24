@@ -28,7 +28,7 @@ def test_optimal_unavailable(client, consts):
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -36,6 +36,6 @@ def test_optimal_unavailable(client, consts):
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)
     # Action
-    api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(rm_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(200)

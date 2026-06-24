@@ -20,7 +20,7 @@ def test_affected_via_ship(client, consts):
     api_char = api_fit.set_character(type_id=eve_char_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -43,7 +43,7 @@ def test_affected_via_struct(client, consts):
     api_char = api_fit.set_character(type_id=eve_char_id)
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_struct.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_struct.id])
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
@@ -65,7 +65,7 @@ def test_unaffected_other_location(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
@@ -90,7 +90,7 @@ def test_unaffected_child(client, consts):
     api_implant = api_fit.add_implant(type_id=eve_implant_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_implant.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
@@ -116,7 +116,7 @@ def test_unaffected_other_fit(client, consts):
     api_char = api_fit2.set_character(type_id=eve_char_id)
     api_fit2.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(100)
 
 
@@ -140,7 +140,7 @@ def test_replace_root(client, consts):
     api_char1 = api_fit.set_character(type_id=eve_char1_id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_char1.update().attrs[eve_affectee_attr_id].modified == approx(120)
     api_char2 = api_fit.set_character(type_id=eve_char2_id)
     assert api_char2.update().attrs[eve_affectee_attr_id].modified == approx(60)
@@ -165,7 +165,7 @@ def setup_switch_type_id_char_test(*, client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     return eve_affectee_attr_id, eve_char_loaded_id, eve_char_not_loaded_id, api_fit, api_proj_effect
 
 
@@ -255,7 +255,7 @@ def test_switch_type_id_tgt_ship_to_struct_remove(client, consts):
      api_char,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
     api_tgt = api_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt.id])
     # Verification
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
@@ -278,7 +278,7 @@ def test_switch_type_id_tgt_ship_to_unknown_remove(client, consts):
      api_char,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
     api_tgt = api_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt.id])
     # Verification
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
@@ -301,7 +301,7 @@ def test_switch_type_id_tgt_ship_to_not_loaded_remove(client, consts):
      api_char,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
     api_tgt = api_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt.id])
     # Verification
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
@@ -324,7 +324,7 @@ def test_switch_type_id_tgt_struct_to_ship_remove(client, consts):
      api_char,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
     api_tgt = api_fit.set_ship(type_id=eve_tgt_struct_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt.id])
     # Verification
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
@@ -347,7 +347,7 @@ def test_switch_type_id_tgt_struct_to_not_loaded_remove(client, consts):
      api_char,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
     api_tgt = api_fit.set_ship(type_id=eve_tgt_struct_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt.id])
     # Verification
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action
@@ -370,7 +370,7 @@ def test_switch_type_id_tgt_unknown_to_ship_remove(client, consts):
      api_char,
      api_proj_effect) = setup_switch_type_id_tgt_test(client=client, consts=consts)
     api_tgt = api_fit.set_ship(type_id=eve_tgt_unknown_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_tgt.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt.id])
     # Verification
     assert api_char.update().attrs[eve_affectee_attr_id].modified == approx(120)
     # Action

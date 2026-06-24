@@ -31,11 +31,10 @@ def test_cutoff(client, consts):
     api_affectee_drone2 = api_affectee_fit.add_drone(type_id=eve_affectee_drone2_id)
     api_affectee_drone3 = api_affectee_fit.add_drone(type_id=eve_affectee_drone3_id)
     api_affectee_drone4 = api_affectee_fit.add_drone(type_id=eve_affectee_drone4_id)
-    api_affector_module = api_affector_fit.add_module(
+    api_affector_fit.add_module(
         type_id=eve_affector_module_id,
-        state=consts.ApiModuleState.active)
-    api_affector_module.change_module(
-        add_projs=[api_affectee_drone1.id, api_affectee_drone2.id, api_affectee_drone3.id, api_affectee_drone4.id])
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_affectee_drone1.id, api_affectee_drone2.id, api_affectee_drone3.id, api_affectee_drone4.id])
     # Verification - all drones but 4 have resist below threshold, thus completely nullifying effect
     api_affectee_drone1.update()
     assert api_affectee_drone1.attrs[eve_affectee_attr_id].modified == approx(500)

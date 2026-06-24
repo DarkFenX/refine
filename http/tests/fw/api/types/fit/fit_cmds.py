@@ -127,7 +127,7 @@ class FitCmdCtx:
             state: ApiMinionState = ApiMinionState.in_bay,
             mutation: MutaAdd | type[Absent] = Absent,
             npc_prop: ApiNpcProp | type[Absent] = Absent,
-            projs: list[str] | type[Absent] = Absent,
+            proj_item_ids: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
@@ -137,7 +137,7 @@ class FitCmdCtx:
             state=state,
             mutation=process_muta_add_request(mutation=mutation),
             npc_prop=npc_prop,
-            projs=projs,
+            proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -169,7 +169,7 @@ class FitCmdCtx:
             charge_type_id: int | type[Absent] = Absent,
             spool: str | type[Absent] = Absent,
             optional_reload: ApiOptionalReload | type[Absent] = Absent,
-            projs: list[str] | type[Absent] = Absent,
+            proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
         command = FitModuleAddCmd(
@@ -181,7 +181,7 @@ class FitCmdCtx:
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
-            projs=projs,
+            proj_item_ids=proj_item_ids,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()

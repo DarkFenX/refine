@@ -65,7 +65,7 @@ def test_proj_add_change_outgoing(client, consts):
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11000, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (approx(11000), approx(9000))
     api_affectee_ship.update()
@@ -119,7 +119,7 @@ def test_proj_add_change_incoming(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11000, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11000), approx(10000))
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(515.175421)
@@ -191,7 +191,7 @@ def test_switch_ship_outgoing(client, consts):
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11000, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (approx(11000), approx(11000))
     api_affectee_ship.update()
@@ -298,7 +298,7 @@ def test_switch_type_id_outgoing(client, consts):
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(13000, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (approx(13000), approx(11000))
     api_affectee_ship.update()
@@ -369,7 +369,7 @@ def test_switch_type_id_incoming(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship1_id, coordinates=(11025, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11025), approx(11000))
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(575)
@@ -467,7 +467,7 @@ def test_switch_src_outgoing(client, consts):
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(13000, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (approx(13000), approx(11000))
     api_affectee_ship.update()
@@ -550,7 +550,7 @@ def test_switch_src_incoming(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11025, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11025), approx(11000))
     assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(575)
@@ -641,7 +641,7 @@ def test_modified_radius_outgoing(client, consts):
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(13000, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - modified radius is 10000, but unmodified radius is used for projections
     assert api_affector_module.update().projs[api_affectee_ship.id] == (approx(13000), approx(11000))
     assert api_affector_ship.update().attrs[eve_radius_attr_id].modified == approx(10000)
@@ -707,7 +707,7 @@ def test_modified_radius_incoming(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_rig = api_affectee_fit.add_rig(type_id=eve_rig_id)
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(13000, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - modified radius is 10000, but unmodified radius is used for projections
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(13000), approx(11000))
     api_affectee_ship.update()
@@ -792,7 +792,7 @@ def test_affector_ship_absent(client, consts):
     api_affector_module.change_module(effect_modes={eve_effect1_id: consts.ApiEffMode.state_compliance})
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(9000, 0, 0))
-    api_affector_module.change_module(add_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_module.update().projs[api_affectee_ship.id] == (approx(9000), approx(9000))
     api_affectee_ship.update()
@@ -827,7 +827,7 @@ def test_affector_ship_absent(client, consts):
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(227.271997)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(227.271997)
     # Action
-    api_affector_module.change_module(rm_projs=[api_affectee_ship.id])
+    api_affector_module.change_module(rm_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affector_module.update()
     with check_no_field():

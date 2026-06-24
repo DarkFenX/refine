@@ -70,7 +70,7 @@ def test_proj_add_change_outgoing(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11000, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11000), approx(10975))
     api_affectee_ship.update()
@@ -124,7 +124,7 @@ def test_proj_add_change_incoming(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_fighter = api_affectee_fit.add_fighter(type_id=eve_affectee_fighter_id, coordinates=(11000, 0, 0))
-    api_affector_drone.change_drone(add_projs=[api_affectee_fighter.id])
+    api_affector_drone.change_drone(add_proj_item_ids=[api_affectee_fighter.id])
     # Verification
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (approx(11000), approx(10900))
     assert api_affectee_fighter.update().attrs[eve_affectee_attr_id].modified == approx(569.09709)
@@ -210,7 +210,7 @@ def test_switch_type_id_outgoing(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11025, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11025), approx(11000))
     api_affectee_ship.update()
@@ -281,7 +281,7 @@ def test_switch_type_id_incoming(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_fighter = api_affectee_fit.add_fighter(type_id=eve_affectee_fighter1_id, coordinates=(11025, 0, 0))
-    api_affector_drone.change_drone(add_projs=[api_affectee_fighter.id])
+    api_affector_drone.change_drone(add_proj_item_ids=[api_affectee_fighter.id])
     # Verification
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (approx(11025), approx(11000))
     assert api_affectee_fighter.update().attrs[eve_affectee_attr_id].modified == approx(575)
@@ -424,7 +424,7 @@ def test_switch_src_outgoing(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11025, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11025), approx(11000))
     api_affectee_ship.update()
@@ -507,7 +507,7 @@ def test_switch_src_incoming(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_fighter = api_affectee_fit.add_fighter(type_id=eve_affectee_fighter_id, coordinates=(11025, 0, 0))
-    api_affector_drone.change_drone(add_projs=[api_affectee_fighter.id])
+    api_affector_drone.change_drone(add_proj_item_ids=[api_affectee_fighter.id])
     # Verification
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (approx(11025), approx(11000))
     assert api_affectee_fighter.update().attrs[eve_affectee_attr_id].modified == approx(575)
@@ -608,7 +608,7 @@ def test_modified_radius_outgoing(client, consts):
         coordinates=(0, 0, 0))
     api_affectee_fit = api_sol.create_fit()
     api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(11025, 0, 0))
-    api_affector_fighter.change_fighter(add_projs=[api_affectee_ship.id])
+    api_affector_fighter.change_fighter(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - modified radius is 1000, but unmodified radius is used for projections
     api_affector_fighter.update()
     assert api_affector_fighter.projs[api_affectee_ship.id] == (approx(11025), approx(11000))
@@ -681,7 +681,7 @@ def test_modified_radius_incoming(client, consts):
     api_affectee_fit = api_sol.create_fit()
     api_rig = api_affectee_fit.add_rig(type_id=eve_rig_id)
     api_affectee_fighter = api_affectee_fit.add_fighter(type_id=eve_affectee_fighter_id, coordinates=(11025, 0, 0))
-    api_affector_drone.change_drone(add_projs=[api_affectee_fighter.id])
+    api_affector_drone.change_drone(add_proj_item_ids=[api_affectee_fighter.id])
     # Verification - modified radius is 1000, but unmodified radius is used for projections
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (approx(11025), approx(11000))
     api_affectee_fighter.update()

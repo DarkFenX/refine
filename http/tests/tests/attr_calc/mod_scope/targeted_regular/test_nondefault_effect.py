@@ -21,9 +21,9 @@ def test_target_untarget(client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)
-    api_module.change_module(rm_projs=[api_ship.id])
+    api_module.change_module(rm_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -46,7 +46,7 @@ def test_affector_state_change(client, consts):
     api_fit2 = api_sol.create_fit()
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)
     api_module.change_module(state=consts.ApiModuleState.active)
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)

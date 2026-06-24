@@ -95,7 +95,7 @@ def test_remote_effect(client, consts):
     assert api_tgt_ship_stats.can_jump_drive is True
     assert api_tgt_ship_stats.can_dock_citadel is True
     # Action
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
         can_warp=True,
@@ -126,7 +126,7 @@ def test_remote_range_vs_ship(client, consts):
     api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 511499, 0))
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(can_warp=True))
     assert api_tgt_ship_stats.can_warp is False
@@ -157,7 +157,7 @@ def test_remote_range_vs_fighter(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0))
     api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_fighter_id, coordinates=(0, 510034, 0))
-    api_src_module.change_module(add_projs=[api_tgt_ship.id, api_tgt_fighter.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_fighter.id])
     # Verification
     api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
     assert api_tgt_fighter_stats.can_warp is False

@@ -20,7 +20,7 @@ def test_affected_root_ship(client, consts):
     api_fit2 = api_sol.create_fit()
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(1)
 
 
@@ -43,7 +43,7 @@ def test_affected_root_struct(client, consts):
     api_fit2 = api_sol.create_fit()
     api_struct = api_fit2.set_ship(type_id=eve_struct_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_struct.id])
+    api_module.change_module(add_proj_item_ids=[api_struct.id])
     assert api_struct.update().attrs[eve_attr2_id].modified == approx(1)
 
 
@@ -66,7 +66,7 @@ def test_affected_child(client, consts):
     api_fit2 = api_sol.create_fit()
     api_drone = api_fit2.add_drone(type_id=eve_drone_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_drone.id])
+    api_module.change_module(add_proj_item_ids=[api_drone.id])
     assert api_drone.update().attrs[eve_attr2_id].modified == approx(1)
 
 
@@ -91,7 +91,7 @@ def test_unaffected_root(client, consts):
     api_char = api_fit2.set_character(type_id=eve_char_id)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_char.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -115,7 +115,7 @@ def test_unaffected_child_via_root(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_drone = api_fit2.add_drone(type_id=eve_drone_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_drone.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -139,7 +139,7 @@ def test_unaffected_root_via_child(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_drone = api_fit2.add_drone(type_id=eve_drone_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_drone.id])
+    api_module.change_module(add_proj_item_ids=[api_drone.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -163,7 +163,7 @@ def test_unaffected_root_other_fit(client, consts):
     api_ship2 = api_fit2.set_ship(type_id=eve_ship_id)
     api_ship3 = api_fit3.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship2.id])
+    api_module.change_module(add_proj_item_ids=[api_ship2.id])
     assert api_ship3.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -187,7 +187,7 @@ def test_unaffected_child_other_fit(client, consts):
     api_drone2 = api_fit2.add_drone(type_id=eve_drone_id)
     api_drone3 = api_fit3.add_drone(type_id=eve_drone_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_drone2.id])
+    api_module.change_module(add_proj_item_ids=[api_drone2.id])
     assert api_drone3.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -210,7 +210,7 @@ def test_unaffected_nontgt_location_item(client, consts):
     api_fit2 = api_sol.create_fit()
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)
 
 
@@ -233,5 +233,5 @@ def test_unaffected_nontgt_location_ship(client, consts):
     api_fit2 = api_sol.create_fit()
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_ship.update().attrs[eve_attr2_id].modified == approx(-2)

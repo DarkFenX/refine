@@ -39,9 +39,9 @@ def test_ship_dps_profiles(client, consts):
     api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rsb.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_stat_options = [
         StatsOptionErps(incoming_dps=(1, 1, 1, 1)),
@@ -124,9 +124,9 @@ def test_drone_dps_profiles(client, consts):
     api_module_rhr = api_src_fit.add_module(type_id=eve_module_rhr_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.set_ship(type_id=eve_drone_id)
-    api_module_rsb.change_module(add_projs=[api_tgt_drone.id])
-    api_module_rar.change_module(add_projs=[api_tgt_drone.id])
-    api_module_rhr.change_module(add_projs=[api_tgt_drone.id])
+    api_module_rsb.change_module(add_proj_item_ids=[api_tgt_drone.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_drone.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_drone.id])
     # Verification
     api_stat_options = [
         StatsOptionErps(incoming_dps=(1, 1, 1, 1)),
@@ -196,9 +196,9 @@ def test_immunity(client, consts):
     api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rsb.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_profiles = [StatsOptionErps(incoming_dps=(1, 0, 0, 0)), StatsOptionErps(incoming_dps=(1, 1, 1, 1))]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=(True, api_profiles)))
@@ -298,9 +298,9 @@ def test_time(client, consts):
     api_tgt_fit.add_module(type_id=eve_module_lsb_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lar_id, state=consts.ApiModuleState.active)
     api_tgt_fit.add_module(type_id=eve_module_lhr_id, state=consts.ApiModuleState.active)
-    api_module_rsb.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rar.change_module(add_projs=[api_tgt_ship.id])
-    api_module_rhr.change_module(add_projs=[api_tgt_ship.id])
+    api_module_rsb.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rar.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
         erps=(True, [StatsOptionErps(time_options=StatTimeBurst())])))

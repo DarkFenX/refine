@@ -288,7 +288,7 @@ def test_unaffected_projectee(client, consts):
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_rig = api_fit2.add_rig(type_id=eve_rig_id)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)
     api_module.remove()
     assert api_rig.update().attrs[eve_affectee_attr_id].modified == approx(7.5)

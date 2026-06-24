@@ -38,7 +38,7 @@ def test_loaded_onlist_to_loaded_offlist_remove(client, consts):
      api_fit2,
      api_module) = setup_test(client=client, consts=consts)
     api_child = api_fit2.add_drone(type_id=eve_loaded_onlist_id)
-    api_module.change_module(add_projs=[api_child.id])
+    api_module.change_module(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -60,7 +60,7 @@ def test_loaded_onlist_to_unloaded_onlist_remove(client, consts):
      api_fit2,
      api_module) = setup_test(client=client, consts=consts)
     api_child = api_fit2.add_drone(type_id=eve_loaded_onlist_id)
-    api_module.change_module(add_projs=[api_child.id])
+    api_module.change_module(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -86,7 +86,7 @@ def test_loaded_onlist_to_unloaded_offlist_remove(client, consts):
      api_fit2,
      api_module) = setup_test(client=client, consts=consts)
     api_child = api_fit2.add_drone(type_id=eve_loaded_onlist_id)
-    api_module.change_module(add_projs=[api_child.id])
+    api_module.change_module(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(90)
     # Action
@@ -112,7 +112,7 @@ def test_loaded_offlist_to_loaded_onlist_remove(client, consts):
      api_fit2,
      api_module) = setup_test(client=client, consts=consts)
     api_child = api_fit2.add_drone(type_id=eve_loaded_offlist_id)
-    api_module.change_module(add_projs=[api_child.id])
+    api_module.change_module(add_proj_item_ids=[api_child.id])
     # Verification
     assert api_child.update().attrs[eve_affectee_attr_id].modified == approx(100)
     # Action
@@ -134,7 +134,7 @@ def test_unloaded_onlist_to_loaded_onlist_remove(client, consts):
      api_fit2,
      api_module) = setup_test(client=client, consts=consts)
     api_child = api_fit2.add_drone(type_id=eve_unloaded_onlist_id)
-    api_module.change_module(add_projs=[api_child.id])
+    api_module.change_module(add_proj_item_ids=[api_child.id])
     # Verification
     with check_no_field():
         api_child.attrs  # noqa: B018
@@ -157,7 +157,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove(client, consts):
      api_fit2,
      api_module) = setup_test(client=client, consts=consts)
     api_child = api_fit2.add_drone(type_id=eve_unloaded_offlist_id)
-    api_module.change_module(add_projs=[api_child.id])
+    api_module.change_module(add_proj_item_ids=[api_child.id])
     # Verification
     api_child.update()
     with check_no_field():

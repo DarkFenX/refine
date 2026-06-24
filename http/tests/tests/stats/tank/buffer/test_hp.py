@@ -592,7 +592,7 @@ def test_remote_asb_ship_accuracy_and_charge_switch(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_rasb.change_module(add_projs=[api_tgt_ship.id])
+    api_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, approx(6900))
@@ -653,7 +653,7 @@ def test_remote_asb_ship_state_switch(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_rasb.change_module(add_projs=[api_tgt_ship.id])
+    api_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, approx(900))
@@ -734,7 +734,7 @@ def test_remote_asb_ship_resist_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(500), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(add_projs=[api_tgt_ship.id])
+    api_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(1000), 0, approx(9000))
@@ -757,7 +757,7 @@ def test_remote_asb_ship_resist_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(500), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(rm_projs=[api_tgt_ship.id])
+    api_rasb.change_module(rm_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(1000), 0, 0)
@@ -802,7 +802,7 @@ def test_remote_asb_ship_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(500), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(250), 0, 0)
     # Action
-    api_rasb.change_module(add_projs=[api_tgt_ship.id])
+    api_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(1000), 0, approx(9000))
@@ -843,7 +843,7 @@ def test_remote_asb_drone_fighter(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_drone_id)
     api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
-    api_rasb.change_module(add_projs=[api_tgt_drone.id, api_tgt_fighter.id])
+    api_rasb.change_module(add_proj_item_ids=[api_tgt_drone.id, api_tgt_fighter.id])
     # Verification
     api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
     assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, approx(3000))
@@ -873,7 +873,7 @@ def test_remote_aar_ship_accuracy_and_charge_switch(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_raar.change_module(add_projs=[api_tgt_ship.id])
+    api_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(3000), 0, 0)
@@ -935,7 +935,7 @@ def test_remote_aar_ship_chargedness_and_state_switch(client, consts):
         charge_type_id=eve_charge_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_raar.change_module(add_projs=[api_tgt_ship.id])
+    api_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - AAR HP scales with how much "charged" cycle is, 3/4 of paste charges yields a
     # cycle of 250 instead of 300
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
@@ -1018,7 +1018,7 @@ def test_remote_aar_ship_resist_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(1000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(add_projs=[api_tgt_ship.id])
+    api_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(2000), 0, 0)
@@ -1041,7 +1041,7 @@ def test_remote_aar_ship_resist_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(1000), 0, approx(3600))
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(rm_projs=[api_tgt_ship.id])
+    api_raar.change_module(rm_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(2000), 0, 0)
@@ -1088,7 +1088,7 @@ def test_remote_aar_ship_proj_range_and_rep_hp_limit(client, consts):
     assert api_tgt_ship_stats.hp.armor == (approx(1000), 0, 0)
     assert api_tgt_ship_stats.hp.hull == (approx(500), 0, 0)
     # Action
-    api_raar.change_module(add_projs=[api_tgt_ship.id])
+    api_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - reps are limited from 1500 / cycle to 1000 / cycle
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(hp=True))
     assert api_tgt_fit_stats.hp.shield == (approx(2000), 0, 0)
@@ -1131,7 +1131,7 @@ def test_remote_aar_drone_fighter(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_drone_id)
     api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_fighter_id)
-    api_raar.change_module(add_projs=[api_tgt_drone.id, api_tgt_fighter.id])
+    api_raar.change_module(add_proj_item_ids=[api_tgt_drone.id, api_tgt_fighter.id])
     # Verification - fighter receives 0 since it has no armor to apply reps to
     api_tgt_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(hp=True))
     assert api_tgt_drone_stats.hp.shield == (approx(1728), 0, 0)

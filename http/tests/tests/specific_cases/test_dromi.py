@@ -40,7 +40,7 @@ def test_resistance(client, consts):
     api_src_dromi = api_src_fit.add_fighter(type_id=eve_dromi_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_dromi.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_dromi.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
     assert api_tgt_fit_stats.speed == approx(550)
@@ -74,7 +74,7 @@ def test_count(client, consts):
     api_src_dromi = api_src_fit.add_fighter(type_id=eve_dromi_id, state=consts.ApiMinionState.engaging, count=2)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_dromi.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_dromi.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
     assert api_tgt_fit_stats.speed == approx(700)
@@ -110,7 +110,7 @@ def test_attr_state(client, consts):
         abilities={eve_web_ability_id: True})
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_dromi.change_fighter(add_projs=[api_tgt_ship.id])
+    api_src_dromi.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(speed=True))
     assert api_tgt_fit_stats.speed == approx(550)

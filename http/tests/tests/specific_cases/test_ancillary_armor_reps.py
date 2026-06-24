@@ -104,7 +104,7 @@ def test_chargedness_remote(client, consts):
         charge_type_id=eve_paste_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - rep has 7 full cycles, and 7/8-charged 8th
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_rps=(True, [
         StatsOptionFitOutRps(time_options=StatTimeBurst()),

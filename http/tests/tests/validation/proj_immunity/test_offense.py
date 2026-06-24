@@ -31,7 +31,7 @@ def test_offense_src_module_tgt_ship_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -41,7 +41,7 @@ def test_offense_src_module_tgt_ship_project_unproject(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(rm_projs=[api_tgt_item.id])
+    api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -73,13 +73,13 @@ def test_offense_src_drone_fighter(client, consts):
     api_src_fighter = api_src_fit.add_fighter(type_id=eve_src_item_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_drone.change_drone(add_projs=[api_tgt_item.id])
+    api_src_drone.change_drone(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_drone.id: [api_tgt_item.id]}
     # Action
-    api_src_fighter.change_fighter(add_projs=[api_tgt_item.id])
+    api_src_fighter.change_fighter(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -121,7 +121,7 @@ def test_offense_src_proj_effect(client, consts):
     api_src_proj_effect = api_sol.add_proj_effect(type_id=eve_src_item_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_proj_effect.change_proj_effect(add_projs=[api_tgt_item.id])
+    api_src_proj_effect.change_proj_effect(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_sol.validate(fit_ids=[api_src_fit.id], options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -149,7 +149,7 @@ def test_offense_tgt_drone_fighter(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_item_id)
     api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_drone.id, api_tgt_fighter.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_drone.id, api_tgt_fighter.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -181,7 +181,7 @@ def test_offense_multiple_src_effects(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -230,7 +230,7 @@ def test_offense_buff(client, consts):
     api_src_module = api_src_fit.add_module(
         type_id=eve_affector_module_id,
         state=consts.ApiModuleState.active)
-    api_src_module.change_module(add_projs=[api_tgt_ship.id])
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - check that effect is applied, and check that validation is passed
     api_tgt_ship.update()
     assert api_tgt_ship.attrs[eve_affectee_attr_id].modified == approx(0.5)
@@ -268,7 +268,7 @@ def test_offense_flag_values(client, consts):
     api_tgt_item4 = api_tgt_fit.add_drone(type_id=eve_tgt_item4_id)
     api_tgt_item5 = api_tgt_fit.add_drone(type_id=eve_tgt_item5_id)
     api_src_item.change_module(
-        add_projs=[api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id, api_tgt_item4.id, api_tgt_item5.id])
+        add_proj_item_ids=[api_tgt_item1.id, api_tgt_item2.id, api_tgt_item3.id, api_tgt_item4.id, api_tgt_item5.id])
     # Verification - no attr or value 0 doesn't fail validation
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -302,7 +302,7 @@ def test_offense_tgt_modified(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -348,7 +348,7 @@ def test_offense_tgt_mutation(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.add_drone(type_id=eve_tgt_base_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     assert api_tgt_item.update().attrs[eve_immunity_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -417,7 +417,7 @@ def test_offense_src_mutation(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_base_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -456,7 +456,7 @@ def test_offense_no_attr(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification - if attribute cannot be found, the validation passes regardless of defined value
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -475,7 +475,7 @@ def test_offense_criterion_no_modifiers(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -501,7 +501,7 @@ def test_offense_criterion_not_offense(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -534,7 +534,7 @@ def test_offense_criterion_effect_cat(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -581,11 +581,11 @@ def test_assist(client, consts):
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
-    api_src_item1.change_module(add_projs=[api_tgt_item.id])
-    api_src_item2.change_module(add_projs=[api_tgt_item.id])
-    api_src_item3.change_module(add_projs=[api_tgt_item.id])
-    api_src_item4.change_module(add_projs=[api_tgt_item.id])
-    api_src_item5.change_module(add_projs=[api_tgt_item.id])
+    api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_item3.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_item4.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_item5.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -614,7 +614,7 @@ def test_assist_switch_src_type_id(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item1_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is False
@@ -659,7 +659,7 @@ def test_assist_src_mutation_add(client, consts):
         mutation=(eve_src_mutator_id, {eve_assist_attr_id: Muta.roll_to_api(val=0)}))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification - validation fails, since unmutated value is used to determine behavior
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -690,7 +690,7 @@ def test_assist_src_mutation_change(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_base_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     assert api_src_item.update().attrs[eve_assist_attr_id].modified == approx(0)
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -736,7 +736,7 @@ def test_assist_no_attr(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification - when attribute disallowing to use assistance vs offense-mod-immune target can't
     # be found, assume assistance can be applied to such target
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
@@ -780,8 +780,8 @@ def test_known_failures(client, consts):
     api_src_assist = api_src_fit.add_module(type_id=eve_src_assist_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_offense.change_module(add_projs=[api_tgt_item.id])
-    api_src_assist.change_module(add_projs=[api_tgt_item.id])
+    api_src_offense.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_assist.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=(True, [api_src_offense.id])))
     assert api_val.passed is False
@@ -836,8 +836,8 @@ def test_assist_immunity(client, consts):
     api_src_assist = api_src_fit.add_module(type_id=eve_src_assist_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_offense.change_module(add_projs=[api_tgt_item.id])
-    api_src_assist.change_module(add_projs=[api_tgt_item.id])
+    api_src_offense.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_assist.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -855,7 +855,7 @@ def test_not_loaded_src(client, consts):
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_item.change_module(add_projs=[api_tgt_item.id])
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True
@@ -896,8 +896,8 @@ def test_not_loaded_tgt(client, consts):
     api_src_assist = api_src_fit.add_module(type_id=eve_src_assist_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
-    api_src_offense.change_module(add_projs=[api_tgt_item.id])
-    api_src_assist.change_module(add_projs=[api_tgt_item.id])
+    api_src_offense.change_module(add_proj_item_ids=[api_tgt_item.id])
+    api_src_assist.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_val.passed is True

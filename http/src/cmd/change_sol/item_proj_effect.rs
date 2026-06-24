@@ -13,7 +13,7 @@ pub(crate) struct HAddProjEffectCmd {
     state: Option<bool>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    projs: Vec<rc::ItemId>,
+    proj_item_ids: Vec<rc::ItemId>,
     effect_modes: Option<HEffectModeMap>,
 }
 impl HAddProjEffectCmd {
@@ -23,7 +23,7 @@ impl HAddProjEffectCmd {
         if let Some(state) = self.state {
             core_proj_effect.set_state(state);
         }
-        for projectee_item_id in self.projs.iter() {
+        for projectee_item_id in self.proj_item_ids.iter() {
             core_proj_effect
                 .add_proj(projectee_item_id)
                 .map_err(|error| match error {

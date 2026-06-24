@@ -147,7 +147,7 @@ def test_range(client, consts):
     api_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 8169, 0))
-    api_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -209,7 +209,7 @@ def test_resist_and_limit(client, consts):
     api_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
-    api_module_proj.change_module(add_projs=[api_tgt_ship.id])
+    api_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(

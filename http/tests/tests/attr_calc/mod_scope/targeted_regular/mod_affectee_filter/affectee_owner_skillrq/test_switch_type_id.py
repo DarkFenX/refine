@@ -51,7 +51,7 @@ def test_root_ship_to_struct_remove(client, consts):
      api_affectee,
      api_module) = setup_ship_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_root_ship_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(96)
     # Action
@@ -74,7 +74,7 @@ def test_root_ship_to_unknown_remove(client, consts):
      api_affectee,
      api_module) = setup_ship_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_root_ship_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(96)
     # Action
@@ -97,7 +97,7 @@ def test_root_ship_to_not_loaded_remove(client, consts):
      api_affectee,
      api_module) = setup_ship_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_root_ship_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(96)
     # Action
@@ -120,7 +120,7 @@ def test_root_struct_to_ship_remove(client, consts):
      api_affectee,
      api_module) = setup_ship_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_root_struct_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(96)
     # Action
@@ -143,7 +143,7 @@ def test_root_unknown_to_ship_remove(client, consts):
      api_affectee,
      api_module) = setup_ship_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_root_unknown_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(96)
     # Action
@@ -166,7 +166,7 @@ def test_root_not_loaded_to_ship_remove(client, consts):
      api_affectee,
      api_module) = setup_ship_test(client=client, consts=consts)
     api_root = api_fit2.set_ship(type_id=eve_root_not_loaded_id)
-    api_module.change_module(add_projs=[api_root.id])
+    api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     assert api_affectee.update().attrs[eve_affectee_attr_id].modified == approx(96)
     # Action
@@ -206,7 +206,7 @@ def setup_char_test(*, client, consts):
     api_module = api_fit1.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_ship = api_fit2.set_ship(type_id=eve_ship_id)
     api_affectee = api_fit2.add_drone(type_id=eve_affectee_id)
-    api_module.change_module(add_projs=[api_ship.id])
+    api_module.change_module(add_proj_item_ids=[api_ship.id])
     return eve_affectee_attr_id, eve_char_loaded_id, eve_char_not_loaded_id, api_fit2, api_affectee, api_module
 
 

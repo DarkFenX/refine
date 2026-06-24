@@ -26,5 +26,5 @@ def test_unaffected(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)
-    api_proj_effect.change_proj_effect(add_projs=[api_ship.id])
+    api_proj_effect.change_proj_effect(add_proj_item_ids=[api_ship.id])
     assert api_drone.update().attrs[eve_affectee_attr_id].modified == approx(100)

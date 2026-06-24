@@ -22,10 +22,10 @@ pub(crate) struct HChangeFighterCmd {
     rearm_minion: TriStateField<HRearmMinion>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    add_projs: Vec<rc::ItemId>,
+    add_proj_item_ids: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
-    rm_projs: Vec<rc::ItemId>,
+    rm_proj_item_ids: Vec<rc::ItemId>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
     effect_modes: Option<HEffectModeMap>,
@@ -64,7 +64,7 @@ impl HChangeFighterCmd {
             TriStateField::None => core_fighter.set_rearm_minion(None),
             TriStateField::Absent => (),
         }
-        for projectee_item_id in self.rm_projs.iter() {
+        for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_fighter
                 .get_proj_mut(projectee_item_id)
                 .map_err(|error| match error {
@@ -73,18 +73,18 @@ impl HChangeFighterCmd {
                 })?
                 .remove();
         }
-        for projectee_item_id in self.add_projs.iter() {
-            core_fighter.add_proj(projectee_item_id).map_err(|error| match error {
-                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
-                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
-                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
-            })?;
-        }
         if let Some(coordinates) = self.coordinates {
             core_fighter.set_coordinates(coordinates.into_core());
         }
         if let Some(movement) = self.movement {
             core_fighter.set_movement(movement.into_core());
+        }
+        for projectee_item_id in self.add_proj_item_ids.iter() {
+            core_fighter.add_proj(projectee_item_id).map_err(|error| match error {
+                rc::err::AddProjError::ProjecteeNotFound(e) => HExecError::ItemNotFoundSecondary(e),
+                rc::err::AddProjError::ProjecteeCantTakeProjs(e) => HExecError::ProjecteeCantTakeProjs(e),
+                rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
+            })?;
         }
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_fighter);
