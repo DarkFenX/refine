@@ -11,6 +11,7 @@ if typing.TYPE_CHECKING:
 
 @dataclasses.dataclass(kw_only=True)
 class BaseModuleCmd(BaseCommand):
+
     type_id: int | type[Absent]
     state: ApiModuleState | type[Absent]
     charge_type_id: int | type[Absent] | None
