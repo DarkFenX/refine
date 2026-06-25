@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, Map, serde_as};
 
-use crate::phb::fsd::{FsdId, FsdMerge};
+use crate::phb::parsing::{Key, KeyMerge};
 
 #[serde_as]
 #[derive(Deserialize)]
@@ -10,12 +10,12 @@ pub(in crate::phb) struct PMutaAttrMods {
     #[serde(rename = "attributeIDs")]
     pub(in crate::phb) attrs: Vec<(i32, PMutaAttrModRange)>,
 }
-impl FsdMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EMutaAttrMod> {
+impl KeyMerge<rc::ed::EMutaAttrMod> for PMutaAttrMods {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EMutaAttrMod> {
         self.attrs
             .into_iter()
             .map(|(attr_id, range)| rc::ed::EMutaAttrMod {
-                muta_id: rc::ed::EItemId::from_i32(id),
+                muta_id: rc::ed::EItemId::from_i32(key),
                 attr_id: rc::ed::EAttrId::from_i32(attr_id),
                 min_attr_mult: rc::ed::EFloat::from_f64(range.min),
                 max_attr_mult: rc::ed::EFloat::from_f64(range.max),

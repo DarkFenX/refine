@@ -1,19 +1,19 @@
 use serde::Deserialize;
 
-use crate::phb::fsd::{FsdId, FsdMerge};
+use crate::phb::parsing::{Key, KeyMerge};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PMutaItemConvs {
     #[serde(rename = "inputOutputMapping")]
     pub(in crate::phb) item_maps: Vec<PMutaItemMap>,
 }
-impl FsdMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EMutaItemConv> {
+impl KeyMerge<rc::ed::EMutaItemConv> for PMutaItemConvs {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EMutaItemConv> {
         let mut vec = Vec::new();
         for item_map in self.item_maps {
             for applicable_type in item_map.applicable_item_ids {
                 vec.push(rc::ed::EMutaItemConv {
-                    muta_id: rc::ed::EItemId::from_i32(id),
+                    muta_id: rc::ed::EItemId::from_i32(key),
                     in_item_id: rc::ed::EItemId::from_i32(applicable_type),
                     out_item_id: rc::ed::EItemId::from_i32(item_map.result_item_id),
                 })

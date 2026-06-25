@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::phb::{
-    fsd::{FsdId, FsdMerge},
+    parsing::{Key, KeyMerge},
     serde_custom::bool_from_int,
 };
 
@@ -30,10 +30,10 @@ pub(in crate::phb) struct PEffect {
     #[serde(rename = "modifierInfo", default, deserialize_with = "effect_mod::deserialize")]
     pub(in crate::phb) mods: Vec<PEffectMod>,
 }
-impl FsdMerge<rc::ed::EEffect> for PEffect {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EEffect> {
+impl KeyMerge<rc::ed::EEffect> for PEffect {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EEffect> {
         vec![rc::ed::EEffect {
-            id: rc::ed::EEffectId::from_i32(id),
+            id: rc::ed::EEffectId::from_i32(key),
             category_id: rc::ed::EEffectCatId::from_i32(self.category_id),
             is_assistance: self.is_assistance,
             is_offensive: self.is_offensive,

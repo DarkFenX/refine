@@ -4,8 +4,8 @@ pub enum Error {
     ///
     /// Includes suffix of requested entity.
     #[cfg(any(feature = "phb-http", feature = "phb-file"))]
-    #[error("{0} FSD decomposition failed: highest-level entity is not a map")]
-    PhbUnexpectedFsdTopEntity(String),
+    #[error("{0} FSD decomposition failed: {1}")]
+    PhbUnrecoverableError(String, Box<dyn std::error::Error>),
     /// HTTP handler cannot use passed URL as base.
     ///
     /// Includes passed URL and text description of failure.
@@ -17,31 +17,31 @@ pub enum Error {
     /// Includes suffix and text description of failure.
     #[cfg(feature = "phb-http")]
     #[error("{0} is failed to be joined to base URL: {1}")]
-    PhbHttpSuffixJoinFailed(String, String),
+    PhbHttpSuffixJoinFailed(String, Box<dyn std::error::Error>),
     /// HTTP handler is unable to fetch data.
     ///
     /// Includes suffix and text description of failure.
     #[cfg(feature = "phb-http")]
     #[error("{0} fetching failed: {1}")]
-    PhbHttpSuffixFetchFailed(String, String),
+    PhbHttpSuffixFetchFailed(String, Box<dyn std::error::Error>),
     /// HTTP handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
     #[cfg(feature = "phb-http")]
     #[error("{0} parsing failed: {1}")]
-    PhbHttpSuffixParseFailed(String, String),
+    PhbHttpSuffixParseFailed(String, Box<dyn std::error::Error>),
     /// File handler is unable to read data.
     ///
     /// Includes suffix and text description of failure.
     #[cfg(feature = "phb-file")]
     #[error("{0} reading failed: {1}")]
-    PhbFileSuffixReadFailed(String, String),
+    PhbFileSuffixReadFailed(String, Box<dyn std::error::Error>),
     /// File handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
     #[cfg(feature = "phb-file")]
     #[error("{0} parsing failed: {1}")]
-    PhbFileSuffixParseFailed(String, String),
+    PhbFileSuffixParseFailed(String, Box<dyn std::error::Error>),
     /// File handler is unable to find client version in metadata.
     #[cfg(feature = "phb-file")]
     #[error("unable to find client build field")]

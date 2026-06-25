@@ -5,20 +5,15 @@ pub(in crate::phb::handler_http) trait FromSuffix<T> {
 }
 impl FromSuffix<url::ParseError> for Error {
     fn from_suffix(err: url::ParseError, suffix: &str) -> Self {
-        Error::PhbHttpSuffixJoinFailed(suffix.to_string(), err.to_string())
+        Error::PhbHttpSuffixJoinFailed(suffix.to_string(), Box::new(err))
     }
 }
 impl FromSuffix<reqwest::Error> for Error {
     fn from_suffix(err: reqwest::Error, suffix: &str) -> Self {
         if err.is_decode() {
-            Error::PhbHttpSuffixParseFailed(suffix.to_string(), err.to_string())
+            Error::PhbHttpSuffixParseFailed(suffix.to_string(), Box::new(err))
         } else {
-            Error::PhbHttpSuffixFetchFailed(suffix.to_string(), err.to_string())
+            Error::PhbHttpSuffixFetchFailed(suffix.to_string(), Box::new(err))
         }
     }
 }
-// impl FromSuffix<serde_json::Error> for Error {
-//     fn from_suffix(err: serde_json::Error, suffix: &str) -> Self {
-//         Error::PhbHttpSuffixParseFailed(suffix.to_string(), err.to_string())
-//     }
-// }

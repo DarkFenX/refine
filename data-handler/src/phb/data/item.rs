@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::phb::fsd::{FsdId, FsdMerge};
+use crate::phb::parsing::{Key, KeyMerge};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItem {
@@ -11,10 +11,10 @@ pub(in crate::phb) struct PItem {
     pub(in crate::phb) radius: f64,
     pub(in crate::phb) volume: f64,
 }
-impl FsdMerge<rc::ed::EItem> for PItem {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItem> {
+impl KeyMerge<rc::ed::EItem> for PItem {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EItem> {
         vec![rc::ed::EItem {
-            id: rc::ed::EItemId::from_i32(id),
+            id: rc::ed::EItemId::from_i32(key),
             group_id: rc::ed::EItemGrpId::from_i32(self.group_id),
             capacity: rc::ed::EFloat::from_f64(self.capacity),
             mass: rc::ed::EFloat::from_f64(self.mass),

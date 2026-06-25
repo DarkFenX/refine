@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::phb::{
-    fsd::{FsdId, FsdMerge},
+    parsing::{Key, KeyMerge},
     serde_custom::bool_from_int,
 };
 
@@ -20,10 +20,10 @@ pub(in crate::phb) struct PAttr {
     #[serde(rename = "unitID")]
     pub(in crate::phb) unit_id: Option<i32>,
 }
-impl FsdMerge<rc::ed::EAttr> for PAttr {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EAttr> {
+impl KeyMerge<rc::ed::EAttr> for PAttr {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EAttr> {
         vec![rc::ed::EAttr {
-            id: rc::ed::EAttrId::from_i32(id),
+            id: rc::ed::EAttrId::from_i32(key),
             stackable: self.stackable,
             high_is_good: self.high_is_good,
             default_value: rc::ed::EFloat::from_f64(self.default_value),

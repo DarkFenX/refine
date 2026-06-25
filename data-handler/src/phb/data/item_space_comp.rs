@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, Map, serde_as};
 
-use crate::phb::fsd::{FsdId, FsdMerge};
+use crate::phb::parsing::{Key, KeyMerge};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceComp {
@@ -16,10 +16,10 @@ pub(in crate::phb) struct PItemSpaceComp {
     #[serde(rename = "linkWithShip", default)]
     pub(in crate::phb) link_with_ship: Option<PItemSpaceCompSl>,
 }
-impl FsdMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EItemSpaceComp> {
+impl KeyMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemSpaceComp> {
         vec![rc::ed::EItemSpaceComp {
-            item_id: rc::ed::EItemId::from_i32(id),
+            item_id: rc::ed::EItemId::from_i32(key),
             system_wide_buffs: self.system_wide_effects.and_then(|v| v.global_debuffs).map(|data| {
                 rc::ed::EItemSpaceCompBuffData {
                     buffs: data

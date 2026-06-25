@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::phb::fsd::{FsdId, FsdMerge};
+use crate::phb::parsing::{Key, KeyMerge};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PFighterAbil {
@@ -9,10 +9,10 @@ pub(in crate::phb) struct PFighterAbil {
     #[serde(rename = "disallowInLowSec")]
     pub(in crate::phb) disallow_lowsec: bool,
 }
-impl FsdMerge<rc::ed::EAbil> for PFighterAbil {
-    fn fsd_merge(self, id: FsdId) -> Vec<rc::ed::EAbil> {
+impl KeyMerge<rc::ed::EAbil> for PFighterAbil {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EAbil> {
         vec![rc::ed::EAbil {
-            id: rc::ed::EAbilId::from_i32(id),
+            id: rc::ed::EAbilId::from_i32(key),
             disallow_hisec: self.disallow_hisec,
             disallow_lowsec: self.disallow_lowsec,
         }]
