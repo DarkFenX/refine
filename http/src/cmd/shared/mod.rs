@@ -11,6 +11,7 @@ pub(in crate::cmd) use val_options::HValOptions;
 
 mod ability;
 mod add_mode;
+mod backref_id;
 mod effect_mode;
 mod getters;
 mod mutation;
