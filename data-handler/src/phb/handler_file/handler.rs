@@ -1,13 +1,13 @@
 use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
-use super::{address::Address, error::FromPath};
+use super::{address::Address, error::FromPath, parsing::ArrayIter};
 use crate::{
     phb::{
         data::{
             PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
             PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
         },
-        parsing,
+        parsing::{handle_keymap_one, handle_keymap_two},
     },
     util::Error,
 };
@@ -33,84 +33,75 @@ impl PhbFileEdh {
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "types");
         let reader = self.get_reader(&addr)?;
-        e_data.items = parsing::handle_keymap_one::<PItem, rc::ed::EItem>(reader, &addr.get_part_str())?;
+        e_data.items = handle_keymap_one::<PItem, rc::ed::EItem>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "groups");
         let reader = self.get_reader(&addr)?;
-        e_data.groups = parsing::handle_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader, &addr.get_part_str())?;
+        e_data.groups = handle_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "typelist");
         let reader = self.get_reader(&addr)?;
-        e_data.item_lists = parsing::handle_keymap_one::<PItemList, rc::ed::EItemList>(reader, &addr.get_part_str())?;
+        e_data.item_lists = handle_keymap_one::<PItemList, rc::ed::EItemList>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "dogmaattributes");
         let reader = self.get_reader(&addr)?;
-        e_data.attrs = parsing::handle_keymap_one::<PAttr, rc::ed::EAttr>(reader, &addr.get_part_str())?;
+        e_data.attrs = handle_keymap_one::<PAttr, rc::ed::EAttr>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "typedogma");
         let reader = self.get_reader(&addr)?;
-        (e_data.item_attrs, e_data.item_effects) = parsing::handle_keymap_two::<
-            PItemDogma,
-            rc::ed::EItemAttr,
-            rc::ed::EItemEffect,
-        >(reader, &addr.get_part_str())?;
+        (e_data.item_attrs, e_data.item_effects) =
+            handle_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "dogmaeffects");
         let reader = self.get_reader(&addr)?;
-        e_data.effects = parsing::handle_keymap_one::<PEffect, rc::ed::EEffect>(reader, &addr.get_part_str())?;
+        e_data.effects = handle_keymap_one::<PEffect, rc::ed::EEffect>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         let reader = self.get_reader(&addr)?;
-        e_data.abils = parsing::handle_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader, &addr.get_part_str())?;
+        e_data.abils = handle_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         let reader = self.get_reader(&addr)?;
-        e_data.item_abils =
-            parsing::handle_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader, &addr.get_part_str())?;
+        e_data.item_abils = handle_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_lite", "dbuffcollections");
         let reader = self.get_reader(&addr)?;
-        e_data.buffs = parsing::handle_keymap_one::<PBuff, rc::ed::EBuff>(reader, &addr.get_part_str())?;
+        e_data.buffs = handle_keymap_one::<PBuff, rc::ed::EBuff>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "spacecomponentsbytype");
         let reader = self.get_reader(&addr)?;
-        e_data.space_comps =
-            parsing::handle_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader, &addr.get_part_str())?;
+        e_data.space_comps = handle_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "requiredskillsfortypes");
         let reader = self.get_reader(&addr)?;
-        e_data.item_srqs =
-            parsing::handle_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader, &addr.get_part_str())?;
+        e_data.item_srqs = handle_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader, &addr.get_part_str())?;
         Ok(())
     }
     fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let addr = Address::new("fsd_built", "dynamicitemattributes");
         let reader = self.get_reader(&addr)?;
-        (e_data.muta_items, e_data.muta_attrs) = parsing::handle_keymap_two::<
-            PMuta,
-            rc::ed::EMutaItemConv,
-            rc::ed::EMutaAttrMod,
-        >(reader, &addr.get_part_str())?;
+        (e_data.muta_items, e_data.muta_attrs) =
+            handle_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader, &addr.get_part_str())?;
         Ok(())
     }
 }
@@ -139,7 +130,7 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
     fn get_data_version(&self) -> rc::ed::EResult<String> {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
-        for metadata_result in parsing::ArrayIter::new(reader) {
+        for metadata_result in ArrayIter::new(reader) {
             let metadata: PMetadata = metadata_result?;
             if metadata.field_name == "client_build" {
                 return Ok(metadata.field_value.to_string());
