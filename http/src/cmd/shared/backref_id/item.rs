@@ -2,7 +2,8 @@ use std::str::FromStr;
 
 use serde::Deserialize;
 
-const BACKREF_PREFIX: &str = "#";
+use super::shared::BACKREF_PREFIX;
+
 const CHARGE_SUFFIX: &str = "c";
 
 pub(in crate::cmd) enum HItemIdBackref {

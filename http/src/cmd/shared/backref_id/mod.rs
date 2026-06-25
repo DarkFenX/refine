@@ -5,3 +5,4 @@ pub(in crate::cmd) use item::HItemIdBackref;
 mod fit;
 mod fleet;
 mod item;
+mod shared;

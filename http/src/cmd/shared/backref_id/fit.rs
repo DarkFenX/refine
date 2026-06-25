@@ -2,7 +2,7 @@ use std::str::FromStr;
 
 use serde::Deserialize;
 
-const BACKREF_PREFIX: &str = "#";
+use super::shared::BACKREF_PREFIX;
 
 pub(in crate::cmd) enum HFitIdBackref {
     Id(rc::FitId),
