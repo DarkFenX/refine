@@ -8,8 +8,8 @@ license = "LGPL-3.0-or-later"
 
 [features]
 full = ["phb-http", "phb-file"]
-phb-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:reqwest", "dep:url"]
-phb-file = ["dep:serde", "dep:serde_json", "dep:serde_with"]
+phb-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:struson", "dep:reqwest", "dep:url"]
+phb-file = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:struson"]
 
 [dependencies]
 rc = { package = "refine-core", path = "../core" }
@@ -17,5 +17,6 @@ reqwest = { version = ">=0.13.4", features = ["blocking", "json"], optional = tr
 serde = { version = ">=1.0.228", features = ["derive"], optional = true }
 serde_json = { version = ">=1.0.150", optional = true }
 serde_with = { version = ">=3.21.0", optional = true }
+struson = { version = ">=0.7.2", features = ["simple-api", "serde"], optional = true }
 thiserror = ">=2.0.18"
 url = { version = ">=2.5.8", optional = true }

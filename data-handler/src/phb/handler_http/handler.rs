@@ -46,92 +46,92 @@ impl PhbHttpEdh {
             }),
         }
     }
-    fn fetch_data(&self, suffix: &str) -> Result<serde_json::Value, Error> {
+    fn get_reader(&self, suffix: &str) -> Result<impl std::io::Read, Error> {
         let full_url = self.base_url.join(suffix).map_err(|e| Error::from_suffix(e, suffix))?;
-        let data = self
+        let response = self
             .client
             .get(full_url)
             .send()
             .map_err(|e| Error::from_suffix(e, suffix))?
             .error_for_status()
-            .map_err(|e| Error::from_suffix(e, suffix))?
-            .json()
             .map_err(|e| Error::from_suffix(e, suffix))?;
-        Ok(data)
+        Ok(response)
     }
     // Entity-specific processing methods
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/types.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.items = fsd::handle::<PItem, rc::ed::EItem>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.items = fsd::handle_one::<PItem, rc::ed::EItem>(reader, suffix)?;
         Ok(())
     }
     fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/groups.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.groups = fsd::handle::<PItemGroup, rc::ed::EItemGroup>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.groups = fsd::handle_one::<PItemGroup, rc::ed::EItemGroup>(reader, suffix)?;
         Ok(())
     }
     fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/typelist.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.item_lists = fsd::handle::<PItemList, rc::ed::EItemList>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.item_lists = fsd::handle_one::<PItemList, rc::ed::EItemList>(reader, suffix)?;
         Ok(())
     }
     fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/dogmaattributes.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.attrs = fsd::handle::<PAttr, rc::ed::EAttr>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.attrs = fsd::handle_one::<PAttr, rc::ed::EAttr>(reader, suffix)?;
         Ok(())
     }
     fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/typedogma.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.item_attrs = fsd::handle::<PItemAttrs, rc::ed::EItemAttr>(data.clone(), suffix)?;
-        e_data.item_effects = fsd::handle::<PItemEffects, rc::ed::EItemEffect>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.item_attrs = fsd::handle_one::<PItemAttrs, rc::ed::EItemAttr>(reader, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.item_effects = fsd::handle_one::<PItemEffects, rc::ed::EItemEffect>(reader, suffix)?;
         Ok(())
     }
     fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/dogmaeffects.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.effects = fsd::handle::<PEffect, rc::ed::EEffect>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.effects = fsd::handle_one::<PEffect, rc::ed::EEffect>(reader, suffix)?;
         Ok(())
     }
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/fighterabilities.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.abils = fsd::handle::<PFighterAbil, rc::ed::EAbil>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.abils = fsd::handle_one::<PFighterAbil, rc::ed::EAbil>(reader, suffix)?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/fighterabilitiesbytype.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.item_abils = fsd::handle::<PItemFighterAbils, rc::ed::EItemAbil>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.item_abils = fsd::handle_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader, suffix)?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/dbuffcollections.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.buffs = fsd::handle::<PBuff, rc::ed::EBuff>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.buffs = fsd::handle_one::<PBuff, rc::ed::EBuff>(reader, suffix)?;
         Ok(())
     }
     fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/spacecomponentsbytype.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.space_comps = fsd::handle::<PItemSpaceComp, rc::ed::EItemSpaceComp>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.space_comps = fsd::handle_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader, suffix)?;
         Ok(())
     }
     fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/requiredskillsfortypes.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.item_srqs = fsd::handle::<PItemSkillMap, rc::ed::EItemSkillReq>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.item_srqs = fsd::handle_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader, suffix)?;
         Ok(())
     }
     fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/dynamicitemattributes.json";
-        let data = self.fetch_data(suffix)?;
-        e_data.muta_items = fsd::handle::<PMutaItemConvs, rc::ed::EMutaItemConv>(data.clone(), suffix)?;
-        e_data.muta_attrs = fsd::handle::<PMutaAttrMods, rc::ed::EMutaAttrMod>(data, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.muta_items = fsd::handle_one::<PMutaItemConvs, rc::ed::EMutaItemConv>(reader, suffix)?;
+        let reader = self.get_reader(suffix)?;
+        e_data.muta_attrs = fsd::handle_one::<PMutaAttrMods, rc::ed::EMutaAttrMod>(reader, suffix)?;
         Ok(())
     }
 }

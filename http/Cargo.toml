@@ -6,7 +6,7 @@ edition = "2024"
 
 [dependencies]
 rc = { package = "refine-core", path = "../core" }
-redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http"] }
+redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http", "phb-file"] }
 radc = { package = "refine-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.9", features = ["query"] }
 chrono = ">=0.4.45"

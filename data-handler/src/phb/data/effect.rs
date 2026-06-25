@@ -112,7 +112,7 @@ mod effect_mod {
             Value::Bool(b) => Ok(rc::ed::EPrimitive::Bool(b)),
             Value::Number(n) => {
                 if let Some(n) = n.as_i64() {
-                    Ok(rc::ed::EPrimitive::Int(n as i32))
+                    Ok(rc::ed::EPrimitive::Int(n.saturating_cast()))
                 } else if let Some(n) = n.as_f64() {
                     Ok(rc::ed::EPrimitive::Float(n))
                 } else {

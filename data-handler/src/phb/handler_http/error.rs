@@ -17,8 +17,8 @@ impl FromSuffix<reqwest::Error> for Error {
         }
     }
 }
-impl FromSuffix<serde_json::Error> for Error {
-    fn from_suffix(err: serde_json::Error, suffix: &str) -> Self {
-        Error::PhbHttpSuffixParseFailed(suffix.to_string(), err.to_string())
-    }
-}
+// impl FromSuffix<serde_json::Error> for Error {
+//     fn from_suffix(err: serde_json::Error, suffix: &str) -> Self {
+//         Error::PhbHttpSuffixParseFailed(suffix.to_string(), err.to_string())
+//     }
+// }
