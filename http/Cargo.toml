@@ -23,8 +23,8 @@ tokio-rayon = ">=2.1.0"
 tower = ">=0.5.3"
 tower-http = { version = ">=0.7.0", features = ["normalize-path", "trace"] }
 tower-request-id = ">=0.3.0"
-time = { version = ">=0.3.49", features = ["macros"] }
+time = { version = ">=0.3.51", features = ["macros"] }
 tracing = ">=0.1.44"
 tracing-appender = ">=0.2.5"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
-uuid = { version = ">=1.23.3", features = ["v4", "fast-rng"] }
+uuid = { version = ">=1.23.4", features = ["v4", "fast-rng"] }
