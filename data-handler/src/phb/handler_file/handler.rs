@@ -5,7 +5,7 @@ use crate::{
     phb::{
         data::{
             PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
-            PItemSkillMap, PItemSpaceComp, PMuta,
+            PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
         },
         parsing,
     },
@@ -139,9 +139,12 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
     fn get_data_version(&self) -> rc::ed::EResult<String> {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
-        match parsing::handle_metadata_client_build(reader, &addr.get_part_str())? {
-            Some(version) => Ok(version),
-            None => Err(Error::PhbFileNoClientBuild.into()),
+        for metadata_result in parsing::ArrayIter::new(reader) {
+            let metadata: PMetadata = metadata_result?;
+            if metadata.field_name == "client_build" {
+                return Ok(metadata.field_value.to_string());
+            }
         }
+        Err(Error::PhbFileNoClientBuild.into())
     }
 }
