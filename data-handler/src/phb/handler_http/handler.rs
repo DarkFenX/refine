@@ -6,8 +6,8 @@ use super::error::FromSuffix;
 use crate::{
     phb::{
         data::{
-            PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemAttrs, PItemEffects, PItemFighterAbils, PItemGroup,
-            PItemList, PItemSkillMap, PItemSpaceComp, PMutaAttrMods, PMutaItemConvs,
+            PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
+            PItemSkillMap, PItemSpaceComp, PMuta,
         },
         parsing,
     },
@@ -61,77 +61,75 @@ impl PhbHttpEdh {
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/types.json";
         let reader = self.get_reader(suffix)?;
-        e_data.items = parsing::handle_keyed_map_one::<PItem, rc::ed::EItem>(reader, suffix)?;
+        e_data.items = parsing::handle_keymap_one::<PItem, rc::ed::EItem>(reader, suffix)?;
         Ok(())
     }
     fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/groups.json";
         let reader = self.get_reader(suffix)?;
-        e_data.groups = parsing::handle_keyed_map_one::<PItemGroup, rc::ed::EItemGroup>(reader, suffix)?;
+        e_data.groups = parsing::handle_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader, suffix)?;
         Ok(())
     }
     fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/typelist.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_lists = parsing::handle_keyed_map_one::<PItemList, rc::ed::EItemList>(reader, suffix)?;
+        e_data.item_lists = parsing::handle_keymap_one::<PItemList, rc::ed::EItemList>(reader, suffix)?;
         Ok(())
     }
     fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/dogmaattributes.json";
         let reader = self.get_reader(suffix)?;
-        e_data.attrs = parsing::handle_keyed_map_one::<PAttr, rc::ed::EAttr>(reader, suffix)?;
+        e_data.attrs = parsing::handle_keymap_one::<PAttr, rc::ed::EAttr>(reader, suffix)?;
         Ok(())
     }
     fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/typedogma.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_attrs = parsing::handle_keyed_map_one::<PItemAttrs, rc::ed::EItemAttr>(reader, suffix)?;
-        let reader = self.get_reader(suffix)?;
-        e_data.item_effects = parsing::handle_keyed_map_one::<PItemEffects, rc::ed::EItemEffect>(reader, suffix)?;
+        (e_data.item_attrs, e_data.item_effects) =
+            parsing::handle_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader, suffix)?;
         Ok(())
     }
     fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/dogmaeffects.json";
         let reader = self.get_reader(suffix)?;
-        e_data.effects = parsing::handle_keyed_map_one::<PEffect, rc::ed::EEffect>(reader, suffix)?;
+        e_data.effects = parsing::handle_keymap_one::<PEffect, rc::ed::EEffect>(reader, suffix)?;
         Ok(())
     }
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/fighterabilities.json";
         let reader = self.get_reader(suffix)?;
-        e_data.abils = parsing::handle_keyed_map_one::<PFighterAbil, rc::ed::EAbil>(reader, suffix)?;
+        e_data.abils = parsing::handle_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader, suffix)?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/fighterabilitiesbytype.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_abils = parsing::handle_keyed_map_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader, suffix)?;
+        e_data.item_abils = parsing::handle_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader, suffix)?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_lite/dbuffcollections.json";
         let reader = self.get_reader(suffix)?;
-        e_data.buffs = parsing::handle_keyed_map_one::<PBuff, rc::ed::EBuff>(reader, suffix)?;
+        e_data.buffs = parsing::handle_keymap_one::<PBuff, rc::ed::EBuff>(reader, suffix)?;
         Ok(())
     }
     fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/spacecomponentsbytype.json";
         let reader = self.get_reader(suffix)?;
-        e_data.space_comps = parsing::handle_keyed_map_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader, suffix)?;
+        e_data.space_comps = parsing::handle_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader, suffix)?;
         Ok(())
     }
     fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/requiredskillsfortypes.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_srqs = parsing::handle_keyed_map_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader, suffix)?;
+        e_data.item_srqs = parsing::handle_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader, suffix)?;
         Ok(())
     }
     fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> rc::ed::EResult<()> {
         let suffix = "fsd_built/dynamicitemattributes.json";
         let reader = self.get_reader(suffix)?;
-        e_data.muta_items = parsing::handle_keyed_map_one::<PMutaItemConvs, rc::ed::EMutaItemConv>(reader, suffix)?;
-        let reader = self.get_reader(suffix)?;
-        e_data.muta_attrs = parsing::handle_keyed_map_one::<PMutaAttrMods, rc::ed::EMutaAttrMod>(reader, suffix)?;
+        (e_data.muta_items, e_data.muta_attrs) =
+            parsing::handle_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader, suffix)?;
         Ok(())
     }
 }

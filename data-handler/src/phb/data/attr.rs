@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::phb::{
-    parsing::{Key, KeyMerge},
+    parsing::{Key, KeyMergeOne},
     serde_custom::bool_from_int,
 };
 
@@ -20,7 +20,7 @@ pub(in crate::phb) struct PAttr {
     #[serde(rename = "unitID")]
     pub(in crate::phb) unit_id: Option<i32>,
 }
-impl KeyMerge<rc::ed::EAttr> for PAttr {
+impl KeyMergeOne<rc::ed::EAttr> for PAttr {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EAttr> {
         vec![rc::ed::EAttr {
             id: rc::ed::EAttrId::from_i32(key),

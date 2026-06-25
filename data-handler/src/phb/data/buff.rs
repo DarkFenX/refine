@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::phb::parsing::{Key, KeyMerge};
+use crate::phb::parsing::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PBuff {
@@ -17,7 +17,7 @@ pub(in crate::phb) struct PBuff {
     #[serde(rename = "locationRequiredSkillModifiers", default)]
     pub(in crate::phb) locsrq_mods: Vec<PBuffLRSM>,
 }
-impl KeyMerge<rc::ed::EBuff> for PBuff {
+impl KeyMergeOne<rc::ed::EBuff> for PBuff {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EBuff> {
         vec![rc::ed::EBuff {
             id: rc::ed::EBuffId::from_i32(key),

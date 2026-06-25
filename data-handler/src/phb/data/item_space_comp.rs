@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, Map, serde_as};
 
-use crate::phb::parsing::{Key, KeyMerge};
+use crate::phb::parsing::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceComp {
@@ -16,7 +16,7 @@ pub(in crate::phb) struct PItemSpaceComp {
     #[serde(rename = "linkWithShip", default)]
     pub(in crate::phb) link_with_ship: Option<PItemSpaceCompSl>,
 }
-impl KeyMerge<rc::ed::EItemSpaceComp> for PItemSpaceComp {
+impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemSpaceComp> {
         vec![rc::ed::EItemSpaceComp {
             item_id: rc::ed::EItemId::from_i32(key),

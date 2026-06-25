@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::phb::parsing::{Key, KeyMerge};
+use crate::phb::parsing::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItem {
@@ -11,7 +11,7 @@ pub(in crate::phb) struct PItem {
     pub(in crate::phb) radius: f64,
     pub(in crate::phb) volume: f64,
 }
-impl KeyMerge<rc::ed::EItem> for PItem {
+impl KeyMergeOne<rc::ed::EItem> for PItem {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItem> {
         vec![rc::ed::EItem {
             id: rc::ed::EItemId::from_i32(key),

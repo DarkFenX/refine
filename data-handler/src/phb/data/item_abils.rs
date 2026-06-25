@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::phb::parsing::{Key, KeyMerge};
+use crate::phb::parsing::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemFighterAbils {
@@ -11,7 +11,7 @@ pub(in crate::phb) struct PItemFighterAbils {
     #[serde(rename = "abilitySlot2")]
     pub(in crate::phb) abil2: Option<PItemFighterAbilData>,
 }
-impl KeyMerge<rc::ed::EItemAbil> for PItemFighterAbils {
+impl KeyMergeOne<rc::ed::EItemAbil> for PItemFighterAbils {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemAbil> {
         let mut vec = Vec::new();
         for (slot, p_abil_data) in [self.abil0, self.abil1, self.abil2].into_iter().enumerate() {

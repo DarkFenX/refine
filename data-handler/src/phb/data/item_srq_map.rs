@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, Map, serde_as};
 
-use crate::phb::parsing::{Key, KeyMerge};
+use crate::phb::parsing::{Key, KeyMergeOne};
 
 #[serde_as]
 #[derive(Deserialize)]
@@ -10,7 +10,7 @@ pub(in crate::phb) struct PItemSkillMap {
     #[serde_as(as = "Map<DisplayFromStr, _>")]
     data: Vec<(i32, i32)>,
 }
-impl KeyMerge<rc::ed::EItemSkillReq> for PItemSkillMap {
+impl KeyMergeOne<rc::ed::EItemSkillReq> for PItemSkillMap {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemSkillReq> {
         self.data
             .into_iter()

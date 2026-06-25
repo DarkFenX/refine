@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::phb::parsing::{Key, KeyMerge};
+use crate::phb::parsing::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemList {
@@ -17,7 +17,7 @@ pub(in crate::phb) struct PItemList {
     #[serde(rename = "excludedCategoryIDs", default)]
     pub(in crate::phb) excluded_cat_ids: Vec<i32>,
 }
-impl KeyMerge<rc::ed::EItemList> for PItemList {
+impl KeyMergeOne<rc::ed::EItemList> for PItemList {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemList> {
         vec![rc::ed::EItemList {
             id: rc::ed::EItemListId::from_i32(key),
