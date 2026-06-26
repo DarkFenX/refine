@@ -5,7 +5,6 @@ pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HSetCharacterCmd, H
 pub(in crate::cmd) use item_proj_effect::{HAddProjEffectCmd, HChangeProjEffectCmd};
 pub(in crate::cmd) use item_ship::{HChangeShipCmd, HSetShipCmd, HUnsetShipCmd};
 pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd, HUnsetStanceCmd};
-pub(in crate::cmd) use item_sw_effect::{HAddSwEffectCmd, HChangeSwEffectCmd};
 pub(crate) use main::HChangeSolCommand;
 pub(in crate::cmd) use sol::HChangeSolCmd;
 
@@ -16,6 +15,5 @@ mod item_character;
 mod item_proj_effect;
 mod item_ship;
 mod item_stance;
-mod item_sw_effect;
 mod main;
 mod sol;

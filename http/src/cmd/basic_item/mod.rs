@@ -26,6 +26,8 @@ pub(crate) use skill_add::{HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillAdd
 pub(crate) use skill_change::{HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSkillChangeCmdICtx};
 pub(crate) use subsystem_add::{HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemAddCmdICtx};
 pub(crate) use subsystem_change::{HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds, HSubsystemChangeCmdICtx};
+pub(crate) use sw_effect_add::HSwEffectAddCmdFCtx;
+pub(crate) use sw_effect_change::{HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds, HSwEffectChangeCmdICtx};
 
 mod autocharge_change;
 mod booster_add;
@@ -49,3 +51,5 @@ mod skill_add;
 mod skill_change;
 mod subsystem_add;
 mod subsystem_change;
+mod sw_effect_add;
+mod sw_effect_change;

@@ -4,10 +4,9 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddProjEffectCmd, HAddSwEffectCmd, HChangeCharacterCmd, HChangeFitCmd, HChangeFleetCmd,
-            HChangeProjEffectCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd, HChangeSwEffectCmd, HDeleteFitCmd,
-            HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd,
-            HUnsetShipCmd, HUnsetStanceCmd,
+            HAddProjEffectCmd, HChangeCharacterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeProjEffectCmd,
+            HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd,
+            HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -43,9 +42,6 @@ pub(crate) enum HChangeSolCommand {
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     UnsetStance(HUnsetStanceCmd),
-    // Item - system-wide effect
-    AddSwEffect(HAddSwEffectCmd),
-    ChangeSwEffect(HChangeSwEffectCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -78,9 +74,6 @@ impl HChangeSolCommand {
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - system-wide effect
-            Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
-            Self::ChangeSwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

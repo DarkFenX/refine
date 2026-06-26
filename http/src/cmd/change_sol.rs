@@ -15,7 +15,7 @@ use crate::{
             HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds,
             HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
             HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
-            HSubsystemChangeCmdFCtxRIds,
+            HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -58,6 +58,9 @@ pub(crate) enum HSolChangeCmdBIds {
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdFCtxBIds),
     ChangeSubsystem(HSubsystemChangeCmdFCtxBIds),
+    // Item - system-wide effect
+    AddSwEffect(HSwEffectAddCmdFCtx),
+    ChangeSwEffect(HSwEffectChangeCmdFCtxBIds),
 }
 
 pub(crate) enum HSolChangeCmdRIds {
@@ -95,6 +98,9 @@ pub(crate) enum HSolChangeCmdRIds {
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdFCtxRIds),
     ChangeSubsystem(HSubsystemChangeCmdFCtxRIds),
+    // Item - system-wide effect
+    AddSwEffect(HSwEffectAddCmdFCtx),
+    ChangeSwEffect(HSwEffectChangeCmdFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -137,6 +143,9 @@ impl HSolChangeCmdBIds {
             // Item - subsystem
             Self::AddSubsystem(cmd) => HSolChangeCmdRIds::AddSubsystem(cmd.render(resps)?),
             Self::ChangeSubsystem(cmd) => HSolChangeCmdRIds::ChangeSubsystem(cmd.render(resps)?),
+            // Item - system-wide effect
+            Self::AddSwEffect(cmd) => HSolChangeCmdRIds::AddSwEffect(cmd),
+            Self::ChangeSwEffect(cmd) => HSolChangeCmdRIds::ChangeSwEffect(cmd.render(resps)?),
         })
     }
 }
@@ -181,6 +190,9 @@ impl HSolChangeCmdRIds {
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - system-wide effect
+            Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
+            Self::ChangeSwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

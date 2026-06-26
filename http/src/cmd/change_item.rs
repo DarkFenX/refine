@@ -7,6 +7,7 @@ use crate::{
             HAutochargeChangeCmdICtx, HBoosterChangeCmdICtx, HChargeChangeCmdICtx, HDroneChangeCmdICtxRIds,
             HFighterChangeCmdICtxRIds, HFwEffectChangeCmdICtx, HImplantChangeCmdICtx, HModuleChangeCmdICtxRIds,
             HRigChangeCmdICtx, HServiceChangeCmdICtx, HSkillChangeCmdICtx, HSubsystemChangeCmdICtx,
+            HSwEffectChangeCmdICtx,
         },
     },
     util::HExecError,
@@ -27,6 +28,7 @@ pub(crate) enum HItemChangeCmd {
     Service(HServiceChangeCmdICtx),
     Skill(HSkillChangeCmdICtx),
     Subsystem(HSubsystemChangeCmdICtx),
+    SwEffect(HSwEffectChangeCmdICtx),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +53,7 @@ impl HItemChangeCmd {
             Self::Service(cmd) => cmd.execute(core_sol, item_id),
             Self::Skill(cmd) => cmd.execute(core_sol, item_id),
             Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
+            Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
         }
     }
 }

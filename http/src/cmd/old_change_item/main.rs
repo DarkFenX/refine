@@ -3,9 +3,7 @@ use serde::Deserialize;
 use crate::{
     cmd::{
         HItemIdsResp,
-        old_change_item::{
-            HChangeCharacterCmd, HChangeProjEffectCmd, HChangeShipCmd, HChangeStanceCmd, HChangeSwEffectCmd,
-        },
+        old_change_item::{HChangeCharacterCmd, HChangeProjEffectCmd, HChangeShipCmd, HChangeStanceCmd},
     },
     util::HExecError,
 };
@@ -17,7 +15,6 @@ pub(crate) enum HChangeItemCommand {
     ProjEffect(HChangeProjEffectCmd),
     Ship(HChangeShipCmd),
     Stance(HChangeStanceCmd),
-    SwEffect(HChangeSwEffectCmd),
 }
 impl HChangeItemCommand {
     pub(crate) fn execute(
@@ -30,7 +27,6 @@ impl HChangeItemCommand {
             Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Ship(cmd) => cmd.execute(core_sol, item_id),
             Self::Stance(cmd) => cmd.execute(core_sol, item_id),
-            Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
         }
     }
 }

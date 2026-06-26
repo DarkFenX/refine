@@ -14,7 +14,6 @@ pub(crate) enum HAddItemCommand {
     ProjEffect(old_change_sol::HAddProjEffectCmd),
     Ship(old_change_sol::HSetShipCmd),
     Stance(old_change_sol::HSetStanceCmd),
-    SwEffect(old_change_sol::HAddSwEffectCmd),
 }
 impl HAddItemCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
@@ -23,7 +22,6 @@ impl HAddItemCommand {
             Self::ProjEffect(cmd) => cmd.execute(core_sol),
             Self::Ship(cmd) => cmd.execute(core_sol),
             Self::Stance(cmd) => cmd.execute(core_sol),
-            Self::SwEffect(cmd) => Ok(cmd.execute(core_sol)),
         }
     }
 }

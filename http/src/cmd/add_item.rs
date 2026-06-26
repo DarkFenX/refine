@@ -6,7 +6,7 @@ use crate::{
         basic_item::{
             HBoosterAddCmdFCtxRIds, HDroneAddCmdFCtxRIds, HFighterAddCmdFCtxRIds, HFwEffectAddCmdFCtxRIds,
             HImplantAddCmdFCtxRIds, HModuleAddCmdFCtxRIds, HRigAddCmdFCtxRIds, HServiceAddCmdFCtxRIds,
-            HSkillAddCmdFCtxRIds, HSubsystemAddCmdFCtxRIds,
+            HSkillAddCmdFCtxRIds, HSubsystemAddCmdFCtxRIds, HSwEffectAddCmdFCtx,
         },
     },
     util::HExecError,
@@ -25,6 +25,7 @@ pub(crate) enum HItemAddCmd {
     Service(HServiceAddCmdFCtxRIds),
     Skill(HSkillAddCmdFCtxRIds),
     Subsystem(HSubsystemAddCmdFCtxRIds),
+    SwEffect(HSwEffectAddCmdFCtx),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,6 +44,7 @@ impl HItemAddCmd {
             Self::Service(cmd) => cmd.execute(core_sol),
             Self::Skill(cmd) => cmd.execute(core_sol),
             Self::Subsystem(cmd) => cmd.execute(core_sol),
+            Self::SwEffect(cmd) => Ok(cmd.execute(core_sol)),
         }
     }
 }
