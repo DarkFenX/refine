@@ -4,10 +4,10 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddBoosterCmd, HAddDroneCmd, HAddFighterCmd, HAddFwEffectCmd, HAddImplantCmd, HAddModuleCmd,
+            HAddBoosterCmd, HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd,
             HAddProjEffectCmd, HAddRigCmd, HAddServiceCmd, HAddSkillCmd, HAddSubsystemCmd, HAddSwEffectCmd,
-            HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeDroneCmd,
-            HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeFwEffectCmd, HChangeImplantCmd, HChangeModuleCmd,
+            HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd,
+            HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeFwEffectCmd, HChangeModuleCmd,
             HChangeProjEffectCmd, HChangeRigCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeSolCmd,
             HChangeStanceCmd, HChangeSubsystemCmd, HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd,
             HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
@@ -42,18 +42,12 @@ pub(crate) enum HChangeSolCommand {
     UnsetCharacter(HUnsetCharacterCmd),
     // Item - charge
     ChangeCharge(HChangeChargeCmd),
-    // Item - drone
-    AddDrone(HAddDroneCmd),
-    ChangeDrone(HChangeDroneCmd),
     // Item - fighter
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
     // Item - fit-wide effect
     AddFwEffect(HAddFwEffectCmd),
     ChangeFwEffect(HChangeFwEffectCmd),
-    // Item - implant
-    AddImplant(HAddImplantCmd),
-    ChangeImplant(HChangeImplantCmd),
     // Item - module
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
@@ -111,18 +105,12 @@ impl HChangeSolCommand {
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - charge
             Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - drone
-            Self::AddDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fighter
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - implant
-            Self::AddImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),

@@ -12,10 +12,8 @@ use crate::{
 pub(crate) enum HAddItemCommand {
     Booster(old_change_sol::HAddBoosterCmd),
     Character(old_change_sol::HSetCharacterCmd),
-    Drone(old_change_sol::HAddDroneCmd),
     Fighter(old_change_sol::HAddFighterCmd),
     FwEffect(old_change_sol::HAddFwEffectCmd),
-    Implant(old_change_sol::HAddImplantCmd),
     Module(old_change_sol::HAddModuleCmd),
     ProjEffect(old_change_sol::HAddProjEffectCmd),
     Rig(old_change_sol::HAddRigCmd),
@@ -31,10 +29,8 @@ impl HAddItemCommand {
         match self {
             Self::Booster(cmd) => cmd.execute(core_sol),
             Self::Character(cmd) => cmd.execute(core_sol),
-            Self::Drone(cmd) => cmd.execute(core_sol),
             Self::Fighter(cmd) => cmd.execute(core_sol),
             Self::FwEffect(cmd) => cmd.execute(core_sol),
-            Self::Implant(cmd) => cmd.execute(core_sol),
             Self::Module(cmd) => cmd.execute(core_sol),
             Self::ProjEffect(cmd) => cmd.execute(core_sol),
             Self::Rig(cmd) => cmd.execute(core_sol),

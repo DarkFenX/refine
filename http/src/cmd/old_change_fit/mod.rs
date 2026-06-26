@@ -6,10 +6,8 @@ pub(in crate::cmd) use item_character::{
     HUnsetCharacterCmd,
 };
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
-pub(in crate::cmd) use item_drone::{HAddDroneCmd, HChangeDroneCmd};
 pub(in crate::cmd) use item_fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(in crate::cmd) use item_fw_effect::{HAddFwEffectCmd, HChangeFwEffectCmd};
-pub(in crate::cmd) use item_implant::{HAddImplantCmd, HChangeImplantCmd};
 pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use item_rig::{HAddRigCmd, HChangeRigCmd};
 pub(in crate::cmd) use item_service::{HAddServiceCmd, HChangeServiceCmd};
@@ -28,10 +26,8 @@ mod item_autocharge;
 mod item_booster;
 mod item_character;
 mod item_charge;
-mod item_drone;
 mod item_fighter;
 mod item_fw_effect;
-mod item_implant;
 mod item_module;
 mod item_rig;
 mod item_service;
