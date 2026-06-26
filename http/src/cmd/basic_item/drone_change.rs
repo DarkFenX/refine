@@ -28,7 +28,7 @@ pub(crate) struct HDroneChangeCmdFCtxRIds {
 
 // Commands with incomplete context
 #[derive(Deserialize)]
-pub(crate) struct HDroneChangeCmdICtxBIds {
+struct HDroneChangeCmdICtxBIds {
     #[serde(flatten)]
     shared: HDroneChangeCmdShared,
     #[serde(default)]
@@ -74,7 +74,7 @@ impl HDroneChangeCmdFCtxBIds {
 }
 
 impl HDroneChangeCmdICtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HDroneChangeCmdICtxRIds, HExecError> {
+    fn render(self, resps: &HCmdResps) -> Result<HDroneChangeCmdICtxRIds, HExecError> {
         Ok(HDroneChangeCmdICtxRIds {
             shared: self.shared,
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,

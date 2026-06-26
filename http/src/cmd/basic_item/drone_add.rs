@@ -44,7 +44,7 @@ pub(crate) struct HDroneAddCmdICtxRIds {
     proj_item_ids: Vec<rc::ItemId>,
 }
 #[derive(Deserialize)]
-pub(crate) struct HDroneAddCmdShared {
+struct HDroneAddCmdShared {
     type_id: i32,
     state: HMinionState,
     mutation: Option<HMutationOnAdd>,
