@@ -45,10 +45,22 @@ pub(crate) enum HExecError {
     ProjectionNotFound(#[source] rc::err::basic::ProjFoundError),
     #[error("{0}")]
     ProjectionAlreadyExists(#[source] rc::err::basic::ProjNotFoundError),
+    // Backreferences
+    #[error("referenced command #{0} does not have results recorded")]
+    BackrefCmdNotFound(usize),
+    #[error("referenced command #{0} exists, but does not have fit ID info")]
+    BackrefCmdNoFitId(usize),
+    #[error("referenced command #{0} exists, but does not have fleet ID info")]
+    BackrefCmdNoFleetId(usize),
+    #[error("referenced command #{0} exists, but does not have item ID info")]
+    BackrefCmdNoItemId(usize),
+    #[error("referenced command #{0} exists, but does not have charge item ID info")]
+    BackrefCmdNoChargeItemId(usize),
 }
 impl HExecError {
     pub(crate) fn get_code(&self) -> String {
         match self {
+            // TODO: reassign codes
             // Fits
             HExecError::FitNotFoundPrimary(_) => "EXC-002",
             HExecError::FitNotFoundSecondary(_) => "EXC-003",
@@ -73,6 +85,12 @@ impl HExecError {
             HExecError::ProjecteeCantTakeProjs(_) => "EXC-021",
             HExecError::ProjectionNotFound(_) => "EXC-022",
             HExecError::ProjectionAlreadyExists(_) => "EXC-023",
+            // Backreferences
+            HExecError::BackrefCmdNotFound(_) => "REF-001",
+            HExecError::BackrefCmdNoFitId(_) => "REF-002",
+            HExecError::BackrefCmdNoFleetId(_) => "REF-003",
+            HExecError::BackrefCmdNoItemId(_) => "REF-004",
+            HExecError::BackrefCmdNoChargeItemId(_) => "REF-005",
         }
         .to_string()
     }

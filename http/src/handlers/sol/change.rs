@@ -7,7 +7,7 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    cmd::{HCmdResps, HChangeSolCommand},
+    cmd::{HChangeSolCommand, HCmdResps},
     handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
     info::HSolInfo,
     state::HAppState,

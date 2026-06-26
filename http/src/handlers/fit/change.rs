@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     bridge::HBrError,
-    cmd::{HCmdResps, HChangeFitCommand},
+    cmd::{HChangeFitCommand, HCmdResps},
     handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     info::HFitInfo,
     state::HAppState,

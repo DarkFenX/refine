@@ -9,7 +9,7 @@ pub(crate) use change_sol::HChangeSolCommand;
 pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd};
 pub(crate) use remove_item::HRemoveItemCmd;
 pub(crate) use shared::{
-    HCmdResps, HCmdResp, HFitIdResp, HFleetIdResp, HItemIdsResp, get_primary_fit, get_primary_fleet,
+    HCmdResp, HCmdResps, HFitIdResp, HFleetIdResp, HItemIdsResp, get_primary_fit, get_primary_fleet,
 };
 pub(crate) use stats::{HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd};
 pub(crate) use try_fit_items::HTryFitItemsCmd;
