@@ -4,10 +4,10 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddProjEffectCmd, HAddSwEffectCmd, HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd,
-            HChangeFitCmd, HChangeFleetCmd, HChangeProjEffectCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd,
-            HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd,
-            HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HAddProjEffectCmd, HAddSwEffectCmd, HChangeCharacterCmd, HChangeFitCmd, HChangeFleetCmd,
+            HChangeProjEffectCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd, HChangeSwEffectCmd, HDeleteFitCmd,
+            HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd,
+            HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -28,14 +28,10 @@ pub(crate) enum HChangeSolCommand {
     DeleteFit(HDeleteFitCmd),
     // Item
     RemoveItem(HRemoveItemCmd),
-    // Item - autocharge
-    ChangeAutocharge(HChangeAutochargeCmd),
     // Item - character
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     UnsetCharacter(HUnsetCharacterCmd),
-    // Item - charge
-    ChangeCharge(HChangeChargeCmd),
     // Item - projected effect
     AddProjEffect(HAddProjEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
@@ -67,14 +63,10 @@ impl HChangeSolCommand {
             Self::DeleteFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - autocharge
-            Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - charge
-            Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - projected effect
             Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),

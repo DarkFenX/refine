@@ -4,9 +4,9 @@ use crate::{
     cmd::{
         HItemIdsResp,
         basic_item::{
-            HBoosterChangeCmdICtx, HDroneChangeCmdICtxRIds, HFighterChangeCmdICtxRIds, HFwEffectChangeCmdICtx,
-            HImplantChangeCmdICtx, HModuleChangeCmdICtxRIds, HRigChangeCmdICtx, HServiceChangeCmdICtx,
-            HSkillChangeCmdICtx, HSubsystemChangeCmdICtx,
+            HAutochargeChangeCmdICtx, HBoosterChangeCmdICtx, HChargeChangeCmdICtx, HDroneChangeCmdICtxRIds,
+            HFighterChangeCmdICtxRIds, HFwEffectChangeCmdICtx, HImplantChangeCmdICtx, HModuleChangeCmdICtxRIds,
+            HRigChangeCmdICtx, HServiceChangeCmdICtx, HSkillChangeCmdICtx, HSubsystemChangeCmdICtx,
         },
     },
     util::HExecError,
@@ -15,7 +15,9 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HItemChangeCmd {
+    Autocharge(HAutochargeChangeCmdICtx),
     Booster(HBoosterChangeCmdICtx),
+    Charge(HChargeChangeCmdICtx),
     Drone(HDroneChangeCmdICtxRIds),
     Fighter(HFighterChangeCmdICtxRIds),
     FwEffect(HFwEffectChangeCmdICtx),
@@ -37,7 +39,9 @@ impl HItemChangeCmd {
         item_id: &rc::ItemId,
     ) -> Result<HItemIdsResp, HExecError> {
         match self {
+            Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),
+            Self::Charge(cmd) => cmd.execute(core_sol, item_id),
             Self::Drone(cmd) => cmd.execute(core_sol, item_id),
             Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
             Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),

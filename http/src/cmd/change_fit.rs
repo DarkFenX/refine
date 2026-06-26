@@ -4,7 +4,8 @@ use crate::{
     cmd::{
         HCmdResp, HCmdResps,
         basic_item::{
-            HBoosterAddCmdICtx, HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HDroneAddCmdICtxBIds,
+            HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HBoosterAddCmdICtx, HBoosterChangeCmdFCtxBIds,
+            HBoosterChangeCmdFCtxRIds, HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds, HDroneAddCmdICtxBIds,
             HDroneAddCmdICtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFighterAddCmdICtxBIds,
             HFighterAddCmdICtxRIds, HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds, HFwEffectAddCmdICtx,
             HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds,
@@ -20,9 +21,13 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HFitChangeCmdBIds {
+    // Item - autocharge
+    ChangeAutocharge(HAutochargeChangeCmdFCtxBIds),
     // Item - booster
     AddBooster(HBoosterAddCmdICtx),
     ChangeBooster(HBoosterChangeCmdFCtxBIds),
+    // Item - charge
+    ChangeCharge(HChargeChangeCmdFCtxBIds),
     // Item - drone
     AddDrone(HDroneAddCmdICtxBIds),
     ChangeDrone(HDroneChangeCmdFCtxBIds),
@@ -53,9 +58,13 @@ pub(crate) enum HFitChangeCmdBIds {
 }
 
 pub(crate) enum HFitChangeCmdRIds {
+    // Item - autocharge
+    ChangeAutocharge(HAutochargeChangeCmdFCtxRIds),
     // Item - booster
     AddBooster(HBoosterAddCmdICtx),
     ChangeBooster(HBoosterChangeCmdFCtxRIds),
+    // Item - charge
+    ChangeCharge(HChargeChangeCmdFCtxRIds),
     // Item - drone
     AddDrone(HDroneAddCmdICtxRIds),
     ChangeDrone(HDroneChangeCmdFCtxRIds),
@@ -91,9 +100,13 @@ pub(crate) enum HFitChangeCmdRIds {
 impl HFitChangeCmdBIds {
     pub(crate) fn render(self, resps: &HCmdResps) -> Result<HFitChangeCmdRIds, HExecError> {
         Ok(match self {
+            // Item - autocharge
+            Self::ChangeAutocharge(cmd) => HFitChangeCmdRIds::ChangeAutocharge(cmd.render(resps)?),
             // Item - booster
             Self::AddBooster(cmd) => HFitChangeCmdRIds::AddBooster(cmd),
             Self::ChangeBooster(cmd) => HFitChangeCmdRIds::ChangeBooster(cmd.render(resps)?),
+            // Item - charge
+            Self::ChangeCharge(cmd) => HFitChangeCmdRIds::ChangeCharge(cmd.render(resps)?),
             // Item - drone
             Self::AddDrone(cmd) => HFitChangeCmdRIds::AddDrone(cmd.render(resps)?),
             Self::ChangeDrone(cmd) => HFitChangeCmdRIds::ChangeDrone(cmd.render(resps)?),
@@ -131,9 +144,13 @@ impl HFitChangeCmdBIds {
 impl HFitChangeCmdRIds {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
+            // Item - autocharge
+            Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - booster
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - charge
+            Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - drone
             Self::AddDrone(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),

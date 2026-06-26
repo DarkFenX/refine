@@ -1,5 +1,9 @@
+pub(crate) use autocharge_change::{
+    HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HAutochargeChangeCmdICtx,
+};
 pub(crate) use booster_add::{HBoosterAddCmdFCtxBIds, HBoosterAddCmdFCtxRIds, HBoosterAddCmdICtx};
 pub(crate) use booster_change::{HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HBoosterChangeCmdICtx};
+pub(crate) use charge_change::{HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds, HChargeChangeCmdICtx};
 pub(crate) use drone_add::{HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneAddCmdICtxBIds, HDroneAddCmdICtxRIds};
 pub(crate) use drone_change::{HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HDroneChangeCmdICtxRIds};
 pub(crate) use fighter_add::{
@@ -23,8 +27,10 @@ pub(crate) use skill_change::{HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, 
 pub(crate) use subsystem_add::{HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemAddCmdICtx};
 pub(crate) use subsystem_change::{HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds, HSubsystemChangeCmdICtx};
 
+mod autocharge_change;
 mod booster_add;
 mod booster_change;
+mod charge_change;
 mod drone_add;
 mod drone_change;
 mod fighter_add;
