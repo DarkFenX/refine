@@ -9,6 +9,8 @@ use crate::{
             HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds,
             HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
             HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds,
+            HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds,
+            HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
             HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
             HSubsystemChangeCmdFCtxRIds,
         },
@@ -34,6 +36,12 @@ pub(crate) enum HSolChangeCmdBIds {
     // Item - rig
     AddRig(HRigAddCmdFCtxBIds),
     ChangeRig(HRigChangeCmdFCtxBIds),
+    // Item - service
+    AddService(HServiceAddCmdFCtxBIds),
+    ChangeService(HServiceChangeCmdFCtxBIds),
+    // Item - skill
+    AddSkill(HSkillAddCmdFCtxBIds),
+    ChangeSkill(HSkillChangeCmdFCtxBIds),
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdFCtxBIds),
     ChangeSubsystem(HSubsystemChangeCmdFCtxBIds),
@@ -55,6 +63,12 @@ pub(crate) enum HSolChangeCmdRIds {
     // Item - rig
     AddRig(HRigAddCmdFCtxRIds),
     ChangeRig(HRigChangeCmdFCtxRIds),
+    // Item - service
+    AddService(HServiceAddCmdFCtxRIds),
+    ChangeService(HServiceChangeCmdFCtxRIds),
+    // Item - skill
+    AddSkill(HSkillAddCmdFCtxRIds),
+    ChangeSkill(HSkillChangeCmdFCtxRIds),
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdFCtxRIds),
     ChangeSubsystem(HSubsystemChangeCmdFCtxRIds),
@@ -81,6 +95,12 @@ impl HSolChangeCmdBIds {
             // Item - rig
             Self::AddRig(cmd) => HSolChangeCmdRIds::AddRig(cmd.render(resps)?),
             Self::ChangeRig(cmd) => HSolChangeCmdRIds::ChangeRig(cmd.render(resps)?),
+            // Item - service
+            Self::AddService(cmd) => HSolChangeCmdRIds::AddService(cmd.render(resps)?),
+            Self::ChangeService(cmd) => HSolChangeCmdRIds::ChangeService(cmd.render(resps)?),
+            // Item - skill
+            Self::AddSkill(cmd) => HSolChangeCmdRIds::AddSkill(cmd.render(resps)?),
+            Self::ChangeSkill(cmd) => HSolChangeCmdRIds::ChangeSkill(cmd.render(resps)?),
             // Item - subsystem
             Self::AddSubsystem(cmd) => HSolChangeCmdRIds::AddSubsystem(cmd.render(resps)?),
             Self::ChangeSubsystem(cmd) => HSolChangeCmdRIds::ChangeSubsystem(cmd.render(resps)?),
@@ -109,6 +129,12 @@ impl HSolChangeCmdRIds {
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - service
+            Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - skill
+            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),

@@ -7,11 +7,9 @@ pub(in crate::cmd) use item_character::{
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
 pub(in crate::cmd) use item_fighter::{HAddFighterCmd, HChangeFighterCmd};
 pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
-pub(in crate::cmd) use item_service::{HAddServiceCmd, HChangeServiceCmd};
 pub(in crate::cmd) use item_ship::{
     HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd, HUnsetShipCmd,
 };
-pub(in crate::cmd) use item_skill::{HAddSkillCmd, HChangeSkillCmd};
 pub(in crate::cmd) use item_stance::{
     HChangeStanceCmd, HChangeStanceViaFitIdCmd, HChangeStanceViaItemIdCmd, HSetStanceCmd, HUnsetStanceCmd,
 };
@@ -23,8 +21,6 @@ mod item_character;
 mod item_charge;
 mod item_fighter;
 mod item_module;
-mod item_service;
 mod item_ship;
-mod item_skill;
 mod item_stance;
 mod main;

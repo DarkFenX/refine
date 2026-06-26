@@ -5,7 +5,7 @@ use crate::{
         HItemIdsResp,
         basic_item::{
             HBoosterAddCmdFCtxRIds, HDroneAddCmdFCtxRIds, HFwEffectAddCmdFCtxRIds, HImplantAddCmdFCtxRIds,
-            HRigAddCmdFCtxRIds, HSubsystemAddCmdFCtxRIds,
+            HRigAddCmdFCtxRIds, HServiceAddCmdFCtxRIds, HSkillAddCmdFCtxRIds, HSubsystemAddCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -19,6 +19,8 @@ pub(crate) enum HItemAddCmd {
     FwEffect(HFwEffectAddCmdFCtxRIds),
     Implant(HImplantAddCmdFCtxRIds),
     Rig(HRigAddCmdFCtxRIds),
+    Service(HServiceAddCmdFCtxRIds),
+    Skill(HSkillAddCmdFCtxRIds),
     Subsystem(HSubsystemAddCmdFCtxRIds),
 }
 
@@ -33,6 +35,8 @@ impl HItemAddCmd {
             Self::FwEffect(cmd) => cmd.execute(core_sol),
             Self::Implant(cmd) => cmd.execute(core_sol),
             Self::Rig(cmd) => cmd.execute(core_sol),
+            Self::Service(cmd) => cmd.execute(core_sol),
+            Self::Skill(cmd) => cmd.execute(core_sol),
             Self::Subsystem(cmd) => cmd.execute(core_sol),
         }
     }

@@ -4,10 +4,9 @@ use crate::{
     cmd::{
         HCmdResp,
         old_change_fit::{
-            HAddFighterCmd, HAddModuleCmd, HAddServiceCmd, HAddSkillCmd, HChangeAutochargeCmd, HChangeCharacterCmd,
-            HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd, HChangeModuleCmd, HChangeServiceCmd, HChangeShipCmd,
-            HChangeSkillCmd, HChangeStanceCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd,
-            HUnsetShipCmd, HUnsetStanceCmd,
+            HAddFighterCmd, HAddModuleCmd, HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd,
+            HChangeFighterCmd, HChangeFitCmd, HChangeModuleCmd, HChangeShipCmd, HChangeStanceCmd, HSetCharacterCmd,
+            HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -32,16 +31,10 @@ pub(crate) enum HChangeFitCommand {
     // Item - module
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
-    // Item - service
-    AddService(HAddServiceCmd),
-    ChangeService(HChangeServiceCmd),
     // Item - ship
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
     UnsetShip(HUnsetShipCmd),
-    // Item - skill
-    AddSkill(HAddSkillCmd),
-    ChangeSkill(HChangeSkillCmd),
     // Item - stance
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
@@ -66,16 +59,10 @@ impl HChangeFitCommand {
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - service
-            Self::AddService(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            // Item - skill
-            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),

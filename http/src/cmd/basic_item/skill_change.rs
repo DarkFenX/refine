@@ -1,18 +1,56 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{HItemIdsResp, shared::HEffectModeMap},
+    cmd::{
+        HCmdResps, HItemIdsResp,
+        shared::{HEffectModeMap, HItemIdBackref},
+    },
     util::HExecError,
 };
 
+// Commands with full context
 #[derive(Deserialize)]
-pub(crate) struct HChangeSkillCmd {
+pub(crate) struct HSkillChangeCmdFCtxBIds {
+    item_id: HItemIdBackref,
+    #[serde(flatten)]
+    ictx_cmd: HSkillChangeCmdICtx,
+}
+pub(crate) struct HSkillChangeCmdFCtxRIds {
+    item_id: rc::ItemId,
+    ictx_cmd: HSkillChangeCmdICtx,
+}
+
+// Commands with incomplete context
+#[derive(Deserialize)]
+pub(crate) struct HSkillChangeCmdICtx {
     type_id: Option<i32>,
     level: Option<i32>,
     state: Option<bool>,
     effect_modes: Option<HEffectModeMap>,
 }
-impl HChangeSkillCmd {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSkillChangeCmdFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HSkillChangeCmdFCtxRIds, HExecError> {
+        Ok(HSkillChangeCmdFCtxRIds {
+            item_id: resps.render_item_id(self.item_id)?,
+            ictx_cmd: self.ictx_cmd,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSkillChangeCmdFCtxRIds {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+        self.ictx_cmd.execute(core_sol, &self.item_id)
+    }
+}
+
+impl HSkillChangeCmdICtx {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,

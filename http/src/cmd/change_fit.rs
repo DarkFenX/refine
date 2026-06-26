@@ -8,7 +8,9 @@ use crate::{
             HDroneAddCmdICtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFwEffectAddCmdICtx,
             HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds,
             HImplantChangeCmdFCtxRIds, HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds,
-            HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
+            HServiceAddCmdICtx, HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HSkillAddCmdICtx,
+            HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds,
+            HSubsystemChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -32,6 +34,12 @@ pub(crate) enum HFitChangeCmdBIds {
     // Item - rig
     AddRig(HRigAddCmdICtx),
     ChangeRig(HRigChangeCmdFCtxBIds),
+    // Item - service
+    AddService(HServiceAddCmdICtx),
+    ChangeService(HServiceChangeCmdFCtxBIds),
+    // Item - skill
+    AddSkill(HSkillAddCmdICtx),
+    ChangeSkill(HSkillChangeCmdFCtxBIds),
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdICtx),
     ChangeSubsystem(HSubsystemChangeCmdFCtxBIds),
@@ -53,6 +61,12 @@ pub(crate) enum HFitChangeCmdRIds {
     // Item - rig
     AddRig(HRigAddCmdICtx),
     ChangeRig(HRigChangeCmdFCtxRIds),
+    // Item - service
+    AddService(HServiceAddCmdICtx),
+    ChangeService(HServiceChangeCmdFCtxRIds),
+    // Item - skill
+    AddSkill(HSkillAddCmdICtx),
+    ChangeSkill(HSkillChangeCmdFCtxRIds),
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdICtx),
     ChangeSubsystem(HSubsystemChangeCmdFCtxRIds),
@@ -79,6 +93,12 @@ impl HFitChangeCmdBIds {
             // Item - rig
             Self::AddRig(cmd) => HFitChangeCmdRIds::AddRig(cmd),
             Self::ChangeRig(cmd) => HFitChangeCmdRIds::ChangeRig(cmd.render(resps)?),
+            // Item - service
+            Self::AddService(cmd) => HFitChangeCmdRIds::AddService(cmd),
+            Self::ChangeService(cmd) => HFitChangeCmdRIds::ChangeService(cmd.render(resps)?),
+            // Item - skill
+            Self::AddSkill(cmd) => HFitChangeCmdRIds::AddSkill(cmd),
+            Self::ChangeSkill(cmd) => HFitChangeCmdRIds::ChangeSkill(cmd.render(resps)?),
             // Item - subsystem
             Self::AddSubsystem(cmd) => HFitChangeCmdRIds::AddSubsystem(cmd),
             Self::ChangeSubsystem(cmd) => HFitChangeCmdRIds::ChangeSubsystem(cmd.render(resps)?),
@@ -107,6 +127,12 @@ impl HFitChangeCmdRIds {
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - service
+            Self::AddService(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - skill
+            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),

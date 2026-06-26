@@ -8,6 +8,10 @@ pub(crate) use implant_add::{HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HIm
 pub(crate) use implant_change::{HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds, HImplantChangeCmdICtx};
 pub(crate) use rig_add::{HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigAddCmdICtx};
 pub(crate) use rig_change::{HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HRigChangeCmdICtx};
+pub(crate) use service_add::{HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceAddCmdICtx};
+pub(crate) use service_change::{HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HServiceChangeCmdICtx};
+pub(crate) use skill_add::{HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillAddCmdICtx};
+pub(crate) use skill_change::{HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSkillChangeCmdICtx};
 pub(crate) use subsystem_add::{HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemAddCmdICtx};
 pub(crate) use subsystem_change::{HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds, HSubsystemChangeCmdICtx};
 
@@ -21,5 +25,9 @@ mod implant_add;
 mod implant_change;
 mod rig_add;
 mod rig_change;
+mod service_add;
+mod service_change;
+mod skill_add;
+mod skill_change;
 mod subsystem_add;
 mod subsystem_change;

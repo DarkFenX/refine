@@ -19,6 +19,8 @@ pub(crate) enum HItemChangeCmd {
     FwEffect(HFwEffectChangeCmdICtx),
     Implant(HImplantChangeCmdICtx),
     Rig(HRigChangeCmdICtx),
+    Service(HRigChangeCmdICtx),
+    Skill(HRigChangeCmdICtx),
     Subsystem(HSubsystemChangeCmdICtx),
 }
 
@@ -37,6 +39,8 @@ impl HItemChangeCmd {
             Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Implant(cmd) => cmd.execute(core_sol, item_id),
             Self::Rig(cmd) => cmd.execute(core_sol, item_id),
+            Self::Service(cmd) => cmd.execute(core_sol, item_id),
+            Self::Skill(cmd) => cmd.execute(core_sol, item_id),
             Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
         }
     }

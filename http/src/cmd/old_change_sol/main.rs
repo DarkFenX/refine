@@ -4,12 +4,11 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddFighterCmd, HAddModuleCmd, HAddProjEffectCmd, HAddServiceCmd, HAddSkillCmd, HAddSwEffectCmd,
-            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd,
-            HChangeFleetCmd, HChangeModuleCmd, HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd,
-            HChangeSkillCmd, HChangeSolCmd, HChangeStanceCmd, HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd,
-            HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd,
-            HUnsetStanceCmd,
+            HAddFighterCmd, HAddModuleCmd, HAddProjEffectCmd, HAddSwEffectCmd, HChangeAutochargeCmd,
+            HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeModuleCmd,
+            HChangeProjEffectCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd, HChangeSwEffectCmd, HDeleteFitCmd,
+            HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd,
+            HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -47,16 +46,10 @@ pub(crate) enum HChangeSolCommand {
     // Item - projected effect
     AddProjEffect(HAddProjEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
-    // Item - service
-    AddService(HAddServiceCmd),
-    ChangeService(HChangeServiceCmd),
     // Item - ship
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
     UnsetShip(HUnsetShipCmd),
-    // Item - skill
-    AddSkill(HAddSkillCmd),
-    ChangeSkill(HChangeSkillCmd),
     // Item - stance
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
@@ -98,16 +91,10 @@ impl HChangeSolCommand {
             // Item - projected effect
             Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - service
-            Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - skill
-            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol)?.into()),

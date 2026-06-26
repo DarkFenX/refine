@@ -14,9 +14,7 @@ pub(crate) enum HAddItemCommand {
     Fighter(old_change_sol::HAddFighterCmd),
     Module(old_change_sol::HAddModuleCmd),
     ProjEffect(old_change_sol::HAddProjEffectCmd),
-    Service(old_change_sol::HAddServiceCmd),
     Ship(old_change_sol::HSetShipCmd),
-    Skill(old_change_sol::HAddSkillCmd),
     Stance(old_change_sol::HSetStanceCmd),
     SwEffect(old_change_sol::HAddSwEffectCmd),
 }
@@ -27,9 +25,7 @@ impl HAddItemCommand {
             Self::Fighter(cmd) => cmd.execute(core_sol),
             Self::Module(cmd) => cmd.execute(core_sol),
             Self::ProjEffect(cmd) => cmd.execute(core_sol),
-            Self::Service(cmd) => cmd.execute(core_sol),
             Self::Ship(cmd) => cmd.execute(core_sol),
-            Self::Skill(cmd) => cmd.execute(core_sol),
             Self::Stance(cmd) => cmd.execute(core_sol),
             Self::SwEffect(cmd) => Ok(cmd.execute(core_sol)),
         }
