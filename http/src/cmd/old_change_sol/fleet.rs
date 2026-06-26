@@ -1,0 +1,34 @@
+use serde::Deserialize;
+use serde_with::{DisplayFromStr, serde_as};
+
+use crate::{
+    cmd::{HFleetIdResp, old_change_fleet, shared::get_primary_fleet},
+    util::HExecError,
+};
+
+#[serde_as]
+#[derive(Deserialize)]
+pub(crate) struct HChangeFleetCmd {
+    #[serde_as(as = "DisplayFromStr")]
+    fleet_id: rc::FleetId,
+    #[serde(flatten)]
+    fleet_cmd: old_change_fleet::HChangeFleetCmd,
+}
+impl HChangeFleetCmd {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFleetIdResp, HExecError> {
+        self.fleet_cmd.execute(core_sol, &self.fleet_id)
+    }
+}
+
+#[serde_as]
+#[derive(Deserialize)]
+pub(crate) struct HDeleteFleetCmd {
+    #[serde_as(as = "DisplayFromStr")]
+    fleet_id: rc::FleetId,
+}
+impl HDeleteFleetCmd {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), HExecError> {
+        get_primary_fleet(core_sol, &self.fleet_id)?.remove();
+        Ok(())
+    }
+}
