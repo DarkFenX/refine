@@ -2,7 +2,7 @@ pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
 pub(in crate::cmd) use item_booster::HChangeBoosterCmd;
 pub(in crate::cmd) use item_character::HChangeCharacterCmd;
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
-pub(in crate::cmd) use item_drone::HChangeDroneCmdFinal;
+pub(in crate::cmd) use item_drone::HChangeDroneCmdComplete;
 pub(in crate::cmd) use item_fighter::HChangeFighterCmd;
 pub(in crate::cmd) use item_fw_effect::HChangeFwEffectCmd;
 pub(in crate::cmd) use item_implant::HChangeImplantCmd;

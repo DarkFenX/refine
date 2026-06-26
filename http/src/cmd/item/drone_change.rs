@@ -10,21 +10,37 @@ use crate::{
     util::{HExecError, TriStateField},
 };
 
+// Commands with full context
 #[derive(Deserialize)]
-pub(crate) struct HChangeDroneCmdBackref {
+pub(crate) struct HDroneChangeCmdFCtxBIds {
+    item_id: HItemIdBackref,
     #[serde(flatten)]
-    shared: HChangeDroneCmdShared,
+    ictx_cmd: HDroneChangeCmdICtxBIds,
+}
+#[serde_as]
+#[derive(Deserialize)]
+pub(crate) struct HDroneChangeCmdFCtxRIds {
+    #[serde_as(as = "DisplayFromStr")]
+    item_id: rc::ItemId,
+    #[serde(flatten)]
+    ictx_cmd: HDroneChangeCmdICtxRIds,
+}
+
+// Commands with incomplete context
+#[derive(Deserialize)]
+pub(crate) struct HDroneChangeCmdICtxBIds {
+    #[serde(flatten)]
+    shared: HDroneChangeCmdShared,
     #[serde(default)]
     add_proj_item_ids: Vec<HItemIdBackref>,
     #[serde(default)]
     rm_proj_item_ids: Vec<HItemIdBackref>,
 }
-
 #[serde_as]
 #[derive(Deserialize)]
-pub(crate) struct HChangeDroneCmdComplete {
+pub(crate) struct HDroneChangeCmdICtxRIds {
     #[serde(flatten)]
-    shared: HChangeDroneCmdShared,
+    shared: HDroneChangeCmdShared,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_proj_item_ids: Vec<rc::ItemId>,
@@ -32,9 +48,8 @@ pub(crate) struct HChangeDroneCmdComplete {
     #[serde(default)]
     rm_proj_item_ids: Vec<rc::ItemId>,
 }
-
 #[derive(Deserialize)]
-struct HChangeDroneCmdShared {
+struct HDroneChangeCmdShared {
     type_id: Option<i32>,
     state: Option<HMinionState>,
     #[serde(default)]
@@ -47,11 +62,20 @@ struct HChangeDroneCmdShared {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Execution
+// Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HChangeDroneCmdBackref {
-    fn render(self, resps: &HCmdResps) -> Result<HChangeDroneCmdComplete, HExecError> {
-        Ok(HChangeDroneCmdComplete {
+impl HDroneChangeCmdFCtxBIds {
+    fn render(self, resps: &HCmdResps) -> Result<HDroneChangeCmdFCtxRIds, HExecError> {
+        Ok(HDroneChangeCmdFCtxRIds {
+            item_id: resps.render_item_id(self.item_id)?,
+            ictx_cmd: self.ictx_cmd.render(resps)?,
+        })
+    }
+}
+
+impl HDroneChangeCmdICtxBIds {
+    fn render(self, resps: &HCmdResps) -> Result<HDroneChangeCmdICtxRIds, HExecError> {
+        Ok(HDroneChangeCmdICtxRIds {
             shared: self.shared,
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,
@@ -59,7 +83,16 @@ impl HChangeDroneCmdBackref {
     }
 }
 
-impl HChangeDroneCmdComplete {
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HDroneChangeCmdFCtxRIds {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+        self.ictx_cmd.execute(core_sol, &self.item_id)
+    }
+}
+
+impl HDroneChangeCmdICtxRIds {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,

@@ -24,6 +24,7 @@ mod change_fleet;
 mod change_item;
 mod change_sol;
 mod dev;
+mod item;
 mod remove_item;
 mod shared;
 mod stats;

@@ -4,7 +4,7 @@ use crate::{
     cmd::{
         HItemIdsResp,
         change_item::{
-            HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeDroneCmdFinal,
+            HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeDroneCmdComplete,
             HChangeFighterCmd, HChangeFwEffectCmd, HChangeImplantCmd, HChangeModuleCmd, HChangeProjEffectCmd,
             HChangeRigCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeStanceCmd, HChangeSubsystemCmd,
             HChangeSwEffectCmd,
@@ -20,7 +20,7 @@ pub(crate) enum HChangeItemCommand {
     Booster(HChangeBoosterCmd),
     Character(HChangeCharacterCmd),
     Charge(HChangeChargeCmd),
-    Drone(HChangeDroneCmdFinal),
+    Drone(HChangeDroneCmdComplete),
     Fighter(HChangeFighterCmd),
     FwEffect(HChangeFwEffectCmd),
     Implant(HChangeImplantCmd),
