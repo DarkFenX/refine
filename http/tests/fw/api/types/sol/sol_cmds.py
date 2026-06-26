@@ -97,7 +97,7 @@ class SolCmdCtx:
     def __make_item(self) -> Item:
         # It is supposed to be called after command has been added
         index = len(self._commands) - 1
-        data = {'id': fr'\{index}', 'charge': {'id': fr'\{index}c'}}
+        data = {'id': f'#{index}', 'charge': {'id': f'#{index}c'}}
         self._ret_datas[index] = data
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
