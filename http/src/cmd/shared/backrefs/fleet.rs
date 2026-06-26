@@ -4,6 +4,7 @@ use serde::Deserialize;
 
 use super::shared::BACKREF_PREFIX;
 
+#[derive(Copy, Clone)]
 pub(in crate::cmd) enum HFleetIdBackref {
     Id(rc::FleetId),
     Backref(usize),

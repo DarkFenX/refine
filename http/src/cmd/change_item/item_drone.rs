@@ -3,7 +3,7 @@ use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::{
-        HItemIdsResp,
+        HCmdResps, HItemIdsResp,
         shared::{HEffectModeMap, HItemIdBackref, HMutationOnChange},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
@@ -50,8 +50,12 @@ struct HChangeDroneCmdShared {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HChangeDroneCmdBackref {
-    fn render(self) -> Result<HChangeDroneCmdFinal, HExecError> {
-        Err(HExecError::UnremovableAutocharge)
+    fn render(self, resps: &HCmdResps) -> Result<HChangeDroneCmdFinal, HExecError> {
+        Ok(HChangeDroneCmdFinal {
+            shared: self.shared,
+            add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
+            rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,
+        })
     }
 }
 

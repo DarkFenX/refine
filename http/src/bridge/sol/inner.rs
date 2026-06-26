@@ -136,10 +136,10 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let mut cmd_resps = HCmdResps::with_capacity(commands.len());
-                for (i, command) in commands.iter().enumerate() {
+                for (index, command) in commands.iter().enumerate() {
                     let resp = command
                         .execute(&mut core_sol)
-                        .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
+                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?;
                     cmd_resps.append(resp);
                 }
                 let sol_info =
@@ -428,10 +428,10 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let mut cmd_resps = HCmdResps::with_capacity(commands.len());
-                for (i, command) in commands.iter().enumerate() {
+                for (index, command) in commands.iter().enumerate() {
                     let resp = command
                         .execute(&mut core_sol, &fit_id)
-                        .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
+                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?;
                     cmd_resps.append(resp);
                 }
                 let mut core_fit = get_primary_fit(&mut core_sol, &fit_id)?;
