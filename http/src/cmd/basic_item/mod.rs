@@ -2,16 +2,24 @@ pub(crate) use booster_add::{HBoosterAddCmdFCtxBIds, HBoosterAddCmdFCtxRIds, HBo
 pub(crate) use booster_change::{HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HBoosterChangeCmdICtx};
 pub(crate) use drone_add::{HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneAddCmdICtxBIds, HDroneAddCmdICtxRIds};
 pub(crate) use drone_change::{HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HDroneChangeCmdICtxRIds};
+pub(crate) use fw_effect_add::{HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectAddCmdICtx};
+pub(crate) use fw_effect_change::{HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HFwEffectChangeCmdICtx};
 pub(crate) use implant_add::{HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantAddCmdICtx};
 pub(crate) use implant_change::{HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds, HImplantChangeCmdICtx};
 pub(crate) use rig_add::{HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigAddCmdICtx};
 pub(crate) use rig_change::{HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HRigChangeCmdICtx};
+pub(crate) use subsystem_add::{HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemAddCmdICtx};
+pub(crate) use subsystem_change::{HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds, HSubsystemChangeCmdICtx};
 
 mod booster_add;
 mod booster_change;
 mod drone_add;
 mod drone_change;
+mod fw_effect_add;
+mod fw_effect_change;
 mod implant_add;
 mod implant_change;
 mod rig_add;
 mod rig_change;
+mod subsystem_add;
+mod subsystem_change;

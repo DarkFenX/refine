@@ -6,8 +6,11 @@ use crate::{
         basic_item::{
             HBoosterAddCmdFCtxBIds, HBoosterAddCmdFCtxRIds, HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds,
             HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds,
+            HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds,
             HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
             HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds,
+            HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
+            HSubsystemChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -22,12 +25,18 @@ pub(crate) enum HSolChangeCmdBIds {
     // Item - drone
     AddDrone(HDroneAddCmdFCtxBIds),
     ChangeDrone(HDroneChangeCmdFCtxBIds),
+    // Item - fit-wide effect
+    AddFwEffect(HFwEffectAddCmdFCtxBIds),
+    ChangeFwEffect(HFwEffectChangeCmdFCtxBIds),
     // Item - implant
     AddImplant(HImplantAddCmdFCtxBIds),
     ChangeImplant(HImplantChangeCmdFCtxBIds),
     // Item - rig
     AddRig(HRigAddCmdFCtxBIds),
     ChangeRig(HRigChangeCmdFCtxBIds),
+    // Item - subsystem
+    AddSubsystem(HSubsystemAddCmdFCtxBIds),
+    ChangeSubsystem(HSubsystemChangeCmdFCtxBIds),
 }
 
 pub(crate) enum HSolChangeCmdRIds {
@@ -37,12 +46,18 @@ pub(crate) enum HSolChangeCmdRIds {
     // Item - drone
     AddDrone(HDroneAddCmdFCtxRIds),
     ChangeDrone(HDroneChangeCmdFCtxRIds),
+    // Item - fit-wide effect
+    AddFwEffect(HFwEffectAddCmdFCtxRIds),
+    ChangeFwEffect(HFwEffectChangeCmdFCtxRIds),
     // Item - implant
     AddImplant(HImplantAddCmdFCtxRIds),
     ChangeImplant(HImplantChangeCmdFCtxRIds),
     // Item - rig
     AddRig(HRigAddCmdFCtxRIds),
     ChangeRig(HRigChangeCmdFCtxRIds),
+    // Item - subsystem
+    AddSubsystem(HSubsystemAddCmdFCtxRIds),
+    ChangeSubsystem(HSubsystemChangeCmdFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,12 +72,18 @@ impl HSolChangeCmdBIds {
             // Item - drone
             Self::AddDrone(cmd) => HSolChangeCmdRIds::AddDrone(cmd.render(resps)?),
             Self::ChangeDrone(cmd) => HSolChangeCmdRIds::ChangeDrone(cmd.render(resps)?),
+            // Item - fit-wide effect
+            Self::AddFwEffect(cmd) => HSolChangeCmdRIds::AddFwEffect(cmd.render(resps)?),
+            Self::ChangeFwEffect(cmd) => HSolChangeCmdRIds::ChangeFwEffect(cmd.render(resps)?),
             // Item - implant
             Self::AddImplant(cmd) => HSolChangeCmdRIds::AddImplant(cmd.render(resps)?),
             Self::ChangeImplant(cmd) => HSolChangeCmdRIds::ChangeImplant(cmd.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => HSolChangeCmdRIds::AddRig(cmd.render(resps)?),
             Self::ChangeRig(cmd) => HSolChangeCmdRIds::ChangeRig(cmd.render(resps)?),
+            // Item - subsystem
+            Self::AddSubsystem(cmd) => HSolChangeCmdRIds::AddSubsystem(cmd.render(resps)?),
+            Self::ChangeSubsystem(cmd) => HSolChangeCmdRIds::ChangeSubsystem(cmd.render(resps)?),
         })
     }
 }
@@ -79,12 +100,18 @@ impl HSolChangeCmdRIds {
             // Item - drone
             Self::AddDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - fit-wide effect
+            Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - implant
             Self::AddImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - subsystem
+            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

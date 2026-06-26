@@ -3,7 +3,10 @@ use serde::Deserialize;
 use crate::{
     cmd::{
         HItemIdsResp,
-        basic_item::{HBoosterChangeCmdICtx, HDroneChangeCmdICtxRIds, HImplantChangeCmdICtx, HRigChangeCmdICtx},
+        basic_item::{
+            HBoosterChangeCmdICtx, HDroneChangeCmdICtxRIds, HFwEffectChangeCmdICtx, HImplantChangeCmdICtx,
+            HRigChangeCmdICtx, HSubsystemChangeCmdICtx,
+        },
     },
     util::HExecError,
 };
@@ -13,8 +16,10 @@ use crate::{
 pub(crate) enum HItemChangeCmd {
     Booster(HBoosterChangeCmdICtx),
     Drone(HDroneChangeCmdICtxRIds),
+    FwEffect(HFwEffectChangeCmdICtx),
     Implant(HImplantChangeCmdICtx),
     Rig(HRigChangeCmdICtx),
+    Subsystem(HSubsystemChangeCmdICtx),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,8 +34,10 @@ impl HItemChangeCmd {
         match self {
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),
             Self::Drone(cmd) => cmd.execute(core_sol, item_id),
+            Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Implant(cmd) => cmd.execute(core_sol, item_id),
             Self::Rig(cmd) => cmd.execute(core_sol, item_id),
+            Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
         }
     }
 }

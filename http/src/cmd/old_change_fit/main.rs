@@ -4,11 +4,10 @@ use crate::{
     cmd::{
         HCmdResp,
         old_change_fit::{
-            HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd, HAddServiceCmd, HAddSkillCmd, HAddSubsystemCmd,
-            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd,
-            HChangeFwEffectCmd, HChangeModuleCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeStanceCmd,
-            HChangeSubsystemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd,
-            HUnsetStanceCmd,
+            HAddFighterCmd, HAddModuleCmd, HAddServiceCmd, HAddSkillCmd, HChangeAutochargeCmd, HChangeCharacterCmd,
+            HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd, HChangeModuleCmd, HChangeServiceCmd, HChangeShipCmd,
+            HChangeSkillCmd, HChangeStanceCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd,
+            HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -30,9 +29,6 @@ pub(crate) enum HChangeFitCommand {
     // Item - fighter
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
-    // Item - fit-wide effect
-    AddFwEffect(HAddFwEffectCmd),
-    ChangeFwEffect(HChangeFwEffectCmd),
     // Item - module
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
@@ -50,9 +46,6 @@ pub(crate) enum HChangeFitCommand {
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     UnsetStance(HUnsetStanceCmd),
-    // Item - subsystem
-    AddSubsystem(HAddSubsystemCmd),
-    ChangeSubsystem(HChangeSubsystemCmd),
 }
 impl HChangeFitCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
@@ -70,9 +63,6 @@ impl HChangeFitCommand {
             // Item - fighter
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
@@ -90,9 +80,6 @@ impl HChangeFitCommand {
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::UnsetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            // Item - subsystem
-            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

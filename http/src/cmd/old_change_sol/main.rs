@@ -4,12 +4,12 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd, HAddProjEffectCmd, HAddServiceCmd, HAddSkillCmd,
-            HAddSubsystemCmd, HAddSwEffectCmd, HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd,
-            HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeFwEffectCmd, HChangeModuleCmd,
-            HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeSolCmd, HChangeStanceCmd,
-            HChangeSubsystemCmd, HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd,
-            HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HAddFighterCmd, HAddModuleCmd, HAddProjEffectCmd, HAddServiceCmd, HAddSkillCmd, HAddSwEffectCmd,
+            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd,
+            HChangeFleetCmd, HChangeModuleCmd, HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd,
+            HChangeSkillCmd, HChangeSolCmd, HChangeStanceCmd, HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd,
+            HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd,
+            HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -41,9 +41,6 @@ pub(crate) enum HChangeSolCommand {
     // Item - fighter
     AddFighter(HAddFighterCmd),
     ChangeFighter(HChangeFighterCmd),
-    // Item - fit-wide effect
-    AddFwEffect(HAddFwEffectCmd),
-    ChangeFwEffect(HChangeFwEffectCmd),
     // Item - module
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
@@ -64,9 +61,6 @@ pub(crate) enum HChangeSolCommand {
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
     UnsetStance(HUnsetStanceCmd),
-    // Item - subsystem
-    AddSubsystem(HAddSubsystemCmd),
-    ChangeSubsystem(HChangeSubsystemCmd),
     // Item - system-wide effect
     AddSwEffect(HAddSwEffectCmd),
     ChangeSwEffect(HChangeSwEffectCmd),
@@ -98,9 +92,6 @@ impl HChangeSolCommand {
             // Item - fighter
             Self::AddFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
@@ -121,9 +112,6 @@ impl HChangeSolCommand {
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - subsystem
-            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - system-wide effect
             Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
             Self::ChangeSwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),

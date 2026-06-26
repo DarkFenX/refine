@@ -4,9 +4,9 @@ use crate::{
     cmd::{
         HItemIdsResp,
         old_change_item::{
-            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFwEffectCmd,
-            HChangeModuleCmd, HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd,
-            HChangeStanceCmd, HChangeSubsystemCmd, HChangeSwEffectCmd,
+            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeModuleCmd,
+            HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeStanceCmd,
+            HChangeSwEffectCmd,
         },
     },
     util::HExecError,
@@ -19,14 +19,12 @@ pub(crate) enum HChangeItemCommand {
     Character(HChangeCharacterCmd),
     Charge(HChangeChargeCmd),
     Fighter(HChangeFighterCmd),
-    FwEffect(HChangeFwEffectCmd),
     Module(HChangeModuleCmd),
     ProjEffect(HChangeProjEffectCmd),
     Service(HChangeServiceCmd),
     Ship(HChangeShipCmd),
     Skill(HChangeSkillCmd),
     Stance(HChangeStanceCmd),
-    Subsystem(HChangeSubsystemCmd),
     SwEffect(HChangeSwEffectCmd),
 }
 impl HChangeItemCommand {
@@ -40,14 +38,12 @@ impl HChangeItemCommand {
             Self::Character(cmd) => cmd.execute(core_sol, item_id),
             Self::Charge(cmd) => cmd.execute(core_sol, item_id),
             Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
-            Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Module(cmd) => cmd.execute(core_sol, item_id),
             Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Service(cmd) => cmd.execute(core_sol, item_id),
             Self::Ship(cmd) => cmd.execute(core_sol, item_id),
             Self::Skill(cmd) => cmd.execute(core_sol, item_id),
             Self::Stance(cmd) => cmd.execute(core_sol, item_id),
-            Self::Subsystem(cmd) => cmd.execute(core_sol, item_id),
             Self::SwEffect(cmd) => cmd.execute(core_sol, item_id),
         }
     }
