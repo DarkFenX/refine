@@ -7,7 +7,7 @@ use axum::{
 
 use crate::{
     bridge::HBrError,
-    cmd::HAddItemCommand,
+    cmd::HItemAddCmd,
     handlers::{HGSolResult, HSingleErr, get_guarded_sol, item::HItemInfoParams},
     state::HAppState,
     util::HExecError,
@@ -18,7 +18,7 @@ pub(crate) async fn create_item(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
     Query(params): Query<HItemInfoParams>,
-    Json(payload): Json<HAddItemCommand>,
+    Json(payload): Json<HItemAddCmd>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,

@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     bridge::HBrError,
-    cmd::{HChangeFitCommand, HCmdResps},
+    cmd::{HCmdResps, HFitChangeCmdBIds},
     handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     info::HFitInfo,
     state::HAppState,
@@ -17,7 +17,7 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HFitChangeReq {
-    commands: Vec<HChangeFitCommand>,
+    commands: Vec<HFitChangeCmdBIds>,
 }
 
 #[derive(Serialize)]

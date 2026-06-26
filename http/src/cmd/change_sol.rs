@@ -35,7 +35,7 @@ pub(crate) enum HSolChangeCmdRIds {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolChangeCmdBIds {
-    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HSolChangeCmdRIds, HExecError> {
+    pub(crate) fn render(self, resps: &HCmdResps) -> Result<HSolChangeCmdRIds, HExecError> {
         Ok(match self {
             // Item - drone
             Self::AddDrone(cmd) => HSolChangeCmdRIds::AddDrone(cmd.render(resps)?),

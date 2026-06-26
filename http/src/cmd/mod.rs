@@ -1,3 +1,7 @@
+pub(crate) use add_item::HItemAddCmd;
+pub(crate) use change_fit::{HFitChangeCmdBIds, HFitChangeCmdRIds};
+pub(crate) use change_item::HItemChangeCmd;
+pub(crate) use change_sol::{HSolChangeCmdBIds, HSolChangeCmdRIds};
 pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd};
 pub(crate) use old_add_fit::HAddFitCmd;
 pub(crate) use old_add_fleet::HAddFleetCmd;

@@ -3,9 +3,9 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HAddFitCmd, HAddFleetCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd,
-        HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResps, HGetFitStatsCmd,
-        HGetFleetStatsCmd, HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
+        HAddFitCmd, HAddFleetCmd, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HChangeFleetCmd,
+        HCmdResps, HFitChangeCmdBIds, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
+        HItemChangeCmd, HRemoveItemCmd, HSolChangeCmdBIds, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
         get_primary_fit, get_primary_fleet,
     },
     info::{
@@ -121,7 +121,7 @@ impl HSolarSystemInner {
     pub(crate) async fn change_sol(
         &mut self,
         tpool: &HThreadPool,
-        commands: Vec<HChangeSolCommand>,
+        commands: Vec<HSolChangeCmdBIds>,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -136,8 +136,10 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let mut cmd_resps = HCmdResps::with_capacity(commands.len());
-                for (index, command) in commands.iter().enumerate() {
+                for (index, command) in commands.into_iter().enumerate() {
                     let resp = command
+                        .render(&cmd_resps)
+                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?
                         .execute(&mut core_sol)
                         .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?;
                     cmd_resps.append(resp);
@@ -415,7 +417,7 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         fit_id: &str,
-        commands: Vec<HChangeFitCommand>,
+        commands: Vec<HFitChangeCmdBIds>,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Result<(HFitInfo, HCmdResps), HBrError> {
@@ -428,8 +430,10 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let mut cmd_resps = HCmdResps::with_capacity(commands.len());
-                for (index, command) in commands.iter().enumerate() {
+                for (index, command) in commands.into_iter().enumerate() {
                     let resp = command
+                        .render(&cmd_resps)
+                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?
                         .execute(&mut core_sol, &fit_id)
                         .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?;
                     cmd_resps.append(resp);
@@ -586,7 +590,7 @@ impl HSolarSystemInner {
     pub(crate) async fn add_item(
         &mut self,
         tpool: &HThreadPool,
-        command: HAddItemCommand,
+        command: HItemAddCmd,
         item_mode: HItemInfoMode,
     ) -> Result<HItemInfo, HBrError> {
         let mut core_sol = self.take_sol()?;
@@ -619,7 +623,7 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         item_id: &str,
-        command: HChangeItemCommand,
+        command: HItemChangeCmd,
         item_mode: HItemInfoMode,
     ) -> Result<HItemInfo, HBrError> {
         let item_id = self.str_to_item_id(item_id)?;
