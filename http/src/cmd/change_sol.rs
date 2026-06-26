@@ -14,10 +14,11 @@ use crate::{
             HProjEffectAddCmdFCtxBIds, HProjEffectAddCmdFCtxRIds, HProjEffectChangeCmdFCtxBIds,
             HProjEffectChangeCmdFCtxRIds, HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds,
             HRigChangeCmdFCtxRIds, HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds,
-            HServiceChangeCmdFCtxRIds, HShipChangeCmdFHybridCtxBIds, HShipChangeCmdFHybridCtxRIds,
-            HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
-            HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
-            HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
+            HServiceChangeCmdFCtxRIds, HShipChangeCmdFHybridCtxBIds, HShipChangeCmdFHybridCtxRIds, HShipSetCmdFCtxBIds,
+            HShipSetCmdFCtxRIds, HShipUnsetCmdFCtxBIds, HShipUnsetCmdFCtxRIds, HSkillAddCmdFCtxBIds,
+            HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSubsystemAddCmdFCtxBIds,
+            HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx,
+            HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -58,7 +59,9 @@ pub(crate) enum HSolChangeCmdBIds {
     AddService(HServiceAddCmdFCtxBIds),
     ChangeService(HServiceChangeCmdFCtxBIds),
     // Item - ship
+    SetShip(HShipSetCmdFCtxBIds),
     ChangeShip(HShipChangeCmdFHybridCtxBIds),
+    UnsetShip(HShipUnsetCmdFCtxBIds),
     // Item - skill
     AddSkill(HSkillAddCmdFCtxBIds),
     ChangeSkill(HSkillChangeCmdFCtxBIds),
@@ -103,7 +106,9 @@ pub(crate) enum HSolChangeCmdRIds {
     AddService(HServiceAddCmdFCtxRIds),
     ChangeService(HServiceChangeCmdFCtxRIds),
     // Item - ship
+    SetShip(HShipSetCmdFCtxRIds),
     ChangeShip(HShipChangeCmdFHybridCtxRIds),
+    UnsetShip(HShipUnsetCmdFCtxRIds),
     // Item - skill
     AddSkill(HSkillAddCmdFCtxRIds),
     ChangeSkill(HSkillChangeCmdFCtxRIds),
@@ -153,7 +158,9 @@ impl HSolChangeCmdBIds {
             Self::AddService(cmd) => HSolChangeCmdRIds::AddService(cmd.render(resps)?),
             Self::ChangeService(cmd) => HSolChangeCmdRIds::ChangeService(cmd.render(resps)?),
             // Item - ship
+            Self::SetShip(cmd) => HSolChangeCmdRIds::SetShip(cmd.render(resps)?),
             Self::ChangeShip(cmd) => HSolChangeCmdRIds::ChangeShip(cmd.render(resps)?),
+            Self::UnsetShip(cmd) => HSolChangeCmdRIds::UnsetShip(cmd.render(resps)?),
             // Item - skill
             Self::AddSkill(cmd) => HSolChangeCmdRIds::AddSkill(cmd.render(resps)?),
             Self::ChangeSkill(cmd) => HSolChangeCmdRIds::ChangeSkill(cmd.render(resps)?),
@@ -205,7 +212,9 @@ impl HSolChangeCmdRIds {
             Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
+            Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),

@@ -4,8 +4,8 @@ use crate::{
     cmd::{
         HCmdResp,
         old_change_fit::{
-            HChangeCharacterCmd, HChangeFitCmd, HChangeShipCmd, HChangeStanceCmd, HSetCharacterCmd, HSetShipCmd,
-            HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HChangeCharacterCmd, HChangeFitCmd, HChangeStanceCmd, HSetCharacterCmd,
+            HSetStanceCmd, HUnsetCharacterCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -20,10 +20,6 @@ pub(crate) enum HChangeFitCommand {
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     UnsetCharacter(HUnsetCharacterCmd),
-    // Item - ship
-    SetShip(HSetShipCmd),
-    ChangeShip(HChangeShipCmd),
-    UnsetShip(HUnsetShipCmd),
     // Item - stance
     SetStance(HSetStanceCmd),
     ChangeStance(HChangeStanceCmd),
@@ -38,10 +34,6 @@ impl HChangeFitCommand {
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            // Item - ship
-            Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),

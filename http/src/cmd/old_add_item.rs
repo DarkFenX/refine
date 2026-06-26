@@ -11,14 +11,12 @@ use crate::{
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HAddItemCommand {
     Character(old_change_sol::HSetCharacterCmd),
-    Ship(old_change_sol::HSetShipCmd),
     Stance(old_change_sol::HSetStanceCmd),
 }
 impl HAddItemCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
         match self {
             Self::Character(cmd) => cmd.execute(core_sol),
-            Self::Ship(cmd) => cmd.execute(core_sol),
             Self::Stance(cmd) => cmd.execute(core_sol),
         }
     }

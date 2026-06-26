@@ -27,6 +27,8 @@ pub(crate) use rig_change::{HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HRigCh
 pub(crate) use service_add::{HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceAddCmdICtx};
 pub(crate) use service_change::{HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HServiceChangeCmdICtx};
 pub(crate) use ship_change::{HShipChangeCmdFHybridCtxBIds, HShipChangeCmdFHybridCtxRIds, HShipChangeCmdICtx};
+pub(crate) use ship_set::{HShipSetCmdFCtxBIds, HShipSetCmdFCtxRIds, HShipSetCmdICtx};
+pub(crate) use ship_unset::{HShipUnsetCmdFCtxBIds, HShipUnsetCmdFCtxRIds, HShipUnsetCmdICtx};
 pub(crate) use skill_add::{HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillAddCmdICtx};
 pub(crate) use skill_change::{HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSkillChangeCmdICtx};
 pub(crate) use subsystem_add::{HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemAddCmdICtx};
@@ -55,6 +57,8 @@ mod rig_change;
 mod service_add;
 mod service_change;
 mod ship_change;
+mod ship_set;
+mod ship_unset;
 mod skill_add;
 mod skill_change;
 mod subsystem_add;
