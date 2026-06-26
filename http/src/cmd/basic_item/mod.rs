@@ -3,6 +3,11 @@ pub(crate) use autocharge_change::{
 };
 pub(crate) use booster_add::{HBoosterAddCmdFCtxBIds, HBoosterAddCmdFCtxRIds, HBoosterAddCmdICtx};
 pub(crate) use booster_change::{HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HBoosterChangeCmdICtx};
+pub(crate) use character_change::{
+    HCharacterChangeCmdFHybridCtxBIds, HCharacterChangeCmdFHybridCtxRIds, HCharacterChangeCmdICtx,
+};
+pub(crate) use character_set::{HCharacterSetCmdFCtxBIds, HCharacterSetCmdFCtxRIds, HCharacterSetCmdICtx};
+pub(crate) use character_unset::{HCharacterUnsetCmdFCtxBIds, HCharacterUnsetCmdFCtxRIds, HCharacterUnsetCmdICtx};
 pub(crate) use charge_change::{HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds, HChargeChangeCmdICtx};
 pub(crate) use drone_add::{HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneAddCmdICtxBIds, HDroneAddCmdICtxRIds};
 pub(crate) use drone_change::{HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HDroneChangeCmdICtxRIds};
@@ -31,6 +36,9 @@ pub(crate) use ship_set::{HShipSetCmdFCtxBIds, HShipSetCmdFCtxRIds, HShipSetCmdI
 pub(crate) use ship_unset::{HShipUnsetCmdFCtxBIds, HShipUnsetCmdFCtxRIds, HShipUnsetCmdICtx};
 pub(crate) use skill_add::{HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillAddCmdICtx};
 pub(crate) use skill_change::{HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSkillChangeCmdICtx};
+pub(crate) use stance_change::{HStanceChangeCmdFHybridCtxBIds, HStanceChangeCmdFHybridCtxRIds, HStanceChangeCmdICtx};
+pub(crate) use stance_set::{HStanceSetCmdFCtxBIds, HStanceSetCmdFCtxRIds, HStanceSetCmdICtx};
+pub(crate) use stance_unset::{HStanceUnsetCmdFCtxBIds, HStanceUnsetCmdFCtxRIds, HStanceUnsetCmdICtx};
 pub(crate) use subsystem_add::{HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemAddCmdICtx};
 pub(crate) use subsystem_change::{HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds, HSubsystemChangeCmdICtx};
 pub(crate) use sw_effect_add::HSwEffectAddCmdFCtx;
@@ -39,6 +47,9 @@ pub(crate) use sw_effect_change::{HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmd
 mod autocharge_change;
 mod booster_add;
 mod booster_change;
+mod character_change;
+mod character_set;
+mod character_unset;
 mod charge_change;
 mod drone_add;
 mod drone_change;
@@ -61,6 +72,9 @@ mod ship_set;
 mod ship_unset;
 mod skill_add;
 mod skill_change;
+mod stance_change;
+mod stance_set;
+mod stance_unset;
 mod subsystem_add;
 mod subsystem_change;
 mod sw_effect_add;

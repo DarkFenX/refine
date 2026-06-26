@@ -5,15 +5,17 @@ use crate::{
         HCmdResp, HCmdResps,
         basic_item::{
             HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HBoosterAddCmdICtx, HBoosterChangeCmdFCtxBIds,
-            HBoosterChangeCmdFCtxRIds, HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds, HDroneAddCmdICtxBIds,
-            HDroneAddCmdICtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFighterAddCmdICtxBIds,
-            HFighterAddCmdICtxRIds, HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds, HFwEffectAddCmdICtx,
-            HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds,
-            HImplantChangeCmdFCtxRIds, HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds, HModuleChangeCmdFCtxBIds,
-            HModuleChangeCmdFCtxRIds, HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HServiceAddCmdICtx,
+            HBoosterChangeCmdFCtxRIds, HCharacterChangeCmdICtx, HCharacterSetCmdICtx, HCharacterUnsetCmdICtx,
+            HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds, HDroneAddCmdICtxBIds, HDroneAddCmdICtxRIds,
+            HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFighterAddCmdICtxBIds, HFighterAddCmdICtxRIds,
+            HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds, HFwEffectAddCmdICtx, HFwEffectChangeCmdFCtxBIds,
+            HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
+            HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds, HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds,
+            HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HServiceAddCmdICtx,
             HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HShipChangeCmdICtx, HShipSetCmdICtx,
             HShipUnsetCmdICtx, HSkillAddCmdICtx, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
-            HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
+            HStanceChangeCmdICtx, HStanceSetCmdICtx, HStanceUnsetCmdICtx, HSubsystemAddCmdICtx,
+            HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -27,6 +29,10 @@ pub(crate) enum HFitChangeCmdBIds {
     // Item - booster
     AddBooster(HBoosterAddCmdICtx),
     ChangeBooster(HBoosterChangeCmdFCtxBIds),
+    // Item - character
+    SetCharacter(HCharacterSetCmdICtx),
+    ChangeCharacter(HCharacterChangeCmdICtx),
+    UnsetCharacter(HCharacterUnsetCmdICtx),
     // Item - charge
     ChangeCharge(HChargeChangeCmdFCtxBIds),
     // Item - drone
@@ -57,6 +63,10 @@ pub(crate) enum HFitChangeCmdBIds {
     // Item - skill
     AddSkill(HSkillAddCmdICtx),
     ChangeSkill(HSkillChangeCmdFCtxBIds),
+    // Item - stance
+    SetStance(HStanceSetCmdICtx),
+    ChangeStance(HStanceChangeCmdICtx),
+    UnsetStance(HStanceUnsetCmdICtx),
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdICtx),
     ChangeSubsystem(HSubsystemChangeCmdFCtxBIds),
@@ -68,6 +78,10 @@ pub(crate) enum HFitChangeCmdRIds {
     // Item - booster
     AddBooster(HBoosterAddCmdICtx),
     ChangeBooster(HBoosterChangeCmdFCtxRIds),
+    // Item - character
+    SetCharacter(HCharacterSetCmdICtx),
+    ChangeCharacter(HCharacterChangeCmdICtx),
+    UnsetCharacter(HCharacterUnsetCmdICtx),
     // Item - charge
     ChangeCharge(HChargeChangeCmdFCtxRIds),
     // Item - drone
@@ -98,6 +112,10 @@ pub(crate) enum HFitChangeCmdRIds {
     // Item - skill
     AddSkill(HSkillAddCmdICtx),
     ChangeSkill(HSkillChangeCmdFCtxRIds),
+    // Item - stance
+    SetStance(HStanceSetCmdICtx),
+    ChangeStance(HStanceChangeCmdICtx),
+    UnsetStance(HStanceUnsetCmdICtx),
     // Item - subsystem
     AddSubsystem(HSubsystemAddCmdICtx),
     ChangeSubsystem(HSubsystemChangeCmdFCtxRIds),
@@ -114,6 +132,10 @@ impl HFitChangeCmdBIds {
             // Item - booster
             Self::AddBooster(cmd) => HFitChangeCmdRIds::AddBooster(cmd),
             Self::ChangeBooster(cmd) => HFitChangeCmdRIds::ChangeBooster(cmd.render(resps)?),
+            // Item - character
+            Self::SetCharacter(cmd) => HFitChangeCmdRIds::SetCharacter(cmd),
+            Self::ChangeCharacter(cmd) => HFitChangeCmdRIds::ChangeCharacter(cmd),
+            Self::UnsetCharacter(cmd) => HFitChangeCmdRIds::UnsetCharacter(cmd),
             // Item - charge
             Self::ChangeCharge(cmd) => HFitChangeCmdRIds::ChangeCharge(cmd.render(resps)?),
             // Item - drone
@@ -144,6 +166,10 @@ impl HFitChangeCmdBIds {
             // Item - skill
             Self::AddSkill(cmd) => HFitChangeCmdRIds::AddSkill(cmd),
             Self::ChangeSkill(cmd) => HFitChangeCmdRIds::ChangeSkill(cmd.render(resps)?),
+            // Item - stance
+            Self::SetStance(cmd) => HFitChangeCmdRIds::SetStance(cmd),
+            Self::ChangeStance(cmd) => HFitChangeCmdRIds::ChangeStance(cmd),
+            Self::UnsetStance(cmd) => HFitChangeCmdRIds::UnsetStance(cmd),
             // Item - subsystem
             Self::AddSubsystem(cmd) => HFitChangeCmdRIds::AddSubsystem(cmd),
             Self::ChangeSubsystem(cmd) => HFitChangeCmdRIds::ChangeSubsystem(cmd.render(resps)?),
@@ -162,6 +188,10 @@ impl HFitChangeCmdRIds {
             // Item - booster
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - character
+            Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeCharacter(cmd) => Ok(cmd.execute_via_fit_id(core_sol, fit_id)?.into()),
+            Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - charge
             Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - drone
@@ -192,6 +222,10 @@ impl HFitChangeCmdRIds {
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - stance
+            Self::SetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeStance(cmd) => Ok(cmd.execute_via_fit_id(core_sol, fit_id)?.into()),
+            Self::UnsetStance(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),

@@ -1,15 +1,11 @@
 pub(in crate::cmd) use fit::{HChangeFitCmd, HDeleteFitCmd};
 pub(in crate::cmd) use fleet::{HChangeFleetCmd, HDeleteFleetCmd};
 pub(in crate::cmd) use item::HRemoveItemCmd;
-pub(in crate::cmd) use item_character::{HChangeCharacterCmd, HSetCharacterCmd, HUnsetCharacterCmd};
-pub(in crate::cmd) use item_stance::{HChangeStanceCmd, HSetStanceCmd, HUnsetStanceCmd};
 pub(crate) use main::HChangeSolCommand;
 pub(in crate::cmd) use sol::HChangeSolCmd;
 
 mod fit;
 mod fleet;
 mod item;
-mod item_character;
-mod item_stance;
 mod main;
 mod sol;
