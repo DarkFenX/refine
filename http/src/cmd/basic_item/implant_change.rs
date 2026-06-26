@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::{
@@ -16,12 +15,8 @@ pub(crate) struct HImplantChangeCmdFCtxBIds {
     #[serde(flatten)]
     ictx_cmd: HImplantChangeCmdICtx,
 }
-#[serde_as]
-#[derive(Deserialize)]
 pub(crate) struct HImplantChangeCmdFCtxRIds {
-    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
-    #[serde(flatten)]
     ictx_cmd: HImplantChangeCmdICtx,
 }
 
