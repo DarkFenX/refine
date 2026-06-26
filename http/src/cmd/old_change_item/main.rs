@@ -4,8 +4,8 @@ use crate::{
     cmd::{
         HItemIdsResp,
         old_change_item::{
-            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeModuleCmd,
-            HChangeProjEffectCmd, HChangeShipCmd, HChangeStanceCmd, HChangeSwEffectCmd,
+            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeProjEffectCmd, HChangeShipCmd,
+            HChangeStanceCmd, HChangeSwEffectCmd,
         },
     },
     util::HExecError,
@@ -17,8 +17,6 @@ pub(crate) enum HChangeItemCommand {
     Autocharge(HChangeAutochargeCmd),
     Character(HChangeCharacterCmd),
     Charge(HChangeChargeCmd),
-    Fighter(HChangeFighterCmd),
-    Module(HChangeModuleCmd),
     ProjEffect(HChangeProjEffectCmd),
     Ship(HChangeShipCmd),
     Stance(HChangeStanceCmd),
@@ -34,8 +32,6 @@ impl HChangeItemCommand {
             Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::Character(cmd) => cmd.execute(core_sol, item_id),
             Self::Charge(cmd) => cmd.execute(core_sol, item_id),
-            Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
-            Self::Module(cmd) => cmd.execute(core_sol, item_id),
             Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Ship(cmd) => cmd.execute(core_sol, item_id),
             Self::Stance(cmd) => cmd.execute(core_sol, item_id),

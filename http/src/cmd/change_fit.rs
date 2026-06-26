@@ -5,12 +5,13 @@ use crate::{
         HCmdResp, HCmdResps,
         basic_item::{
             HBoosterAddCmdICtx, HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HDroneAddCmdICtxBIds,
-            HDroneAddCmdICtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFwEffectAddCmdICtx,
+            HDroneAddCmdICtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFighterAddCmdICtxBIds,
+            HFighterAddCmdICtxRIds, HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds, HFwEffectAddCmdICtx,
             HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds,
-            HImplantChangeCmdFCtxRIds, HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds,
-            HServiceAddCmdICtx, HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HSkillAddCmdICtx,
-            HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds,
-            HSubsystemChangeCmdFCtxRIds,
+            HImplantChangeCmdFCtxRIds, HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds, HModuleChangeCmdFCtxBIds,
+            HModuleChangeCmdFCtxRIds, HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HServiceAddCmdICtx,
+            HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HSkillAddCmdICtx, HSkillChangeCmdFCtxBIds,
+            HSkillChangeCmdFCtxRIds, HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -25,12 +26,18 @@ pub(crate) enum HFitChangeCmdBIds {
     // Item - drone
     AddDrone(HDroneAddCmdICtxBIds),
     ChangeDrone(HDroneChangeCmdFCtxBIds),
+    // Item - fighter
+    AddFighter(HFighterAddCmdICtxBIds),
+    ChangeFighter(HFighterChangeCmdFCtxBIds),
     // Item - fit-wide effect
     AddFwEffect(HFwEffectAddCmdICtx),
     ChangeFwEffect(HFwEffectChangeCmdFCtxBIds),
     // Item - implant
     AddImplant(HImplantAddCmdICtx),
     ChangeImplant(HImplantChangeCmdFCtxBIds),
+    // Item - module
+    AddModule(HModuleAddCmdICtxBIds),
+    ChangeModule(HModuleChangeCmdFCtxBIds),
     // Item - rig
     AddRig(HRigAddCmdICtx),
     ChangeRig(HRigChangeCmdFCtxBIds),
@@ -52,12 +59,18 @@ pub(crate) enum HFitChangeCmdRIds {
     // Item - drone
     AddDrone(HDroneAddCmdICtxRIds),
     ChangeDrone(HDroneChangeCmdFCtxRIds),
+    // Item - fighter
+    AddFighter(HFighterAddCmdICtxRIds),
+    ChangeFighter(HFighterChangeCmdFCtxRIds),
     // Item - fit-wide effect
     AddFwEffect(HFwEffectAddCmdICtx),
     ChangeFwEffect(HFwEffectChangeCmdFCtxRIds),
     // Item - implant
     AddImplant(HImplantAddCmdICtx),
     ChangeImplant(HImplantChangeCmdFCtxRIds),
+    // Item - module
+    AddModule(HModuleAddCmdICtxRIds),
+    ChangeModule(HModuleChangeCmdFCtxRIds),
     // Item - rig
     AddRig(HRigAddCmdICtx),
     ChangeRig(HRigChangeCmdFCtxRIds),
@@ -84,12 +97,18 @@ impl HFitChangeCmdBIds {
             // Item - drone
             Self::AddDrone(cmd) => HFitChangeCmdRIds::AddDrone(cmd.render(resps)?),
             Self::ChangeDrone(cmd) => HFitChangeCmdRIds::ChangeDrone(cmd.render(resps)?),
+            // Item - fighter
+            Self::AddFighter(cmd) => HFitChangeCmdRIds::AddFighter(cmd.render(resps)?),
+            Self::ChangeFighter(cmd) => HFitChangeCmdRIds::ChangeFighter(cmd.render(resps)?),
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => HFitChangeCmdRIds::AddFwEffect(cmd),
             Self::ChangeFwEffect(cmd) => HFitChangeCmdRIds::ChangeFwEffect(cmd.render(resps)?),
             // Item - implant
             Self::AddImplant(cmd) => HFitChangeCmdRIds::AddImplant(cmd),
             Self::ChangeImplant(cmd) => HFitChangeCmdRIds::ChangeImplant(cmd.render(resps)?),
+            // Item - module
+            Self::AddModule(cmd) => HFitChangeCmdRIds::AddModule(cmd.render(resps)?),
+            Self::ChangeModule(cmd) => HFitChangeCmdRIds::ChangeModule(cmd.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => HFitChangeCmdRIds::AddRig(cmd),
             Self::ChangeRig(cmd) => HFitChangeCmdRIds::ChangeRig(cmd.render(resps)?),
@@ -118,12 +137,18 @@ impl HFitChangeCmdRIds {
             // Item - drone
             Self::AddDrone(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - fighter
+            Self::AddFighter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - implant
             Self::AddImplant(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - module
+            Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
+            Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),

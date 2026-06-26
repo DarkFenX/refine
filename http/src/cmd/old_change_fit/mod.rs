@@ -5,8 +5,6 @@ pub(in crate::cmd) use item_character::{
     HUnsetCharacterCmd,
 };
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
-pub(in crate::cmd) use item_fighter::{HAddFighterCmd, HChangeFighterCmd};
-pub(in crate::cmd) use item_module::{HAddModuleCmd, HChangeModuleCmd};
 pub(in crate::cmd) use item_ship::{
     HChangeShipCmd, HChangeShipViaFitIdCmd, HChangeShipViaItemIdCmd, HSetShipCmd, HUnsetShipCmd,
 };
@@ -19,8 +17,6 @@ mod fit;
 mod item_autocharge;
 mod item_character;
 mod item_charge;
-mod item_fighter;
-mod item_module;
 mod item_ship;
 mod item_stance;
 mod main;

@@ -4,11 +4,10 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddFighterCmd, HAddModuleCmd, HAddProjEffectCmd, HAddSwEffectCmd, HChangeAutochargeCmd,
-            HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeModuleCmd,
-            HChangeProjEffectCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd, HChangeSwEffectCmd, HDeleteFitCmd,
-            HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd,
-            HUnsetShipCmd, HUnsetStanceCmd,
+            HAddProjEffectCmd, HAddSwEffectCmd, HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd,
+            HChangeFitCmd, HChangeFleetCmd, HChangeProjEffectCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd,
+            HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd,
+            HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -37,12 +36,6 @@ pub(crate) enum HChangeSolCommand {
     UnsetCharacter(HUnsetCharacterCmd),
     // Item - charge
     ChangeCharge(HChangeChargeCmd),
-    // Item - fighter
-    AddFighter(HAddFighterCmd),
-    ChangeFighter(HChangeFighterCmd),
-    // Item - module
-    AddModule(HAddModuleCmd),
-    ChangeModule(HChangeModuleCmd),
     // Item - projected effect
     AddProjEffect(HAddProjEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
@@ -82,12 +75,6 @@ impl HChangeSolCommand {
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - charge
             Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - fighter
-            Self::AddFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - module
-            Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - projected effect
             Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),

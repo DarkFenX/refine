@@ -4,9 +4,9 @@ use crate::{
     cmd::{
         HCmdResp,
         old_change_fit::{
-            HAddFighterCmd, HAddModuleCmd, HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd,
-            HChangeFighterCmd, HChangeFitCmd, HChangeModuleCmd, HChangeShipCmd, HChangeStanceCmd, HSetCharacterCmd,
-            HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFitCmd, HChangeShipCmd,
+            HChangeStanceCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd,
+            HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -25,12 +25,6 @@ pub(crate) enum HChangeFitCommand {
     UnsetCharacter(HUnsetCharacterCmd),
     // Item - charge
     ChangeCharge(HChangeChargeCmd),
-    // Item - fighter
-    AddFighter(HAddFighterCmd),
-    ChangeFighter(HChangeFighterCmd),
-    // Item - module
-    AddModule(HAddModuleCmd),
-    ChangeModule(HChangeModuleCmd),
     // Item - ship
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
@@ -53,12 +47,6 @@ impl HChangeFitCommand {
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - charge
             Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - fighter
-            Self::AddFighter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - module
-            Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),

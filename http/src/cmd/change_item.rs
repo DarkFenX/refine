@@ -4,8 +4,9 @@ use crate::{
     cmd::{
         HItemIdsResp,
         basic_item::{
-            HBoosterChangeCmdICtx, HDroneChangeCmdICtxRIds, HFwEffectChangeCmdICtx, HImplantChangeCmdICtx,
-            HRigChangeCmdICtx, HSubsystemChangeCmdICtx,
+            HBoosterChangeCmdICtx, HDroneChangeCmdICtxRIds, HFighterChangeCmdICtxRIds, HFwEffectChangeCmdICtx,
+            HImplantChangeCmdICtx, HModuleChangeCmdICtxRIds, HRigChangeCmdICtx, HServiceChangeCmdICtx,
+            HSkillChangeCmdICtx, HSubsystemChangeCmdICtx,
         },
     },
     util::HExecError,
@@ -16,11 +17,13 @@ use crate::{
 pub(crate) enum HItemChangeCmd {
     Booster(HBoosterChangeCmdICtx),
     Drone(HDroneChangeCmdICtxRIds),
+    Fighter(HFighterChangeCmdICtxRIds),
     FwEffect(HFwEffectChangeCmdICtx),
     Implant(HImplantChangeCmdICtx),
+    Module(HModuleChangeCmdICtxRIds),
     Rig(HRigChangeCmdICtx),
-    Service(HRigChangeCmdICtx),
-    Skill(HRigChangeCmdICtx),
+    Service(HServiceChangeCmdICtx),
+    Skill(HSkillChangeCmdICtx),
     Subsystem(HSubsystemChangeCmdICtx),
 }
 
@@ -36,8 +39,10 @@ impl HItemChangeCmd {
         match self {
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),
             Self::Drone(cmd) => cmd.execute(core_sol, item_id),
+            Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
             Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Implant(cmd) => cmd.execute(core_sol, item_id),
+            Self::Module(cmd) => cmd.execute(core_sol, item_id),
             Self::Rig(cmd) => cmd.execute(core_sol, item_id),
             Self::Service(cmd) => cmd.execute(core_sol, item_id),
             Self::Skill(cmd) => cmd.execute(core_sol, item_id),

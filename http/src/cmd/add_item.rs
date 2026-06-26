@@ -4,8 +4,9 @@ use crate::{
     cmd::{
         HItemIdsResp,
         basic_item::{
-            HBoosterAddCmdFCtxRIds, HDroneAddCmdFCtxRIds, HFwEffectAddCmdFCtxRIds, HImplantAddCmdFCtxRIds,
-            HRigAddCmdFCtxRIds, HServiceAddCmdFCtxRIds, HSkillAddCmdFCtxRIds, HSubsystemAddCmdFCtxRIds,
+            HBoosterAddCmdFCtxRIds, HDroneAddCmdFCtxRIds, HFighterAddCmdFCtxRIds, HFwEffectAddCmdFCtxRIds,
+            HImplantAddCmdFCtxRIds, HModuleAddCmdFCtxRIds, HRigAddCmdFCtxRIds, HServiceAddCmdFCtxRIds,
+            HSkillAddCmdFCtxRIds, HSubsystemAddCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -16,8 +17,10 @@ use crate::{
 pub(crate) enum HItemAddCmd {
     Booster(HBoosterAddCmdFCtxRIds),
     Drone(HDroneAddCmdFCtxRIds),
+    Fighter(HFighterAddCmdFCtxRIds),
     FwEffect(HFwEffectAddCmdFCtxRIds),
     Implant(HImplantAddCmdFCtxRIds),
+    Module(HModuleAddCmdFCtxRIds),
     Rig(HRigAddCmdFCtxRIds),
     Service(HServiceAddCmdFCtxRIds),
     Skill(HSkillAddCmdFCtxRIds),
@@ -32,8 +35,10 @@ impl HItemAddCmd {
         match self {
             Self::Booster(cmd) => cmd.execute(core_sol),
             Self::Drone(cmd) => cmd.execute(core_sol),
+            Self::Fighter(cmd) => cmd.execute(core_sol),
             Self::FwEffect(cmd) => cmd.execute(core_sol),
             Self::Implant(cmd) => cmd.execute(core_sol),
+            Self::Module(cmd) => cmd.execute(core_sol),
             Self::Rig(cmd) => cmd.execute(core_sol),
             Self::Service(cmd) => cmd.execute(core_sol),
             Self::Skill(cmd) => cmd.execute(core_sol),
