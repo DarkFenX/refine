@@ -14,8 +14,9 @@ use crate::{
             HProjEffectAddCmdFCtxBIds, HProjEffectAddCmdFCtxRIds, HProjEffectChangeCmdFCtxBIds,
             HProjEffectChangeCmdFCtxRIds, HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds,
             HRigChangeCmdFCtxRIds, HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds,
-            HServiceChangeCmdFCtxRIds, HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds,
-            HSkillChangeCmdFCtxRIds, HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
+            HServiceChangeCmdFCtxRIds, HShipChangeCmdFHybridCtxBIds, HShipChangeCmdFHybridCtxRIds,
+            HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
+            HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
             HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
         },
     },
@@ -56,6 +57,8 @@ pub(crate) enum HSolChangeCmdBIds {
     // Item - service
     AddService(HServiceAddCmdFCtxBIds),
     ChangeService(HServiceChangeCmdFCtxBIds),
+    // Item - ship
+    ChangeShip(HShipChangeCmdFHybridCtxBIds),
     // Item - skill
     AddSkill(HSkillAddCmdFCtxBIds),
     ChangeSkill(HSkillChangeCmdFCtxBIds),
@@ -99,6 +102,8 @@ pub(crate) enum HSolChangeCmdRIds {
     // Item - service
     AddService(HServiceAddCmdFCtxRIds),
     ChangeService(HServiceChangeCmdFCtxRIds),
+    // Item - ship
+    ChangeShip(HShipChangeCmdFHybridCtxRIds),
     // Item - skill
     AddSkill(HSkillAddCmdFCtxRIds),
     ChangeSkill(HSkillChangeCmdFCtxRIds),
@@ -147,6 +152,8 @@ impl HSolChangeCmdBIds {
             // Item - service
             Self::AddService(cmd) => HSolChangeCmdRIds::AddService(cmd.render(resps)?),
             Self::ChangeService(cmd) => HSolChangeCmdRIds::ChangeService(cmd.render(resps)?),
+            // Item - ship
+            Self::ChangeShip(cmd) => HSolChangeCmdRIds::ChangeShip(cmd.render(resps)?),
             // Item - skill
             Self::AddSkill(cmd) => HSolChangeCmdRIds::AddSkill(cmd.render(resps)?),
             Self::ChangeSkill(cmd) => HSolChangeCmdRIds::ChangeSkill(cmd.render(resps)?),
@@ -197,6 +204,8 @@ impl HSolChangeCmdRIds {
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - ship
+            Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),

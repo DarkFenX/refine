@@ -11,8 +11,9 @@ use crate::{
             HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds,
             HImplantChangeCmdFCtxRIds, HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds, HModuleChangeCmdFCtxBIds,
             HModuleChangeCmdFCtxRIds, HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HServiceAddCmdICtx,
-            HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HSkillAddCmdICtx, HSkillChangeCmdFCtxBIds,
-            HSkillChangeCmdFCtxRIds, HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
+            HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HShipChangeCmdICtx, HSkillAddCmdICtx,
+            HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds,
+            HSubsystemChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -49,6 +50,8 @@ pub(crate) enum HFitChangeCmdBIds {
     // Item - service
     AddService(HServiceAddCmdICtx),
     ChangeService(HServiceChangeCmdFCtxBIds),
+    // Item - ship
+    ChangeShip(HShipChangeCmdICtx),
     // Item - skill
     AddSkill(HSkillAddCmdICtx),
     ChangeSkill(HSkillChangeCmdFCtxBIds),
@@ -86,6 +89,8 @@ pub(crate) enum HFitChangeCmdRIds {
     // Item - service
     AddService(HServiceAddCmdICtx),
     ChangeService(HServiceChangeCmdFCtxRIds),
+    // Item - ship
+    ChangeShip(HShipChangeCmdICtx),
     // Item - skill
     AddSkill(HSkillAddCmdICtx),
     ChangeSkill(HSkillChangeCmdFCtxRIds),
@@ -128,6 +133,8 @@ impl HFitChangeCmdBIds {
             // Item - service
             Self::AddService(cmd) => HFitChangeCmdRIds::AddService(cmd),
             Self::ChangeService(cmd) => HFitChangeCmdRIds::ChangeService(cmd.render(resps)?),
+            // Item - ship
+            Self::ChangeShip(cmd) => HFitChangeCmdRIds::ChangeShip(cmd),
             // Item - skill
             Self::AddSkill(cmd) => HFitChangeCmdRIds::AddSkill(cmd),
             Self::ChangeSkill(cmd) => HFitChangeCmdRIds::ChangeSkill(cmd.render(resps)?),
@@ -172,6 +179,8 @@ impl HFitChangeCmdRIds {
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - ship
+            Self::ChangeShip(cmd) => Ok(cmd.execute_via_fit_id(core_sol, fit_id)?.into()),
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
