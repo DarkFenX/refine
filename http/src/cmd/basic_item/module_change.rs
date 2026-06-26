@@ -17,12 +17,8 @@ pub(crate) struct HModuleChangeCmdFCtxBIds {
     #[serde(flatten)]
     ictx_cmd: HModuleChangeCmdICtxBIds,
 }
-#[serde_as]
-#[derive(Deserialize)]
 pub(crate) struct HModuleChangeCmdFCtxRIds {
-    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
-    #[serde(flatten)]
     ictx_cmd: HModuleChangeCmdICtxRIds,
 }
 

@@ -17,12 +17,8 @@ pub(crate) struct HDroneChangeCmdFCtxBIds {
     #[serde(flatten)]
     ictx_cmd: HDroneChangeCmdICtxBIds,
 }
-#[serde_as]
-#[derive(Deserialize)]
 pub(crate) struct HDroneChangeCmdFCtxRIds {
-    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
-    #[serde(flatten)]
     ictx_cmd: HDroneChangeCmdICtxRIds,
 }
 

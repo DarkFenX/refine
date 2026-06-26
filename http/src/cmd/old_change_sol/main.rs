@@ -4,9 +4,9 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddProjEffectCmd, HChangeCharacterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeProjEffectCmd,
-            HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd,
-            HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HChangeCharacterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeShipCmd, HChangeSolCmd, HChangeStanceCmd,
+            HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd,
+            HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -31,9 +31,6 @@ pub(crate) enum HChangeSolCommand {
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
     UnsetCharacter(HUnsetCharacterCmd),
-    // Item - projected effect
-    AddProjEffect(HAddProjEffectCmd),
-    ChangeProjEffect(HChangeProjEffectCmd),
     // Item - ship
     SetShip(HSetShipCmd),
     ChangeShip(HChangeShipCmd),
@@ -63,9 +60,6 @@ impl HChangeSolCommand {
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - projected effect
-            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),

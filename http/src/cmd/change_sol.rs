@@ -11,10 +11,11 @@ use crate::{
             HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds,
             HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
             HModuleAddCmdFCtxBIds, HModuleAddCmdFCtxRIds, HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds,
-            HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds,
-            HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds,
-            HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
-            HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
+            HProjEffectAddCmdFCtxBIds, HProjEffectAddCmdFCtxRIds, HProjEffectChangeCmdFCtxBIds,
+            HProjEffectChangeCmdFCtxRIds, HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds,
+            HRigChangeCmdFCtxRIds, HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds,
+            HServiceChangeCmdFCtxRIds, HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds,
+            HSkillChangeCmdFCtxRIds, HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
             HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
         },
     },
@@ -46,6 +47,9 @@ pub(crate) enum HSolChangeCmdBIds {
     // Item - module
     AddModule(HModuleAddCmdFCtxBIds),
     ChangeModule(HModuleChangeCmdFCtxBIds),
+    // Item - projected effect
+    AddProjEffect(HProjEffectAddCmdFCtxBIds),
+    ChangeProjEffect(HProjEffectChangeCmdFCtxBIds),
     // Item - rig
     AddRig(HRigAddCmdFCtxBIds),
     ChangeRig(HRigChangeCmdFCtxBIds),
@@ -86,6 +90,9 @@ pub(crate) enum HSolChangeCmdRIds {
     // Item - module
     AddModule(HModuleAddCmdFCtxRIds),
     ChangeModule(HModuleChangeCmdFCtxRIds),
+    // Item - projected effect
+    AddProjEffect(HProjEffectAddCmdFCtxRIds),
+    ChangeProjEffect(HProjEffectChangeCmdFCtxRIds),
     // Item - rig
     AddRig(HRigAddCmdFCtxRIds),
     ChangeRig(HRigChangeCmdFCtxRIds),
@@ -131,6 +138,9 @@ impl HSolChangeCmdBIds {
             // Item - module
             Self::AddModule(cmd) => HSolChangeCmdRIds::AddModule(cmd.render(resps)?),
             Self::ChangeModule(cmd) => HSolChangeCmdRIds::ChangeModule(cmd.render(resps)?),
+            // Item - projected effect
+            Self::AddProjEffect(cmd) => HSolChangeCmdRIds::AddProjEffect(cmd.render(resps)?),
+            Self::ChangeProjEffect(cmd) => HSolChangeCmdRIds::ChangeProjEffect(cmd.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => HSolChangeCmdRIds::AddRig(cmd.render(resps)?),
             Self::ChangeRig(cmd) => HSolChangeCmdRIds::ChangeRig(cmd.render(resps)?),
@@ -178,6 +188,9 @@ impl HSolChangeCmdRIds {
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - projected effect
+            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),

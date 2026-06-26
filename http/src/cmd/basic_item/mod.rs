@@ -18,6 +18,10 @@ pub(crate) use module_add::{
     HModuleAddCmdFCtxBIds, HModuleAddCmdFCtxRIds, HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds,
 };
 pub(crate) use module_change::{HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds, HModuleChangeCmdICtxRIds};
+pub(crate) use proj_effect_add::{HProjEffectAddCmdFCtxBIds, HProjEffectAddCmdFCtxRIds};
+pub(crate) use proj_effect_change::{
+    HProjEffectChangeCmdFCtxBIds, HProjEffectChangeCmdFCtxRIds, HProjEffectChangeCmdICtxRIds,
+};
 pub(crate) use rig_add::{HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigAddCmdICtx};
 pub(crate) use rig_change::{HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HRigChangeCmdICtx};
 pub(crate) use service_add::{HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceAddCmdICtx};
@@ -43,6 +47,8 @@ mod implant_add;
 mod implant_change;
 mod module_add;
 mod module_change;
+mod proj_effect_add;
+mod proj_effect_change;
 mod rig_add;
 mod rig_change;
 mod service_add;

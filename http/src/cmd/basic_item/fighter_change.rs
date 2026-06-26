@@ -17,12 +17,8 @@ pub(crate) struct HFighterChangeCmdFCtxBIds {
     #[serde(flatten)]
     ictx_cmd: HFighterChangeCmdICtxBIds,
 }
-#[serde_as]
-#[derive(Deserialize)]
 pub(crate) struct HFighterChangeCmdFCtxRIds {
-    #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
-    #[serde(flatten)]
     ictx_cmd: HFighterChangeCmdICtxRIds,
 }
 
