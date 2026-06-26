@@ -9,7 +9,7 @@ pub(crate) use old_add_sol::HAddSolCmd;
 pub(crate) use old_change_fit::HChangeFitCommand;
 pub(crate) use old_change_fleet::HChangeFleetCmd;
 pub(crate) use old_change_sol::HChangeSolCommand;
-pub(crate) use remove_item::HRemoveItemCmd;
+pub(crate) use remove_item::HItemRemoveCmd;
 pub(crate) use shared::{
     HCmdResp, HCmdResps, HFitIdResp, HFleetIdResp, HItemIdsResp, get_primary_fit, get_primary_fleet,
 };

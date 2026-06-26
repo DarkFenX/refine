@@ -1,3 +1,4 @@
+pub(crate) use item::{HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HItemRemoveCmdICtx};
 pub(crate) use item_autocharge::{
     HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HAutochargeChangeCmdICtx,
 };
@@ -63,6 +64,7 @@ pub(crate) use item_sw_effect::{
     HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds, HSwEffectChangeCmdICtx,
 };
 
+mod item;
 mod item_autocharge;
 mod item_booster;
 mod item_character;

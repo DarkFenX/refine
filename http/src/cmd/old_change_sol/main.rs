@@ -3,9 +3,7 @@ use serde::Deserialize;
 use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
-        old_change_sol::{
-            HChangeFitCmd, HChangeFleetCmd, HChangeSolCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd,
-        },
+        old_change_sol::{HChangeFitCmd, HChangeFleetCmd, HChangeSolCmd, HDeleteFitCmd, HDeleteFleetCmd},
     },
     util::HExecError,
 };
@@ -23,8 +21,6 @@ pub(crate) enum HChangeSolCommand {
     AddFit(HAddFitCmd),
     ChangeFit(HChangeFitCmd),
     DeleteFit(HDeleteFitCmd),
-    // Item
-    RemoveItem(HRemoveItemCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -40,8 +36,6 @@ impl HChangeSolCommand {
             Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item
-            Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

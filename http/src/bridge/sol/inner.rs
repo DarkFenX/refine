@@ -5,7 +5,7 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HChangeFleetCmd,
         HCmdResps, HFitChangeCmdBIds, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
-        HItemChangeCmd, HRemoveItemCmd, HSolChangeCmdBIds, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
+        HItemChangeCmd, HItemRemoveCmd, HSolChangeCmdBIds, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
         get_primary_fit, get_primary_fleet,
     },
     info::{
@@ -659,7 +659,7 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         item_id: &str,
-        command: HRemoveItemCmd,
+        command: HItemRemoveCmd,
     ) -> Result<(), HBrError> {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_sol = self.take_sol()?;
@@ -668,7 +668,7 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                match command.execute(&mut core_sol, item_id) {
+                match command.execute(&mut core_sol, &item_id) {
                     Ok(_) => Ok(core_sol),
                     Err(exec_err) => Err((core_sol, HBrError::from(exec_err))),
                 }

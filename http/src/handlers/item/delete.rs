@@ -7,7 +7,7 @@ use axum::{
 
 use crate::{
     bridge::HBrError,
-    cmd::HRemoveItemCmd,
+    cmd::HItemRemoveCmd,
     handlers::{HGSolResult, HSingleErr, get_guarded_sol},
     state::HAppState,
     util::HExecError,
@@ -17,7 +17,7 @@ use crate::{
 pub(crate) async fn delete_item(
     State(state): State<HAppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    payload: Option<Json<HRemoveItemCmd>>,
+    payload: Option<Json<HItemRemoveCmd>>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,
