@@ -1,12 +1,10 @@
 pub(in crate::cmd) use item_autocharge::HChangeAutochargeCmd;
-pub(in crate::cmd) use item_booster::HChangeBoosterCmd;
 pub(in crate::cmd) use item_character::HChangeCharacterCmd;
 pub(in crate::cmd) use item_charge::HChangeChargeCmd;
 pub(in crate::cmd) use item_fighter::HChangeFighterCmd;
 pub(in crate::cmd) use item_fw_effect::HChangeFwEffectCmd;
 pub(in crate::cmd) use item_module::HChangeModuleCmd;
 pub(in crate::cmd) use item_proj_effect::HChangeProjEffectCmd;
-pub(in crate::cmd) use item_rig::HChangeRigCmd;
 pub(in crate::cmd) use item_service::HChangeServiceCmd;
 pub(in crate::cmd) use item_ship::HChangeShipCmd;
 pub(in crate::cmd) use item_skill::HChangeSkillCmd;
@@ -16,14 +14,12 @@ pub(in crate::cmd) use item_sw_effect::HChangeSwEffectCmd;
 pub(crate) use main::HChangeItemCommand;
 
 mod item_autocharge;
-mod item_booster;
 mod item_character;
 mod item_charge;
 mod item_fighter;
 mod item_fw_effect;
 mod item_module;
 mod item_proj_effect;
-mod item_rig;
 mod item_service;
 mod item_ship;
 mod item_skill;

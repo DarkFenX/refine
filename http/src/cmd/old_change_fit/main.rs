@@ -4,12 +4,11 @@ use crate::{
     cmd::{
         HCmdResp,
         old_change_fit::{
-            HAddBoosterCmd, HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd, HAddRigCmd,
-            HAddServiceCmd, HAddSkillCmd, HAddSubsystemCmd, HChangeAutochargeCmd, HChangeBoosterCmd,
-            HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd,
-            HChangeFwEffectCmd, HChangeModuleCmd, HChangeRigCmd, HChangeServiceCmd, HChangeShipCmd,
-            HChangeSkillCmd, HChangeStanceCmd, HChangeSubsystemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd,
-            HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd, HAddServiceCmd, HAddSkillCmd, HAddSubsystemCmd,
+            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFitCmd,
+            HChangeFwEffectCmd, HChangeModuleCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeStanceCmd,
+            HChangeSubsystemCmd, HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd,
+            HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -22,9 +21,6 @@ pub(crate) enum HChangeFitCommand {
     ChangeFit(HChangeFitCmd),
     // Item - autocharge
     ChangeAutocharge(HChangeAutochargeCmd),
-    // Item - booster
-    AddBooster(HAddBoosterCmd),
-    ChangeBooster(HChangeBoosterCmd),
     // Item - character
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
@@ -40,9 +36,6 @@ pub(crate) enum HChangeFitCommand {
     // Item - module
     AddModule(HAddModuleCmd),
     ChangeModule(HChangeModuleCmd),
-    // Item - rig
-    AddRig(HAddRigCmd),
-    ChangeRig(HChangeRigCmd),
     // Item - service
     AddService(HAddServiceCmd),
     ChangeService(HChangeServiceCmd),
@@ -68,9 +61,6 @@ impl HChangeFitCommand {
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - booster
-            Self::AddBooster(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
@@ -86,9 +76,6 @@ impl HChangeFitCommand {
             // Item - module
             Self::AddModule(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - rig
-            Self::AddRig(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
-            Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),

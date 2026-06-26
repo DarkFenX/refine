@@ -4,10 +4,9 @@ use crate::{
     cmd::{
         HItemIdsResp,
         old_change_item::{
-            HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd,
-            HChangeFighterCmd, HChangeFwEffectCmd, HChangeModuleCmd, HChangeProjEffectCmd,
-            HChangeRigCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeStanceCmd, HChangeSubsystemCmd,
-            HChangeSwEffectCmd,
+            HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd, HChangeFighterCmd, HChangeFwEffectCmd,
+            HChangeModuleCmd, HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd,
+            HChangeStanceCmd, HChangeSubsystemCmd, HChangeSwEffectCmd,
         },
     },
     util::HExecError,
@@ -17,14 +16,12 @@ use crate::{
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HChangeItemCommand {
     Autocharge(HChangeAutochargeCmd),
-    Booster(HChangeBoosterCmd),
     Character(HChangeCharacterCmd),
     Charge(HChangeChargeCmd),
     Fighter(HChangeFighterCmd),
     FwEffect(HChangeFwEffectCmd),
     Module(HChangeModuleCmd),
     ProjEffect(HChangeProjEffectCmd),
-    Rig(HChangeRigCmd),
     Service(HChangeServiceCmd),
     Ship(HChangeShipCmd),
     Skill(HChangeSkillCmd),
@@ -40,14 +37,12 @@ impl HChangeItemCommand {
     ) -> Result<HItemIdsResp, HExecError> {
         match self {
             Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
-            Self::Booster(cmd) => cmd.execute(core_sol, item_id),
             Self::Character(cmd) => cmd.execute(core_sol, item_id),
             Self::Charge(cmd) => cmd.execute(core_sol, item_id),
             Self::Fighter(cmd) => cmd.execute(core_sol, item_id),
             Self::FwEffect(cmd) => cmd.execute(core_sol, item_id),
             Self::Module(cmd) => cmd.execute(core_sol, item_id),
             Self::ProjEffect(cmd) => cmd.execute(core_sol, item_id),
-            Self::Rig(cmd) => cmd.execute(core_sol, item_id),
             Self::Service(cmd) => cmd.execute(core_sol, item_id),
             Self::Ship(cmd) => cmd.execute(core_sol, item_id),
             Self::Skill(cmd) => cmd.execute(core_sol, item_id),

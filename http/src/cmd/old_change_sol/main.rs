@@ -4,13 +4,12 @@ use crate::{
     cmd::{
         HAddFitCmd, HAddFleetCmd, HCmdResp,
         old_change_sol::{
-            HAddBoosterCmd, HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd,
-            HAddProjEffectCmd, HAddRigCmd, HAddServiceCmd, HAddSkillCmd, HAddSubsystemCmd, HAddSwEffectCmd,
-            HChangeAutochargeCmd, HChangeBoosterCmd, HChangeCharacterCmd, HChangeChargeCmd,
+            HAddFighterCmd, HAddFwEffectCmd, HAddModuleCmd, HAddProjEffectCmd, HAddServiceCmd, HAddSkillCmd,
+            HAddSubsystemCmd, HAddSwEffectCmd, HChangeAutochargeCmd, HChangeCharacterCmd, HChangeChargeCmd,
             HChangeFighterCmd, HChangeFitCmd, HChangeFleetCmd, HChangeFwEffectCmd, HChangeModuleCmd,
-            HChangeProjEffectCmd, HChangeRigCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeSolCmd,
-            HChangeStanceCmd, HChangeSubsystemCmd, HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd,
-            HSetCharacterCmd, HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
+            HChangeProjEffectCmd, HChangeServiceCmd, HChangeShipCmd, HChangeSkillCmd, HChangeSolCmd, HChangeStanceCmd,
+            HChangeSubsystemCmd, HChangeSwEffectCmd, HDeleteFitCmd, HDeleteFleetCmd, HRemoveItemCmd, HSetCharacterCmd,
+            HSetShipCmd, HSetStanceCmd, HUnsetCharacterCmd, HUnsetShipCmd, HUnsetStanceCmd,
         },
     },
     util::HExecError,
@@ -33,9 +32,6 @@ pub(crate) enum HChangeSolCommand {
     RemoveItem(HRemoveItemCmd),
     // Item - autocharge
     ChangeAutocharge(HChangeAutochargeCmd),
-    // Item - booster
-    AddBooster(HAddBoosterCmd),
-    ChangeBooster(HChangeBoosterCmd),
     // Item - character
     SetCharacter(HSetCharacterCmd),
     ChangeCharacter(HChangeCharacterCmd),
@@ -54,9 +50,6 @@ pub(crate) enum HChangeSolCommand {
     // Item - projected effect
     AddProjEffect(HAddProjEffectCmd),
     ChangeProjEffect(HChangeProjEffectCmd),
-    // Item - rig
-    AddRig(HAddRigCmd),
-    ChangeRig(HChangeRigCmd),
     // Item - service
     AddService(HAddServiceCmd),
     ChangeService(HChangeServiceCmd),
@@ -96,9 +89,6 @@ impl HChangeSolCommand {
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - booster
-            Self::AddBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
@@ -117,9 +107,6 @@ impl HChangeSolCommand {
             // Item - projected effect
             Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Item - rig
-            Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
