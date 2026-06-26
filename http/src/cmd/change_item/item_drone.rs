@@ -4,11 +4,21 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HMutationOnChange, HItemIdBackref},
+        shared::{HEffectModeMap, HItemIdBackref, HMutationOnChange},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::{HExecError, TriStateField},
 };
+
+#[derive(Deserialize)]
+pub(crate) struct HChangeDroneCmdBackref {
+    #[serde(flatten)]
+    shared: HChangeDroneCmdShared,
+    #[serde(default)]
+    add_proj_item_ids: Vec<HItemIdBackref>,
+    #[serde(default)]
+    rm_proj_item_ids: Vec<HItemIdBackref>,
+}
 
 #[serde_as]
 #[derive(Deserialize)]
@@ -21,16 +31,6 @@ pub(crate) struct HChangeDroneCmdFinal {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_proj_item_ids: Vec<rc::ItemId>,
-}
-
-#[derive(Deserialize)]
-pub(crate) struct HChangeDroneCmdBackref {
-    #[serde(flatten)]
-    shared: HChangeDroneCmdShared,
-    #[serde(default)]
-    add_proj_item_ids: Vec<HItemIdBackref>,
-    #[serde(default)]
-    rm_proj_item_ids: Vec<HItemIdBackref>,
 }
 
 #[derive(Deserialize)]
@@ -49,6 +49,12 @@ struct HChangeDroneCmdShared {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HChangeDroneCmdBackref {
+    fn render(self) -> Result<HChangeDroneCmdFinal, HExecError> {
+        Err(HExecError::UnremovableAutocharge)
+    }
+}
+
 impl HChangeDroneCmdFinal {
     pub(in crate::cmd) fn execute(
         &self,

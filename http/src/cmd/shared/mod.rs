@@ -1,10 +1,10 @@
 pub(in crate::cmd) use ability::HAbilityMap;
 pub(in crate::cmd) use add_mode::HAddMode;
-pub(in crate::cmd) use backref_id::{HFitIdBackref, HFleetIdBackref, HItemIdBackref};
+pub(in crate::cmd) use backrefs::{HFitIdBackref, HFleetIdBackref, HItemIdBackref};
 pub(in crate::cmd) use effect_mode::HEffectModeMap;
 pub(crate) use getters::{get_primary_fit, get_primary_fleet, get_primary_item};
 pub(in crate::cmd) use mutation::{HItemAttrMutationValue, HMutationOnAdd, HMutationOnChange};
-pub(crate) use resp::{HCmdResp, HFitIdResp, HFleetIdResp, HItemIdsResp};
+pub(crate) use resp::{HCmdResps, HCmdResp, HFitIdResp, HFleetIdResp, HItemIdsResp};
 pub(in crate::cmd) use rm_mode::HRmMode;
 pub(in crate::cmd) use side_effect::HSideEffectMap;
 pub(in crate::cmd) use sol_cloner::HSolCloner;
@@ -12,7 +12,7 @@ pub(in crate::cmd) use val_options::HValOptions;
 
 mod ability;
 mod add_mode;
-mod backref_id;
+mod backrefs;
 mod effect_mode;
 mod getters;
 mod mutation;

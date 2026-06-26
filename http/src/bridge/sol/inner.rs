@@ -3,10 +3,10 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HAddFitCmd, HAddFleetCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd,
-        HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand, HCmdResp, HGetFitStatsCmd,
-        HGetFleetStatsCmd, HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
-        get_primary_fit, get_primary_fleet,
+        HCmdResps, HAddFitCmd, HAddFleetCmd, HAddItemCommand, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd,
+        HBenchmarkTryFitItemsCmd, HChangeFitCommand, HChangeFleetCmd, HChangeItemCommand, HChangeSolCommand,
+        HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HRemoveItemCmd, HTryFitItemsCmd, HValidateFitCmd,
+        HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
@@ -126,7 +126,7 @@ impl HSolarSystemInner {
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<(HSolInfo, Vec<HCmdResp>), HBrError> {
+    ) -> Result<(HSolInfo, HCmdResps), HBrError> {
         let mut core_sol = self.take_sol()?;
         let core_sol_backup = core_sol.clone();
         let sol_id_mv = self.id.clone();
@@ -135,12 +135,12 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let mut cmd_resps = Vec::with_capacity(commands.len());
+                let mut cmd_resps = HCmdResps::with_capacity(commands.len());
                 for (i, command) in commands.iter().enumerate() {
                     let resp = command
                         .execute(&mut core_sol)
                         .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
-                    cmd_resps.push(resp);
+                    cmd_resps.append(resp);
                 }
                 let sol_info =
                     HSolInfo::from_id_and_core(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
@@ -418,7 +418,7 @@ impl HSolarSystemInner {
         commands: Vec<HChangeFitCommand>,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
-    ) -> Result<(HFitInfo, Vec<HCmdResp>), HBrError> {
+    ) -> Result<(HFitInfo, HCmdResps), HBrError> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_sol = self.take_sol()?;
         let core_sol_backup = core_sol.clone();
@@ -427,12 +427,12 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let mut cmd_resps = Vec::with_capacity(commands.len());
+                let mut cmd_resps = HCmdResps::with_capacity(commands.len());
                 for (i, command) in commands.iter().enumerate() {
                     let resp = command
                         .execute(&mut core_sol, &fit_id)
                         .map_err(|exec_err| HBrError::from_exec_batch(i, exec_err))?;
-                    cmd_resps.push(resp);
+                    cmd_resps.append(resp);
                 }
                 let mut core_fit = get_primary_fit(&mut core_sol, &fit_id)?;
                 let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);

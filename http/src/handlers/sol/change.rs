@@ -7,7 +7,7 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    cmd::{HChangeSolCommand, HCmdResp},
+    cmd::{HCmdResps, HChangeSolCommand},
     handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
     info::HSolInfo,
     state::HAppState,
@@ -21,10 +21,10 @@ pub(crate) struct HSolChangeReq {
 #[derive(Serialize)]
 struct HSolChangeResp {
     solar_system: HSolInfo,
-    cmd_results: Vec<HCmdResp>,
+    cmd_results: HCmdResps,
 }
 impl HSolChangeResp {
-    pub(crate) fn new(sol_info: HSolInfo, cmd_results: Vec<HCmdResp>) -> Self {
+    pub(crate) fn new(sol_info: HSolInfo, cmd_results: HCmdResps) -> Self {
         Self {
             solar_system: sol_info,
             cmd_results,

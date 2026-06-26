@@ -8,7 +8,7 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     bridge::HBrError,
-    cmd::{HChangeFitCommand, HCmdResp},
+    cmd::{HCmdResps, HChangeFitCommand},
     handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     info::HFitInfo,
     state::HAppState,
@@ -23,7 +23,7 @@ pub(crate) struct HFitChangeReq {
 #[derive(Serialize)]
 struct HFitChangeResp {
     fit: HFitInfo,
-    cmd_results: Vec<HCmdResp>,
+    cmd_results: HCmdResps,
 }
 
 #[allow(clippy::let_and_return)]
