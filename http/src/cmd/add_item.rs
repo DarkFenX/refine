@@ -3,7 +3,7 @@ use serde::Deserialize;
 use crate::{
     cmd::{
         HItemIdsResp,
-        basic_item::{
+        basic::{
             HBoosterAddCmdFCtxRIds, HCharacterSetCmdFCtxRIds, HDroneAddCmdFCtxRIds, HFighterAddCmdFCtxRIds,
             HFwEffectAddCmdFCtxRIds, HImplantAddCmdFCtxRIds, HModuleAddCmdFCtxRIds, HProjEffectAddCmdFCtxRIds,
             HRigAddCmdFCtxRIds, HServiceAddCmdFCtxRIds, HShipSetCmdFCtxRIds, HSkillAddCmdFCtxRIds,

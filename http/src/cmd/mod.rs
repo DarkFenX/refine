@@ -18,7 +18,7 @@ pub(crate) use try_fit_items::HTryFitItemsCmd;
 pub(crate) use validate::{HValidateFitCmd, HValidateSolCmd};
 
 mod add_item;
-mod basic_item;
+mod basic;
 mod change_fit;
 mod change_item;
 mod change_sol;

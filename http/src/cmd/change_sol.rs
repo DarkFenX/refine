@@ -3,7 +3,7 @@ use serde::Deserialize;
 use crate::{
     cmd::{
         HCmdResp, HCmdResps,
-        basic_item::{
+        basic::{
             HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HBoosterAddCmdFCtxBIds, HBoosterAddCmdFCtxRIds,
             HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HCharacterChangeCmdFHybridCtxBIds,
             HCharacterChangeCmdFHybridCtxRIds, HCharacterSetCmdFCtxBIds, HCharacterSetCmdFCtxRIds,
