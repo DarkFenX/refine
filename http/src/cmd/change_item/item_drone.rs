@@ -4,7 +4,7 @@ use serde_with::{DisplayFromStr, serde_as};
 use crate::{
     cmd::{
         HItemIdsResp,
-        shared::{HEffectModeMap, HMutationOnChange},
+        shared::{HEffectModeMap, HMutationOnChange, HItemIdBackref},
     },
     shared::{HCoordinates, HMinionState, HMovement, HNpcProp},
     util::{HExecError, TriStateField},
@@ -12,24 +12,44 @@ use crate::{
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(crate) struct HChangeDroneCmd {
-    type_id: Option<i32>,
-    state: Option<HMinionState>,
-    #[serde(default)]
-    mutation: TriStateField<HMutationOnChange>,
-    #[serde(default)]
-    npc_prop: TriStateField<HNpcProp>,
+pub(crate) struct HChangeDroneCmdFinal {
+    #[serde(flatten)]
+    shared: HChangeDroneCmdShared,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     add_proj_item_ids: Vec<rc::ItemId>,
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     rm_proj_item_ids: Vec<rc::ItemId>,
+}
+
+#[derive(Deserialize)]
+pub(crate) struct HChangeDroneCmdBackref {
+    #[serde(flatten)]
+    shared: HChangeDroneCmdShared,
+    #[serde(default)]
+    add_proj_item_ids: Vec<HItemIdBackref>,
+    #[serde(default)]
+    rm_proj_item_ids: Vec<HItemIdBackref>,
+}
+
+#[derive(Deserialize)]
+struct HChangeDroneCmdShared {
+    type_id: Option<i32>,
+    state: Option<HMinionState>,
+    #[serde(default)]
+    mutation: TriStateField<HMutationOnChange>,
+    #[serde(default)]
+    npc_prop: TriStateField<HNpcProp>,
     coordinates: Option<HCoordinates>,
     movement: Option<HMovement>,
     effect_modes: Option<HEffectModeMap>,
 }
-impl HChangeDroneCmd {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HChangeDroneCmdFinal {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
@@ -39,14 +59,14 @@ impl HChangeDroneCmd {
             rc::err::GetDroneError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetDroneError::ItemIsNotDrone(e) => HExecError::ItemKindMismatch(e),
         })?;
-        if let Some(type_id) = self.type_id {
+        if let Some(type_id) = self.shared.type_id {
             let core_type_id = rc::ItemTypeId::from_i32(type_id);
             core_drone.set_type_id(core_type_id);
         }
-        if let Some(state) = &self.state {
+        if let Some(state) = &self.shared.state {
             core_drone.set_state(state.into_core());
         }
-        match &self.mutation {
+        match &self.shared.mutation {
             TriStateField::Value(mutation) => match mutation {
                 // Mutates item or updates existing mutation
                 HMutationOnChange::Mutator(mutator_id) => {
@@ -81,7 +101,7 @@ impl HChangeDroneCmd {
             }
             TriStateField::Absent => (),
         }
-        match self.npc_prop {
+        match self.shared.npc_prop {
             TriStateField::Value(h_npc_prop) => core_drone.set_npc_prop(Some(h_npc_prop.into_core())),
             TriStateField::None => core_drone.set_npc_prop(None),
             TriStateField::Absent => (),
@@ -95,10 +115,10 @@ impl HChangeDroneCmd {
                 })?
                 .remove();
         }
-        if let Some(coordinates) = self.coordinates {
+        if let Some(coordinates) = self.shared.coordinates {
             core_drone.set_coordinates(coordinates.into_core());
         }
-        if let Some(movement) = self.movement {
+        if let Some(movement) = self.shared.movement {
             core_drone.set_movement(movement.into_core());
         }
         for projectee_item_id in self.add_proj_item_ids.iter() {
@@ -108,7 +128,7 @@ impl HChangeDroneCmd {
                 rc::err::AddProjError::ProjectionAlreadyExists(e) => HExecError::ProjectionAlreadyExists(e),
             })?;
         }
-        if let Some(h_effect_modes) = self.effect_modes.as_ref() {
+        if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_drone);
         }
         Ok(HItemIdsResp::from_core_drone(core_drone))

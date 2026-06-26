@@ -1,5 +1,6 @@
 pub(in crate::cmd) use ability::HAbilityMap;
 pub(in crate::cmd) use add_mode::HAddMode;
+pub(in crate::cmd) use backref_id::{HFitIdBackref, HFleetIdBackref, HItemIdBackref};
 pub(in crate::cmd) use effect_mode::HEffectModeMap;
 pub(crate) use getters::{get_primary_fit, get_primary_fleet, get_primary_item};
 pub(in crate::cmd) use mutation::{HItemAttrMutationValue, HMutationOnAdd, HMutationOnChange};

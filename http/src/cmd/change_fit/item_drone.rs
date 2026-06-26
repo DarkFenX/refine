@@ -73,7 +73,7 @@ pub(crate) struct HChangeDroneCmd {
     #[serde_as(as = "DisplayFromStr")]
     item_id: rc::ItemId,
     #[serde(flatten)]
-    item_cmd: change_item::HChangeDroneCmd,
+    item_cmd: change_item::HChangeDroneCmdFinal,
 }
 impl HChangeDroneCmd {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
