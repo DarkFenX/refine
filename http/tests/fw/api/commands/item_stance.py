@@ -73,19 +73,7 @@ class ItemStanceChangeCmd(BaseStanceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitStanceChangeViaItemIdCmd(BaseStanceCmd):
-
-    item_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'set_stance'
-        body['item_id'] = self.item_id
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class FitStanceChangeViaFitIdCmd(BaseStanceCmd):
+class FitStanceChangeCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()

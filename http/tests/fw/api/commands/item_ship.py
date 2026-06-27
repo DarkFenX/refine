@@ -77,19 +77,7 @@ class ItemShipChangeCmd(BaseShipCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitShipChangeViaItemIdCmd(BaseShipCmd):
-
-    item_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'set_ship'
-        body['item_id'] = self.item_id
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class FitShipChangeViaFitIdCmd(BaseShipCmd):
+class FitShipChangeCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()

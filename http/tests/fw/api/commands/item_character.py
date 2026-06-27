@@ -73,19 +73,7 @@ class ItemCharacterChangeCmd(BaseCharacterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitCharacterChangeViaItemIdCmd(BaseCharacterCmd):
-
-    item_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'set_character'
-        body['item_id'] = self.item_id
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class FitCharacterChangeViaFitIdCmd(BaseCharacterCmd):
+class FitCharacterChangeCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()

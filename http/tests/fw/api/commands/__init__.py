@@ -13,6 +13,11 @@ from .fleet import (
     SolFleetChangeCmd,
     SolFleetRemoveCmd,
 )
+from .item import (
+    FitItemRemoveCmd,
+    ItemItemRemoveCmd,
+    SolItemRemoveCmd,
+)
 from .item_autocharge import (
     FitAutochargeChangeCmd,
     ItemAutochargeChangeCmd,
@@ -27,8 +32,7 @@ from .item_booster import (
     SolBoosterChangeCmd,
 )
 from .item_character import (
-    FitCharacterChangeViaFitIdCmd,
-    FitCharacterChangeViaItemIdCmd,
+    FitCharacterChangeCmd,
     FitCharacterSetCmd,
     FitCharacterUnsetCmd,
     ItemCharacterChangeCmd,
@@ -106,8 +110,7 @@ from .item_service import (
     SolServiceChangeCmd,
 )
 from .item_ship import (
-    FitShipChangeViaFitIdCmd,
-    FitShipChangeViaItemIdCmd,
+    FitShipChangeCmd,
     FitShipSetCmd,
     FitShipUnsetCmd,
     ItemShipChangeCmd,
@@ -126,8 +129,7 @@ from .item_skill import (
     SolSkillChangeCmd,
 )
 from .item_stance import (
-    FitStanceChangeViaFitIdCmd,
-    FitStanceChangeViaItemIdCmd,
+    FitStanceChangeCmd,
     FitStanceSetCmd,
     FitStanceUnsetCmd,
     ItemStanceChangeCmd,
