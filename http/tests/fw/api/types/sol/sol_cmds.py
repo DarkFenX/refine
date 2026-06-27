@@ -7,14 +7,16 @@ from fw.api.commands import (
     SolFitAddCmd,
     SolFitRemoveCmd,
     SolImplantAddCmd,
+    SolItemRemoveCmd,
     SolModuleAddCmd,
+    SolModuleChangeCmd,
     SolRigAddCmd,
     SolShipSetCmd,
     SolSkillAddCmd,
     SolStanceSetCmd,
 )
 from fw.api.types.fit import Fit
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
+from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.item import Item
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack
 from fw.util import Absent
@@ -23,13 +25,14 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfile, MutaAdd
+    from fw.api.aliases import DpsProfile, MutaAdd, MutaChange
     from fw.api.commands import BaseCommand
     from fw.consts import (
         ApiEffMode,
         ApiFitInfoMode,
         ApiFleetInfoMode,
         ApiItemInfoMode,
+        ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
         ApiSolInfoMode,
@@ -129,6 +132,17 @@ class SolCmdCtx:
 
     def remove_fit(self, *, fit_id: str) -> None:
         command = SolFitRemoveCmd(fit_id=fit_id)
+        self._commands.append(command)
+
+    # Item
+    def remove_item(
+            self, *,
+            item_id: str,
+            rm_mode: ApiModRmMode | type[Absent] = Absent,
+    ) -> None:
+        command = SolItemRemoveCmd(
+            item_id=item_id,
+            rm_mode=rm_mode)
         self._commands.append(command)
 
     # Item - booster
@@ -236,6 +250,32 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_module(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: ApiModuleState | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
+            charge_type_id: int | type[Absent] | None = Absent,
+            spool: str | type[Absent] | None = Absent,
+            optional_reload: ApiOptionalReload | type[Absent] | None = Absent,
+            add_proj_item_ids: list[str] | type[Absent] = Absent,
+            rm_proj_item_ids: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolModuleChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            mutation=process_muta_change_request(mutation=mutation),
+            charge_type_id=charge_type_id,
+            spool=spool,
+            optional_reload=optional_reload,
+            add_proj_item_ids=add_proj_item_ids,
+            rm_proj_item_ids=rm_proj_item_ids,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - implant
     def add_rig(

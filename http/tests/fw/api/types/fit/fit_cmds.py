@@ -5,13 +5,15 @@ from fw.api.commands import (
     FitCharacterSetCmd,
     FitDroneAddCmd,
     FitImplantAddCmd,
+    FitItemRemoveCmd,
     FitModuleAddCmd,
+    FitModuleChangeCmd,
     FitRigAddCmd,
     FitShipSetCmd,
     FitSkillAddCmd,
     FitStanceSetCmd,
 )
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
+from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.item import Item
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack
 from fw.util import Absent
@@ -20,9 +22,9 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import MutaAdd
+    from fw.api.aliases import MutaAdd, MutaChange
     from fw.api.commands import BaseCommand
-    from fw.consts import ApiEffMode, ApiFitInfoMode, ApiItemInfoMode, ApiNpcProp, ApiOptionalReload
+    from fw.consts import ApiEffMode, ApiFitInfoMode, ApiItemInfoMode, ApiModRmMode, ApiNpcProp, ApiOptionalReload
     from .fit import Fit
 
 
@@ -91,6 +93,17 @@ class FitCmdCtx:
         data = {'id': f'#{index}', 'charge': {'id': f'#{index}c'}}
         self._ret_datas[index] = data
         return Item(client=self._client, data=data, sol_id=self._sol_id)
+
+    # Item
+    def remove_item(
+            self, *,
+            item_id: str,
+            rm_mode: ApiModRmMode | type[Absent] = Absent,
+    ) -> None:
+        command = FitItemRemoveCmd(
+            item_id=item_id,
+            rm_mode=rm_mode)
+        self._commands.append(command)
 
     # Item - booster
     def add_booster(
@@ -187,6 +200,32 @@ class FitCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_module(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: ApiModuleState | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
+            charge_type_id: int | type[Absent] | None = Absent,
+            spool: str | type[Absent] | None = Absent,
+            optional_reload: ApiOptionalReload | type[Absent] | None = Absent,
+            add_proj_item_ids: list[str] | type[Absent] = Absent,
+            rm_proj_item_ids: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = FitModuleChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            mutation=process_muta_change_request(mutation=mutation),
+            charge_type_id=charge_type_id,
+            spool=spool,
+            optional_reload=optional_reload,
+            add_proj_item_ids=add_proj_item_ids,
+            rm_proj_item_ids=rm_proj_item_ids,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - rig
     def add_rig(
