@@ -429,8 +429,10 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
         api_sol_cmds.set_character(fit_id=api_fit.id, type_id=1373)
         for eve_skill_id in get_skill_type_ids():
             api_sol_cmds.add_skill(fit_id=api_fit.id, type_id=eve_skill_id, level=5)
-        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=42245)  # Rabisu
-        api_sol_cmds.add_module(fit_id=api_fit.id, type_id=20563, state=consts.ApiModuleState.active)  # Smokescreen Cloak
+        # Rabisu
+        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=42245)
+        # Smokescreen Cloak
+        api_sol_cmds.add_module(fit_id=api_fit.id, type_id=20563, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(

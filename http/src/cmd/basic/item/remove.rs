@@ -50,7 +50,7 @@ impl HItemRemoveCmdICtx {
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
     ) -> Result<(), HExecError> {
-        let core_item = core_sol.get_item_mut(&item_id).map_err(|error| match error {
+        let core_item = core_sol.get_item_mut(item_id).map_err(|error| match error {
             rc::err::GetItemError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
         })?;
         core_item
