@@ -77,8 +77,6 @@ class FitCmdCtx:
             self._fit._data = resp_data['fit']  # noqa: SLF001
             # Update IDs in all the entities which were created by the commands
             for i, cmd_result in enumerate(resp_data['cmd_results']):
-                if cmd_result is None:
-                    continue
                 if i not in self._ret_datas:
                     continue
                 entity_data = self._ret_datas[i]

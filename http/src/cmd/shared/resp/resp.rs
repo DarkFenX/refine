@@ -5,11 +5,12 @@ use serde_with::{DisplayFromStr, serde_as};
 #[derive(Serialize)]
 #[serde(untagged)]
 pub(crate) enum HCmdResp {
-    NoData,
     CreatedFitId(HCreatedFitIdResp),
     CreatedFleetId(HCreatedFleetIdResp),
     CreatedItemIds(HCreatedItemIdsResp),
     ChangedItemIds(HChangedItemIdsResp),
+    // This variant has an empty value just to serialize as an object, not as null
+    NoData {},
 }
 
 #[serde_as]
@@ -49,7 +50,7 @@ pub(crate) struct HChangedItemIdsResp {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl From<()> for HCmdResp {
     fn from(_: ()) -> Self {
-        HCmdResp::NoData
+        HCmdResp::NoData {}
     }
 }
 impl From<HCreatedFitIdResp> for HCmdResp {
