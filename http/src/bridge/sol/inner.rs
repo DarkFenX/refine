@@ -3,10 +3,10 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmdBIds,
+        HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmd,
         HFitRemoveCmd, HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd, HGetFitStatsCmd, HGetFleetStatsCmd,
-        HGetItemStatsCmd, HItemAddCmd, HItemChangeCmd, HItemRemoveCmd, HSolChangeCmdBIds, HTryFitItemsCmd,
-        HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
+        HGetItemStatsCmd, HItemAddCmd, HItemChangeCmd, HItemRemoveCmd, HSolChangeCmd, HTryFitItemsCmd, HValidateFitCmd,
+        HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
@@ -121,7 +121,7 @@ impl HSolarSystemInner {
     pub(crate) async fn change_sol(
         &mut self,
         tpool: &HThreadPool,
-        commands: Vec<HSolChangeCmdBIds>,
+        commands: Vec<HSolChangeCmd>,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -416,7 +416,7 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         fit_id: &str,
-        commands: Vec<HFitChangeCmdBIds>,
+        commands: Vec<HFitChangeCmd>,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Result<(HFitInfo, HCmdResps), HBrError> {

@@ -7,7 +7,7 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    cmd::{HCmdResps, HSolChangeCmdBIds},
+    cmd::{HCmdResps, HSolChangeCmd},
     handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
     info::HSolInfo,
     state::HAppState,
@@ -15,7 +15,7 @@ use crate::{
 
 #[derive(Deserialize)]
 pub(crate) struct HSolChangeReq {
-    commands: Vec<HSolChangeCmdBIds>,
+    commands: Vec<HSolChangeCmd>,
 }
 
 #[derive(Serialize)]
