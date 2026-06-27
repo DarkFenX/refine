@@ -6,7 +6,7 @@ use uuid::Uuid;
 
 use crate::{
     bridge::{HBrError, HSolarSystem, HThreadPool},
-    cmd::HAddSolCmd,
+    cmd::HSolAddCmd,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
 
@@ -24,7 +24,7 @@ impl HSolMgr {
     pub(crate) async fn add_sol(
         &self,
         tpool: &HThreadPool,
-        command: HAddSolCmd,
+        command: HSolAddCmd,
         src: rc::Src,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,

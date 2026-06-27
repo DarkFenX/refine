@@ -71,6 +71,7 @@ pub(crate) use item_subsystem::{
 pub(crate) use item_sw_effect::{
     HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds, HSwEffectChangeCmdICtx,
 };
+pub(crate) use sol::{HSolAddCmdFCtx, HSolChangeCmdFCtx};
 
 mod fit;
 mod fleet;
@@ -92,3 +93,4 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod sol;

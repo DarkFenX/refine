@@ -3,7 +3,7 @@ use serde::Deserialize;
 use crate::shared::{HDpsProfile, HNpcProp, HOptionalReload, HRearmMinion, HSecZone, HSpool};
 
 #[derive(Deserialize)]
-pub(crate) struct HChangeSolCmd {
+pub(crate) struct HSolChangeCmdFCtx {
     sec_zone: Option<HSecZone>,
     default_incoming_dps: Option<HDpsProfile>,
     default_spool: Option<HSpool>,
@@ -11,7 +11,11 @@ pub(crate) struct HChangeSolCmd {
     default_optional_reloads: Option<HOptionalReload>,
     default_rearm_minions: Option<HRearmMinion>,
 }
-impl HChangeSolCmd {
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HSolChangeCmdFCtx {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) {
         if let Some(h_sec_zone) = &self.sec_zone {
             core_sol.set_sec_zone(h_sec_zone.into_core());

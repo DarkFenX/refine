@@ -22,7 +22,7 @@ use crate::{
             HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HShipChangeCmdFHybridCtxBIds,
             HShipChangeCmdFHybridCtxRIds, HShipSetCmdFCtxBIds, HShipSetCmdFCtxRIds, HShipUnsetCmdFCtxBIds,
             HShipUnsetCmdFCtxRIds, HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds,
-            HSkillChangeCmdFCtxRIds, HStanceChangeCmdFHybridCtxBIds, HStanceChangeCmdFHybridCtxRIds,
+            HSkillChangeCmdFCtxRIds, HSolChangeCmdFCtx, HStanceChangeCmdFHybridCtxBIds, HStanceChangeCmdFHybridCtxRIds,
             HStanceSetCmdFCtxBIds, HStanceSetCmdFCtxRIds, HStanceUnsetCmdFCtxBIds, HStanceUnsetCmdFCtxRIds,
             HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
             HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
@@ -34,6 +34,8 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HSolChangeCmdBIds {
+    // Solar system
+    ChangeSol(HSolChangeCmdFCtx),
     // Fleet
     AddFleet(HFleetAddCmdFCtxBIds),
     ChangeFleet(HFleetChangeCmdFCtxBIds),
@@ -99,6 +101,8 @@ pub(crate) enum HSolChangeCmdBIds {
 }
 
 pub(crate) enum HSolChangeCmdRIds {
+    // Solar system
+    ChangeSol(HSolChangeCmdFCtx),
     // Fleet
     AddFleet(HFleetAddCmdFCtxRIds),
     ChangeFleet(HFleetChangeCmdFCtxRIds),
@@ -169,6 +173,8 @@ pub(crate) enum HSolChangeCmdRIds {
 impl HSolChangeCmdBIds {
     pub(crate) fn render(self, resps: &HCmdResps) -> Result<HSolChangeCmdRIds, HExecError> {
         Ok(match self {
+            // Solar system
+            Self::ChangeSol(cmd) => HSolChangeCmdRIds::ChangeSol(cmd),
             // Fleet
             Self::AddFleet(cmd) => HSolChangeCmdRIds::AddFleet(cmd.render(resps)?),
             Self::ChangeFleet(cmd) => HSolChangeCmdRIds::ChangeFleet(cmd.render(resps)?),
@@ -241,6 +247,8 @@ impl HSolChangeCmdBIds {
 impl HSolChangeCmdRIds {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
+            // Solar system
+            Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
             // Fleet
             Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),

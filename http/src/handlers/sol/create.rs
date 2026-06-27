@@ -8,7 +8,7 @@ use serde::Deserialize;
 
 use crate::{
     bridge::HBrError,
-    cmd::HAddSolCmd,
+    cmd::HSolAddCmd,
     handlers::{HSingleErr, sol::HSolInfoParams},
     state::HAppState,
 };
@@ -17,7 +17,7 @@ use crate::{
 pub(crate) struct HCreateSolReq {
     src_alias: Option<String>,
     #[serde(flatten)]
-    cmd: HAddSolCmd,
+    cmd: HSolAddCmd,
 }
 
 pub(crate) async fn create_sol(
