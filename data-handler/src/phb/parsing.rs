@@ -36,7 +36,8 @@ where
                 .push(format!("failed to cast key \"{}\" to integer", raw_key));
             return Ok(());
         };
-        let value = match member_reader.read_deserialize::<PHB>() {
+        let raw_value = member_reader.read_deserialize::<serde_json::Value>()?;
+        let value = match serde_json::from_value::<PHB>(raw_value) {
             Ok(value) => value,
             // In case of an unexpected value format - log error and skip element
             Err(e) => {
@@ -73,7 +74,8 @@ where
             e_cont2.warns.push(warning);
             return Ok(());
         };
-        let value = match member_reader.read_deserialize::<PHB>() {
+        let raw_value = member_reader.read_deserialize::<serde_json::Value>()?;
+        let value = match serde_json::from_value::<PHB>(raw_value) {
             Ok(value) => value,
             // In case of an unexpected value format - log error and skip element
             Err(e) => {
