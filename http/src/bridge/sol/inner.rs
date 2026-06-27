@@ -28,8 +28,8 @@ pub(crate) struct HSolarSystemInner {
 ///   Commands executed by those methods could have rollback code in case of errors, but it is too
 ///   hard to write, and is likely to become a source of bugs. Cloning is easier, and is fast
 ///   enough.
-/// - non-fallible methods guarantee that solar system will stay in consistent and expected state
-///   even if underlying operations can produce errors (e.g. there is rollback code in core library
+/// - infallible methods guarantee that solar system will stay in consistent and expected state even
+///   if underlying operations can produce errors (e.g. there is rollback code in core library
 ///   methods).
 impl HSolarSystemInner {
     pub(crate) fn new(id: String, core_sol: Box<rc::SolarSystem>) -> Self {
@@ -91,7 +91,7 @@ impl HSolarSystemInner {
 // Solar system methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolarSystemInner {
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-sol-get", level = "trace", skip_all)]
     pub(crate) async fn get_sol(
         &mut self,
@@ -160,7 +160,7 @@ impl HSolarSystemInner {
             }
         }
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-sol-chg-src", level = "trace", skip_all)]
     pub(crate) async fn change_sol_src(
         &mut self,
@@ -187,7 +187,7 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         Ok(info)
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-sol-val", level = "trace", skip_all)]
     pub(crate) async fn validate_sol(
         &mut self,
@@ -197,16 +197,16 @@ impl HSolarSystemInner {
     ) -> Result<HSolValResult, HBrError> {
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
-        let (core_sol, result) = tpool
+        let (core_sol, val_result) = tpool
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = command.execute(&mut core_sol, valid_mode);
-                (core_sol, result)
+                let val_result = command.execute(&mut core_sol, valid_mode);
+                (core_sol, val_result)
             })
             .await;
         self.put_sol_back(core_sol);
-        Ok(result)
+        Ok(val_result)
     }
 }
 
@@ -214,7 +214,7 @@ impl HSolarSystemInner {
 // Fleet methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolarSystemInner {
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fleet-get", level = "trace", skip_all)]
     pub(crate) async fn get_fleet(
         &mut self,
@@ -231,7 +231,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let result = match get_primary_fleet(&mut core_sol, &fleet_id) {
                     Ok(mut core_fleet) => Ok(HFleetInfo::from_core(&mut core_fleet, fleet_mode)),
-                    Err(exec_error) => Err(exec_error.into()),
+                    Err(exec_err) => Err(HBrError::from(exec_err)),
                 };
                 (core_sol, result)
             })
@@ -305,7 +305,7 @@ impl HSolarSystemInner {
             }
         }
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fleet-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fleet(
         &mut self,
@@ -320,17 +320,14 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = match command.execute(&mut core_sol, &fleet_id) {
-                    Ok(_) => Ok(()),
-                    Err(exec_err) => Err(HBrError::from(exec_err)),
-                };
-                (core_sol, result)
+                let result = command.execute(&mut core_sol, &fleet_id);
+                (core_sol, result.map_err(HBrError::from))
             })
             .await;
         self.put_sol_back(core_sol);
         result
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fleet-stat", level = "trace", skip_all)]
     pub(crate) async fn get_fleet_stats(
         &mut self,
@@ -358,7 +355,7 @@ impl HSolarSystemInner {
 // Fit methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolarSystemInner {
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fit-get", level = "trace", skip_all)]
     pub(crate) async fn get_fit(
         &mut self,
@@ -376,7 +373,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let result = match get_primary_fit(&mut core_sol, &fit_id) {
                     Ok(mut core_fit) => Ok(HFitInfo::from_core(&mut core_fit, fit_mode, item_mode)),
-                    Err(exec_error) => Err(exec_error.into()),
+                    Err(exec_err) => Err(HBrError::from(exec_err)),
                 };
                 (core_sol, result)
             })
@@ -405,7 +402,7 @@ impl HSolarSystemInner {
                         let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);
                         Ok(fit_info)
                     }
-                    Err(exec_error) => Err(exec_error.into()),
+                    Err(exec_err) => Err(HBrError::from(exec_err)),
                 };
                 (core_sol, result)
             })
@@ -456,7 +453,7 @@ impl HSolarSystemInner {
             }
         }
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fit-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fit(
         &mut self,
@@ -471,17 +468,14 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = match command.execute(&mut core_sol, &fit_id) {
-                    Ok(_) => Ok(()),
-                    Err(exec_err) => Err(HBrError::from(exec_err)),
-                };
-                (core_sol, result)
+                let result = command.execute(&mut core_sol, &fit_id);
+                (core_sol, result.map_err(HBrError::from))
             })
             .await;
         self.put_sol_back(core_sol);
         result
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fit-stat", level = "trace", skip_all)]
     pub(crate) async fn get_fit_stats(
         &mut self,
@@ -503,7 +497,7 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         result
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
     pub(crate) async fn validate_fit(
         &mut self,
@@ -544,7 +538,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 match command.execute(&mut core_sol, &fit_id) {
                     Ok(core_result) => Ok(core_result.into_iter().map(|v| v.into_i32()).collect()),
-                    Err(exec_error) => Err(exec_error.into()),
+                    Err(exec_err) => Err(HBrError::from(exec_err)),
                 }
             })
             .await;
@@ -557,7 +551,7 @@ impl HSolarSystemInner {
 // Item methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolarSystemInner {
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-item-get", level = "trace", skip_all)]
     pub(crate) async fn get_item(
         &mut self,
@@ -657,7 +651,7 @@ impl HSolarSystemInner {
             }
         }
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-item-del", level = "trace", skip_all)]
     pub(crate) async fn remove_item(
         &mut self,
@@ -668,28 +662,18 @@ impl HSolarSystemInner {
         let item_id = self.str_to_item_id(item_id)?;
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
-        match tpool
+        let (core_sol, result) = tpool
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                match command.execute(&mut core_sol, &item_id) {
-                    Ok(_) => Ok(core_sol),
-                    Err(exec_err) => Err((core_sol, HBrError::from(exec_err))),
-                }
+                let result = command.execute(&mut core_sol, &item_id);
+                (core_sol, result.map_err(HBrError::from))
             })
-            .await
-        {
-            Ok(core_sol) => {
-                self.put_sol_back(core_sol);
-                Ok(())
-            }
-            Err((core_sol, br_err)) => {
-                self.put_sol_back(core_sol);
-                Err(br_err)
-            }
-        }
+            .await;
+        self.put_sol_back(core_sol);
+        result
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-item-stat", level = "trace", skip_all)]
     pub(crate) async fn get_item_stats(
         &mut self,
@@ -717,7 +701,7 @@ impl HSolarSystemInner {
 // Development-related methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolarSystemInner {
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-dev-check", level = "trace", skip_all)]
     pub(crate) async fn dev_consistency_check(&mut self, tpool: &HThreadPool) -> Result<bool, HBrError> {
         let core_sol = self.take_sol()?;
@@ -733,7 +717,7 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         Ok(result)
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
     pub(crate) async fn dev_benchmark_attrs(
         &mut self,
@@ -753,7 +737,7 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         Ok(())
     }
-    /// Non-fallible
+    /// Infallible
     #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
     pub(crate) async fn dev_benchmark_stats(
         &mut self,
@@ -773,7 +757,7 @@ impl HSolarSystemInner {
         self.put_sol_back(core_sol);
         Ok(())
     }
-    /// Non-fallible
+    /// Infallible
     pub(crate) async fn dev_benchmark_try_fit_items(
         &mut self,
         tpool: &HThreadPool,
