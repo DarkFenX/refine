@@ -1,3 +1,5 @@
+import typing
+
 import pytest
 
 from fw import eve
@@ -5,6 +7,9 @@ from fw.log import LogEntryNotFoundError
 from fw.request import Request
 from fw.util import Default
 from .base import ApiClientBase
+
+if typing.TYPE_CHECKING:
+    from fw.eve.aliases import DataPrimHook
 
 
 class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
@@ -30,6 +35,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             self, *,
             data: eve.EveObjects | type[Default] = Default,
             cleanup_check: bool = True,
+            data_prim_hook: DataPrimHook | None = None,
     ) -> None:
 
         def process(*, data: eve.EveObjects) -> None:
@@ -39,7 +45,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
         if data is Default:
             data = self._get_default_eve_data()
-        self._setup_eve_data_server(data=data)
+        self._setup_eve_data_server(data=data, data_prim_hook=data_prim_hook)
         if cleanup_check:
             with self._log_reader.get_collector() as log_collector:
                 process(data=data)
@@ -69,11 +75,18 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
         assert resp.status_code == 204
         self.__created_data_aliases.remove(src_alias)
 
-    def create_sources(self, *, cleanup_check: bool = True) -> None:
+    def create_sources(
+            self, *,
+            cleanup_check: bool = True,
+            data_prim_hook: DataPrimHook | None = None,
+    ) -> None:
 
         def process(*, cleanup_check: bool) -> None:
             for data in self._eve_datas.values():
-                self.create_source(data=data, cleanup_check=cleanup_check)
+                self.create_source(
+                    data=data,
+                    cleanup_check=cleanup_check,
+                    data_prim_hook=data_prim_hook)
 
         # If no data was created, create default one
         if not self._eve_datas:

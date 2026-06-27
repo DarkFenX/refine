@@ -3,6 +3,7 @@ import typing
 if typing.TYPE_CHECKING:
     import pytest_httpserver
 
+    from .aliases import DataPrimHook
     from .containers import EveObjects
 
 
@@ -12,8 +13,8 @@ class EveDataServer:
         super().__init__(**kwargs)
         self.__data_server = data_server
 
-    def _setup_eve_data_server(self, *, data: EveObjects) -> None:
-        str_data = data.render()
+    def _setup_eve_data_server(self, *, data: EveObjects, data_prim_hook: DataPrimHook | None) -> None:
+        str_data = data.render(data_prim_hook=data_prim_hook)
         suffix_cont_map = {
             'fsd_built/types.json': str_data.types,
             'fsd_built/groups.json': str_data.groups,

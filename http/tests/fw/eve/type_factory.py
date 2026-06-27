@@ -89,7 +89,7 @@ class EveTypeFactory(EveDataManager):
             cat_id: int | type[Absent | Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | type[Absent | Default] | None = Default,
+            defeff_id: int | type[Default] | None = Default,
             abils: list[ItemAbilityData] | type[Absent] = Absent,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
