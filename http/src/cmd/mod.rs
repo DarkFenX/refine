@@ -1,14 +1,14 @@
 pub(crate) use add_item::HItemAddCmd;
-pub(crate) use change_fit::{HFitChangeCmdBIds, HFitChangeCmdRIds};
+pub(crate) use change_fit::HFitChangeCmdBIds;
 pub(crate) use change_item::HItemChangeCmd;
-pub(crate) use change_sol::{HSolChangeCmdBIds, HSolChangeCmdRIds};
+pub(crate) use change_sol::HSolChangeCmdBIds;
 pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd};
 pub(crate) use old_add_fit::HAddFitCmd;
 pub(crate) use old_add_fleet::HAddFleetCmd;
 pub(crate) use old_add_sol::HAddSolCmd;
-pub(crate) use old_change_fit::HChangeFitCommand;
 pub(crate) use old_change_fleet::HChangeFleetCmd;
 pub(crate) use old_change_sol::HChangeSolCommand;
+pub(crate) use remove_fit::HFitRemoveCmd;
 pub(crate) use remove_item::HItemRemoveCmd;
 pub(crate) use shared::{
     HCmdResp, HCmdResps, HFitIdResp, HFleetIdResp, HItemIdsResp, get_primary_fit, get_primary_fleet,
@@ -26,9 +26,9 @@ mod dev;
 mod old_add_fit;
 mod old_add_fleet;
 mod old_add_sol;
-mod old_change_fit;
 mod old_change_fleet;
 mod old_change_sol;
+mod remove_fit;
 mod remove_item;
 mod shared;
 mod stats;

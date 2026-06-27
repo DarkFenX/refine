@@ -10,6 +10,7 @@ use crate::{
             HCharacterUnsetCmdFCtxBIds, HCharacterUnsetCmdFCtxRIds, HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds,
             HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds,
             HFighterAddCmdFCtxBIds, HFighterAddCmdFCtxRIds, HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds,
+            HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds,
             HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds,
             HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
             HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HModuleAddCmdFCtxBIds, HModuleAddCmdFCtxRIds,
@@ -31,6 +32,9 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HSolChangeCmdBIds {
+    // Fit
+    ChangeFit(HFitChangeCmdFCtxBIds),
+    RemoveFit(HFitRemoveCmdFCtxBIds),
     // Item
     RemoveItem(HItemRemoveCmdFCtxBIds),
     // Item - autocharge
@@ -88,6 +92,9 @@ pub(crate) enum HSolChangeCmdBIds {
 }
 
 pub(crate) enum HSolChangeCmdRIds {
+    // Fit
+    ChangeFit(HFitChangeCmdFCtxRIds),
+    RemoveFit(HFitRemoveCmdFCtxRIds),
     // Item
     RemoveItem(HItemRemoveCmdFCtxRIds),
     // Item - autocharge
@@ -150,6 +157,9 @@ pub(crate) enum HSolChangeCmdRIds {
 impl HSolChangeCmdBIds {
     pub(crate) fn render(self, resps: &HCmdResps) -> Result<HSolChangeCmdRIds, HExecError> {
         Ok(match self {
+            // Fit
+            Self::ChangeFit(cmd) => HSolChangeCmdRIds::ChangeFit(cmd.render(resps)?),
+            Self::RemoveFit(cmd) => HSolChangeCmdRIds::RemoveFit(cmd.render(resps)?),
             // Item
             Self::RemoveItem(cmd) => HSolChangeCmdRIds::RemoveItem(cmd.render(resps)?),
             // Item - autocharge
@@ -214,6 +224,9 @@ impl HSolChangeCmdBIds {
 impl HSolChangeCmdRIds {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
+            // Item
+            Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RemoveFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - autocharge

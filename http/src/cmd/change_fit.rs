@@ -8,14 +8,15 @@ use crate::{
             HBoosterChangeCmdFCtxRIds, HCharacterChangeCmdICtx, HCharacterSetCmdICtx, HCharacterUnsetCmdICtx,
             HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds, HDroneAddCmdICtxBIds, HDroneAddCmdICtxRIds,
             HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds, HFighterAddCmdICtxBIds, HFighterAddCmdICtxRIds,
-            HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds, HFwEffectAddCmdICtx, HFwEffectChangeCmdFCtxBIds,
-            HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
-            HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds,
-            HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds, HRigAddCmdICtx, HRigChangeCmdFCtxBIds,
-            HRigChangeCmdFCtxRIds, HServiceAddCmdICtx, HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds,
-            HShipChangeCmdICtx, HShipSetCmdICtx, HShipUnsetCmdICtx, HSkillAddCmdICtx, HSkillChangeCmdFCtxBIds,
-            HSkillChangeCmdFCtxRIds, HStanceChangeCmdICtx, HStanceSetCmdICtx, HStanceUnsetCmdICtx,
-            HSubsystemAddCmdICtx, HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
+            HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds, HFitChangeCmdICtxBIds, HFitChangeCmdICtxRIds,
+            HFwEffectAddCmdICtx, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdICtx,
+            HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds, HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds,
+            HModuleAddCmdICtxBIds, HModuleAddCmdICtxRIds, HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds,
+            HRigAddCmdICtx, HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HServiceAddCmdICtx,
+            HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HShipChangeCmdICtx, HShipSetCmdICtx,
+            HShipUnsetCmdICtx, HSkillAddCmdICtx, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds,
+            HStanceChangeCmdICtx, HStanceSetCmdICtx, HStanceUnsetCmdICtx, HSubsystemAddCmdICtx,
+            HSubsystemChangeCmdFCtxBIds, HSubsystemChangeCmdFCtxRIds,
         },
     },
     util::HExecError,
@@ -24,6 +25,8 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HFitChangeCmdBIds {
+    // Fit
+    ChangeFit(HFitChangeCmdICtxBIds),
     // Item
     RemoveItem(HItemRemoveCmdFCtxBIds),
     // Item - autocharge
@@ -75,6 +78,8 @@ pub(crate) enum HFitChangeCmdBIds {
 }
 
 pub(crate) enum HFitChangeCmdRIds {
+    // Fit
+    ChangeFit(HFitChangeCmdICtxRIds),
     // Item
     RemoveItem(HItemRemoveCmdFCtxRIds),
     // Item - autocharge
@@ -131,6 +136,8 @@ pub(crate) enum HFitChangeCmdRIds {
 impl HFitChangeCmdBIds {
     pub(crate) fn render(self, resps: &HCmdResps) -> Result<HFitChangeCmdRIds, HExecError> {
         Ok(match self {
+            // Fit
+            Self::ChangeFit(cmd) => HFitChangeCmdRIds::ChangeFit(cmd.render(resps)?),
             // Item
             Self::RemoveItem(cmd) => HFitChangeCmdRIds::RemoveItem(cmd.render(resps)?),
             // Item - autocharge
@@ -189,6 +196,8 @@ impl HFitChangeCmdBIds {
 impl HFitChangeCmdRIds {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
+            // Item
+            Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - autocharge
