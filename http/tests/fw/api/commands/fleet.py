@@ -60,9 +60,12 @@ class FleetFleetChangeCmd(BaseFleetChangeCmd):
 @dataclasses.dataclass(kw_only=True)
 class SolFleetChangeCmd(BaseFleetChangeCmd):
 
+    fleet_id: str
+
     def serialize(self) -> dict:
         body = super().serialize()
         body['type'] = 'change_fleet'
+        body['fleet_id'] = self.fleet_id
         return body
 
 

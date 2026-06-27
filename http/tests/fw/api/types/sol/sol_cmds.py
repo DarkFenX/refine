@@ -5,8 +5,10 @@ from fw.api.commands import (
     SolCharacterSetCmd,
     SolDroneAddCmd,
     SolFitAddCmd,
+    SolFitChangeCmd,
     SolFitRemoveCmd,
     SolFleetAddCmd,
+    SolFleetChangeCmd,
     SolFleetRemoveCmd,
     SolImplantAddCmd,
     SolItemRemoveCmd,
@@ -133,6 +135,18 @@ class SolCmdCtx:
         self._commands.append(command)
         return self.__make_fleet()
 
+    def change_fleet(
+            self, *,
+            fleet_id: str,
+            add_fit_ids: list[str] | type[Absent] = Absent,
+            rm_fit_ids: list[str] | type[Absent] = Absent,
+    ) -> None:
+        command = SolFleetChangeCmd(
+            fleet_id=fleet_id,
+            add_fit_ids=add_fit_ids,
+            rm_fit_ids=rm_fit_ids)
+        self._commands.append(command)
+
     def remove_fleet(self, *, fleet_id: str) -> None:
         command = SolFleetRemoveCmd(fleet_id=fleet_id)
         self._commands.append(command)
@@ -150,6 +164,20 @@ class SolCmdCtx:
             rah_incoming_dps=rah_incoming_dps)
         self._commands.append(command)
         return self.__make_fit()
+
+    def change_fit(
+            self, *,
+            fit_id: str,
+            fleet_id: str | type[Absent] = Absent,
+            sec_status: float | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfile | type[Absent] = Absent,
+    ) -> None:
+        command = SolFitChangeCmd(
+            fit_id=fit_id,
+            fleet_id=fleet_id,
+            sec_status=sec_status,
+            rah_incoming_dps=rah_incoming_dps)
+        self._commands.append(command)
 
     def remove_fit(self, *, fit_id: str) -> None:
         command = SolFitRemoveCmd(fit_id=fit_id)
