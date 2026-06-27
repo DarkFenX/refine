@@ -7,6 +7,7 @@ use axum::{
 
 use crate::{
     bridge::HBrError,
+    cmd::HFleetRemoveCmd,
     handlers::{HGSolResult, HSingleErr, get_guarded_sol},
     state::HAppState,
     util::HExecError,
@@ -16,12 +17,19 @@ use crate::{
 pub(crate) async fn delete_fleet(
     State(state): State<HAppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
+    payload: Option<Json<HFleetRemoveCmd>>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,
         HGSolResult::ErrResp(r) => return r,
     };
-    let resp = match guarded_sol.lock().await.remove_fleet(&state.tpool, &fleet_id).await {
+    let Json(payload) = payload.unwrap_or_default();
+    let resp = match guarded_sol
+        .lock()
+        .await
+        .remove_fleet(&state.tpool, &fleet_id, payload)
+        .await
+    {
         Ok(_) => StatusCode::NO_CONTENT.into_response(),
         Err(br_err) => {
             let code = match &br_err {

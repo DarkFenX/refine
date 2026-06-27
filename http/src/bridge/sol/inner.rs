@@ -4,9 +4,9 @@ use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
         HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmdBIds,
-        HFleetAddCmd, HFleetChangeCmd, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
-        HItemChangeCmd, HItemRemoveCmd, HSolChangeCmdBIds, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
-        get_primary_fit, get_primary_fleet,
+        HFitRemoveCmd, HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd, HGetFitStatsCmd, HGetFleetStatsCmd,
+        HGetItemStatsCmd, HItemAddCmd, HItemChangeCmd, HItemRemoveCmd, HSolChangeCmdBIds, HTryFitItemsCmd,
+        HValidateFitCmd, HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
@@ -307,7 +307,12 @@ impl HSolarSystemInner {
     }
     /// Non-fallible
     #[tracing::instrument(name = "sol-fleet-del", level = "trace", skip_all)]
-    pub(crate) async fn remove_fleet(&mut self, tpool: &HThreadPool, fleet_id: &str) -> Result<(), HBrError> {
+    pub(crate) async fn remove_fleet(
+        &mut self,
+        tpool: &HThreadPool,
+        fleet_id: &str,
+        command: HFleetRemoveCmd,
+    ) -> Result<(), HBrError> {
         let fleet_id = self.str_to_fleet_id(fleet_id)?;
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
@@ -315,12 +320,9 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = match get_primary_fleet(&mut core_sol, &fleet_id) {
-                    Ok(core_fleet) => {
-                        core_fleet.remove();
-                        Ok(())
-                    }
-                    Err(exec_error) => Err(exec_error.into()),
+                let result = match command.execute(&mut core_sol, &fleet_id) {
+                    Ok(_) => Ok(()),
+                    Err(exec_err) => Err(HBrError::from(exec_err)),
                 };
                 (core_sol, result)
             })
@@ -456,7 +458,12 @@ impl HSolarSystemInner {
     }
     /// Non-fallible
     #[tracing::instrument(name = "sol-fit-del", level = "trace", skip_all)]
-    pub(crate) async fn remove_fit(&mut self, tpool: &HThreadPool, fit_id: &str) -> Result<(), HBrError> {
+    pub(crate) async fn remove_fit(
+        &mut self,
+        tpool: &HThreadPool,
+        fit_id: &str,
+        command: HFitRemoveCmd,
+    ) -> Result<(), HBrError> {
         let fit_id = self.str_to_fit_id(fit_id)?;
         let mut core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
@@ -464,12 +471,9 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let result = match get_primary_fit(&mut core_sol, &fit_id) {
-                    Ok(core_fit) => {
-                        core_fit.remove();
-                        Ok(())
-                    }
-                    Err(exec_error) => Err(exec_error.into()),
+                let result = match command.execute(&mut core_sol, &fit_id) {
+                    Ok(_) => Ok(()),
+                    Err(exec_err) => Err(HBrError::from(exec_err)),
                 };
                 (core_sol, result)
             })
