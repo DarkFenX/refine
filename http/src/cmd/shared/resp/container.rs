@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::{
     cmd::shared::{HCmdResp, HFitIdBackref, HFleetIdBackref, HItemIdBackref},
-    util::{HExecError, TriStateField},
+    util::HExecError,
 };
 
 #[derive(Serialize)]
@@ -30,6 +30,16 @@ impl HCmdResps {
             HFitIdBackref::Id(item_id) => Ok(item_id),
             HFitIdBackref::Backref(index) => self.get_fit_id(index),
         }
+    }
+    pub(in crate::cmd) fn render_fit_ids(
+        &self,
+        backref_fit_ids: Vec<HFitIdBackref>,
+    ) -> Result<Vec<rc::FitId>, HExecError> {
+        let mut fit_ids = Vec::with_capacity(backref_fit_ids.len());
+        for backref_fit_id in backref_fit_ids {
+            fit_ids.push(self.render_fit_id(backref_fit_id)?);
+        }
+        Ok(fit_ids)
     }
     pub(in crate::cmd) fn render_item_id(&self, item_id: HItemIdBackref) -> Result<rc::ItemId, HExecError> {
         match item_id {

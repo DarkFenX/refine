@@ -7,7 +7,7 @@ use axum::{
 
 use crate::{
     bridge::HBrError,
-    cmd::HChangeFleetCmd,
+    cmd::HFleetChangeCmd,
     handlers::{HGSolResult, HSingleErr, fleet::HFleetInfoParams, get_guarded_sol},
     state::HAppState,
     util::HExecError,
@@ -18,7 +18,7 @@ pub(crate) async fn change_fleet(
     State(state): State<HAppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
     Query(params): Query<HFleetInfoParams>,
-    Json(payload): Json<HChangeFleetCmd>,
+    Json(payload): Json<HFleetChangeCmd>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,

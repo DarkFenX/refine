@@ -3,8 +3,8 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HAddFleetCmd, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HChangeFleetCmd, HCmdResps,
-        HFitAddCmd, HFitChangeCmdBIds, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
+        HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmdBIds,
+        HFleetAddCmd, HFleetChangeCmd, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
         HItemChangeCmd, HItemRemoveCmd, HSolChangeCmdBIds, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
         get_primary_fit, get_primary_fleet,
     },
@@ -244,7 +244,7 @@ impl HSolarSystemInner {
     pub(crate) async fn add_fleet(
         &mut self,
         tpool: &HThreadPool,
-        command: HAddFleetCmd,
+        command: HFleetAddCmd,
         fleet_mode: HFleetInfoMode,
     ) -> Result<HFleetInfo, HBrError> {
         let mut core_sol = self.take_sol()?;
@@ -277,7 +277,7 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         fleet_id: &str,
-        command: HChangeFleetCmd,
+        command: HFleetChangeCmd,
         fleet_mode: HFleetInfoMode,
     ) -> Result<HFleetInfo, HBrError> {
         let fleet_id = self.str_to_fleet_id(fleet_id)?;

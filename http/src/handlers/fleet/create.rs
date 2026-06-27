@@ -6,7 +6,7 @@ use axum::{
 };
 
 use crate::{
-    cmd::HAddFleetCmd,
+    cmd::HFleetAddCmd,
     handlers::{HGSolResult, HSingleErr, fleet::HFleetInfoParams, get_guarded_sol},
     state::HAppState,
 };
@@ -16,7 +16,7 @@ pub(crate) async fn create_fleet(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
     Query(params): Query<HFleetInfoParams>,
-    payload: Option<Json<HAddFleetCmd>>,
+    payload: Option<Json<HFleetAddCmd>>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,

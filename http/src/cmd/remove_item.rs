@@ -4,6 +4,7 @@ use crate::{cmd::basic::HItemRemoveCmdICtx, util::HExecError};
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HItemRemoveCmd {
+    #[serde(flatten)]
     basic: HItemRemoveCmdICtx,
 }
 impl HItemRemoveCmd {

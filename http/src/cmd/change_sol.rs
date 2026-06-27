@@ -11,18 +11,20 @@ use crate::{
             HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds,
             HFighterAddCmdFCtxBIds, HFighterAddCmdFCtxRIds, HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds,
             HFitAddCmdFCtxBIds, HFitAddCmdFCtxRIds, HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds,
-            HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds,
-            HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds, HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds,
-            HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds, HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds,
-            HModuleAddCmdFCtxBIds, HModuleAddCmdFCtxRIds, HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds,
-            HProjEffectAddCmdFCtxBIds, HProjEffectAddCmdFCtxRIds, HProjEffectChangeCmdFCtxBIds,
-            HProjEffectChangeCmdFCtxRIds, HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds, HRigChangeCmdFCtxBIds,
-            HRigChangeCmdFCtxRIds, HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds, HServiceChangeCmdFCtxBIds,
-            HServiceChangeCmdFCtxRIds, HShipChangeCmdFHybridCtxBIds, HShipChangeCmdFHybridCtxRIds, HShipSetCmdFCtxBIds,
-            HShipSetCmdFCtxRIds, HShipUnsetCmdFCtxBIds, HShipUnsetCmdFCtxRIds, HSkillAddCmdFCtxBIds,
-            HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds, HSkillChangeCmdFCtxRIds, HStanceChangeCmdFHybridCtxBIds,
-            HStanceChangeCmdFHybridCtxRIds, HStanceSetCmdFCtxBIds, HStanceSetCmdFCtxRIds, HStanceUnsetCmdFCtxBIds,
-            HStanceUnsetCmdFCtxRIds, HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
+            HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFleetAddCmdFCtxBIds, HFleetAddCmdFCtxRIds,
+            HFleetChangeCmdFCtxBIds, HFleetChangeCmdFCtxRIds, HFleetRemoveCmdFCtxBIds, HFleetRemoveCmdFCtxRIds,
+            HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds,
+            HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
+            HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HModuleAddCmdFCtxBIds, HModuleAddCmdFCtxRIds,
+            HModuleChangeCmdFCtxBIds, HModuleChangeCmdFCtxRIds, HProjEffectAddCmdFCtxBIds, HProjEffectAddCmdFCtxRIds,
+            HProjEffectChangeCmdFCtxBIds, HProjEffectChangeCmdFCtxRIds, HRigAddCmdFCtxBIds, HRigAddCmdFCtxRIds,
+            HRigChangeCmdFCtxBIds, HRigChangeCmdFCtxRIds, HServiceAddCmdFCtxBIds, HServiceAddCmdFCtxRIds,
+            HServiceChangeCmdFCtxBIds, HServiceChangeCmdFCtxRIds, HShipChangeCmdFHybridCtxBIds,
+            HShipChangeCmdFHybridCtxRIds, HShipSetCmdFCtxBIds, HShipSetCmdFCtxRIds, HShipUnsetCmdFCtxBIds,
+            HShipUnsetCmdFCtxRIds, HSkillAddCmdFCtxBIds, HSkillAddCmdFCtxRIds, HSkillChangeCmdFCtxBIds,
+            HSkillChangeCmdFCtxRIds, HStanceChangeCmdFHybridCtxBIds, HStanceChangeCmdFHybridCtxRIds,
+            HStanceSetCmdFCtxBIds, HStanceSetCmdFCtxRIds, HStanceUnsetCmdFCtxBIds, HStanceUnsetCmdFCtxRIds,
+            HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
             HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
         },
     },
@@ -32,6 +34,10 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
 pub(crate) enum HSolChangeCmdBIds {
+    // Fleet
+    AddFleet(HFleetAddCmdFCtxBIds),
+    ChangeFleet(HFleetChangeCmdFCtxBIds),
+    RemoveFleet(HFleetRemoveCmdFCtxBIds),
     // Fit
     AddFit(HFitAddCmdFCtxBIds),
     ChangeFit(HFitChangeCmdFCtxBIds),
@@ -93,6 +99,10 @@ pub(crate) enum HSolChangeCmdBIds {
 }
 
 pub(crate) enum HSolChangeCmdRIds {
+    // Fleet
+    AddFleet(HFleetAddCmdFCtxRIds),
+    ChangeFleet(HFleetChangeCmdFCtxRIds),
+    RemoveFleet(HFleetRemoveCmdFCtxRIds),
     // Fit
     AddFit(HFitAddCmdFCtxRIds),
     ChangeFit(HFitChangeCmdFCtxRIds),
@@ -159,6 +169,10 @@ pub(crate) enum HSolChangeCmdRIds {
 impl HSolChangeCmdBIds {
     pub(crate) fn render(self, resps: &HCmdResps) -> Result<HSolChangeCmdRIds, HExecError> {
         Ok(match self {
+            // Fleet
+            Self::AddFleet(cmd) => HSolChangeCmdRIds::AddFleet(cmd.render(resps)?),
+            Self::ChangeFleet(cmd) => HSolChangeCmdRIds::ChangeFleet(cmd.render(resps)?),
+            Self::RemoveFleet(cmd) => HSolChangeCmdRIds::RemoveFleet(cmd.render(resps)?),
             // Fit
             Self::AddFit(cmd) => HSolChangeCmdRIds::AddFit(cmd.render(resps)?),
             Self::ChangeFit(cmd) => HSolChangeCmdRIds::ChangeFit(cmd.render(resps)?),
@@ -227,7 +241,11 @@ impl HSolChangeCmdBIds {
 impl HSolChangeCmdRIds {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
         match self {
-            // Item
+            // Fleet
+            Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RemoveFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Fit
             Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::RemoveFit(cmd) => Ok(cmd.execute(core_sol)?.into()),

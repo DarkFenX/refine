@@ -7,6 +7,7 @@ use crate::{
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HFitAddCmd {
+    #[serde(flatten)]
     basic: HFitAddCmdFCtxRIds,
 }
 impl HFitAddCmd {

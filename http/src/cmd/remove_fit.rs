@@ -4,6 +4,7 @@ use crate::{cmd::basic::HFitRemoveCmdICtx, util::HExecError};
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HFitRemoveCmd {
+    #[serde(flatten)]
     basic: HFitRemoveCmdICtx,
 }
 impl HFitRemoveCmd {

@@ -2,6 +2,10 @@ pub(crate) use fit::{
     HFitAddCmdFCtxBIds, HFitAddCmdFCtxRIds, HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitChangeCmdICtxBIds,
     HFitChangeCmdICtxRIds, HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFitRemoveCmdICtx,
 };
+pub(crate) use fleet::{
+    HFleetAddCmdFCtxBIds, HFleetAddCmdFCtxRIds, HFleetChangeCmdFCtxBIds, HFleetChangeCmdFCtxRIds,
+    HFleetChangeCmdICtxRIds, HFleetRemoveCmdFCtxBIds, HFleetRemoveCmdFCtxRIds, HFleetRemoveCmdICtx,
+};
 pub(crate) use item::{HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HItemRemoveCmdICtx};
 pub(crate) use item_autocharge::{
     HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HAutochargeChangeCmdICtx,
@@ -69,6 +73,7 @@ pub(crate) use item_sw_effect::{
 };
 
 mod fit;
+mod fleet;
 mod item;
 mod item_autocharge;
 mod item_booster;
