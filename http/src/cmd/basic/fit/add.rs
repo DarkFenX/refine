@@ -2,7 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HCmdResps, HFitIdResp, shared::HFleetIdBackref},
+    cmd::shared::{HCmdResps, HCreatedFitIdResp, HFleetIdBackref},
     shared::HDpsProfile,
     util::HExecError,
 };
@@ -48,7 +48,7 @@ impl HFitAddCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFitAddCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFitIdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFitIdResp, HExecError> {
         let mut core_fit = core_sol.add_fit();
         if let Some(fleet_id) = self.fleet_id {
             core_fit.set_fleet(&fleet_id).map_err(|error| match error {
@@ -62,6 +62,6 @@ impl HFitAddCmdFCtxRIds {
         if let Some(rah_incoming_dps) = self.shared.rah_incoming_dps {
             core_fit.set_rah_incoming_dps(rah_incoming_dps.into_core());
         }
-        Ok(HFitIdResp::from_core_fit(core_fit))
+        Ok(HCreatedFitIdResp::from_core_fit(core_fit))
     }
 }

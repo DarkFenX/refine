@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref},
     util::HExecError,
 };
 
@@ -45,7 +42,7 @@ impl HSkillChangeCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSkillChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -55,7 +52,7 @@ impl HSkillChangeCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_skill = core_sol.get_skill_mut(item_id).map_err(|error| match error {
             rc::err::GetSkillError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetSkillError::ItemIsNotSkill(e) => HExecError::ItemKindMismatch(e),
@@ -76,6 +73,6 @@ impl HSkillChangeCmdICtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_skill);
         }
-        Ok(HItemIdsResp::from_core_skill(core_skill))
+        Ok(HChangedItemIdsResp::default())
     }
 }

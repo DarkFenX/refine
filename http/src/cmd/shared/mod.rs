@@ -4,7 +4,9 @@ pub(in crate::cmd) use backrefs::{HFitIdBackref, HFleetIdBackref, HItemIdBackref
 pub(in crate::cmd) use effect_mode::HEffectModeMap;
 pub(crate) use getters::{get_primary_fit, get_primary_fleet, get_primary_item};
 pub(in crate::cmd) use mutation::{HItemAttrMutationValue, HMutationOnAdd, HMutationOnChange};
-pub(crate) use resp::{HCmdResp, HCmdResps, HFitIdResp, HFleetIdResp, HItemIdsResp};
+pub(crate) use resp::{
+    HChangedItemIdsResp, HCmdResp, HCmdResps, HCreatedFitIdResp, HCreatedFleetIdResp, HCreatedItemIdsResp,
+};
 pub(in crate::cmd) use rm_mode::HRmMode;
 pub(in crate::cmd) use side_effect::HSideEffectMap;
 pub(in crate::cmd) use sol_cloner::HSolCloner;

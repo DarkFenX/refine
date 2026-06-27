@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HFleetIdResp,
-        shared::{HFitIdBackref, HFleetIdBackref, get_primary_fleet},
-    },
+    cmd::shared::{HCmdResps, HFitIdBackref, HFleetIdBackref, get_primary_fleet},
     util::HExecError,
 };
 
@@ -66,7 +63,7 @@ impl HFleetChangeCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFleetChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFleetIdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), HExecError> {
         self.ictx_cmd.execute(core_sol, &self.fleet_id)
     }
 }
@@ -76,7 +73,7 @@ impl HFleetChangeCmdICtxRIds {
         &self,
         core_sol: &mut rc::SolarSystem,
         fleet_id: &rc::FleetId,
-    ) -> Result<HFleetIdResp, HExecError> {
+    ) -> Result<(), HExecError> {
         let mut core_fleet = get_primary_fleet(core_sol, fleet_id)?;
         for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id).map_err(|error| match error {
@@ -90,6 +87,6 @@ impl HFleetChangeCmdICtxRIds {
                 rc::err::FleetAddFitError::FitAlreadyInThisFleet(e) => HExecError::FitAlreadyInThisFleet(e),
             })?;
         }
-        Ok(HFleetIdResp::from_core_fleet(core_fleet))
+        Ok(())
     }
 }

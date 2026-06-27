@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref, HSideEffectMap},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref, HSideEffectMap},
     util::HExecError,
 };
 
@@ -45,7 +42,7 @@ impl HBoosterChangeCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HBoosterChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -55,7 +52,7 @@ impl HBoosterChangeCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_booster = core_sol.get_booster_mut(item_id).map_err(|error| match error {
             rc::err::GetBoosterError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetBoosterError::ItemIsNotBooster(e) => HExecError::ItemKindMismatch(e),
@@ -73,6 +70,6 @@ impl HBoosterChangeCmdICtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_booster);
         }
-        Ok(HItemIdsResp::from_core_booster(core_booster))
+        Ok(HChangedItemIdsResp::default())
     }
 }

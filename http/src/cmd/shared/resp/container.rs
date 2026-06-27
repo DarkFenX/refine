@@ -62,28 +62,29 @@ impl HCmdResps {
     fn get_fleet_id(&self, index: usize) -> Result<rc::FleetId, HExecError> {
         let resp = self.get_resp(index)?;
         match resp {
-            HCmdResp::FleetId(resp) => Ok(resp.id),
+            HCmdResp::CreatedFleetId(resp) => Ok(resp.id),
             _ => Err(HExecError::BackrefCmdNoFleetId(index)),
         }
     }
     fn get_fit_id(&self, index: usize) -> Result<rc::FitId, HExecError> {
         let resp = self.get_resp(index)?;
         match resp {
-            HCmdResp::FitId(resp) => Ok(resp.id),
+            HCmdResp::CreatedFitId(resp) => Ok(resp.id),
             _ => Err(HExecError::BackrefCmdNoFitId(index)),
         }
     }
     fn get_item_id(&self, index: usize) -> Result<rc::ItemId, HExecError> {
         let resp = self.get_resp(index)?;
         match resp {
-            HCmdResp::ItemIds(resp) => Ok(resp.id),
+            HCmdResp::CreatedItemIds(resp) => Ok(resp.id),
             _ => Err(HExecError::BackrefCmdNoItemId(index)),
         }
     }
     fn get_charge_item_id(&self, index: usize) -> Result<rc::ItemId, HExecError> {
         let resp = self.get_resp(index)?;
         match resp {
-            HCmdResp::ItemIds(resp) if let Some(charge_item_id) = resp.charge_id => Ok(charge_item_id),
+            HCmdResp::CreatedItemIds(resp) if let Some(charge_item_id) = resp.charge_id => Ok(charge_item_id),
+            HCmdResp::ChangedItemIds(resp) if let Some(charge_item_id) = resp.charge_id => Ok(charge_item_id),
             _ => Err(HExecError::BackrefCmdNoChargeItemId(index)),
         }
     }

@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref},
     util::HExecError,
 };
 
@@ -43,7 +40,7 @@ impl HAutochargeChangeCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HAutochargeChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -53,7 +50,7 @@ impl HAutochargeChangeCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_autocharge = core_sol.get_autocharge_mut(item_id).map_err(|error| match error {
             rc::err::GetAutochargeError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetAutochargeError::ItemIsNotAutocharge(e) => HExecError::ItemKindMismatch(e),
@@ -64,6 +61,6 @@ impl HAutochargeChangeCmdICtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_autocharge);
         }
-        Ok(HItemIdsResp::from_core_autocharge(core_autocharge))
+        Ok(HChangedItemIdsResp::default())
     }
 }

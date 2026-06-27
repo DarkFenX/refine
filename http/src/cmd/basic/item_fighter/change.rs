@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HAbilityMap, HEffectModeMap, HItemIdBackref},
-    },
+    cmd::shared::{HAbilityMap, HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref},
     shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::{HExecError, TriStateField},
 };
@@ -84,7 +81,7 @@ impl HFighterChangeCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFighterChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -94,7 +91,7 @@ impl HFighterChangeCmdICtxRIds {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_fighter = core_sol.get_fighter_mut(item_id).map_err(|error| match error {
             rc::err::GetFighterError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetFighterError::ItemIsNotFighter(e) => HExecError::ItemKindMismatch(e),
@@ -148,6 +145,6 @@ impl HFighterChangeCmdICtxRIds {
         if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_fighter);
         }
-        Ok(HItemIdsResp::from_core_fighter(core_fighter))
+        Ok(HChangedItemIdsResp::default())
     }
 }

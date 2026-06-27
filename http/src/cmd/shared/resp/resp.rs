@@ -6,30 +6,39 @@ use serde_with::{DisplayFromStr, serde_as};
 #[serde(untagged)]
 pub(crate) enum HCmdResp {
     NoData,
-    FitId(HFitIdResp),
-    FleetId(HFleetIdResp),
-    ItemIds(HItemIdsResp),
+    CreatedFitId(HCreatedFitIdResp),
+    CreatedFleetId(HCreatedFleetIdResp),
+    CreatedItemIds(HCreatedItemIdsResp),
+    ChangedItemIds(HChangedItemIdsResp),
 }
 
 #[serde_as]
 #[derive(Serialize)]
-pub(crate) struct HFleetIdResp {
+pub(crate) struct HCreatedFleetIdResp {
     #[serde_as(as = "DisplayFromStr")]
     pub(crate) id: rc::FleetId,
 }
 
 #[serde_as]
 #[derive(Serialize)]
-pub(crate) struct HFitIdResp {
+pub(crate) struct HCreatedFitIdResp {
     #[serde_as(as = "DisplayFromStr")]
     pub(crate) id: rc::FitId,
 }
 
 #[serde_as]
 #[derive(Serialize)]
-pub(crate) struct HItemIdsResp {
+pub(crate) struct HCreatedItemIdsResp {
     #[serde_as(as = "DisplayFromStr")]
     pub(crate) id: rc::ItemId,
+    #[serde_as(as = "Option<DisplayFromStr>")]
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) charge_id: Option<rc::ItemId>,
+}
+
+#[serde_as]
+#[derive(Default, Serialize)]
+pub(crate) struct HChangedItemIdsResp {
     #[serde_as(as = "Option<DisplayFromStr>")]
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) charge_id: Option<rc::ItemId>,
@@ -43,23 +52,28 @@ impl From<()> for HCmdResp {
         HCmdResp::NoData
     }
 }
-impl From<HFitIdResp> for HCmdResp {
-    fn from(resp: HFitIdResp) -> Self {
-        HCmdResp::FitId(resp)
+impl From<HCreatedFitIdResp> for HCmdResp {
+    fn from(resp: HCreatedFitIdResp) -> Self {
+        HCmdResp::CreatedFitId(resp)
     }
 }
-impl From<HFleetIdResp> for HCmdResp {
-    fn from(resp: HFleetIdResp) -> Self {
-        HCmdResp::FleetId(resp)
+impl From<HCreatedFleetIdResp> for HCmdResp {
+    fn from(resp: HCreatedFleetIdResp) -> Self {
+        HCmdResp::CreatedFleetId(resp)
     }
 }
-impl From<HItemIdsResp> for HCmdResp {
-    fn from(resp: HItemIdsResp) -> Self {
-        HCmdResp::ItemIds(resp)
+impl From<HCreatedItemIdsResp> for HCmdResp {
+    fn from(resp: HCreatedItemIdsResp) -> Self {
+        HCmdResp::CreatedItemIds(resp)
+    }
+}
+impl From<HChangedItemIdsResp> for HCmdResp {
+    fn from(resp: HChangedItemIdsResp) -> Self {
+        HCmdResp::ChangedItemIds(resp)
     }
 }
 
-impl HFleetIdResp {
+impl HCreatedFleetIdResp {
     pub(in crate::cmd) fn from_core_fleet(core_fleet: rc::FleetMut) -> Self {
         Self {
             id: core_fleet.get_fleet_id(),
@@ -67,7 +81,7 @@ impl HFleetIdResp {
     }
 }
 
-impl HFitIdResp {
+impl HCreatedFitIdResp {
     pub(in crate::cmd) fn from_core_fit(core_fit: rc::FitMut) -> Self {
         Self {
             id: core_fit.get_fit_id(),
@@ -75,13 +89,7 @@ impl HFitIdResp {
     }
 }
 
-impl HItemIdsResp {
-    pub(in crate::cmd) fn from_core_autocharge(core_autocharge: rc::AutochargeMut) -> Self {
-        Self {
-            id: core_autocharge.get_item_id(),
-            charge_id: None,
-        }
-    }
+impl HCreatedItemIdsResp {
     pub(in crate::cmd) fn from_core_booster(core_booster: rc::BoosterMut) -> Self {
         Self {
             id: core_booster.get_item_id(),
@@ -91,12 +99,6 @@ impl HItemIdsResp {
     pub(in crate::cmd) fn from_core_character(core_character: rc::CharacterMut) -> Self {
         Self {
             id: core_character.get_item_id(),
-            charge_id: None,
-        }
-    }
-    pub(in crate::cmd) fn from_core_charge(core_charge: rc::ChargeMut) -> Self {
-        Self {
-            id: core_charge.get_item_id(),
             charge_id: None,
         }
     }
@@ -176,6 +178,14 @@ impl HItemIdsResp {
         Self {
             id: core_sw_effect.get_item_id(),
             charge_id: None,
+        }
+    }
+}
+
+impl HChangedItemIdsResp {
+    pub(in crate::cmd) fn from_core_charge(core_charge: rc::ChargeMut) -> Self {
+        Self {
+            charge_id: Some(core_charge.get_item_id()),
         }
     }
 }

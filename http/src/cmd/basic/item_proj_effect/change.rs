@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref},
     util::HExecError,
 };
 
@@ -76,7 +73,7 @@ impl HProjEffectChangeCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HProjEffectChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -86,7 +83,7 @@ impl HProjEffectChangeCmdICtxRIds {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_proj_effect = core_sol.get_proj_effect_mut(item_id).map_err(|error| match error {
             rc::err::GetProjEffectError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetProjEffectError::ItemIsNotProjEffect(e) => HExecError::ItemKindMismatch(e),
@@ -119,6 +116,6 @@ impl HProjEffectChangeCmdICtxRIds {
         if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_proj_effect);
         }
-        Ok(HItemIdsResp::from_core_proj_effect(core_proj_effect))
+        Ok(HChangedItemIdsResp::default())
     }
 }

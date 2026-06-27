@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref, HMutationOnChange},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref, HMutationOnChange},
     shared::{HModuleState, HOptionalReload, HSpool},
     util::{HExecError, TriStateField},
 };
@@ -85,7 +82,7 @@ impl HModuleChangeCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HModuleChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -95,7 +92,8 @@ impl HModuleChangeCmdICtxRIds {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
+        let mut resp = HChangedItemIdsResp::default();
         let mut core_module = core_sol.get_module_mut(item_id).map_err(|error| match error {
             rc::err::GetModuleError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetModuleError::ItemIsNotModule(e) => HExecError::ItemKindMismatch(e),
@@ -145,7 +143,9 @@ impl HModuleChangeCmdICtxRIds {
         match self.shared.charge_type_id {
             TriStateField::Value(charge_type_id) => {
                 let core_charge_type_id = rc::ItemTypeId::from_i32(charge_type_id);
-                core_module.set_charge_type_id(core_charge_type_id);
+                let core_charge = core_module.set_charge_type_id(core_charge_type_id);
+                // Set response charge ID only if we actually did it
+                resp = HChangedItemIdsResp::from_core_charge(core_charge);
             }
             TriStateField::None => match core_module.get_charge_mut() {
                 Some(core_charge) => core_charge.remove(),
@@ -184,6 +184,6 @@ impl HModuleChangeCmdICtxRIds {
         if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_module);
         }
-        Ok(HItemIdsResp::from_core_module(core_module))
+        Ok(resp)
     }
 }

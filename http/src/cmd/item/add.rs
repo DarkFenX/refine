@@ -2,13 +2,13 @@ use serde::Deserialize;
 
 use crate::{
     cmd::{
-        HItemIdsResp,
         basic::{
             HBoosterAddCmdFCtxRIds, HCharacterSetCmdFCtxRIds, HDroneAddCmdFCtxRIds, HFighterAddCmdFCtxRIds,
             HFwEffectAddCmdFCtxRIds, HImplantAddCmdFCtxRIds, HModuleAddCmdFCtxRIds, HProjEffectAddCmdFCtxRIds,
             HRigAddCmdFCtxRIds, HServiceAddCmdFCtxRIds, HShipSetCmdFCtxRIds, HSkillAddCmdFCtxRIds,
             HStanceSetCmdFCtxRIds, HSubsystemAddCmdFCtxRIds, HSwEffectAddCmdFCtx,
         },
+        shared::HCreatedItemIdsResp,
     },
     util::HExecError,
 };
@@ -37,7 +37,7 @@ pub(crate) enum HItemAddCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HItemAddCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedItemIdsResp, HExecError> {
         match self {
             Self::Booster(cmd) => cmd.execute(core_sol),
             Self::Character(cmd) => cmd.execute(core_sol),

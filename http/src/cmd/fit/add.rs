@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{HFitIdResp, basic::HFitAddCmdFCtxRIds},
+    cmd::{basic::HFitAddCmdFCtxRIds, shared::HCreatedFitIdResp},
     util::HExecError,
 };
 
@@ -11,7 +11,7 @@ pub(crate) struct HFitAddCmd {
     basic: HFitAddCmdFCtxRIds,
 }
 impl HFitAddCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFitIdResp, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFitIdResp, HExecError> {
         self.basic.execute(core_sol)
     }
 }

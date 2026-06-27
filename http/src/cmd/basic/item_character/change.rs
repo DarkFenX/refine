@@ -2,10 +2,7 @@ use rc::ItemCommon;
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp, get_primary_fit,
-        shared::{HEffectModeMap, HFitIdBackref, HItemIdBackref},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HFitIdBackref, HItemIdBackref, get_primary_fit},
     util::HExecError,
 };
 
@@ -85,7 +82,7 @@ impl HCharacterChangeCmdFItemCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HCharacterChangeCmdFHybridCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         match self {
             Self::ViaFitId(cmd) => cmd.execute(core_sol),
             Self::ViaItemId(cmd) => cmd.execute(core_sol),
@@ -93,12 +90,12 @@ impl HCharacterChangeCmdFHybridCtxRIds {
     }
 }
 impl HCharacterChangeCmdFFitCtxRIds {
-    fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute_via_fit_id(core_sol, &self.fit_id)
     }
 }
 impl HCharacterChangeCmdFItemCtxRIds {
-    fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute_via_item_id(core_sol, &self.item_id)
     }
 }
@@ -108,7 +105,7 @@ impl HCharacterChangeCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let core_fit = get_primary_fit(core_sol, fit_id)?;
         let character_item_id = match core_fit.get_character() {
             Some(core_character) => core_character.get_item_id(),
@@ -120,7 +117,7 @@ impl HCharacterChangeCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_character = core_sol.get_character_mut(item_id).map_err(|error| match error {
             rc::err::GetCharacterError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetCharacterError::ItemIsNotCharacter(e) => HExecError::ItemKindMismatch(e),
@@ -135,6 +132,6 @@ impl HCharacterChangeCmdICtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_character);
         }
-        Ok(HItemIdsResp::from_core_character(core_character))
+        Ok(HChangedItemIdsResp::default())
     }
 }

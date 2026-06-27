@@ -2,9 +2,9 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HAddMode, HEffectModeMap, HFitIdBackref, HItemIdBackref, HMutationOnAdd, get_primary_fit},
+    cmd::shared::{
+        HAddMode, HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HFitIdBackref, HItemIdBackref, HMutationOnAdd,
+        get_primary_fit,
     },
     shared::{HModRack, HModuleState, HOptionalReload, HSpool},
     util::HExecError,
@@ -81,7 +81,7 @@ impl HModuleAddCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HModuleAddCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -91,7 +91,7 @@ impl HModuleAddCmdICtxRIds {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_module = core_fit.add_module(
             self.shared.rack.into_core(),
@@ -132,6 +132,6 @@ impl HModuleAddCmdICtxRIds {
         if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_module);
         }
-        Ok(HItemIdsResp::from_core_module(core_module))
+        Ok(HCreatedItemIdsResp::from_core_module(core_module))
     }
 }

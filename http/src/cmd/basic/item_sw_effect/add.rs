@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::cmd::{HItemIdsResp, shared::HEffectModeMap};
+use crate::cmd::shared::{HCreatedItemIdsResp, HEffectModeMap};
 
 // Commands with full context
 #[derive(Deserialize)]
@@ -14,7 +14,7 @@ pub(crate) struct HSwEffectAddCmdFCtx {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSwEffectAddCmdFCtx {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HItemIdsResp {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HCreatedItemIdsResp {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let mut core_sw_effect = core_sol.add_sw_effect(core_type_id);
         if let Some(state) = self.state {
@@ -23,6 +23,6 @@ impl HSwEffectAddCmdFCtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_sw_effect);
         }
-        HItemIdsResp::from_core_sw_effect(core_sw_effect)
+        HCreatedItemIdsResp::from_core_sw_effect(core_sw_effect)
     }
 }

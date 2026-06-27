@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref},
-    },
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref},
     util::HExecError,
 };
 
@@ -44,7 +41,7 @@ impl HRigChangeCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HRigChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HChangedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.item_id)
     }
 }
@@ -54,7 +51,7 @@ impl HRigChangeCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         let mut core_rig = core_sol.get_rig_mut(item_id).map_err(|error| match error {
             rc::err::GetRigError::ItemNotFound(e) => HExecError::ItemNotFoundPrimary(e),
             rc::err::GetRigError::ItemIsNotRig(e) => HExecError::ItemKindMismatch(e),
@@ -69,6 +66,6 @@ impl HRigChangeCmdICtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_rig);
         }
-        Ok(HItemIdsResp::from_core_rig(core_rig))
+        Ok(HChangedItemIdsResp::default())
     }
 }

@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{HFleetIdResp, basic::HFleetAddCmdFCtxRIds},
+    cmd::{basic::HFleetAddCmdFCtxRIds, shared::HCreatedFleetIdResp},
     util::HExecError,
 };
 
@@ -11,7 +11,7 @@ pub(crate) struct HFleetAddCmd {
     basic: HFleetAddCmdFCtxRIds,
 }
 impl HFleetAddCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFleetIdResp, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFleetIdResp, HExecError> {
         self.basic.execute(core_sol)
     }
 }

@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps,
-        shared::{HFitIdBackref, get_primary_fit},
-    },
+    cmd::shared::{HCmdResps, HFitIdBackref, get_primary_fit},
     util::HExecError,
 };
 

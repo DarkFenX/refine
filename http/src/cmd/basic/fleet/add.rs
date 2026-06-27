@@ -2,7 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{HCmdResps, HFleetIdResp, shared::HFitIdBackref},
+    cmd::shared::{HCmdResps, HCreatedFleetIdResp, HFitIdBackref},
     util::HExecError,
 };
 
@@ -34,7 +34,7 @@ impl HFleetAddCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFleetAddCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFleetIdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFleetIdResp, HExecError> {
         let mut core_fleet = core_sol.add_fleet();
         for fit_id in &self.fit_ids {
             core_fleet.add_fit(fit_id).map_err(|error| match error {
@@ -42,6 +42,6 @@ impl HFleetAddCmdFCtxRIds {
                 rc::err::FleetAddFitError::FitAlreadyInThisFleet(e) => HExecError::FitAlreadyInThisFleet(e),
             })?;
         }
-        Ok(HFleetIdResp::from_core_fleet(core_fleet))
+        Ok(HCreatedFleetIdResp::from_core_fleet(core_fleet))
     }
 }

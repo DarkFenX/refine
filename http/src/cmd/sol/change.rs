@@ -2,7 +2,6 @@ use serde::Deserialize;
 
 use crate::{
     cmd::{
-        HCmdResp, HCmdResps,
         basic::{
             HAutochargeChangeCmdFCtxBIds, HAutochargeChangeCmdFCtxRIds, HBoosterAddCmdFCtxBIds, HBoosterAddCmdFCtxRIds,
             HBoosterChangeCmdFCtxBIds, HBoosterChangeCmdFCtxRIds, HCharacterChangeCmdFHybridCtxBIds,
@@ -27,6 +26,7 @@ use crate::{
             HSubsystemAddCmdFCtxBIds, HSubsystemAddCmdFCtxRIds, HSubsystemChangeCmdFCtxBIds,
             HSubsystemChangeCmdFCtxRIds, HSwEffectAddCmdFCtx, HSwEffectChangeCmdFCtxBIds, HSwEffectChangeCmdFCtxRIds,
         },
+        shared::{HCmdResp, HCmdResps},
     },
     util::HExecError,
 };

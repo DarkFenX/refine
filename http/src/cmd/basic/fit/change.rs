@@ -1,10 +1,7 @@
 use serde::Deserialize;
 
 use crate::{
-    cmd::{
-        HFitIdResp,
-        shared::{HCmdResps, HFitIdBackref, HFleetIdBackref, get_primary_fit},
-    },
+    cmd::shared::{HCmdResps, HFitIdBackref, HFleetIdBackref, get_primary_fit},
     shared::HDpsProfile,
     util::{HExecError, TriStateField},
 };
@@ -69,17 +66,13 @@ impl HFitChangeCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFitChangeCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HFitIdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), HExecError> {
         self.ictx_cmd.execute(core_sol, &self.fit_id)
     }
 }
 
 impl HFitChangeCmdICtxRIds {
-    pub(in crate::cmd) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        fit_id: &rc::FitId,
-    ) -> Result<HFitIdResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         match self.fleet_id {
             TriStateField::Value(fleet_id) => {
@@ -106,6 +99,6 @@ impl HFitChangeCmdICtxRIds {
             }
             TriStateField::Absent => (),
         }
-        Ok(HFitIdResp::from_core_fit(core_fit))
+        Ok(())
     }
 }

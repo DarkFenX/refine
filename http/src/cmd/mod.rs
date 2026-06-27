@@ -2,9 +2,7 @@ pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkStatsCmd, H
 pub(crate) use fit::{HFitAddCmd, HFitChangeCmd, HFitRemoveCmd};
 pub(crate) use fleet::{HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd};
 pub(crate) use item::{HItemAddCmd, HItemChangeCmd, HItemRemoveCmd};
-pub(crate) use shared::{
-    HCmdResp, HCmdResps, HFitIdResp, HFleetIdResp, HItemIdsResp, get_primary_fit, get_primary_fleet,
-};
+pub(crate) use shared::{HCmdResps, get_primary_fit, get_primary_fleet};
 pub(crate) use sol::{HSolAddCmd, HSolChangeCmd};
 pub(crate) use stats::{HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd};
 pub(crate) use try_fit_items::HTryFitItemsCmd;

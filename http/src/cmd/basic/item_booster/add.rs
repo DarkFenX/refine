@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HFitIdBackref, HSideEffectMap, get_primary_fit},
-    },
+    cmd::shared::{HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HFitIdBackref, HSideEffectMap, get_primary_fit},
     util::HExecError,
 };
 
@@ -50,7 +47,7 @@ impl HBoosterAddCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HBoosterAddCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -60,7 +57,7 @@ impl HBoosterAddCmdICtx {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let mut core_booster = core_fit.add_booster(core_type_id);
@@ -73,6 +70,6 @@ impl HBoosterAddCmdICtx {
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_booster);
         }
-        Ok(HItemIdsResp::from_core_booster(core_booster))
+        Ok(HCreatedItemIdsResp::from_core_booster(core_booster))
     }
 }

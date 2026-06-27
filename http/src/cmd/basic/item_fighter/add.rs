@@ -2,9 +2,8 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HAbilityMap, HEffectModeMap, HFitIdBackref, HItemIdBackref, get_primary_fit},
+    cmd::shared::{
+        HAbilityMap, HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HFitIdBackref, HItemIdBackref, get_primary_fit,
     },
     shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
     util::HExecError,
@@ -80,7 +79,7 @@ impl HFighterAddCmdICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFighterAddCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedItemIdsResp, HExecError> {
         self.ictx_cmd.execute(core_sol, &self.fit_id)
     }
 }
@@ -90,7 +89,7 @@ impl HFighterAddCmdICtxRIds {
         &self,
         core_sol: &mut rc::SolarSystem,
         fit_id: &rc::FitId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let mut core_fighter = core_fit.add_fighter(
             rc::ItemTypeId::from_i32(self.shared.type_id),
@@ -118,6 +117,6 @@ impl HFighterAddCmdICtxRIds {
         if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_fighter);
         }
-        Ok(HItemIdsResp::from_core_fighter(core_fighter))
+        Ok(HCreatedItemIdsResp::from_core_fighter(core_fighter))
     }
 }

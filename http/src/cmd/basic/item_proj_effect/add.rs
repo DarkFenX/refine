@@ -2,10 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::{
-        HCmdResps, HItemIdsResp,
-        shared::{HEffectModeMap, HItemIdBackref},
-    },
+    cmd::shared::{HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HItemIdBackref},
     util::HExecError,
 };
 
@@ -49,7 +46,7 @@ impl HProjEffectAddCmdFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HProjEffectAddCmdFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HItemIdsResp, HExecError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedItemIdsResp, HExecError> {
         let core_type_id = rc::ItemTypeId::from_i32(self.shared.type_id);
         let mut core_proj_effect = core_sol.add_proj_effect(core_type_id);
         if let Some(state) = self.shared.state {
@@ -67,6 +64,6 @@ impl HProjEffectAddCmdFCtxRIds {
         if let Some(h_effect_modes) = self.shared.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_proj_effect);
         }
-        Ok(HItemIdsResp::from_core_proj_effect(core_proj_effect))
+        Ok(HCreatedItemIdsResp::from_core_proj_effect(core_proj_effect))
     }
 }

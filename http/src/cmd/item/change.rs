@@ -2,7 +2,6 @@ use serde::Deserialize;
 
 use crate::{
     cmd::{
-        HItemIdsResp,
         basic::{
             HAutochargeChangeCmdICtx, HBoosterChangeCmdICtx, HCharacterChangeCmdICtx, HChargeChangeCmdICtx,
             HDroneChangeCmdICtxRIds, HFighterChangeCmdICtxRIds, HFwEffectChangeCmdICtx, HImplantChangeCmdICtx,
@@ -10,6 +9,7 @@ use crate::{
             HShipChangeCmdICtx, HSkillChangeCmdICtx, HStanceChangeCmdICtx, HSubsystemChangeCmdICtx,
             HSwEffectChangeCmdICtx,
         },
+        shared::HChangedItemIdsResp,
     },
     util::HExecError,
 };
@@ -44,7 +44,7 @@ impl HItemChangeCmd {
         &self,
         core_sol: &mut rc::SolarSystem,
         item_id: &rc::ItemId,
-    ) -> Result<HItemIdsResp, HExecError> {
+    ) -> Result<HChangedItemIdsResp, HExecError> {
         match self {
             Self::Autocharge(cmd) => cmd.execute(core_sol, item_id),
             Self::Booster(cmd) => cmd.execute(core_sol, item_id),
