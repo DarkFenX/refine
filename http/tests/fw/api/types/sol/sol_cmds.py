@@ -5,6 +5,7 @@ from fw.api.commands import (
     SolCharacterSetCmd,
     SolDroneAddCmd,
     SolFitAddCmd,
+    SolFitRemoveCmd,
     SolImplantAddCmd,
     SolModuleAddCmd,
     SolRigAddCmd,
@@ -123,6 +124,10 @@ class SolCmdCtx:
             rah_incoming_dps=rah_incoming_dps)
         self._commands.append(command)
         return self.__make_fit()
+
+    def remove_fit(self, *, fit_id: str) -> None:
+        command = SolFitRemoveCmd(fit_id=fit_id)
+        self._commands.append(command)
 
     # Item - booster
     def add_booster(
