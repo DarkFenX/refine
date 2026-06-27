@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::{
     cmd::{
-        HAddFitCmd, HAddFleetCmd, HCmdResp,
+        HAddFleetCmd, HCmdResp,
         old_change_sol::{HChangeFleetCmd, HChangeSolCmd, HDeleteFleetCmd},
     },
     util::HExecError,
@@ -17,8 +17,6 @@ pub(crate) enum HChangeSolCommand {
     AddFleet(HAddFleetCmd),
     ChangeFleet(HChangeFleetCmd),
     DeleteFleet(HDeleteFleetCmd),
-    // Fit
-    AddFit(HAddFitCmd),
 }
 impl HChangeSolCommand {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCmdResp, HExecError> {
@@ -30,8 +28,6 @@ impl HChangeSolCommand {
             Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::DeleteFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            // Fit
-            Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

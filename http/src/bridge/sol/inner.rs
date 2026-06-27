@@ -3,8 +3,8 @@ use tokio_rayon::AsyncThreadPool;
 use crate::{
     bridge::{HBrError, HThreadPool},
     cmd::{
-        HAddFitCmd, HAddFleetCmd, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HChangeFleetCmd,
-        HCmdResps, HFitChangeCmdBIds, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
+        HAddFleetCmd, HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HChangeFleetCmd, HCmdResps,
+        HFitAddCmd, HFitChangeCmdBIds, HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd, HItemAddCmd,
         HItemChangeCmd, HItemRemoveCmd, HSolChangeCmdBIds, HTryFitItemsCmd, HValidateFitCmd, HValidateSolCmd,
         get_primary_fit, get_primary_fleet,
     },
@@ -387,7 +387,7 @@ impl HSolarSystemInner {
     pub(crate) async fn add_fit(
         &mut self,
         tpool: &HThreadPool,
-        command: HAddFitCmd,
+        command: HFitAddCmd,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Result<HFitInfo, HBrError> {

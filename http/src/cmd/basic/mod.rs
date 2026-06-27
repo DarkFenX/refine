@@ -1,6 +1,6 @@
 pub(crate) use fit::{
-    HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitChangeCmdICtxBIds, HFitChangeCmdICtxRIds, HFitRemoveCmdFCtxBIds,
-    HFitRemoveCmdFCtxRIds, HFitRemoveCmdICtx,
+    HFitAddCmdFCtxBIds, HFitAddCmdFCtxRIds, HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitChangeCmdICtxBIds,
+    HFitChangeCmdICtxRIds, HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFitRemoveCmdICtx,
 };
 pub(crate) use item::{HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HItemRemoveCmdICtx};
 pub(crate) use item_autocharge::{

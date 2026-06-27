@@ -1,9 +1,9 @@
+pub(crate) use add_fit::HFitAddCmd;
 pub(crate) use add_item::HItemAddCmd;
 pub(crate) use change_fit::HFitChangeCmdBIds;
 pub(crate) use change_item::HItemChangeCmd;
 pub(crate) use change_sol::HSolChangeCmdBIds;
 pub(crate) use dev::{HBenchmarkAttrCalcCmd, HBenchmarkCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd};
-pub(crate) use old_add_fit::HAddFitCmd;
 pub(crate) use old_add_fleet::HAddFleetCmd;
 pub(crate) use old_add_sol::HAddSolCmd;
 pub(crate) use old_change_fleet::HChangeFleetCmd;
@@ -17,13 +17,13 @@ pub(crate) use stats::{HGetFitStatsCmd, HGetFleetStatsCmd, HGetItemStatsCmd};
 pub(crate) use try_fit_items::HTryFitItemsCmd;
 pub(crate) use validate::{HValidateFitCmd, HValidateSolCmd};
 
+mod add_fit;
 mod add_item;
 mod basic;
 mod change_fit;
 mod change_item;
 mod change_sol;
 mod dev;
-mod old_add_fit;
 mod old_add_fleet;
 mod old_add_sol;
 mod old_change_fleet;
