@@ -424,13 +424,13 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
 def test_playground(client, consts):  # noqa: ANN001, ANN201
     setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
-    api_fit = api_sol.create_fit()
-    with api_fit.commands() as api_fit_cmds:
-        api_fit_cmds.set_character(type_id=1373)
+    with api_sol.commands() as api_sol_cmds:
+        api_fit = api_sol_cmds.create_fit()
+        api_sol_cmds.set_character(fit_id=api_fit.id, type_id=1373)
         for eve_skill_id in get_skill_type_ids():
-            api_fit_cmds.add_skill(type_id=eve_skill_id, level=5)
-        api_fit_cmds.set_ship(type_id=42245)  # Rabisu
-        api_fit_cmds.add_module(type_id=20563, state=consts.ApiModuleState.active)  # Smokescreen Cloak
+            api_sol_cmds.add_skill(fit_id=api_fit.id, type_id=eve_skill_id, level=5)
+        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=42245)  # Rabisu
+        api_sol_cmds.add_module(fit_id=api_fit.id, type_id=20563, state=consts.ApiModuleState.active)  # Smokescreen Cloak
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(

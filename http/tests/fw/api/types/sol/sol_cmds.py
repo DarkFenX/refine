@@ -4,6 +4,7 @@ from fw.api.commands import (
     SolBoosterAddCmd,
     SolCharacterSetCmd,
     SolDroneAddCmd,
+    SolFitAddCmd,
     SolImplantAddCmd,
     SolModuleAddCmd,
     SolRigAddCmd,
@@ -11,6 +12,7 @@ from fw.api.commands import (
     SolSkillAddCmd,
     SolStanceSetCmd,
 )
+from fw.api.types.fit import Fit
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack
@@ -20,7 +22,7 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import MutaAdd
+    from fw.api.aliases import DpsProfile, MutaAdd
     from fw.api.commands import BaseCommand
     from fw.consts import (
         ApiEffMode,
@@ -94,12 +96,33 @@ class SolCmdCtx:
                 if 'charge_id' in cmd_result:
                     entity_data['charge'] = {'id': cmd_result['charge_id']}
 
+    def __make_fit(self) -> Fit:
+        # It is supposed to be called after command has been added
+        index = len(self._commands) - 1
+        data = {'id': f'#{index}'}
+        self._ret_datas[index] = data
+        return Fit(client=self._client, data=data, sol_id=self._sol_id)
+
     def __make_item(self) -> Item:
         # It is supposed to be called after command has been added
         index = len(self._commands) - 1
         data = {'id': f'#{index}', 'charge': {'id': f'#{index}c'}}
         self._ret_datas[index] = data
         return Item(client=self._client, data=data, sol_id=self._sol_id)
+
+    # Fit
+    def create_fit(
+            self, *,
+            fleet_id: str | type[Absent] = Absent,
+            sec_status: float | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfile | type[Absent] = Absent,
+    ) -> Fit | None:
+        command = SolFitAddCmd(
+            fleet_id=fleet_id,
+            sec_status=sec_status,
+            rah_incoming_dps=rah_incoming_dps)
+        self._commands.append(command)
+        return self.__make_fit()
 
     # Item - booster
     def add_booster(
