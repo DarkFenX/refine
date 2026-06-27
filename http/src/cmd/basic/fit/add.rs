@@ -11,12 +11,14 @@ use crate::{
 #[serde_as]
 #[derive(Deserialize)]
 pub(crate) struct HFitAddCmdFCtxBIds {
+    #[serde(flatten)]
     shared: HFitAddCmdShared,
     fleet_id: Option<HFleetIdBackref>,
 }
 #[serde_as]
 #[derive(Default, Deserialize)]
 pub(crate) struct HFitAddCmdFCtxRIds {
+    #[serde(flatten)]
     shared: HFitAddCmdShared,
     #[serde_as(as = "Option<DisplayFromStr>")]
     fleet_id: Option<rc::FleetId>,
