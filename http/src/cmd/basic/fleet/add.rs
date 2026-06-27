@@ -9,6 +9,7 @@ use crate::{
 // Commands with full context
 #[derive(Deserialize)]
 pub(crate) struct HFleetAddCmdFCtxBIds {
+    #[serde(default)]
     fit_ids: Vec<HFitIdBackref>,
 }
 #[serde_as]

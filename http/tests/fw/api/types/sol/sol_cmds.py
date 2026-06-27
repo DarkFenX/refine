@@ -6,6 +6,8 @@ from fw.api.commands import (
     SolDroneAddCmd,
     SolFitAddCmd,
     SolFitRemoveCmd,
+    SolFleetAddCmd,
+    SolFleetRemoveCmd,
     SolImplantAddCmd,
     SolItemRemoveCmd,
     SolModuleAddCmd,
@@ -16,6 +18,7 @@ from fw.api.commands import (
     SolStanceSetCmd,
 )
 from fw.api.types.fit import Fit
+from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.item import Item
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack
@@ -100,6 +103,13 @@ class SolCmdCtx:
                 if 'charge_id' in cmd_result:
                     entity_data['charge'] = {'id': cmd_result['charge_id']}
 
+    def __make_fleet(self) -> Fleet:
+        # It is supposed to be called after command has been added
+        index = len(self._commands) - 1
+        data = {'id': f'#{index}'}
+        self._ret_datas[index] = data
+        return Fleet(client=self._client, data=data, sol_id=self._sol_id)
+
     def __make_fit(self) -> Fit:
         # It is supposed to be called after command has been added
         index = len(self._commands) - 1
@@ -114,13 +124,26 @@ class SolCmdCtx:
         self._ret_datas[index] = data
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
+    # Fleet
+    def create_fleet(
+            self, *,
+            fit_ids: list[str] | type[Absent] = Absent,
+    ) -> Fleet:
+        command = SolFleetAddCmd(fit_ids=fit_ids)
+        self._commands.append(command)
+        return self.__make_fleet()
+
+    def remove_fleet(self, *, fleet_id: str) -> None:
+        command = SolFleetRemoveCmd(fleet_id=fleet_id)
+        self._commands.append(command)
+
     # Fit
     def create_fit(
             self, *,
             fleet_id: str | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
             rah_incoming_dps: DpsProfile | type[Absent] = Absent,
-    ) -> Fit | None:
+    ) -> Fit:
         command = SolFitAddCmd(
             fleet_id=fleet_id,
             sec_status=sec_status,
