@@ -148,7 +148,7 @@ class LogReader:
 class LogCollector:
 
     def __init__(self) -> None:
-        self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
+        self.__buffer: queue.Queue[LogEntry] = queue.Queue()
         self.__errors: list[ParseError] = []
 
     def append_error(self, *, error: ParseError) -> None:
@@ -164,19 +164,28 @@ class LogCollector:
             span: str | None = None,
             timeout: float = 1,
     ) -> None:
+
+        def make_err_msg() -> str:
+            return f'cannot find log entry with level {level}, span {span}, message "{msg}"'
+
         timer = Timer(timeout=timeout)
-        while True:
+        while timer.remainder > 0:
             try:
                 entry = self.__buffer.get(timeout=timer.remainder)
             except queue.Empty as e:
-                e_msg = f'cannot find log entry with level {level}, span {span}, message "{msg}"'
-                raise LogEntryNotFoundError(e_msg) from e
+                raise LogEntryNotFoundError(make_err_msg()) from e
             if entry.check(msg=msg, level=level, span=span):
                 return
+        # Prevent more entries getting into queue after timeout while checking remaining ones
+        local_buffer = tuple(self.__buffer.queue)
+        for entry in local_buffer:
+            if entry.check(msg=msg, level=level, span=span):
+                return
+        raise LogEntryNotFoundError(make_err_msg())
 
     @property
-    def buffer(self) -> queue.SimpleQueue[LogEntry]:
-        return self.__buffer
+    def entries(self) -> list[LogEntry]:
+        return list(self.__buffer.queue)
 
     @property
     def errors(self) -> list[ParseError]:
