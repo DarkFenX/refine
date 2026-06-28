@@ -1,7 +1,7 @@
 """
 This module has tests which checks what happens when EVE data handler receives malformed data. Data
-errors can be recoverable (correct JSON, but unexpected data), in which case handler should skip
-malformed entity if possible, and unrecoverable.
+errors can be recoverable (valid JSON, but unexpected data), and unrecoverable. In case of
+recoverable errors, data handler should skip malformed entity and parse everything else.
 
 Since some phobos files contain data for 2 separate EVE data entities (typedogma,
 dynamicitemattributes), data handler implementations have different functions to read/parse them,
@@ -19,7 +19,7 @@ if typing.TYPE_CHECKING:
 
 def test_types_key(client, log):
 
-    def data_prim_hook(prim_data: EvePrimitives):
+    def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types = {
             f'str{k}' if k == eve_item1_id else k: v
             for k, v in prim_data.types.items()}
@@ -28,7 +28,7 @@ def test_types_key(client, log):
     eve_group_id = client.mk_eve_item_group()
     eve_item1_id = client.mk_eve_item(grp_id=eve_group_id)
     eve_item2_id = client.mk_eve_item(grp_id=eve_group_id)
-    client.create_sources(data_prim_hook=data_prim_hook)
+    client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
         msg='1 warnings encountered during fetching of EItem, showing up to 5:',
         level='WARN',
@@ -48,14 +48,14 @@ def test_types_key(client, log):
 
 def test_types_value(client, log):
 
-    def data_prim_hook(prim_data: EvePrimitives):
+    def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types[eve_item1_id] = [1, 2, 3]
 
     # Same group ID just to avoid cleanup
     eve_group_id = client.mk_eve_item_group()
     eve_item1_id = client.mk_eve_item(grp_id=eve_group_id)
     eve_item2_id = client.mk_eve_item(grp_id=eve_group_id)
-    client.create_sources(data_prim_hook=data_prim_hook)
+    client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
         msg='1 warnings encountered during fetching of EItem, showing up to 5:',
         level='WARN',
@@ -75,7 +75,7 @@ def test_types_value(client, log):
 
 def test_typedogma_key(client, log):
 
-    def data_prim_hook(prim_data: EvePrimitives):
+    def hook_data_prim(prim_data: EvePrimitives):
         prim_data.typedogma = {
             f'pre{k}' if k == eve_item1_id else k: v
             for k, v in prim_data.typedogma.items()}
@@ -84,7 +84,7 @@ def test_typedogma_key(client, log):
     eve_effect_id = client.mk_eve_effect()
     eve_item1_id = client.mk_eve_item(attrs={eve_attr_id: 5}, eff_ids=[eve_effect_id])
     eve_item2_id = client.mk_eve_item(attrs={eve_attr_id: 7}, eff_ids=[eve_effect_id])
-    client.create_sources(data_prim_hook=data_prim_hook)
+    client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
         msg='1 warnings encountered during fetching of EItemAttr, showing up to 5:',
         level='WARN',
@@ -117,14 +117,14 @@ def test_typedogma_key(client, log):
 
 def test_typedogma_value(client, log):
 
-    def data_prim_hook(prim_data: EvePrimitives):
+    def hook_data_prim(prim_data: EvePrimitives):
         prim_data.typedogma[eve_item1_id] = 'random'
 
     eve_attr_id = client.mk_eve_attr()
     eve_effect_id = client.mk_eve_effect()
     eve_item1_id = client.mk_eve_item(attrs={eve_attr_id: 5}, eff_ids=[eve_effect_id])
     eve_item2_id = client.mk_eve_item(attrs={eve_attr_id: 7}, eff_ids=[eve_effect_id])
-    client.create_sources(data_prim_hook=data_prim_hook)
+    client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
         msg='1 warnings encountered during fetching of EItemAttr, showing up to 5:',
         level='WARN',

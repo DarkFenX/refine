@@ -308,10 +308,10 @@ class EveObjects:
         self.mutators.setdefault(id_, []).append(mutator)
         return mutator
 
-    def render(self, *, data_prim_hook: DataPrimHook | None) -> EveStrings:
-        return self.to_primitives(data_prim_hook=data_prim_hook).to_strings()
+    def render(self, *, hook_data_prim: DataPrimHook | None) -> EveStrings:
+        return self.to_primitives(hook_data_prim=hook_data_prim).to_strings()
 
-    def to_primitives(self, *, data_prim_hook: DataPrimHook | None) -> EvePrimitives:
+    def to_primitives(self, *, hook_data_prim: DataPrimHook | None) -> EvePrimitives:
         primitive_data = EvePrimitives(alias=self.alias)
         self.__handle_container(primitive_data=primitive_data, container=self.items, entity_class=Item)
         self.__handle_container(primitive_data=primitive_data, container=self.item_groups, entity_class=Group)
@@ -322,8 +322,8 @@ class EveObjects:
         self.__handle_container(primitive_data=primitive_data, container=self.abilities, entity_class=Ability)
         self.__handle_container(primitive_data=primitive_data, container=self.space_comps, entity_class=SpaceComponent)
         self.__handle_container(primitive_data=primitive_data, container=self.mutators, entity_class=Mutator)
-        if data_prim_hook is not None:
-            data_prim_hook(primitive_data)
+        if hook_data_prim is not None:
+            hook_data_prim(primitive_data)
         return primitive_data
 
     @staticmethod

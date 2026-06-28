@@ -35,7 +35,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             self, *,
             data: eve.EveObjects | type[Default] = Default,
             cleanup_check: bool = True,
-            data_prim_hook: DataPrimHook | None = None,
+            hook_data_prim: DataPrimHook | None = None,
     ) -> None:
 
         def process(*, data: eve.EveObjects) -> None:
@@ -45,7 +45,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
         if data is Default:
             data = self._get_default_eve_data()
-        self._setup_eve_data_server(data=data, data_prim_hook=data_prim_hook)
+        self._setup_eve_data_server(data=data, hook_data_prim=hook_data_prim)
         if cleanup_check:
             with self._log_reader.get_collector() as log_collector:
                 process(data=data)
@@ -78,7 +78,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
     def create_sources(
             self, *,
             cleanup_check: bool = True,
-            data_prim_hook: DataPrimHook | None = None,
+            hook_data_prim: DataPrimHook | None = None,
     ) -> None:
 
         def process(*, cleanup_check: bool) -> None:
@@ -86,7 +86,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
                 self.create_source(
                     data=data,
                     cleanup_check=cleanup_check,
-                    data_prim_hook=data_prim_hook)
+                    hook_data_prim=hook_data_prim)
 
         # If no data was created, create default one
         if not self._eve_datas:
