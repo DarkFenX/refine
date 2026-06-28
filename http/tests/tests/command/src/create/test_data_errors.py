@@ -1,5 +1,6 @@
 import typing
 
+from fw import check_no_field
 from fw.api import ValOptions
 
 if typing.TYPE_CHECKING:
@@ -8,7 +9,9 @@ if typing.TYPE_CHECKING:
 
 def test_types_value(client, log):
     # This test checks what happens when handler sees some valid JSON, but not an item object. The
-    # malformed item should be skipped, and the rest of the file processed normally.
+    # malformed item should be skipped, and the rest of the file processed normally. There are two
+    # versions of parsing function in EVE data handler, this test covers the one which extracts one
+    # entity out of each entry.
 
     def data_prim_hook(prim_data: EvePrimitives):
         prim_data.types[eve_item1_id] = [1, 2, 3]
@@ -33,3 +36,47 @@ def test_types_value(client, log):
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
     assert api_val.details.not_loaded_item == [api_item1.id]
+
+
+def test_typedogma_value(client, log):
+    # This test checks what happens when handler sees some valid JSON, but not an item object. The
+    # malformed item should be skipped, and the rest of the file processed normally. There are two
+    # versions of parsing function in EVE data handler, this test covers the one which extracts two
+    # entities out of each entry.
+
+    def data_prim_hook(prim_data: EvePrimitives):
+        prim_data.typedogma[eve_item1_id] = 'random'
+
+    eve_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect()
+    eve_item1_id = client.mk_eve_item(attrs={eve_attr_id: 5}, eff_ids=[eve_effect_id])
+    eve_item2_id = client.mk_eve_item(attrs={eve_attr_id: 7}, eff_ids=[eve_effect_id])
+    client.create_sources(data_prim_hook=data_prim_hook)
+    log.wait_log_entry(
+        msg='1 warnings encountered during fetching of EItemAttr, showing up to 5:',
+        level='WARN',
+        span='src-new:adg')
+    log.wait_log_entry(
+        msg=f're:failed to parse value with key "{eve_item1_id}":.+',
+        level='WARN',
+        span='src-new:adg')
+    log.wait_log_entry(
+        msg='1 warnings encountered during fetching of EItemEffect, showing up to 5:',
+        level='WARN',
+        span='src-new:adg')
+    log.wait_log_entry(
+        msg=f're:failed to parse value with key "{eve_item1_id}":.+',
+        level='WARN',
+        span='src-new:adg')
+    api_sol = client.create_sol()
+    api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
+    api_item2 = api_sol.add_sw_effect(type_id=eve_item2_id)
+    # Verification
+    api_item1.update()
+    with check_no_field():
+        api_item1.attrs  # noqa: B018
+    with check_no_field():
+        api_item1.effects  # noqa: B018
+    api_item2.update()
+    assert eve_attr_id in api_item2.attrs
+    assert eve_effect_id in api_item2.effects
