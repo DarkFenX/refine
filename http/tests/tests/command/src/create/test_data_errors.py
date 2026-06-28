@@ -7,8 +7,8 @@ if typing.TYPE_CHECKING:
 
 
 def test_types_value(client, log):
-    # This test checks what happens when type value is in unexpected format. It should be skipped,
-    # and the rest of the file processed.
+    # This test checks what happens when handler sees some valid JSON, but not an item object. The
+    # malformed item should be skipped, and the rest of the file processed normally.
 
     def data_prim_hook(prim_data: EvePrimitives):
         prim_data.types[eve_item1_id] = [1, 2, 3]

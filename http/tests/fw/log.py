@@ -150,15 +150,12 @@ class LogCollector:
     def __init__(self) -> None:
         self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
         self.__errors: list[ParseError] = []
-        self.__collecting: bool = True
 
     def append_error(self, *, error: ParseError) -> None:
-        if self.__collecting:
-            self.__errors.append(error)
+        self.__errors.append(error)
 
     def append_entry(self, *, entry: LogEntry) -> None:
-        if self.__collecting:
-            self.__buffer.put(entry)
+        self.__buffer.put(entry)
 
     def wait_log_entry(
             self, *,
@@ -176,9 +173,6 @@ class LogCollector:
                 raise LogEntryNotFoundError(e_msg) from e
             if entry.check(msg=msg, level=level, span=span):
                 return
-            # Prevent more entries getting into queue after timeout while checking remaining ones
-            if timer.remainder == 0:
-                self.__collecting = False
 
     @property
     def buffer(self) -> queue.SimpleQueue[LogEntry]:
