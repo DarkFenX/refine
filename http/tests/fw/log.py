@@ -16,7 +16,13 @@ if typing.TYPE_CHECKING:
 
 
 class ParseError(Exception):
-    ...
+
+    def __init__(self, *, line: str) -> None:
+        super().__init__()
+        self.line = line
+
+    def __str__(self) -> str:
+        return f'failed to parse line: {self.line}'
 
 
 class LogEntryNotFoundError(Exception):
@@ -133,7 +139,7 @@ class LogReader:
     def __parse(self, *, line: str) -> LogEntry:
         m = re.match(self.LOG_MATCHER, line)
         if not m:
-            raise ParseError(line)
+            raise ParseError(line=line)
         return LogEntry(
             timestamp=m.group('timestamp'),
             level=Level(m.group('level')),
