@@ -20,7 +20,20 @@ class ParseError(Exception):
 
 
 class LogEntryNotFoundError(Exception):
-    ...
+
+    def __init__(
+            self, *,
+            msg: str,
+            level: Level | str | None = None,
+            span: str | None = None,
+    ) -> None:
+        super().__init__()
+        self.level = level
+        self.span = span
+        self.msg = msg
+
+    def __str__(self) -> str:
+        return f'cannot find log entry with level {self.level}, span {self.span}, message "{self.msg}"'
 
 
 @unique
@@ -148,7 +161,8 @@ class LogReader:
 class LogCollector:
 
     def __init__(self) -> None:
-        self.__buffer: queue.Queue[LogEntry] = queue.Queue()
+        self.__buffer: queue.SimpleQueue[LogEntry] = queue.SimpleQueue()
+        self.__entries: list[LogEntry] = []
         self.__errors: list[ParseError] = []
 
     def append_error(self, *, error: ParseError) -> None:
@@ -156,6 +170,7 @@ class LogCollector:
 
     def append_entry(self, *, entry: LogEntry) -> None:
         self.__buffer.put(entry)
+        self.__entries.append(entry)
 
     def wait_log_entry(
             self, *,
@@ -164,28 +179,28 @@ class LogCollector:
             span: str | None = None,
             timeout: float = 1,
     ) -> None:
-
-        def make_err_msg() -> str:
-            return f'cannot find log entry with level {level}, span {span}, message "{msg}"'
-
         timer = Timer(timeout=timeout)
         while timer.remainder > 0:
             try:
                 entry = self.__buffer.get(timeout=timer.remainder)
             except queue.Empty as e:
-                raise LogEntryNotFoundError(make_err_msg()) from e
+                raise LogEntryNotFoundError(msg=msg, level=level, span=span) from e
             if entry.check(msg=msg, level=level, span=span):
                 return
-        # Prevent more entries getting into queue after timeout while checking remaining ones
-        local_buffer = tuple(self.__buffer.queue)
-        for entry in local_buffer:
+        # Limit entries we check after timer expires by count of entries upon expiration - not to
+        # check entries added after that
+        for _ in range(self.__buffer.qsize()):
+            try:
+                entry = self.__buffer.get_nowait()
+            except queue.Empty as e:
+                raise LogEntryNotFoundError(msg=msg, level=level, span=span) from e
             if entry.check(msg=msg, level=level, span=span):
                 return
-        raise LogEntryNotFoundError(make_err_msg())
+        raise LogEntryNotFoundError(msg=msg, level=level, span=span)
 
     @property
     def entries(self) -> list[LogEntry]:
-        return list(self.__buffer.queue)
+        return self.__entries
 
     @property
     def errors(self) -> list[ParseError]:
