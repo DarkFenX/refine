@@ -6,10 +6,8 @@ use std::{
     path::PathBuf,
 };
 
-use crate::{
-    VERSION,
-    cacher_json::{data::CData, error::JsonZfileAdcError},
-};
+use super::{data::CData, error::JsonZfileAdcError};
+use crate::VERSION;
 
 /// JSON adapted data cacher implementation.
 ///
@@ -94,7 +92,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
             Err(_) => None,
         }
     }
-    fn load_from_cache(&mut self) -> rc::ad::AResult<rc::ad::AData> {
+    fn load_from_cache(&mut self) -> Result<rc::ad::AData, Box<dyn std::error::Error>> {
         let full_path = self.get_cache_path();
         let file = OpenOptions::new()
             .read(true)

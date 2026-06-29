@@ -1,19 +1,46 @@
-use crate::util::Error;
+use crate::phb::parsing::ReadParseError;
 
-pub(in crate::phb::handler_http) trait FromSuffix<T> {
-    fn from_suffix(err: T, suffix: &str) -> Self;
+#[derive(thiserror::Error, Debug)]
+pub enum PhbHttpEdhInitError {
+    /// HTTP handler cannot use passed URL as base.
+    ///
+    /// Includes passed URL and text description of failure.
+    #[error("invalid base URL \"{0}\": {1}")]
+    PhbHttpInvalidBaseUrl(String, String),
 }
-impl FromSuffix<url::ParseError> for Error {
-    fn from_suffix(err: url::ParseError, suffix: &str) -> Self {
-        Error::PhbHttpSuffixJoinFailed(suffix.to_string(), Box::new(err))
+
+#[derive(thiserror::Error, Debug)]
+pub(super) enum PhbHttpEdhError {
+    /// HTTP handler is unable to join base URL and suffix.
+    ///
+    /// Includes suffix and text description of failure.
+    #[error("{0} is failed to be joined to base URL: {1}")]
+    JoinFailed(String, String),
+    /// HTTP handler is unable to fetch data.
+    ///
+    /// Includes suffix and text description of failure.
+    #[error("{0} fetching failed: {1}")]
+    FetchFailed(String, String),
+    /// HTTP handler is unable to parse data.
+    ///
+    /// Includes suffix and text description of failure.
+    #[error("{0} parsing failed: {1}")]
+    ParseFailed(String, String),
+}
+impl PhbHttpEdhError {
+    pub(super) fn from_url(error: url::ParseError, suffix: &str) -> Self {
+        PhbHttpEdhError::JoinFailed(suffix.to_string(), error.to_string())
     }
-}
-impl FromSuffix<reqwest::Error> for Error {
-    fn from_suffix(err: reqwest::Error, suffix: &str) -> Self {
-        if err.is_decode() {
-            Error::PhbHttpSuffixParseFailed(suffix.to_string(), Box::new(err))
-        } else {
-            Error::PhbHttpSuffixFetchFailed(suffix.to_string(), Box::new(err))
+    pub(super) fn from_reqwest(error: reqwest::Error, suffix: &str) -> Self {
+        match error.is_decode() {
+            true => PhbHttpEdhError::ParseFailed(suffix.to_string(), error.to_string()),
+            false => PhbHttpEdhError::FetchFailed(suffix.to_string(), error.to_string()),
+        }
+    }
+    pub(super) fn from_read_parse(error: ReadParseError, suffix: &str) -> Self {
+        match error {
+            ReadParseError::ReadFailed(message) => Self::FetchFailed(suffix.to_string(), message),
+            ReadParseError::ParseFailed(message) => Self::ParseFailed(suffix.to_string(), message),
         }
     }
 }

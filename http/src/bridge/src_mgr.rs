@@ -120,7 +120,7 @@ fn create_src(
     cache_folder: Option<String>,
 ) -> Result<rc::Src, HBrError> {
     let edh: Box<dyn rc::ed::EveDataHandler> = Box::new(
-        redh::PhbHttpEdh::new(data_base_url.as_str(), data_version).map_err(|e| {
+        redh::PhbHttpEdh::try_new(data_base_url.as_str(), data_version).map_err(|e| {
             let reason = format!("{e}");
             HBrError::EdhInitFailed(reason)
         })?,

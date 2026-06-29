@@ -1,8 +1,7 @@
 use struson::reader::{JsonReader, JsonStreamReader};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Array handling
-////////////////////////////////////////////////////////////////////////////////////////////////////
+use crate::phb::parsing::ReadParseError;
+
 pub(in crate::phb) struct ArrayIter<T, R>
 where
     T: serde::de::DeserializeOwned,
@@ -32,29 +31,37 @@ where
     T: serde::de::DeserializeOwned,
     R: std::io::Read,
 {
-    type Item = rc::ed::EResult<T>;
+    type Item = Result<T, ReadParseError>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.closed {
             return None;
         }
         if !self.opened {
-            if let Err(e) = self.reader.begin_array() {
-                return Some(Err(e.into()));
+            if let Err(error) = self.reader.begin_array() {
+                return Some(Err(error.into()));
             }
             self.opened = true;
         }
-        match self.reader.has_next() {
-            Ok(has_next) if has_next => match self.reader.deserialize_next::<T>() {
-                Ok(value) => return Some(Ok(value)),
+        loop {
+            match self.reader.has_next() {
+                Ok(has_next) => match has_next {
+                    true => match self.reader.deserialize_next::<serde_json::Value>() {
+                        Ok(raw_value) => match serde_json::from_value::<T>(raw_value) {
+                            Ok(value) => return Some(Ok(value)),
+                            // Silently skip malformed entries
+                            Err(_) => continue,
+                        },
+                        Err(error) => return Some(Err(error.into())),
+                    },
+                    false => break,
+                },
                 Err(e) => return Some(Err(e.into())),
-            },
-            Err(e) => return Some(Err(e.into())),
-            _ => (),
+            }
         }
         if !self.closed {
-            if let Err(e) = self.reader.end_array() {
-                return Some(Err(e.into()));
+            if let Err(error) = self.reader.end_array() {
+                return Some(Err(error.into()));
             }
             self.closed = true;
         }

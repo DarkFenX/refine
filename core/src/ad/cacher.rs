@@ -1,4 +1,4 @@
-use crate::ad::{AData, AResult};
+use crate::ad::AData;
 
 /// Adapted data cacher interface definition.
 ///
@@ -11,7 +11,7 @@ pub trait AdaptedDataCacher: std::fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
     fn get_cache_fingerprint(&mut self) -> Option<String>;
     /// Load cache from persistent storage.
-    fn load_from_cache(&mut self) -> AResult<AData>;
+    fn load_from_cache(&mut self) -> Result<AData, Box<dyn std::error::Error>>;
     /// Store passed data in cache.
     fn write_cache(&mut self, data: &AData, fingerprint: &str);
     /// Get adapted data cacher version.

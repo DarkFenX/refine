@@ -17,11 +17,9 @@ pub use data::{
     AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
 };
 pub(crate) use generator::generate_adapted_data;
-pub use result::AResult;
 
 mod cacher;
 mod consts;
 mod data;
 pub mod err;
 mod generator;
-mod result;

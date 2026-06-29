@@ -40,9 +40,7 @@ pub use data::{
     EItemSpaceCompBuffData, EItemSpaceCompBuffEntry, EMutaAttrMod, EMutaItemConv, EPrimitive,
 };
 pub use handler::EveDataHandler;
-pub use result::EResult;
 
 mod consts;
 mod data;
 mod handler;
-mod result;

@@ -1,7 +1,7 @@
 #[cfg(feature = "phb-file")]
 pub use handler_file::PhbFileEdh;
 #[cfg(feature = "phb-http")]
-pub use handler_http::PhbHttpEdh;
+pub use handler_http::{PhbHttpEdh, PhbHttpEdhInitError};
 
 #[cfg(any(feature = "phb-http", feature = "phb-file"))]
 mod data;
