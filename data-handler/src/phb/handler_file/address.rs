@@ -1,26 +1,20 @@
 use std::path::{Path, PathBuf};
 
-pub(in crate::phb::handler_file) struct Address {
+pub(super) struct Address {
     folder: &'static str,
     file: &'static str,
 }
 impl Address {
-    pub(in crate::phb::handler_file) fn new(folder: &'static str, file: &'static str) -> Self {
+    pub(super) fn new(folder: &'static str, file: &'static str) -> Self {
         Self { folder, file }
     }
-    pub(in crate::phb::handler_file) fn get_full_path(&self, base: &Path) -> PathBuf {
+    pub(super) fn get_full_path(&self, base: &Path) -> PathBuf {
         base.join(self.get_part_path())
     }
-    pub(in crate::phb::handler_file) fn get_part_path(&self) -> PathBuf {
+    pub(super) fn get_part_path(&self) -> PathBuf {
         PathBuf::from(self.folder).join(format!("{}.json", self.file))
     }
-    pub(in crate::phb::handler_file) fn get_part_str(&self) -> String {
-        Self::path_to_str(&self.get_part_path())
-    }
-    fn path_to_str(path: &Path) -> String {
-        match path.to_str() {
-            Some(s) => s.to_owned(),
-            None => "<unable to decode path>".to_owned(),
-        }
+    pub(super) fn get_part_str(&self) -> String {
+        self.get_part_path().into_string().unwrap_or_else(|_| "<unable to decode path>".to_owned())
     }
 }
