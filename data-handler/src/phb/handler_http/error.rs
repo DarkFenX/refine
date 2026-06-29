@@ -1,4 +1,4 @@
-use crate::phb::parsing::ReadParseError;
+use crate::phb::parsing::ReadParseFailReason;
 
 #[derive(thiserror::Error, Debug)]
 pub enum PhbHttpEdhInitError {
@@ -38,10 +38,10 @@ impl PhbHttpEdhError {
             false => PhbHttpEdhError::FetchFailed(suffix.to_string(), error.to_string()),
         }
     }
-    pub(super) fn from_read_parse(error: ReadParseError, suffix: &str) -> Self {
+    pub(super) fn from_read_parse(error: ReadParseFailReason, suffix: &str) -> Self {
         match error {
-            ReadParseError::ReadFailed(message) => Self::FetchFailed(suffix.to_string(), message),
-            ReadParseError::ParseFailed(message) => Self::ParseFailed(suffix.to_string(), message),
+            ReadParseFailReason::ReadFailed(message) => Self::FetchFailed(suffix.to_string(), message),
+            ReadParseFailReason::ParseFailed(message) => Self::ParseFailed(suffix.to_string(), message),
         }
     }
 }

@@ -1,6 +1,6 @@
 use struson::reader::{JsonReader, JsonStreamReader};
 
-use crate::phb::parsing::ReadParseError;
+use crate::phb::parsing::ReadParseFailReason;
 
 pub(in crate::phb) struct ArrayIter<T, R>
 where
@@ -31,7 +31,7 @@ where
     T: serde::de::DeserializeOwned,
     R: std::io::Read,
 {
-    type Item = Result<T, ReadParseError>;
+    type Item = Result<T, ReadParseFailReason>;
 
     fn next(&mut self) -> Option<Self::Item> {
         if self.closed {

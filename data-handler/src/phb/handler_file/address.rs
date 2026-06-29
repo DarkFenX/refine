@@ -15,6 +15,8 @@ impl Address {
         PathBuf::from(self.folder).join(format!("{}.json", self.file))
     }
     pub(super) fn get_part_str(&self) -> String {
-        self.get_part_path().into_string().unwrap_or_else(|_| "<unable to decode path>".to_owned())
+        self.get_part_path()
+            .into_string()
+            .unwrap_or_else(|_| "<unable to decode path>".to_owned())
     }
 }

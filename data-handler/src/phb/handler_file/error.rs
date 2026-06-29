@@ -1,4 +1,4 @@
-use crate::phb::parsing::ReadParseError;
+use crate::phb::parsing::ReadParseFailReason;
 
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PhbFileEdhError {
@@ -20,10 +20,10 @@ impl PhbFileEdhError {
     pub(super) fn from_io(error: std::io::Error, path: String) -> Self {
         Self::ReadFailed(path, error.to_string())
     }
-    pub(super) fn from_read_parse(error: ReadParseError, path: String) -> Self {
+    pub(super) fn from_read_parse(error: ReadParseFailReason, path: String) -> Self {
         match error {
-            ReadParseError::ReadFailed(message) => Self::ReadFailed(path, message),
-            ReadParseError::ParseFailed(message) => Self::ParseFailed(path, message),
+            ReadParseFailReason::ReadFailed(message) => Self::ReadFailed(path, message),
+            ReadParseFailReason::ParseFailed(message) => Self::ParseFailed(path, message),
         }
     }
 }

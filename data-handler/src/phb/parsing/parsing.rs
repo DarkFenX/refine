@@ -2,13 +2,13 @@ use struson::reader::simple::{SimpleJsonReader, ValueReader};
 
 use super::{
     aliases::Key,
-    error::ReadParseError,
+    error::ReadParseFailReason,
     traits::{KeyMergeOne, KeyMergeTwo},
 };
 
 pub(in crate::phb) fn handle_keymap_one<PHB, EVE>(
     reader: impl std::io::Read,
-) -> Result<rc::ed::EDataCont<EVE>, ReadParseError>
+) -> Result<rc::ed::EDataCont<EVE>, ReadParseFailReason>
 where
     PHB: serde::de::DeserializeOwned + KeyMergeOne<EVE>,
 {
@@ -42,7 +42,7 @@ where
 
 pub(in crate::phb) fn handle_keymap_two<PHB, EVE1, EVE2>(
     reader: impl std::io::Read,
-) -> Result<(rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>), ReadParseError>
+) -> Result<(rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>), ReadParseFailReason>
 where
     PHB: serde::de::DeserializeOwned + KeyMergeTwo<EVE1, EVE2>,
 {
