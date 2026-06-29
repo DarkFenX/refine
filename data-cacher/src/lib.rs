@@ -8,7 +8,7 @@
 //! - `json-zfile`: Enables cacher which writes compressed JSON cache to disk.
 
 #[cfg(feature = "json-zfile")]
-pub use cacher_json::{JsonZfileAdc, JsonZfileAdcError};
+pub use cacher_json::JsonZfileAdc;
 
 #[cfg(feature = "json-zfile")]
 mod cacher_json;

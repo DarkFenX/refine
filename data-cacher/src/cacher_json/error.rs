@@ -1,5 +1,5 @@
 #[derive(thiserror::Error, Debug)]
-pub enum JsonZfileAdcError {
+pub(super) enum JsonZfileAdcError {
     #[error("unable to open cache for reading: {0}")]
     ReadFailed(String),
     #[error("unable to decompress cache: {0}")]

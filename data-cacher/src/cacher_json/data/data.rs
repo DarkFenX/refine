@@ -1,3 +1,5 @@
+use struson::reader::{JsonReader, JsonStreamReader};
+
 use crate::cacher_json::data::{
     abil::CAbil, attr::CAttr, buff::CBuff, effect::CEffect, item::CItem, item_list::CItemList, muta::CMuta,
 };
@@ -38,5 +40,27 @@ impl CData {
             abils: self.abils.into_iter().map(|v| v.into_adapted()).collect(),
             item_lists: self.item_lists.into_iter().map(|v| v.into_adapted()).collect(),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CData {
+    pub(in crate::cacher_json) fn deserialize<R>(reader: R) -> Self
+    where
+        R: std::io::Read,
+    {
+        let mut cdata = CData {
+            items: Vec::new(),
+            attrs: Vec::new(),
+            mutas: Vec::new(),
+            effects: Vec::new(),
+            buffs: Vec::new(),
+            abils: Vec::new(),
+            item_lists: Vec::new(),
+        };
+        let reader = JsonStreamReader::new(reader);
+        cdata
     }
 }

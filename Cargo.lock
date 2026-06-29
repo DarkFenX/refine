@@ -1664,6 +1664,7 @@ dependencies = [
  "serde_repr",
  "serde_tuple",
  "serde_with",
+ "struson",
  "thiserror",
  "tracing",
  "zstd",

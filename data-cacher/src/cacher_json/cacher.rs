@@ -1,8 +1,7 @@
 use std::{
     fmt,
     fs::{OpenOptions, create_dir_all},
-    io,
-    io::Write,
+    io::{self, Write},
     path::PathBuf,
 };
 
@@ -98,10 +97,8 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
             .read(true)
             .open(full_path)
             .map_err(|e| JsonZfileAdcError::ReadFailed(e.to_string()))?;
-        let mut raw = Vec::new();
-        zstd::stream::copy_decode(file, &mut raw).map_err(|e| JsonZfileAdcError::DecompFailed(e.to_string()))?;
-        let c_data =
-            serde_json::from_slice::<CData>(&raw).map_err(|e| JsonZfileAdcError::ParseFailed(e.to_string()))?;
+        let reader = zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcError::ReadFailed(e.to_string()))?;
+        let c_data = CData::deserialize(reader);
         Ok(c_data.into_adapted())
     }
     #[tracing::instrument(name = "adc-json-zfile-update", level = "trace", skip_all)]
