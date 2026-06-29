@@ -9,6 +9,7 @@ pub enum PhbHttpEdhInitError {
     PhbHttpInvalidBaseUrl(String, String),
 }
 
+#[allow(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PhbHttpEdhError {
     /// HTTP handler is unable to join base URL and suffix.
