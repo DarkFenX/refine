@@ -1,8 +1,5 @@
-#[derive(thiserror::Error, Debug)]
 pub(in crate::phb) enum ReadParseError {
-    #[error("reading failed: {0}")]
     ReadFailed(String),
-    #[error("parsing failed: {0}")]
     ParseFailed(String),
 }
 impl From<struson::reader::ReaderError> for ReadParseError {

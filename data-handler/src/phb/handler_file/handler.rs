@@ -140,7 +140,8 @@ impl rc::ed::EveDataHandler for PhbFileEdh {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
         for metadata_result in ArrayIter::new(reader) {
-            let metadata: PMetadata = metadata_result?;
+            let metadata: PMetadata =
+                metadata_result.map_err(|e| PhbFileEdhError::from_read_parse(e, addr.get_part_str()))?;
             if metadata.field_name == "client_build" {
                 return Ok(metadata.field_value.to_string());
             }
