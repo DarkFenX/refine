@@ -86,8 +86,9 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| JsonZfileAdcReadError::ReadFailed(e.to_string()))?;
-        let reader = zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcReadError::ReadFailed(e.to_string()))?;
+            .map_err(|e| JsonZfileAdcReadError::DataReadFailed(e.to_string()))?;
+        let reader =
+            zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcReadError::DataReadFailed(e.to_string()))?;
         let c_data = CData::try_deserialize(reader)?;
         Ok(c_data.into_adapted())
     }
