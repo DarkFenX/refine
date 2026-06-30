@@ -1,4 +1,5 @@
-use super::{super::shared::COp, affectee_filter::CEffectAffecteeFilter, strength::CEffectModStrength};
+use super::{affectee_filter::CEffectAffecteeFilter, strength::CEffectModStrength};
+use crate::cacher_json::data::{AdaptedConv, COp};
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -13,8 +14,10 @@ pub(super) struct CEffectModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CEffectModifier {
-    pub(super) fn from_adapted(a_modifier: &rc::ad::AEffectModifier) -> Self {
+impl AdaptedConv for CEffectModifier {
+    type AEntity = rc::ad::AEffectModifier;
+
+    fn from_adapted(a_modifier: &Self::AEntity) -> Self {
         Self {
             strength: CEffectModStrength::from_adapted(&a_modifier.strength),
             op: COp::from_adapted(&a_modifier.op),
@@ -22,8 +25,9 @@ impl CEffectModifier {
             affectee_attr_id: a_modifier.affectee_attr_id,
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::AEffectModifier {
-        rc::ad::AEffectModifier {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             strength: self.strength.into_adapted(),
             op: self.op.into_adapted(),
             affectee_filter: self.affectee_filter.into_adapted(),

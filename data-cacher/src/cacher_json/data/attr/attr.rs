@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::cacher_json::data) struct CAttr {
@@ -15,8 +17,10 @@ pub(in crate::cacher_json::data) struct CAttr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CAttr {
-    pub(in crate::cacher_json::data) fn from_adapted(a_attr: &rc::ad::AAttr) -> Self {
+impl AdaptedConv for CAttr {
+    type AEntity = rc::ad::AAttr;
+
+    fn from_adapted(a_attr: &Self::AEntity) -> Self {
         Self {
             id: a_attr.id,
             penalizable: a_attr.penalizable,
@@ -26,8 +30,9 @@ impl CAttr {
             max_attr_id: a_attr.max_attr_id,
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AAttr {
-        rc::ad::AAttr {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             id: self.id,
             penalizable: self.penalizable,
             hig: self.hig,

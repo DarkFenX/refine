@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::cacher_json::data) struct CAbil {
@@ -9,15 +11,18 @@ pub(in crate::cacher_json::data) struct CAbil {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CAbil {
-    pub(in crate::cacher_json::data) fn from_adapted(a_abil: &rc::ad::AAbil) -> Self {
+impl AdaptedConv for CAbil {
+    type AEntity = rc::ad::AAbil;
+
+    fn from_adapted(a_abil: &Self::AEntity) -> Self {
         Self {
             id: a_abil.id.into_i32(),
             effect_id: a_abil.effect_id,
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AAbil {
-        rc::ad::AAbil {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             id: rc::ad::AAbilId::from_i32(self.id),
             effect_id: self.effect_id,
         }

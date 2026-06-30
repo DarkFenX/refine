@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub(super) enum CEffectLocation {
@@ -12,25 +14,28 @@ pub(super) enum CEffectLocation {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CEffectLocation {
-    pub(super) fn from_adapted(a_effect_location: &rc::ad::AEffectLocation) -> Self {
+impl AdaptedConv for CEffectLocation {
+    type AEntity = rc::ad::AEffectLocation;
+
+    fn from_adapted(a_effect_location: &Self::AEntity) -> Self {
         match a_effect_location {
-            rc::ad::AEffectLocation::Ship => Self::Ship,
-            rc::ad::AEffectLocation::Structure => Self::Structure,
-            rc::ad::AEffectLocation::Char => Self::Char,
-            rc::ad::AEffectLocation::Item => Self::Item,
-            rc::ad::AEffectLocation::Other => Self::Other,
-            rc::ad::AEffectLocation::Target => Self::Target,
+            Self::AEntity::Ship => Self::Ship,
+            Self::AEntity::Structure => Self::Structure,
+            Self::AEntity::Char => Self::Char,
+            Self::AEntity::Item => Self::Item,
+            Self::AEntity::Other => Self::Other,
+            Self::AEntity::Target => Self::Target,
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::AEffectLocation {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Ship => rc::ad::AEffectLocation::Ship,
-            Self::Structure => rc::ad::AEffectLocation::Structure,
-            Self::Char => rc::ad::AEffectLocation::Char,
-            Self::Item => rc::ad::AEffectLocation::Item,
-            Self::Other => rc::ad::AEffectLocation::Other,
-            Self::Target => rc::ad::AEffectLocation::Target,
+            Self::Ship => Self::AEntity::Ship,
+            Self::Structure => Self::AEntity::Structure,
+            Self::Char => Self::AEntity::Char,
+            Self::Item => Self::AEntity::Item,
+            Self::Other => Self::AEntity::Other,
+            Self::Target => Self::AEntity::Target,
         }
     }
 }

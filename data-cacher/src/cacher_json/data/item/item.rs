@@ -1,4 +1,5 @@
-use super::{super::shared::CState, effect_data::CItemEffectData};
+use super::effect_data::CItemEffectData;
+use crate::cacher_json::data::{AdaptedConv, CState};
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -44,8 +45,10 @@ struct CItemEffect {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CItem {
-    pub(in crate::cacher_json::data) fn from_adapted(a_item: &rc::ad::AItem) -> Self {
+impl AdaptedConv for CItem {
+    type AEntity = rc::ad::AItem;
+
+    fn from_adapted(a_item: &Self::AEntity) -> Self {
         Self {
             id: a_item.id.into_i32(),
             grp_id: a_item.grp_id.into_i32(),
@@ -84,8 +87,9 @@ impl CItem {
             disallowed_in_wspace: a_item.disallowed_in_wspace,
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AItem {
-        rc::ad::AItem {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             id: rc::ad::AItemId::from_i32(self.id),
             grp_id: rc::ad::AItemGrpId::from_i32(self.grp_id),
             cat_id: rc::ad::AItemCatId::from_i32(self.cat_id),

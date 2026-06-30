@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[serde_with::serde_as]
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -9,17 +11,20 @@ pub(super) enum CEffectModStrength {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CEffectModStrength {
-    pub(super) fn from_adapted(a_buff_str: &rc::ad::AEffectModStrength) -> Self {
+impl AdaptedConv for CEffectModStrength {
+    type AEntity = rc::ad::AEffectModStrength;
+
+    fn from_adapted(a_buff_str: &Self::AEntity) -> Self {
         match a_buff_str {
-            rc::ad::AEffectModStrength::Attr(attr_id) => Self::Attr(*attr_id),
-            rc::ad::AEffectModStrength::Hardcoded(buff_val) => Self::Hardcoded(buff_val.into_f64()),
+            Self::AEntity::Attr(attr_id) => Self::Attr(*attr_id),
+            Self::AEntity::Hardcoded(buff_val) => Self::Hardcoded(buff_val.into_f64()),
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::AEffectModStrength {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Attr(attr_id) => rc::ad::AEffectModStrength::Attr(attr_id),
-            Self::Hardcoded(buff_val) => rc::ad::AEffectModStrength::Hardcoded(rc::ad::AValue::from_f64(buff_val)),
+            Self::Attr(attr_id) => Self::AEntity::Attr(attr_id),
+            Self::Hardcoded(buff_val) => Self::AEntity::Hardcoded(rc::ad::AValue::from_f64(buff_val)),
         }
     }
 }

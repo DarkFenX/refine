@@ -1,4 +1,5 @@
-use super::{super::shared::COp, aggr_mode::CBuffAggrMode, modifier::CBuffModifier};
+use super::{aggr_mode::CBuffAggrMode, modifier::CBuffModifier};
+use crate::cacher_json::data::{AdaptedConv, COp};
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -13,8 +14,10 @@ pub(in crate::cacher_json::data) struct CBuff {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CBuff {
-    pub(in crate::cacher_json::data) fn from_adapted(a_buff: &rc::ad::ABuff) -> Self {
+impl AdaptedConv for CBuff {
+    type AEntity = rc::ad::ABuff;
+
+    fn from_adapted(a_buff: &Self::AEntity) -> Self {
         Self {
             id: a_buff.id,
             aggr_mode: CBuffAggrMode::from_adapted(&a_buff.aggr_mode),
@@ -22,8 +25,9 @@ impl CBuff {
             mods: a_buff.mods.iter().map(CBuffModifier::from_adapted).collect(),
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::ABuff {
-        rc::ad::ABuff {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             id: self.id,
             aggr_mode: self.aggr_mode.into_adapted(),
             op: self.op.into_adapted(),

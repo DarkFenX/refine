@@ -1,10 +1,11 @@
 use struson::reader::{JsonReader, JsonStreamReader};
 
-use crate::cacher_json::data::{
-    abil::CAbil, attr::CAttr, buff::CBuff, effect::CEffect, item::CItem, item_list::CItemList, muta::CMuta,
+use crate::cacher_json::{
+    data::{AdaptedConv, CAbil, CAttr, CBuff, CEffect, CItem, CItemList, CMuta},
+    error::JsonZfileAdcError,
 };
 
-#[derive(serde::Serialize, serde::Deserialize)]
+#[derive(Default, serde::Serialize, serde::Deserialize)]
 pub(in crate::cacher_json) struct CData {
     items: Vec<CItem>,
     attrs: Vec<CAttr>,
@@ -18,6 +19,7 @@ pub(in crate::cacher_json) struct CData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+
 impl CData {
     pub(in crate::cacher_json) fn from_adapted(a_data: &rc::ad::AData) -> Self {
         Self {
@@ -47,20 +49,40 @@ impl CData {
 // Deserialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CData {
-    pub(in crate::cacher_json) fn deserialize<R>(reader: R) -> Self
+    pub(in crate::cacher_json) fn try_deserialize<R>(reader: R) -> Result<Self, JsonZfileAdcError>
     where
         R: std::io::Read,
     {
-        let mut cdata = CData {
-            items: Vec::new(),
-            attrs: Vec::new(),
-            mutas: Vec::new(),
-            effects: Vec::new(),
-            buffs: Vec::new(),
-            abils: Vec::new(),
-            item_lists: Vec::new(),
-        };
-        let reader = JsonStreamReader::new(reader);
-        cdata
+        let mut c_data = CData::default();
+        let mut reader = JsonStreamReader::new(reader);
+        reader.begin_object()?;
+        while reader.has_next()? {
+            match reader.next_name()? {
+                "items" => read_array(&mut c_data.items, &mut reader)?,
+                "attrs" => read_array(&mut c_data.attrs, &mut reader)?,
+                "mutas" => read_array(&mut c_data.mutas, &mut reader)?,
+                "effects" => read_array(&mut c_data.effects, &mut reader)?,
+                "buffs" => read_array(&mut c_data.buffs, &mut reader)?,
+                "abils" => read_array(&mut c_data.abils, &mut reader)?,
+                "item_lists" => read_array(&mut c_data.item_lists, &mut reader)?,
+                _ => reader.skip_value()?,
+            }
+        }
+        reader.end_object()?;
+        Ok(c_data)
     }
+}
+
+fn read_array<R, C>(c_entities: &mut Vec<C>, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcError>
+where
+    R: std::io::Read,
+    C: serde::de::DeserializeOwned,
+{
+    reader.begin_array()?;
+    while reader.has_next()? {
+        let entry = reader.deserialize_next::<C>()?;
+        c_entities.push(entry);
+    }
+    reader.end_array()?;
+    Ok(())
 }

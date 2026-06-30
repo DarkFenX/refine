@@ -1,4 +1,5 @@
-use super::{super::shared::CModifierSrq, location::CEffectLocation};
+use super::location::CEffectLocation;
+use crate::cacher_json::data::{AdaptedConv, CModifierSrq};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -13,29 +14,28 @@ pub(super) enum CEffectAffecteeFilter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CEffectAffecteeFilter {
-    pub(super) fn from_adapted(a_effect_affectee_filter: &rc::ad::AEffectAffecteeFilter) -> Self {
+impl AdaptedConv for CEffectAffecteeFilter {
+    type AEntity = rc::ad::AEffectAffecteeFilter;
+
+    fn from_adapted(a_effect_affectee_filter: &Self::AEntity) -> Self {
         match a_effect_affectee_filter {
-            rc::ad::AEffectAffecteeFilter::Direct(loc) => Self::Direct(CEffectLocation::from_adapted(loc)),
-            rc::ad::AEffectAffecteeFilter::Loc(loc) => Self::Loc(CEffectLocation::from_adapted(loc)),
-            rc::ad::AEffectAffecteeFilter::LocGrp(loc, grp) => {
-                Self::LocGrp(CEffectLocation::from_adapted(loc), grp.into_i32())
-            }
-            rc::ad::AEffectAffecteeFilter::LocSrq(loc, srq) => {
+            Self::AEntity::Direct(loc) => Self::Direct(CEffectLocation::from_adapted(loc)),
+            Self::AEntity::Loc(loc) => Self::Loc(CEffectLocation::from_adapted(loc)),
+            Self::AEntity::LocGrp(loc, grp) => Self::LocGrp(CEffectLocation::from_adapted(loc), grp.into_i32()),
+            Self::AEntity::LocSrq(loc, srq) => {
                 Self::LocSrq(CEffectLocation::from_adapted(loc), CModifierSrq::from_adapted(srq))
             }
-            rc::ad::AEffectAffecteeFilter::OwnSrq(srq) => Self::OwnSrq(CModifierSrq::from_adapted(srq)),
+            Self::AEntity::OwnSrq(srq) => Self::OwnSrq(CModifierSrq::from_adapted(srq)),
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::AEffectAffecteeFilter {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Direct(loc) => rc::ad::AEffectAffecteeFilter::Direct(loc.into_adapted()),
-            Self::Loc(loc) => rc::ad::AEffectAffecteeFilter::Loc(loc.into_adapted()),
-            Self::LocGrp(loc, grp) => {
-                rc::ad::AEffectAffecteeFilter::LocGrp(loc.into_adapted(), rc::ad::AItemGrpId::from_i32(grp))
-            }
-            Self::LocSrq(loc, srq) => rc::ad::AEffectAffecteeFilter::LocSrq(loc.into_adapted(), srq.into_adapted()),
-            Self::OwnSrq(srq) => rc::ad::AEffectAffecteeFilter::OwnSrq(srq.into_adapted()),
+            Self::Direct(loc) => Self::AEntity::Direct(loc.into_adapted()),
+            Self::Loc(loc) => Self::AEntity::Loc(loc.into_adapted()),
+            Self::LocGrp(loc, grp) => Self::AEntity::LocGrp(loc.into_adapted(), rc::ad::AItemGrpId::from_i32(grp)),
+            Self::LocSrq(loc, srq) => Self::AEntity::LocSrq(loc.into_adapted(), srq.into_adapted()),
+            Self::OwnSrq(srq) => Self::AEntity::OwnSrq(srq.into_adapted()),
         }
     }
 }

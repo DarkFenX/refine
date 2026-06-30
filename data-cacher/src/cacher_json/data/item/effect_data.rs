@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(super) struct CItemEffectData {
@@ -12,8 +14,10 @@ pub(super) struct CItemEffectData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CItemEffectData {
-    pub(super) fn from_adapted(a_item_effect_data: &rc::ad::AItemEffectData) -> Self {
+impl AdaptedConv for CItemEffectData {
+    type AEntity = rc::ad::AItemEffectData;
+
+    fn from_adapted(a_item_effect_data: &Self::AEntity) -> Self {
         Self {
             autocharge: a_item_effect_data.autocharge.map(|v| v.into_i32()),
             cooldown: a_item_effect_data.cooldown.map(|v| v.into_f64()),
@@ -22,8 +26,9 @@ impl CItemEffectData {
             projectee_filter: a_item_effect_data.projectee_filter,
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::AItemEffectData {
-        rc::ad::AItemEffectData {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             autocharge: self.autocharge.map(rc::ad::AItemId::from_i32),
             cooldown: self.cooldown.map(rc::ad::AValue::from_f64),
             charge_count: self.charge_count.map(rc::ad::ACount::from_u32),

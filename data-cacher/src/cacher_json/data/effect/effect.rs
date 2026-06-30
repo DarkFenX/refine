@@ -1,4 +1,5 @@
-use super::{super::shared::CState, buff::CEffectBuffInfo, duration::CEffectAggroDuration, modifier::CEffectModifier};
+use super::{buff::CEffectBuff, duration::CEffectAggroDuration, modifier::CEffectModifier};
+use crate::cacher_json::data::{AdaptedConv, CState};
 
 #[serde_with::serde_as]
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
@@ -10,7 +11,7 @@ pub(in crate::cacher_json::data) struct CEffect {
     modifiers: Vec<CEffectModifier>,
     #[serde_as(as = "Vec<serde_with::DisplayFromStr>")]
     stopped_effect_ids: Vec<rc::ad::AEffectId>,
-    buff: Option<CEffectBuffInfo>,
+    buff: Option<CEffectBuff>,
     aggro: Option<CEffectAggroDuration>,
     is_assist: bool,
     is_offense: bool,
@@ -35,15 +36,17 @@ pub(in crate::cacher_json::data) struct CEffect {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CEffect {
-    pub(in crate::cacher_json::data) fn from_adapted(a_effect: &rc::ad::AEffect) -> Self {
+impl AdaptedConv for CEffect {
+    type AEntity = rc::ad::AEffect;
+
+    fn from_adapted(a_effect: &Self::AEntity) -> Self {
         Self {
             id: a_effect.id,
             category: a_effect.category.into_i32(),
             state: CState::from_adapted(&a_effect.state),
             modifiers: a_effect.modifiers.iter().map(CEffectModifier::from_adapted).collect(),
             stopped_effect_ids: a_effect.stopped_effect_ids.iter().copied().collect(),
-            buff: a_effect.buff.as_ref().map(CEffectBuffInfo::from_adapted),
+            buff: a_effect.buff.as_ref().map(CEffectBuff::from_adapted),
             aggro: a_effect.aggro.as_ref().map(CEffectAggroDuration::from_adapted),
             is_assist: a_effect.is_assist,
             is_offense: a_effect.is_offense,
@@ -58,8 +61,9 @@ impl CEffect {
             resist_attr_id: a_effect.resist_attr_id,
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AEffect {
-        rc::ad::AEffect {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             id: self.id,
             category: rc::ad::AEffectCatId::from_i32(self.category),
             state: self.state.into_adapted(),

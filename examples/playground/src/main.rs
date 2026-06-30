@@ -97,7 +97,8 @@ fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCac
     //     println!("{attr_id} {}", val.extra);
     // }
 
-    let iterations = 1000000;
+    // let iterations = 1000000;
+    let iterations = 1;
     tracing::error!("starting crusader test");
     let before = Utc::now();
     for _ in 0..iterations {

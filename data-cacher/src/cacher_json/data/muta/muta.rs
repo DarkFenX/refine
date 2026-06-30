@@ -1,4 +1,5 @@
 use super::attr_range::CMutaAttrRange;
+use crate::cacher_json::data::AdaptedConv;
 
 #[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
 pub(in crate::cacher_json::data) struct CMuta {
@@ -7,11 +8,21 @@ pub(in crate::cacher_json::data) struct CMuta {
     attr_mods: Vec<CMutaAttr>,
 }
 
+#[serde_with::serde_as]
+#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
+struct CMutaAttr {
+    #[serde_as(as = "serde_with::DisplayFromStr")]
+    id: rc::ad::AAttrId,
+    range: CMutaAttrRange,
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CMuta {
-    pub(in crate::cacher_json::data) fn from_adapted(a_muta: &rc::ad::AMuta) -> Self {
+impl AdaptedConv for CMuta {
+    type AEntity = rc::ad::AMuta;
+
+    fn from_adapted(a_muta: &Self::AEntity) -> Self {
         Self {
             id: a_muta.id.into_i32(),
             item_map: a_muta
@@ -29,8 +40,9 @@ impl CMuta {
                 .collect(),
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AMuta {
-        rc::ad::AMuta {
+
+    fn into_adapted(self) -> Self::AEntity {
+        Self::AEntity {
             id: rc::ad::AItemId::from_i32(self.id),
             item_map: self
                 .item_map
@@ -50,12 +62,4 @@ impl CMuta {
                 .collect(),
         }
     }
-}
-
-#[serde_with::serde_as]
-#[derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)]
-struct CMutaAttr {
-    #[serde_as(as = "serde_with::DisplayFromStr")]
-    id: rc::ad::AAttrId,
-    range: CMutaAttrRange,
 }

@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub(super) enum CBuffAggrMode {
@@ -8,17 +10,20 @@ pub(super) enum CBuffAggrMode {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CBuffAggrMode {
-    pub(super) fn from_adapted(a_buff_aggr_mode: &rc::ad::ABuffAggrMode) -> Self {
+impl AdaptedConv for CBuffAggrMode {
+    type AEntity = rc::ad::ABuffAggrMode;
+
+    fn from_adapted(a_buff_aggr_mode: &Self::AEntity) -> Self {
         match a_buff_aggr_mode {
-            rc::ad::ABuffAggrMode::Min => Self::Min,
-            rc::ad::ABuffAggrMode::Max => Self::Max,
+            Self::AEntity::Min => Self::Min,
+            Self::AEntity::Max => Self::Max,
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::ABuffAggrMode {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Min => rc::ad::ABuffAggrMode::Min,
-            Self::Max => rc::ad::ABuffAggrMode::Max,
+            Self::Min => Self::AEntity::Min,
+            Self::Max => Self::AEntity::Max,
         }
     }
 }

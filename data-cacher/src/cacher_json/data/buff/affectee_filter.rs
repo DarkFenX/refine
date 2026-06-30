@@ -1,4 +1,4 @@
-use super::super::shared::CModifierSrq;
+use crate::cacher_json::data::{AdaptedConv, CModifierSrq};
 
 #[derive(serde::Serialize, serde::Deserialize)]
 #[serde(rename_all = "snake_case")]
@@ -12,21 +12,24 @@ pub(super) enum CBuffAffecteeFilter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CBuffAffecteeFilter {
-    pub(super) fn from_adapted(a_buff_affectee_filter: &rc::ad::ABuffAffecteeFilter) -> Self {
+impl AdaptedConv for CBuffAffecteeFilter {
+    type AEntity = rc::ad::ABuffAffecteeFilter;
+
+    fn from_adapted(a_buff_affectee_filter: &Self::AEntity) -> Self {
         match a_buff_affectee_filter {
-            rc::ad::ABuffAffecteeFilter::Direct => Self::Direct,
-            rc::ad::ABuffAffecteeFilter::Loc => Self::Loc,
-            rc::ad::ABuffAffecteeFilter::LocGrp(grp) => Self::LocGrp(grp.into_i32()),
-            rc::ad::ABuffAffecteeFilter::LocSrq(srq) => Self::LocSrq(CModifierSrq::from_adapted(srq)),
+            Self::AEntity::Direct => Self::Direct,
+            Self::AEntity::Loc => Self::Loc,
+            Self::AEntity::LocGrp(grp) => Self::LocGrp(grp.into_i32()),
+            Self::AEntity::LocSrq(srq) => Self::LocSrq(CModifierSrq::from_adapted(srq)),
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::ABuffAffecteeFilter {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Direct => rc::ad::ABuffAffecteeFilter::Direct,
-            Self::Loc => rc::ad::ABuffAffecteeFilter::Loc,
-            Self::LocGrp(grp) => rc::ad::ABuffAffecteeFilter::LocGrp(rc::ad::AItemGrpId::from_i32(grp)),
-            Self::LocSrq(srq) => rc::ad::ABuffAffecteeFilter::LocSrq(srq.into_adapted()),
+            Self::Direct => Self::AEntity::Direct,
+            Self::Loc => Self::AEntity::Loc,
+            Self::LocGrp(grp) => Self::AEntity::LocGrp(rc::ad::AItemGrpId::from_i32(grp)),
+            Self::LocSrq(srq) => Self::AEntity::LocSrq(srq.into_adapted()),
         }
     }
 }

@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub(in crate::cacher_json::data) enum CState {
@@ -11,23 +13,26 @@ pub(in crate::cacher_json::data) enum CState {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CState {
-    pub(in crate::cacher_json::data) fn from_adapted(a_state: &rc::ad::AState) -> Self {
+impl AdaptedConv for CState {
+    type AEntity = rc::ad::AState;
+
+    fn from_adapted(a_state: &Self::AEntity) -> Self {
         match a_state {
-            rc::ad::AState::Disabled => Self::Disabled,
-            rc::ad::AState::Offline => Self::Offline,
-            rc::ad::AState::Online => Self::Online,
-            rc::ad::AState::Active => Self::Active,
-            rc::ad::AState::Overload => Self::Overload,
+            Self::AEntity::Disabled => Self::Disabled,
+            Self::AEntity::Offline => Self::Offline,
+            Self::AEntity::Online => Self::Online,
+            Self::AEntity::Active => Self::Active,
+            Self::AEntity::Overload => Self::Overload,
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AState {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Disabled => rc::ad::AState::Disabled,
-            Self::Offline => rc::ad::AState::Offline,
-            Self::Online => rc::ad::AState::Online,
-            Self::Active => rc::ad::AState::Active,
-            Self::Overload => rc::ad::AState::Overload,
+            Self::Disabled => Self::AEntity::Disabled,
+            Self::Offline => Self::AEntity::Offline,
+            Self::Online => Self::AEntity::Online,
+            Self::Active => Self::AEntity::Active,
+            Self::Overload => Self::AEntity::Overload,
         }
     }
 }

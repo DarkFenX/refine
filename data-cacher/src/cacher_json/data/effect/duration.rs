@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub enum CEffectAggroDuration {
@@ -8,17 +10,20 @@ pub enum CEffectAggroDuration {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CEffectAggroDuration {
-    pub(super) fn from_adapted(a_aggro_duration: &rc::ad::AEffectAggroDuration) -> Self {
+impl AdaptedConv for CEffectAggroDuration {
+    type AEntity = rc::ad::AEffectAggroDuration;
+
+    fn from_adapted(a_aggro_duration: &Self::AEntity) -> Self {
         match a_aggro_duration {
-            rc::ad::AEffectAggroDuration::Instant => Self::Instant,
-            rc::ad::AEffectAggroDuration::Effect => Self::Effect,
+            Self::AEntity::Instant => Self::Instant,
+            Self::AEntity::Effect => Self::Effect,
         }
     }
-    pub(super) fn into_adapted(self) -> rc::ad::AEffectAggroDuration {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::Instant => rc::ad::AEffectAggroDuration::Instant,
-            Self::Effect => rc::ad::AEffectAggroDuration::Effect,
+            Self::Instant => Self::AEntity::Instant,
+            Self::Effect => Self::AEntity::Effect,
         }
     }
 }

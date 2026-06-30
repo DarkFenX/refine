@@ -1,3 +1,5 @@
+use crate::cacher_json::data::AdaptedConv;
+
 #[derive(serde_repr::Serialize_repr, serde_repr::Deserialize_repr)]
 #[repr(u8)]
 pub(in crate::cacher_json::data) enum COp {
@@ -17,35 +19,38 @@ pub(in crate::cacher_json::data) enum COp {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl COp {
-    pub(in crate::cacher_json::data) fn from_adapted(a_op: &rc::ad::AOp) -> Self {
+impl AdaptedConv for COp {
+    type AEntity = rc::ad::AOp;
+
+    fn from_adapted(a_op: &Self::AEntity) -> Self {
         match a_op {
-            rc::ad::AOp::PreAssign => Self::PreAssign,
-            rc::ad::AOp::PreMul => Self::PreMul,
-            rc::ad::AOp::PreDiv => Self::PreDiv,
-            rc::ad::AOp::Add => Self::Add,
-            rc::ad::AOp::Sub => Self::Sub,
-            rc::ad::AOp::PostMul => Self::PostMul,
-            rc::ad::AOp::PostMulImmune => Self::PostMulImmune,
-            rc::ad::AOp::PostDiv => Self::PostDiv,
-            rc::ad::AOp::PostPerc => Self::PostPerc,
-            rc::ad::AOp::PostPercImmune => Self::PostPercImmune,
-            rc::ad::AOp::PostAssign => Self::PostAssign,
+            Self::AEntity::PreAssign => Self::PreAssign,
+            Self::AEntity::PreMul => Self::PreMul,
+            Self::AEntity::PreDiv => Self::PreDiv,
+            Self::AEntity::Add => Self::Add,
+            Self::AEntity::Sub => Self::Sub,
+            Self::AEntity::PostMul => Self::PostMul,
+            Self::AEntity::PostMulImmune => Self::PostMulImmune,
+            Self::AEntity::PostDiv => Self::PostDiv,
+            Self::AEntity::PostPerc => Self::PostPerc,
+            Self::AEntity::PostPercImmune => Self::PostPercImmune,
+            Self::AEntity::PostAssign => Self::PostAssign,
         }
     }
-    pub(in crate::cacher_json::data) fn into_adapted(self) -> rc::ad::AOp {
+
+    fn into_adapted(self) -> Self::AEntity {
         match self {
-            Self::PreAssign => rc::ad::AOp::PreAssign,
-            Self::PreMul => rc::ad::AOp::PreMul,
-            Self::PreDiv => rc::ad::AOp::PreDiv,
-            Self::Add => rc::ad::AOp::Add,
-            Self::Sub => rc::ad::AOp::Sub,
-            Self::PostMul => rc::ad::AOp::PostMul,
-            Self::PostMulImmune => rc::ad::AOp::PostMulImmune,
-            Self::PostDiv => rc::ad::AOp::PostDiv,
-            Self::PostPerc => rc::ad::AOp::PostPerc,
-            Self::PostPercImmune => rc::ad::AOp::PostPercImmune,
-            Self::PostAssign => rc::ad::AOp::PostAssign,
+            Self::PreAssign => Self::AEntity::PreAssign,
+            Self::PreMul => Self::AEntity::PreMul,
+            Self::PreDiv => Self::AEntity::PreDiv,
+            Self::Add => Self::AEntity::Add,
+            Self::Sub => Self::AEntity::Sub,
+            Self::PostMul => Self::AEntity::PostMul,
+            Self::PostMulImmune => Self::AEntity::PostMulImmune,
+            Self::PostDiv => Self::AEntity::PostDiv,
+            Self::PostPerc => Self::AEntity::PostPerc,
+            Self::PostPercImmune => Self::AEntity::PostPercImmune,
+            Self::PostAssign => Self::AEntity::PostAssign,
         }
     }
 }

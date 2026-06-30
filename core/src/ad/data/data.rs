@@ -10,7 +10,7 @@ pub struct AData {
     pub item_lists: AItemLists,
 }
 impl AData {
-    pub(crate) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             items: AItems::new(),
             attrs: AAttrs::new(),
