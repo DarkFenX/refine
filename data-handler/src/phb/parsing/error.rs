@@ -18,15 +18,3 @@ impl From<struson::serde::DeserializerError> for ReadParseFailReason {
         }
     }
 }
-impl From<Box<dyn std::error::Error>> for ReadParseFailReason {
-    fn from(error: Box<dyn std::error::Error>) -> Self {
-        let error = match error.downcast::<struson::reader::ReaderError>() {
-            Ok(reader_error) => return (*reader_error).into(),
-            Err(error) => error,
-        };
-        match error.downcast::<struson::serde::DeserializerError>() {
-            Ok(de_error) => (*de_error).into(),
-            Err(error) => Self::ParseFailed(error.to_string()),
-        }
-    }
-}
