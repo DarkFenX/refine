@@ -16,10 +16,12 @@ pub use data::{
     AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv,
     AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
 };
+pub use fingerprint::AFingerprint;
 pub(crate) use generator::generate_adapted_data;
 
 mod cacher;
 mod consts;
 mod data;
 pub mod err;
+mod fingerprint;
 mod generator;

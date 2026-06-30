@@ -1,4 +1,4 @@
-use crate::ad::AData;
+use crate::ad::{AData, AFingerprint};
 
 /// Adapted data cacher interface definition.
 ///
@@ -9,11 +9,11 @@ use crate::ad::AData;
 /// data handlers which store data on themselves.
 pub trait AdaptedDataCacher: std::fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
-    fn get_cache_fingerprint(&mut self) -> Option<String>;
+    fn get_cache_fingerprint(&mut self) -> Option<AFingerprint>;
     /// Load cache from persistent storage.
     fn load_from_cache(&mut self) -> Result<AData, Box<dyn std::error::Error>>;
     /// Store passed data in cache.
-    fn write_cache(&mut self, data: &AData, fingerprint: &str);
+    fn write_cache(&mut self, data: &AData, fingerprint: AFingerprint);
     /// Get adapted data cacher version.
     ///
     /// Change in version triggers adapted data cache rebuild, even if source data and core library

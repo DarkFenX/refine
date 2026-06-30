@@ -1,6 +1,5 @@
 use crate::{
-    ad::{AData, AdaptedDataCacher, generate_adapted_data},
-    def::VERSION,
+    ad::{AData, AFingerprint, AdaptedDataCacher, generate_adapted_data},
     ed::EveDataHandler,
     rd::SrcInitError,
 };
@@ -21,7 +20,7 @@ pub(in crate::rd::src) fn prepare_adapted_data(
                     // Cache is updated only if EVE data version is specified
                     if let Some(ed_version) = ed_version {
                         let current_fingerprint = get_current_fingerprint(ed_version, ad_cacher);
-                        ad_cacher.write_cache(&a_data, &current_fingerprint);
+                        ad_cacher.write_cache(&a_data, current_fingerprint);
                     }
                     Ok(a_data)
                 }
@@ -45,10 +44,8 @@ fn get_ed_version(ed_handler: &dyn EveDataHandler) -> Option<String> {
     }
 }
 
-#[allow(clippy::borrowed_box)]
-fn get_current_fingerprint(ed_version: String, ad_cacher: &dyn AdaptedDataCacher) -> String {
-    let adc_version = ad_cacher.get_cacher_version();
-    format!("ed{ed_version}_adc{adc_version}_core{VERSION}")
+fn get_current_fingerprint(ed_version: String, ad_cacher: &dyn AdaptedDataCacher) -> AFingerprint {
+    AFingerprint::new(ed_version, ad_cacher.get_cacher_version())
 }
 
 fn get_relevant_a_data(ed_version: Option<String>, ad_cacher: &mut dyn AdaptedDataCacher) -> Option<AData> {

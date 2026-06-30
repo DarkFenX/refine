@@ -52,7 +52,7 @@ impl JsonZfileAdc {
         c_data.try_serialize(writer)?;
         Ok(())
     }
-    fn write_fingerprint(&self, fingerprint: &str) -> Result<(), JsonZfileAdcWriteError> {
+    fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), JsonZfileAdcWriteError> {
         let fp_path = self.get_fingerprint_path();
         let mut file = OpenOptions::new()
             .create(true)
@@ -74,10 +74,10 @@ impl fmt::Debug for JsonZfileAdc {
     }
 }
 impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
-    fn get_cache_fingerprint(&mut self) -> Option<String> {
+    fn get_cache_fingerprint(&mut self) -> Option<rc::ad::AFingerprint> {
         let fp_path = self.get_fingerprint_path();
         match std::fs::read_to_string(fp_path) {
-            Ok(fingerprint) => Some(fingerprint.trim().into()),
+            Ok(fingerprint) => Some(rc::ad::AFingerprint::from_string(fingerprint.trim().into())),
             Err(_) => None,
         }
     }
@@ -93,7 +93,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         Ok(c_data.into_adapted())
     }
     #[tracing::instrument(name = "adc-json-zfile-update", level = "trace", skip_all)]
-    fn write_cache(&mut self, a_data: &rc::ad::AData, fingerprint: &str) {
+    fn write_cache(&mut self, a_data: &rc::ad::AData, fingerprint: rc::ad::AFingerprint) {
         if let Err(error) = self.create_cache_folder() {
             tracing::error!("{error}");
             return;
