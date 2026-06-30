@@ -22,6 +22,7 @@ impl From<struson::serde::DeserializerError> for JsonZfileAdcReadError {
     }
 }
 
+#[allow(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 pub(super) enum JsonZfileAdcWriteError {
     #[error("unable to create cache folder: {0}")]

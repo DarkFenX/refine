@@ -103,7 +103,6 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         }
         if let Err(error) = self.write_fingerprint(fingerprint) {
             tracing::error!("{error}");
-            return;
         }
     }
     fn get_cacher_version(&self) -> String {
