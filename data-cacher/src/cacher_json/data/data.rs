@@ -1,11 +1,14 @@
-use struson::reader::{JsonReader, JsonStreamReader};
+use struson::{
+    reader::{JsonReader, JsonStreamReader},
+    writer::{JsonStreamWriter, JsonWriter},
+};
 
 use crate::cacher_json::{
     data::{AdaptedConv, CAbil, CAttr, CBuff, CEffect, CItem, CItemList, CMuta},
-    error::JsonZfileAdcError,
+    error::{JsonZfileAdcReadError, JsonZfileAdcWriteError},
 };
 
-#[derive(Default, serde::Serialize, serde::Deserialize)]
+#[derive(Default)]
 pub(in crate::cacher_json) struct CData {
     items: Vec<CItem>,
     attrs: Vec<CAttr>,
@@ -46,10 +49,59 @@ impl CData {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CData {
+    pub(in crate::cacher_json) fn try_serialize<W>(&self, writer: W) -> Result<(), JsonZfileAdcWriteError>
+    where
+        W: std::io::Write,
+    {
+        let mut writer = JsonStreamWriter::new(writer);
+        writer.begin_object()?;
+        write_object_field("items", &self.items, &mut writer)?;
+        write_object_field("attrs", &self.attrs, &mut writer)?;
+        write_object_field("mutas", &self.mutas, &mut writer)?;
+        write_object_field("effects", &self.effects, &mut writer)?;
+        write_object_field("buffs", &self.buffs, &mut writer)?;
+        write_object_field("abils", &self.abils, &mut writer)?;
+        write_object_field("item_lists", &self.item_lists, &mut writer)?;
+        writer.end_object()?;
+        writer.finish_document()?;
+        Ok(())
+    }
+}
+
+fn write_object_field<W, C>(
+    name: &str,
+    c_entities: &[C],
+    writer: &mut JsonStreamWriter<W>,
+) -> Result<(), JsonZfileAdcWriteError>
+where
+    W: std::io::Write,
+    C: serde::ser::Serialize,
+{
+    writer.name(name)?;
+    write_array(c_entities, writer)
+}
+
+fn write_array<W, C>(c_entities: &[C], writer: &mut JsonStreamWriter<W>) -> Result<(), JsonZfileAdcWriteError>
+where
+    W: std::io::Write,
+    C: serde::ser::Serialize,
+{
+    writer.begin_array()?;
+    for c_entity in c_entities {
+        writer.serialize_value(c_entity)?;
+    }
+    writer.end_array()?;
+    Ok(())
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Deserialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CData {
-    pub(in crate::cacher_json) fn try_deserialize<R>(reader: R) -> Result<Self, JsonZfileAdcError>
+    pub(in crate::cacher_json) fn try_deserialize<R>(reader: R) -> Result<Self, JsonZfileAdcReadError>
     where
         R: std::io::Read,
     {
@@ -73,7 +125,7 @@ impl CData {
     }
 }
 
-fn read_array<R, C>(c_entities: &mut Vec<C>, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcError>
+fn read_array<R, C>(c_entities: &mut Vec<C>, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcReadError>
 where
     R: std::io::Read,
     C: serde::de::DeserializeOwned,

@@ -5,7 +5,10 @@ use std::{
     path::PathBuf,
 };
 
-use super::{data::CData, error::JsonZfileAdcError};
+use super::{
+    data::CData,
+    error::{JsonZfileAdcReadError, JsonZfileAdcWriteError},
+};
 use crate::VERSION;
 
 /// JSON adapted data cacher implementation.
@@ -26,52 +29,39 @@ impl JsonZfileAdc {
     fn get_fingerprint_path(&self) -> PathBuf {
         self.folder.join(format!("{}_fp.txt", self.name))
     }
-    fn create_cache_folder(&self) -> Option<String> {
+    fn create_cache_folder(&self) -> Result<(), JsonZfileAdcWriteError> {
         match create_dir_all(&self.folder) {
-            Ok(_) => None,
+            Ok(()) => Ok(()),
             Err(e) => {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
-                    io::ErrorKind::AlreadyExists => None,
-                    _ => Some(e.to_string()),
+                    io::ErrorKind::AlreadyExists => Ok(()),
+                    _ => Err(JsonZfileAdcWriteError::CreateFolderFailed(e.to_string())),
                 }
             }
         }
     }
-    fn write_data(&self, c_data: CData) {
+    fn write_data(&self, c_data: CData) -> Result<(), JsonZfileAdcWriteError> {
         let cache_path = self.get_cache_path();
-        let file = match OpenOptions::new()
+        let file = OpenOptions::new()
             .create(true)
             .write(true)
             .truncate(true)
-            .open(cache_path)
-        {
-            Ok(f) => f,
-            Err(e) => {
-                tracing::error!("unable to open cache file for writing: {e}");
-                return;
-            }
-        };
-        let json = serde_json::json!(c_data).to_string();
-        match zstd::stream::copy_encode(json.as_bytes(), file, 7) {
-            Ok(_) => (),
-            Err(e) => {
-                tracing::error!("unable to write cache file: {e}")
-            }
-        };
+            .open(cache_path)?;
+        let writer = zstd::stream::Encoder::new(file, 7)?;
+        c_data.try_serialize(writer)?;
+        Ok(())
     }
-    fn write_fingerprint(&self, fingerprint: &str) {
+    fn write_fingerprint(&self, fingerprint: &str) -> Result<(), JsonZfileAdcWriteError> {
         let fp_path = self.get_fingerprint_path();
-        let mut file = match OpenOptions::new().create(true).write(true).truncate(true).open(fp_path) {
-            Ok(f) => f,
-            Err(e) => {
-                tracing::error!("unable to open fingerprint file for writing: {e}");
-                return;
-            }
-        };
-        if let Err(e) = write!(file, "{fingerprint}") {
-            tracing::error!("unable to write fingerprint file: {e}");
-        }
+        let mut file = OpenOptions::new()
+            .create(true)
+            .write(true)
+            .truncate(true)
+            .open(fp_path)
+            .map_err(|e| JsonZfileAdcWriteError::FpWriteFailed(e.to_string()))?;
+        write!(file, "{fingerprint}").map_err(|e| JsonZfileAdcWriteError::FpWriteFailed(e.to_string()))?;
+        Ok(())
     }
 }
 impl fmt::Debug for JsonZfileAdc {
@@ -96,19 +86,25 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| JsonZfileAdcError::ReadFailed(e.to_string()))?;
-        let reader = zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcError::ReadFailed(e.to_string()))?;
+            .map_err(|e| JsonZfileAdcReadError::ReadFailed(e.to_string()))?;
+        let reader = zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcReadError::ReadFailed(e.to_string()))?;
         let c_data = CData::try_deserialize(reader)?;
         Ok(c_data.into_adapted())
     }
     #[tracing::instrument(name = "adc-json-zfile-update", level = "trace", skip_all)]
     fn write_cache(&mut self, a_data: &rc::ad::AData, fingerprint: &str) {
-        if let Some(err_str) = self.create_cache_folder() {
-            tracing::error!("unable to create cache folder: {err_str}");
+        if let Err(error) = self.create_cache_folder() {
+            tracing::error!("{error}");
             return;
         }
-        self.write_data(CData::from_adapted(a_data));
-        self.write_fingerprint(fingerprint);
+        if let Err(error) = self.write_data(CData::from_adapted(a_data)) {
+            tracing::error!("{error}");
+            return;
+        }
+        if let Err(error) = self.write_fingerprint(fingerprint) {
+            tracing::error!("{error}");
+            return;
+        }
     }
     fn get_cacher_version(&self) -> String {
         VERSION.to_string()
