@@ -17,7 +17,7 @@ pub use data::{
     AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
 };
 pub use fingerprint::AFingerprint;
-pub(crate) use generator::generate_adapted_data;
+pub(crate) use generator::{ADataGenerator, ADataGeneratorError};
 
 mod cacher;
 mod consts;

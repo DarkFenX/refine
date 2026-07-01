@@ -1,6 +1,6 @@
 use crate::{
     ad::generator::{
-        GSupport,
+        AdgSupport,
         rels::{Fk, KeyPart, Pk},
     },
     ed::EMutaItemConv,
@@ -16,7 +16,7 @@ impl Pk for EMutaItemConv {
 }
 
 impl Fk for EMutaItemConv {
-    fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         vec![
             KeyPart::from_item_eid(self.muta_id),
             KeyPart::from_item_eid(self.in_item_id),

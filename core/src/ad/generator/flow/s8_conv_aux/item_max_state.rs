@@ -1,11 +1,13 @@
 use crate::{
-    ad::{AData, AEffect, AEffectId, AState},
+    ad::{ADataGenerator, AEffect, AEffectId, AState},
     util::RMap,
 };
 
-pub(in crate::ad::generator::flow::s8_conv_post) fn fill_max_state(a_data: &mut AData) {
-    for a_item in a_data.items.data.values_mut() {
-        a_item.max_state = get_max_state(a_item.effects.keys(), &a_data.effects.data);
+impl ADataGenerator {
+    pub(super) fn fill_max_state(&mut self) {
+        for a_item in self.a_data.items.data.values_mut() {
+            a_item.max_state = get_max_state(a_item.effects.keys(), &self.a_data.effects.data);
+        }
     }
 }
 

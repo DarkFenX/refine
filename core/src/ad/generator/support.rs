@@ -6,7 +6,7 @@ use crate::{
 };
 
 /// Container for auxiliary data.
-pub(in crate::ad::generator) struct GSupport {
+pub(in crate::ad::generator) struct AdgSupport {
     pub(in crate::ad::generator) grp_cat_map: RMap<EItemGrpId, EItemCatId>,
     pub(in crate::ad::generator) attr_unit_map: RMap<EAttrId, EAttrUnitId>,
     pub(in crate::ad::generator) eff_item_map: RMapRSet<EEffectId, EItemId>,
@@ -17,7 +17,7 @@ pub(in crate::ad::generator) struct GSupport {
     pub(in crate::ad::generator) standalone_effects: Vec<AEffect>,
     pub(in crate::ad::generator) standalone_buffs: Vec<ABuff>,
 }
-impl GSupport {
+impl AdgSupport {
     pub(in crate::ad::generator) fn new() -> Self {
         Self {
             grp_cat_map: RMap::new(),

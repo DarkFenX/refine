@@ -2,7 +2,7 @@ use crate::{
     ad::{
         AEffectId,
         generator::{
-            GSupport,
+            AdgSupport,
             rels::{Fk, KeyPart, Pk},
         },
     },
@@ -18,20 +18,20 @@ impl Pk for EEffect {
 }
 
 impl Fk for EEffect {
-    fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         self.get_fks_from_mod_args("skillTypeID")
     }
-    fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_group_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         self.get_fks_from_mod_args("groupID")
     }
-    fn get_item_list_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
+    fn get_item_list_fks(&self, adg_supp: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
-        if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
+        if let Some(effect_buff) = adg_supp.eff_buff_map.get(&self.id) {
             fks.extend(effect_buff.iter_item_list_eids().map(KeyPart::from_item_list_eid));
         }
         fks
     }
-    fn get_attr_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
+    fn get_attr_fks(&self, adg_supp: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         vec_push_opt(&mut fks, self.discharge_attr_id.map(KeyPart::from_attr_eid));
         vec_push_opt(&mut fks, self.duration_attr_id.map(KeyPart::from_attr_eid));
@@ -42,7 +42,7 @@ impl Fk for EEffect {
         vec_push_opt(&mut fks, self.resist_attr_id.map(KeyPart::from_attr_eid));
         fks.extend(self.get_fks_from_mod_args("modifyingAttributeID"));
         fks.extend(self.get_fks_from_mod_args("modifiedAttributeID"));
-        if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
+        if let Some(effect_buff) = adg_supp.eff_buff_map.get(&self.id) {
             fks.extend(effect_buff.iter_attr_eids().map(KeyPart::from_attr_eid));
         }
         // Hardcoded charge info can reference attributes
@@ -51,13 +51,13 @@ impl Fk for EEffect {
         }
         fks
     }
-    fn get_effect_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_effect_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         // EffectStopper modifier type uses this argument
         self.get_fks_from_mod_args("effectID")
     }
-    fn get_buff_fks(&self, g_supp: &GSupport) -> Vec<KeyPart> {
+    fn get_buff_fks(&self, adg_supp: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
-        if let Some(effect_buff) = g_supp.eff_buff_map.get(&self.id) {
+        if let Some(effect_buff) = adg_supp.eff_buff_map.get(&self.id) {
             fks.extend(effect_buff.iter_buff_eids().map(KeyPart::from_buff_eid));
         }
         fks

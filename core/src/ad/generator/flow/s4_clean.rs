@@ -1,35 +1,37 @@
 use crate::{
-    ad::generator::{
-        GSupport,
-        rels::{KeyDb, KeyPart},
+    ad::{
+        ADataGenerator, ADataGeneratorError,
+        generator::rels::{KeyDb, KeyPart},
     },
     ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
-    util::{LibNamed, RSet, StrMsgError},
+    util::{LibNamed, RSet},
 };
 
 const MAX_CYCLES: u32 = 100;
 
-pub(in crate::ad::generator) fn clean_unused(alive: &mut EData, g_supp: &mut GSupport) -> Result<(), StrMsgError> {
-    let mut trash = EData::new();
-    trash_all(alive, &mut trash);
-    restore_core_items(alive, &mut trash, g_supp);
-    restore_attrs(alive, &mut trash);
-    restore_hardcoded_buffs(alive, &mut trash);
-    restore_hardcoded_item_lists(alive, &mut trash);
+impl ADataGenerator {
+    pub(in crate::ad::generator) fn clean_unused(&mut self) -> Result<(), ADataGeneratorError> {
+        let mut trash = EData::new();
+        self.trash_all(&mut trash);
+        self.restore_core_items(&mut trash);
+        self.restore_attrs(&mut trash);
+        self.restore_hardcoded_buffs(&mut trash);
+        self.restore_hardcoded_item_lists(&mut trash);
 
-    let mut counter = 0;
-    let mut changes = true;
-    while changes {
-        counter += 1;
-        if counter > MAX_CYCLES {
-            let msg = format!("reached limit of {MAX_CYCLES} cycles during cleanup");
-            tracing::error!("{msg}");
-            return Err(StrMsgError { msg });
+        let mut counter = 0;
+        let mut changes = true;
+        while changes {
+            counter += 1;
+            if counter > MAX_CYCLES {
+                return Err(ADataGeneratorError::CleanupFailed(format!(
+                    "reached limit of {MAX_CYCLES} cycles"
+                )));
+            }
+            changes = self.restore_item_data(&mut trash) || self.restore_fk_tgts(&mut trash);
         }
-        changes = restore_item_data(alive, &mut trash) || restore_fk_tgts(alive, &mut trash, g_supp);
+        self.cleanup_report(&trash);
+        Ok(())
     }
-    cleanup_report(alive, &trash);
-    Ok(())
 }
 
 fn move_data<T, F>(src_cont: &mut EDataCont<T>, dst_cont: &mut EDataCont<T>, filter: F) -> bool
@@ -43,165 +45,167 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Initial preparation functions
+// Initial preparation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn trash_all(alive: &mut EData, trash: &mut EData) {
-    move_data(&mut alive.items, &mut trash.items, |_| true);
-    move_data(&mut alive.groups, &mut trash.groups, |_| true);
-    move_data(&mut alive.item_lists, &mut trash.item_lists, |_| true);
-    move_data(&mut alive.attrs, &mut trash.attrs, |_| true);
-    move_data(&mut alive.item_attrs, &mut trash.item_attrs, |_| true);
-    move_data(&mut alive.effects, &mut trash.effects, |_| true);
-    move_data(&mut alive.item_effects, &mut trash.item_effects, |_| true);
-    move_data(&mut alive.abils, &mut trash.abils, |_| true);
-    move_data(&mut alive.item_abils, &mut trash.item_abils, |_| true);
-    move_data(&mut alive.buffs, &mut trash.buffs, |_| true);
-    move_data(&mut alive.space_comps, &mut trash.space_comps, |_| true);
-    move_data(&mut alive.item_srqs, &mut trash.item_srqs, |_| true);
-    move_data(&mut alive.muta_items, &mut trash.muta_items, |_| true);
-    move_data(&mut alive.muta_attrs, &mut trash.muta_attrs, |_| true);
-}
-
-fn restore_core_items(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) {
-    let cats = [
-        EItemCatId::CHARGE,
-        EItemCatId::DRONE,
-        EItemCatId::FIGHTER,
-        EItemCatId::IMPLANT,
-        EItemCatId::MODULE,
-        EItemCatId::SHIP,
-        EItemCatId::SKILL,
-        EItemCatId::STRUCTURE,
-        EItemCatId::STRUCTURE_MODULE,
-        EItemCatId::SUBSYSTEM,
-    ];
-    let mut grps = vec![
-        EItemGrpId::CHARACTER,
-        EItemGrpId::EFFECT_BEACON,
-        EItemGrpId::DESTRUCTIBLE_EFFECT_BEACON,
-        EItemGrpId::TEMPORARY_COLLIDABLE_STRUCTURES,
-        EItemGrpId::ABYSSAL_HAZARDS,
-        EItemGrpId::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES,
-    ];
-    // Some useful items are hard to pick apart from others; for example, abyssal weathers belong to
-    // 2 separate groups (non-interactable objects and massive environments), with both groups
-    // including lots of items useless for the lib. Just rely on effects to restore those.
-    let effs = [
-        EEffectId::WEATHER_ELECTRIC_STORM,
-        EEffectId::WEATHER_INFERNAL,
-        EEffectId::WEATHER_CAUSTIC_TOXIN,
-        EEffectId::WEATHER_XENON_GAS,
-        EEffectId::WEATHER_DARKNESS,
-        EEffectId::AOE_BEACON_PULSE_01,
-    ];
-    // Items included directly, for cases when there is no easy other way to include them
-    let mut items = vec![EItemId::WEAPON_OVERCHARGE_PYLON];
-    for (&grp, cat) in g_supp.grp_cat_map.iter() {
-        if cats.contains(cat) {
-            grps.push(grp);
+impl ADataGenerator {
+    fn trash_all(&mut self, trash: &mut EData) {
+        move_data(&mut self.e_data.items, &mut trash.items, |_| true);
+        move_data(&mut self.e_data.groups, &mut trash.groups, |_| true);
+        move_data(&mut self.e_data.item_lists, &mut trash.item_lists, |_| true);
+        move_data(&mut self.e_data.attrs, &mut trash.attrs, |_| true);
+        move_data(&mut self.e_data.item_attrs, &mut trash.item_attrs, |_| true);
+        move_data(&mut self.e_data.effects, &mut trash.effects, |_| true);
+        move_data(&mut self.e_data.item_effects, &mut trash.item_effects, |_| true);
+        move_data(&mut self.e_data.abils, &mut trash.abils, |_| true);
+        move_data(&mut self.e_data.item_abils, &mut trash.item_abils, |_| true);
+        move_data(&mut self.e_data.buffs, &mut trash.buffs, |_| true);
+        move_data(&mut self.e_data.space_comps, &mut trash.space_comps, |_| true);
+        move_data(&mut self.e_data.item_srqs, &mut trash.item_srqs, |_| true);
+        move_data(&mut self.e_data.muta_items, &mut trash.muta_items, |_| true);
+        move_data(&mut self.e_data.muta_attrs, &mut trash.muta_attrs, |_| true);
+    }
+    fn restore_core_items(&mut self, trash: &mut EData) {
+        let cats = [
+            EItemCatId::CHARGE,
+            EItemCatId::DRONE,
+            EItemCatId::FIGHTER,
+            EItemCatId::IMPLANT,
+            EItemCatId::MODULE,
+            EItemCatId::SHIP,
+            EItemCatId::SKILL,
+            EItemCatId::STRUCTURE,
+            EItemCatId::STRUCTURE_MODULE,
+            EItemCatId::SUBSYSTEM,
+        ];
+        let mut grps = vec![
+            EItemGrpId::CHARACTER,
+            EItemGrpId::EFFECT_BEACON,
+            EItemGrpId::DESTRUCTIBLE_EFFECT_BEACON,
+            EItemGrpId::TEMPORARY_COLLIDABLE_STRUCTURES,
+            EItemGrpId::ABYSSAL_HAZARDS,
+            EItemGrpId::SOV_HUB_SYSTEM_EFFECT_GENERATOR_UPGRADES,
+        ];
+        // Some useful items are hard to pick apart from others; for example, abyssal weathers
+        // belong to 2 separate groups (non-interactable objects and massive environments), with
+        // both groups including lots of items useless for the lib. Just rely on effects to restore
+        // those.
+        let effs = [
+            EEffectId::WEATHER_ELECTRIC_STORM,
+            EEffectId::WEATHER_INFERNAL,
+            EEffectId::WEATHER_CAUSTIC_TOXIN,
+            EEffectId::WEATHER_XENON_GAS,
+            EEffectId::WEATHER_DARKNESS,
+            EEffectId::AOE_BEACON_PULSE_01,
+        ];
+        // Items included directly, for cases when there is no easy other way to include them
+        let mut items = vec![EItemId::WEAPON_OVERCHARGE_PYLON];
+        for (&grp, cat) in self.support.grp_cat_map.iter() {
+            if cats.contains(cat) {
+                grps.push(grp);
+            }
         }
+        for eff in effs {
+            items.extend(self.support.eff_item_map.get(&eff).copied())
+        }
+        move_data(&mut trash.items, &mut self.e_data.items, |v| {
+            items.contains(&v.id) || grps.contains(&v.group_id)
+        });
     }
-    for eff in effs {
-        items.extend(g_supp.eff_item_map.get(&eff).copied())
+    fn restore_attrs(&mut self, trash: &mut EData) {
+        // Some attributes are known to be used by EVE, despite them not referred from anywhere.
+        // Oftentimes, those are needed, due to how attribute calculation works: a user can request
+        // calculation of any attribute on any item, and this would use on-attribute info for
+        // calculation (for example, default value). Just restore all the attributes here.
+        move_data(&mut trash.attrs, &mut self.e_data.attrs, |_| true);
     }
-    move_data(&mut trash.items, &mut alive.items, |v| {
-        items.contains(&v.id) || grps.contains(&v.group_id)
-    });
-}
-
-fn restore_attrs(alive: &mut EData, trash: &mut EData) {
-    // Some attributes are known to be used by EVE, despite them not referred from anywhere.
-    // Oftentimes, those are needed, due to how attribute calculation works: a user can request
-    // calculation of any attribute on any item, and this would use on-attribute info for
-    // calculation (for example, default value). Just restore all the attributes here.
-    move_data(&mut trash.attrs, &mut alive.attrs, |_| true);
-}
-
-fn restore_hardcoded_buffs(alive: &mut EData, trash: &mut EData) {
-    // Used in custom wubble effect
-    move_data(&mut trash.buffs, &mut alive.buffs, |v| {
-        v.id == EBuffId::STASIS_WEBIFICATION_BURST
-    });
-}
-
-fn restore_hardcoded_item_lists(alive: &mut EData, trash: &mut EData) {
-    // Used in sec zone validation
-    move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
-        v.id == EItemListId::WORMHOLE_JUMP_BLACK_LIST
-    });
+    fn restore_hardcoded_buffs(&mut self, trash: &mut EData) {
+        // Used in custom wubble effect
+        move_data(&mut trash.buffs, &mut self.e_data.buffs, |v| {
+            v.id == EBuffId::STASIS_WEBIFICATION_BURST
+        });
+    }
+    fn restore_hardcoded_item_lists(&mut self, trash: &mut EData) {
+        // Used in sec zone validation
+        move_data(&mut trash.item_lists, &mut self.e_data.item_lists, |v| {
+            v.id == EItemListId::WORMHOLE_JUMP_BLACK_LIST
+        });
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cyclic restoration functions
+// Cyclic restoration
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn restore_item_data(alive: &mut EData, trash: &mut EData) -> bool {
-    let item_ids: RSet<_> = alive.items.data.iter().map(|v| v.id).collect();
-    // We need the data which describes our items directly, so some FKs are avoided deliberately.
-    // For instance, having an item-attribute mapping entry restored just because its value refers
-    // some item which is already "alive" is undesired.
-    //
-    // Extra notes on specific entities:
-    // - Space components are restored if they contain any buff data
-    // - Mutator item conversions are restored for input/output items which are alive
-    // - Mutator attribute modifications are restored for alive mutators
-    move_data(&mut trash.item_attrs, &mut alive.item_attrs, |v| {
-        item_ids.contains(&v.item_id)
-    }) || move_data(&mut trash.item_effects, &mut alive.item_effects, |v| {
-        item_ids.contains(&v.item_id)
-    }) || move_data(&mut trash.item_abils, &mut alive.item_abils, |v| {
-        item_ids.contains(&v.item_id)
-    }) || move_data(&mut trash.space_comps, &mut alive.space_comps, |v| v.has_buffs())
-        || move_data(&mut trash.item_srqs, &mut alive.item_srqs, |v| {
+impl ADataGenerator {
+    fn restore_item_data(&mut self, trash: &mut EData) -> bool {
+        let item_ids: RSet<_> = self.e_data.items.data.iter().map(|v| v.id).collect();
+        // We need the data which describes our items directly, so some FKs are avoided
+        // deliberately. For instance, having an item-attribute mapping entry restored just because
+        // its value refers some item which is already "alive" is undesired.
+        //
+        // Extra notes on specific entities:
+        // - Space components are restored if they contain any buff data
+        // - Mutator item conversions are restored for input/output items which are alive
+        // - Mutator attribute modifications are restored for alive mutators
+        move_data(&mut trash.item_attrs, &mut self.e_data.item_attrs, |v| {
             item_ids.contains(&v.item_id)
+        }) || move_data(&mut trash.item_effects, &mut self.e_data.item_effects, |v| {
+            item_ids.contains(&v.item_id)
+        }) || move_data(&mut trash.item_abils, &mut self.e_data.item_abils, |v| {
+            item_ids.contains(&v.item_id)
+        }) || move_data(&mut trash.space_comps, &mut self.e_data.space_comps, |v| v.has_buffs())
+            || move_data(&mut trash.item_srqs, &mut self.e_data.item_srqs, |v| {
+                item_ids.contains(&v.item_id)
+            })
+            || move_data(&mut trash.muta_items, &mut self.e_data.muta_items, |v| {
+                item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
+            })
+            || move_data(&mut trash.muta_attrs, &mut self.e_data.muta_attrs, |v| {
+                item_ids.contains(&v.muta_id)
+            })
+    }
+    fn restore_fk_tgts(&mut self, trash: &mut EData) -> bool {
+        let fkdb = KeyDb::new_fkdb(&self.e_data, &self.support);
+        move_data(&mut trash.items, &mut self.e_data.items, |v| {
+            fkdb.items.contains(&KeyPart::from_item_eid(v.id))
+        }) || move_data(&mut trash.groups, &mut self.e_data.groups, |v| {
+            fkdb.groups.contains(&KeyPart::from_item_grp_eid(v.id))
+        }) || move_data(&mut trash.item_lists, &mut self.e_data.item_lists, |v| {
+            fkdb.item_lists.contains(&KeyPart::from_item_list_eid(v.id))
+        }) || move_data(&mut trash.attrs, &mut self.e_data.attrs, |v| {
+            fkdb.attrs.contains(&KeyPart::from_attr_eid(v.id))
+        }) || move_data(&mut trash.effects, &mut self.e_data.effects, |v| {
+            fkdb.effects.contains(&KeyPart::from_effect_eid(v.id))
+        }) || move_data(&mut trash.abils, &mut self.e_data.abils, |v| {
+            fkdb.abils.contains(&KeyPart::from_abil_eid(v.id))
+        }) || move_data(&mut trash.buffs, &mut self.e_data.buffs, |v| {
+            fkdb.buffs.contains(&KeyPart::from_buff_eid(v.id))
         })
-        || move_data(&mut trash.muta_items, &mut alive.muta_items, |v| {
-            item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
-        })
-        || move_data(&mut trash.muta_attrs, &mut alive.muta_attrs, |v| {
-            item_ids.contains(&v.muta_id)
-        })
-}
-
-fn restore_fk_tgts(alive: &mut EData, trash: &mut EData, g_supp: &GSupport) -> bool {
-    let fkdb = KeyDb::new_fkdb(alive, g_supp);
-    move_data(&mut trash.items, &mut alive.items, |v| {
-        fkdb.items.contains(&KeyPart::from_item_eid(v.id))
-    }) || move_data(&mut trash.groups, &mut alive.groups, |v| {
-        fkdb.groups.contains(&KeyPart::from_item_grp_eid(v.id))
-    }) || move_data(&mut trash.item_lists, &mut alive.item_lists, |v| {
-        fkdb.item_lists.contains(&KeyPart::from_item_list_eid(v.id))
-    }) || move_data(&mut trash.attrs, &mut alive.attrs, |v| {
-        fkdb.attrs.contains(&KeyPart::from_attr_eid(v.id))
-    }) || move_data(&mut trash.effects, &mut alive.effects, |v| {
-        fkdb.effects.contains(&KeyPart::from_effect_eid(v.id))
-    }) || move_data(&mut trash.abils, &mut alive.abils, |v| {
-        fkdb.abils.contains(&KeyPart::from_abil_eid(v.id))
-    }) || move_data(&mut trash.buffs, &mut alive.buffs, |v| {
-        fkdb.buffs.contains(&KeyPart::from_buff_eid(v.id))
-    })
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Reporting
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn cleanup_report(alive: &EData, trash: &EData) {
-    let cleaned = false;
-    let cleaned = cont_report(&alive.items, &trash.items) || cleaned;
-    let cleaned = cont_report(&alive.groups, &trash.groups) || cleaned;
-    let cleaned = cont_report(&alive.item_lists, &trash.item_lists) || cleaned;
-    let cleaned = cont_report(&alive.attrs, &trash.attrs) || cleaned;
-    let cleaned = cont_report(&alive.item_attrs, &trash.item_attrs) || cleaned;
-    let cleaned = cont_report(&alive.effects, &trash.effects) || cleaned;
-    let cleaned = cont_report(&alive.item_effects, &trash.item_effects) || cleaned;
-    let cleaned = cont_report(&alive.abils, &trash.abils) || cleaned;
-    let cleaned = cont_report(&alive.item_abils, &trash.item_abils) || cleaned;
-    let cleaned = cont_report(&alive.buffs, &trash.buffs) || cleaned;
-    let cleaned = cont_report(&alive.space_comps, &trash.space_comps) || cleaned;
-    let cleaned = cont_report(&alive.item_srqs, &trash.item_srqs) || cleaned;
-    let cleaned = cont_report(&alive.muta_items, &trash.muta_items) || cleaned;
-    let cleaned = cont_report(&alive.muta_attrs, &trash.muta_attrs) || cleaned;
-    if !cleaned {
-        tracing::info!("no unused data found during cleanup");
+impl ADataGenerator {
+    fn cleanup_report(&self, trash: &EData) {
+        let cleaned = false;
+        let cleaned = cont_report(&self.e_data.items, &trash.items) || cleaned;
+        let cleaned = cont_report(&self.e_data.groups, &trash.groups) || cleaned;
+        let cleaned = cont_report(&self.e_data.item_lists, &trash.item_lists) || cleaned;
+        let cleaned = cont_report(&self.e_data.attrs, &trash.attrs) || cleaned;
+        let cleaned = cont_report(&self.e_data.item_attrs, &trash.item_attrs) || cleaned;
+        let cleaned = cont_report(&self.e_data.effects, &trash.effects) || cleaned;
+        let cleaned = cont_report(&self.e_data.item_effects, &trash.item_effects) || cleaned;
+        let cleaned = cont_report(&self.e_data.abils, &trash.abils) || cleaned;
+        let cleaned = cont_report(&self.e_data.item_abils, &trash.item_abils) || cleaned;
+        let cleaned = cont_report(&self.e_data.buffs, &trash.buffs) || cleaned;
+        let cleaned = cont_report(&self.e_data.space_comps, &trash.space_comps) || cleaned;
+        let cleaned = cont_report(&self.e_data.item_srqs, &trash.item_srqs) || cleaned;
+        let cleaned = cont_report(&self.e_data.muta_items, &trash.muta_items) || cleaned;
+        let cleaned = cont_report(&self.e_data.muta_attrs, &trash.muta_attrs) || cleaned;
+        if !cleaned {
+            tracing::info!("no unused data found during cleanup");
+        }
     }
 }
 

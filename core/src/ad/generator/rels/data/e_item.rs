@@ -1,6 +1,6 @@
 use crate::{
     ad::generator::{
-        GSupport,
+        AdgSupport,
         rels::{Fk, KeyPart, Pk},
     },
     ed::EItem,
@@ -13,7 +13,7 @@ impl Pk for EItem {
 }
 
 impl Fk for EItem {
-    fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_group_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         vec![KeyPart::from_item_grp_eid(self.group_id)]
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     ad::generator::{
-        GSupport,
+        AdgSupport,
         rels::{Fk, KeyPart, Pk, attr_val_to_fk},
     },
     ed::{EAttr, EAttrId, EAttrUnitId},
@@ -14,21 +14,21 @@ impl Pk for EAttr {
 }
 
 impl Fk for EAttr {
-    fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         if let Some(fk) = self.get_fk_from_defval(EAttrUnitId::ITEM_ID) {
             fks.push(fk);
         }
         fks
     }
-    fn get_group_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_group_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         if let Some(fk) = self.get_fk_from_defval(EAttrUnitId::GROUP_ID) {
             fks.push(fk);
         }
         fks
     }
-    fn get_item_list_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_item_list_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         if EAttrId::TYPE_LIST_ATTRS.contains(&self.id)
             && let Some(fk) = attr_val_to_fk(self.default_value)
@@ -37,7 +37,7 @@ impl Fk for EAttr {
         }
         fks
     }
-    fn get_attr_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_attr_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         vec_push_opt(&mut fks, self.min_attr_id.map(KeyPart::from_attr_eid));
         vec_push_opt(&mut fks, self.max_attr_id.map(KeyPart::from_attr_eid));
@@ -46,7 +46,7 @@ impl Fk for EAttr {
         }
         fks
     }
-    fn get_buff_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_buff_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         if EAttrId::BUFF_ID_ATTRS.contains(&self.id)
             && let Some(fk) = attr_val_to_fk(self.default_value)

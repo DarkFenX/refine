@@ -1,6 +1,6 @@
 use crate::{
     ad::generator::{
-        GSupport,
+        AdgSupport,
         rels::{Fk, KeyPart, Pk},
     },
     ed::EItemEffect,
@@ -16,10 +16,10 @@ impl Pk for EItemEffect {
 }
 
 impl Fk for EItemEffect {
-    fn get_item_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         vec![KeyPart::from_item_eid(self.item_id)]
     }
-    fn get_effect_fks(&self, _: &GSupport) -> Vec<KeyPart> {
+    fn get_effect_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         vec![KeyPart::from_effect_eid(self.effect_id)]
     }
 }

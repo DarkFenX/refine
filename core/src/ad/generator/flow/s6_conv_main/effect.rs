@@ -1,13 +1,132 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectCatId, AEffectId, AEffectLocation,
-        AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId, AItemId,
-        AModifierSrq, AOp, AState,
-        generator::{GSupport, get_abil_effect},
+        AAttrId, ADataGenerator, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectCatId, AEffectId,
+        AEffectLocation, AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId,
+        AItemId, AModifierSrq, AOp, AState, generator::get_abil_effect,
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
     util::{RMap, RSet, StrMsgError},
 };
+
+impl ADataGenerator {
+    pub(super) fn conv_effects(&mut self) {
+        let mut a_effects = RMap::new();
+        for e_effect in self.e_data.effects.data.iter() {
+            let state = match e_effect.category_id {
+                EEffectCatId::PASSIVE => AState::Offline,
+                EEffectCatId::ACTIVE => AState::Active,
+                EEffectCatId::TARGET => AState::Active,
+                EEffectCatId::ONLINE => AState::Online,
+                EEffectCatId::OVERLOAD => AState::Overload,
+                EEffectCatId::SYSTEM => AState::Offline,
+                _ => {
+                    let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
+                    tracing::warn!("{msg}");
+                    continue;
+                }
+            };
+            let mut a_effect = AEffect {
+                id: AEffectId::from_eid(e_effect.id),
+                category: AEffectCatId::from_eid(e_effect.category_id),
+                state,
+                modifiers: AEffectModifiers::new(),
+                stopped_effect_ids: AEffectStopIds::new(),
+                buff: self.support.eff_buff_map.get(&e_effect.id).cloned(),
+                aggro: match e_effect.is_offensive {
+                    true => Some(AEffectAggroDuration::Effect),
+                    false => None,
+                },
+                is_assist: e_effect.is_assistance,
+                is_offense: e_effect.is_offensive,
+                banned_in_hisec: false,
+                banned_in_lowsec: false,
+                discharge_attr_id: e_effect.discharge_attr_id.map(AAttrId::from_eid),
+                duration_attr_id: e_effect.duration_attr_id.map(AAttrId::from_eid),
+                range_attr_id: e_effect.range_attr_id.map(AAttrId::from_eid),
+                falloff_attr_id: e_effect.falloff_attr_id.map(AAttrId::from_eid),
+                track_attr_id: e_effect.tracking_attr_id.map(AAttrId::from_eid),
+                chance_attr_id: e_effect.usage_chance_attr_id.map(AAttrId::from_eid),
+                resist_attr_id: e_effect.resist_attr_id.map(AAttrId::from_eid),
+            };
+            for e_modifier in e_effect.mods.iter() {
+                // Process effect stoppers first
+                match extract_stopper(e_modifier) {
+                    Ok(Some(effect_id)) => {
+                        let effect_aid = AEffectId::from_eid(effect_id);
+                        if !a_effect.stopped_effect_ids.contains(&effect_aid) {
+                            a_effect.stopped_effect_ids.insert(effect_aid)
+                        };
+                        continue;
+                    }
+                    Err(e) => {
+                        let msg = format!("failed to build stopper for effect {}: {}", a_effect.id, e);
+                        tracing::warn!("{msg}");
+                        continue;
+                    }
+                    _ => (),
+                }
+                // Process regular attribute modifiers
+                let a_mod_res = match e_modifier.func.as_str() {
+                    "ItemModifier" => conv_item_mod(e_modifier, &a_effect),
+                    "LocationModifier" => conv_loc_mod(e_modifier, &a_effect),
+                    "LocationGroupModifier" => conv_locgrp_mod(e_modifier, &a_effect),
+                    "LocationRequiredSkillModifier" => conv_locsrq_mod(e_modifier, &a_effect),
+                    "OwnerRequiredSkillModifier" => conv_ownsrq_mod(e_modifier, &a_effect),
+                    _ => Err(StrMsgError {
+                        msg: format!("unknown function \"{}\"", e_modifier.func),
+                    }),
+                };
+                match a_mod_res {
+                    Ok(a_mod) => a_effect.modifiers.insert(a_mod),
+                    Err(e) => {
+                        let msg = format!("failed to build modifier for effect {}: {}", a_effect.id, e);
+                        tracing::warn!("{msg}");
+                        continue;
+                    }
+                }
+            }
+            a_effects.insert(a_effect.id, a_effect);
+        }
+        // Transfer some data from abilities onto effects
+        let hisec_ban_map = extract_ability_map(&self.e_data, EAbil::get_disallow_hisec);
+        let lowsec_ban_map = extract_ability_map(&self.e_data, EAbil::get_disallow_lowsec);
+        for a_effect in a_effects.values_mut() {
+            // Hisec flag
+            if let Some(flags) = hisec_ban_map.get(&a_effect.id) {
+                match flags.len() {
+                    1 => {
+                        a_effect.banned_in_hisec = *flags.iter().next().unwrap();
+                    }
+                    _ => {
+                        let msg = format!(
+                            "effect {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
+                            a_effect.id,
+                            flags.len()
+                        );
+                        tracing::warn!("{msg}");
+                    }
+                }
+            }
+            // Lowsec flag
+            if let Some(flags) = lowsec_ban_map.get(&a_effect.id) {
+                match flags.len() {
+                    1 => {
+                        a_effect.banned_in_lowsec = *flags.iter().next().unwrap();
+                    }
+                    _ => {
+                        let msg = format!(
+                            "effect {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
+                            a_effect.id,
+                            flags.len()
+                        );
+                        tracing::warn!("{msg}");
+                    }
+                }
+            }
+        }
+        self.a_data.effects = AEffects { data: a_effects };
+    }
+}
 
 impl EAbil {
     fn get_disallow_hisec(&self) -> bool {
@@ -16,124 +135,6 @@ impl EAbil {
     fn get_disallow_lowsec(&self) -> bool {
         self.disallow_lowsec
     }
-}
-
-pub(in crate::ad::generator::flow::s6_conv_pre) fn conv_effects(e_data: &EData, g_supp: &GSupport) -> AEffects {
-    let mut a_effects = RMap::new();
-    for e_effect in e_data.effects.data.iter() {
-        let state = match e_effect.category_id {
-            EEffectCatId::PASSIVE => AState::Offline,
-            EEffectCatId::ACTIVE => AState::Active,
-            EEffectCatId::TARGET => AState::Active,
-            EEffectCatId::ONLINE => AState::Online,
-            EEffectCatId::OVERLOAD => AState::Overload,
-            EEffectCatId::SYSTEM => AState::Offline,
-            _ => {
-                let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
-                tracing::warn!("{msg}");
-                continue;
-            }
-        };
-        let mut a_effect = AEffect {
-            id: AEffectId::from_eid(e_effect.id),
-            category: AEffectCatId::from_eid(e_effect.category_id),
-            state,
-            modifiers: AEffectModifiers::new(),
-            stopped_effect_ids: AEffectStopIds::new(),
-            buff: g_supp.eff_buff_map.get(&e_effect.id).cloned(),
-            aggro: match e_effect.is_offensive {
-                true => Some(AEffectAggroDuration::Effect),
-                false => None,
-            },
-            is_assist: e_effect.is_assistance,
-            is_offense: e_effect.is_offensive,
-            banned_in_hisec: false,
-            banned_in_lowsec: false,
-            discharge_attr_id: e_effect.discharge_attr_id.map(AAttrId::from_eid),
-            duration_attr_id: e_effect.duration_attr_id.map(AAttrId::from_eid),
-            range_attr_id: e_effect.range_attr_id.map(AAttrId::from_eid),
-            falloff_attr_id: e_effect.falloff_attr_id.map(AAttrId::from_eid),
-            track_attr_id: e_effect.tracking_attr_id.map(AAttrId::from_eid),
-            chance_attr_id: e_effect.usage_chance_attr_id.map(AAttrId::from_eid),
-            resist_attr_id: e_effect.resist_attr_id.map(AAttrId::from_eid),
-        };
-        for e_modifier in e_effect.mods.iter() {
-            // Process effect stoppers first
-            match extract_stopper(e_modifier) {
-                Ok(Some(effect_id)) => {
-                    let effect_aid = AEffectId::from_eid(effect_id);
-                    if !a_effect.stopped_effect_ids.contains(&effect_aid) {
-                        a_effect.stopped_effect_ids.insert(effect_aid)
-                    };
-                    continue;
-                }
-                Err(e) => {
-                    let msg = format!("failed to build stopper for effect {}: {}", a_effect.id, e);
-                    tracing::warn!("{msg}");
-                    continue;
-                }
-                _ => (),
-            }
-            // Process regular attribute modifiers
-            let a_mod_res = match e_modifier.func.as_str() {
-                "ItemModifier" => conv_item_mod(e_modifier, &a_effect),
-                "LocationModifier" => conv_loc_mod(e_modifier, &a_effect),
-                "LocationGroupModifier" => conv_locgrp_mod(e_modifier, &a_effect),
-                "LocationRequiredSkillModifier" => conv_locsrq_mod(e_modifier, &a_effect),
-                "OwnerRequiredSkillModifier" => conv_ownsrq_mod(e_modifier, &a_effect),
-                _ => Err(StrMsgError {
-                    msg: format!("unknown function \"{}\"", e_modifier.func),
-                }),
-            };
-            match a_mod_res {
-                Ok(a_mod) => a_effect.modifiers.insert(a_mod),
-                Err(e) => {
-                    let msg = format!("failed to build modifier for effect {}: {}", a_effect.id, e);
-                    tracing::warn!("{msg}");
-                    continue;
-                }
-            }
-        }
-        a_effects.insert(a_effect.id, a_effect);
-    }
-    // Transfer some data from abilities onto effects
-    let hisec_ban_map = extract_ability_map(e_data, EAbil::get_disallow_hisec);
-    let lowsec_ban_map = extract_ability_map(e_data, EAbil::get_disallow_lowsec);
-    for a_effect in a_effects.values_mut() {
-        // Hisec flag
-        if let Some(flags) = hisec_ban_map.get(&a_effect.id) {
-            match flags.len() {
-                1 => {
-                    a_effect.banned_in_hisec = *flags.iter().next().unwrap();
-                }
-                _ => {
-                    let msg = format!(
-                        "effect {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
-                        a_effect.id,
-                        flags.len()
-                    );
-                    tracing::warn!("{msg}");
-                }
-            }
-        }
-        // Lowsec flag
-        if let Some(flags) = lowsec_ban_map.get(&a_effect.id) {
-            match flags.len() {
-                1 => {
-                    a_effect.banned_in_lowsec = *flags.iter().next().unwrap();
-                }
-                _ => {
-                    let msg = format!(
-                        "effect {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
-                        a_effect.id,
-                        flags.len()
-                    );
-                    tracing::warn!("{msg}");
-                }
-            }
-        }
-    }
-    AEffects { data: a_effects }
 }
 
 fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgError> {
