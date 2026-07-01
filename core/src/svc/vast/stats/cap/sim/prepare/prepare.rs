@@ -101,7 +101,7 @@ fn fill_consumers(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
                 continue;
             };
@@ -134,7 +134,7 @@ fn fill_nosfs(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let Some(iter_data) = aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), projectee_item_uid)
             else {
                 continue;
@@ -171,7 +171,7 @@ fn fill_incoming_neuts(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let Some(iter_data) = aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, (), Some(cap_item_uid))
             else {
                 continue;
@@ -208,7 +208,7 @@ fn fill_incoming_transfers(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let Some(iter_data) = aggr_proj_iter(
                 ctx,
                 calc,
@@ -246,7 +246,7 @@ fn fill_injectors(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
                 continue;
             };

@@ -278,7 +278,7 @@ impl Calc {
     }
     fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> CalcAttrVals {
         let item = ctx.u_data.items.get(item_uid);
-        let attr = ctx.u_data.src.get_attr_by_rid(attr_rid);
+        let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_val = self.calc_item_base_attr_value(ctx, item_uid, item, attr);
         let mut accumulator = ModAccumFast::new();
         for modification in self.iter_modifications(ctx, &item_uid, item, attr_rid) {

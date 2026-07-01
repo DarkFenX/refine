@@ -18,7 +18,7 @@ impl SolarSystem {
         }
         SolarSystem::util_remove_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, reuse_eupdates);
         let u_subsystem = self.u_data.items.get_mut(subsystem_uid).dc_subsystem_mut().unwrap();
-        u_subsystem.set_type_aid(type_aid, &self.u_data.src);
+        u_subsystem.set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_add_subsystem(&mut self.u_data, &mut self.svc, subsystem_uid, reuse_eupdates);
     }
 }

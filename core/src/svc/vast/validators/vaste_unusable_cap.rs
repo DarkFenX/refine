@@ -94,7 +94,7 @@ fn get_cap_consumption_instance(
     u_item: &UItem,
     cap_consumer: &RItemCapConsumer,
 ) -> Option<PValue> {
-    let r_effect = ctx.u_data.src.get_effect_by_rid(cap_consumer.effect_rid);
+    let r_effect = ctx.u_data.r_data.get_effect_by_rid(cap_consumer.effect_rid);
     let mut cap_consumed = cap_consumer
         .opc_spec
         .base

@@ -18,7 +18,7 @@ impl SolarSystem {
         }
         SolarSystem::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, reuse_eupdates);
         let u_rig = self.u_data.items.get_mut(rig_uid).dc_rig_mut().unwrap();
-        u_rig.set_type_aid(type_aid, &self.u_data.src);
+        u_rig.set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, reuse_eupdates);
     }
 }

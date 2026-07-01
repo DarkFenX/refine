@@ -59,7 +59,7 @@ fn main() {
 
 fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
     let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
-    let mut sol_sys = SolarSystem::new(src);
+    let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
     let mut fighter = fit.add_fighter(ItemTypeId::from_i32(40562), MinionState::InBay, None, None);
     let autocharges: Vec<_> = fighter
@@ -72,7 +72,7 @@ fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
 fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
     let skill_ids = get_skill_ids(&edh);
     let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
-    let mut sol_sys = SolarSystem::new(src);
+    let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
     let ship_id = fit.set_ship(ItemTypeId::from_i32(11184), None, None).get_item_id();
     for skill_id in skill_ids.iter() {
@@ -140,7 +140,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     let skill_ids = get_skill_ids(&edh);
     let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
 
-    let mut sol_sys = SolarSystem::new(src);
+    let mut sol_sys = SolarSystem::new(&src);
     sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
     let mut fit = sol_sys.add_fit();
 

@@ -25,7 +25,7 @@ impl Calc {
     pub(super) fn calc_proj_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
         let item_uid = cmod.ctx.get_item_uid()?;
         let proj_mult_getter = cmod.raw.proj_spec?.proj_mult?;
-        let effect = ctx.u_data.src.get_effect_by_rid(cmod.raw.affector_espec.effect_rid);
+        let effect = ctx.u_data.r_data.get_effect_by_rid(cmod.raw.affector_espec.effect_rid);
         let proj_data = ctx.eff_projs.get_proj_data(cmod.raw.affector_espec, item_uid)?;
         Some(proj_mult_getter.get_mult(ctx, self, cmod.raw.affector_espec.item_uid, effect, item_uid, proj_data))
     }

@@ -15,7 +15,7 @@ impl SolarSystem {
         let old_r_state = u_autocharge.get_state();
         u_autocharge.set_force_disabled(!state);
         let new_r_state = u_autocharge.get_state();
-        u_autocharge.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_autocharge.update_reffs(reuse_eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

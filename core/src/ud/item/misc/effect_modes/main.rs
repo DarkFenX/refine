@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     misc::EffectMode,
-    rd::{REffectId, Src},
+    rd::{RData, REffectId},
     util::RMap,
 };
 
@@ -33,26 +33,26 @@ impl UEffectModes {
         }
     }
     // Modification methods
-    pub(in crate::ud::item) fn set_by_aid(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
+    pub(in crate::ud::item) fn set_by_aid(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
         match effect_mode {
             DEFAULT_EFFECT_MODE => {
                 self.by_aid.remove(&effect_aid);
-                if let Some(effect_rid) = src.get_effect_rid_by_aid(&effect_aid) {
+                if let Some(effect_rid) = r_data.get_effect_rid_by_aid(&effect_aid) {
                     self.by_rid.remove(&effect_rid);
                 }
             }
             _ => {
                 self.by_aid.insert(effect_aid, effect_mode);
-                if let Some(effect_rid) = src.get_effect_rid_by_aid(&effect_aid) {
+                if let Some(effect_rid) = r_data.get_effect_rid_by_aid(&effect_aid) {
                     self.by_rid.insert(effect_rid, effect_mode);
                 }
             }
         };
     }
-    pub(in crate::ud::item) fn update_rids(&mut self, src: &Src) {
+    pub(in crate::ud::item) fn update_rids(&mut self, r_data: &RData) {
         self.by_rid.clear();
         for (effect_aid, effect_mode) in self.by_aid.iter() {
-            if let Some(effect_rid) = src.get_effect_rid_by_aid(effect_aid) {
+            if let Some(effect_rid) = r_data.get_effect_rid_by_aid(effect_aid) {
                 self.by_rid.insert(effect_rid, *effect_mode);
             }
         }

@@ -17,7 +17,7 @@ impl SolarSystem {
         let old_a_state = u_module.get_state();
         u_module.set_module_state(state);
         let new_a_state = u_module.get_state();
-        u_module.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_module.update_reffs(reuse_eupdates, &self.u_data.r_data);
         // Update services for module
         SolarSystem::util_switch_item_state(
             &self.u_data,

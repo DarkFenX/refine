@@ -14,7 +14,7 @@ impl SolarSystem {
     ) -> Result<(), ItemNotMutatedError> {
         SolarSystem::util_remove_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        if let Err(error) = u_module.mutate(mutation, &self.u_data.src) {
+        if let Err(error) = u_module.mutate(mutation, &self.u_data.r_data) {
             SolarSystem::util_add_module_with_charge_act(&mut self.u_data, &mut self.svc, module_uid, reuse_eupdates);
             return Err(error);
         }

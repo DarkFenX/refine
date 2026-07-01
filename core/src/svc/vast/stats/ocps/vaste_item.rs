@@ -30,7 +30,7 @@ impl Vast {
             return Ok(ocps);
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let Some(ospec) = effect.outgoing_cap else {
                 continue;
             };

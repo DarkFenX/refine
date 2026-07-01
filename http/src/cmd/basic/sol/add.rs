@@ -16,7 +16,7 @@ pub(crate) struct HSolAddCmdFCtx {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HSolAddCmdFCtx {
-    pub(in crate::cmd) fn execute(&self, src: rc::Src) -> rc::SolarSystem {
+    pub(in crate::cmd) fn execute(&self, src: &rc::Src) -> rc::SolarSystem {
         let mut core_sol = rc::SolarSystem::new(src);
         if let Some(h_sec_zone) = &self.sec_zone {
             core_sol.set_sec_zone(h_sec_zone.into_core());

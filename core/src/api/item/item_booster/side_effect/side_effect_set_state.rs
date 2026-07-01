@@ -11,8 +11,8 @@ impl<'a> SideEffectMut<'a> {
             false => EffectMode::FullCompliance,
         };
         let mut reuse_eupdates = UEffectUpdates::new();
-        u_booster.set_effect_mode(self.effect_aid, effect_mode, &self.sol.u_data.src);
-        u_booster.update_reffs(&mut reuse_eupdates, &self.sol.u_data.src);
+        u_booster.set_effect_mode(self.effect_aid, effect_mode, &self.sol.u_data.r_data);
+        u_booster.update_reffs(&mut reuse_eupdates, &self.sol.u_data.r_data);
         SolarSystem::util_process_effect_updates(&self.sol.u_data, &mut self.sol.svc, self.item_uid, &reuse_eupdates);
     }
 }

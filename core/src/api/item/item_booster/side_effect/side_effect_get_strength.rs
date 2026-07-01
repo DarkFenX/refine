@@ -4,7 +4,7 @@ use crate::{
     ad::AEffectId,
     api::{AttrId, Op, SideEffect, SideEffectMut},
     num::Value,
-    rd::{REffectModStrength, Src},
+    rd::{RData, REffectModStrength},
 };
 
 pub struct SideEffectPartialStr {
@@ -45,7 +45,7 @@ impl<'a> SideEffect<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.u_data.src, &self.effect_aid)
+        get_strength_partial(&self.sol.u_data.r_data, &self.effect_aid)
     }
 }
 
@@ -55,7 +55,7 @@ impl<'a> SideEffectMut<'a> {
     /// Returns something only if all the side effect modifiers use the same operator and attribute
     /// ID to apply modification.
     pub fn get_strength_partial(&self) -> Option<SideEffectPartialStr> {
-        get_strength_partial(&self.sol.u_data.src, &self.effect_aid)
+        get_strength_partial(&self.sol.u_data.r_data, &self.effect_aid)
     }
     /// Get side effect strength as an operator and modification value.
     ///
@@ -78,9 +78,9 @@ impl<'a> SideEffectMut<'a> {
     }
 }
 
-fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPartialStr> {
-    let effect_rid = src.get_effect_rid_by_aid(effect_id).unwrap();
-    let mut se_strs = src
+fn get_strength_partial(r_data: &RData, effect_id: &AEffectId) -> Option<SideEffectPartialStr> {
+    let effect_rid = r_data.get_effect_rid_by_aid(effect_id).unwrap();
+    let mut se_strs = r_data
         .get_effect_by_rid(effect_rid)
         .modifiers
         .iter()
@@ -94,7 +94,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
                 op: Op::from_a_op(op),
                 attr_id: strength
                     .get_attr_rid()
-                    .map(|v| AttrId::from_aid(src.get_attr_by_rid(v).aid)),
+                    .map(|v| AttrId::from_aid(r_data.get_attr_by_rid(v).aid)),
                 strength,
             })
             .next(),
@@ -108,7 +108,7 @@ fn get_strength_partial(src: &Src, effect_id: &AEffectId) -> Option<SideEffectPa
                     op: Op::from_a_op(base_op),
                     attr_id: base_strength
                         .get_attr_rid()
-                        .map(|v| AttrId::from_aid(src.get_attr_by_rid(v).aid)),
+                        .map(|v| AttrId::from_aid(r_data.get_attr_by_rid(v).aid)),
                     strength: base_strength,
                 }),
                 false => None,

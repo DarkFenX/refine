@@ -18,7 +18,7 @@ impl<'a> BoosterMut<'a> {
     }
     pub fn get_side_effect_mut(&mut self, effect_id: &EffectId) -> Result<SideEffectMut<'_>, GetSideEffectError> {
         let effect_aid = effect_id.into_aid();
-        match get_se_chance_attr_aid_by_effect_aid(&self.sol.u_data.src, &effect_aid) {
+        match get_se_chance_attr_aid_by_effect_aid(&self.sol.u_data.r_data, &effect_aid) {
             Some(chance_attr_aid) => Ok(SideEffectMut::new(self.sol, self.uid, effect_aid, chance_attr_aid)),
             None => Err(SideEffectFoundError {
                 item_id: self.sol.u_data.items.ext_id_by_int_id(self.uid),
@@ -35,7 +35,7 @@ fn get_side_effect<'a>(
     effect_id: &EffectId,
 ) -> Result<SideEffect<'a>, GetSideEffectError> {
     let effect_aid = effect_id.into_aid();
-    match get_se_chance_attr_aid_by_effect_aid(&sol.u_data.src, &effect_aid) {
+    match get_se_chance_attr_aid_by_effect_aid(&sol.u_data.r_data, &effect_aid) {
         Some(chance_attr_aid) => Ok(SideEffect::new(sol, booster_uid, effect_aid, chance_attr_aid)),
         None => Err(SideEffectFoundError {
             item_id: sol.u_data.items.ext_id_by_int_id(booster_uid),

@@ -14,7 +14,7 @@ impl SolarSystem {
     ) -> UItemId {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let item_id = self.u_data.items.alloc_id();
-        let u_rig = URig::new(item_id, type_aid, fit_uid, true, &self.u_data.src);
+        let u_rig = URig::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
         let u_item = UItem::Rig(u_rig);
         let rig_uid = self.u_data.items.add(u_item);
         u_fit.rigs.insert(rig_uid);

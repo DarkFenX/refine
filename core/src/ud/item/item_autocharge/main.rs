@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     misc::EffectMode,
     num::{SkillLevel, Value},
-    rd::{RAttrId, REffectId, RItemAXt, RItemEffectData, RState, Src},
+    rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
         ItemId, UFitId, UItemId,
         item::{UEffectUpdates, UItemBase, UProjs},
@@ -29,10 +29,10 @@ impl UAutocharge {
         cont_effect_rid: REffectId,
         activated: bool,
         force_disabled: bool,
-        src: &Src,
+        r_data: &RData,
     ) -> Self {
         Self {
-            base: UItemBase::new(item_id, type_aid, get_state(activated, force_disabled), src),
+            base: UItemBase::new(item_id, type_aid, get_state(activated, force_disabled), r_data),
             fit_uid,
             cont_item_uid,
             cont_effect_rid,
@@ -78,29 +78,34 @@ impl UAutocharge {
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
     }
-    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.update_reffs(reuse_eupdates, src, false, false);
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
+        self.base.update_reffs(reuse_eupdates, r_data, false, false);
     }
-    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.stop_all_reffs(reuse_eupdates, src, false, false)
+    pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
+        self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
     }
     pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode(effect_rid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.base.set_effect_mode(effect_aid, effect_mode, src)
+    pub(in crate::ud::item) fn set_effect_mode(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) {
+        self.base.set_effect_mode(effect_aid, effect_mode, r_data)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        src: &Src,
+        r_data: &RData,
     ) {
-        self.base.set_effect_modes(effect_modes, src)
+        self.base.set_effect_modes(effect_modes, r_data)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::ud::item) fn src_changed(&mut self, _src: &Src) {
+    pub(in crate::ud::item) fn r_data_changed(&mut self, _r_data: &RData) {
         // Just panic to expose attempts to reload it, since autocharges should never be reloaded.
         // Instead, they are removed and re-added when parent item changes.
         unreachable!("autocharges should be removed/added outside of autocharge item handler");

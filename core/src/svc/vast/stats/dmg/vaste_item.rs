@@ -110,7 +110,7 @@ impl Vast {
             return Ok(());
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
@@ -210,7 +210,7 @@ impl Vast {
             return Ok(());
         }
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(ospec) = &effect.normal_dmg {
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {

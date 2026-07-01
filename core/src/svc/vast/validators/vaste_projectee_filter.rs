@@ -58,7 +58,7 @@ fn validate_projection(
     allowed_type_list_rid: RItemListId,
     projectee_uid: UItemId,
 ) -> bool {
-    let allowed_type_list = ctx.u_data.src.get_item_list_by_rid(allowed_type_list_rid);
+    let allowed_type_list = ctx.u_data.r_data.get_item_list_by_rid(allowed_type_list_rid);
     let projectee_type_aid = ctx.u_data.items.get(projectee_uid).get_type_aid();
     allowed_type_list.item_aids.contains(&projectee_type_aid) || kfs.contains(&projector_espec.item_uid)
 }

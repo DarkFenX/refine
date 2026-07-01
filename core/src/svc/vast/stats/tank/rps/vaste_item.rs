@@ -134,7 +134,7 @@ fn get_local_rps(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = match time_options {
                 StatTimeOptions::Burst(_) => {
                     aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack())
@@ -187,7 +187,7 @@ fn get_irr_data(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             match time_options {
                 StatTimeOptions::Burst(burst_opts) => {
                     if let Some(accum) = aggr_proj_burst(

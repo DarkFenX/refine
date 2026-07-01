@@ -1,7 +1,7 @@
 use crate::{
     ad::AEffectId,
     misc::EffectMode,
-    rd::{REffect, REffectId, RItem, RState, RcEffect, Src},
+    rd::{RData, REffect, REffectId, RItem, RState, RcEffect},
     ud::item::misc::UEffectModes,
     util::RSet,
 };
@@ -38,7 +38,7 @@ impl UEffectUpdates {
 pub(super) fn process_effects(
     reuse_eupdates: &mut UEffectUpdates,
     reffs: &mut RSet<REffectId>,
-    src: &Src,
+    r_data: &RData,
     item: &RItem,
     item_state: RState,
     item_effect_modes: &UEffectModes,
@@ -46,11 +46,11 @@ pub(super) fn process_effects(
     force_active_nondefeff: bool,
 ) {
     match item_state {
-        RState::Ghost => stop_all_effects(reuse_eupdates, reffs, src, item),
+        RState::Ghost => stop_all_effects(reuse_eupdates, reffs, r_data, item),
         _ => update_running_effects(
             reuse_eupdates,
             reffs,
-            src,
+            r_data,
             item,
             item_state,
             item_effect_modes,
@@ -60,12 +60,12 @@ pub(super) fn process_effects(
     }
 }
 
-fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectId>, src: &Src, item: &RItem) {
+fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffectId>, r_data: &RData, item: &RItem) {
     // We don't want to waste time resolving effects when we want them to just stop (which happens
     // before e.g. item removal)
     reuse_eupdates.to_stop.reserve(reffs.len());
     for effect_rid in reffs.drain() {
-        let effect = src.get_effect_by_rid(effect_rid).clone();
+        let effect = r_data.get_effect_by_rid(effect_rid).clone();
         if effect.activates_charge_for_item(item) {
             reuse_eupdates.charge = Some(false);
         }
@@ -80,14 +80,14 @@ fn stop_all_effects(reuse_eupdates: &mut UEffectUpdates, reffs: &mut RSet<REffec
     reuse_eupdates.to_stop.extend(
         reffs
             .drain()
-            .map(|effect_rid| src.get_effect_by_rid(effect_rid).clone()),
+            .map(|effect_rid| r_data.get_effect_by_rid(effect_rid).clone()),
     );
 }
 
 fn update_running_effects(
     reuse_eupdates: &mut UEffectUpdates,
     reffs: &mut RSet<REffectId>,
-    src: &Src,
+    r_data: &RData,
     item: &RItem,
     item_state: RState,
     item_effect_modes: &UEffectModes,
@@ -96,23 +96,25 @@ fn update_running_effects(
 ) {
     // Separate handling for the online effect
     let online_should_run = resolve_online_effect_status(item, item_effect_modes, item_state);
-    let online_running = match src.get_effect_consts().online {
+    let online_running = match r_data.get_effect_consts().online {
         Some(online_effect_rid) => reffs.contains(&online_effect_rid),
         None => false,
     };
     // Whenever online effect status changes, it should be guaranteed that online effect is
     // available on the source level, so can just unwrap here
     if online_running && !online_should_run {
-        reuse_eupdates.to_stop.push(src.get_online_effect().unwrap().clone());
+        reuse_eupdates.to_stop.push(r_data.get_online_effect().unwrap().clone());
     } else if !online_running && online_should_run {
-        reuse_eupdates.to_start.push(src.get_online_effect().unwrap().clone());
+        reuse_eupdates
+            .to_start
+            .push(r_data.get_online_effect().unwrap().clone());
     }
     for &effect_rid in item.effects.keys() {
         // Online effect has already been handled
-        if Some(effect_rid) == src.get_effect_consts().online {
+        if Some(effect_rid) == r_data.get_effect_consts().online {
             continue;
         }
-        let effect = src.get_effect_by_rid(effect_rid);
+        let effect = r_data.get_effect_by_rid(effect_rid);
         let should_run = resolve_regular_effect_status(
             item_effect_modes,
             item.defeff_rid,

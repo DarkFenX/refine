@@ -58,8 +58,8 @@ impl<'a> BoosterMut<'a> {
             .into_iter()
             .flat_map(|effects| {
                 effects.keys().filter_map(|&effect_rid| {
-                    let effect_id = self.sol.u_data.src.get_effect_by_rid(effect_rid).aid;
-                    get_se_chance_attr_aid_by_effect_rid(&self.sol.u_data.src, effect_rid)
+                    let effect_id = self.sol.u_data.r_data.get_effect_by_rid(effect_rid).aid;
+                    get_se_chance_attr_aid_by_effect_rid(&self.sol.u_data.r_data, effect_rid)
                         .map(|chance_attr_id| (effect_id, chance_attr_id))
                 })
             })
@@ -72,11 +72,11 @@ fn iter_side_effects(sol: &SolarSystem, booster_uid: UItemId) -> impl Iterator<I
     let u_booster = sol.u_data.items.get(booster_uid).dc_booster().unwrap();
     u_booster.get_effects().into_iter().flat_map(move |effect_datas| {
         effect_datas.keys().filter_map(move |&effect_rid| {
-            get_se_chance_attr_aid_by_effect_rid(&sol.u_data.src, effect_rid).map(|chance_attr_id| {
+            get_se_chance_attr_aid_by_effect_rid(&sol.u_data.r_data, effect_rid).map(|chance_attr_id| {
                 SideEffect::new(
                     sol,
                     booster_uid,
-                    sol.u_data.src.get_effect_by_rid(effect_rid).aid,
+                    sol.u_data.r_data.get_effect_by_rid(effect_rid).aid,
                     chance_attr_id,
                 )
             })

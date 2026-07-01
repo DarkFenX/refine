@@ -36,7 +36,7 @@ impl ModStrength {
         match self {
             Self::Attr(attr_rid) => smallvec![Affector {
                 item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(*attr_rid).aid)),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.r_data.get_attr_by_rid(*attr_rid).aid)),
             }],
             Self::Hardcoded(_) => smallvec![Affector {
                 item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),

@@ -33,7 +33,7 @@ impl SolarSystem {
         SolarSystem::util_remove_skill(&mut self.u_data, &mut self.svc, skill_uid, reuse_eupdates);
         // Update type ID and reload adapted data
         let u_skill = self.u_data.items.get_mut(skill_uid).dc_skill_mut().unwrap();
-        u_skill.set_type_aid(type_aid, &self.u_data.src);
+        u_skill.set_type_aid(type_aid, &self.u_data.r_data);
         // Update fit skill map
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let fit_skill = u_fit.skills.remove(&old_type_aid).unwrap();

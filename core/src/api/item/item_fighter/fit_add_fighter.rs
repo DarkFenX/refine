@@ -16,7 +16,7 @@ impl SolarSystem {
     ) -> UItemId {
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         let item_id = self.u_data.items.alloc_id();
-        let u_fighter = UFighter::new(item_id, type_aid, fit_uid, state, physics, &self.u_data.src);
+        let u_fighter = UFighter::new(item_id, type_aid, fit_uid, state, physics, &self.u_data.r_data);
         let u_item = UItem::Fighter(u_fighter);
         let fighter_uid = self.u_data.items.add(u_item);
         u_fit.fighters.insert(fighter_uid);

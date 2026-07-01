@@ -12,7 +12,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(fighter_uid);
-        u_item.update_reffs(reuse_eupdates, &u_data.src);
+        u_item.update_reffs(reuse_eupdates, &u_data.r_data);
         SolarSystem::util_add_item(u_data, svc, fighter_uid, reuse_eupdates);
     }
     pub(in crate::api) fn util_add_fighter_with_acs(
@@ -34,7 +34,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = u_data.items.get_mut(fighter_uid);
-        u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
+        u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
         SolarSystem::util_remove_item(u_data, svc, fighter_uid, reuse_eupdates);
     }
     pub(in crate::api) fn util_remove_fighter_with_acs(

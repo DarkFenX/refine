@@ -24,13 +24,13 @@ impl AttrValData {
     pub(in crate::svc::calc) fn item_loaded(&mut self, u_data: &UData, item_uid: UItemId, item: &UItem) {
         let mut item_data = ItemAttrData::new();
         match item {
-            UItem::Fighter(_) if let Some(count_attr_rid) = u_data.src.get_attr_consts().ftr_sq_size => {
+            UItem::Fighter(_) if let Some(count_attr_rid) = u_data.r_data.get_attr_consts().ftr_sq_size => {
                 item_data.reg_postproc(count_attr_rid, ItemAttrPostproc::FighterCount);
             }
-            UItem::Ship(_) if let Some(ss_attr_rid) = u_data.src.get_attr_consts().pilot_security_status => {
+            UItem::Ship(_) if let Some(ss_attr_rid) = u_data.r_data.get_attr_consts().pilot_security_status => {
                 item_data.reg_postproc(ss_attr_rid, ItemAttrPostproc::SecStatus);
             }
-            UItem::Skill(_) if let Some(lvl_attr_rid) = u_data.src.get_attr_consts().skill_level => {
+            UItem::Skill(_) if let Some(lvl_attr_rid) = u_data.r_data.get_attr_consts().skill_level => {
                 item_data.reg_postproc(lvl_attr_rid, ItemAttrPostproc::SkillLevel);
             }
             _ => (),

@@ -54,7 +54,7 @@ impl SolarSystem {
                 let u_module = module_u_item.dc_module().unwrap();
                 match u_module.get_defeff_rid() {
                     Some(Some(defeff_rid)) => {
-                        self.u_data.src.get_effect_by_rid(defeff_rid).activates_charge()
+                        self.u_data.r_data.get_effect_by_rid(defeff_rid).activates_charge()
                             && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_rid))
                     }
                     _ => false,
@@ -71,7 +71,7 @@ impl SolarSystem {
             module_uid,
             activated,
             false,
-            &self.u_data.src,
+            &self.u_data.r_data,
         );
         let charge_u_item = UItem::Charge(u_charge);
         let new_charge_uid = self.u_data.items.add(charge_u_item);

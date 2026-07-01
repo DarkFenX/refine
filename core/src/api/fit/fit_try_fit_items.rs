@@ -23,7 +23,7 @@ impl SolarSystem {
         let u_physics = UPhysics::default();
         let chargeable_module_uids = get_chargeable_modules(&self.u_data, fit_uid);
         for type_aid in type_aids {
-            let Some(r_item) = self.u_data.src.get_item_by_aid(type_aid) else {
+            let Some(r_item) = self.u_data.r_data.get_item_by_aid(type_aid) else {
                 continue;
             };
             let Some(item_kind) = r_item.axt.kind else {

@@ -8,16 +8,13 @@
 //! - Combining adapted and hardcoded data (as well as derived from both of those) under one roof;
 //! - Remapping some IDs to arena-alike storage IDs for faster access to some entity types.
 
-use data::RData;
 pub(crate) use data::{
-    RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, REffect, REffectBuff, REffectBuffScope,
+    RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, RBuffModifier, RData, REffect, REffectBuff, REffectBuffScope,
     REffectCharge, REffectChargeLoc, REffectConsts, REffectEcm, REffectId, REffectLocalOpcSpec, REffectMining,
     REffectModStrength, REffectModifier, REffectNeut, REffectProjModSpec, REffectProjOpcSpec, REffectProjecteeFilter,
     REffectResist, REffectSpoolAttrs, RItem, RItemAXt, RItemCapConsumer, RItemChargeLimit, RItemContLimit,
     RItemEffectData, RItemList, RItemListId, RItemShipLimit, RMuta, RMutaAttrRange, RShipDroneLimit, RShipKind, RState,
-    RcEffect, RcItem, RcMuta,
+    RcData, RcEffect, RcItem, RcMuta,
 };
-pub use src::{Src, SrcInitError};
 
 mod data;
-mod src;

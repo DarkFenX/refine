@@ -16,8 +16,8 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = self.u_data.items.get_mut(item_uid);
-        u_item.set_effect_mode(effect_aid, effect_mode, &self.u_data.src);
-        u_item.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_item.set_effect_mode(effect_aid, effect_mode, &self.u_data.r_data);
+        u_item.update_reffs(reuse_eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid, reuse_eupdates);
     }
     pub(in crate::api) fn internal_set_effect_id_modes(
@@ -27,8 +27,8 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_item = self.u_data.items.get_mut(item_uid);
-        u_item.set_effect_modes(effect_modes, &self.u_data.src);
-        u_item.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_item.set_effect_modes(effect_modes, &self.u_data.r_data);
+        u_item.update_reffs(reuse_eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid, reuse_eupdates);
     }
     fn effect_mode_update_postprocess(&mut self, item_uid: UItemId, reuse_eupdates: &mut UEffectUpdates) {

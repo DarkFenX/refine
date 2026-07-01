@@ -49,17 +49,19 @@ pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Aff
         info.extend([
             Affector {
                 item_id,
-                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(speed_factor_rid).aid)),
+                attr_id: Some(AttrId::from_aid(
+                    ctx.u_data.r_data.get_attr_by_rid(speed_factor_rid).aid,
+                )),
             },
             Affector {
                 item_id,
                 attr_id: Some(AttrId::from_aid(
-                    ctx.u_data.src.get_attr_by_rid(speed_boost_factor_rid).aid,
+                    ctx.u_data.r_data.get_attr_by_rid(speed_boost_factor_rid).aid,
                 )),
             },
             Affector {
                 item_id: ctx.u_data.items.ext_id_by_int_id(ship_uid),
-                attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(mass_rid).aid)),
+                attr_id: Some(AttrId::from_aid(ctx.u_data.r_data.get_attr_by_rid(mass_rid).aid)),
             },
         ]);
     }

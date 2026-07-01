@@ -46,7 +46,7 @@ impl<'a> AbilityMut<'a> {
 
 fn get_charge_count(sol: &SolarSystem, fighter_uid: UItemId, abil_aid: &AAbilId) -> Option<Count> {
     // Only abilities which exist in source are exposed by API, just unwrap
-    let r_abil = sol.u_data.src.get_ability_by_aid(abil_aid).unwrap();
+    let r_abil = sol.u_data.r_data.get_ability_by_aid(abil_aid).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_uid).dc_fighter().unwrap();
     u_fighter.get_effects()?.get(&r_abil.effect_rid)?.charge_count
 }

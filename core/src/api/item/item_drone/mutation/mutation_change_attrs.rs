@@ -10,7 +10,7 @@ impl SolarSystem {
         attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<(), ItemMutatedError> {
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();
-        let changed_attr_rids = u_drone.change_mutation_attrs(&self.u_data.src, attr_mutations)?;
+        let changed_attr_rids = u_drone.change_mutation_attrs(&self.u_data.r_data, attr_mutations)?;
         for attr_rid in changed_attr_rids {
             self.svc
                 .notify_base_attr_value_changed(&self.u_data, drone_uid, attr_rid);

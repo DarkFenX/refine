@@ -74,7 +74,7 @@ impl Svc {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc.effects_started(svc_ctx, item_uid, item, effects);
         self.vast
-            .effects_started(u_data.src.get_attr_consts(), item_uid, item, effects);
+            .effects_started(u_data.r_data.get_attr_consts(), item_uid, item, effects);
     }
     pub(crate) fn notify_effects_stopped(
         &mut self,
@@ -86,7 +86,7 @@ impl Svc {
         let svc_ctx = SvcCtx::new(u_data, &self.eff_projs);
         self.calc.effects_stopped(svc_ctx, item_uid, item, effects);
         self.vast
-            .effects_stopped(u_data.src.get_attr_consts(), item_uid, item, effects);
+            .effects_stopped(u_data.r_data.get_attr_consts(), item_uid, item, effects);
     }
     pub(crate) fn notify_item_projected(&mut self) {}
     pub(crate) fn notify_item_unprojected(&mut self) {}

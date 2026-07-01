@@ -14,9 +14,9 @@ impl<'u, 'p> SvcCtx<'u, 'p> {
         Self { u_data, eff_projs }
     }
     pub(crate) fn ac(&self) -> &RAttrConsts {
-        self.u_data.src.get_attr_consts()
+        self.u_data.r_data.get_attr_consts()
     }
     pub(crate) fn ec(&self) -> &REffectConsts {
-        self.u_data.src.get_effect_consts()
+        self.u_data.r_data.get_effect_consts()
     }
 }

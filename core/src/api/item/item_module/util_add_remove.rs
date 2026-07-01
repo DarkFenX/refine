@@ -12,7 +12,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Option<UItemId> {
         let u_module = u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        u_module.update_reffs(reuse_eupdates, &u_data.src);
+        u_module.update_reffs(reuse_eupdates, &u_data.r_data);
         let charge_uid = u_module.get_charge_uid();
         SolarSystem::util_add_item(u_data, svc, module_uid, reuse_eupdates);
         charge_uid
@@ -39,7 +39,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Option<UItemId> {
         let u_module = u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        u_module.stop_all_reffs(reuse_eupdates, &u_data.src);
+        u_module.stop_all_reffs(reuse_eupdates, &u_data.r_data);
         let charge_uid = u_module.get_charge_uid();
         SolarSystem::util_remove_item(u_data, svc, module_uid, reuse_eupdates);
         charge_uid

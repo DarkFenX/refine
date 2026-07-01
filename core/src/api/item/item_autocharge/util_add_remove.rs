@@ -50,7 +50,7 @@ impl SolarSystem {
                 let autocharge_item_id = u_data.items.alloc_id();
                 // Autocharge is activated only if effect controlling it is running, and activates
                 // charges
-                let activated = u_data.src.get_effect_by_rid(effect_rid).activates_autocharge()
+                let activated = u_data.r_data.get_effect_by_rid(effect_rid).activates_autocharge()
                     && u_data
                         .items
                         .get(item_uid)
@@ -64,7 +64,7 @@ impl SolarSystem {
                     effect_rid,
                     activated,
                     false,
-                    &u_data.src,
+                    &u_data.r_data,
                 );
                 // Don't add an autocharge if it can't be loaded
                 if !u_autocharge.is_loaded() {
@@ -83,7 +83,7 @@ impl SolarSystem {
         }
         for ac_data in ac_datas.iter() {
             let autocharge_u_item = u_data.items.get_mut(ac_data.autocharge_uid);
-            autocharge_u_item.update_reffs(reuse_eupdates, &u_data.src);
+            autocharge_u_item.update_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_add_item(u_data, svc, ac_data.autocharge_uid, reuse_eupdates);
             if !projections.is_empty() {
                 let u_autocharge = u_data
@@ -137,7 +137,7 @@ impl SolarSystem {
             }
             // Remove from services
             let autocharge_u_item = u_data.items.get_mut(autocharge_uid);
-            autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.src);
+            autocharge_u_item.stop_all_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_remove_item(u_data, svc, autocharge_uid, reuse_eupdates);
         }
         // Update items

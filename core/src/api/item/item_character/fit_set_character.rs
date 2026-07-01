@@ -19,7 +19,7 @@ impl SolarSystem {
         }
         // Add new character
         let item_id = self.u_data.items.alloc_id();
-        let u_character = UCharacter::new(item_id, type_aid, fit_uid, true, &self.u_data.src);
+        let u_character = UCharacter::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
         let u_item = UItem::Character(u_character);
         let character_uid = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_uid);

@@ -18,7 +18,7 @@ impl SolarSystem {
         }
         SolarSystem::util_remove_charge(&mut self.u_data, &mut self.svc, charge_uid, reuse_eupdates);
         let u_charge = self.u_data.items.get_mut(charge_uid).dc_charge_mut().unwrap();
-        u_charge.set_type_aid(type_aid, &self.u_data.src);
+        u_charge.set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_add_charge(&mut self.u_data, &mut self.svc, charge_uid, reuse_eupdates);
     }
 }

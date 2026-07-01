@@ -10,7 +10,7 @@ impl SolarSystem {
         attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<(), ItemMutatedError> {
         let u_module = self.u_data.items.get_mut(module_uid).dc_module_mut().unwrap();
-        let changed_attr_rids = u_module.change_mutation_attrs(&self.u_data.src, attr_mutations)?;
+        let changed_attr_rids = u_module.change_mutation_attrs(&self.u_data.r_data, attr_mutations)?;
         for attr_rids in changed_attr_rids {
             self.svc
                 .notify_base_attr_value_changed(&self.u_data, module_uid, attr_rids);

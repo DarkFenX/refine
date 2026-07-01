@@ -27,7 +27,7 @@ pub(super) fn get_autocharge_cseq_map(
     let effect_rids = autocharge.get_reffs().unwrap().iter();
     reuse_cseq_map.reserve(effect_rids.len());
     for &effect_rid in effect_rids {
-        let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+        let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         if effect.is_active() {
             reuse_cseq_map.insert(effect_rid, cont_effect_cycle);
         }

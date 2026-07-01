@@ -84,7 +84,7 @@ fn get_ocps(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = match time_options {
                 StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,

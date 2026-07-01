@@ -4,7 +4,7 @@ impl<'a> AbilityMut<'a> {
     pub fn set_state(&mut self, state: bool) {
         // Only abilities which exist in source and only for loaded fighters are exposed by API, so
         // just unwrap everything
-        let r_abil = self.sol.u_data.src.get_ability_by_aid(&self.abil_aid).unwrap();
+        let r_abil = self.sol.u_data.r_data.get_ability_by_aid(&self.abil_aid).unwrap();
         let effect_aid = r_abil.effect_aid;
         let u_fighter = self.sol.u_data.items.get(self.fighter_uid).dc_fighter().unwrap();
         let is_defeff = u_fighter.get_defeff_rid().unwrap() == Some(r_abil.effect_rid);

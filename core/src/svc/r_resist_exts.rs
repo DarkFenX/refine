@@ -24,7 +24,7 @@ impl REffectResist {
             Self::AttrRef(ref_attr_rid) => {
                 let ref_value = u_data.items.get(projector_uid).get_attr(*ref_attr_rid)?;
                 let resist_attr_aid = AAttrId::try_eve_from_f64_rounded(ref_value.into_f64())?;
-                u_data.src.get_attr_rid_by_aid(&resist_attr_aid)
+                u_data.r_data.get_attr_rid_by_aid(&resist_attr_aid)
             }
             Self::RemoteResistance => u_data
                 .items

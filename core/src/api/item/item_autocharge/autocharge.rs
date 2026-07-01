@@ -91,7 +91,7 @@ fn get_cont_item(sol: &SolarSystem, autocharge_uid: UItemId) -> Item<'_> {
 }
 fn get_cont_effect_id(sol: &SolarSystem, autocharge_uid: UItemId) -> EffectId {
     let cont_effect_rid = get_u_autocharge(sol, autocharge_uid).get_cont_effect_rid();
-    let effect_aid = sol.u_data.src.get_effect_by_rid(cont_effect_rid).aid;
+    let effect_aid = sol.u_data.r_data.get_effect_by_rid(cont_effect_rid).aid;
     EffectId::from_aid(effect_aid)
 }
 fn get_state(sol: &SolarSystem, autocharge_uid: UItemId) -> bool {

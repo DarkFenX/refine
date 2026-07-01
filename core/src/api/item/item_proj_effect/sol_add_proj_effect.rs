@@ -17,7 +17,7 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> UItemId {
         let item_id = self.u_data.items.alloc_id();
-        let u_proj_effect = UProjEffect::new(item_id, type_aid, true, &self.u_data.src);
+        let u_proj_effect = UProjEffect::new(item_id, type_aid, true, &self.u_data.r_data);
         let u_item = UItem::ProjEffect(u_proj_effect);
         let proj_effect_uid = self.u_data.items.add(u_item);
         self.u_data.proj_effects.insert(proj_effect_uid);

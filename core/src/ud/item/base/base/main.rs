@@ -3,7 +3,7 @@ use crate::{
     misc::EffectMode,
     num::{SkillLevel, Value},
     rd::{
-        RAttrId, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcItem, Src,
+        RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcItem,
     },
     ud::{
         ItemId,
@@ -28,13 +28,13 @@ pub(in crate::ud::item) struct UItemBase {
 }
 impl UItemBase {
     // Constructors
-    pub(in crate::ud::item) fn new(item_id: ItemId, type_aid: AItemId, state: RState, src: &Src) -> Self {
+    pub(in crate::ud::item) fn new(item_id: ItemId, type_aid: AItemId, state: RState, r_data: &RData) -> Self {
         Self {
             item_id,
             type_aid,
             state,
             effect_modes: UEffectModes::new(),
-            cache: src.get_item_by_aid(&type_aid).map(|r_item| ItemBaseCache {
+            cache: r_data.get_item_by_aid(&type_aid).map(|r_item| ItemBaseCache {
                 r_item: r_item.clone(),
                 reffs: RSet::new(),
             }),
@@ -72,9 +72,9 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_type_aid(&self) -> AItemId {
         self.type_aid
     }
-    pub(in crate::ud::item) fn set_type_aid(&mut self, type_aid: AItemId, src: &Src) {
+    pub(in crate::ud::item) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
         self.type_aid = type_aid;
-        self.base_update_r_data(src);
+        self.base_update_r_data(r_data);
     }
     pub(in crate::ud::item) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base_get_r_item().map(|v| v.grp_id)
@@ -165,30 +165,35 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
         self.effect_modes.get_by_aid(effect_aid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.effect_modes.set_by_aid(effect_aid, effect_mode, src);
+    pub(in crate::ud::item) fn set_effect_mode(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) {
+        self.effect_modes.set_by_aid(effect_aid, effect_mode, r_data);
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        src: &Src,
+        r_data: &RData,
     ) {
         for (effect_id, effect_mode) in effect_modes {
-            self.effect_modes.set_by_aid(effect_id, effect_mode, src);
+            self.effect_modes.set_by_aid(effect_id, effect_mode, r_data);
         }
     }
-    pub(in crate::ud::item::base) fn base_update_effect_modes(&mut self, src: &Src) {
-        self.effect_modes.update_rids(src);
+    pub(in crate::ud::item::base) fn base_update_effect_modes(&mut self, r_data: &RData) {
+        self.effect_modes.update_rids(r_data);
     }
     pub(in crate::ud::item) fn is_loaded(&self) -> bool {
         self.cache.is_some()
     }
-    pub(in crate::ud::item) fn src_changed(&mut self, src: &Src) {
-        self.base_update_effect_modes(src);
-        self.base_update_r_data(src);
+    pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
+        self.base_update_effect_modes(r_data);
+        self.base_update_r_data(r_data);
     }
-    pub(in crate::ud::item::base) fn base_update_r_data(&mut self, src: &Src) {
-        match src.get_item_by_aid(&self.type_aid) {
+    pub(in crate::ud::item::base) fn base_update_r_data(&mut self, r_data: &RData) {
+        match r_data.get_item_by_aid(&self.type_aid) {
             Some(r_item) => self.base_set_r_item(r_item.clone()),
             None => self.cache = None,
         }
@@ -225,7 +230,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn update_reffs(
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
+        r_data: &RData,
         require_disabled_defeff: bool,
         force_active_nondefeff: bool,
     ) {
@@ -235,7 +240,7 @@ impl UItemBase {
             process_effects(
                 reuse_eupdates,
                 &mut cache.reffs,
-                src,
+                r_data,
                 &cache.r_item,
                 self.state,
                 &self.effect_modes,
@@ -247,7 +252,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn stop_all_reffs(
         &mut self,
         reuse_eupdates: &mut UEffectUpdates,
-        src: &Src,
+        r_data: &RData,
         require_disabled_defeff: bool,
         force_active_nondefeff: bool,
     ) {
@@ -256,7 +261,7 @@ impl UItemBase {
             process_effects(
                 reuse_eupdates,
                 &mut cache.reffs,
-                src,
+                r_data,
                 &cache.r_item,
                 RState::Ghost,
                 &self.effect_modes,

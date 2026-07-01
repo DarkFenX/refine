@@ -18,7 +18,7 @@ impl SolarSystem {
         let old_state = u_fighter.get_state();
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
-        u_fighter.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_fighter.update_reffs(reuse_eupdates, &self.u_data.r_data);
         // Filter out autocharges which couldn't be loaded, and fill autocharge key data
         let ac_activations = reuse_eupdates
             .autocharges

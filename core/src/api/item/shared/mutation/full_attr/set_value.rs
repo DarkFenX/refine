@@ -35,7 +35,7 @@ impl<'a> FullMAttrMut<'a> {
                     _ => unreachable!("unmutable item kind is used in mutation"),
                 };
                 resolve_absolutes_into_rolls_with_ids(
-                    &self.sol.u_data.src,
+                    &self.sol.u_data.r_data,
                     &base_type_aid,
                     &mutator_type_aid,
                     &[(self.attr_aid, absolute_value)],

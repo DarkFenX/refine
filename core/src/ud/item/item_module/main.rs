@@ -4,7 +4,7 @@ use crate::{
     err::basic::ItemNotMutatedError,
     misc::{EffectMode, ModRack, OptionalReload, Spool},
     num::{Count, Index, PValue, SkillLevel, Value},
-    rd::{RAttrId, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState, Src},
+    rd::{RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState},
     ud::{
         ItemId, UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
@@ -35,10 +35,10 @@ impl UModule {
         pos: Index,
         mutation: Option<UItemMutationRequest>,
         charge_uid: Option<UItemId>,
-        src: &Src,
+        r_data: &RData,
     ) -> Self {
         Self {
-            base: UItemBaseMutable::new(item_id, type_aid, module_state.into_r_state(), mutation, src),
+            base: UItemBaseMutable::new(item_id, type_aid, module_state.into_r_state(), mutation, r_data),
             fit_uid,
             rack,
             pos,
@@ -55,8 +55,8 @@ impl UModule {
     pub(crate) fn get_type_aid(&self) -> AItemId {
         self.base.get_type_aid()
     }
-    pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, src: &Src) {
-        self.base.set_type_aid(type_aid, src);
+    pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
+        self.base.set_type_aid(type_aid, r_data);
     }
     pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
         self.base.get_group_id()
@@ -112,54 +112,59 @@ impl UModule {
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
     }
-    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.update_reffs(reuse_eupdates, src, false, false);
+    pub(crate) fn update_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
+        self.base.update_reffs(reuse_eupdates, r_data, false, false);
     }
-    pub(crate) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, src: &Src) {
-        self.base.stop_all_reffs(reuse_eupdates, src, false, false)
+    pub(crate) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
+        self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
     }
     pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode(effect_rid)
     }
-    pub(in crate::ud::item) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, src: &Src) {
-        self.base.set_effect_mode(effect_aid, effect_mode, src)
+    pub(in crate::ud::item) fn set_effect_mode(
+        &mut self,
+        effect_aid: AEffectId,
+        effect_mode: EffectMode,
+        r_data: &RData,
+    ) {
+        self.base.set_effect_mode(effect_aid, effect_mode, r_data)
     }
     pub(in crate::ud::item) fn set_effect_modes(
         &mut self,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
-        src: &Src,
+        r_data: &RData,
     ) {
-        self.base.set_effect_modes(effect_modes, src)
+        self.base.set_effect_modes(effect_modes, r_data)
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
-    pub(in crate::ud::item) fn src_changed(&mut self, src: &Src) {
-        self.base.src_changed(src);
+    pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
+        self.base.r_data_changed(r_data);
     }
     // Mutation-specific methods
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
-    pub(crate) fn mutate(&mut self, mutation: UItemMutationRequest, src: &Src) -> Result<(), ItemNotMutatedError> {
-        self.base.mutate(mutation, src)
+    pub(crate) fn mutate(&mut self, mutation: UItemMutationRequest, r_data: &RData) -> Result<(), ItemNotMutatedError> {
+        self.base.mutate(mutation, r_data)
     }
     pub(crate) fn change_mutation_attrs(
         &mut self,
-        src: &Src,
+        r_data: &RData,
         attr_mutations: Vec<UAttrMutationRequest>,
     ) -> Result<Vec<RAttrId>, ItemMutatedError> {
-        self.base.change_mutation_attrs(src, attr_mutations)
+        self.base.change_mutation_attrs(r_data, attr_mutations)
     }
     pub(crate) fn set_mutator_type_aid(
         &mut self,
         mutator_type_aid: AItemId,
-        src: &Src,
+        r_data: &RData,
     ) -> Result<(), ItemMutatedError> {
-        self.base.set_mutator_type_aid(mutator_type_aid, src)
+        self.base.set_mutator_type_aid(mutator_type_aid, r_data)
     }
-    pub(crate) fn unmutate(&mut self, src: &Src) -> Result<(), ItemMutatedError> {
-        self.base.unmutate(src)
+    pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<(), ItemMutatedError> {
+        self.base.unmutate(r_data)
     }
     // Item-specific methods
     pub(crate) fn get_module_state(&self) -> ModuleState {

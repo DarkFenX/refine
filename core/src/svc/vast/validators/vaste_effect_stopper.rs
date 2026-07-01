@@ -50,7 +50,7 @@ impl VastFitData {
                 && !kfs.contains(&stopped_espec.item_uid)
             {
                 let item_id = ctx.u_data.items.ext_id_by_int_id(stopped_espec.item_uid);
-                let effect_aid = ctx.u_data.src.get_effect_by_rid(stopped_espec.effect_rid).aid;
+                let effect_aid = ctx.u_data.r_data.get_effect_by_rid(stopped_espec.effect_rid).aid;
                 items
                     .entry(item_id)
                     .or_insert_with(Vec::new)
@@ -87,7 +87,7 @@ fn get_espec_proj_mult(
     projector_espec: EffectSpec,
     projectee_uid: UItemId,
 ) -> Option<PValue> {
-    let projector_effect = ctx.u_data.src.get_effect_by_rid(projector_espec.effect_rid);
+    let projector_effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
     let proj_mult_getter = projector_effect.proj_mod?.proj_mult?;
     let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_uid)?;
     Some(proj_mult_getter.get_mult(

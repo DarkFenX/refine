@@ -15,7 +15,7 @@ impl SolarSystem {
         let old_a_state = u_skill.get_state();
         u_skill.set_skill_state(state);
         let new_a_state = u_skill.get_state();
-        u_skill.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_skill.update_reffs(reuse_eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

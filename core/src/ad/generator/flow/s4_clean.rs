@@ -34,13 +34,13 @@ impl ADataGenerator {
     }
 }
 
-fn move_data<T, F>(src_cont: &mut EDataCont<T>, dst_cont: &mut EDataCont<T>, filter: F) -> bool
+fn move_data<T, F>(src_cont: &mut EDataCont<T>, tgt_cont: &mut EDataCont<T>, filter: F) -> bool
 where
     F: FnMut(&mut T) -> bool,
 {
     let mut drained = src_cont.data.extract_if(.., filter).peekable();
     let changes = drained.peek().is_some();
-    dst_cont.data.extend(drained);
+    tgt_cont.data.extend(drained);
     changes
 }
 

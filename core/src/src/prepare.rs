@@ -1,10 +1,10 @@
 use crate::{
-    ad::{AData, AFingerprint, AdaptedDataCacher, generate_adapted_data},
+    ad::{AData, ADataGenerator, ADataGeneratorError, AFingerprint, AdaptedDataCacher},
     ed::EveDataHandler,
-    rd::SrcInitError,
+    src::SrcInitError,
 };
 
-pub(in crate::rd::src) fn prepare_adapted_data(
+pub(in crate::src) fn prepare_adapted_data(
     ed_handler: &dyn EveDataHandler,
     ad_cacher: Option<&mut Box<dyn AdaptedDataCacher>>,
 ) -> Result<AData, SrcInitError> {
@@ -28,7 +28,7 @@ pub(in crate::rd::src) fn prepare_adapted_data(
         }
         None => {
             tracing::info!("initializing new source with {ed_handler:?} without caching");
-            adapt_data(ed_handler)
+            adapt_data(ed_handler).map_err(Into::into)
         }
     }
 }
@@ -76,7 +76,7 @@ fn get_relevant_a_data(ed_version: Option<String>, ad_cacher: &mut dyn AdaptedDa
 }
 
 #[allow(clippy::borrowed_box)]
-fn adapt_data(ed_handler: &dyn EveDataHandler) -> Result<AData, SrcInitError> {
+fn adapt_data(ed_handler: &dyn EveDataHandler) -> Result<AData, ADataGeneratorError> {
     tracing::info!("generating adapted data...");
-    generate_adapted_data(ed_handler)
+    ADataGenerator::new().generate(ed_handler)
 }

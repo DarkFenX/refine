@@ -79,7 +79,7 @@ fn get_nps(
             continue;
         }
         for (&effect_rid, ospec) in item_data.iter() {
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if !item_kinds.resolve(effect) {
                 continue;
             }

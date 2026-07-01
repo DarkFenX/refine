@@ -1,16 +1,16 @@
 use crate::{
     misc::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool},
     num::{PValue, UnitInterval},
-    rd::Src,
+    rd::RcData,
     ud::{UFits, UFleets, UItemId, UItems},
     util::RSet,
 };
 
-// UAD stands for User and Adapted Data. Per definition, contains user-defined data, as well as some
-// adapted data, stored on user-defined entities for optimization purposes.
+// UAD stands for User and Adapted Data. Per definition, contains user-defined data, as well as
+// container with EVE-derived-data, since which one is used is also chosen by user.
 #[derive(Clone)]
 pub(crate) struct UData {
-    pub(crate) src: Src,
+    pub(crate) r_data: RcData,
     pub(crate) fleets: UFleets,
     pub(crate) fits: UFits,
     pub(crate) sw_effects: RSet<UItemId>,
@@ -26,9 +26,9 @@ pub(crate) struct UData {
     pub(crate) default_rearm_minions: RearmMinion,
 }
 impl UData {
-    pub(crate) fn new(src: Src) -> Self {
+    pub(crate) fn new(r_data: RcData) -> Self {
         Self {
-            src,
+            r_data,
             fleets: UFleets::new(5),
             fits: UFits::new(50),
             sw_effects: RSet::new(),

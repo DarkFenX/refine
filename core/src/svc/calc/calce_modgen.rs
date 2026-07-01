@@ -37,7 +37,7 @@ impl Calc {
                         let Some(buff_aid) = ABuffId::try_eve_from_f64_rounded(buff_id_cval.extra.into_f64()) else {
                             continue;
                         };
-                        let Some(buff) = ctx.u_data.src.get_buff_by_aid(&buff_aid) else {
+                        let Some(buff) = ctx.u_data.r_data.get_buff_by_aid(&buff_aid) else {
                             continue;
                         };
                         add_buff_mods_with_attr(
@@ -58,7 +58,7 @@ impl Calc {
             for buff_full in effect_buff.full.iter() {
                 match buff_full.strength {
                     REffectModStrength::Attr(buff_str_attr_rid) => {
-                        let buff = ctx.u_data.src.get_buff_by_rid(buff_full.buff_rid);
+                        let buff = ctx.u_data.r_data.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_attr(
                             ctx.u_data,
                             reuse_rmods,
@@ -72,7 +72,7 @@ impl Calc {
                         )
                     }
                     REffectModStrength::Hardcoded(buff_str) => {
-                        let buff = ctx.u_data.src.get_buff_by_rid(buff_full.buff_rid);
+                        let buff = ctx.u_data.r_data.get_buff_by_rid(buff_full.buff_rid);
                         add_buff_mods_with_hardcoded(
                             ctx.u_data,
                             reuse_rmods,
@@ -89,8 +89,10 @@ impl Calc {
         }
         // Custom modifiers
         if let Some(custom_mod) = effect.calc_custom_mod
-            && let Some(rmod) =
-                custom_mod.make_rmod(ctx.u_data.src.get_attr_consts(), EffectSpec::new(item_uid, effect.rid))
+            && let Some(rmod) = custom_mod.make_rmod(
+                ctx.u_data.r_data.get_attr_consts(),
+                EffectSpec::new(item_uid, effect.rid),
+            )
         {
             reuse_rmods.push(rmod);
         }
@@ -104,11 +106,11 @@ impl Calc {
         buff_type_attr_rid: RAttrId,
     ) -> Vec<RawModifier> {
         let mut rmods = Vec::new();
-        let Some(buff_str_attr_rid) = ctx.u_data.src.get_attr_by_rid(buff_type_attr_rid).buff_str_attr_rid else {
+        let Some(buff_str_attr_rid) = ctx.u_data.r_data.get_attr_by_rid(buff_type_attr_rid).buff_str_attr_rid else {
             return rmods;
         };
         for &effect_rid in effect_rids {
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(effect_buff) = &effect.buff
                 && let Some(buff_attr_merge) = &effect_buff.attr_merge
                 && let Ok(buff_id_cval) = self.get_item_attr_rfull(ctx, item_uid, buff_type_attr_rid)
@@ -116,7 +118,7 @@ impl Calc {
                 let Some(buff_aid) = ABuffId::try_eve_from_f64_rounded(buff_id_cval.extra.into_f64()) else {
                     continue;
                 };
-                let Some(buff) = ctx.u_data.src.get_buff_by_aid(&buff_aid) else {
+                let Some(buff) = ctx.u_data.r_data.get_buff_by_aid(&buff_aid) else {
                     continue;
                 };
                 add_buff_mods_with_attr(

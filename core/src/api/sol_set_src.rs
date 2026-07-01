@@ -1,7 +1,7 @@
 use crate::{
     num::PValue,
-    rd::Src,
     sol::SolarSystem,
+    src::Src,
     ud::{UData, UEffectUpdates, UItem, UItemId, UShipKind},
 };
 
@@ -70,14 +70,14 @@ impl ItemUIds {
 }
 
 impl SolarSystem {
-    pub fn set_src(&mut self, mut src: Src) {
+    pub fn set_src(&mut self, src: &Src) {
         let item_uids = ItemUIds::from_u_data(&self.u_data);
         let mut reuse_eupdates = UEffectUpdates::new();
         self.unload_items(&item_uids, &mut reuse_eupdates);
-        // Set new source
-        std::mem::swap(&mut self.u_data.src, &mut src);
+        // Set new runtime data
+        self.u_data.r_data = src.r_data.clone();
         for item in self.u_data.items.values_mut() {
-            item.src_changed(&self.u_data.src);
+            item.r_data_changed(&self.u_data.r_data);
         }
         // Update fit kind
         for fit in self.u_data.fits.values_mut() {

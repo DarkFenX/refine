@@ -43,7 +43,7 @@ impl Vast {
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                     continue;
                 };
-                let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+                let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
                 match time_options {
                     StatTimeOptions::Burst(burst_opts) => {
                         if let Some(accum) = aggr_proj_burst(

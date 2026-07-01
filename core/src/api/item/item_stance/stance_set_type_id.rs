@@ -18,7 +18,7 @@ impl SolarSystem {
         }
         SolarSystem::util_remove_stance(&mut self.u_data, &mut self.svc, stance_uid, reuse_eupdates);
         let u_stance = self.u_data.items.get_mut(stance_uid).dc_stance_mut().unwrap();
-        u_stance.set_type_aid(type_aid, &self.u_data.src);
+        u_stance.set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_add_stance(&mut self.u_data, &mut self.svc, stance_uid, reuse_eupdates);
     }
 }

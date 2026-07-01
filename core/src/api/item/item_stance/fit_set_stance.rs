@@ -19,7 +19,7 @@ impl SolarSystem {
         }
         // Add new stance
         let item_id = self.u_data.items.alloc_id();
-        let u_stance = UStance::new(item_id, type_aid, fit_uid, true, &self.u_data.src);
+        let u_stance = UStance::new(item_id, type_aid, fit_uid, true, &self.u_data.r_data);
         let u_item = UItem::Stance(u_stance);
         let stance_uid = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_uid);

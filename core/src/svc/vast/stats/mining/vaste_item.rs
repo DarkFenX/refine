@@ -80,7 +80,7 @@ where
     }
     let item = ctx.u_data.items.get(item_uid);
     for (&effect_rid, cseq) in reuse_cseq_map.iter() {
-        let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+        let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
         let ospec = match mining_ospec_getter(effect) {
             Some(effect_mining) if effect_mining.check(item) => &effect_mining.ospec,
             _ => continue,

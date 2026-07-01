@@ -73,7 +73,7 @@ fn fill_module_effect_info(
     effect_rid: REffectId,
     options: CyclingOptions,
 ) {
-    let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+    let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
     if !effect.is_active_with_duration {
         return;
     }

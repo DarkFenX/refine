@@ -39,7 +39,7 @@ impl Calc {
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(attr_rid).aid);
+                let attr_id = AttrId::from_aid(ctx.u_data.r_data.get_attr_by_rid(attr_rid).aid);
                 info_map.extend_entries(attr_id, info_vec.into_iter());
             }
         }
@@ -101,7 +101,7 @@ impl Calc {
     }
     fn calc_item_attr_info(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> AttrValInfo {
         let item = ctx.u_data.items.get(item_uid);
-        let attr = ctx.u_data.src.get_attr_by_rid(attr_rid);
+        let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_attr_info = self.calc_item_base_attr_info(ctx, item_uid, item, attr);
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(ctx, &item_uid, item, attr_rid) {
@@ -133,7 +133,9 @@ impl Calc {
                     applied_str: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                        attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
+                        attr_id: Some(AttrId::from_aid(
+                            ctx.u_data.r_data.get_attr_by_rid(limiter_attr_rid).aid,
+                        )),
                     }],
                 })
             }
@@ -154,7 +156,9 @@ impl Calc {
                     applied_str: limiter_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                        attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(limiter_attr_rid).aid)),
+                        attr_id: Some(AttrId::from_aid(
+                            ctx.u_data.r_data.get_attr_by_rid(limiter_attr_rid).aid,
+                        )),
                     }],
                 })
             }
@@ -204,7 +208,9 @@ impl Calc {
                     applied_str: security_full_val.dogma,
                     affectors: vec![Affector {
                         item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                        attr_id: Some(AttrId::from_aid(ctx.u_data.src.get_attr_by_rid(security_attr_rid).aid)),
+                        attr_id: Some(AttrId::from_aid(
+                            ctx.u_data.r_data.get_attr_by_rid(security_attr_rid).aid,
+                        )),
                     }],
                 });
                 return base_attr_info;

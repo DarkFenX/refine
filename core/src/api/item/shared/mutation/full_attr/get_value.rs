@@ -21,6 +21,6 @@ impl<'a> FullMAttrMut<'a> {
 }
 
 fn get_value(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Value {
-    let attr_rid = sol.u_data.src.get_attr_rid_by_aid(attr_aid).unwrap();
+    let attr_rid = sol.u_data.r_data.get_attr_rid_by_aid(attr_aid).unwrap();
     sol.u_data.items.get(item_uid).get_attr(attr_rid).unwrap()
 }

@@ -237,7 +237,7 @@ impl VastFitData {
             }
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
-                let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+                let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
@@ -320,7 +320,7 @@ impl VastFitData {
             };
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
-                let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+                let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }
@@ -347,7 +347,7 @@ impl VastFitData {
             }
             let item = ctx.u_data.items.get(item_uid);
             for (&effect_rid, ospec) in item_data.iter() {
-                let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+                let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
                 if !item_kinds.resolve(item, effect) {
                     continue;
                 }

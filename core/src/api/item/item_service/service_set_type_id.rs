@@ -18,7 +18,7 @@ impl SolarSystem {
         }
         SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, reuse_eupdates);
         let u_service = self.u_data.items.get_mut(service_uid).dc_service_mut().unwrap();
-        u_service.set_type_aid(type_aid, &self.u_data.src);
+        u_service.set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, reuse_eupdates);
     }
 }

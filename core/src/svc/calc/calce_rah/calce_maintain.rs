@@ -111,7 +111,7 @@ impl Calc {
         if self.rah.resonances.is_empty() {
             return;
         }
-        let attr = ctx.u_data.src.get_attr_by_rid(aspec.attr_rid);
+        let attr = ctx.u_data.r_data.get_attr_by_rid(aspec.attr_rid);
         match attr.aid {
             // Ship armor resonances and RAH resonances
             AAttrId::ARMOR_EM_DMG_RESONANCE
@@ -132,7 +132,7 @@ impl Calc {
                 self.clear_fit_rah_results(ctx, fit_uid);
             }
             // RAH cycle duration
-            _ if Some(aspec.attr_rid) == ctx.u_data.src.get_rah_duration_attr_rid()
+            _ if Some(aspec.attr_rid) == ctx.u_data.r_data.get_rah_duration_attr_rid()
                 && self.rah.resonances.contains_key(&aspec.item_uid) =>
             {
                 // Only modules should be registered in resonances container, and those are

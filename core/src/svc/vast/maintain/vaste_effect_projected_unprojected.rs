@@ -93,13 +93,13 @@ impl Vast {
                 .add_entry(projectee_uid, projector_uid, effect.rid, rep_ospec);
         }
         if let Some(neut) = &effect.neut
-            && neut.check(projector_item, u_data.src.get_attr_consts())
+            && neut.check(projector_item, u_data.r_data.get_attr_consts())
         {
             self.in_neuts
                 .add_entry(projectee_uid, projector_uid, effect.rid, neut.ospec);
         }
         if let Some(ecm) = &effect.ecm
-            && ecm.check(projector_item, u_data.src.get_attr_consts())
+            && ecm.check(projector_item, u_data.r_data.get_attr_consts())
         {
             self.in_ecm
                 .add_entry(projectee_uid, projector_uid, effect.rid, ecm.ospec);
@@ -180,12 +180,12 @@ impl Vast {
             self.in_cap.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
         if let Some(neut) = &effect.neut
-            && neut.check(projector_item, u_data.src.get_attr_consts())
+            && neut.check(projector_item, u_data.r_data.get_attr_consts())
         {
             self.in_neuts.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }
         if let Some(ecm) = &effect.ecm
-            && ecm.check(projector_item, u_data.src.get_attr_consts())
+            && ecm.check(projector_item, u_data.r_data.get_attr_consts())
         {
             self.in_ecm.remove_l3(projectee_uid, projector_uid, &effect.rid);
         }

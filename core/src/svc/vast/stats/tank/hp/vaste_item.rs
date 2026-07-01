@@ -105,7 +105,7 @@ fn get_local_ancil_hp(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = aggr_local_clip(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack()) {
                 total_ancil_hp += accum.instances.stacked;
             }
@@ -133,7 +133,7 @@ fn get_remote_ancil_hp(
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = aggr_proj_clip(
                 ctx,
                 calc,

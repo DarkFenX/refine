@@ -32,7 +32,7 @@ impl Vast {
         }
         let u_item = ctx.u_data.items.get(item_uid);
         for (&effect_rid, cseq) in reuse_cseq_map.iter() {
-            let effect = ctx.u_data.src.get_effect_by_rid(effect_rid);
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             let ospec = match &effect.neut {
                 Some(neut) if neut.check(u_item, ctx.ac()) => neut.ospec,
                 _ => continue,

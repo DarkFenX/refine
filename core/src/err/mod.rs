@@ -13,5 +13,5 @@ pub use crate::{
     },
     misc::{BreacherProfileError, DpsProfileError},
     num::{FighterCountError, FitSecStatusError, SkillLevelError, UnitIntervalError},
-    rd::SrcInitError,
+    src::error::SrcInitError,
 };

@@ -20,7 +20,7 @@ impl<'a> AbilityMut<'a> {
 
 fn get_state(sol: &SolarSystem, fighter_uid: UItemId, abil_id: &AAbilId) -> bool {
     // Only abilities which exist in source are exposed by API, just unwrap
-    let r_abil = sol.u_data.src.get_ability_by_aid(abil_id).unwrap();
+    let r_abil = sol.u_data.r_data.get_ability_by_aid(abil_id).unwrap();
     let u_fighter = sol.u_data.items.get(fighter_uid).dc_fighter().unwrap();
     match u_fighter.get_effect_mode(&r_abil.effect_rid) {
         // Default disabled/active effects are ran if fighter becomes disabled+/active+, others are

@@ -16,7 +16,7 @@ impl SolarSystem {
         let old_a_state = u_charge.get_state();
         u_charge.set_activated(activated);
         let new_a_state = u_charge.get_state();
-        u_charge.update_reffs(reuse_eupdates, &u_data.src);
+        u_charge.update_reffs(reuse_eupdates, &u_data.r_data);
         SolarSystem::util_switch_item_state(u_data, svc, charge_uid, old_a_state, new_a_state, reuse_eupdates);
     }
 }

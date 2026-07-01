@@ -36,7 +36,7 @@ impl UItemId {
 impl RAttrId {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         // Will crash if attr ID is not valid
-        u_data.src.get_attr_by_rid(*self);
+        u_data.r_data.get_attr_by_rid(*self);
         Ok(())
     }
 }
@@ -44,7 +44,7 @@ impl RAttrId {
 impl REffectId {
     pub(crate) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         // Will crash if effect ID is not valid
-        u_data.src.get_effect_by_rid(*self);
+        u_data.r_data.get_effect_by_rid(*self);
         Ok(())
     }
 }

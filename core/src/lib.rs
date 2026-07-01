@@ -44,8 +44,8 @@ pub use misc::{
     Spool,
 };
 pub use num::{Count, FighterCount, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
-pub use rd::Src;
 pub use sol::SolarSystem;
+pub use src::Src;
 pub use svc::calc::{Affector, Modification};
 pub use ud::{FitId, FleetId, ItemId};
 
@@ -60,6 +60,7 @@ mod nd;
 mod num;
 mod rd;
 mod sol;
+pub mod src;
 pub mod stats;
 mod svc;
 mod ud;

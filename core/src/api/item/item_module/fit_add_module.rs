@@ -33,7 +33,7 @@ impl SolarSystem {
             Index::ZERO,
             mutation,
             None,
-            &self.u_data.src,
+            &self.u_data.r_data,
         );
         let module_u_item = UItem::Module(u_module);
         let module_uid = self.u_data.items.add(module_u_item);
@@ -87,7 +87,7 @@ impl SolarSystem {
                     module_uid,
                     false,
                     false,
-                    &self.u_data.src,
+                    &self.u_data.r_data,
                 );
                 let charge_u_item = UItem::Charge(u_charge);
                 let charge_uid = self.u_data.items.add(charge_u_item);

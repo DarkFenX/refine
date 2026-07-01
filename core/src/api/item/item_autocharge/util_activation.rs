@@ -16,7 +16,7 @@ impl SolarSystem {
             let old_a_state = u_autocharge.get_state();
             u_autocharge.set_activated(ac_activated);
             let new_a_state = u_autocharge.get_state();
-            u_autocharge.update_reffs(reuse_eupdates, &u_data.src);
+            u_autocharge.update_reffs(reuse_eupdates, &u_data.r_data);
             SolarSystem::util_switch_item_state(u_data, svc, ac_uid, old_a_state, new_a_state, reuse_eupdates);
         }
     }

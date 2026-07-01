@@ -22,7 +22,7 @@ impl SolarSystem {
             .get_mut(drone_uid)
             .dc_drone_mut()
             .unwrap()
-            .set_type_aid(type_aid, &self.u_data.src);
+            .set_type_aid(type_aid, &self.u_data.r_data);
         SolarSystem::util_update_item_radius_in_projs(&mut self.u_data, &self.rev_projs, &mut self.svc, drone_uid);
         SolarSystem::util_add_drone(&mut self.u_data, &mut self.svc, drone_uid, reuse_eupdates);
     }

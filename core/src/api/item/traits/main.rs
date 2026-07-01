@@ -45,7 +45,7 @@ pub trait ItemCommon: ItemSealed {
             }
         };
         let effect_infos = effect_rids.map(move |&effect_rid| {
-            let effect_aid = sol.u_data.src.get_effect_by_rid(effect_rid).aid;
+            let effect_aid = sol.u_data.r_data.get_effect_by_rid(effect_rid).aid;
             let running = reffs.contains(&effect_rid);
             let mode = item.get_effect_mode(&effect_rid);
             (EffectId::from_aid(effect_aid), EffectInfo { running, mode })
@@ -60,7 +60,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let attr_aid = attr_id.into_aid();
-        let Some(attr_rid) = sol.u_data.src.get_attr_rid_by_aid(&attr_aid) else {
+        let Some(attr_rid) = sol.u_data.r_data.get_attr_rid_by_aid(&attr_aid) else {
             return Err(AttrFoundError { attr_id: *attr_id }.into());
         };
         match sol.internal_get_item_attr(item_uid, attr_rid) {
@@ -77,7 +77,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_uid) {
             Ok(attr_iter) => Ok(attr_iter.map(|(attr_rid, calc_vals)| {
                 (
-                    AttrId::from_aid(sol.u_data.src.get_attr_by_rid(attr_rid).aid),
+                    AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
                     AttrVals::from_calc_attr_vals(calc_vals),
                 )
             })),

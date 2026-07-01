@@ -15,7 +15,7 @@ impl SolarSystem {
         let old_a_state = u_implant.get_state();
         u_implant.set_implant_state(state);
         let new_a_state = u_implant.get_state();
-        u_implant.update_reffs(reuse_eupdates, &self.u_data.src);
+        u_implant.update_reffs(reuse_eupdates, &self.u_data.r_data);
         SolarSystem::util_switch_item_state(
             &self.u_data,
             &mut self.svc,

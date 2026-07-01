@@ -9,31 +9,94 @@ use crate::{
     util::{ArenaPrm, RMap},
 };
 
+pub(crate) type RcData = Arc<RData>;
 pub(crate) type RcItem = Arc<RItem>;
 pub(crate) type RcEffect = Arc<REffect>;
 pub(crate) type RcMuta = Arc<RMuta>;
 
-pub(in crate::rd) struct RData {
-    pub(in crate::rd) items: RMap<AItemId, RcItem>,
-    pub(in crate::rd) item_lists: ArenaPrm<RItemListId, RItemList>,
-    pub(in crate::rd) item_list_aid_rid_map: RMap<AItemListId, RItemListId>,
-    pub(in crate::rd) attrs: ArenaPrm<RAttrId, RAttr>,
-    pub(in crate::rd) attr_aid_rid_map: RMap<AAttrId, RAttrId>,
-    pub(in crate::rd) attr_consts: RAttrConsts,
-    pub(in crate::rd) effects: ArenaPrm<REffectId, RcEffect>,
-    pub(in crate::rd) effect_aid_rid_map: RMap<AEffectId, REffectId>,
-    pub(in crate::rd) effect_consts: REffectConsts,
-    pub(in crate::rd) buffs: ArenaPrm<RBuffId, RBuff>,
-    pub(in crate::rd) buff_aid_rid_map: RMap<ABuffId, RBuffId>,
-    pub(in crate::rd) mutas: RMap<AItemId, RcMuta>,
-    pub(in crate::rd) abils: RMap<AAbilId, RAbil>,
+pub(crate) struct RData {
+    items: RMap<AItemId, RcItem>,
+    item_lists: ArenaPrm<RItemListId, RItemList>,
+    item_list_aid_rid_map: RMap<AItemListId, RItemListId>,
+    attrs: ArenaPrm<RAttrId, RAttr>,
+    attr_aid_rid_map: RMap<AAttrId, RAttrId>,
+    attr_consts: RAttrConsts,
+    effects: ArenaPrm<REffectId, RcEffect>,
+    effect_aid_rid_map: RMap<AEffectId, REffectId>,
+    effect_consts: REffectConsts,
+    buffs: ArenaPrm<RBuffId, RBuff>,
+    buff_aid_rid_map: RMap<ABuffId, RBuffId>,
+    mutas: RMap<AItemId, RcMuta>,
+    abils: RMap<AAbilId, RAbil>,
+    // Extra data stored directly on RData for ease of access / optimization purposes
+    online_effect: Option<RcEffect>,
+    rah_duration_attr_rid: Option<RAttrId>,
+}
+impl RData {
+    // Item methods
+    pub(crate) fn get_item_by_aid(&self, item_aid: &AItemId) -> Option<&RcItem> {
+        self.items.get(item_aid)
+    }
+    // Item list methods
+    pub(crate) fn get_item_list_by_rid(&self, item_list_rid: RItemListId) -> &RItemList {
+        self.item_lists.get(item_list_rid).unwrap()
+    }
+    pub(crate) fn get_item_list_rid_by_aid(&self, item_list_aid: &AItemListId) -> Option<RItemListId> {
+        self.item_list_aid_rid_map.get(item_list_aid).copied()
+    }
+    // Attr methods
+    pub(crate) fn get_attr_by_rid(&self, attr_rid: RAttrId) -> &RAttr {
+        self.attrs.get(attr_rid).unwrap()
+    }
+    pub(crate) fn get_attr_rid_by_aid(&self, attr_aid: &AAttrId) -> Option<RAttrId> {
+        self.attr_aid_rid_map.get(attr_aid).copied()
+    }
+    pub(crate) fn get_attr_aid_rid_map(&self) -> &RMap<AAttrId, RAttrId> {
+        &self.attr_aid_rid_map
+    }
+    pub(crate) fn get_attr_consts(&self) -> &RAttrConsts {
+        &self.attr_consts
+    }
+    // Attr methods
+    pub(crate) fn get_effect_by_rid(&self, effect_rid: REffectId) -> &RcEffect {
+        self.effects.get(effect_rid).unwrap()
+    }
+    pub(crate) fn get_effect_rid_by_aid(&self, effect_aid: &AEffectId) -> Option<REffectId> {
+        self.effect_aid_rid_map.get(effect_aid).copied()
+    }
+    pub(crate) fn get_effect_consts(&self) -> &REffectConsts {
+        &self.effect_consts
+    }
+    // Buff methods
+    pub(crate) fn get_buff_by_rid(&self, buff_rid: RBuffId) -> &RBuff {
+        self.buffs.get(buff_rid).unwrap()
+    }
+    pub(crate) fn get_buff_by_aid(&self, buff_aid: &ABuffId) -> Option<&RBuff> {
+        let buff_rid = *self.buff_aid_rid_map.get(buff_aid)?;
+        Some(self.get_buff_by_rid(buff_rid))
+    }
+    // Mutator methods
+    pub(crate) fn get_mutator_by_aid(&self, item_aid: &AItemId) -> Option<&RcMuta> {
+        self.mutas.get(item_aid)
+    }
+    // Ability methods
+    pub(crate) fn get_ability_by_aid(&self, ability_aid: &AAbilId) -> Option<&RAbil> {
+        self.abils.get(ability_aid)
+    }
+    // Misc getters
+    pub(crate) fn get_online_effect(&self) -> Option<&RcEffect> {
+        self.online_effect.as_ref()
+    }
+    pub(crate) fn get_rah_duration_attr_rid(&self) -> Option<RAttrId> {
+        self.rah_duration_attr_rid
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RData {
-    pub(in crate::rd) fn from_a_data(a_data: AData) -> Self {
+    pub(crate) fn from_a_data(a_data: AData) -> Self {
         let mut items: RMap<_, _> = a_data
             .items
             .data
@@ -131,6 +194,13 @@ impl RData {
         for r_abil in abils.values_mut() {
             r_abil.fill_runtime(&effect_aid_rid_map);
         }
+        // Extra data
+        let rah_duration_attr_rid = effect_consts
+            .adaptive_armor_hardener
+            .and_then(|effect_rid| effects.get(effect_rid).unwrap().duration_attr_rid);
+        let online_effect = effect_consts
+            .online
+            .map(|effect_rid| effects.get(effect_rid).unwrap().clone());
         Self {
             items,
             item_lists,
@@ -145,6 +215,8 @@ impl RData {
             buff_aid_rid_map,
             mutas,
             abils,
+            rah_duration_attr_rid,
+            online_effect,
         }
     }
 }

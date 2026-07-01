@@ -18,7 +18,7 @@ impl SolarSystem {
         svc.notify_item_projected();
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_rid in reffs.iter() {
-                let r_effect = u_data.src.get_effect_by_rid(effect_rid);
+                let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                 if is_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_projected(
                         u_data,
@@ -43,7 +43,7 @@ impl SolarSystem {
         let projectee_u_item = u_data.items.get(projectee_uid);
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_rid in reffs.iter() {
-                let r_effect = u_data.src.get_effect_by_rid(effect_rid);
+                let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                 if is_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_unprojected(
                         u_data,
@@ -70,7 +70,7 @@ impl SolarSystem {
         svc.notify_item_proj_data_changed();
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_rid in reffs.iter() {
-                let r_effect = u_data.src.get_effect_by_rid(effect_rid);
+                let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
                 if is_effect_projectable(projector_u_item, r_effect) {
                     svc.notify_effect_proj_data_changed(
                         u_data,
