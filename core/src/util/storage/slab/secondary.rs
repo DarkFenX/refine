@@ -1,21 +1,21 @@
 use cranelift_entity::SecondaryMap;
 
-use super::shared::ArenaId;
+use super::shared::SlabId;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular version
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct ArenaSec<I, V>
+pub(crate) struct SlabSec<I, V>
 where
-    I: ArenaId,
+    I: SlabId,
     V: Clone,
 {
     data: SecondaryMap<I, Option<V>>,
 }
-impl<I, V> ArenaSec<I, V>
+impl<I, V> SlabSec<I, V>
 where
-    I: ArenaId,
+    I: SlabId,
     V: Clone,
 {
     pub(crate) fn new() -> Self {
@@ -47,20 +47,20 @@ where
 // should be upheld by code using it
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct ArenaSecUnchecked<I, V>
+pub(crate) struct SlabSecUnchecked<I, V>
 where
-    I: ArenaId,
+    I: SlabId,
     V: Clone,
 {
-    inner: ArenaSec<I, V>,
+    inner: SlabSec<I, V>,
 }
-impl<I, V> ArenaSecUnchecked<I, V>
+impl<I, V> SlabSecUnchecked<I, V>
 where
-    I: ArenaId,
+    I: SlabId,
     V: Clone,
 {
     pub(crate) fn new() -> Self {
-        Self { inner: ArenaSec::new() }
+        Self { inner: SlabSec::new() }
     }
     pub(crate) fn get(&self, id: I) -> &V {
         self.inner.get(id).unwrap()

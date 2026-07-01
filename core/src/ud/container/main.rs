@@ -1,24 +1,24 @@
 use std::{hash::Hash, marker::PhantomData};
 
-use crate::util::{ArenaId, ArenaPrm, LibDefault, LibGetId, LibIncrement, LibNamed, RMap};
+use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, RMap, SlabId, SlabPrm};
 
 pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
-    pub(super) data: ArenaPrm<IntId, T>,
+    pub(super) data: SlabPrm<IntId, T>,
     pub(super) ext_id_to_int_id: RMap<ExtId, IntId>,
     phantom: PhantomData<Err>,
 }
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where
     T: LibGetId<ExtId> + LibNamed,
-    IntId: ArenaId,
+    IntId: SlabId,
     ExtId: Copy + Eq + Hash + LibDefault + LibIncrement,
     Err: From<ExtId>,
 {
     pub(in crate::ud) fn new(capacity: usize) -> Self {
         Self {
             counter: ExtId::lib_default(),
-            data: ArenaPrm::with_capacity(capacity),
+            data: SlabPrm::with_capacity(capacity),
             ext_id_to_int_id: RMap::with_capacity(capacity),
             phantom: PhantomData,
         }

@@ -6,7 +6,7 @@ use crate::{
         RAbil, RAttr, RAttrConsts, RAttrId, RBuff, RBuffId, REffect, REffectConsts, REffectId, RItem, RItemList,
         RItemListId, RMuta,
     },
-    util::{ArenaPrm, RMap},
+    util::{RMap, SlabPrm},
 };
 
 pub(crate) type RcData = Arc<RData>;
@@ -16,15 +16,15 @@ pub(crate) type RcMuta = Arc<RMuta>;
 
 pub(crate) struct RData {
     items: RMap<AItemId, RcItem>,
-    item_lists: ArenaPrm<RItemListId, RItemList>,
+    item_lists: SlabPrm<RItemListId, RItemList>,
     item_list_aid_rid_map: RMap<AItemListId, RItemListId>,
-    attrs: ArenaPrm<RAttrId, RAttr>,
+    attrs: SlabPrm<RAttrId, RAttr>,
     attr_aid_rid_map: RMap<AAttrId, RAttrId>,
     attr_consts: RAttrConsts,
-    effects: ArenaPrm<REffectId, RcEffect>,
+    effects: SlabPrm<REffectId, RcEffect>,
     effect_aid_rid_map: RMap<AEffectId, REffectId>,
     effect_consts: REffectConsts,
-    buffs: ArenaPrm<RBuffId, RBuff>,
+    buffs: SlabPrm<RBuffId, RBuff>,
     buff_aid_rid_map: RMap<ABuffId, RBuffId>,
     mutas: RMap<AItemId, RcMuta>,
     abils: RMap<AAbilId, RAbil>,
@@ -117,7 +117,7 @@ impl RData {
             .collect();
         // Item lists
         let mut item_list_aid_rid_map = RMap::with_capacity(a_data.item_lists.data.len());
-        let mut item_lists = ArenaPrm::with_capacity(a_data.item_lists.data.len());
+        let mut item_lists = SlabPrm::with_capacity(a_data.item_lists.data.len());
         for a_item_list in a_data.item_lists.iter() {
             let entry = item_lists.vacant_entry();
             let item_list_rid = entry.id();
@@ -127,7 +127,7 @@ impl RData {
         }
         // Attributes
         let mut attr_aid_rid_map = RMap::with_capacity(a_data.attrs.data.len());
-        let mut attrs = ArenaPrm::with_capacity(a_data.attrs.data.len());
+        let mut attrs = SlabPrm::with_capacity(a_data.attrs.data.len());
         for a_attr in a_data.attrs.iter() {
             let entry = attrs.vacant_entry();
             let attr_rid = entry.id();
@@ -137,7 +137,7 @@ impl RData {
         }
         // Effects
         let mut effect_aid_rid_map = RMap::with_capacity(a_data.effects.data.len());
-        let mut effects = ArenaPrm::with_capacity(a_data.effects.data.len());
+        let mut effects = SlabPrm::with_capacity(a_data.effects.data.len());
         for a_effect in a_data.effects.iter() {
             let entry = effects.vacant_entry();
             let effect_rid = entry.id();
@@ -147,7 +147,7 @@ impl RData {
         }
         // Buffs
         let mut buff_aid_rid_map = RMap::with_capacity(a_data.buffs.data.len());
-        let mut buffs = ArenaPrm::with_capacity(a_data.buffs.data.len());
+        let mut buffs = SlabPrm::with_capacity(a_data.buffs.data.len());
         for a_buff in a_data.buffs.iter() {
             let entry = buffs.vacant_entry();
             let buff_rid = entry.id();

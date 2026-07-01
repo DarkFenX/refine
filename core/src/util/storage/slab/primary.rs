@@ -1,15 +1,15 @@
 use slab::Slab;
 
-use super::shared::ArenaId;
+use super::shared::SlabId;
 
 #[derive(Clone)]
-pub(crate) struct ArenaPrm<I, V> {
+pub(crate) struct SlabPrm<I, V> {
     data: Slab<V>,
     phantom: std::marker::PhantomData<I>,
 }
-impl<I, V> ArenaPrm<I, V>
+impl<I, V> SlabPrm<I, V>
 where
-    I: ArenaId,
+    I: SlabId,
 {
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -48,14 +48,14 @@ where
 
 pub(crate) struct VacantEntry<'a, I, V>
 where
-    I: ArenaId,
+    I: SlabId,
 {
     inner: slab::VacantEntry<'a, V>,
     phantom: std::marker::PhantomData<I>,
 }
 impl<'a, I, V> VacantEntry<'a, I, V>
 where
-    I: ArenaId,
+    I: SlabId,
 {
     fn new(inner: slab::VacantEntry<'a, V>) -> Self {
         Self {

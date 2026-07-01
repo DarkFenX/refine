@@ -1,9 +1,9 @@
-use crate::util::ArenaId;
+use crate::util::SlabId;
 
 #[derive(Copy, Clone, Eq, PartialEq, Hash)]
 pub(crate) struct RBuffId(usize);
 
-impl ArenaId for RBuffId {
+impl SlabId for RBuffId {
     fn new(index: usize) -> Self {
         Self(index)
     }

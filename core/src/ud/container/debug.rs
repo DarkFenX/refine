@@ -3,12 +3,12 @@ use std::hash::Hash;
 use crate::{
     dbg::DebugResult,
     ud::container::UEntityContainer,
-    util::{ArenaId, RSet},
+    util::{RSet, SlabId},
 };
 
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where
-    IntId: Hash + ArenaId,
+    IntId: Hash + SlabId,
     ExtId: Eq + Hash,
 {
     pub(in crate::ud) fn consistency_check(&self) -> DebugResult {
