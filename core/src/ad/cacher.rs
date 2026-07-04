@@ -9,11 +9,11 @@ use crate::ad::{AData, AFingerprint};
 /// data handlers which store data on themselves.
 pub trait AdaptedDataCacher: std::fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
-    fn get_cache_fingerprint(&mut self) -> Option<AFingerprint>;
+    fn get_cache_fingerprint(&mut self) -> Result<AFingerprint, Box<dyn std::error::Error>>;
     /// Load cache from persistent storage.
     fn load_from_cache(&mut self) -> Result<AData, Box<dyn std::error::Error>>;
     /// Store passed data in cache.
-    fn write_cache(&mut self, data: &AData, fingerprint: AFingerprint);
+    fn write_cache(&mut self, data: &AData, fingerprint: AFingerprint) -> Result<(), Box<dyn std::error::Error>>;
     /// Get adapted data cacher version.
     ///
     /// Change in version triggers adapted data cache rebuild, even if source data and core library

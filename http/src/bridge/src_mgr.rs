@@ -129,8 +129,6 @@ fn create_src(
         Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias))),
         None => None,
     };
-    rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| {
-        let reason = format!("failed to initialize source: {e}");
-        HBrError::SrcInitFailed(reason)
-    })
+    tracing::info!("initializing new source with {edh:?} and {adc:?}");
+    rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| HBrError::SrcInitFailed(e.to_string()))
 }

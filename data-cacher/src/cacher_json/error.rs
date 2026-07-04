@@ -4,6 +4,8 @@ pub(super) enum JsonZfileAdcReadError {
     DataReadFailed(String),
     #[error("unable to parse cache data: {0}")]
     DataParseFailed(String),
+    #[error("unable to read fingerprint: {0}")]
+    FpReadFailed(String),
 }
 impl From<struson::reader::ReaderError> for JsonZfileAdcReadError {
     fn from(error: struson::reader::ReaderError) -> Self {

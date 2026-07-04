@@ -74,12 +74,10 @@ impl fmt::Debug for JsonZfileAdc {
     }
 }
 impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
-    fn get_cache_fingerprint(&mut self) -> Option<rc::ad::AFingerprint> {
-        let fp_path = self.get_fingerprint_path();
-        match std::fs::read_to_string(fp_path) {
-            Ok(fingerprint) => Some(rc::ad::AFingerprint::from_string(fingerprint.trim().into())),
-            Err(_) => None,
-        }
+    fn get_cache_fingerprint(&mut self) -> Result<rc::ad::AFingerprint, Box<dyn std::error::Error>> {
+        let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
+            .map_err(|e| JsonZfileAdcReadError::FpReadFailed(e.to_string()))?;
+        Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
     fn load_from_cache(&mut self) -> Result<rc::ad::AData, Box<dyn std::error::Error>> {
         let full_path = self.get_cache_path();
@@ -92,19 +90,15 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         let c_data = CData::try_deserialize(reader)?;
         Ok(c_data.into_adapted())
     }
-    #[tracing::instrument(name = "adc-json-zfile-update", level = "trace", skip_all)]
-    fn write_cache(&mut self, a_data: &rc::ad::AData, fingerprint: rc::ad::AFingerprint) {
-        if let Err(error) = self.create_cache_folder() {
-            tracing::error!("{error}");
-            return;
-        }
-        if let Err(error) = self.write_data(CData::from_adapted(a_data)) {
-            tracing::error!("{error}");
-            return;
-        }
-        if let Err(error) = self.write_fingerprint(fingerprint) {
-            tracing::error!("{error}");
-        }
+    fn write_cache(
+        &mut self,
+        a_data: &rc::ad::AData,
+        fingerprint: rc::ad::AFingerprint,
+    ) -> Result<(), Box<dyn std::error::Error>> {
+        self.create_cache_folder()?;
+        self.write_data(CData::from_adapted(a_data))?;
+        self.write_fingerprint(fingerprint)?;
+        Ok(())
     }
     fn get_cacher_version(&self) -> String {
         VERSION.to_string()

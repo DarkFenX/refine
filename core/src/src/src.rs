@@ -1,13 +1,7 @@
 use std::sync::Arc;
 
-use super::{error::SrcInitError, origin::SrcOrigin, prepare::prepare_adapted_data};
+use super::{error::SrcInitError, info::SrcInfo, prepare::prepare_adapted_data};
 use crate::{ad::AdaptedDataCacher, ed::EveDataHandler, rd::RData};
-
-/// Data source and extra info on
-pub struct SrcWithOrigin {
-    pub src: Src,
-    pub origin: SrcOrigin,
-}
 
 /// Data source.
 ///
@@ -18,6 +12,7 @@ pub struct SrcWithOrigin {
 #[derive(Clone)]
 pub struct Src {
     pub(crate) r_data: Arc<RData>,
+    info: SrcInfo,
 }
 impl Src {
     #[tracing::instrument(name = "src-new", level = "trace", skip_all)]
@@ -25,10 +20,11 @@ impl Src {
         ed_handler: &dyn EveDataHandler,
         ad_cacher: Option<&mut Box<dyn AdaptedDataCacher>>,
     ) -> Result<Self, SrcInitError> {
-        let a_data = prepare_adapted_data(ed_handler, ad_cacher)?;
+        let (a_data, info) = prepare_adapted_data(ed_handler, ad_cacher)?;
         let r_data = RData::from_a_data(a_data);
         Ok(Self {
             r_data: Arc::new(r_data),
+            info,
         })
     }
 }
