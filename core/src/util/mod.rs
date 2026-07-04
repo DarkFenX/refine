@@ -11,7 +11,6 @@ pub(crate) use storage::{
     CMap, RMap, RMapRMap, RMapRMapRMap, RMapRSet, RMapVec, ROrdSet, RSet, SlabId, SlabPrm, SlabSec, SlabSecUnchecked,
     extend_vec_from_map_set_l1,
 };
-pub(crate) use str_err::StrMsgError;
 pub(crate) use traits::{LibConverter, LibDefault, LibGetId, LibIncrement, LibMax, LibNamed};
 
 mod float;
@@ -19,5 +18,4 @@ mod func;
 mod iter_peek_prefetch;
 mod state;
 mod storage;
-mod str_err;
 mod traits;

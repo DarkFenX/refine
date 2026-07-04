@@ -3,7 +3,7 @@ use crate::{
         AAttrId, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier, ABuffs, ADataGenerator, AItemGrpId,
         AItemId, AModifierSrq, AOp,
     },
-    util::{RMap, StrMsgError},
+    util::RMap,
 };
 
 impl ADataGenerator {
@@ -65,17 +65,15 @@ impl ADataGenerator {
     }
 }
 
-fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ABuffAggrMode, StrMsgError> {
+fn conv_buff_aggr_mode(aggr_mode: &str) -> Result<ABuffAggrMode, String> {
     match aggr_mode {
         "Minimum" => Ok(ABuffAggrMode::Min),
         "Maximum" => Ok(ABuffAggrMode::Max),
-        _ => Err(StrMsgError {
-            msg: format!("unexpected aggregate mode \"{aggr_mode}\""),
-        }),
+        _ => Err(format!("unexpected aggregate mode \"{aggr_mode}\"")),
     }
 }
 
-fn conv_buff_op(operation: &str) -> Result<AOp, StrMsgError> {
+fn conv_buff_op(operation: &str) -> Result<AOp, String> {
     match operation {
         "PreAssignment" => Ok(AOp::PreAssign),
         "PreMul" => Ok(AOp::PreMul),
@@ -86,8 +84,6 @@ fn conv_buff_op(operation: &str) -> Result<AOp, StrMsgError> {
         "PostDiv" => Ok(AOp::PostDiv),
         "PostPercent" => Ok(AOp::PostPerc),
         "PostAssignment" => Ok(AOp::PostAssign),
-        _ => Err(StrMsgError {
-            msg: format!("unexpected operation \"{operation}\""),
-        }),
+        _ => Err(format!("unexpected operation \"{operation}\"")),
     }
 }

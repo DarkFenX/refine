@@ -5,7 +5,7 @@ use crate::{
         AItemId, AModifierSrq, AOp, AState, generator::get_abil_effect,
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
-    util::{RMap, RSet, StrMsgError},
+    util::{RMap, RSet},
 };
 
 impl ADataGenerator {
@@ -72,9 +72,7 @@ impl ADataGenerator {
                     "LocationGroupModifier" => conv_locgrp_mod(e_modifier, &a_effect),
                     "LocationRequiredSkillModifier" => conv_locsrq_mod(e_modifier, &a_effect),
                     "OwnerRequiredSkillModifier" => conv_ownsrq_mod(e_modifier, &a_effect),
-                    _ => Err(StrMsgError {
-                        msg: format!("unknown function \"{}\"", e_modifier.func),
-                    }),
+                    _ => Err(format!("unknown function \"{}\"", e_modifier.func)),
                 };
                 match a_mod_res {
                     Ok(a_mod) => a_effect.modifiers.insert(a_mod),
@@ -137,15 +135,13 @@ impl EAbil {
     }
 }
 
-fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgError> {
+fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, String> {
     match e_modifier.func.as_str() {
         "EffectStopper" => {
             let arg_map = make_arg_map(&e_modifier.args);
             let domain = get_arg_str(&arg_map, "domain")?;
             if domain.ne("target") {
-                return Err(StrMsgError {
-                    msg: format!("unexpected domain \"{domain}\""),
-                });
+                return Err(format!("unexpected domain \"{domain}\""));
             }
             Ok(Some(EEffectId::from_i32(get_arg_int(&arg_map, "effectID")?)))
         }
@@ -153,7 +149,7 @@ fn extract_stopper(e_modifier: &EEffectMod) -> Result<Option<EEffectId>, StrMsgE
     }
 }
 
-fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
+fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, String> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
         strength: get_mod_strength(&arg_map)?,
@@ -163,7 +159,7 @@ fn conv_item_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectM
     })
 }
 
-fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
+fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, String> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
         strength: get_mod_strength(&arg_map)?,
@@ -173,7 +169,7 @@ fn conv_loc_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectMo
     })
 }
 
-fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
+fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, String> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
         strength: get_mod_strength(&arg_map)?,
@@ -186,7 +182,7 @@ fn conv_locgrp_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
     })
 }
 
-fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
+fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, String> {
     let arg_map = make_arg_map(&e_modifier.args);
     Ok(AEffectModifier {
         strength: get_mod_strength(&arg_map)?,
@@ -199,18 +195,16 @@ fn conv_locsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
     })
 }
 
-fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, StrMsgError> {
+fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffectModifier, String> {
     let arg_map = make_arg_map(&e_modifier.args);
     if !matches!(
         get_mod_location(&arg_map, a_effect)?,
         AEffectLocation::Char | AEffectLocation::Target
     ) {
-        return Err(StrMsgError {
-            msg: format!(
-                "unexpected domain \"{}\" for owner-filtered modification",
-                get_arg_str(&arg_map, "domain")?
-            ),
-        });
+        return Err(format!(
+            "unexpected domain \"{}\" for owner-filtered modification",
+            get_arg_str(&arg_map, "domain")?
+        ));
     }
     Ok(AEffectModifier {
         strength: get_mod_strength(&arg_map)?,
@@ -220,20 +214,20 @@ fn conv_ownsrq_mod(e_modifier: &EEffectMod, a_effect: &AEffect) -> Result<AEffec
     })
 }
 
-fn get_mod_strength(arg_map: &RMap<String, EPrimitive>) -> Result<AEffectModStrength, StrMsgError> {
+fn get_mod_strength(arg_map: &RMap<String, EPrimitive>) -> Result<AEffectModStrength, String> {
     get_arg_int(arg_map, "modifyingAttributeID")
         .map(EAttrId::from_i32)
         .map(AAttrId::from_eid)
         .map(AEffectModStrength::Attr)
 }
 
-fn get_mod_affectee_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttrId, StrMsgError> {
+fn get_mod_affectee_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttrId, String> {
     get_arg_int(arg_map, "modifiedAttributeID")
         .map(EAttrId::from_i32)
         .map(AAttrId::from_eid)
 }
 
-fn get_mod_location(arg_map: &RMap<String, EPrimitive>, a_effect: &AEffect) -> Result<AEffectLocation, StrMsgError> {
+fn get_mod_location(arg_map: &RMap<String, EPrimitive>, a_effect: &AEffect) -> Result<AEffectLocation, String> {
     let domain = get_arg_str(arg_map, "domain")?;
     match domain.as_str() {
         "itemID" => Ok(AEffectLocation::Item),
@@ -242,18 +236,14 @@ fn get_mod_location(arg_map: &RMap<String, EPrimitive>, a_effect: &AEffect) -> R
         "structureID" => Ok(AEffectLocation::Structure),
         "targetID" => match a_effect.category {
             AEffectCatId::TARGET => Ok(AEffectLocation::Target),
-            _ => Err(StrMsgError {
-                msg: format!("modifier uses {domain} domain on untargeted effect"),
-            }),
+            _ => Err(format!("modifier uses {domain} domain on untargeted effect")),
         },
         "otherID" => Ok(AEffectLocation::Other),
-        _ => Err(StrMsgError {
-            msg: format!("unknown domain {domain}"),
-        }),
+        _ => Err(format!("unknown domain {domain}")),
     }
 }
 
-fn get_mod_operation(arg_map: &RMap<String, EPrimitive>) -> Result<AOp, StrMsgError> {
+fn get_mod_operation(arg_map: &RMap<String, EPrimitive>) -> Result<AOp, String> {
     let op = get_arg_int(arg_map, "operation")?;
     match op {
         -1 => Ok(AOp::PreAssign),
@@ -266,45 +256,35 @@ fn get_mod_operation(arg_map: &RMap<String, EPrimitive>) -> Result<AOp, StrMsgEr
         6 => Ok(AOp::PostPerc),
         7 => Ok(AOp::PostAssign),
         8 => Ok(AOp::PostPercImmune),
-        _ => Err(StrMsgError {
-            msg: format!("unknown operation {op}"),
-        }),
+        _ => Err(format!("unknown operation {op}")),
     }
 }
 
-fn get_mod_grp_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AItemGrpId, StrMsgError> {
+fn get_mod_grp_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AItemGrpId, String> {
     get_arg_int(arg_map, "groupID")
         .map(EItemGrpId::from_i32)
         .map(AItemGrpId::from_eid)
 }
 
-fn get_mod_skill_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AItemId, StrMsgError> {
+fn get_mod_skill_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AItemId, String> {
     get_arg_int(arg_map, "skillTypeID")
         .map(EItemId::from_i32)
         .map(AItemId::from_eid)
 }
 
-fn get_arg_int(arg_map: &RMap<String, EPrimitive>, name: &str) -> Result<i32, StrMsgError> {
-    let primitive = arg_map.get(name).ok_or(StrMsgError {
-        msg: format!("no \"{name}\" in args"),
-    })?;
+fn get_arg_int(arg_map: &RMap<String, EPrimitive>, name: &str) -> Result<i32, String> {
+    let primitive = arg_map.get(name).ok_or(format!("no \"{name}\" in args"))?;
     match primitive {
         EPrimitive::Int(i) => Ok(*i),
-        _ => Err(StrMsgError {
-            msg: format!("expected int in \"{name}\" value"),
-        }),
+        _ => Err(format!("expected int in \"{name}\" value")),
     }
 }
 
-fn get_arg_str(arg_map: &RMap<String, EPrimitive>, name: &str) -> Result<String, StrMsgError> {
-    let primitive = arg_map.get(name).ok_or(StrMsgError {
-        msg: format!("no \"{name}\" in args"),
-    })?;
+fn get_arg_str(arg_map: &RMap<String, EPrimitive>, name: &str) -> Result<String, String> {
+    let primitive = arg_map.get(name).ok_or(format!("no \"{name}\" in args"))?;
     match primitive {
         EPrimitive::String(s) => Ok(s.clone()),
-        _ => Err(StrMsgError {
-            msg: format!("expected string in \"{name}\" value"),
-        }),
+        _ => Err(format!("expected string in \"{name}\" value")),
     }
 }
 
