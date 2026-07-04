@@ -37,7 +37,9 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             self, *,
             data: eve.EveObjects | type[Default] = Default,
             src_info_mode: ApiSrcInfoMode | type[Absent] = ApiSrcInfoMode.full,
+            status_code: int = 201,
             cleanup_check: bool = True,
+            json_predicate: dict | None = None,
             hook_data_prim: DataPrimHook | None = None,
     ) -> None:
         if data is Default:
@@ -46,10 +48,11 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
         resp = self.create_source_request(
             data=data,
             src_info_mode=src_info_mode).send()
-        assert resp.status_code == 201
-        if cleanup_check:
-            assert len(resp.json().get('warnings', {}).get('adg_cleanup', ())) == 0
-        self.__created_data_aliases.add(data.alias)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if status_code == 201:
+            if cleanup_check:
+                assert len(resp.json().get('warnings', {}).get('adg_cleanup', ())) == 0
+            self.__created_data_aliases.add(data.alias)
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
@@ -65,7 +68,9 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
     def create_sources(
             self, *,
             src_info_mode: ApiSrcInfoMode | type[Absent] = ApiSrcInfoMode.full,
+            status_code: int = 201,
             cleanup_check: bool = True,
+            json_predicate: dict | None = None,
             hook_data_prim: DataPrimHook | None = None,
     ) -> None:
         # If no data was created, create default one
@@ -75,7 +80,9 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             self.create_source(
                 data=data,
                 src_info_mode=src_info_mode,
+                status_code=status_code,
                 cleanup_check=cleanup_check,
+                json_predicate=json_predicate,
                 hook_data_prim=hook_data_prim)
 
     def cleanup_sources(self) -> None:

@@ -1,3 +1,4 @@
+import re
 import typing
 
 import requests
@@ -26,4 +27,15 @@ def subset_check(*, actual: typing.Any, expected: typing.Any) -> None:
     if isinstance(actual, dict) and isinstance(expected, dict):
         for name in expected:
             subset_check(actual=actual.get(name), expected=expected.get(name))
+        return
+    if isinstance(actual, list | tuple) and isinstance(expected, list | tuple):
+        assert len(actual) == len(expected)
+        for i in range(len(expected)):
+            subset_check(actual=actual[i], expected=expected[i])
+        return
+    # Regex matching based on "re:" string prefix
+    if isinstance(expected, str) and expected[:3] == 're:':
+        pattern = expected[3:]
+        assert re.match(pattern, actual) is not None
+        return
     assert actual == expected
