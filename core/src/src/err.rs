@@ -1,4 +1,4 @@
-use crate::ad::ADataGeneratorError;
+use crate::ad::err::ADataGeneratorError;
 
 #[derive(thiserror::Error, Debug)]
 pub enum SrcInitError {

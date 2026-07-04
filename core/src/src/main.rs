@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use super::{
-    error::SrcInitError,
+    err::SrcInitError,
     info::{SrcInfo, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
 };
 use crate::{

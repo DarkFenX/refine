@@ -1,6 +1,7 @@
 use crate::{
     ad::{
-        ADataGenerator, ADataGeneratorError, ADataWarnings,
+        ADataGenerator, ADataWarnings,
+        err::ADataGeneratorError,
         generator::rels::{KeyDb, KeyPart},
     },
     ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},

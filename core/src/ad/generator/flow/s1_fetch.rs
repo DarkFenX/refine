@@ -1,5 +1,5 @@
 use crate::{
-    ad::{ADataGenerator, ADataGeneratorError, ADataWarnings},
+    ad::{ADataGenerator, ADataWarnings, err::ADataGeneratorError},
     ed::{EDataCont, EveDataHandler},
     util::LibNamed,
 };
