@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use super::{
     error::SrcInitError,
-    info::{SrcInfo, SrcOrigin, SrcOriginCached, SrcOriginGenFpMismatch, SrcOriginGenReason, SrcWarnings},
+    info::{SrcInfo, SrcOrigin, SrcOriginCached, SrcOriginGenReason, SrcWarnings},
 };
 use crate::{
     ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher},
@@ -58,10 +58,9 @@ impl Src {
         if cached_fingerprint != current_fingerprint {
             return generate_and_cache(
                 ed_handler,
-                SrcOrigin::Generated(SrcOriginGenReason::FingerprintMismatch(SrcOriginGenFpMismatch {
-                    needed: current_fingerprint.get_str().to_string(),
-                    cached: cached_fingerprint.into_string(),
-                })),
+                SrcOrigin::Generated(SrcOriginGenReason::FingerprintMismatch(format!(
+                    "needed fingerprint {current_fingerprint}, cached fingerprint {cached_fingerprint}"
+                ))),
                 ad_cacher,
                 current_fingerprint,
             );

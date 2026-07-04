@@ -22,14 +22,8 @@ pub enum SrcOriginGenReason {
     NoCacher,
     NoEveDataVersion(String),
     NoCachedFingerprint(String),
-    FingerprintMismatch(SrcOriginGenFpMismatch),
+    FingerprintMismatch(String),
     CacheLoadFailed(String),
-}
-
-#[derive(Clone)]
-pub struct SrcOriginGenFpMismatch {
-    pub needed: String,
-    pub cached: String,
 }
 
 #[derive(Clone)]
