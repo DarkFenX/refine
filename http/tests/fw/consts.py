@@ -748,6 +748,12 @@ class ApiCapSimResult(StrEnum):
 
 
 @unique
+class ApiSrcInfoMode(StrEnum):
+    partial = 'partial'
+    full = 'full'
+
+
+@unique
 class ApiSolInfoMode(StrEnum):
     id = 'id'
     full = 'full'

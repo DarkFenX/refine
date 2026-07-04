@@ -3,12 +3,13 @@ import typing
 from fw.api.commands import ItemItemRemoveCmd
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
-from fw.util import Absent, conditional_insert
+from fw.util import conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
     from fw.api.commands import BaseCommand
     from fw.consts import ApiItemInfoMode, ApiModRmMode
+    from fw.util import Absent
 
 
 class ApiClientItem(ApiClientBase):
