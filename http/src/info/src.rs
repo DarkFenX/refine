@@ -109,13 +109,13 @@ impl HSrcOriginGeneratedReason {
 impl HSrcWarnings {
     fn from_core(core_warnings: &rc::src::SrcWarnings) -> Self {
         Self {
-            eve_data_fetch: core_warnings.eve_data_fetch.iter().cloned().collect(),
-            adg_pk_duplicates: core_warnings.adg_pk_duplicates.iter().cloned().collect(),
-            adg_cleanup: core_warnings.adg_cleanup.iter().cloned().collect(),
-            adg_validation: core_warnings.adg_validation.iter().cloned().collect(),
-            adg_conversion_main: core_warnings.adg_conversion_main.iter().cloned().collect(),
-            adg_customization: core_warnings.adg_customization.iter().cloned().collect(),
-            adg_conversion_aux: core_warnings.adg_conversion_aux.iter().cloned().collect(),
+            eve_data_fetch: core_warnings.eve_data_fetch.to_vec(),
+            adg_pk_duplicates: core_warnings.adg_pk_duplicates.to_vec(),
+            adg_cleanup: core_warnings.adg_cleanup.to_vec(),
+            adg_validation: core_warnings.adg_validation.to_vec(),
+            adg_conversion_main: core_warnings.adg_conversion_main.to_vec(),
+            adg_customization: core_warnings.adg_customization.to_vec(),
+            adg_conversion_aux: core_warnings.adg_conversion_aux.to_vec(),
             cache_write: core_warnings.cache_write.clone(),
         }
     }
