@@ -44,7 +44,7 @@ impl HSrcMgr {
             .heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                create_src(alias_cloned, data_base_url, data_version, cache_folder_cloned)
+                create_core_src(alias_cloned, data_base_url, data_version, cache_folder_cloned)
             })
             .await
         {
@@ -113,7 +113,7 @@ impl HSrcMgr {
     }
 }
 
-fn create_src(
+fn create_core_src(
     alias: String,
     data_base_url: String,
     data_version: String,
@@ -137,43 +137,49 @@ fn create_src(
             None => "no caching".to_string(),
         }
     );
-    let src = rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| HBrError::SrcInitFailed(e.to_string()))?;
-    let info = src.get_info();
+    let core_src = rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| HBrError::SrcInitFailed(e.to_string()))?;
+    log_warnings(&core_src);
+    Ok(core_src)
+}
+
+fn log_warnings(core_src: &rc::Src) {
+    let core_info = core_src.get_info();
+    // Report data fetching errors under EVE data handler span, since that's where they originate
+    // from
     tracing::trace_span!("edh").in_scope(|| {
-        for warning in info.warnings.eve_data_fetch.iter() {
+        for warning in core_info.warnings.eve_data_fetch.iter() {
             tracing::warn!("{}", warning);
         }
     });
     tracing::trace_span!("adg").in_scope(|| {
-        for warning in info.warnings.adg_pk_duplicates.iter() {
+        for warning in core_info.warnings.adg_pk_duplicates.iter() {
             tracing::warn!("{}", warning);
         }
         // Cleanup is a normal process, so just record those "warnings" as infos
-        match info.warnings.adg_cleanup.is_empty() {
+        match core_info.warnings.adg_cleanup.is_empty() {
             true => tracing::info!("no unused data found during cleanup"),
             false => {
-                for warning in info.warnings.adg_cleanup.iter() {
+                for warning in core_info.warnings.adg_cleanup.iter() {
                     tracing::info!("{}", warning);
                 }
             }
         }
-        for warning in info.warnings.adg_validation.iter() {
+        for warning in core_info.warnings.adg_validation.iter() {
             tracing::warn!("{}", warning);
         }
-        for warning in info.warnings.adg_conversion_main.iter() {
+        for warning in core_info.warnings.adg_conversion_main.iter() {
             tracing::warn!("{}", warning);
         }
-        for warning in info.warnings.adg_customization.iter() {
+        for warning in core_info.warnings.adg_customization.iter() {
             tracing::warn!("{}", warning);
         }
-        for warning in info.warnings.adg_conversion_aux.iter() {
+        for warning in core_info.warnings.adg_conversion_aux.iter() {
             tracing::warn!("{}", warning);
         }
     });
-    if let Some(warning) = info.warnings.cache_write.as_ref() {
+    if let Some(warning) = core_info.warnings.cache_write.as_ref() {
         tracing::trace_span!("adc").in_scope(|| {
             tracing::warn!("{}", warning);
         });
     }
-    Ok(src)
 }
