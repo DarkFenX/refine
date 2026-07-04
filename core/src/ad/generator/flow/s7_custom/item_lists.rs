@@ -13,10 +13,11 @@ impl ADataGenerator {
                     Entry::Occupied(entry) => {
                         let a_item_list = entry.into_mut();
                         if !a_item_list.item_ids.is_empty() {
-                            tracing::info!(
+                            let warning = format!(
                                 "item list {}: clearing to overwrite with custom contents",
                                 a_item_list.id
                             );
+                            self.a_data.warnings.customization.push(warning);
                             a_item_list.item_ids.clear();
                         }
                         a_item_list

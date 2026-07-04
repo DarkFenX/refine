@@ -1,52 +1,53 @@
 use crate::{
-    ad::{ADataGenerator, ADataGeneratorError},
+    ad::{ADataGenerator, ADataGeneratorError, AdgWarnings},
     ed::{EDataCont, EveDataHandler},
     util::LibNamed,
 };
-
-const MAX_WARNS: usize = 5;
 
 impl ADataGenerator {
     pub(in crate::ad::generator) fn fetch_data(
         &mut self,
         ed_handler: &dyn EveDataHandler,
     ) -> Result<(), ADataGeneratorError> {
-        tracing::debug!("fetching EVE data");
         self.e_data = ed_handler
             .get_data()
             .map_err(|e| ADataGeneratorError::DataFetchFailed(e.to_string()))?;
-        report_warnings(&self.e_data.items);
-        report_warnings(&self.e_data.groups);
-        report_warnings(&self.e_data.item_lists);
-        report_warnings(&self.e_data.attrs);
-        report_warnings(&self.e_data.item_attrs);
-        report_warnings(&self.e_data.effects);
-        report_warnings(&self.e_data.item_effects);
-        report_warnings(&self.e_data.abils);
-        report_warnings(&self.e_data.item_abils);
-        report_warnings(&self.e_data.buffs);
-        report_warnings(&self.e_data.space_comps);
-        report_warnings(&self.e_data.item_srqs);
-        report_warnings(&self.e_data.muta_items);
-        report_warnings(&self.e_data.muta_attrs);
+        record_warnings(&mut self.e_data.items, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.groups, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.item_lists, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.attrs, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.item_attrs, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.effects, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.item_effects, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.abils, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.item_abils, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.buffs, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.space_comps, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.item_srqs, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.muta_items, &mut self.a_data.warnings);
+        record_warnings(&mut self.e_data.muta_attrs, &mut self.a_data.warnings);
         Ok(())
     }
 }
 
-fn report_warnings<T>(data_cont: &EDataCont<T>)
+fn record_warnings<T>(e_cont: &mut EDataCont<T>, a_warnings: &mut AdgWarnings)
 where
     T: LibNamed,
 {
-    let warn_count = data_cont.warns.len();
-    if warn_count > 0 {
-        tracing::warn!(
-            "{} warnings encountered during fetching of {}, showing up to {}:",
-            warn_count,
+    let warning_count = e_cont.warnings.len();
+    let warning_limit = 5;
+    a_warnings.data_fetch.extend(
+        e_cont
+            .warnings
+            .drain(..)
+            .map(|v| format!("failed to fetch {}: {}", T::lib_get_name(), v)),
+    );
+    if warning_count > warning_limit {
+        let warning = format!(
+            "failed to fetch {}: <{} more warnings hidden>",
             T::lib_get_name(),
-            MAX_WARNS
+            warning_count - warning_limit
         );
-        for warn_msg in data_cont.warns.iter().take(MAX_WARNS) {
-            tracing::warn!("{warn_msg}");
-        }
+        a_warnings.data_fetch.push(warning);
     }
 }

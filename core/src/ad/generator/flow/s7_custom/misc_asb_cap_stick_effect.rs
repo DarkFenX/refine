@@ -18,7 +18,8 @@ impl ADataGenerator {
             }
         }
         if !applied {
-            tracing::info!("effect {CAP_EFFECT}: was not removed from cap charges");
+            let warning = format!("effect {CAP_EFFECT}: was not removed from cap charges");
+            self.a_data.warnings.customization.push(warning);
         }
     }
 }

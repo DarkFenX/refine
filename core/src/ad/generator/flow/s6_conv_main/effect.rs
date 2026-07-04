@@ -20,8 +20,8 @@ impl ADataGenerator {
                 EEffectCatId::OVERLOAD => AState::Overload,
                 EEffectCatId::SYSTEM => AState::Offline,
                 _ => {
-                    let msg = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
-                    tracing::warn!("{msg}");
+                    let warning = format!("{} uses unknown effect category {}", e_effect, e_effect.category_id);
+                    self.a_data.warnings.conversion_main.push(warning);
                     continue;
                 }
             };
@@ -59,8 +59,8 @@ impl ADataGenerator {
                         continue;
                     }
                     Err(e) => {
-                        let msg = format!("failed to build stopper for effect {}: {}", a_effect.id, e);
-                        tracing::warn!("{msg}");
+                        let warning = format!("failed to build stopper for effect {}: {}", a_effect.id, e);
+                        self.a_data.warnings.conversion_main.push(warning);
                         continue;
                     }
                     _ => (),
@@ -79,8 +79,8 @@ impl ADataGenerator {
                 match a_mod_res {
                     Ok(a_mod) => a_effect.modifiers.insert(a_mod),
                     Err(e) => {
-                        let msg = format!("failed to build modifier for effect {}: {}", a_effect.id, e);
-                        tracing::warn!("{msg}");
+                        let warning = format!("failed to build modifier for effect {}: {}", a_effect.id, e);
+                        self.a_data.warnings.conversion_main.push(warning);
                         continue;
                     }
                 }
@@ -98,12 +98,12 @@ impl ADataGenerator {
                         a_effect.banned_in_hisec = *flags.iter().next().unwrap();
                     }
                     _ => {
-                        let msg = format!(
+                        let warning = format!(
                             "effect {} has {} distinct \"disallow in hisec\" values mapped from fighter abilities",
                             a_effect.id,
                             flags.len()
                         );
-                        tracing::warn!("{msg}");
+                        self.a_data.warnings.conversion_main.push(warning);
                     }
                 }
             }
@@ -114,12 +114,12 @@ impl ADataGenerator {
                         a_effect.banned_in_lowsec = *flags.iter().next().unwrap();
                     }
                     _ => {
-                        let msg = format!(
+                        let warning = format!(
                             "effect {} has {} distinct \"disallow in lowsec\" values mapped from fighter abilities",
                             a_effect.id,
                             flags.len()
                         );
-                        tracing::warn!("{msg}");
+                        self.a_data.warnings.conversion_main.push(warning);
                     }
                 }
             }

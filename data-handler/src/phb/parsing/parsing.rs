@@ -20,7 +20,7 @@ where
         // In case of malformed ID - log error and skip element
         let Ok(key) = raw_key.parse::<Key>() else {
             let warning = format!("failed to cast key \"{}\" to integer", raw_key);
-            e_cont.warns.push(warning);
+            e_cont.warnings.push(warning);
             reader.skip_value()?;
             continue;
         };
@@ -30,7 +30,7 @@ where
             // In case of an unexpected value format - log error and skip element
             Err(e) => {
                 let warning = format!("failed to parse value with key \"{key}\": {e}");
-                e_cont.warns.push(warning);
+                e_cont.warnings.push(warning);
                 continue;
             }
         };
@@ -56,8 +56,8 @@ where
         // In case of malformed ID - log error and skip element
         let Ok(key) = raw_key.parse::<Key>() else {
             let warning = format!("failed to cast key \"{}\" to integer", raw_key);
-            e_cont1.warns.push(warning.clone());
-            e_cont2.warns.push(warning);
+            e_cont1.warnings.push(warning.clone());
+            e_cont2.warnings.push(warning);
             reader.skip_value()?;
             continue;
         };
@@ -67,8 +67,8 @@ where
             // In case of an unexpected value format - log error and skip element
             Err(e) => {
                 let warning = format!("failed to parse value with key \"{key}\": {e}");
-                e_cont1.warns.push(warning.clone());
-                e_cont2.warns.push(warning);
+                e_cont1.warnings.push(warning.clone());
+                e_cont2.warnings.push(warning);
                 continue;
             }
         };

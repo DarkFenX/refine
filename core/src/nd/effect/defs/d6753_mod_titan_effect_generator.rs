@@ -27,7 +27,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut AEffect) {
+fn update_effect(a_effect: &mut AEffect, _adg_warnings: &mut Vec<String>) {
     // Phenoms do not keep aggression though whole duration, but apply aggression only on initial
     // burst. Probably because of that, effect is not marked as offensive, even if aggression is
     // applied.

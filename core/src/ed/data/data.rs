@@ -43,13 +43,13 @@ impl EData {
 
 pub struct EDataCont<T> {
     pub data: Vec<T>,
-    pub warns: Vec<String>,
+    pub warnings: Vec<String>,
 }
 impl<T> EDataCont<T> {
     pub fn new() -> EDataCont<T> {
         EDataCont {
             data: Vec::new(),
-            warns: Vec::new(),
+            warnings: Vec::new(),
         }
     }
 }

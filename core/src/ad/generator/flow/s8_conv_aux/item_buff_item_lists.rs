@@ -63,16 +63,18 @@ impl ADataGenerator {
         // much. 5 is an arbitrary threshold, need to reassess different approaches once it is
         // reached.
         if proj_max_len >= MAX_ALLOWED_LENGTH {
-            tracing::warn!(
+            let warning = format!(
                 "max count of item list IDs involved in projected buffs is {}",
                 proj_max_len
             );
+            self.a_data.warnings.conversion_aux.push(warning);
         }
         if fleet_max_len >= MAX_ALLOWED_LENGTH {
-            tracing::warn!(
+            let warning = format!(
                 "max count of item list IDs involved in fleet buffs is {}",
-                fleet_max_len
+                fleet_max_len,
             );
+            self.a_data.warnings.conversion_aux.push(warning);
         }
     }
 }

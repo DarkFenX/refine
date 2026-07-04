@@ -9,7 +9,8 @@ impl ADataGenerator {
                 let a_buff = buff_maker();
                 match self.a_data.buffs.data.entry(a_buff.id) {
                     Entry::Occupied(_) => {
-                        tracing::info!("buff {}: already exists, not replacing", a_buff.id);
+                        let warning = format!("buff {}: already exists, not replacing", a_buff.id);
+                        self.a_data.warnings.customization.push(warning);
                     }
                     Entry::Vacant(entry) => {
                         entry.insert(a_buff);

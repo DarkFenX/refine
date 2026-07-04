@@ -26,12 +26,12 @@ impl AValue {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ACount {
-    pub(in crate::ad) fn from_eint_clamped(eint: EInt) -> Self {
-        Self(eint.into_i32().max(0) as u32)
+    pub(in crate::ad) fn from_eint_clamped(value: EInt) -> Self {
+        Self(value.into_i32().max(0) as u32)
     }
 }
 impl AValue {
-    pub(in crate::ad) fn from_efloat(efloat: EFloat) -> Self {
-        Self(efloat.into_f64())
+    pub(in crate::ad) fn from_efloat(value: EFloat) -> Self {
+        Self(value.into_f64())
     }
 }

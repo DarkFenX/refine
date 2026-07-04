@@ -1,4 +1,4 @@
-use crate::ad::{AAbils, AAttrs, ABuffs, AEffects, AItemLists, AItems, AMutas};
+use crate::ad::{AAbils, AAttrs, ABuffs, AEffects, AItemLists, AItems, AMutas, AdgWarnings};
 
 pub struct AData {
     pub items: AItems,
@@ -8,6 +8,7 @@ pub struct AData {
     pub buffs: ABuffs,
     pub abils: AAbils,
     pub item_lists: AItemLists,
+    pub warnings: AdgWarnings,
 }
 impl AData {
     pub(in crate::ad) fn new() -> Self {
@@ -19,6 +20,7 @@ impl AData {
             buffs: ABuffs::new(),
             abils: AAbils::new(),
             item_lists: AItemLists::new(),
+            warnings: AdgWarnings::new(),
         }
     }
 }

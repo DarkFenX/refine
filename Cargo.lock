@@ -1687,7 +1687,6 @@ dependencies = [
  "slab",
  "smallvec",
  "thiserror",
- "tracing",
 ]
 
 [[package]]

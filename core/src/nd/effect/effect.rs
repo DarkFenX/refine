@@ -12,7 +12,7 @@ use crate::{
 // ADG
 pub(crate) type NEffectMaker = fn() -> AEffect;
 pub(crate) type NEffectAssigner = fn(&mut RMap<AItemId, AItem>) -> bool;
-pub(crate) type NEffectUpdater = fn(&mut AEffect);
+pub(crate) type NEffectUpdater = fn(&mut AEffect, &mut Vec<String>);
 
 pub(crate) struct NEffect {
     // Adapted data effect ID

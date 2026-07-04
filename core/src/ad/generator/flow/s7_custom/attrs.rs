@@ -9,7 +9,8 @@ impl ADataGenerator {
                 let a_attr = attr_maker();
                 match self.a_data.attrs.data.entry(a_attr.id) {
                     Entry::Occupied(_) => {
-                        tracing::info!("attr {}: already exists, not replacing", a_attr.id);
+                        let warning = format!("attr {}: already exists, not replacing", a_attr.id);
+                        self.a_data.warnings.customization.push(warning);
                     }
                     Entry::Vacant(entry) => {
                         entry.insert(a_attr);

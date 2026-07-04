@@ -19,7 +19,9 @@ impl ADataGenerator {
             applied = true;
         }
         if !applied {
-            tracing::info!("attribute {BUBBLE_ATTR_ID}: WDFG bubble warp disruption strength fix wasn't applied");
+            let warning =
+                format!("attribute {BUBBLE_ATTR_ID}: WDFG bubble warp disruption strength fix wasn't applied");
+            self.a_data.warnings.customization.push(warning);
         }
     }
 }

@@ -1,6 +1,6 @@
 use crate::{
     ad::{
-        ADataGenerator, ADataGeneratorError,
+        ADataGenerator, ADataGeneratorError, AdgWarnings,
         generator::rels::{KeyDb, KeyPart},
     },
     ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
@@ -29,7 +29,7 @@ impl ADataGenerator {
             }
             changes = self.restore_item_data(&mut trash) || self.restore_fk_tgts(&mut trash);
         }
-        self.cleanup_report(&trash);
+        self.record_stats(&trash);
         Ok(())
     }
 }
@@ -184,40 +184,41 @@ impl ADataGenerator {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Reporting
+// Recording stats
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ADataGenerator {
-    fn cleanup_report(&self, trash: &EData) {
-        let cleaned = false;
-        let cleaned = cont_report(&self.e_data.items, &trash.items) || cleaned;
-        let cleaned = cont_report(&self.e_data.groups, &trash.groups) || cleaned;
-        let cleaned = cont_report(&self.e_data.item_lists, &trash.item_lists) || cleaned;
-        let cleaned = cont_report(&self.e_data.attrs, &trash.attrs) || cleaned;
-        let cleaned = cont_report(&self.e_data.item_attrs, &trash.item_attrs) || cleaned;
-        let cleaned = cont_report(&self.e_data.effects, &trash.effects) || cleaned;
-        let cleaned = cont_report(&self.e_data.item_effects, &trash.item_effects) || cleaned;
-        let cleaned = cont_report(&self.e_data.abils, &trash.abils) || cleaned;
-        let cleaned = cont_report(&self.e_data.item_abils, &trash.item_abils) || cleaned;
-        let cleaned = cont_report(&self.e_data.buffs, &trash.buffs) || cleaned;
-        let cleaned = cont_report(&self.e_data.space_comps, &trash.space_comps) || cleaned;
-        let cleaned = cont_report(&self.e_data.item_srqs, &trash.item_srqs) || cleaned;
-        let cleaned = cont_report(&self.e_data.muta_items, &trash.muta_items) || cleaned;
-        let cleaned = cont_report(&self.e_data.muta_attrs, &trash.muta_attrs) || cleaned;
-        if !cleaned {
-            tracing::info!("no unused data found during cleanup");
-        }
+    fn record_stats(&mut self, trash: &EData) {
+        record_cont_stats(&self.e_data.items, &trash.items, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.groups, &trash.groups, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.item_lists, &trash.item_lists, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.attrs, &trash.attrs, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.item_attrs, &trash.item_attrs, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.effects, &trash.effects, &mut self.a_data.warnings);
+        record_cont_stats(
+            &self.e_data.item_effects,
+            &trash.item_effects,
+            &mut self.a_data.warnings,
+        );
+        record_cont_stats(&self.e_data.abils, &trash.abils, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.item_abils, &trash.item_abils, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.buffs, &trash.buffs, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.space_comps, &trash.space_comps, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.item_srqs, &trash.item_srqs, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.muta_items, &trash.muta_items, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
     }
 }
 
-fn cont_report<T: LibNamed>(alive: &EDataCont<T>, trash: &EDataCont<T>) -> bool {
-    let total = alive.data.len() + trash.data.len();
-    if total == 0 {
-        return false;
+fn record_cont_stats<T>(e_cont_alive: &EDataCont<T>, e_cont_trash: &EDataCont<T>, a_warnings: &mut AdgWarnings)
+where
+    T: LibNamed,
+{
+    let removed = e_cont_trash.data.len();
+    if removed == 0 {
+        return;
     }
-    let ratio = trash.data.len() as f64 / total as f64;
-    if ratio > 0.0 {
-        tracing::info!("cleaned {:.1}% of {}", ratio * 100.0, T::lib_get_name());
-        return true;
-    }
-    false
+    let total = e_cont_alive.data.len() + removed;
+    let ratio = removed as f64 / total as f64;
+    let warning = format!("cleaned {:.1}% of {}", ratio * 100.0, T::lib_get_name());
+    a_warnings.cleanup.push(warning);
 }

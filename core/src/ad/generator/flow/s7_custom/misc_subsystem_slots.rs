@@ -24,7 +24,8 @@ impl ADataGenerator {
             }
         }
         if !applied {
-            tracing::info!("attribute {SLOT_ATTR}: fix for t3c subsystem count wasn't applied");
+            let warning = format!("attribute {SLOT_ATTR}: fix for t3c subsystem count wasn't applied");
+            self.a_data.warnings.customization.push(warning);
         }
     }
 }

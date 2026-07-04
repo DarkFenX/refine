@@ -2,9 +2,14 @@ use crate::ad::{
     AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
 };
 
-pub(in crate::nd::effect::defs) fn add_tp_mods(effect_aid: AEffectId, a_effect: &mut AEffect) {
+pub(in crate::nd::effect::defs) fn add_tp_mods(
+    effect_aid: AEffectId,
+    a_effect: &mut AEffect,
+    adg_warnings: &mut Vec<String>,
+) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!("effect {effect_aid}: TP effect has modifiers, overwriting them");
+        let warning = format!("effect {effect_aid}: TP effect has modifiers, overwriting them");
+        adg_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.insert(AEffectModifier {

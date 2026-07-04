@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::{
-        ADataGenerator,
+        ADataGenerator, AdgWarnings,
         generator::{
             AdgSupport, get_abil_effect,
             rels::{Fk, KeyDb, KeyPart, Pk},
@@ -30,31 +30,49 @@ impl ADataGenerator {
 impl ADataGenerator {
     fn fk_check(&mut self) {
         let pkdb = KeyDb::new_pkdb(&self.e_data);
-        fk_check_referer(&self.e_data.items, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.groups, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.item_lists, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.attrs, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.item_attrs, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.effects, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.item_effects, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.abils, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.item_abils, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.buffs, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.space_comps, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.item_srqs, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.muta_items, &pkdb, &self.support);
-        fk_check_referer(&self.e_data.muta_attrs, &pkdb, &self.support);
+        fk_check_referer(&self.e_data.items, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.groups, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.item_lists, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.attrs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.item_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.effects, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(
+            &self.e_data.item_effects,
+            &pkdb,
+            &self.support,
+            &mut self.a_data.warnings,
+        );
+        fk_check_referer(&self.e_data.abils, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.item_abils, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.buffs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(
+            &self.e_data.space_comps,
+            &pkdb,
+            &self.support,
+            &mut self.a_data.warnings,
+        );
+        fk_check_referer(&self.e_data.item_srqs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.muta_items, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.muta_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
     }
 }
-fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, adg_supp: &AdgSupport)
+fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, adg_supp: &AdgSupport, a_warnings: &mut AdgWarnings)
 where
     T: Fk + LibNamed,
 {
-    fk_check_referee(rer_cont, &pkdb.items, adg_supp, T::get_item_fks, EItem::lib_get_name());
+    fk_check_referee(
+        rer_cont,
+        &pkdb.items,
+        adg_supp,
+        a_warnings,
+        T::get_item_fks,
+        EItem::lib_get_name(),
+    );
     fk_check_referee(
         rer_cont,
         &pkdb.groups,
         adg_supp,
+        a_warnings,
         T::get_group_fks,
         EItemGroup::lib_get_name(),
     );
@@ -62,42 +80,66 @@ where
         rer_cont,
         &pkdb.item_lists,
         adg_supp,
+        a_warnings,
         T::get_item_list_fks,
         EItemList::lib_get_name(),
     );
-    fk_check_referee(rer_cont, &pkdb.attrs, adg_supp, T::get_attr_fks, EAttr::lib_get_name());
+    fk_check_referee(
+        rer_cont,
+        &pkdb.attrs,
+        adg_supp,
+        a_warnings,
+        T::get_attr_fks,
+        EAttr::lib_get_name(),
+    );
     fk_check_referee(
         rer_cont,
         &pkdb.effects,
         adg_supp,
+        a_warnings,
         T::get_effect_fks,
         EEffect::lib_get_name(),
     );
-    fk_check_referee(rer_cont, &pkdb.abils, adg_supp, T::get_abil_fks, EAbil::lib_get_name());
-    fk_check_referee(rer_cont, &pkdb.buffs, adg_supp, T::get_buff_fks, EBuff::lib_get_name());
+    fk_check_referee(
+        rer_cont,
+        &pkdb.abils,
+        adg_supp,
+        a_warnings,
+        T::get_abil_fks,
+        EAbil::lib_get_name(),
+    );
+    fk_check_referee(
+        rer_cont,
+        &pkdb.buffs,
+        adg_supp,
+        a_warnings,
+        T::get_buff_fks,
+        EBuff::lib_get_name(),
+    );
 }
 fn fk_check_referee<T, F>(
-    rer_cont: &EDataCont<T>,
-    ree_pks: &RSet<KeyPart>,
+    referer_cont: &EDataCont<T>,
+    referee_pks: &RSet<KeyPart>,
     adg_supp: &AdgSupport,
+    a_warnings: &mut AdgWarnings,
     func: F,
-    ree_name: &str,
+    referee_name: &str,
 ) where
     T: Fk + LibNamed,
     F: Fn(&T, &AdgSupport) -> Vec<KeyPart>,
 {
     let mut fks = RSet::new();
-    rer_cont.data.iter().for_each(|v| fks.extend(func(v, adg_supp)));
-    let missing = fks.difference(ree_pks).copied().collect_vec();
+    referer_cont.data.iter().for_each(|v| fks.extend(func(v, adg_supp)));
+    let missing = fks.difference(referee_pks).copied().collect_vec();
     if !missing.is_empty() {
-        let msg = format!(
+        let warning = format!(
             "{} refers to {} missing {}: {}",
             T::lib_get_name(),
             missing.len(),
-            ree_name,
+            referee_name,
             missing.into_iter().map(|v| v.into_i32()).sorted_unstable().join(", ")
         );
-        tracing::warn!("{msg}");
+        a_warnings.validation.push(warning);
     }
 }
 
@@ -115,8 +157,8 @@ impl ADataGenerator {
             }
         }
         if unsets > 0 {
-            let msg = format!("set {unsets} excessive default effects as non-default");
-            tracing::warn!("{msg}");
+            let warning = format!("set {unsets} excessive default effects as non-default");
+            self.a_data.warnings.validation.push(warning);
         }
     }
 }
@@ -153,22 +195,25 @@ impl ADataGenerator {
             })
             .count();
         if abils > 0 || item_abils > 0 {
-            let max_logged = 5;
-            let msg = format!(
-                "removed {} {} and {} {} with unmappable fighter ability IDs, showing up to {}: {}",
+            let entry_limit = 5;
+            let entry_count = unknown_ids.len();
+            let mut warning = format!(
+                "removed {} {} and {} {} with unmappable fighter ability IDs: {}",
                 abils,
                 EAbil::lib_get_name(),
                 item_abils,
                 EItemAbil::lib_get_name(),
-                max_logged,
                 unknown_ids
                     .into_iter()
                     .map(|v| v.into_i32())
                     .sorted_unstable()
-                    .take(max_logged)
+                    .take(entry_limit)
                     .join(", ")
             );
-            tracing::warn!("{msg}");
+            if entry_count > entry_limit {
+                warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+            }
+            self.a_data.warnings.validation.push(warning);
         }
     }
 }
@@ -190,21 +235,24 @@ impl ADataGenerator {
             })
             .count();
         if !broken_ids.is_empty() {
-            let max_logged = 5;
-            let msg = format!(
-                "removed {} {} with invalid target {}, showing up to {}: {}",
+            let entry_limit = 5;
+            let entry_count = broken_ids.len();
+            let mut warning = format!(
+                "removed {} {} with invalid target {}: {}",
                 item_abils,
                 EItemAbil::lib_get_name(),
                 EAbil::lib_get_name(),
-                max_logged,
                 broken_ids
                     .into_iter()
                     .map(|v| v.into_i32())
                     .sorted_unstable()
-                    .take(max_logged)
+                    .take(entry_limit)
                     .join(", ")
             );
-            tracing::warn!("{msg}");
+            if entry_count > entry_limit {
+                warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+            }
+            self.a_data.warnings.validation.push(warning);
         }
     }
 }
@@ -236,20 +284,23 @@ impl ADataGenerator {
                 invalids.insert((v.item_id, v.abil_id));
             });
         if !invalids.is_empty() {
-            let max_logged = 5;
-            let msg = format!(
-                "removed {} {} with references to missing on-item effects, showing up to {}: {}",
+            let entry_limit = 5;
+            let entry_count = invalids.len();
+            let mut warning = format!(
+                "removed {} {} with references to missing on-item effects: {}",
                 invalids.len(),
                 EItemAbil::lib_get_name(),
-                max_logged,
                 invalids
                     .into_iter()
                     .map(|(v1, v2)| (v1.into_i32(), v2.into_i32()))
                     .sorted_unstable()
-                    .take(max_logged)
+                    .take(entry_limit)
                     .format_with(", ", |v, f| f(&format_args!("[{}, {}]", v.0, v.1)))
             );
-            tracing::warn!("{msg}");
+            if entry_count > entry_limit {
+                warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+            }
+            self.a_data.warnings.validation.push(warning);
         }
     }
 }

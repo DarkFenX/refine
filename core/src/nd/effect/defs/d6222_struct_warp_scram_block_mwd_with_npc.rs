@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut AEffect) {
+fn update_effect(a_effect: &mut AEffect, _adg_warnings: &mut Vec<String>) {
     // Effect is expected to have some modifiers, so we're silently clearing them up
     a_effect.modifiers.clear();
     a_effect.modifiers.extend([

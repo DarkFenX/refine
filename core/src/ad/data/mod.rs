@@ -20,6 +20,7 @@ pub use item_list::{
 };
 pub use muta::{AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv, AMutaItemConvs, AMutas};
 pub use shared::{ACount, AModifierSrq, AOp, AState, AValue};
+pub use warnings::AdgWarnings;
 
 mod abil;
 mod attr;
@@ -30,3 +31,4 @@ mod item;
 mod item_list;
 mod muta;
 mod shared;
+mod warnings;

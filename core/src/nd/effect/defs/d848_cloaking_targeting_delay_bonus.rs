@@ -16,11 +16,11 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut AEffect) {
+fn update_effect(a_effect: &mut AEffect, adg_warnings: &mut Vec<String>) {
     if !a_effect.modifiers.is_empty() {
-        tracing::info!(
-            "effect {EFFECT_AID}: self-skillreq cloaking target delay effect has modifiers, overwriting them"
-        );
+        let warning =
+            format!("effect {EFFECT_AID}: self-skillreq cloaking target delay effect has modifiers, overwriting them");
+        adg_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     let modifier = AEffectModifier {

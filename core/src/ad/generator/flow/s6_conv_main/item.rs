@@ -24,8 +24,8 @@ impl ADataGenerator {
         for e_item in self.e_data.items.data.iter() {
             // Item category ID
             let Some(&cat_eid) = self.support.grp_cat_map.get(&e_item.group_id) else {
-                let msg = format!("unable to find category ID for {e_item}");
-                tracing::warn!("{msg}");
+                let warning = format!("unable to find category ID for {e_item}");
+                self.a_data.warnings.conversion_main.push(warning);
                 continue;
             };
             // Item default effect

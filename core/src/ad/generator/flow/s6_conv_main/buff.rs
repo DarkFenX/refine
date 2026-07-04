@@ -13,16 +13,16 @@ impl ADataGenerator {
             let op = match conv_buff_op(&e_buff.operation) {
                 Ok(op) => op,
                 Err(e) => {
-                    let msg = format!("{e_buff}: {e}");
-                    tracing::warn!("{msg}");
+                    let warning = format!("{e_buff}: {e}");
+                    self.a_data.warnings.conversion_main.push(warning);
                     continue;
                 }
             };
             let aggr_mode = match conv_buff_aggr_mode(&e_buff.aggregate_mode) {
                 Ok(am) => am,
                 Err(e) => {
-                    let msg = format!("{e_buff}: {e}");
-                    tracing::warn!("{msg}");
+                    let warning = format!("{e_buff}: {e}");
+                    self.a_data.warnings.conversion_main.push(warning);
                     continue;
                 }
             };

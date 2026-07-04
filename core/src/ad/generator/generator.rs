@@ -18,7 +18,6 @@ impl ADataGenerator {
             support: AdgSupport::new(),
         }
     }
-    #[tracing::instrument(name = "adg", level = "trace", skip_all)]
     pub(crate) fn generate(mut self, ed_handler: &dyn EveDataHandler) -> Result<AData, ADataGeneratorError> {
         self.fetch_data(ed_handler)?;
         self.dedup_pks();
