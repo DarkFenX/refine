@@ -7,7 +7,7 @@ from fw.util import Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from fw.eve.aliases import DataPrimHook
+    from fw.eve.aliases import DataPrimHook, DataStrHook
     from fw.util import Absent
 
 
@@ -41,10 +41,14 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             cleanup_check: bool = True,
             json_predicate: dict | None = None,
             hook_data_prim: DataPrimHook | None = None,
+            hook_data_str: DataStrHook | None = None,
     ) -> None:
         if data is Default:
             data = self._get_default_eve_data()
-        self._setup_eve_data_server(data=data, hook_data_prim=hook_data_prim)
+        self._setup_eve_data_server(
+            data=data,
+            hook_data_prim=hook_data_prim,
+            hook_data_str=hook_data_str)
         resp = self.create_source_request(
             data=data,
             src_info_mode=src_info_mode).send()
@@ -72,6 +76,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             cleanup_check: bool = True,
             json_predicate: dict | None = None,
             hook_data_prim: DataPrimHook | None = None,
+            hook_data_str: DataStrHook | None = None,
     ) -> None:
         # If no data was created, create default one
         if not self._eve_datas:
@@ -83,7 +88,8 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
                 status_code=status_code,
                 cleanup_check=cleanup_check,
                 json_predicate=json_predicate,
-                hook_data_prim=hook_data_prim)
+                hook_data_prim=hook_data_prim,
+                hook_data_str=hook_data_str)
 
     def cleanup_sources(self) -> None:
         for alias in self.__created_data_aliases.copy():

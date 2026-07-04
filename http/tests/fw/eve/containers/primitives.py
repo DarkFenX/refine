@@ -1,6 +1,10 @@
 import json
+import typing
 
 from .strings import EveStrings
+
+if typing.TYPE_CHECKING:
+    from fw.eve.aliases import DataStrHook
 
 
 class EvePrimitives:
@@ -20,7 +24,7 @@ class EvePrimitives:
         self.requiredskillsfortypes = {}
         self.dynamicitemattributes = {}
 
-    def to_strings(self) -> EveStrings:
+    def to_strings(self, *, hook_data_str: DataStrHook | None) -> EveStrings:
         string_data = EveStrings(alias=self.alias)
         string_data.types = json.dumps(self.types)
         string_data.groups = json.dumps(self.groups)
@@ -34,4 +38,6 @@ class EvePrimitives:
         string_data.spacecomponentsbytype = json.dumps(self.spacecomponentsbytype)
         string_data.requiredskillsfortypes = json.dumps(self.requiredskillsfortypes)
         string_data.dynamicitemattributes = json.dumps(self.dynamicitemattributes)
+        if hook_data_str is not None:
+            hook_data_str(string_data)
         return string_data

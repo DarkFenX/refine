@@ -8,7 +8,7 @@ pub(crate) struct HSolAddCmd {
     basic: HSolAddCmdFCtx,
 }
 impl HSolAddCmd {
-    pub(crate) fn execute(&self, src: &rc::Src) -> rc::SolarSystem {
-        self.basic.execute(src)
+    pub(crate) fn execute(&self, core_src: &rc::Src) -> rc::SolarSystem {
+        self.basic.execute(core_src)
     }
 }

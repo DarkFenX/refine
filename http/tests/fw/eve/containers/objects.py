@@ -18,7 +18,7 @@ from fw.util import Absent
 from .primitives import EvePrimitives
 
 if typing.TYPE_CHECKING:
-    from fw.eve.aliases import DataPrimHook
+    from fw.eve.aliases import DataPrimHook, DataStrHook
     from fw.eve.types import BuffModifier, EffectModifier
     from .strings import EveStrings
 
@@ -308,10 +308,17 @@ class EveObjects:
         self.mutators.setdefault(id_, []).append(mutator)
         return mutator
 
-    def render(self, *, hook_data_prim: DataPrimHook | None) -> EveStrings:
-        return self.to_primitives(hook_data_prim=hook_data_prim).to_strings()
+    def render(
+            self, *,
+            hook_data_prim: DataPrimHook | None,
+            hook_data_str: DataStrHook | None,
+    ) -> EveStrings:
+        return self.to_primitives(hook_data_prim=hook_data_prim).to_strings(hook_data_str=hook_data_str)
 
-    def to_primitives(self, *, hook_data_prim: DataPrimHook | None) -> EvePrimitives:
+    def to_primitives(
+            self, *,
+            hook_data_prim: DataPrimHook | None,
+    ) -> EvePrimitives:
         primitive_data = EvePrimitives(alias=self.alias)
         self.__handle_container(primitive_data=primitive_data, container=self.items, entity_class=Item)
         self.__handle_container(primitive_data=primitive_data, container=self.item_groups, entity_class=Group)

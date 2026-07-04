@@ -14,7 +14,7 @@ from fw import check_no_field
 from fw.api import ValOptions
 
 if typing.TYPE_CHECKING:
-    from fw.eve.containers import EvePrimitives
+    from fw.eve.containers import EvePrimitives, EveStrings
 
 
 def test_types_key(client, log):
@@ -59,6 +59,22 @@ def test_types_value(client, log):
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is False
     assert api_val.details.not_loaded_item == [api_item1.id]
+
+
+def test_types_json(client):
+
+    def hook_data_str(str_data: EveStrings):
+        # Remove closing brace to make it invalid JSON
+        str_data.types = str_data.types[:-1]
+
+    client.mk_eve_item()
+    client.create_sources(
+        hook_data_str=hook_data_str,
+        status_code=422,
+        json_predicate={
+            'code': 'SIN-001',
+            'message': 're:source initialization failed: failed to fetch EVE data: '
+                       'fsd_built/types.json parsing failed:.+'})
 
 
 def test_typedogma_key(client, log):
@@ -121,3 +137,21 @@ def test_typedogma_value(client, log):
     api_item2.update()
     assert eve_attr_id in api_item2.attrs
     assert eve_effect_id in api_item2.effects
+
+
+def test_typedogma_json(client):
+
+    def hook_data_str(str_data: EveStrings):
+        # Replace closing brace to make it invalid JSON
+        str_data.typedogma = str_data.typedogma[:-1] + '>'
+
+    eve_attr_id = client.mk_eve_attr()
+    eve_effect_id = client.mk_eve_effect()
+    client.mk_eve_item(attrs={eve_attr_id: 5}, eff_ids=[eve_effect_id])
+    client.create_sources(
+        hook_data_str=hook_data_str,
+        status_code=422,
+        json_predicate={
+            'code': 'SIN-001',
+            'message': 're:source initialization failed: failed to fetch EVE data: '
+                       'fsd_built/typedogma.json parsing failed:.+'})

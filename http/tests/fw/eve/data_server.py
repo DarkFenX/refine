@@ -3,7 +3,7 @@ import typing
 if typing.TYPE_CHECKING:
     import pytest_httpserver
 
-    from .aliases import DataPrimHook
+    from .aliases import DataPrimHook, DataStrHook
     from .containers import EveObjects
 
 
@@ -13,8 +13,13 @@ class EveDataServer:
         super().__init__(**kwargs)
         self.__data_server = data_server
 
-    def _setup_eve_data_server(self, *, data: EveObjects, hook_data_prim: DataPrimHook | None) -> None:
-        str_data = data.render(hook_data_prim=hook_data_prim)
+    def _setup_eve_data_server(
+            self, *,
+            data: EveObjects,
+            hook_data_prim: DataPrimHook | None,
+            hook_data_str: DataStrHook | None,
+    ) -> None:
+        str_data = data.render(hook_data_prim=hook_data_prim, hook_data_str=hook_data_str)
         suffix_cont_map = {
             'fsd_built/types.json': str_data.types,
             'fsd_built/groups.json': str_data.groups,
