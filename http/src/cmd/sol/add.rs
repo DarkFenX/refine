@@ -9,6 +9,6 @@ pub(crate) struct HSolAddCmd {
 }
 impl HSolAddCmd {
     pub(crate) fn execute(&self, src: &rc::Src) -> rc::SolarSystem {
-        self.basic.execute(&src)
+        self.basic.execute(src)
     }
 }

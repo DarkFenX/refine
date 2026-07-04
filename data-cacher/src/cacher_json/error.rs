@@ -1,3 +1,4 @@
+#[allow(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 pub(super) enum JsonZfileAdcReadError {
     #[error("unable to read cache data: {0}")]

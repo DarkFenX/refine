@@ -8,7 +8,7 @@ pub struct ADataWarnings {
     pub conversion_aux: Vec<String>,
 }
 impl ADataWarnings {
-    pub fn new() -> Self {
+    pub(in crate::ad::data) fn new() -> Self {
         Self {
             data_fetch: Vec::new(),
             pk_duplicates: Vec::new(),

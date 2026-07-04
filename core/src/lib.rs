@@ -60,7 +60,7 @@ mod nd;
 mod num;
 mod rd;
 mod sol;
-pub mod src;
+mod src;
 pub mod stats;
 mod svc;
 mod ud;
