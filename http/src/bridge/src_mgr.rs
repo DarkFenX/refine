@@ -129,6 +129,51 @@ fn create_src(
         Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias))),
         None => None,
     };
-    tracing::info!("initializing new source with {edh:?} and {adc:?}");
-    rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| HBrError::SrcInitFailed(e.to_string()))
+    tracing::info!(
+        "initializing new source with {:?} and {}",
+        edh,
+        match adc.as_ref() {
+            Some(adc) => format!("{:?}", adc),
+            None => "no caching".to_string(),
+        }
+    );
+    let src = rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| HBrError::SrcInitFailed(e.to_string()))?;
+    let info = src.get_info();
+    tracing::trace_span!("edh").in_scope(|| {
+        for warning in info.warnings.eve_data_fetch.iter() {
+            tracing::warn!("{}", warning);
+        }
+    });
+    tracing::trace_span!("adg").in_scope(|| {
+        for warning in info.warnings.adg_pk_duplicates.iter() {
+            tracing::warn!("{}", warning);
+        }
+        // Cleanup is a normal process, so just record those "warnings" as infos
+        match info.warnings.adg_cleanup.is_empty() {
+            true => tracing::info!("no unused data found during cleanup"),
+            false => {
+                for warning in info.warnings.adg_cleanup.iter() {
+                    tracing::info!("{}", warning);
+                }
+            }
+        }
+        for warning in info.warnings.adg_validation.iter() {
+            tracing::warn!("{}", warning);
+        }
+        for warning in info.warnings.adg_conversion_main.iter() {
+            tracing::warn!("{}", warning);
+        }
+        for warning in info.warnings.adg_customization.iter() {
+            tracing::warn!("{}", warning);
+        }
+        for warning in info.warnings.adg_conversion_aux.iter() {
+            tracing::warn!("{}", warning);
+        }
+    });
+    if let Some(warning) = info.warnings.cache_write.as_ref() {
+        tracing::trace_span!("adc").in_scope(|| {
+            tracing::warn!("{}", warning);
+        });
+    }
+    Ok(src)
 }

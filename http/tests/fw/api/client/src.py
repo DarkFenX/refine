@@ -53,13 +53,13 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
                     # Check if there are any "cleaned" entries in log upon completion w/o any
                     # waiting for a fast way
                     with pytest.raises(LogEntryNotFoundError):
-                        log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
+                        log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='srcmgr-add:sync:adg', timeout=0)
                 else:
                     # Wait for negative report to appear for regular check
                     log_collector.wait_log_entry(
                         msg='no unused data found during cleanup',
                         level='INFO',
-                        span='src-new:adg',
+                        span='srcmgr-add:sync:adg',
                         timeout=3)
         else:
             process(data=data)
@@ -99,7 +99,7 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
                 # No need to have per-source check when we do wider one
                 process(cleanup_check=False)
                 with pytest.raises(LogEntryNotFoundError):
-                    log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='src-new:adg', timeout=0)
+                    log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='srcmgr-add:sync:adg', timeout=0)
         else:
             process(cleanup_check=cleanup_check)
 

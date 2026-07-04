@@ -30,13 +30,9 @@ def test_types_key(client, log):
     eve_item2_id = client.mk_eve_item(grp_id=eve_group_id)
     client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
-        msg='1 warnings encountered during fetching of EItem, showing up to 5:',
+        msg=f'failed to fetch EItem: failed to cast key "str{eve_item1_id}" to integer',
         level='WARN',
-        span='src-new:adg')
-    log.wait_log_entry(
-        msg=f'failed to cast key "str{eve_item1_id}" to integer',
-        level='WARN',
-        span='src-new:adg')
+        span='srcmgr-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -57,13 +53,9 @@ def test_types_value(client, log):
     eve_item2_id = client.mk_eve_item(grp_id=eve_group_id)
     client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
-        msg='1 warnings encountered during fetching of EItem, showing up to 5:',
+        msg=f're:failed to fetch EItem: failed to parse value with key "{eve_item1_id}":.+',
         level='WARN',
-        span='src-new:adg')
-    log.wait_log_entry(
-        msg=f're:failed to parse value with key "{eve_item1_id}":.+',
-        level='WARN',
-        span='src-new:adg')
+        span='srcmgr-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -86,21 +78,13 @@ def test_typedogma_key(client, log):
     eve_item2_id = client.mk_eve_item(attrs={eve_attr_id: 7}, eff_ids=[eve_effect_id])
     client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
-        msg='1 warnings encountered during fetching of EItemAttr, showing up to 5:',
+        msg=f'failed to fetch EItemAttr: failed to cast key "pre{eve_item1_id}" to integer',
         level='WARN',
-        span='src-new:adg')
+        span='srcmgr-add:sync:edh')
     log.wait_log_entry(
-        msg=f'failed to cast key "pre{eve_item1_id}" to integer',
+        msg=f'failed to fetch EItemEffect: failed to cast key "pre{eve_item1_id}" to integer',
         level='WARN',
-        span='src-new:adg')
-    log.wait_log_entry(
-        msg='1 warnings encountered during fetching of EItemEffect, showing up to 5:',
-        level='WARN',
-        span='src-new:adg')
-    log.wait_log_entry(
-        msg=f'failed to cast key "pre{eve_item1_id}" to integer',
-        level='WARN',
-        span='src-new:adg')
+        span='srcmgr-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_item2 = api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -126,21 +110,13 @@ def test_typedogma_value(client, log):
     eve_item2_id = client.mk_eve_item(attrs={eve_attr_id: 7}, eff_ids=[eve_effect_id])
     client.create_sources(hook_data_prim=hook_data_prim)
     log.wait_log_entry(
-        msg='1 warnings encountered during fetching of EItemAttr, showing up to 5:',
+        msg=f're:failed to fetch EItemAttr: failed to parse value with key "{eve_item1_id}":.+',
         level='WARN',
-        span='src-new:adg')
+        span='srcmgr-add:sync:edh')
     log.wait_log_entry(
-        msg=f're:failed to parse value with key "{eve_item1_id}":.+',
+        msg=f're:failed to fetch EItemEffect: failed to parse value with key "{eve_item1_id}":.+',
         level='WARN',
-        span='src-new:adg')
-    log.wait_log_entry(
-        msg='1 warnings encountered during fetching of EItemEffect, showing up to 5:',
-        level='WARN',
-        span='src-new:adg')
-    log.wait_log_entry(
-        msg=f're:failed to parse value with key "{eve_item1_id}":.+',
-        level='WARN',
-        span='src-new:adg')
+        span='srcmgr-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_item2 = api_sol.add_sw_effect(type_id=eve_item2_id)
