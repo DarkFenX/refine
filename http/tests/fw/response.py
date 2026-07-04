@@ -1,3 +1,5 @@
+import typing
+
 import requests
 
 
@@ -17,4 +19,11 @@ class Response(requests.Response):
         if text_predicate is not None:
             assert self.text == text_predicate
         if json_predicate is not None:
-            assert self.json() == json_predicate
+            subset_check(actual=self.json(), expected=json_predicate)
+
+
+def subset_check(*, actual: typing.Any, expected: typing.Any) -> None:
+    if isinstance(actual, dict) and isinstance(expected, dict):
+        for name in expected:
+            subset_check(actual=actual.get(name), expected=expected.get(name))
+    assert actual == expected
