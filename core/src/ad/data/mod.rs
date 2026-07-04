@@ -20,7 +20,7 @@ pub use item_list::{
 };
 pub use muta::{AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv, AMutaItemConvs, AMutas};
 pub use shared::{ACount, AModifierSrq, AOp, AState, AValue};
-pub use warnings::AdgWarnings;
+pub use warnings::ADataWarnings;
 
 mod abil;
 mod attr;

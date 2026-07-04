@@ -16,12 +16,12 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut AEffect, adg_warnings: &mut Vec<String>) {
+fn update_effect(a_effect: &mut AEffect, a_warnings: &mut Vec<String>) {
     // Make sure to apply self-modifiers even if fighter is disabled
     a_effect.state = AState::Disabled;
     if !a_effect.modifiers.is_empty() {
         let warning = format!("effect {EFFECT_AID}: fighter MJD effect has modifiers, overwriting them");
-        adg_warnings.push(warning);
+        a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     // As of 2026-06-10, fighter sig blow during MJD does not work on TQ, keeping it disabled until

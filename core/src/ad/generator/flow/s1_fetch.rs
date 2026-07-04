@@ -1,5 +1,5 @@
 use crate::{
-    ad::{ADataGenerator, ADataGeneratorError, AdgWarnings},
+    ad::{ADataGenerator, ADataGeneratorError, ADataWarnings},
     ed::{EDataCont, EveDataHandler},
     util::LibNamed,
 };
@@ -30,7 +30,7 @@ impl ADataGenerator {
     }
 }
 
-fn record_warnings<T>(e_cont: &mut EDataCont<T>, a_warnings: &mut AdgWarnings)
+fn record_warnings<T>(e_cont: &mut EDataCont<T>, a_warnings: &mut ADataWarnings)
 where
     T: LibNamed,
 {

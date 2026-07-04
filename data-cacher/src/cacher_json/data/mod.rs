@@ -10,6 +10,7 @@ use item_list::CItemList;
 use muta::CMuta;
 use shared::{CModifierSrq, COp, CState};
 use traits::AdaptedConv;
+use warnings::CDataWarnings;
 
 mod abil;
 mod attr;
@@ -21,3 +22,4 @@ mod item_list;
 mod muta;
 mod shared;
 mod traits;
+mod warnings;

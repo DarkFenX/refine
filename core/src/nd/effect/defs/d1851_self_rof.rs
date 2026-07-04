@@ -16,10 +16,10 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut AEffect, adg_warnings: &mut Vec<String>) {
+fn update_effect(a_effect: &mut AEffect, a_warnings: &mut Vec<String>) {
     if !a_effect.modifiers.is_empty() {
         let warning = format!("effect {EFFECT_AID}: self-skillreq missile rof effect has modifiers, overwriting them");
-        adg_warnings.push(warning);
+        a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     let modifier = AEffectModifier {

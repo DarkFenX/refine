@@ -1,4 +1,4 @@
-pub struct AdgWarnings {
+pub struct ADataWarnings {
     pub data_fetch: Vec<String>,
     pub pk_duplicates: Vec<String>,
     pub cleanup: Vec<String>,
@@ -7,7 +7,7 @@ pub struct AdgWarnings {
     pub customization: Vec<String>,
     pub conversion_aux: Vec<String>,
 }
-impl AdgWarnings {
+impl ADataWarnings {
     pub fn new() -> Self {
         Self {
             data_fetch: Vec::new(),

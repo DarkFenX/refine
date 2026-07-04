@@ -17,11 +17,11 @@ pub(in crate::nd::effect::defs) fn mk_bubble_buff(duration: AEffectBuffDuration)
 pub(in crate::nd::effect::defs) fn add_web_mods(
     effect_aid: AEffectId,
     a_effect: &mut AEffect,
-    adg_warnings: &mut Vec<String>,
+    a_warnings: &mut Vec<String>,
 ) {
     if !a_effect.modifiers.is_empty() {
         let warning = format!("effect {effect_aid}: web effect has modifiers, overwriting them");
-        adg_warnings.push(warning);
+        a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     a_effect.modifiers.insert(AEffectModifier {

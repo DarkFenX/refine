@@ -6,11 +6,11 @@ use crate::ad::{
 pub(in crate::nd::effect::defs) fn add_td_mods(
     effect_aid: AEffectId,
     a_effect: &mut AEffect,
-    adg_warnings: &mut Vec<String>,
+    a_warnings: &mut Vec<String>,
 ) {
     if !a_effect.modifiers.is_empty() {
         let warning = format!("effect {effect_aid}: TD effect has modifiers, overwriting them");
-        adg_warnings.push(warning);
+        a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     add_td_modifiers(&mut a_effect.modifiers);
@@ -19,11 +19,11 @@ pub(in crate::nd::effect::defs) fn add_td_mods(
 pub(in crate::nd::effect::defs) fn add_gd_mods(
     effect_aid: AEffectId,
     a_effect: &mut AEffect,
-    adg_warnings: &mut Vec<String>,
+    a_warnings: &mut Vec<String>,
 ) {
     if !a_effect.modifiers.is_empty() {
         let warning = format!("effect {effect_aid}: GD effect has modifiers, overwriting them");
-        adg_warnings.push(warning);
+        a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     add_gd_modifiers(&mut a_effect.modifiers);
@@ -32,11 +32,11 @@ pub(in crate::nd::effect::defs) fn add_gd_mods(
 pub(in crate::nd::effect::defs) fn add_wd_mods(
     effect_aid: AEffectId,
     a_effect: &mut AEffect,
-    adg_warnings: &mut Vec<String>,
+    a_warnings: &mut Vec<String>,
 ) {
     if !a_effect.modifiers.is_empty() {
         let warning = format!("effect {effect_aid}: WD effect has modifiers, overwriting them");
-        adg_warnings.push(warning);
+        a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
     add_td_modifiers(&mut a_effect.modifiers);

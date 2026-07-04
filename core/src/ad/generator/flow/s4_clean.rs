@@ -1,6 +1,6 @@
 use crate::{
     ad::{
-        ADataGenerator, ADataGeneratorError, AdgWarnings,
+        ADataGenerator, ADataGeneratorError, ADataWarnings,
         generator::rels::{KeyDb, KeyPart},
     },
     ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
@@ -209,7 +209,7 @@ impl ADataGenerator {
     }
 }
 
-fn record_cont_stats<T>(e_cont_alive: &EDataCont<T>, e_cont_trash: &EDataCont<T>, a_warnings: &mut AdgWarnings)
+fn record_cont_stats<T>(e_cont_alive: &EDataCont<T>, e_cont_trash: &EDataCont<T>, a_warnings: &mut ADataWarnings)
 where
     T: LibNamed,
 {

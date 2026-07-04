@@ -15,7 +15,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     }
 }
 
-fn update_effect(a_effect: &mut AEffect, _adg_warnings: &mut Vec<String>) {
+fn update_effect(a_effect: &mut AEffect, _a_warnings: &mut Vec<String>) {
     // In EVE, it seems like modules which disallow assistance do it indirectly. Whenever they are
     // active, assistance just cannot be applied to carrying ship. In the lib, we just transfer it
     // to ship for simplicity

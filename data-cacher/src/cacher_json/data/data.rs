@@ -4,7 +4,7 @@ use struson::{
 };
 
 use crate::cacher_json::{
-    data::{AdaptedConv, CAbil, CAttr, CBuff, CEffect, CItem, CItemList, CMuta},
+    data::{AdaptedConv, CAbil, CAttr, CBuff, CDataWarnings, CEffect, CItem, CItemList, CMuta},
     error::{JsonZfileAdcReadError, JsonZfileAdcWriteError},
 };
 
@@ -17,6 +17,7 @@ pub(in crate::cacher_json) struct CData {
     buffs: Vec<CBuff>,
     abils: Vec<CAbil>,
     item_lists: Vec<CItemList>,
+    warnings: CDataWarnings,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,6 +34,7 @@ impl CData {
             buffs: a_data.buffs.iter().map(CBuff::from_adapted).collect(),
             abils: a_data.abils.iter().map(CAbil::from_adapted).collect(),
             item_lists: a_data.item_lists.iter().map(CItemList::from_adapted).collect(),
+            warnings: CDataWarnings::from_adapted(&a_data.warnings),
         }
     }
     pub(in crate::cacher_json) fn into_adapted(self) -> rc::ad::AData {
@@ -44,6 +46,7 @@ impl CData {
             buffs: self.buffs.into_iter().map(|v| v.into_adapted()).collect(),
             abils: self.abils.into_iter().map(|v| v.into_adapted()).collect(),
             item_lists: self.item_lists.into_iter().map(|v| v.into_adapted()).collect(),
+            warnings: self.warnings.into_adapted(),
         }
     }
 }
@@ -58,20 +61,22 @@ impl CData {
     {
         let mut writer = JsonStreamWriter::new(writer);
         writer.begin_object()?;
-        write_object_field("items", &self.items, &mut writer)?;
-        write_object_field("attrs", &self.attrs, &mut writer)?;
-        write_object_field("mutas", &self.mutas, &mut writer)?;
-        write_object_field("effects", &self.effects, &mut writer)?;
-        write_object_field("buffs", &self.buffs, &mut writer)?;
-        write_object_field("abils", &self.abils, &mut writer)?;
-        write_object_field("item_lists", &self.item_lists, &mut writer)?;
+        write_array_to_object("items", &self.items, &mut writer)?;
+        write_array_to_object("attrs", &self.attrs, &mut writer)?;
+        write_array_to_object("mutas", &self.mutas, &mut writer)?;
+        write_array_to_object("effects", &self.effects, &mut writer)?;
+        write_array_to_object("buffs", &self.buffs, &mut writer)?;
+        write_array_to_object("abils", &self.abils, &mut writer)?;
+        write_array_to_object("item_lists", &self.item_lists, &mut writer)?;
+        writer.name("warnings")?;
+        writer.serialize_value(&self.warnings)?;
         writer.end_object()?;
         writer.finish_document()?;
         Ok(())
     }
 }
 
-fn write_object_field<W, C>(
+fn write_array_to_object<W, C>(
     name: &str,
     c_entities: &[C],
     writer: &mut JsonStreamWriter<W>,
@@ -117,6 +122,7 @@ impl CData {
                 "buffs" => read_array(&mut c_data.buffs, &mut reader)?,
                 "abils" => read_array(&mut c_data.abils, &mut reader)?,
                 "item_lists" => read_array(&mut c_data.item_lists, &mut reader)?,
+                "warnings" => c_data.warnings = reader.deserialize_next()?,
                 _ => reader.skip_value()?,
             }
         }

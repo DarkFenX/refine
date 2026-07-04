@@ -8,13 +8,13 @@ pub use cacher::AdaptedDataCacher;
 pub use data::{
     AAbil, AAbilId, AAbils, AAttr, AAttrId, AAttrs, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier,
     ABuffModifiers, ABuffs, ACount, ACustomAttrId, ACustomBuffId, ACustomEffectId, ACustomItemListId, AData,
-    ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectBuff, AEffectBuffAttrMerge,
-    AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId, AEffectLocation,
-    AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AEveAttrId, AEveBuffId,
-    AEveItemListId, AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect,
+    ADataWarnings, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectBuff,
+    AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId,
+    AEffectLocation, AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AEveAttrId,
+    AEveBuffId, AEveItemListId, AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect,
     AItemEffectData, AItemEffects, AItemGrpId, AItemId, AItemList, AItemListId, AItemListItemIds, AItemLists,
     AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv,
-    AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue, AdgWarnings,
+    AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
 };
 pub use fingerprint::AFingerprint;
 pub(crate) use generator::{ADataGenerator, ADataGeneratorError};

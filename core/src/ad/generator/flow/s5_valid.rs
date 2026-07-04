@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::{
-        ADataGenerator, AdgWarnings,
+        ADataGenerator, ADataWarnings,
         generator::{
             AdgSupport, get_abil_effect,
             rels::{Fk, KeyDb, KeyPart, Pk},
@@ -56,7 +56,7 @@ impl ADataGenerator {
         fk_check_referer(&self.e_data.muta_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
     }
 }
-fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, adg_supp: &AdgSupport, a_warnings: &mut AdgWarnings)
+fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, adg_supp: &AdgSupport, a_warnings: &mut ADataWarnings)
 where
     T: Fk + LibNamed,
 {
@@ -121,7 +121,7 @@ fn fk_check_referee<T, F>(
     referer_cont: &EDataCont<T>,
     referee_pks: &RSet<KeyPart>,
     adg_supp: &AdgSupport,
-    a_warnings: &mut AdgWarnings,
+    a_warnings: &mut ADataWarnings,
     func: F,
     referee_name: &str,
 ) where

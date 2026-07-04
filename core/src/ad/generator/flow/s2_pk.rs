@@ -1,7 +1,7 @@
 //! Contains facilities which clean up data to ensure no duplicate primary keys exist.
 
 use crate::{
-    ad::{ADataGenerator, AdgWarnings, generator::rels::Pk},
+    ad::{ADataGenerator, ADataWarnings, generator::rels::Pk},
     ed::EDataCont,
     util::{LibNamed, RSet},
 };
@@ -25,7 +25,7 @@ impl ADataGenerator {
     }
 }
 
-fn dedup_pks_vec<T: Pk + LibNamed>(e_cont: &mut EDataCont<T>, a_warnings: &mut AdgWarnings) {
+fn dedup_pks_vec<T: Pk + LibNamed>(e_cont: &mut EDataCont<T>, a_warnings: &mut ADataWarnings) {
     let mut seen_pks = RSet::new();
     let removed = e_cont
         .data

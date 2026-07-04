@@ -48,7 +48,7 @@ impl JsonZfileAdc {
             .write(true)
             .truncate(true)
             .open(cache_path)?;
-        let writer = zstd::stream::Encoder::new(file, 7)?;
+        let writer = zstd::stream::Encoder::new(file, 7)?.auto_finish();
         c_data.try_serialize(writer)?;
         Ok(())
     }
