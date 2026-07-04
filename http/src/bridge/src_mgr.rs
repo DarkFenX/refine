@@ -170,8 +170,9 @@ fn log_warnings(core_src: &rc::Src) {
         for warning in core_info.warnings.adg_conversion_main.iter() {
             tracing::warn!("{}", warning);
         }
+        // Customization errors are fairly low-priority, log those as infos as well
         for warning in core_info.warnings.adg_customization.iter() {
-            tracing::warn!("{}", warning);
+            tracing::info!("{}", warning);
         }
         for warning in core_info.warnings.adg_conversion_aux.iter() {
             tracing::warn!("{}", warning);
