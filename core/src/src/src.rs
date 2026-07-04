@@ -15,7 +15,6 @@ pub struct Src {
     info: SrcInfo,
 }
 impl Src {
-    #[tracing::instrument(name = "src-new", level = "trace", skip_all)]
     pub fn new(
         ed_handler: &dyn EveDataHandler,
         ad_cacher: Option<&mut Box<dyn AdaptedDataCacher>>,
@@ -26,5 +25,8 @@ impl Src {
             r_data: Arc::new(r_data),
             info,
         })
+    }
+    pub fn get_info(&self) -> &SrcInfo {
+        &self.info
     }
 }

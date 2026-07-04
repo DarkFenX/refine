@@ -1,6 +1,6 @@
 use super::{
     error::SrcInitError,
-    info::{SrcInfo, SrcOrigin, SrcOriginCached, SrcOriginGenFpMismatch, SrcOriginGenReason},
+    info::{SrcInfo, SrcOrigin, SrcOriginCached, SrcOriginGenFpMismatch, SrcOriginGenReason, SrcWarnings},
 };
 use crate::{
     ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher},
@@ -51,32 +51,31 @@ pub(in crate::src) fn prepare_adapted_data(
             current_fingerprint,
         );
     }
-    // Cannot load cached data - generate adapted data and cache it
-    let a_data = match ad_cacher.load_from_cache() {
-        Ok(a_data) => a_data,
-        Err(error) => {
-            return generate_and_cache(
-                ed_handler,
-                SrcOrigin::Generated(SrcOriginGenReason::CacheLoadFailed(error.to_string())),
-                ad_cacher,
-                current_fingerprint,
-            );
+    match ad_cacher.load_from_cache() {
+        Ok(a_data) => {
+            let info = SrcInfo {
+                origin: SrcOrigin::Cached(SrcOriginCached {
+                    fingerprint: cached_fingerprint.into_string(),
+                }),
+                warnings: SrcWarnings::new(),
+            };
+            Ok((a_data, info))
         }
-    };
-    let info = SrcInfo {
-        origin: SrcOrigin::Cached(SrcOriginCached {
-            fingerprint: cached_fingerprint.into_string(),
-        }),
-        warnings: false,
-    };
-    Ok((a_data, info))
+        // Cannot load cached data - generate adapted data and cache it
+        Err(error) => generate_and_cache(
+            ed_handler,
+            SrcOrigin::Generated(SrcOriginGenReason::CacheLoadFailed(error.to_string())),
+            ad_cacher,
+            current_fingerprint,
+        ),
+    }
 }
 
 fn generate(ed_handler: &dyn EveDataHandler, origin: SrcOrigin) -> Result<(AData, SrcInfo), SrcInitError> {
     let a_data = ADataGenerator::new().generate(ed_handler)?;
     let info = SrcInfo {
         origin,
-        warnings: false,
+        warnings: SrcWarnings::new(),
     };
     Ok((a_data, info))
 }
@@ -87,11 +86,9 @@ fn generate_and_cache(
     ad_cacher: &mut dyn AdaptedDataCacher,
     fingerprint: AFingerprint,
 ) -> Result<(AData, SrcInfo), SrcInitError> {
-    let a_data = ADataGenerator::new().generate(ed_handler)?;
-    let info = SrcInfo {
-        origin,
-        warnings: false,
-    };
-    ad_cacher.write_cache(&a_data, fingerprint);
+    let (a_data, mut info) = generate(ed_handler, origin)?;
+    if let Err(error) = ad_cacher.write_cache(&a_data, fingerprint) {
+        info.warnings.cache_write = Some(error.to_string());
+    }
     Ok((a_data, info))
 }
