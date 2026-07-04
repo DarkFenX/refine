@@ -4,13 +4,13 @@ use tokio::sync::RwLock;
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::{HBrError, HThreadPool},
+    bridge::{HBrError, HSrc, HThreadPool},
     info::{HSrcInfo, HSrcInfoMode},
 };
 
 pub(crate) struct HSrcMgr {
     cache_folder: Option<String>,
-    alias_src_map: RwLock<HashMap<String, rc::Src>>,
+    alias_src_map: RwLock<HashMap<String, HSrc>>,
     default_alias: RwLock<Option<String>>,
     locked_aliases: RwLock<HashSet<String>>,
 }
@@ -52,12 +52,13 @@ impl HSrcMgr {
             })
             .await
         {
-            Ok(src) => {
+            Ok(core_src) => {
                 if make_default {
                     *self.default_alias.write().await = Some(alias.clone())
                 };
-                let src_info = HSrcInfo::from_core(src.get_info(), src_mode);
-                self.alias_src_map.write().await.insert(alias.clone(), src);
+                let src_info = HSrcInfo::from_core(core_src.get_info(), src_mode);
+                let h_src = HSrc::from_core(core_src);
+                self.alias_src_map.write().await.insert(alias.clone(), h_src);
                 self.unlock_alias(&alias).await;
                 Ok(src_info)
             }
@@ -67,7 +68,7 @@ impl HSrcMgr {
             }
         }
     }
-    pub(crate) async fn get(&self, alias: Option<&str>) -> Result<rc::Src, HBrError> {
+    pub(crate) async fn get(&self, alias: Option<&str>) -> Result<HSrc, HBrError> {
         match alias {
             Some(a) => self.get_src_by_alias(a).await,
             None => self.get_default_src().await,
@@ -102,7 +103,7 @@ impl HSrcMgr {
             tracing::warn!("attempt to unlock alias which is not locked")
         }
     }
-    async fn get_src_by_alias(&self, alias: &str) -> Result<rc::Src, HBrError> {
+    async fn get_src_by_alias(&self, alias: &str) -> Result<HSrc, HBrError> {
         self.alias_src_map
             .read()
             .await
@@ -110,7 +111,7 @@ impl HSrcMgr {
             .cloned()
             .ok_or_else(|| HBrError::SrcNotFound(alias.to_string()))
     }
-    async fn get_default_src(&self) -> Result<rc::Src, HBrError> {
+    async fn get_default_src(&self) -> Result<HSrc, HBrError> {
         match self.default_alias.read().await.as_ref() {
             Some(a) => self.get_src_by_alias(a).await,
             None => Err(HBrError::NoDefaultSrc),

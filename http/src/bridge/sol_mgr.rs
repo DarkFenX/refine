@@ -5,7 +5,7 @@ use tokio_rayon::AsyncThreadPool;
 use uuid::Uuid;
 
 use crate::{
-    bridge::{HBrError, HSolarSystem, HThreadPool},
+    bridge::{HBrError, HSolarSystem, HSrc, HThreadPool},
     cmd::HSolAddCmd,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
@@ -25,7 +25,7 @@ impl HSolMgr {
         &self,
         tpool: &HThreadPool,
         command: HSolAddCmd,
-        src: rc::Src,
+        src: HSrc,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -38,7 +38,7 @@ impl HSolMgr {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                let mut core_sol = Box::new(command.execute(&src));
+                let mut core_sol = Box::new(command.execute(src.get_core()));
                 let sol_info =
                     HSolInfo::from_id_and_core(id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
                 (core_sol, sol_info)

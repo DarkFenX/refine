@@ -16,7 +16,6 @@ use crate::{
 /// necessary preparations and expose processed data to solar system and its services.
 // Under the hood it's an entity which builds runtime data container, and then provides access to
 // its contents
-#[derive(Clone)]
 pub struct Src {
     pub(crate) r_data: Arc<RData>,
     info: SrcInfo,

@@ -1,7 +1,7 @@
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::{HBrError, HThreadPool},
+    bridge::{HBrError, HSrc, HThreadPool},
     cmd::{
         HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmd,
         HFitRemoveCmd, HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd, HGetFitStatsCmd, HGetFleetStatsCmd,
@@ -165,7 +165,7 @@ impl HSolarSystemInner {
     pub(crate) async fn change_sol_src(
         &mut self,
         tpool: &HThreadPool,
-        src: rc::Src,
+        src: HSrc,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -178,7 +178,7 @@ impl HSolarSystemInner {
             .standard
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                core_sol.set_src(&src);
+                core_sol.set_src(src.get_core());
                 let info =
                     HSolInfo::from_id_and_core(sol_id_mv, &mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
                 (core_sol, info)
