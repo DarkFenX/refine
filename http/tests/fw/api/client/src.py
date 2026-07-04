@@ -1,9 +1,6 @@
 import typing
 
-import pytest
-
 from fw import eve
-from fw.log import LogEntryNotFoundError
 from fw.request import Request
 from fw.util import Default
 from .base import ApiClientBase
@@ -14,9 +11,8 @@ if typing.TYPE_CHECKING:
 
 class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
 
-    def __init__(self, *, fast_cleanup_check: bool, **kwargs) -> None:
+    def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.__fast_cleanup_check: bool = fast_cleanup_check
         self.__created_data_aliases: set[str] = set()
 
     def create_source_request(
@@ -37,32 +33,14 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             cleanup_check: bool = True,
             hook_data_prim: DataPrimHook | None = None,
     ) -> None:
-
-        def process(*, data: eve.EveObjects) -> None:
-            resp = self.create_source_request(data=data).send()
-            assert resp.status_code == 201
-            self.__created_data_aliases.add(data.alias)
-
         if data is Default:
             data = self._get_default_eve_data()
         self._setup_eve_data_server(data=data, hook_data_prim=hook_data_prim)
+        resp = self.create_source_request(data=data).send()
+        assert resp.status_code == 201
         if cleanup_check:
-            with self._log_reader.get_collector() as log_collector:
-                process(data=data)
-                if self.__fast_cleanup_check:
-                    # Check if there are any "cleaned" entries in log upon completion w/o any
-                    # waiting for a fast way
-                    with pytest.raises(LogEntryNotFoundError):
-                        log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='srcmgr-add:sync:adg', timeout=0)
-                else:
-                    # Wait for negative report to appear for regular check
-                    log_collector.wait_log_entry(
-                        msg='no unused data found during cleanup',
-                        level='INFO',
-                        span='srcmgr-add:sync:adg',
-                        timeout=3)
-        else:
-            process(data=data)
+            assert len(resp.json().get('warnings', {}).get('adg_cleanup', ())) == 0
+        self.__created_data_aliases.add(data.alias)
 
     def remove_source_request(self, *, src_alias: str) -> Request:
         return Request(
@@ -80,28 +58,11 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             cleanup_check: bool = True,
             hook_data_prim: DataPrimHook | None = None,
     ) -> None:
-
-        def process(*, cleanup_check: bool) -> None:
-            for data in self._eve_datas.values():
-                self.create_source(
-                    data=data,
-                    cleanup_check=cleanup_check,
-                    hook_data_prim=hook_data_prim)
-
         # If no data was created, create default one
         if not self._eve_datas:
             self._get_default_eve_data()
-        # Fast cleanup check is done when we create multiple sources if possible, since it becomes
-        # more reliable this way; we check if there are any "cleaned" entries in log upon completion
-        # w/o any waiting
-        if cleanup_check and self.__fast_cleanup_check:
-            with self._log_reader.get_collector() as log_collector:
-                # No need to have per-source check when we do wider one
-                process(cleanup_check=False)
-                with pytest.raises(LogEntryNotFoundError):
-                    log_collector.wait_log_entry(msg='re:cleaned .+', level='INFO', span='srcmgr-add:sync:adg', timeout=0)
-        else:
-            process(cleanup_check=cleanup_check)
+        for data in self._eve_datas.values():
+            self.create_source(data=data, cleanup_check=cleanup_check, hook_data_prim=hook_data_prim)
 
     def cleanup_sources(self) -> None:
         for alias in self.__created_data_aliases.copy():

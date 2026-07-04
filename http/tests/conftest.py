@@ -29,10 +29,6 @@ def pytest_addoption(parser: pytest.Parser) -> None:
         type=str,
         default='',
         help='pin server process to passed CPU IDs')
-    parser.addoption(
-        '--fast-cleanup-check',
-        action='store_true',
-        help='make log check during source creation faster, but unreliable')
 
 
 @pytest.fixture(scope='session')
@@ -47,7 +43,7 @@ def run_config(run_tmp_folder: Path) -> ConfigInfo:
     return build_config(config_path=config_path, port=port, log_folder=run_tmp_folder)
 
 
-@pytest.fixture(scope='session', autouse=True)  # noqa: RUF076
+@pytest.fixture(scope='session', autouse=True)
 def refine_server(
         pytestconfig: pytest.Config,
         run_config: ConfigInfo,
@@ -78,16 +74,11 @@ def refine_server(
 
 @pytest.fixture
 def client(
-        pytestconfig: pytest.Config,
         httpserver: pytest_httpserver.HTTPServer,
         run_config: ConfigInfo,
         log_reader: LogReader,
 ) -> Generator[TestClient]:
-    test_client = TestClient(
-        eve_data_server=httpserver,
-        api_port=run_config.port,
-        log_reader=log_reader,
-        fast_cleanup_check=pytestconfig.getoption('fast_cleanup_check'))
+    test_client = TestClient(eve_data_server=httpserver, api_port=run_config.port, log_reader=log_reader)
     yield test_client
     test_client.cleanup_sols()
     test_client.cleanup_sources()

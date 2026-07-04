@@ -16,10 +16,5 @@ class TestClient(ApiClient, EveTypeFactory, EveDataManager):
             eve_data_server: pytest_httpserver.HTTPServer,
             api_port: int,
             log_reader: LogReader,
-            fast_cleanup_check: bool,
     ) -> None:
-        super().__init__(
-            data_server=eve_data_server,
-            port=api_port,
-            log_reader=log_reader,
-            fast_cleanup_check=fast_cleanup_check)
+        super().__init__(data_server=eve_data_server, port=api_port, log_reader=log_reader)
