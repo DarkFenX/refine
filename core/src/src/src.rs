@@ -2,7 +2,7 @@ use std::sync::Arc;
 
 use super::{
     error::SrcInitError,
-    info::{SrcInfo, SrcOrigin, SrcOriginCached, SrcOriginGenReason, SrcWarnings},
+    info::{SrcInfo, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
 };
 use crate::{
     ad::{AData, ADataGenerator, AFingerprint, AdaptedDataCacher},
@@ -29,7 +29,7 @@ impl Src {
         // No cacher - just generate adapted data (no cacher to write it)
         let ad_cacher = match ad_cacher {
             Some(ad_cacher) => ad_cacher.as_mut(),
-            None => return generate(ed_handler, SrcOrigin::Generated(SrcOriginGenReason::NoCacher)),
+            None => return generate(ed_handler, SrcOrigin::Generated(SrcOriginGeneratedReason::NoCacher)),
         };
         // No EVE data version - just generate adapted data (no EVE data part of the fingerprint)
         let ed_version = match ed_handler.get_data_version() {
@@ -37,7 +37,7 @@ impl Src {
             Err(error) => {
                 return generate(
                     ed_handler,
-                    SrcOrigin::Generated(SrcOriginGenReason::NoEveDataVersion(error.to_string())),
+                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoEveDataVersion(error.to_string())),
                 );
             }
         };
@@ -48,7 +48,7 @@ impl Src {
             Err(error) => {
                 return generate_and_cache(
                     ed_handler,
-                    SrcOrigin::Generated(SrcOriginGenReason::NoCachedFingerprint(error.to_string())),
+                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoCachedFingerprint(error.to_string())),
                     ad_cacher,
                     current_fingerprint,
                 );
@@ -58,7 +58,7 @@ impl Src {
         if cached_fingerprint != current_fingerprint {
             return generate_and_cache(
                 ed_handler,
-                SrcOrigin::Generated(SrcOriginGenReason::FingerprintMismatch(format!(
+                SrcOrigin::Generated(SrcOriginGeneratedReason::FingerprintMismatch(format!(
                     "needed fingerprint {current_fingerprint}, cached fingerprint {cached_fingerprint}"
                 ))),
                 ad_cacher,
@@ -66,16 +66,11 @@ impl Src {
             );
         }
         match ad_cacher.load_from_cache() {
-            Ok(a_data) => process(
-                a_data,
-                SrcOrigin::Cached(SrcOriginCached {
-                    fingerprint: cached_fingerprint.into_string(),
-                }),
-            ),
+            Ok(a_data) => process(a_data, SrcOrigin::Cached(cached_fingerprint.into_string())),
             // Cannot load cached data - generate adapted data and cache it
             Err(error) => generate_and_cache(
                 ed_handler,
-                SrcOrigin::Generated(SrcOriginGenReason::CacheLoadFailed(error.to_string())),
+                SrcOrigin::Generated(SrcOriginGeneratedReason::CacheLoadFailed(error.to_string())),
                 ad_cacher,
                 current_fingerprint,
             ),

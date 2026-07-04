@@ -3,7 +3,10 @@ use std::collections::{HashMap, HashSet};
 use tokio::sync::RwLock;
 use tokio_rayon::AsyncThreadPool;
 
-use crate::bridge::{HBrError, HThreadPool};
+use crate::{
+    bridge::{HBrError, HThreadPool},
+    info::{HSrcInfo, HSrcInfoMode},
+};
 
 pub(crate) struct HSrcMgr {
     cache_folder: Option<String>,
@@ -29,7 +32,8 @@ impl HSrcMgr {
         data_version: String,
         data_base_url: String,
         make_default: bool,
-    ) -> Result<(), HBrError> {
+        src_mode: HSrcInfoMode,
+    ) -> Result<HSrcInfo, HBrError> {
         tracing::debug!("adding source with alias \"{alias}\", default={make_default}");
 
         if !self.check_alias_availability(&alias).await {
@@ -52,9 +56,10 @@ impl HSrcMgr {
                 if make_default {
                     *self.default_alias.write().await = Some(alias.clone())
                 };
+                let src_info = HSrcInfo::from_core(src.get_info(), src_mode);
                 self.alias_src_map.write().await.insert(alias.clone(), src);
                 self.unlock_alias(&alias).await;
-                Ok(())
+                Ok(src_info)
             }
             Err(e) => {
                 self.unlock_alias(&alias).await;

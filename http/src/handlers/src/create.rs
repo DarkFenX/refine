@@ -1,11 +1,12 @@
 use axum::{
     Json,
-    extract::{Path, State},
+    extract::{Path, Query, State},
     http::StatusCode,
     response::IntoResponse,
 };
 use serde::Deserialize;
 
+use super::query::HSrcInfoParams;
 use crate::{bridge::HBrError, handlers::HSingleErr, state::HAppState};
 
 #[derive(Deserialize)]
@@ -18,6 +19,7 @@ pub(crate) struct HCreateSrcReq {
 pub(crate) async fn create_source(
     State(state): State<HAppState>,
     Path(alias): Path<String>,
+    Query(params): Query<HSrcInfoParams>,
     Json(payload): Json<HCreateSrcReq>,
 ) -> impl IntoResponse {
     let data_version = payload.data_version;
@@ -25,10 +27,17 @@ pub(crate) async fn create_source(
     let make_default = payload.make_default.unwrap_or(false);
     match state
         .src_mgr
-        .add(&state.tpool, alias, data_version, data_base_url, make_default)
+        .add(
+            &state.tpool,
+            alias,
+            data_version,
+            data_base_url,
+            make_default,
+            params.src.unwrap_or_default(),
+        )
         .await
     {
-        Ok(_) => StatusCode::CREATED.into_response(),
+        Ok(src_info) => (StatusCode::CREATED, Json(src_info)).into_response(),
         Err(br_err) => {
             let code = match br_err {
                 HBrError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,

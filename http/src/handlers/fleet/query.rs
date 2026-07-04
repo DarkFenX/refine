@@ -4,5 +4,5 @@ use crate::info::HFleetInfoMode;
 
 #[derive(Deserialize)]
 pub(crate) struct HFleetInfoParams {
-    pub(in crate::handlers::fleet) fleet: Option<HFleetInfoMode>,
+    pub(super) fleet: Option<HFleetInfoMode>,
 }
