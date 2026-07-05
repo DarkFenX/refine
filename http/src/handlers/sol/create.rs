@@ -6,12 +6,8 @@ use axum::{
 };
 use serde::Deserialize;
 
-use crate::{
-    cmd::HSolAddCmd,
-    err::HBrError,
-    handlers::{HSingleErr, sol::HSolInfoParams},
-    state::HAppState,
-};
+use super::query::HSolInfoParams;
+use crate::{cmd::HSolAddCmd, err::HApiError, state::HAppState};
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HCreateSolReq {
@@ -28,14 +24,7 @@ pub(crate) async fn create_sol(
     let Json(payload) = payload.unwrap_or_default();
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,
-        Err(br_err) => {
-            let code = match br_err {
-                HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
-                HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            return (code, Json(HSingleErr::from_bridge(br_err))).into_response();
-        }
+        Err(br_err) => return HApiError::from_br_path_empty(br_err).into_response(),
     };
     let sol_info = state
         .sol_mgr

@@ -4,12 +4,13 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
+use super::query::HSolInfoParams;
 use crate::{
     cmd::{HCmdResps, HSolChangeCmd},
     err::HApiError,
-    handlers::{HSingleErr, sol::HSolInfoParams},
     info::HSolInfo,
     state::HAppState,
 };
@@ -37,13 +38,13 @@ pub(crate) async fn change_sol(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
     Query(params): Query<HSolInfoParams>,
-    Json(payload): Json<HSolChangeReq>,
+    WithRejection(Json(payload), _): WithRejection<Json<HSolChangeReq>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
         Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
-    let resp = match sol
+    match sol
         .lock()
         .await
         .change_sol(
@@ -60,7 +61,6 @@ pub(crate) async fn change_sol(
             let resp = HSolChangeResp::new(sol_info, cmd_results);
             (StatusCode::OK, Json(resp)).into_response()
         }
-        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response(),
-    };
-    resp
+        Err(br_err) => HApiError::from_br_path_sol(br_err).into_response(),
+    }
 }

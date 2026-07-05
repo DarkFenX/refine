@@ -5,11 +5,8 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    err::HApiError,
-    handlers::{HSingleErr, sol::HSolInfoParams},
-    state::HAppState,
-};
+use super::query::HSolInfoParams;
+use crate::{err::HApiError, state::HAppState};
 
 pub(crate) async fn get_sol(
     State(state): State<HAppState>,
@@ -20,7 +17,7 @@ pub(crate) async fn get_sol(
         Ok(sol) => sol,
         Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
-    let resp = match sol
+    match sol
         .lock()
         .await
         .get_sol(
@@ -33,7 +30,6 @@ pub(crate) async fn get_sol(
         .await
     {
         Ok(sol_info) => (StatusCode::OK, Json(sol_info)).into_response(),
-        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response(),
-    };
-    resp
+        Err(br_err) => HApiError::from_br_path_sol(br_err).into_response(),
+    }
 }
