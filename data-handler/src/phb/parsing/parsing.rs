@@ -1,5 +1,5 @@
 use struson::{
-    reader::{JsonReader, JsonStreamReader},
+    reader::{JsonReader, JsonStreamReader, ReaderError},
     serde::DeserializerError,
 };
 
@@ -82,14 +82,17 @@ where
     Ok((e_cont1, e_cont2))
 }
 
-fn try_recover(
+pub(in crate::phb) fn try_recover(
     reader: &mut JsonStreamReader<impl std::io::Read>,
     error: DeserializerError,
 ) -> Result<DeserializerError, ReadParseFailReason> {
-    // Consider only custom error as recoverable - they seem to be produced when serde
-    // deserialization fails
+    // When calling deserialize_next(), if it fails it usually returns Custom variant. However, in
+    // some niche cases it can return other error kinds as well (e.g. array instead of an object in
+    // an array of objects)
     match error {
-        DeserializerError::Custom(_) => (),
+        DeserializerError::Custom(_)
+        | DeserializerError::ReaderError(ReaderError::UnexpectedValueType { .. })
+        | DeserializerError::ReaderError(ReaderError::UnexpectedStructure { .. }) => (),
         _ => return Err(error.into()),
     }
     // Recover by skipping element which failed deserialization

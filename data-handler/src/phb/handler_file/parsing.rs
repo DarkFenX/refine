@@ -1,6 +1,6 @@
 use struson::reader::{JsonReader, JsonStreamReader};
 
-use crate::phb::parsing::ReadParseFailReason;
+use crate::phb::parsing::{ReadParseFailReason, try_recover};
 
 pub(in crate::phb) struct ArrayIter<T, R>
 where
@@ -46,13 +46,15 @@ where
         loop {
             match self.reader.has_next() {
                 Ok(has_next) => match has_next {
-                    true => match self.reader.deserialize_next::<serde_json::Value>() {
-                        Ok(raw_value) => match serde_json::from_value::<T>(raw_value) {
-                            Ok(value) => return Some(Ok(value)),
-                            // Silently skip malformed entries
-                            Err(_) => continue,
-                        },
-                        Err(error) => return Some(Err(error.into())),
+                    true => match self.reader.deserialize_next::<T>() {
+                        Ok(value) => return Some(Ok(value)),
+                        Err(error) => {
+                            match try_recover(&mut self.reader, error) {
+                                // Skip recoverable errors
+                                Ok(_) => continue,
+                                Err(error) => return Some(Err(error)),
+                            }
+                        }
                     },
                     false => break,
                 },

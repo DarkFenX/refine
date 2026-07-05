@@ -17,6 +17,7 @@ use rc::{
     SecZoneCorruption, SkillLevel, SolarSystem, Src, VERSION,
     ad::{AState, AdaptedDataCacher},
     ed::{EItemCatId, EveDataHandler},
+    src::SrcOrigin,
     val::ValOptions,
 };
 use tracing_subscriber::prelude::*;
@@ -37,7 +38,7 @@ fn setup_logger() -> () {
         .with(stdout_log)
         .with(
             tracing_subscriber::filter::Targets::new()
-                .with_default(tracing::Level::ERROR)
+                .with_default(tracing::Level::INFO)
                 .with_target("refine_core", tracing::Level::TRACE)
                 .with_target("refine_dh_eve", tracing::Level::TRACE)
                 .with_target("refine_dh_adapted", tracing::Level::TRACE),
@@ -72,6 +73,10 @@ fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
 fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
     let skill_ids = get_skill_ids(&edh);
     let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
+    match src.get_info().origin {
+        SrcOrigin::Cached(_) => tracing::info!("source: loaded from cache"),
+        SrcOrigin::Generated(_) => tracing::info!("source: generated"),
+    }
     let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
     let ship_id = fit.set_ship(ItemTypeId::from_i32(11184), None, None).get_item_id();
