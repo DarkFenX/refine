@@ -4,10 +4,11 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 use serde::Deserialize;
 
 use super::query::HSrcInfoParams;
-use crate::{err::HBrError, handlers::HSingleErr, state::HAppState};
+use crate::{err::HApiError, state::HAppState};
 
 #[derive(Deserialize)]
 pub(crate) struct HCreateSrcReq {
@@ -18,9 +19,9 @@ pub(crate) struct HCreateSrcReq {
 
 pub(crate) async fn create_source(
     State(state): State<HAppState>,
-    Path(alias): Path<String>,
+    Path(src_alias): Path<String>,
     Query(params): Query<HSrcInfoParams>,
-    Json(payload): Json<HCreateSrcReq>,
+    WithRejection(Json(payload), _): WithRejection<Json<HCreateSrcReq>, HApiError>,
 ) -> impl IntoResponse {
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;
@@ -29,7 +30,7 @@ pub(crate) async fn create_source(
         .src_mgr
         .add(
             &state.tpool,
-            alias,
+            src_alias,
             data_version,
             data_base_url,
             make_default,
@@ -38,14 +39,6 @@ pub(crate) async fn create_source(
         .await
     {
         Ok(src_info) => (StatusCode::CREATED, Json(src_info)).into_response(),
-        Err(br_err) => {
-            let code = match br_err {
-                HBrError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
-                HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
-        }
+        Err(br_err) => HApiError::from_br_path_src(br_err).into_response(),
     }
 }

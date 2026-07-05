@@ -10,6 +10,7 @@ pub(crate) enum HApiError {
 
 pub(crate) struct HBrErrorPathAware {
     err: HBrError,
+    src_in_path: bool,
     fleet_in_path: bool,
     fit_in_path: bool,
     item_in_path: bool,
@@ -30,11 +31,13 @@ impl HApiError {
             HApiError::JsonFailure(_) => StatusCode::BAD_REQUEST,
             HApiError::BridgeFailure(br_err) => match &br_err.err {
                 // Related to source initialization
-                HBrError::EdhInitFailed(_) | HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
+                HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 HBrError::SolNotFound(_) => StatusCode::NOT_FOUND,
                 HBrError::NoCoreSol => StatusCode::INTERNAL_SERVER_ERROR,
                 // Source-related issues
-                HBrError::SrcNotFound(_) | HBrError::NoDefaultSrc => StatusCode::BAD_REQUEST,
+                HBrError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
+                HBrError::SrcNotFound(_) if br_err.src_in_path => StatusCode::NOT_FOUND,
                 // Casts happen only when those IDs are in HTTP paths; if they fail, can safely
                 // assume that it's 404
                 HBrError::FleetIdCastFailed(_) | HBrError::FitIdCastFailed(_) | HBrError::ItemIdCastFailed(_) => {
@@ -73,9 +76,28 @@ impl HApiError {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HApiError {
+    pub(crate) fn from_br_path_empty(bridge_error: HBrError) -> Self {
+        Self::BridgeFailure(HBrErrorPathAware {
+            err: bridge_error,
+            src_in_path: false,
+            fleet_in_path: false,
+            fit_in_path: false,
+            item_in_path: false,
+        })
+    }
+    pub(crate) fn from_br_path_src(bridge_error: HBrError) -> Self {
+        Self::BridgeFailure(HBrErrorPathAware {
+            err: bridge_error,
+            src_in_path: true,
+            fleet_in_path: false,
+            fit_in_path: false,
+            item_in_path: false,
+        })
+    }
     pub(crate) fn from_br_path_sol(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
+            src_in_path: false,
             fleet_in_path: false,
             fit_in_path: false,
             item_in_path: false,
@@ -84,6 +106,7 @@ impl HApiError {
     pub(crate) fn from_br_path_sol_fleet(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
+            src_in_path: false,
             fleet_in_path: true,
             fit_in_path: false,
             item_in_path: false,
@@ -92,6 +115,7 @@ impl HApiError {
     pub(crate) fn from_br_path_sol_fit(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
+            src_in_path: false,
             fleet_in_path: false,
             fit_in_path: true,
             item_in_path: false,
@@ -100,6 +124,7 @@ impl HApiError {
     pub(crate) fn from_br_path_sol_item(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
+            src_in_path: false,
             fleet_in_path: false,
             fit_in_path: false,
             item_in_path: true,
