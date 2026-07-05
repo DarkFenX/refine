@@ -1,30 +1,58 @@
 import typing
 
 from fw.api.commands import (
+    SolAutochargeChangeCmd,
     SolBoosterAddCmd,
+    SolBoosterChangeCmd,
+    SolCharacterChangeViaFitIdCmd,
+    SolCharacterChangeViaItemIdCmd,
     SolCharacterSetCmd,
+    SolCharacterUnsetCmd,
+    SolChargeChangeCmd,
     SolDroneAddCmd,
     SolDroneChangeCmd,
+    SolFighterAddCmd,
+    SolFighterChangeCmd,
     SolFitAddCmd,
     SolFitChangeCmd,
     SolFitRemoveCmd,
     SolFleetAddCmd,
     SolFleetChangeCmd,
     SolFleetRemoveCmd,
+    SolFwEffectAddCmd,
+    SolFwEffectChangeCmd,
     SolImplantAddCmd,
+    SolImplantChangeCmd,
     SolItemRemoveCmd,
     SolModuleAddCmd,
     SolModuleChangeCmd,
+    SolProjEffectAddCmd,
+    SolProjEffectChangeCmd,
     SolRigAddCmd,
+    SolRigChangeCmd,
+    SolServiceAddCmd,
+    SolServiceChangeCmd,
+    SolShipChangeViaFitIdCmd,
+    SolShipChangeViaItemIdCmd,
     SolShipSetCmd,
+    SolShipUnsetCmd,
     SolSkillAddCmd,
+    SolSkillChangeCmd,
+    SolSolChangeCmd,
+    SolStanceChangeViaFitIdCmd,
+    SolStanceChangeViaItemIdCmd,
     SolStanceSetCmd,
+    SolStanceUnsetCmd,
+    SolSubsystemAddCmd,
+    SolSubsystemChangeCmd,
+    SolSwEffectAddCmd,
+    SolSwEffectChangeCmd,
 )
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.item import Item
-from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack
+from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
@@ -41,6 +69,8 @@ if typing.TYPE_CHECKING:
         ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
+        ApiRearmMinion,
+        ApiSecZone,
         ApiSolInfoMode,
     )
     from .sol import SolarSystem
@@ -129,6 +159,25 @@ class SolCmdCtx:
         self._ret_datas[index] = data
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
+    # Sol
+    def change_sol(
+            self, *,
+            sec_zone: ApiSecZone | type[Absent] = Absent,
+            default_incoming_dps: DpsProfile | type[Absent] = Absent,
+            default_spool: str | type[Absent] = Absent,
+            default_npc_prop: ApiNpcProp | type[Absent] = Absent,
+            default_optional_reloads: ApiOptionalReload | type[Absent] = Absent,
+            default_rearm_minions: ApiRearmMinion | type[Absent] = Absent,
+    ) -> None:
+        command = SolSolChangeCmd(
+            sec_zone=sec_zone,
+            default_incoming_dps=default_incoming_dps,
+            default_spool=default_spool,
+            default_npc_prop=default_npc_prop,
+            default_optional_reloads=default_optional_reloads,
+            default_rearm_minions=default_rearm_minions)
+        self._commands.append(command)
+
     # Fleet
     def create_fleet(
             self, *,
@@ -197,6 +246,19 @@ class SolCmdCtx:
             rm_mode=rm_mode)
         self._commands.append(command)
 
+    # Item - autocharge
+    def change_autocharge(
+            self, *,
+            item_id: str,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolAutochargeChangeCmd(
+            item_id=item_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
     # Item - booster
     def add_booster(
             self, *,
@@ -215,6 +277,22 @@ class SolCmdCtx:
         self._commands.append(command)
         return self.__make_item()
 
+    def change_booster(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            side_effects: dict[int | str, bool] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolBoosterChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            side_effects=process_effect_map_request(effect_map=side_effects),
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
     # Item - character
     def set_character(
             self, *,
@@ -230,6 +308,53 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_character_via_fit_id(
+            self, *,
+            fit_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolCharacterChangeViaFitIdCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    def change_character_via_item_id(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolCharacterChangeViaItemIdCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    def unset_character(self, *, fit_id: str) -> None:
+        command = SolCharacterUnsetCmd(fit_id=fit_id)
+        self._commands.append(command)
+
+    # Item - charge
+    def change_charge(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolChargeChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - drone
     def add_drone(
@@ -283,6 +408,92 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
 
+    # Item - fighter
+    def add_fighter(
+            self, *,
+            fit_id: str,
+            type_id: int,
+            state: ApiMinionState = ApiMinionState.in_bay,
+            count: int | type[Absent] = Absent,
+            abilities: dict[int, bool] | type[Absent] = Absent,
+            rearm_minion: ApiRearmMinion | type[Absent] = Absent,
+            proj_item_ids: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolFighterAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            count=count,
+            abilities=abilities,
+            rearm_minion=rearm_minion,
+            proj_item_ids=proj_item_ids,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def change_fighter(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: ApiMinionState | type[Absent] = Absent,
+            count: int | type[Absent] | None = Absent,
+            abilities: dict[int, bool] | type[Absent] = Absent,
+            rearm_minion: ApiRearmMinion | type[Absent] | None = Absent,
+            add_proj_item_ids: list[str] | type[Absent] = Absent,
+            rm_proj_item_ids: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolFighterChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            count=count,
+            abilities=abilities,
+            rearm_minion=rearm_minion,
+            add_proj_item_ids=add_proj_item_ids,
+            rm_proj_item_ids=rm_proj_item_ids,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    # Item - fit-wide effect
+    def add_fw_effect(
+            self, *,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolFwEffectAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def change_fw_effect(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolFwEffectChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
     # Item - implant
     def add_implant(
             self, *,
@@ -298,6 +509,20 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_implant(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolImplantChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - module
     def add_module(
@@ -355,7 +580,41 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
 
-    # Item - implant
+    # Item - projected effect
+    def add_proj_effect(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            proj_item_ids: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolProjEffectAddCmd(
+            type_id=type_id,
+            state=state,
+            proj_item_ids=proj_item_ids,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def change_proj_effect(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            add_proj_item_ids: list[str] | type[Absent] = Absent,
+            rm_proj_item_ids: list[str] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolProjEffectChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            add_proj_item_ids=add_proj_item_ids,
+            rm_proj_item_ids=rm_proj_item_ids,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    # Item - rig
     def add_rig(
             self, *,
             fit_id: str,
@@ -370,6 +629,50 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_rig(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolRigChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    # Item - service
+    def add_service(
+            self, *,
+            fit_id: str,
+            type_id: int,
+            state: ApiServiceState = ApiServiceState.offline,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolServiceAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def change_service(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: ApiServiceState | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolServiceChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - ship
     def set_ship(
@@ -391,6 +694,46 @@ class SolCmdCtx:
         self._commands.append(command)
         return self.__make_item()
 
+    def change_ship_via_fit_id(
+            self, *,
+            fit_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolShipChangeViaFitIdCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    def change_ship_via_item_id(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolShipChangeViaItemIdCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    def unset_ship(self, *, fit_id: str) -> None:
+        command = SolShipUnsetCmd(fit_id=fit_id)
+        self._commands.append(command)
+
     # Item - skill
     def add_skill(
             self, *,
@@ -409,6 +752,22 @@ class SolCmdCtx:
         self._commands.append(command)
         return self.__make_item()
 
+    def change_skill(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            level: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolSkillChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            level=level,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
     # Item - stance
     def set_stance(
             self, *,
@@ -424,3 +783,93 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_stance_via_fit_id(
+            self, *,
+            fit_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolStanceChangeViaFitIdCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    def change_stance_via_item_id(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolStanceChangeViaItemIdCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    def unset_stance(self, *, fit_id: str) -> None:
+        command = SolStanceUnsetCmd(fit_id=fit_id)
+        self._commands.append(command)
+
+    # Item - subsystem
+    def add_subsystem(
+            self, *,
+            fit_id: str,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolSubsystemAddCmd(
+            fit_id=fit_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def change_subsystem(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolSubsystemChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    # Item - system-wide effect
+    def add_sw_effect(
+            self, *,
+            type_id: int,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> Item:
+        command = SolSwEffectAddCmd(
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+        return self.__make_item()
+
+    def change_sw_effect(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: bool | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolSwEffectChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)

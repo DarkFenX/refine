@@ -60,7 +60,10 @@ class ItemSwEffectChangeCmd(BaseSwEffectCmd):
 @dataclasses.dataclass(kw_only=True)
 class SolSwEffectChangeCmd(BaseSwEffectCmd):
 
+    item_id: str
+
     def serialize(self) -> dict:
         body = super().serialize()
         body['type'] = 'change_sw_effect'
+        body['item_id'] = self.item_id
         return body

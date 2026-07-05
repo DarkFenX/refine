@@ -84,7 +84,10 @@ class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
 @dataclasses.dataclass(kw_only=True)
 class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
 
+    item_id: str
+
     def serialize(self) -> dict:
         body = super().serialize()
         body['type'] = 'change_proj_effect'
+        body['item_id'] = self.item_id
         return body
