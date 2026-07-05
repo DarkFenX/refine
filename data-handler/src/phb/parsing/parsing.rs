@@ -1,4 +1,7 @@
-use struson::reader::{JsonReader, JsonStreamReader};
+use struson::{
+    reader::{JsonReader, JsonStreamReader},
+    serde::DeserializerError,
+};
 
 use super::{
     aliases::Key,
@@ -24,12 +27,11 @@ where
             reader.skip_value()?;
             continue;
         };
-        let raw_value = reader.deserialize_next::<serde_json::Value>()?;
-        let value = match serde_json::from_value::<PHB>(raw_value) {
+        let value = match reader.deserialize_next::<PHB>() {
             Ok(value) => value,
-            // In case of an unexpected value format - log error and skip element
-            Err(e) => {
-                let warning = format!("failed to parse value with key \"{key}\": {e}");
+            Err(error) => {
+                let error = try_recover(&mut reader, error)?;
+                let warning = format!("failed to parse value with key \"{key}\": {error}");
                 e_cont.warnings.push(warning);
                 continue;
             }
@@ -61,12 +63,11 @@ where
             reader.skip_value()?;
             continue;
         };
-        let raw_value = reader.deserialize_next::<serde_json::Value>()?;
-        let value = match serde_json::from_value::<PHB>(raw_value) {
+        let value = match reader.deserialize_next::<PHB>() {
             Ok(value) => value,
-            // In case of an unexpected value format - log error and skip element
-            Err(e) => {
-                let warning = format!("failed to parse value with key \"{key}\": {e}");
+            Err(error) => {
+                let error = try_recover(&mut reader, error)?;
+                let warning = format!("failed to parse value with key \"{key}\": {error}");
                 e_cont1.warnings.push(warning.clone());
                 e_cont2.warnings.push(warning);
                 continue;
@@ -79,4 +80,25 @@ where
     reader.end_object()?;
     reader.consume_trailing_whitespace()?;
     Ok((e_cont1, e_cont2))
+}
+
+fn try_recover(
+    reader: &mut JsonStreamReader<impl std::io::Read>,
+    error: DeserializerError,
+) -> Result<DeserializerError, ReadParseFailReason> {
+    // Consider only custom error as recoverable - they seem to be produced when serde
+    // deserialization fails
+    match error {
+        DeserializerError::Custom(_) => (),
+        _ => return Err(error.into()),
+    }
+    // Recover by skipping element which failed deserialization
+    let current = reader.current_position(true).path.unwrap();
+    match current.len() > 1 {
+        // Just get back to depth of 1 when parser is deeper
+        true => reader.seek_back(&current[1..])?,
+        // If parser is on the same level, likely it didn't even try to touch value, so just skip it
+        false => reader.skip_value()?,
+    }
+    Ok(error)
 }

@@ -9,7 +9,7 @@ impl EInt {
     }
 }
 
-#[derive(Copy, Clone, PartialEq, derive_more::Display)]
+#[derive(Copy, Clone, PartialEq, Debug, derive_more::Display)]
 pub struct EFloat(f64);
 impl EFloat {
     pub const fn from_f64(value: f64) -> Self {
