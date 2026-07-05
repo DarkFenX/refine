@@ -7,8 +7,8 @@ use axum::{
 
 use crate::{
     cmd::HFleetChangeCmd,
-    err::{HBrError, HExecError},
-    handlers::{HGSolResult, HSingleErr, fleet::HFleetInfoParams, get_guarded_sol},
+    err::{HApiError, HBrError, HExecError},
+    handlers::{HSingleErr, fleet::HFleetInfoParams},
     state::HAppState,
 };
 
@@ -19,11 +19,11 @@ pub(crate) async fn change_fleet(
     Query(params): Query<HFleetInfoParams>,
     Json(payload): Json<HFleetChangeCmd>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol
+    let resp = match sol
         .lock()
         .await
         .change_fleet(&state.tpool, &fleet_id, payload, params.fleet.unwrap_or_default())

@@ -7,8 +7,8 @@ use axum::{
 use serde::Deserialize;
 
 use crate::{
-    err::HBrError,
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
+    err::HApiError,
+    handlers::{HSingleErr, sol::HSolInfoParams},
     state::HAppState,
 };
 
@@ -23,22 +23,15 @@ pub(crate) async fn change_sol_src(
     Query(params): Query<HSolInfoParams>,
     Json(payload): Json<HChangeSolSrcReq>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::SrcNotFound(_) => StatusCode::UNPROCESSABLE_ENTITY,
-                HBrError::NoDefaultSrc => StatusCode::UNPROCESSABLE_ENTITY,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            return (code, Json(HSingleErr::from_bridge(br_err))).into_response();
-        }
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let sol_info = match guarded_sol
+    let sol_info = match sol
         .lock()
         .await
         .change_sol_src(

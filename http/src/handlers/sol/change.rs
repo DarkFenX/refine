@@ -8,7 +8,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     cmd::{HCmdResps, HSolChangeCmd},
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
+    err::HApiError,
+    handlers::{HSingleErr, sol::HSolInfoParams},
     info::HSolInfo,
     state::HAppState,
 };
@@ -39,11 +40,11 @@ pub(crate) async fn change_sol(
     Query(params): Query<HSolInfoParams>,
     Json(payload): Json<HSolChangeReq>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol
+    let resp = match sol
         .lock()
         .await
         .change_sol(

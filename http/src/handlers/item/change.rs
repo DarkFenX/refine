@@ -7,8 +7,8 @@ use axum::{
 
 use crate::{
     cmd::HItemChangeCmd,
-    err::{HBrError, HExecError},
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol, item::HItemInfoParams},
+    err::{HApiError, HBrError, HExecError},
+    handlers::{HSingleErr, item::HItemInfoParams},
     state::HAppState,
 };
 
@@ -19,11 +19,11 @@ pub(crate) async fn change_item(
     Query(params): Query<HItemInfoParams>,
     Json(payload): Json<HItemChangeCmd>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol
+    let resp = match sol
         .lock()
         .await
         .change_item(&state.tpool, &item_id, payload, params.item.unwrap_or_default())

@@ -5,18 +5,15 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol},
-    state::HAppState,
-};
+use crate::{err::HApiError, handlers::HSingleErr, state::HAppState};
 
 #[allow(clippy::let_and_return)]
 pub(crate) async fn dev_check_sol(State(state): State<HAppState>, Path(sol_id): Path<String>) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol.lock().await.dev_consistency_check(&state.tpool).await {
+    let resp = match sol.lock().await.dev_consistency_check(&state.tpool).await {
         Ok(result) => match result {
             true => StatusCode::OK.into_response(),
             false => StatusCode::INTERNAL_SERVER_ERROR.into_response(),

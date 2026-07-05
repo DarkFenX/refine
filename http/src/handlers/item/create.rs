@@ -6,12 +6,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use crate::{
-    cmd::HItemAddCmd,
-    err::HApiError,
-    handlers::{HGSolResult, get_guarded_sol, item::HItemInfoParams},
-    state::HAppState,
-};
+use crate::{cmd::HItemAddCmd, err::HApiError, handlers::item::HItemInfoParams, state::HAppState};
 
 #[allow(clippy::let_and_return)]
 pub(crate) async fn create_item(
@@ -20,11 +15,11 @@ pub(crate) async fn create_item(
     Query(params): Query<HItemInfoParams>,
     WithRejection(Json(payload), _): WithRejection<Json<HItemAddCmd>, HApiError>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol
+    let resp = match sol
         .lock()
         .await
         .add_item(&state.tpool, payload, params.item.unwrap_or_default())

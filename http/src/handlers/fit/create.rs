@@ -7,7 +7,8 @@ use axum::{
 
 use crate::{
     cmd::HFitAddCmd,
-    handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
+    err::HApiError,
+    handlers::{HSingleErr, fit::HFitInfoParams},
     state::HAppState,
 };
 
@@ -18,12 +19,12 @@ pub(crate) async fn create_fit(
     Query(params): Query<HFitInfoParams>,
     payload: Option<Json<HFitAddCmd>>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    let resp = match guarded_sol
+    let resp = match sol
         .lock()
         .await
         .add_fit(

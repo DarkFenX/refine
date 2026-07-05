@@ -7,8 +7,8 @@ use axum::{
 
 use crate::{
     cmd::HTryFitItemsCmd,
-    err::{HBrError, HExecError},
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol},
+    err::{HApiError, HBrError, HExecError},
+    handlers::HSingleErr,
     state::HAppState,
 };
 
@@ -18,16 +18,11 @@ pub(crate) async fn try_fit_items(
     Path((sol_id, fit_id)): Path<(String, String)>,
     Json(payload): Json<HTryFitItemsCmd>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol
-        .lock()
-        .await
-        .try_fit_items(&state.tpool, &fit_id, payload)
-        .await
-    {
+    let resp = match sol.lock().await.try_fit_items(&state.tpool, &fit_id, payload).await {
         Ok(valid_type_ids) => (StatusCode::OK, Json(valid_type_ids)).into_response(),
         Err(br_err) => {
             let code = match &br_err {

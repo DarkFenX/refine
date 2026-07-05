@@ -8,8 +8,8 @@ use serde::{Deserialize, Serialize};
 
 use crate::{
     cmd::{HCmdResps, HFitChangeCmd},
-    err::{HBrError, HExecError},
-    handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
+    err::{HApiError, HBrError, HExecError},
+    handlers::{HSingleErr, fit::HFitInfoParams},
     info::HFitInfo,
     state::HAppState,
 };
@@ -32,11 +32,11 @@ pub(crate) async fn change_fit(
     Query(params): Query<HFitInfoParams>,
     Json(payload): Json<HFitChangeReq>,
 ) -> impl IntoResponse {
-    let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
-        HGSolResult::Sol(sol) => sol,
-        HGSolResult::ErrResp(r) => return r,
+    let sol = match state.sol_mgr.get_sol(&sol_id).await {
+        Ok(sol) => sol,
+        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
-    let resp = match guarded_sol
+    let resp = match sol
         .lock()
         .await
         .change_fit(

@@ -31,6 +31,10 @@ impl HApiError {
             HApiError::BridgeFailure(br_err) => match &br_err.err {
                 // Related to source initialization
                 HBrError::EdhInitFailed(_) | HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrError::SolNotFound(_) => StatusCode::NOT_FOUND,
+                HBrError::NoCoreSol => StatusCode::INTERNAL_SERVER_ERROR,
+                // Source-related issues
+                HBrError::SrcNotFound(_) | HBrError::NoDefaultSrc => StatusCode::BAD_REQUEST,
                 // Casts happen only when those IDs are in HTTP paths; if they fail, can safely
                 // assume that it's 404
                 HBrError::FleetIdCastFailed(_) | HBrError::FitIdCastFailed(_) | HBrError::ItemIdCastFailed(_) => {
