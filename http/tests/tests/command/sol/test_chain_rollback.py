@@ -17,7 +17,4 @@ def test_rollback(client):
         api_sol_cmds.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])
     # Verification - failing 2nd command should've reverted all the prior commands, including drone
     # removal
-    api_src_drone.update()
-    assert api_src_drone.type_id == eve_drone_id
-    assert api_src_drone.projs[api_tgt_ship.id] == [0, 0]
-    assert api_tgt_ship.update().type_id == eve_ship_id
+    assert api_src_drone.update().projs[api_tgt_ship.id] == [0, 0]

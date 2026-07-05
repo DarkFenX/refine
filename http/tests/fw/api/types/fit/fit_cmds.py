@@ -4,6 +4,7 @@ from fw.api.commands import (
     FitBoosterAddCmd,
     FitCharacterSetCmd,
     FitDroneAddCmd,
+    FitDroneChangeCmd,
     FitImplantAddCmd,
     FitItemRemoveCmd,
     FitModuleAddCmd,
@@ -156,6 +157,32 @@ class FitCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_drone(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: ApiMinionState | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
+            npc_prop: ApiNpcProp | type[Absent] | None = Absent,
+            add_proj_item_ids: list[str] | type[Absent] = Absent,
+            rm_proj_item_ids: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = FitDroneChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            mutation=process_muta_change_request(mutation=mutation),
+            npc_prop=npc_prop,
+            add_proj_item_ids=add_proj_item_ids,
+            rm_proj_item_ids=rm_proj_item_ids,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - implant
     def add_implant(
