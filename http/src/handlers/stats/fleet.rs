@@ -5,12 +5,7 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    cmd::HGetFleetStatsCmd,
-    err::{HApiError, HBrError, HExecError},
-    handlers::HSingleErr,
-    state::HAppState,
-};
+use crate::{cmd::HGetFleetStatsCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn get_fleet_stats(
     State(state): State<HAppState>,
@@ -19,19 +14,11 @@ pub(crate) async fn get_fleet_stats(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol_fleet(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    let resp = match sol.lock().await.get_fleet_stats(&state.tpool, &fleet_id, payload).await {
-        Ok(valid_info) => (StatusCode::OK, Json(valid_info)).into_response(),
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::FleetIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(HExecError::FleetNotFoundPrimary(_)) => StatusCode::NOT_FOUND,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
-        }
-    };
-    resp
+    match sol.lock().await.get_fleet_stats(&state.tpool, &fleet_id, payload).await {
+        Ok(stats) => (StatusCode::OK, Json(stats)).into_response(),
+        Err(br_err) => HApiError::from_br_path_sol_fleet(br_err).into_response(),
+    }
 }

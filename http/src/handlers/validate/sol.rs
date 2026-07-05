@@ -5,12 +5,8 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    cmd::HValidateSolCmd,
-    err::{HApiError, HBrError, HExecError},
-    handlers::{HSingleErr, validate::HValidInfoParams},
-    state::HAppState,
-};
+use super::query::HValidInfoParams;
+use crate::{cmd::HValidateSolCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn validate_sol(
     State(state): State<HAppState>,
@@ -23,21 +19,13 @@ pub(crate) async fn validate_sol(
         Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    let resp = match sol
+    match sol
         .lock()
         .await
         .validate_sol(&state.tpool, payload, params.validation.unwrap_or_default())
         .await
     {
         Ok(valid_info) => (StatusCode::OK, Json(valid_info)).into_response(),
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(HExecError::FitNotFoundPrimary(_)) => StatusCode::NOT_FOUND,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
-        }
-    };
-    resp
+        Err(br_err) => HApiError::from_br_path_sol(br_err).into_response(),
+    }
 }
