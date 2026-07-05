@@ -19,7 +19,7 @@ pub(crate) async fn try_fit_items(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     let resp = match sol.lock().await.try_fit_items(&state.tpool, &fit_id, payload).await {
         Ok(valid_type_ids) => (StatusCode::OK, Json(valid_type_ids)).into_response(),

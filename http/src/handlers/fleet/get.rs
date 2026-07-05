@@ -15,7 +15,7 @@ pub(crate) async fn get_fleet(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_fleet_in_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol_fleet(br_err).into_response(),
     };
     match sol
         .lock()
@@ -24,6 +24,6 @@ pub(crate) async fn get_fleet(
         .await
     {
         Ok(fleet_info) => (StatusCode::OK, Json(fleet_info)).into_response(),
-        Err(br_err) => HApiError::from_bridge_with_fleet_in_path(br_err).into_response(),
+        Err(br_err) => HApiError::from_br_path_sol_fleet(br_err).into_response(),
     }
 }

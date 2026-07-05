@@ -19,7 +19,7 @@ pub(crate) async fn get_fleet_stats(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
     let resp = match sol.lock().await.get_fleet_stats(&state.tpool, &fleet_id, payload).await {

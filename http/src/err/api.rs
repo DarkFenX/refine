@@ -73,7 +73,7 @@ impl HApiError {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HApiError {
-    pub(crate) fn from_bridge_with_empty_path(bridge_error: HBrError) -> Self {
+    pub(crate) fn from_br_path_sol(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
             fleet_in_path: false,
@@ -81,7 +81,7 @@ impl HApiError {
             item_in_path: false,
         })
     }
-    pub(crate) fn from_bridge_with_fleet_in_path(bridge_error: HBrError) -> Self {
+    pub(crate) fn from_br_path_sol_fleet(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
             fleet_in_path: true,
@@ -89,7 +89,7 @@ impl HApiError {
             item_in_path: false,
         })
     }
-    pub(crate) fn from_bridge_with_fit_in_path(bridge_error: HBrError) -> Self {
+    pub(crate) fn from_br_path_sol_fit(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
             fleet_in_path: false,
@@ -97,7 +97,7 @@ impl HApiError {
             item_in_path: false,
         })
     }
-    pub(crate) fn from_bridge_with_item_in_path(bridge_error: HBrError) -> Self {
+    pub(crate) fn from_br_path_sol_item(bridge_error: HBrError) -> Self {
         Self::BridgeFailure(HBrErrorPathAware {
             err: bridge_error,
             fleet_in_path: false,

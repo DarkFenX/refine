@@ -17,7 +17,7 @@ pub(crate) async fn create_item(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     match sol
         .lock()
@@ -26,6 +26,6 @@ pub(crate) async fn create_item(
         .await
     {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),
-        Err(br_err) => HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => HApiError::from_br_path_sol(br_err).into_response(),
     }
 }

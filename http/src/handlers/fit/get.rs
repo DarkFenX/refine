@@ -5,11 +5,8 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    err::{HApiError, HBrError, HExecError},
-    handlers::{HSingleErr, fit::HFitInfoParams},
-    state::HAppState,
-};
+use super::query::HFitInfoParams;
+use crate::{err::HApiError, state::HAppState};
 
 pub(crate) async fn get_fit(
     State(state): State<HAppState>,
@@ -18,9 +15,9 @@ pub(crate) async fn get_fit(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol_fit(br_err).into_response(),
     };
-    let resp = match sol
+    match sol
         .lock()
         .await
         .get_fit(
@@ -32,14 +29,6 @@ pub(crate) async fn get_fit(
         .await
     {
         Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::FitIdCastFailed(_) => StatusCode::NOT_FOUND,
-                HBrError::ExecFailed(HExecError::FitNotFoundPrimary(_)) => StatusCode::NOT_FOUND,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
-        }
-    };
-    resp
+        Err(br_err) => HApiError::from_br_path_sol_fit(br_err).into_response(),
+    }
 }

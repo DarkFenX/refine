@@ -5,12 +5,8 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    cmd::HFitAddCmd,
-    err::HApiError,
-    handlers::{HSingleErr, fit::HFitInfoParams},
-    state::HAppState,
-};
+use super::query::HFitInfoParams;
+use crate::{cmd::HFitAddCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn create_fit(
     State(state): State<HAppState>,
@@ -20,10 +16,10 @@ pub(crate) async fn create_fit(
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    let resp = match sol
+    match sol
         .lock()
         .await
         .add_fit(
@@ -35,7 +31,6 @@ pub(crate) async fn create_fit(
         .await
     {
         Ok(fit_info) => (StatusCode::CREATED, Json(fit_info)).into_response(),
-        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response(),
-    };
-    resp
+        Err(br_err) => HApiError::from_br_path_sol(br_err).into_response(),
+    }
 }

@@ -10,7 +10,7 @@ use crate::{err::HApiError, handlers::HSingleErr, state::HAppState};
 pub(crate) async fn dev_check_sol(State(state): State<HAppState>, Path(sol_id): Path<String>) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,
-        Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     let resp = match sol.lock().await.dev_consistency_check(&state.tpool).await {
         Ok(result) => match result {
