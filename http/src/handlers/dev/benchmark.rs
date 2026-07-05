@@ -7,7 +7,6 @@ use axum::{
 
 use crate::{cmd::HBenchmarkCmd, err::HApiError, handlers::shared::HSingleErr, state::HAppState};
 
-#[allow(clippy::let_and_return)]
 pub(crate) async fn dev_benchmark_sol(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,

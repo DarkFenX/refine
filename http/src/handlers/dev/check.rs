@@ -7,7 +7,6 @@ use axum::{
 
 use crate::{err::HApiError, handlers::HSingleErr, state::HAppState};
 
-#[allow(clippy::let_and_return)]
 pub(crate) async fn dev_check_sol(State(state): State<HAppState>, Path(sol_id): Path<String>) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

@@ -12,7 +12,6 @@ use crate::{
     state::HAppState,
 };
 
-#[allow(clippy::let_and_return)]
 pub(crate) async fn delete_fit(
     State(state): State<HAppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,

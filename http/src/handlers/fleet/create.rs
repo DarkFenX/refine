@@ -12,7 +12,6 @@ use crate::{
     state::HAppState,
 };
 
-#[allow(clippy::let_and_return)]
 pub(crate) async fn create_fleet(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
