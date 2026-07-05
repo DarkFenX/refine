@@ -31,7 +31,7 @@ pub(crate) async fn create_item(
         .await
     {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),
-        Err(br_err) => HApiError::from_bridge(br_err).into_response(),
+        Err(br_err) => HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
     resp
 }

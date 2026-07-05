@@ -58,7 +58,7 @@ pub(crate) enum HExecError {
     BackrefCmdNoChargeItemId(usize),
 }
 impl HExecError {
-    pub(crate) fn get_code(&self) -> String {
+    pub(crate) fn get_api_code(&self) -> String {
         match self {
             // Fits
             HExecError::FitNotFoundPrimary(_) => "FIT-001",

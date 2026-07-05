@@ -1,11 +1,18 @@
 use axum::{Json, extract::rejection::JsonRejection, http::StatusCode, response::IntoResponse};
 use serde::Serialize;
 
-use crate::err::HBrError;
+use crate::err::{HBrError, HExecError};
 
 pub(crate) enum HApiError {
     JsonFailure(JsonRejection),
-    BridgeFailure(HBrError),
+    BridgeFailure(HBrErrorPathAware),
+}
+
+pub(crate) struct HBrErrorPathAware {
+    err: HBrError,
+    fleet_in_path: bool,
+    fit_in_path: bool,
+    item_in_path: bool,
 }
 
 #[derive(Serialize)]
@@ -15,11 +22,84 @@ struct HApiErrorResponse {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Codes & messages
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl HApiError {
+    fn get_http_code(&self) -> StatusCode {
+        match self {
+            HApiError::JsonFailure(_) => StatusCode::BAD_REQUEST,
+            HApiError::BridgeFailure(br_err) => match &br_err.err {
+                // Related to source initialization
+                HBrError::EdhInitFailed(_) | HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                // Casts happen only when those IDs are in HTTP paths; if they fail, can safely
+                // assume that it's 404
+                HBrError::FleetIdCastFailed(_) | HBrError::FitIdCastFailed(_) | HBrError::ItemIdCastFailed(_) => {
+                    StatusCode::NOT_FOUND
+                }
+                HBrError::ExecFailed(exec_err) | HBrError::ExecBatchFailed(_, exec_err) => match exec_err {
+                    // Return 404 for fleet/fit/item not found errors only if they were part of path
+                    HExecError::FleetNotFoundPrimary(_) if br_err.fleet_in_path => StatusCode::NOT_FOUND,
+                    HExecError::FitNotFoundPrimary(_) if br_err.fit_in_path => StatusCode::NOT_FOUND,
+                    HExecError::ItemNotFoundPrimary(_) if br_err.item_in_path => StatusCode::NOT_FOUND,
+                    // Attempt to remove unremovable item is 403
+                    HExecError::UnremovableAutocharge => StatusCode::FORBIDDEN,
+                    // Attempt to add skill which is already on fit is 409
+                    HExecError::SkillIdCollision(_) => StatusCode::CONFLICT,
+                    _ => StatusCode::BAD_REQUEST,
+                },
+                _ => StatusCode::BAD_REQUEST,
+            },
+        }
+    }
+    fn get_api_code(&self) -> String {
+        match self {
+            Self::JsonFailure(_) => "JSN-001".to_string(),
+            Self::BridgeFailure(br_err) => br_err.err.get_api_code(),
+        }
+    }
+    fn get_message(&self) -> String {
+        match self {
+            Self::JsonFailure(json_err) => json_err.body_text(),
+            Self::BridgeFailure(br_err) => br_err.err.to_string(),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HApiError {
-    pub(crate) fn from_bridge(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(bridge_error)
+    pub(crate) fn from_bridge_with_empty_path(bridge_error: HBrError) -> Self {
+        Self::BridgeFailure(HBrErrorPathAware {
+            err: bridge_error,
+            fleet_in_path: false,
+            fit_in_path: false,
+            item_in_path: false,
+        })
+    }
+    pub(crate) fn from_bridge_with_fleet_in_path(bridge_error: HBrError) -> Self {
+        Self::BridgeFailure(HBrErrorPathAware {
+            err: bridge_error,
+            fleet_in_path: true,
+            fit_in_path: false,
+            item_in_path: false,
+        })
+    }
+    pub(crate) fn from_bridge_with_fit_in_path(bridge_error: HBrError) -> Self {
+        Self::BridgeFailure(HBrErrorPathAware {
+            err: bridge_error,
+            fleet_in_path: false,
+            fit_in_path: true,
+            item_in_path: false,
+        })
+    }
+    pub(crate) fn from_bridge_with_item_in_path(bridge_error: HBrError) -> Self {
+        Self::BridgeFailure(HBrErrorPathAware {
+            err: bridge_error,
+            fleet_in_path: false,
+            fit_in_path: false,
+            item_in_path: true,
+        })
     }
 }
 impl From<JsonRejection> for HApiError {
@@ -30,18 +110,10 @@ impl From<JsonRejection> for HApiError {
 
 impl IntoResponse for HApiError {
     fn into_response(self) -> axum::response::Response {
-        let (http_code, api_code, message) = match self {
-            HApiError::JsonFailure(json_rejection) => (
-                StatusCode::BAD_REQUEST,
-                "JSN-001".to_string(),
-                json_rejection.body_text(),
-            ),
-            HApiError::BridgeFailure(br_err) => (StatusCode::BAD_REQUEST, br_err.get_code(), br_err.to_string()),
-        };
         let payload = HApiErrorResponse {
-            code: api_code,
-            message,
+            code: self.get_api_code(),
+            message: self.get_message(),
         };
-        (http_code, Json(payload)).into_response()
+        (self.get_http_code(), Json(payload)).into_response()
     }
 }

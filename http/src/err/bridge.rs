@@ -31,7 +31,7 @@ impl HBrError {
     pub(crate) fn from_exec_batch(index: usize, error: HExecError) -> Self {
         Self::ExecBatchFailed(index, error)
     }
-    pub(crate) fn get_code(&self) -> String {
+    pub(crate) fn get_api_code(&self) -> String {
         match self {
             Self::SrcAliasNotAvailable(_) => "SRC-001".to_string(),
             Self::SrcNotFound(_) => "SRC-002".to_string(),
@@ -43,8 +43,8 @@ impl HBrError {
             Self::ItemIdCastFailed(_) => "IDC-003".to_string(),
             Self::EdhInitFailed(_) => "EDH-001".to_string(),
             Self::SrcInitFailed(_) => "SIN-001".to_string(),
-            Self::ExecFailed(e) => e.get_code(),
-            Self::ExecBatchFailed(_, e) => e.get_code(),
+            Self::ExecFailed(e) => e.get_api_code(),
+            Self::ExecBatchFailed(_, e) => e.get_api_code(),
         }
     }
 }

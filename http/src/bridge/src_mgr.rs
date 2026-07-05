@@ -127,10 +127,8 @@ fn create_core_src(
     cache_folder: Option<String>,
 ) -> Result<rc::Src, HBrError> {
     let edh: Box<dyn rc::ed::EveDataHandler> = Box::new(
-        redh::PhbHttpEdh::try_new(data_base_url.as_str(), data_version).map_err(|e| {
-            let reason = format!("{e}");
-            HBrError::EdhInitFailed(reason)
-        })?,
+        redh::PhbHttpEdh::try_new(data_base_url.as_str(), data_version)
+            .map_err(|e| HBrError::EdhInitFailed(e.to_string()))?,
     );
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
         Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias))),
