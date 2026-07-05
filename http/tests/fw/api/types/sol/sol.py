@@ -39,6 +39,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> SolCmdCtx:
         return SolCmdCtx(
             client=self._client,
@@ -48,7 +49,8 @@ class SolarSystem(AttrDict):
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode,
-            status_code=status_code)
+            status_code=status_code,
+            json_predicate=json_predicate)
 
     def update(
             self, *,

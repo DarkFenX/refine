@@ -4,6 +4,7 @@ from fw.api.commands import (
     SolBoosterAddCmd,
     SolCharacterSetCmd,
     SolDroneAddCmd,
+    SolDroneChangeCmd,
     SolFitAddCmd,
     SolFitChangeCmd,
     SolFitRemoveCmd,
@@ -57,6 +58,7 @@ class SolCmdCtx:
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
             status_code: int,
+            json_predicate: dict | None,
     ) -> None:
         self._client = client
         self._sol = sol
@@ -66,6 +68,7 @@ class SolCmdCtx:
         self._fit_info_mode = fit_info_mode
         self._item_info_mode = item_info_mode
         self._status_code = status_code
+        self._json_predicate = json_predicate
         self._commands: list[BaseCommand] = []
         self._ret_datas: dict[int, dict] = {}
 
@@ -89,7 +92,7 @@ class SolCmdCtx:
             fleet_info_mode=self._fleet_info_mode,
             item_info_mode=self._item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=self._status_code)
+        resp.check(status_code=self._status_code, json_predicate=self._json_predicate)
         # In case of successful response, update entity data
         if resp.status_code == 200:
             resp_data = resp.json()
@@ -253,6 +256,32 @@ class SolCmdCtx:
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
         return self.__make_item()
+
+    def change_drone(
+            self, *,
+            item_id: str,
+            type_id: int | type[Absent] = Absent,
+            state: ApiMinionState | type[Absent] = Absent,
+            mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
+            npc_prop: ApiNpcProp | type[Absent] | None = Absent,
+            add_proj_item_ids: list[str] | type[Absent] = Absent,
+            rm_proj_item_ids: list[str] | type[Absent] = Absent,
+            coordinates: tuple[float, float, float] | type[Absent] = Absent,
+            movement: tuple[float, float, float] | type[Absent] = Absent,
+            effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
+    ) -> None:
+        command = SolDroneChangeCmd(
+            item_id=item_id,
+            type_id=type_id,
+            state=state,
+            mutation=process_muta_change_request(mutation=mutation),
+            npc_prop=npc_prop,
+            add_proj_item_ids=add_proj_item_ids,
+            rm_proj_item_ids=rm_proj_item_ids,
+            coordinates=coordinates,
+            movement=movement,
+            effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
 
     # Item - implant
     def add_implant(
