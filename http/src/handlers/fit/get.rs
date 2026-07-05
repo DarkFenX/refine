@@ -6,10 +6,9 @@ use axum::{
 };
 
 use crate::{
-    bridge::HBrError,
+    err::{HBrError, HExecError},
     handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     state::HAppState,
-    util::HExecError,
 };
 
 #[allow(clippy::let_and_return)]

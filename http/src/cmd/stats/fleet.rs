@@ -8,11 +8,12 @@ use crate::{
             HStatOptionFitOutRps, HStatResolvedOption,
         },
     },
+    err::HExecError,
     info::{
         HFleetStats,
         stats::{HStatDmg, HStatMining, HStatOutReps},
     },
-    util::{HExecError, default_true},
+    util::default_true,
 };
 
 #[derive(educe::Educe, Deserialize)]

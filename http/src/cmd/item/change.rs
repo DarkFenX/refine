@@ -11,7 +11,7 @@ use crate::{
         },
         shared::HChangedItemIdsResp,
     },
-    util::HExecError,
+    err::HExecError,
 };
 
 #[derive(Deserialize)]

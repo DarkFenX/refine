@@ -12,13 +12,10 @@ class Response(requests.Response):
     def check(
             self, *,
             status_code: int | None = None,
-            text_predicate: str | None = None,
             json_predicate: dict | None = None,
     ) -> None:
         if status_code is not None:
             assert self.status_code == status_code
-        if text_predicate is not None:
-            assert self.text == text_predicate
         if json_predicate is not None:
             subset_check(actual=self.json(), expected=json_predicate)
 

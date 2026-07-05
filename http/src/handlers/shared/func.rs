@@ -5,7 +5,8 @@ use axum::{
 };
 
 use crate::{
-    bridge::{HBrError, HSolMgr, HSolarSystem},
+    bridge::{HSolMgr, HSolarSystem},
+    err::HBrError,
     handlers::HSingleErr,
 };
 

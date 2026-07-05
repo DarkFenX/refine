@@ -1,18 +1,18 @@
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::{HBrError, HSrc, HThreadPool},
+    bridge::{HSrc, HThreadPool},
     cmd::{
         HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmd,
         HFitRemoveCmd, HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd, HGetFitStatsCmd, HGetFleetStatsCmd,
         HGetItemStatsCmd, HItemAddCmd, HItemChangeCmd, HItemRemoveCmd, HSolChangeCmd, HTryFitItemsCmd, HValidateFitCmd,
         HValidateSolCmd, get_primary_fit, get_primary_fleet,
     },
+    err::{HBrError, HExecError},
     info::{
         HFitInfo, HFitInfoMode, HFitStats, HFitValResult, HFleetInfo, HFleetInfoMode, HFleetStats, HItemInfo,
         HItemInfoMode, HItemStats, HSolInfo, HSolInfoMode, HSolValResult, HValidInfoMode,
     },
-    util::HExecError,
 };
 
 pub(crate) struct HSolarSystemInner {

@@ -1,4 +1,4 @@
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub(crate) enum HExecError {
     // Fits
     #[error("{0}")]

@@ -210,8 +210,10 @@ def test_add_absent(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         add_mode=Absent,
-        status_code=422,
-        text_predicate='Failed to deserialize the JSON body into the target type: missing field `add_mode`')
+        status_code=400,
+        json_predicate={
+            'code': 'JSN-001',
+            'message': 'Failed to deserialize the JSON body into the target type: missing field `add_mode`'})
 
 
 def test_remove_remove(client, consts):

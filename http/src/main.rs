@@ -17,6 +17,7 @@ use crate::{settings::HSettings, state::HInnerAppState};
 
 mod bridge;
 mod cmd;
+mod err;
 mod handlers;
 mod info;
 mod logging;

@@ -4,7 +4,8 @@ use tokio::sync::RwLock;
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::{HBrError, HSrc, HThreadPool},
+    bridge::{HSrc, HThreadPool},
+    err::HBrError,
     info::{HSrcInfo, HSrcInfoMode},
 };
 

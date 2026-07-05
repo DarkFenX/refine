@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::{cmd::basic::HFleetChangeCmdICtxRIds, util::HExecError};
+use crate::{cmd::basic::HFleetChangeCmdICtxRIds, err::HExecError};
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HFleetChangeCmd {

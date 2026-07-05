@@ -9,6 +9,7 @@ rc = { package = "refine-core", path = "../core" }
 redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http"] }
 radc = { package = "refine-adc", path = "../data-cacher", features = ["json-zfile"] }
 axum = { version = ">=0.8.9", features = ["query"] }
+axum-extra = { version = "0.12.6", features = ["with-rejection"] }
 chrono = ">=0.4.45"
 config = { version = ">=0.15.25", features = ["toml"] }
 educe = { version = ">=0.6.0", features = ["Default"], default-features = false }

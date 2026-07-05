@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::{cmd::basic::HItemRemoveCmdICtx, util::HExecError};
+use crate::{cmd::basic::HItemRemoveCmdICtx, err::HExecError};
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HItemRemoveCmd {

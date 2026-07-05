@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::{
     cmd::{basic::HFitAddCmdFCtxRIds, shared::HCreatedFitIdResp},
-    util::HExecError,
+    err::HExecError,
 };
 
 #[derive(Default, Deserialize)]

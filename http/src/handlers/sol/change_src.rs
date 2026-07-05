@@ -7,7 +7,7 @@ use axum::{
 use serde::Deserialize;
 
 use crate::{
-    bridge::HBrError,
+    err::HBrError,
     handlers::{HGSolResult, HSingleErr, get_guarded_sol, sol::HSolInfoParams},
     state::HAppState,
 };

@@ -7,7 +7,7 @@ use axum::{
 use serde::Deserialize;
 
 use super::query::HSrcInfoParams;
-use crate::{bridge::HBrError, handlers::HSingleErr, state::HAppState};
+use crate::{err::HBrError, handlers::HSingleErr, state::HAppState};
 
 #[derive(Deserialize)]
 pub(crate) struct HCreateSrcReq {

@@ -2,8 +2,8 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HValOptions, get_primary_fit},
+    err::HExecError,
     info::{HFitValResult, HValidInfoMode},
-    util::HExecError,
 };
 
 #[derive(Deserialize, Default)]

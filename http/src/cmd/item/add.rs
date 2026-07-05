@@ -10,7 +10,7 @@ use crate::{
         },
         shared::HCreatedItemIdsResp,
     },
-    util::HExecError,
+    err::HExecError,
 };
 
 #[derive(Deserialize)]

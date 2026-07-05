@@ -2,7 +2,7 @@ use serde::Serialize;
 
 use crate::{
     cmd::shared::{HCmdResp, HFitIdBackref, HFleetIdBackref, HItemIdBackref},
-    util::HExecError,
+    err::HExecError,
 };
 
 #[derive(Serialize)]

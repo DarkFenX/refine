@@ -1,4 +1,4 @@
-use crate::util::HExecError;
+use crate::err::HExecError;
 
 pub(crate) fn get_primary_fit<'a>(
     core_sol: &'a mut rc::SolarSystem,

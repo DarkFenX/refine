@@ -5,8 +5,9 @@ use tokio_rayon::AsyncThreadPool;
 use uuid::Uuid;
 
 use crate::{
-    bridge::{HBrError, HSolarSystem, HSrc, HThreadPool},
+    bridge::{HSolarSystem, HSrc, HThreadPool},
     cmd::HSolAddCmd,
+    err::HBrError,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
 };
 

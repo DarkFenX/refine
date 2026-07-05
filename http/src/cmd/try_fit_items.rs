@@ -3,7 +3,7 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HValOptions, get_primary_fit},
-    util::HExecError,
+    err::HExecError,
 };
 
 #[derive(Deserialize)]

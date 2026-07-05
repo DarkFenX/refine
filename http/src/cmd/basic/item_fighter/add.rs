@@ -5,8 +5,8 @@ use crate::{
     cmd::shared::{
         HAbilityMap, HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HFitIdBackref, HItemIdBackref, get_primary_fit,
     },
+    err::HExecError,
     shared::{HCoordinates, HMinionState, HMovement, HRearmMinion},
-    util::HExecError,
 };
 
 // Commands with full context

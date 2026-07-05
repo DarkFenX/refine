@@ -4,13 +4,13 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use crate::{
-    bridge::HBrError,
     cmd::HItemAddCmd,
-    handlers::{HGSolResult, HSingleErr, get_guarded_sol, item::HItemInfoParams},
+    err::HApiError,
+    handlers::{HGSolResult, get_guarded_sol, item::HItemInfoParams},
     state::HAppState,
-    util::HExecError,
 };
 
 #[allow(clippy::let_and_return)]
@@ -18,7 +18,7 @@ pub(crate) async fn create_item(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
     Query(params): Query<HItemInfoParams>,
-    Json(payload): Json<HItemAddCmd>,
+    WithRejection(Json(payload), _): WithRejection<Json<HItemAddCmd>, HApiError>,
 ) -> impl IntoResponse {
     let guarded_sol = match get_guarded_sol(&state.sol_mgr, &sol_id).await {
         HGSolResult::Sol(sol) => sol,
@@ -31,13 +31,7 @@ pub(crate) async fn create_item(
         .await
     {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),
-        Err(br_err) => {
-            let code = match &br_err {
-                HBrError::ExecFailed(HExecError::SkillIdCollision(_)) => StatusCode::CONFLICT,
-                _ => StatusCode::INTERNAL_SERVER_ERROR,
-            };
-            (code, Json(HSingleErr::from_bridge(br_err))).into_response()
-        }
+        Err(br_err) => HApiError::from_bridge(br_err).into_response(),
     };
     resp
 }

@@ -7,12 +7,11 @@ use axum::{
 use serde::{Deserialize, Serialize};
 
 use crate::{
-    bridge::HBrError,
     cmd::{HCmdResps, HFitChangeCmd},
+    err::{HBrError, HExecError},
     handlers::{HGSolResult, HSingleErr, fit::HFitInfoParams, get_guarded_sol},
     info::HFitInfo,
     state::HAppState,
-    util::HExecError,
 };
 
 #[derive(Deserialize)]

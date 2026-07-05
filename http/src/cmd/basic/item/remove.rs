@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HCmdResps, HItemIdBackref, HRmMode},
-    util::HExecError,
+    err::HExecError,
 };
 
 // Commands with full context

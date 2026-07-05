@@ -3,8 +3,8 @@ use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::shared::{HCmdResps, HCreatedFitIdResp, HFleetIdBackref},
+    err::HExecError,
     shared::HDpsProfile,
-    util::HExecError,
 };
 
 // Commands with full context

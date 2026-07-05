@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HCmdResps, HFleetIdBackref, get_primary_fleet},
-    util::HExecError,
+    err::HExecError,
 };
 
 // Commands with full context

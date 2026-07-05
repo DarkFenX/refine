@@ -2,7 +2,7 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HCmdResps, HFitIdBackref, get_primary_fit},
-    util::HExecError,
+    err::HExecError,
 };
 
 // Commands with full context

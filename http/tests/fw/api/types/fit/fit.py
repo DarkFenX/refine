@@ -432,7 +432,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
-            text_predicate: str | None = None,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemModuleAddCmd(
             fit_id=self.id,
@@ -451,7 +451,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code, text_predicate=text_predicate)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None

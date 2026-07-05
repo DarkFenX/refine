@@ -3,8 +3,8 @@ use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::shared::{HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HFitIdBackref, get_primary_fit},
+    err::HExecError,
     shared::HServiceState,
-    util::HExecError,
 };
 
 // Commands with full context

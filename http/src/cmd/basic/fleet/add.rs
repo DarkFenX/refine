@@ -3,7 +3,7 @@ use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
     cmd::shared::{HCmdResps, HCreatedFleetIdResp, HFitIdBackref},
-    util::HExecError,
+    err::HExecError,
 };
 
 // Commands with full context

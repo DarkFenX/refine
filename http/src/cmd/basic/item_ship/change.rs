@@ -3,8 +3,8 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HFitIdBackref, HItemIdBackref, get_primary_fit},
+    err::HExecError,
     shared::{HCoordinates, HMovement},
-    util::HExecError,
 };
 
 // Commands with full hybrid context

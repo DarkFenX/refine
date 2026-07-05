@@ -1,6 +1,6 @@
-use crate::util::HExecError;
+use crate::err::HExecError;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub(crate) enum HBrError {
     #[error("source alias \"{0}\" is not available")]
     SrcAliasNotAvailable(String),
@@ -24,7 +24,7 @@ pub(crate) enum HBrError {
     SrcInitFailed(String),
     #[error("{0}")]
     ExecFailed(#[from] HExecError),
-    #[error("command #{i} failed: {1}", i = .0 + 1)]
+    #[error("command #{0} failed: {1}")]
     ExecBatchFailed(usize, #[source] HExecError),
 }
 impl HBrError {

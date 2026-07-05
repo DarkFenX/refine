@@ -28,7 +28,7 @@ use crate::{
         },
         shared::{HCmdResp, HCmdResps},
     },
-    util::HExecError,
+    err::HExecError,
 };
 
 #[derive(Deserialize)]

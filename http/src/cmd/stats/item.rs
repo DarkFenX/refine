@@ -10,6 +10,7 @@ use crate::{
             HStatOptionItemOutRps, HStatOptionRps, HStatResolvedOption,
         },
     },
+    err::HExecError,
     info::{
         HItemStats,
         stats::{
@@ -17,7 +18,7 @@ use crate::{
             HStatRps, HStatSensors,
         },
     },
-    util::{HExecError, default_true},
+    util::default_true,
 };
 
 #[derive(educe::Educe, Deserialize)]

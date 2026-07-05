@@ -6,8 +6,8 @@ use crate::{
         HAddMode, HCmdResps, HCreatedItemIdsResp, HEffectModeMap, HFitIdBackref, HItemIdBackref, HMutationOnAdd,
         get_primary_fit,
     },
+    err::HExecError,
     shared::{HModRack, HModuleState, HOptionalReload, HSpool},
-    util::HExecError,
 };
 
 // Commands with full context

@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use crate::{cmd::basic::HFitRemoveCmdICtx, util::HExecError};
+use crate::{cmd::basic::HFitRemoveCmdICtx, err::HExecError};
 
 #[derive(Default, Deserialize)]
 pub(crate) struct HFitRemoveCmd {

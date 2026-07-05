@@ -2,8 +2,9 @@ use serde::Deserialize;
 
 use crate::{
     cmd::shared::{HCmdResps, HFitIdBackref, HFleetIdBackref, get_primary_fit},
+    err::HExecError,
     shared::HDpsProfile,
-    util::{HExecError, TriStateField},
+    util::TriStateField,
 };
 
 // Commands with full context

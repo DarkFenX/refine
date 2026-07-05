@@ -5,7 +5,7 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{bridge::HBrError, handlers::HSingleErr, state::HAppState};
+use crate::{err::HBrError, handlers::HSingleErr, state::HAppState};
 
 pub(crate) async fn delete_sol(State(state): State<HAppState>, Path(id): Path<String>) -> impl IntoResponse {
     match state.sol_mgr.delete_sol(&id).await {
