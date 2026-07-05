@@ -5,12 +5,8 @@ use axum::{
     response::IntoResponse,
 };
 
-use crate::{
-    cmd::HFleetAddCmd,
-    err::HApiError,
-    handlers::{HSingleErr, fleet::HFleetInfoParams},
-    state::HAppState,
-};
+use super::query::HFleetInfoParams;
+use crate::{cmd::HFleetAddCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn create_fleet(
     State(state): State<HAppState>,
@@ -23,14 +19,13 @@ pub(crate) async fn create_fleet(
         Err(br_err) => return HApiError::from_bridge_with_empty_path(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    let resp = match sol
+    match sol
         .lock()
         .await
         .add_fleet(&state.tpool, payload, params.fleet.unwrap_or_default())
         .await
     {
         Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),
-        Err(br_err) => (StatusCode::INTERNAL_SERVER_ERROR, Json(HSingleErr::from_bridge(br_err))).into_response(),
-    };
-    resp
+        Err(br_err) => HApiError::from_bridge_with_empty_path(br_err).into_response(),
+    }
 }
