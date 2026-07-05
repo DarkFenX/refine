@@ -4,13 +4,14 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use crate::{cmd::HGetFitStatsCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn get_fit_stats(
     State(state): State<HAppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    payload: Option<Json<HGetFitStatsCmd>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HGetFitStatsCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

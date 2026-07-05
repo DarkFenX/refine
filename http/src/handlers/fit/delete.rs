@@ -4,13 +4,14 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use crate::{cmd::HFitRemoveCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn delete_fit(
     State(state): State<HAppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    payload: Option<Json<HFitRemoveCmd>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HFitRemoveCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

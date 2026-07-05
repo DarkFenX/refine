@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use super::query::HValidInfoParams;
 use crate::{cmd::HValidateSolCmd, err::HApiError, state::HAppState};
@@ -12,7 +13,7 @@ pub(crate) async fn validate_sol(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
     Query(params): Query<HValidInfoParams>,
-    payload: Option<Json<HValidateSolCmd>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HValidateSolCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

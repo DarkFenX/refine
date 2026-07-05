@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use super::query::HFitInfoParams;
 use crate::{cmd::HFitAddCmd, err::HApiError, state::HAppState};
@@ -12,7 +13,7 @@ pub(crate) async fn create_fit(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
     Query(params): Query<HFitInfoParams>,
-    payload: Option<Json<HFitAddCmd>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HFitAddCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

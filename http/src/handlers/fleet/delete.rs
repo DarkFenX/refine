@@ -4,13 +4,14 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use crate::{cmd::HFleetRemoveCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn delete_fleet(
     State(state): State<HAppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    payload: Option<Json<HFleetRemoveCmd>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HFleetRemoveCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

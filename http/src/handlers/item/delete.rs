@@ -4,13 +4,14 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use crate::{cmd::HItemRemoveCmd, err::HApiError, state::HAppState};
 
 pub(crate) async fn delete_item(
     State(state): State<HAppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    payload: Option<Json<HItemRemoveCmd>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HItemRemoveCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

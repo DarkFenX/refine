@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 use serde::Deserialize;
 
 use super::query::HSolInfoParams;
@@ -19,7 +20,7 @@ pub(crate) struct HCreateSolReq {
 pub(crate) async fn create_sol(
     State(state): State<HAppState>,
     Query(params): Query<HSolInfoParams>,
-    payload: Option<Json<HCreateSolReq>>,
+    WithRejection(payload, _): WithRejection<Option<Json<HCreateSolReq>>, HApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
