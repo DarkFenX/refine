@@ -256,7 +256,7 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let resp = command.execute(&mut core_sol).map_err(HBrError::from)?;
-                let mut core_fleet = get_primary_fleet(&mut core_sol, &resp.id).unwrap();
+                let mut core_fleet = get_primary_fleet(&mut core_sol, &resp.fleet_id).unwrap();
                 let fleet_info = HFleetInfo::from_core(&mut core_fleet, fleet_mode);
                 Ok((core_sol, fleet_info))
             })
@@ -399,7 +399,7 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let result = match command.execute(&mut core_sol) {
                     Ok(cmd_resp) => {
-                        let mut core_fit = core_sol.get_fit_mut(&cmd_resp.id).unwrap();
+                        let mut core_fit = core_sol.get_fit_mut(&cmd_resp.fit_id).unwrap();
                         let fit_info = HFitInfo::from_core(&mut core_fit, fit_mode, item_mode);
                         Ok(fit_info)
                     }
@@ -601,7 +601,7 @@ impl HSolarSystemInner {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 let cmd_resp = command.execute(&mut core_sol).map_err(HBrError::from)?;
-                let mut core_item = core_sol.get_item_mut(&cmd_resp.id).unwrap();
+                let mut core_item = core_sol.get_item_mut(&cmd_resp.item_id).unwrap();
                 let item_info = HItemInfo::from_core(&mut core_item, item_mode);
                 Ok((core_sol, item_info))
             })

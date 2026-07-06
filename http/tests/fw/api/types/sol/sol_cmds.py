@@ -138,10 +138,14 @@ class SolCmdCtx:
                 if i not in self._ret_datas:
                     continue
                 entity_data = self._ret_datas[i]
-                if 'id' in cmd_result:
-                    entity_data['id'] = cmd_result['id']
-                if 'charge_id' in cmd_result:
-                    entity_data['charge'] = {'id': cmd_result['charge_id']}
+                if 'fleet_id' in cmd_result:
+                    entity_data['id'] = cmd_result['fleet_id']
+                if 'fit_id' in cmd_result:
+                    entity_data['id'] = cmd_result['fit_id']
+                if 'item_id' in cmd_result:
+                    entity_data['id'] = cmd_result['item_id']
+                if 'charge_item_id' in cmd_result:
+                    entity_data['charge'] = {'id': cmd_result['charge_item_id']}
 
     def __make_fleet(self) -> Fleet:
         # It is supposed to be called after command has been added
