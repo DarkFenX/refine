@@ -26,7 +26,6 @@ class Request:
         return self.__prepared.body
 
     def set_body(self, body: str | bytes | None) -> None:
-        print(self.__prepared.headers)
         if body is None:
             self.__prepared.body = None
             self.__prepared.headers['Content-Length'] = str(0)
