@@ -1,6 +1,7 @@
 use struson::reader::{JsonReader, JsonStreamReader};
 
-use crate::phb::parsing::{ReadParseFailReason, try_recover};
+use super::recovery::try_recover;
+use crate::phb::parsing::ReadParseFailReason;
 
 pub(in crate::phb) struct ArrayIter<T, R>
 where

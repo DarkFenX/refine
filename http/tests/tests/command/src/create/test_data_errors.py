@@ -213,13 +213,13 @@ def test_dogmaeffects_key_symbols(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.dogmaeffects = {
-            f'#&!' if k == eve_effect1_id else k: v
+            '#&!' if k == eve_effect1_id else k: v
             for k, v in prim_data.dogmaeffects.items()}
 
     eve_effect1_id = client.mk_eve_effect()
     eve_effect2_id = client.mk_eve_effect()
     eve_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
-    warning = f'failed to fetch EEffect: failed to cast key "#&!" to integer'
+    warning = 'failed to fetch EEffect: failed to cast key "#&!" to integer'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
     log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
     api_sol = client.create_sol()

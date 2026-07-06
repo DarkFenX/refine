@@ -1,12 +1,12 @@
 use std::{fmt, fs::File, io::BufReader, path::PathBuf};
 
-use super::{address::Address, error::PhbFileEdhError, parsing::ArrayIter};
+use super::{address::Address, error::PhbFileEdhError};
 use crate::phb::{
     data::{
         PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
         PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
     },
-    parsing::{handle_keymap_one, handle_keymap_two},
+    parsing::{ArrayIter, handle_keymap_one, handle_keymap_two},
 };
 
 /// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
