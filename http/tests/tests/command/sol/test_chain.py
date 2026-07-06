@@ -1,5 +1,19 @@
 
 
+def test_execution(client):
+    eve_ship_id = client.mk_eve_item()
+    eve_drone_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_sol.commands() as api_sol_cmds:
+        api_ship = api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
+        api_drone = api_sol_cmds.add_drone(fit_id=api_fit.id, type_id=eve_drone_id)
+    # Verification
+    assert api_ship.update().type_id == eve_ship_id
+    assert api_drone.update().type_id == eve_drone_id
+
+
 def test_rollback(client):
     eve_drone_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_item()

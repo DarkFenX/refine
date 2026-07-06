@@ -68,6 +68,7 @@ class FitCmdCtx:
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
             status_code: int,
+            json_predicate: dict | None,
     ) -> None:
         self._client = client
         self._fit = fit
@@ -76,6 +77,7 @@ class FitCmdCtx:
         self._fit_info_mode = fit_info_mode
         self._item_info_mode = item_info_mode
         self._status_code = status_code
+        self._json_predicate = json_predicate
         self._commands: list[BaseCommand] = []
         self._ret_datas: dict[int, dict] = {}
 
@@ -98,7 +100,7 @@ class FitCmdCtx:
             fit_info_mode=self._fit_info_mode,
             item_info_mode=self._item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=self._status_code)
+        resp.check(status_code=self._status_code, json_predicate=self._json_predicate)
         # In case of successful response, update entity data
         if resp.status_code == 200:
             resp_data = resp.json()

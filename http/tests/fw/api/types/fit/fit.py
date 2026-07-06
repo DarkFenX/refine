@@ -61,6 +61,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> FitCmdCtx:
         return FitCmdCtx(
             client=self._client,
@@ -69,7 +70,8 @@ class Fit(AttrDict):
             fit_id=self.id,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode,
-            status_code=status_code)
+            status_code=status_code,
+            json_predicate=json_predicate)
 
     def update(
             self, *,
