@@ -19,6 +19,7 @@ from fw.api.commands import (
     ItemStanceSetCmd,
     ItemSubsystemAddCmd,
 )
+from fw.api.types.cmd_ctx import FitCmdCtx
 from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
@@ -36,7 +37,6 @@ from fw.consts import (
     ApiValInfoMode,
 )
 from fw.util import Absent, AttrDict, AttrHookDef, is_subset
-from .fit_cmds import FitCmdCtx
 
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient

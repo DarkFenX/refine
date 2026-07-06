@@ -1,1 +1,0 @@
-from .sol import SolarSystem

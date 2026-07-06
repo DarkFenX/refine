@@ -1,6 +1,7 @@
 import typing
 
 from fw.api.commands import ItemProjEffectAddCmd, ItemSwEffectAddCmd, SolSolChangeCmd
+from fw.api.types.cmd_ctx import SolCmdCtx
 from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
@@ -9,7 +10,6 @@ from fw.api.types.item import Item
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
-from .sol_cmds import SolCmdCtx
 
 if typing.TYPE_CHECKING:
     from fw import eve
