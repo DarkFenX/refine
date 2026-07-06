@@ -17,7 +17,7 @@ if typing.TYPE_CHECKING:
     from fw.eve.containers import EvePrimitives, EveStrings
 
 
-def test_types_key(client, log):
+def test_types_key_prefix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types = {
@@ -40,7 +40,7 @@ def test_types_key(client, log):
     assert api_val.details.not_loaded_item == [api_item1.id]
 
 
-def test_types_value(client, log):
+def test_types_value_array(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types[eve_item1_id] = [1, 2, 3]
@@ -61,7 +61,7 @@ def test_types_value(client, log):
     assert api_val.details.not_loaded_item == [api_item1.id]
 
 
-def test_types_json(client):
+def test_types_json_closing_brace_absent(client):
 
     def hook_data_str(str_data: EveStrings):
         # Remove closing brace to make it invalid JSON
@@ -77,7 +77,7 @@ def test_types_json(client):
                        'fsd_built/types.json parsing failed:.+'})
 
 
-def test_typedogma_key(client, log):
+def test_typedogma_key_prefix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.typedogma = {
@@ -109,7 +109,7 @@ def test_typedogma_key(client, log):
     assert eve_effect_id in api_item2.effects
 
 
-def test_typedogma_value(client, log):
+def test_typedogma_value_string(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.typedogma[eve_item1_id] = 'random'
@@ -139,7 +139,7 @@ def test_typedogma_value(client, log):
     assert eve_effect_id in api_item2.effects
 
 
-def test_typedogma_json(client):
+def test_typedogma_json_closing_brace_wrong(client):
 
     def hook_data_str(str_data: EveStrings):
         # Replace closing brace to make it invalid JSON
@@ -155,3 +155,107 @@ def test_typedogma_json(client):
             'code': 'SIN-001',
             'message': 're:source initialization failed: failed to fetch EVE data: '
                        'fsd_built/typedogma.json parsing failed:.+'})
+
+
+def test_dogmaattributes_key_suffix(client, log):
+
+    def hook_data_prim(prim_data: EvePrimitives):
+        prim_data.dogmaattributes = {
+            f'{k}suf' if k == eve_attr1_id else k: v
+            for k, v in prim_data.dogmaattributes.items()}
+
+    eve_attr1_id = client.mk_eve_attr()
+    eve_attr2_id = client.mk_eve_attr()
+    eve_item_id = client.mk_eve_item(attrs={eve_attr2_id: 5})
+    warning = f'failed to fetch EAttr: failed to cast key "{eve_attr1_id}suf" to integer'
+    client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
+    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    api_sol = client.create_sol()
+    api_item = api_sol.add_sw_effect(type_id=eve_item_id)
+    # Verification - malformed attribute entry did not prevent other attributes from being processed
+    assert eve_attr2_id in api_item.update().attrs
+
+
+def test_dogmaattributes_value_null(client, log):
+
+    def hook_data_prim(prim_data: EvePrimitives):
+        prim_data.dogmaattributes[eve_attr1_id] = None
+
+    eve_attr1_id = client.mk_eve_attr()
+    eve_attr2_id = client.mk_eve_attr()
+    eve_item_id = client.mk_eve_item(attrs={eve_attr2_id: 5})
+    warning = f're:failed to fetch EAttr: failed to parse value with key "{eve_attr1_id}":.+'
+    client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
+    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    api_sol = client.create_sol()
+    api_item = api_sol.add_sw_effect(type_id=eve_item_id)
+    # Verification - malformed attribute entry did not prevent other attributes from being processed
+    assert eve_attr2_id in api_item.update().attrs
+
+
+def test_dogmaattributes_json_opening_brace_absent(client):
+
+    def hook_data_str(str_data: EveStrings):
+        # Remove opening brace to make it invalid JSON
+        str_data.dogmaattributes = str_data.dogmaattributes[1:]
+
+    client.mk_eve_attr()
+    client.create_sources(
+        hook_data_str=hook_data_str,
+        status_code=422,
+        json_predicate={
+            'code': 'SIN-001',
+            'message': 're:source initialization failed: failed to fetch EVE data: '
+                       'fsd_built/dogmaattributes.json parsing failed:.+'})
+
+
+def test_dogmaeffects_key_symbols(client, log):
+
+    def hook_data_prim(prim_data: EvePrimitives):
+        prim_data.dogmaeffects = {
+            f'#&!' if k == eve_effect1_id else k: v
+            for k, v in prim_data.dogmaeffects.items()}
+
+    eve_effect1_id = client.mk_eve_effect()
+    eve_effect2_id = client.mk_eve_effect()
+    eve_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
+    warning = f'failed to fetch EEffect: failed to cast key "#&!" to integer'
+    client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
+    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    api_sol = client.create_sol()
+    api_item = api_sol.add_sw_effect(type_id=eve_item_id)
+    # Verification - malformed effect entry did not prevent other effects from being processed
+    assert eve_effect2_id in api_item.update().effects
+
+
+def test_dogmaeffects_value_required_absent(client, log):
+
+    def hook_data_prim(prim_data: EvePrimitives):
+        del prim_data.dogmaeffects[eve_effect1_id]['effectCategory']
+
+    eve_effect1_id = client.mk_eve_effect()
+    eve_effect2_id = client.mk_eve_effect()
+    eve_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
+    warning = f're:failed to fetch EEffect: failed to parse value with key "{eve_effect1_id}":.+'
+    client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
+    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    api_sol = client.create_sol()
+    api_item = api_sol.add_sw_effect(type_id=eve_item_id)
+    # Verification - malformed effect entry did not prevent other effects from being processed
+    assert eve_effect2_id in api_item.update().effects
+
+
+def test_dogmaeffects_json_opening_brace_wrong(client):
+
+    def hook_data_str(str_data: EveStrings):
+        # Replace opening brace to make it invalid JSON
+        str_data.dogmaeffects = '[' + str_data.dogmaeffects[1:]
+
+    client.mk_eve_attr()
+    client.create_sources(
+        hook_data_str=hook_data_str,
+        status_code=422,
+        json_predicate={
+            'code': 'SIN-001',
+            'message': 're:source initialization failed: failed to fetch EVE data: '
+                       'fsd_built/dogmaeffects.json parsing failed:.+'})
