@@ -43,7 +43,7 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import MutaAdd, MutaChange
+    from fw.api.aliases import MutaAdd, MutaChange, ReqHook
     from fw.api.commands import BaseCommand
     from fw.consts import (
         ApiEffMode,
@@ -67,6 +67,7 @@ class FitCmdCtx:
             fit_id: str,
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
+            hook_req: ReqHook | None,
             status_code: int,
             json_predicate: dict | None,
     ) -> None:
@@ -76,6 +77,7 @@ class FitCmdCtx:
         self._fit_id = fit_id
         self._fit_info_mode = fit_info_mode
         self._item_info_mode = item_info_mode
+        self._hook_req = hook_req
         self._status_code = status_code
         self._json_predicate = json_predicate
         self._commands: list[BaseCommand] = []
@@ -93,12 +95,15 @@ class FitCmdCtx:
         # Clear temporary data first, it better be cleaned if anything fails
         for entity_data in self._ret_datas.values():
             entity_data.clear()
-        resp = self._client.fit_commands_request(
+        req = self._client.fit_commands_request(
             sol_id=self._sol_id,
             fit_id=self._fit_id,
             commands=self._commands,
             fit_info_mode=self._fit_info_mode,
-            item_info_mode=self._item_info_mode).send()
+            item_info_mode=self._item_info_mode)
+        if self._hook_req is not None:
+            self._hook_req(req)
+        resp = req.send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=self._status_code, json_predicate=self._json_predicate)
         # In case of successful response, update entity data

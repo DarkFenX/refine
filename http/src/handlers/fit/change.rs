@@ -8,16 +8,11 @@ use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
 use super::query::HFitInfoParams;
-use crate::{
-    cmd::{HCmdResps, HFitChangeCmd},
-    err::HApiError,
-    info::HFitInfo,
-    state::HAppState,
-};
+use crate::{cmd::HCmdResps, err::HApiError, info::HFitInfo, state::HAppState};
 
 #[derive(Deserialize)]
 pub(crate) struct HFitChangeReq {
-    commands: Vec<HFitChangeCmd>,
+    commands: Vec<serde_json::Value>,
 }
 
 #[derive(Serialize)]

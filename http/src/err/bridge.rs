@@ -25,11 +25,16 @@ pub(crate) enum HBrError {
     #[error("{0}")]
     ExecFailed(#[from] HExecError),
     #[error("command #{0} failed: {1}")]
-    ExecBatchFailed(usize, #[source] HExecError),
+    BatchParseFailed(usize, String),
+    #[error("command #{0} failed: {1}")]
+    BatchExecFailed(usize, #[source] HExecError),
 }
 impl HBrError {
-    pub(crate) fn from_exec_batch(index: usize, error: HExecError) -> Self {
-        Self::ExecBatchFailed(index, error)
+    pub(crate) fn from_batch_parse(index: usize, error: impl std::error::Error) -> Self {
+        Self::BatchParseFailed(index, error.to_string())
+    }
+    pub(crate) fn from_batch_exec(index: usize, error: HExecError) -> Self {
+        Self::BatchExecFailed(index, error)
     }
     pub(crate) fn get_api_code(&self) -> String {
         match self {
@@ -44,7 +49,8 @@ impl HBrError {
             Self::EdhInitFailed(_) => "EDH-001".to_string(),
             Self::SrcInitFailed(_) => "SIN-001".to_string(),
             Self::ExecFailed(e) => e.get_api_code(),
-            Self::ExecBatchFailed(_, e) => e.get_api_code(),
+            Self::BatchParseFailed(_, _) => "JSN-002".to_string(),
+            Self::BatchExecFailed(_, e) => e.get_api_code(),
         }
     }
 }

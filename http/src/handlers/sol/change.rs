@@ -8,16 +8,11 @@ use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
 use super::query::HSolInfoParams;
-use crate::{
-    cmd::{HCmdResps, HSolChangeCmd},
-    err::HApiError,
-    info::HSolInfo,
-    state::HAppState,
-};
+use crate::{cmd::HCmdResps, err::HApiError, info::HSolInfo, state::HAppState};
 
 #[derive(Deserialize)]
 pub(crate) struct HSolChangeReq {
-    commands: Vec<HSolChangeCmd>,
+    commands: Vec<serde_json::Value>,
 }
 
 #[derive(Serialize)]

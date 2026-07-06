@@ -40,7 +40,7 @@ from .fit_cmds import FitCmdCtx
 
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfile, MutaAdd
+    from fw.api.aliases import DpsProfile, MutaAdd, ReqHook
     from fw.api.types.stats import FitStatsOptions
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
@@ -60,6 +60,7 @@ class Fit(AttrDict):
             self, *,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
+            hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> FitCmdCtx:
@@ -70,6 +71,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode,
+            hook_req=hook_req,
             status_code=status_code,
             json_predicate=json_predicate)
 

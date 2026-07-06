@@ -8,39 +8,41 @@ if typing.TYPE_CHECKING:
     from fw.response import Response
 
 
-class Request(requests.PreparedRequest):
+class Request:
 
     def __init__(self, *, client: ApiClientBase, **kwargs) -> None:
-        prepared_request = requests.Request(**kwargs).prepare()
-        self.__dict__.update(prepared_request.__dict__)
         self.__client = client
-        self.__body_bytes = None
-        self.body = prepared_request.body
+        self.__prepared = requests.Request(**kwargs).prepare()
 
     @property
-    def body(self) -> str:
-        if self.__body_bytes is None:
-            return ''
-        return self.__body_bytes.decode('utf-8')
+    def prepared(self) -> requests.PreparedRequest:
+        return self.__prepared
 
-    @body.setter
-    def body(self, body: str | bytes) -> None:
+    def get_body(self) -> str:
+        if self.__prepared.body is None:
+            return ''
+        if isinstance(self.__prepared.body, bytes):
+            self.__prepared.body.decode('utf-8')
+        return self.__prepared.body
+
+    def set_body(self, body: str | bytes | None) -> None:
+        print(self.__prepared.headers)
         if body is None:
-            self.__body_bytes = None
-            self.headers['content-length'] = str(0)
+            self.__prepared.body = None
+            self.__prepared.headers['Content-Length'] = str(0)
             return
         if not isinstance(body, bytes):
             body = body.encode('utf-8')
-        self.headers['content-length'] = str(len(body))
-        self.__body_bytes = body
+        self.__prepared.headers['Content-Length'] = str(len(body))
+        self.__prepared.body = body
 
-    @property
-    def json(self) -> typing.Any:
-        return json.loads(self.body)
+    def get_json(self) -> typing.Any:
+        body = self.get_body()
+        return json.loads(body)
 
-    @json.setter
-    def json(self, data: typing.Any) -> None:
-        self.body = json.dumps(data)
+    def set_json(self, data: typing.Any) -> None:
+        body = json.dumps(data)
+        self.set_body(body)
 
     def send(self) -> Response:
         return self.__client.send_prepared(req=self)

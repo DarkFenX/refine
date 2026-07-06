@@ -121,7 +121,7 @@ impl HSolarSystemInner {
     pub(crate) async fn change_sol(
         &mut self,
         tpool: &HThreadPool,
-        commands: Vec<HSolChangeCmd>,
+        commands: Vec<serde_json::Value>,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -137,11 +137,12 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let mut cmd_resps = HCmdResps::with_capacity(commands.len());
                 for (index, command) in commands.into_iter().enumerate() {
-                    let resp = command
+                    let resp = serde_json::from_value::<HSolChangeCmd>(command)
+                        .map_err(|parse_err| HBrError::from_batch_parse(index, parse_err))?
                         .render(&cmd_resps)
-                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?
+                        .map_err(|exec_err| HBrError::from_batch_exec(index, exec_err))?
                         .execute(&mut core_sol)
-                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?;
+                        .map_err(|exec_err| HBrError::from_batch_exec(index, exec_err))?;
                     cmd_resps.append(resp);
                 }
                 let sol_info =
@@ -416,7 +417,7 @@ impl HSolarSystemInner {
         &mut self,
         tpool: &HThreadPool,
         fit_id: &str,
-        commands: Vec<HFitChangeCmd>,
+        commands: Vec<serde_json::Value>,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
     ) -> Result<(HFitInfo, HCmdResps), HBrError> {
@@ -430,11 +431,12 @@ impl HSolarSystemInner {
                 let _sg = sync_span.enter();
                 let mut cmd_resps = HCmdResps::with_capacity(commands.len());
                 for (index, command) in commands.into_iter().enumerate() {
-                    let resp = command
+                    let resp = serde_json::from_value::<HFitChangeCmd>(command)
+                        .map_err(|parse_err| HBrError::from_batch_parse(index, parse_err))?
                         .render(&cmd_resps)
-                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?
+                        .map_err(|exec_err| HBrError::from_batch_exec(index, exec_err))?
                         .execute(&mut core_sol, &fit_id)
-                        .map_err(|exec_err| HBrError::from_exec_batch(index, exec_err))?;
+                        .map_err(|exec_err| HBrError::from_batch_exec(index, exec_err))?;
                     cmd_resps.append(resp);
                 }
                 let mut core_fit = get_primary_fit(&mut core_sol, &fit_id)?;

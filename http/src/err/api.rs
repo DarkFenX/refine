@@ -43,7 +43,7 @@ impl HApiError {
                 HBrError::FleetIdCastFailed(_) | HBrError::FitIdCastFailed(_) | HBrError::ItemIdCastFailed(_) => {
                     StatusCode::NOT_FOUND
                 }
-                HBrError::ExecFailed(exec_err) | HBrError::ExecBatchFailed(_, exec_err) => match exec_err {
+                HBrError::ExecFailed(exec_err) | HBrError::BatchExecFailed(_, exec_err) => match exec_err {
                     // Return 404 for fleet/fit/item not found errors only if they were part of path
                     HExecError::FleetNotFoundPrimary(_) if br_err.fleet_in_path => StatusCode::NOT_FOUND,
                     HExecError::FitNotFoundPrimary(_) if br_err.fit_in_path => StatusCode::NOT_FOUND,

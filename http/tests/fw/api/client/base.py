@@ -18,7 +18,7 @@ class ApiClientBase:
         self.__log_reader: LogReader = log_reader
 
     def send_prepared(self, *, req: Request) -> Response:
-        response = self.__session.send(req)
+        response = self.__session.send(req.prepared)
         return Response(response=response)
 
     @property

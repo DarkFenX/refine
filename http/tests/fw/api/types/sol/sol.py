@@ -14,7 +14,7 @@ from .sol_cmds import SolCmdCtx
 if typing.TYPE_CHECKING:
     from fw import eve
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfile, ReqHook
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
@@ -38,6 +38,7 @@ class SolarSystem(AttrDict):
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
+            hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> SolCmdCtx:
@@ -49,6 +50,7 @@ class SolarSystem(AttrDict):
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode,
+            hook_req=hook_req,
             status_code=status_code,
             json_predicate=json_predicate)
 
