@@ -77,7 +77,7 @@ class FitStanceChangeCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_stance'
+        body['type'] = 'change_stance'
         return body
 
 
@@ -88,7 +88,7 @@ class SolStanceChangeViaItemIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_stance'
+        body['type'] = 'change_stance'
         body['item_id'] = self.item_id
         return body
 
@@ -100,7 +100,7 @@ class SolStanceChangeViaFitIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_stance'
+        body['type'] = 'change_stance'
         body['fit_id'] = self.fit_id
         return body
 

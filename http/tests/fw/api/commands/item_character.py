@@ -77,7 +77,7 @@ class FitCharacterChangeCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_character'
+        body['type'] = 'change_character'
         return body
 
 
@@ -88,7 +88,7 @@ class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_character'
+        body['type'] = 'change_character'
         body['item_id'] = self.item_id
         return body
 
@@ -100,7 +100,7 @@ class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_character'
+        body['type'] = 'change_character'
         body['fit_id'] = self.fit_id
         return body
 

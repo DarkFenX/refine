@@ -147,22 +147,20 @@ class SolCmdCtx:
                 if 'charge_item_id' in cmd_result:
                     entity_data['charge'] = {'id': cmd_result['charge_item_id']}
 
+    # Entity making methods are supposed to be called after command has been added
     def __make_fleet(self) -> Fleet:
-        # It is supposed to be called after command has been added
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
         self._ret_datas[index] = data
         return Fleet(client=self._client, data=data, sol_id=self._sol_id)
 
     def __make_fit(self) -> Fit:
-        # It is supposed to be called after command has been added
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
         self._ret_datas[index] = data
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
 
     def __make_item(self) -> Item:
-        # It is supposed to be called after command has been added
         index = len(self._commands) - 1
         data = {'id': f'#{index}', 'charge': {'id': f'#{index}c'}}
         self._ret_datas[index] = data
