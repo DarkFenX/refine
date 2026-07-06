@@ -170,6 +170,33 @@ def test_character_unset(client):
         api_fit.character  # noqa: B018
 
 
+def test_charge_change_after_module_add(client):
+    eve_module_id = client.mk_eve_item()
+    eve_charge_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_sol.commands() as api_sol_cmds:
+        api_module = api_sol_cmds.add_module(fit_id=api_fit.id, type_id=eve_module_id, charge_type_id=eve_charge_id)
+        api_sol_cmds.change_charge(item_id=api_module.charge.id, state=False)
+    # Verification
+    assert api_module.update().charge.enabled is False
+
+
+def test_charge_change_after_module_change(client):
+    eve_module_id = client.mk_eve_item()
+    eve_charge_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module = api_fit.add_module(type_id=eve_module_id)
+    with api_sol.commands() as api_sol_cmds:
+        api_charge = api_sol_cmds.change_module(item_id=api_module.id, charge_type_id=eve_charge_id)
+        api_sol_cmds.change_charge(item_id=api_charge.id, state=False)
+    # Verification
+    assert api_charge.update().enabled is False
+
+
 def test_drone_add(client):
     eve_drone_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_item()

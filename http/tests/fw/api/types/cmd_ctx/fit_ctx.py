@@ -408,7 +408,7 @@ class FitCmdCtx(BaseCmdCtx):
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
-    ) -> None:
+    ) -> Item:
         command = FitModuleChangeCmd(
             item_id=item_id,
             type_id=type_id,
@@ -421,6 +421,7 @@ class FitCmdCtx(BaseCmdCtx):
             rm_proj_item_ids=rm_proj_item_ids,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
+        return self._make_item_charge()
 
     # Item - rig
     def add_rig(

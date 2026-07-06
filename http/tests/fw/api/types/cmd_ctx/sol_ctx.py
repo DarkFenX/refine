@@ -53,7 +53,7 @@ from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
-from .base_ctx import BaseCmdCtx
+from .base_ctx import BaseCmdCtx, EntityData, IdFillKind
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
@@ -133,13 +133,13 @@ class SolCmdCtx(BaseCmdCtx):
     def _make_fleet(self) -> Fleet:
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
-        self._ret_datas[index] = data
+        self._ret_datas[index] = EntityData(kind=IdFillKind.regular, data=data)
         return Fleet(client=self._client, data=data, sol_id=self._sol_id)
 
     def _make_fit(self) -> Fit:
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
-        self._ret_datas[index] = data
+        self._ret_datas[index] = EntityData(kind=IdFillKind.regular, data=data)
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
 
     # Sol
@@ -549,7 +549,7 @@ class SolCmdCtx(BaseCmdCtx):
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
-    ) -> None:
+    ) -> Item:
         command = SolModuleChangeCmd(
             item_id=item_id,
             type_id=type_id,
@@ -562,6 +562,7 @@ class SolCmdCtx(BaseCmdCtx):
             rm_proj_item_ids=rm_proj_item_ids,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
+        return self._make_item_charge()
 
     # Item - projected effect
     def add_proj_effect(
