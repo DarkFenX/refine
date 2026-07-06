@@ -1,7 +1,7 @@
 import typing
 
 from fw.api.commands import ItemProjEffectAddCmd, ItemSwEffectAddCmd, SolSolChangeCmd
-from fw.api.types.cmd_ctx import SolCmdCtx
+from fw.api.types.cmd_ctx.sol_ctx import SolCmdCtx
 from fw.api.types.dmg_types import DmgTypes
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet

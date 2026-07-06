@@ -51,16 +51,16 @@ from fw.api.commands import (
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
-from fw.api.types.item import Item
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
+from .base_ctx import BaseCmdCtx
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfile, MutaAdd, MutaChange, ReqHook
-    from fw.api.commands import BaseCommand
+    from fw.api.types.item import Item
     from fw.api.types.sol import SolarSystem
     from fw.consts import (
         ApiEffMode,
@@ -76,7 +76,7 @@ if typing.TYPE_CHECKING:
     )
 
 
-class SolCmdCtx:
+class SolCmdCtx(BaseCmdCtx):
 
     def __init__(
             self, *,
@@ -91,18 +91,17 @@ class SolCmdCtx:
             status_code: int,
             json_predicate: dict | None,
     ) -> None:
-        self._client = client
+        super().__init__(
+            client=client,
+            sol_id=sol_id,
+            hook_req=hook_req,
+            status_code=status_code,
+            json_predicate=json_predicate)
         self._sol = sol
-        self._sol_id = sol_id
         self._sol_info_mode = sol_info_mode
         self._fleet_info_mode = fleet_info_mode
         self._fit_info_mode = fit_info_mode
         self._item_info_mode = item_info_mode
-        self._hook_req = hook_req
-        self._status_code = status_code
-        self._json_predicate = json_predicate
-        self._commands: list[BaseCommand] = []
-        self._ret_datas: dict[int, dict] = {}
 
     def __enter__(self) -> typing.Self:
         return self
@@ -114,8 +113,7 @@ class SolCmdCtx:
             exc_tb: TracebackType | None,
     ) -> None:
         # Clear temporary data first, it better be cleaned if anything fails
-        for entity_data in self._ret_datas.values():
-            entity_data.clear()
+        self._clear_ret_datas()
         req = self._client.sol_commands_request(
             sol_id=self._sol_id,
             commands=self._commands,
@@ -123,48 +121,26 @@ class SolCmdCtx:
             fit_info_mode=self._fit_info_mode,
             fleet_info_mode=self._fleet_info_mode,
             item_info_mode=self._item_info_mode)
-        if self._hook_req is not None:
-            self._hook_req(req)
-        resp = req.send()
-        self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=self._status_code, json_predicate=self._json_predicate)
+        resp = self._process_request(req=req)
         # In case of successful response, update entity data
         if resp.status_code == 200:
             resp_data = resp.json()
             # Solar system which initiated the command chain
             self._sol._data = resp_data['solar_system']  # noqa: SLF001
-            # Update IDs in all the entities which were created by the commands
-            for i, cmd_result in enumerate(resp_data['cmd_results']):
-                if i not in self._ret_datas:
-                    continue
-                entity_data = self._ret_datas[i]
-                if 'fleet_id' in cmd_result:
-                    entity_data['id'] = cmd_result['fleet_id']
-                if 'fit_id' in cmd_result:
-                    entity_data['id'] = cmd_result['fit_id']
-                if 'item_id' in cmd_result:
-                    entity_data['id'] = cmd_result['item_id']
-                if 'charge_item_id' in cmd_result:
-                    entity_data['charge'] = {'id': cmd_result['charge_item_id']}
+            self._fill_entity_ids(resp_data=resp_data)
 
     # Entity making methods are supposed to be called after command has been added
-    def __make_fleet(self) -> Fleet:
+    def _make_fleet(self) -> Fleet:
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
         self._ret_datas[index] = data
         return Fleet(client=self._client, data=data, sol_id=self._sol_id)
 
-    def __make_fit(self) -> Fit:
+    def _make_fit(self) -> Fit:
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
         self._ret_datas[index] = data
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
-
-    def __make_item(self) -> Item:
-        index = len(self._commands) - 1
-        data = {'id': f'#{index}', 'charge': {'id': f'#{index}c'}}
-        self._ret_datas[index] = data
-        return Item(client=self._client, data=data, sol_id=self._sol_id)
 
     # Sol
     def change_sol(
@@ -192,7 +168,7 @@ class SolCmdCtx:
     ) -> Fleet:
         command = SolFleetAddCmd(fit_ids=fit_ids)
         self._commands.append(command)
-        return self.__make_fleet()
+        return self._make_fleet()
 
     def change_fleet(
             self, *,
@@ -222,7 +198,7 @@ class SolCmdCtx:
             sec_status=sec_status,
             rah_incoming_dps=rah_incoming_dps)
         self._commands.append(command)
-        return self.__make_fit()
+        return self._make_fit()
 
     def change_fit(
             self, *,
@@ -282,7 +258,7 @@ class SolCmdCtx:
             side_effects=process_effect_map_request(effect_map=side_effects),
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_booster(
             self, *,
@@ -314,7 +290,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_character_via_fit_id(
             self, *,
@@ -387,7 +363,7 @@ class SolCmdCtx:
             movement=movement,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_drone(
             self, *,
@@ -441,7 +417,7 @@ class SolCmdCtx:
             movement=movement,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_fighter(
             self, *,
@@ -485,7 +461,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_fw_effect(
             self, *,
@@ -515,7 +491,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_implant(
             self, *,
@@ -559,7 +535,7 @@ class SolCmdCtx:
             proj_item_ids=proj_item_ids,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_module(
             self, *,
@@ -601,7 +577,7 @@ class SolCmdCtx:
             proj_item_ids=proj_item_ids,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_proj_effect(
             self, *,
@@ -635,7 +611,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_rig(
             self, *,
@@ -665,7 +641,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_service(
             self, *,
@@ -699,7 +675,7 @@ class SolCmdCtx:
             movement=movement,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_ship_via_fit_id(
             self, *,
@@ -757,7 +733,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_skill(
             self, *,
@@ -789,7 +765,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_stance_via_fit_id(
             self, *,
@@ -837,7 +813,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_subsystem(
             self, *,
@@ -865,7 +841,7 @@ class SolCmdCtx:
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
-        return self.__make_item()
+        return self._make_item()
 
     def change_sw_effect(
             self, *,
