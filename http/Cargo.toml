@@ -12,7 +12,7 @@ axum = { version = ">=0.8.9", features = ["query"] }
 axum-extra = { version = "0.12.6", features = ["with-rejection"] }
 chrono = ">=0.4.45"
 config = { version = ">=0.15.25", features = ["toml"] }
-educe = { version = ">=0.6.0", features = ["Default"], default-features = false }
+educe = { version = ">=0.7.4", features = ["Default"], default-features = false }
 itertools = ">=0.15.0"
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }
 serde = { version = ">=1.0.228", features = ["derive"] }
