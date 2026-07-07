@@ -404,6 +404,102 @@ def test_hp_changed(client, consts):
     assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.75825)
 
 
+def test_resist_changed(client, consts):
+    # Since amount of HP dictates how much ship takes from a breacher, make sure RAH adapts to
+    # changes to it
+    eve_basic_info = setup_rah_basics(client=client, consts=consts)
+    eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)
+    eve_ship_id = make_eve_ship(
+        client=client,
+        basic_info=eve_basic_info,
+        resos=(0.5, 0.65, 0.75, 0.9),
+        hps=(200, 200, 200))
+    eve_boost_attr_id = client.mk_eve_attr()
+    eve_resist_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_boost_attr_id,
+        affectee_attr_id=eve_basic_info.res_breach_attr_id)
+    eve_resist_effect_id = client.mk_eve_effect(mod_info=[eve_resist_mod])
+    eve_weak_bdc_id = client.mk_eve_item(attrs={eve_boost_attr_id: -40}, eff_ids=[eve_resist_effect_id])
+    eve_strong_bdc_id = client.mk_eve_item(attrs={eve_boost_attr_id: -80}, eff_ids=[eve_resist_effect_id])
+    eve_absolute_bdc_id = client.mk_eve_item(attrs={eve_boost_attr_id: -100}, eff_ids=[eve_resist_effect_id])
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit(rah_incoming_dps=(0, 5, 5, 5, (10, 0.01)))
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_rah = api_fit.add_module(type_id=eve_rah_id, state=consts.ApiModuleState.active)
+    # Verification - breacher DPS is 6
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.5575)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(1.0)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(1.0)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.8425)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_breach_attr_id].modified == approx(1)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.27875)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.65)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.75)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.75825)
+    # Action
+    api_module = api_fit.add_module(type_id=eve_weak_bdc_id)
+    # Verification - breacher DPS is 3.6
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.6025)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.97)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.8275)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_breach_attr_id].modified == approx(0.6)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.30125)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.65)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.7275)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.74475)
+    # Action
+    api_module.change_module(type_id=eve_strong_bdc_id)
+    # Verification - breacher DPS is 1.2
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.925)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.82)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.655)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_breach_attr_id].modified == approx(0.2)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.60125)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.615)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.5895)
+    # Action
+    api_module.change_module(type_id=eve_absolute_bdc_id)
+    # Verification - breacher DPS is 0
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(1)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.925)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.82)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.655)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_breach_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.5)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.60125)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.615)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.5895)
+    # Action
+    api_fit.change(rah_incoming_dps=(0, 0, 0, 0, (10, 0.01)))
+    # Verification - breacher DPS is 0, other dps is 0 too, no adaptation
+    api_rah.update()
+    assert api_rah.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.85)
+    assert api_rah.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.85)
+    assert api_rah.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.85)
+    assert api_rah.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.85)
+    api_ship.update()
+    assert api_ship.attrs[eve_basic_info.res_breach_attr_id].modified == approx(0)
+    assert api_ship.attrs[eve_basic_info.res_em_attr_id].modified == approx(0.425)
+    assert api_ship.attrs[eve_basic_info.res_therm_attr_id].modified == approx(0.5525)
+    assert api_ship.attrs[eve_basic_info.res_kin_attr_id].modified == approx(0.6375)
+    assert api_ship.attrs[eve_basic_info.res_expl_attr_id].modified == approx(0.765)
+
+
 def test_no_attr_hp_shield(client, consts):
     eve_basic_info = setup_rah_basics(client=client, consts=consts, attr_shield_hp=None)
     eve_rah_id = make_eve_rah(client=client, basic_info=eve_basic_info, resos=(0.85, 0.85, 0.85, 0.85), shift_amount=6)

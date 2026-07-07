@@ -2,7 +2,7 @@ import typing
 from dataclasses import dataclass
 from itertools import chain
 
-from fw.util import Default
+from fw.util import Absent, Default
 
 if typing.TYPE_CHECKING:
     from fw.client import TestClient
@@ -11,17 +11,18 @@ if typing.TYPE_CHECKING:
 
 @dataclass(kw_only=True)
 class RahBasicInfo:
-    shield_hp_attr_id: int | None
-    armor_hp_attr_id: int | None
-    hull_hp_attr_id: int | None
-    res_max_attr_id: int | None
-    res_em_attr_id: int | None
-    res_therm_attr_id: int | None
-    res_kin_attr_id: int | None
-    res_expl_attr_id: int | None
-    res_shift_attr_id: int | None
-    cycle_time_attr_id: int | None
-    cycle_time_bonus_attr_id: int | None
+    shield_hp_attr_id: int | type[Absent]
+    armor_hp_attr_id: int | type[Absent]
+    hull_hp_attr_id: int | type[Absent]
+    res_max_attr_id: int | type[Absent]
+    res_em_attr_id: int | type[Absent]
+    res_therm_attr_id: int | type[Absent]
+    res_kin_attr_id: int | type[Absent]
+    res_expl_attr_id: int | type[Absent]
+    res_breach_attr_id: int | type[Absent]
+    res_shift_attr_id: int | type[Absent]
+    cycle_time_attr_id: int | type[Absent]
+    cycle_time_bonus_attr_id: int | type[Absent]
     rah_effect_id: int
     heat_effect_id: int
 
@@ -38,6 +39,7 @@ def setup_rah_basics(
         attr_res_therm: type[Default] | None = Default,
         attr_res_kin: type[Default] | None = Default,
         attr_res_expl: type[Default] | None = Default,
+        attr_res_breach: type[Default] | None = Default,
         attr_shift: type[Default] | None = Default,
         attr_cycle_time: int | type[Default] | None = Default,
 ) -> RahBasicInfo:
@@ -68,6 +70,9 @@ def setup_rah_basics(
         client=client, datas=datas,
         id_=attr_res_expl, default_id=consts.EveAttr.armor_expl_dmg_resonance,
         stackable=False, max_attr_id=eve_res_max_attr_id)
+    eve_res_breach_attr_id = _make_optional_attr(
+        client=client, datas=datas,
+        id_=attr_res_breach, default_id=consts.EveAttr.breacher_pod_dmg_resist, def_val=1)
     eve_res_shift_attr_id = _make_optional_attr(
         client=client, datas=datas,
         id_=attr_shift, default_id=consts.EveAttr.resist_shift_amount, stackable=True)
@@ -101,6 +106,7 @@ def setup_rah_basics(
         res_therm_attr_id=eve_res_therm_attr_id,
         res_kin_attr_id=eve_res_kin_attr_id,
         res_expl_attr_id=eve_res_expl_attr_id,
+        res_breach_attr_id=eve_res_breach_attr_id,
         cycle_time_attr_id=eve_cycle_time_attr_id,
         cycle_time_bonus_attr_id=eve_cycle_time_bonus_attr_id,
         res_shift_attr_id=eve_res_shift_attr_id,
@@ -138,7 +144,7 @@ def make_eve_rah(
                  cycle_time,
                  heat_cycle_mod),
                 strict=True)
-            if k is not None and v is not None},
+            if k is not Absent and v is not None},
         eff_ids=[basic_info.rah_effect_id, basic_info.heat_effect_id],
         defeff_id=basic_info.rah_effect_id)
 
@@ -151,6 +157,7 @@ def make_eve_ship(
         id_: int | type[Default] = Default,
         resos: tuple[float | None, float | None, float | None, float | None],
         hps: tuple[float | None, float | None, float | None] | type[Default] = Default,
+        breach_resist: float | None = None,
 ) -> int:
     if hps is Default:
         hps = (0, 0, 0)
@@ -168,8 +175,9 @@ def make_eve_ship(
                  basic_info.armor_hp_attr_id,
                  basic_info.hull_hp_attr_id),
                 hps,
-                strict=True))
-        if k is not None and v is not None})
+                strict=True),
+            [(basic_info.res_breach_attr_id, breach_resist)])
+        if k is not Absent and v is not None})
 
 
 def _make_optional_attr(
@@ -179,10 +187,11 @@ def _make_optional_attr(
         id_: int | type[Default] | None,
         default_id: int,
         stackable: bool | type[Default] = Default,
+        def_val: float | type[Default] = Default,
         max_attr_id: int | type[Default] = Default,
-) -> int | None:
+) -> int | type[Absent]:
     if id_ is None:
-        return None
+        return Absent
     if id_ is Default:
         id_ = default_id
-    return client.mk_eve_attr(datas=datas, id_=id_, stackable=stackable, max_attr_id=max_attr_id)
+    return client.mk_eve_attr(datas=datas, id_=id_, stackable=stackable, def_val=def_val, max_attr_id=max_attr_id)

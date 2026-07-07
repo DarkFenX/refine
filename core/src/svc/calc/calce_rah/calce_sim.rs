@@ -83,7 +83,7 @@ impl Calc {
                         .get_absolute_max()
                         .min(breacher.get_relative_max().into_pvalue() * ship_stats.total_hp);
                     // Breacher counts as EM damage for some reason
-                    item_data.taken_dmg.em += breacher_dps * tick_data.time_passed;
+                    item_data.taken_dmg.em += breacher_dps * ship_stats.breacher_reso * tick_data.time_passed;
                 }
             }
             // If RAH just finished its cycle, make resist switch
@@ -143,31 +143,55 @@ impl Calc {
     fn get_ship_stats(&mut self, ctx: SvcCtx, ship_uid: UItemId) -> Option<RahShipStats> {
         let attr_consts = ctx.ac();
         // Fail if ship is not loaded, or any of resonance attributes are not available
-        let em = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_em_dmg_resonance)?;
-        let therm = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_therm_dmg_resonance)?;
-        let kin = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_kin_dmg_resonance)?;
-        let expl = self.get_item_oattr_odogma(ctx, ship_uid, attr_consts.armor_expl_dmg_resonance)?;
-        let shield_hp = PValue::from_value_clamped(self.get_item_oattr_afb_odogma(
+        let em_reso = PValue::from_value_clamped(self.get_item_oattr_odogma(
+            ctx,
+            ship_uid,
+            attr_consts.armor_em_dmg_resonance,
+        )?);
+        let therm_reso = PValue::from_value_clamped(self.get_item_oattr_odogma(
+            ctx,
+            ship_uid,
+            attr_consts.armor_therm_dmg_resonance,
+        )?);
+        let kin_reso = PValue::from_value_clamped(self.get_item_oattr_odogma(
+            ctx,
+            ship_uid,
+            attr_consts.armor_kin_dmg_resonance,
+        )?);
+        let expl_reso = PValue::from_value_clamped(self.get_item_oattr_odogma(
+            ctx,
+            ship_uid,
+            attr_consts.armor_expl_dmg_resonance,
+        )?);
+        // Do not require breacher resist and HP attributes
+        let breach_reso = PValue::from_value_clamped(self.get_item_oattr_afb_oextra(
+            ctx,
+            ship_uid,
+            attr_consts.breacher_pod_dmg_resist,
+            Value::ONE,
+        )?);
+        let shield_hp = PValue::from_value_clamped(self.get_item_oattr_afb_oextra(
             ctx,
             ship_uid,
             attr_consts.shield_capacity,
             Value::ZERO,
         )?);
-        let armor_hp = PValue::from_value_clamped(self.get_item_oattr_afb_odogma(
+        let armor_hp = PValue::from_value_clamped(self.get_item_oattr_afb_oextra(
             ctx,
             ship_uid,
             attr_consts.armor_hp,
             Value::ZERO,
         )?);
         let hull_hp =
-            PValue::from_value_clamped(self.get_item_oattr_afb_odogma(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
+            PValue::from_value_clamped(self.get_item_oattr_afb_oextra(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
         Some(RahShipStats {
             resos: DmgKinds {
-                em,
-                thermal: therm,
-                kinetic: kin,
-                explosive: expl,
+                em: em_reso,
+                thermal: therm_reso,
+                kinetic: kin_reso,
+                explosive: expl_reso,
             },
+            breacher_reso: breach_reso,
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }

@@ -124,6 +124,10 @@ impl Calc {
                 }
                 _ => (),
             },
+            // Ship breacher resistance
+            AAttrId::BREACHER_POD_DMG_RESIST if let UItem::Ship(ship) = ctx.u_data.items.get(aspec.item_uid) => {
+                self.clear_fit_rah_results(ctx, ship.get_fit_uid());
+            }
             // RAH shift amount
             AAttrId::RESIST_SHIFT_AMOUNT if self.rah.resonances.contains_key(&aspec.item_uid) => {
                 // Only modules should be registered in resonances container, and those are
