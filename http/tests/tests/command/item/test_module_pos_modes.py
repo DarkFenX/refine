@@ -271,6 +271,14 @@ def test_move_swap(client, consts):
     assert api_module1.update().pos == 6
     assert api_module2.update().pos == 3
     assert api_module3.update().pos == 1
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.swap: 6})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module3.id, None, api_module2.id, None, None, api_module1.id]
+    assert api_module1.update().pos == 6
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 1
 
 
 def test_move_shift(client, consts):
@@ -356,6 +364,16 @@ def test_move_shift(client, consts):
     assert api_module3.update().pos == 2
     assert api_module4.update().pos == 5
     assert api_module5.update().pos == 3
+    # Action
+    api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        api_module1.id, api_module2.id, api_module3.id, api_module4.id, api_module5.id]
+    assert api_module1.update().pos == 0
+    assert api_module2.update().pos == 1
+    assert api_module3.update().pos == 2
+    assert api_module4.update().pos == 3
+    assert api_module5.update().pos == 4
     # Action
     api_module4.change_module(move={consts.ApiModMvMode.shift: 3})
     # Verification
