@@ -32,6 +32,7 @@ impl REffectResist {
                 Some(attr_aid) => Self::Attr(*attr_aid_rid_map.get(attr_aid)?),
                 None => Self::RemoteResistance,
             },
+            NEffectResist::Attr(attr_aid) => Self::Attr(*attr_aid_rid_map.get(attr_aid)?),
             NEffectResist::AttrRef(attr_aid) => Self::AttrRef(*attr_aid_rid_map.get(attr_aid)?),
         })
     }

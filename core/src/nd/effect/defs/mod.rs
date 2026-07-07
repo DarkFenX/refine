@@ -19,6 +19,7 @@ pub(in crate::nd::effect) mod d11691_debuff_lance;
 pub(in crate::nd::effect) mod d12126_micro_jump_portal_drive_capital;
 pub(in crate::nd::effect) mod d12174_dot_missile_launching;
 pub(in crate::nd::effect) mod d12597_mod_bonus_integrated_sensor_array;
+pub(in crate::nd::effect) mod d12916_mod_bonus_breacher_pod_damage_control;
 pub(in crate::nd::effect) mod d1730_drone_dmg_bonus;
 pub(in crate::nd::effect) mod d17_mining;
 pub(in crate::nd::effect) mod d1851_self_rof;

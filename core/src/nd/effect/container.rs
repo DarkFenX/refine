@@ -158,6 +158,7 @@ fn get_effect_map() -> RMap<AEffectId, NEffect> {
         defs::d12126_micro_jump_portal_drive_capital::mk_n_effect(),
         defs::d12174_dot_missile_launching::mk_n_effect(),
         defs::d12597_mod_bonus_integrated_sensor_array::mk_n_effect(),
+        defs::d12916_mod_bonus_breacher_pod_damage_control::mk_n_effect(),
         defs::test::d10000000_mod_proj_simple::mk_n_effect(),
         defs::test::d10000001_mod_proj_normal1::mk_n_effect(),
         defs::test::d10000002_mod_proj_normal2::mk_n_effect(),

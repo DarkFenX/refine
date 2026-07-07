@@ -145,4 +145,5 @@ impl EEffectId {
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_i32(12126);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_i32(12174);
     pub(crate) const MOD_BONUS_INTEGRATED_SENSOR_ARRAY: Self = Self::from_i32(12597);
+    pub(crate) const MOD_BONUS_BREACHER_POD_DAMAGE_CONTROL: Self = Self::from_i32(12916);
 }

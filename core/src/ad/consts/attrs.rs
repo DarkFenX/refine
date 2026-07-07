@@ -373,6 +373,9 @@ impl AAttrId {
     pub(crate) const CAN_FIT_SHIP_TYPE12: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_TYPE12);
     pub(crate) const MINING_CRIT_CHANCE: Self = Self::from_eid(EAttrId::MINING_CRIT_CHANCE);
     pub(crate) const MINING_CRIT_BONUS_YIELD: Self = Self::from_eid(EAttrId::MINING_CRIT_BONUS_YIELD);
+    pub(crate) const BREACHER_POD_DMG_RESIST: Self = Self::from_eid(EAttrId::BREACHER_POD_DMG_RESIST);
+    pub(crate) const BREACHER_POD_ACTIVATED_DMG_RECEIVED_PERCENT: Self =
+        Self::from_eid(EAttrId::BREACHER_POD_ACTIVATED_DMG_RECEIVED_PERCENT);
     // Library-specific attributes
     pub(crate) const WARP_BUBBLE_STRENGTH: Self = Self::Custom(ACustomAttrId::from_i32(1));
     pub(crate) const DISALLOW_WARPING: Self = Self::Custom(ACustomAttrId::from_i32(2));

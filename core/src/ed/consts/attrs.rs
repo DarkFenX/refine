@@ -341,4 +341,6 @@ impl EAttrId {
     pub(crate) const CAN_FIT_SHIP_TYPE12: Self = Self::from_i32(5948);
     pub(crate) const MINING_CRIT_CHANCE: Self = Self::from_i32(5967);
     pub(crate) const MINING_CRIT_BONUS_YIELD: Self = Self::from_i32(5969);
+    pub(crate) const BREACHER_POD_DMG_RESIST: Self = Self::from_i32(6255);
+    pub(crate) const BREACHER_POD_ACTIVATED_DMG_RECEIVED_PERCENT: Self = Self::from_i32(6257);
 }

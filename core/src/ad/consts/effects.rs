@@ -166,6 +166,8 @@ impl AEffectId {
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DOT_MISSILE_LAUNCHING);
     pub(crate) const MOD_BONUS_INTEGRATED_SENSOR_ARRAY: Self =
         Self::from_eid(EEffectId::MOD_BONUS_INTEGRATED_SENSOR_ARRAY);
+    pub(crate) const MOD_BONUS_BREACHER_POD_DAMAGE_CONTROL: Self =
+        Self::from_eid(EEffectId::MOD_BONUS_BREACHER_POD_DAMAGE_CONTROL);
     // Library-specific effects
     pub(crate) const CHAR_MISSILE_DMG: Self = Self::Custom(ACustomEffectId::from_i32(1));
     pub(crate) const AAR_PASTE_BOOST: Self = Self::Custom(ACustomEffectId::from_i32(2));
