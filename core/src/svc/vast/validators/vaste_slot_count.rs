@@ -457,13 +457,13 @@ fn validate_fast_ordered(
     max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
 ) -> bool {
-    let used = Count::from_usize(users.len());
+    let used = Count::from_usize(users.slot_count());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid).unwrap_or(Count::ZERO);
     match kfs.is_empty() {
         true => used <= max,
         false => match used <= max {
             true => true,
-            false => users.iter_uids_from(max.into_usize()).all(|v| kfs.contains(v)),
+            false => users.iter_uids_from_pos(max.into_index()).all(|v| kfs.contains(&v)),
         },
     }
 }
@@ -520,16 +520,16 @@ fn validate_verbose_ordered(
     max_attr_rid: Option<RAttrId>,
     users: &UItemVec,
 ) -> Option<ValSlotCountFail> {
-    let used = Count::from_usize(users.len());
+    let used = Count::from_usize(users.slot_count());
     let max = get_attr_as_count(ctx, calc, max_item_uid, max_attr_rid);
     let effective_max = max.unwrap_or(Count::ZERO);
     if used <= effective_max {
         return None;
     }
     let users: Vec<_> = users
-        .iter_uids_from(effective_max.into_usize())
+        .iter_uids_from_pos(effective_max.into_index())
         .filter(|item_uid| !kfs.contains(item_uid))
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
+        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(item_uid))
         .collect();
     match users.is_empty() {
         true => None,

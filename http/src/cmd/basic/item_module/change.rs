@@ -2,7 +2,7 @@ use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
 use crate::{
-    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref, HMutationOnChange},
+    cmd::shared::{HChangedItemIdsResp, HCmdResps, HEffectModeMap, HItemIdBackref, HMutationOnChange, HMvMode},
     err::HExecError,
     shared::{HModuleState, HOptionalReload, HSpool},
     util::TriStateField,
@@ -45,6 +45,8 @@ pub(crate) struct HModuleChangeCmdICtxRIds {
 #[derive(Deserialize)]
 struct HModuleChangeCmdShared {
     type_id: Option<i32>,
+    #[serde(rename = "move")]
+    move_: Option<HMvMode>,
     state: Option<HModuleState>,
     #[serde(default)]
     mutation: TriStateField<HMutationOnChange>,
@@ -102,6 +104,9 @@ impl HModuleChangeCmdICtxRIds {
         if let Some(type_id) = self.shared.type_id {
             let core_type_id = rc::ItemTypeId::from_i32(type_id);
             core_module.set_type_id(core_type_id);
+        }
+        if let Some(h_move) = self.shared.move_ {
+            core_module.move_(h_move.into_core());
         }
         if let Some(state) = &self.shared.state {
             core_module.set_state(state.into_core());

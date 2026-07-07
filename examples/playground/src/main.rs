@@ -72,6 +72,7 @@ fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
 
 fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
     let skill_ids = get_skill_ids(&edh);
+    tracing::info!("source: initializing...");
     let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
     match src.get_info().origin {
         SrcOrigin::Cached(_) => tracing::info!("source: loaded from cache"),

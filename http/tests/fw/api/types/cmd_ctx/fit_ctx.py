@@ -50,6 +50,7 @@ if typing.TYPE_CHECKING:
         ApiEffMode,
         ApiFitInfoMode,
         ApiItemInfoMode,
+        ApiModMvMode,
         ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
@@ -400,6 +401,7 @@ class FitCmdCtx(BaseCmdCtx):
             self, *,
             item_id: str,
             type_id: int | type[Absent] = Absent,
+            move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent] = Absent,
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,
@@ -412,6 +414,7 @@ class FitCmdCtx(BaseCmdCtx):
         command = FitModuleChangeCmd(
             item_id=item_id,
             type_id=type_id,
+            move=move,
             state=state,
             mutation=process_muta_change_request(mutation=mutation),
             charge_type_id=charge_type_id,

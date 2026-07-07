@@ -6,7 +6,7 @@ pub use effect_info::EffectInfo;
 pub use item_grp_id::ItemGrpId;
 pub use op::Op;
 pub use physics::{Coordinates, Direction, Movement};
-pub use pos_modes::{AddMode, RmMode};
+pub use pos_modes::{AddMode, MvMode, RmMode};
 pub use proj_range::ProjRange;
 pub use states::{MinionState, ModuleState, ServiceState};
 pub use type_id::ItemTypeId;

@@ -12,17 +12,17 @@ use crate::{
 impl VastFitData {
     // Modules
     pub(in crate::svc) fn get_stat_high_slots(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatSlot {
-        let used = Count::from_usize(fit.mods_high.len());
+        let used = Count::from_usize(fit.mods_high.slot_count());
         let total = get_attr_as_count(ctx, calc, fit.ship, ctx.ac().hi_slots);
         StatSlot { used, total }
     }
     pub(in crate::svc) fn get_stat_mid_slots(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatSlot {
-        let used = Count::from_usize(fit.mods_mid.len());
+        let used = Count::from_usize(fit.mods_mid.slot_count());
         let total = get_attr_as_count(ctx, calc, fit.ship, ctx.ac().med_slots);
         StatSlot { used, total }
     }
     pub(in crate::svc) fn get_stat_low_slots(&self, ctx: SvcCtx, calc: &mut Calc, fit: &UFit) -> StatSlot {
-        let used = Count::from_usize(fit.mods_low.len());
+        let used = Count::from_usize(fit.mods_low.slot_count());
         let total = get_attr_as_count(ctx, calc, fit.ship, ctx.ac().low_slots);
         StatSlot { used, total }
     }

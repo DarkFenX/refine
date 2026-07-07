@@ -1,6 +1,6 @@
 use crate::{
     ad::ACount,
-    num::{PValue, Value},
+    num::{Index, PValue, Value},
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 
@@ -31,9 +31,6 @@ impl Count {
     pub(crate) fn from_usize(value: usize) -> Self {
         Self(value.clamp(u32::MIN as usize, u32::MAX as usize) as u32)
     }
-    pub(crate) fn into_usize(self) -> usize {
-        self.0 as usize
-    }
     pub(crate) fn from_value_trunced(value: Value) -> Self {
         Self(trunc_f64_to_u32(value.into_f64()))
     }
@@ -57,6 +54,9 @@ impl Count {
     }
     pub(crate) fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0 as f64)
+    }
+    pub(crate) fn into_index(self) -> Index {
+        Index::from_usize(self.0 as usize)
     }
 }
 impl From<Count> for u32 {

@@ -21,8 +21,8 @@ pub use item::{
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_uids, iter_ranged_projs};
 pub use misc::{
     AbilId, AddMode, AttrId, AttrIdParseError, AttrVals, Coordinates, CustomEffectId, Direction, DogmaEffectId,
-    EffectId, EffectIdParseError, EffectInfo, ItemGrpId, ItemTypeId, MinionState, ModuleState, Movement, Op, ProjRange,
-    RmMode, ServiceState,
+    EffectId, EffectIdParseError, EffectInfo, ItemGrpId, ItemTypeId, MinionState, ModuleState, Movement, MvMode, Op,
+    ProjRange, RmMode, ServiceState,
 };
 pub use util::MutIter;
 

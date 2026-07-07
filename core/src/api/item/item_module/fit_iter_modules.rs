@@ -47,7 +47,7 @@ impl<'a> FitMut<'a> {
     }
     pub fn iter_modules_mut(&mut self, rack: ModRack) -> ModuleIter<'_> {
         let u_module_vec = get_fit_rack(&self.sol.u_data.fits, self.uid, rack);
-        let module_uids = u_module_vec.iter_all().copied().collect();
+        let module_uids = u_module_vec.iter_all().collect();
         ModuleIter::new(self.sol, module_uids)
     }
 }

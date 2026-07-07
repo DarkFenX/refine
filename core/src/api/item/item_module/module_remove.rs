@@ -1,7 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
+    Index,
     api::{ModuleMut, RmMode},
-    num::Index,
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
 };
@@ -16,6 +16,7 @@ impl SolarSystem {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
         let fit_uid = u_module.get_fit_uid();
         let rack = u_module.get_rack();
+        let pos = u_module.get_pos();
         let charge_uid = u_module.get_charge_uid();
         // Remove outgoing projections for both module and charge
         if !u_module.get_projs().is_empty() {
@@ -53,19 +54,11 @@ impl SolarSystem {
         }
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
         match pos_mode {
-            RmMode::Free => u_fit_rack.free(&module_uid),
+            RmMode::Free => u_fit_rack.free(pos),
             RmMode::Remove => {
-                if let Some(pos) = u_fit_rack.remove(&module_uid) {
-                    for (i, rack_module_uid) in u_fit_rack.inner()[pos..].iter().enumerate() {
-                        if let Some(rack_module_uid) = rack_module_uid {
-                            self.u_data
-                                .items
-                                .get_mut(*rack_module_uid)
-                                .dc_module_mut()
-                                .unwrap()
-                                .set_pos(Index::from_usize(pos + i));
-                        }
-                    }
+                for shift_module_uid in u_fit_rack.remove(pos) {
+                    let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
+                    shift_u_module.set_pos(shift_u_module.get_pos() - Index::ONE)
                 }
             }
         }

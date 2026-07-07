@@ -6,7 +6,7 @@ from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import MutaAdd, MutaChange
-    from fw.consts import ApiEffMode, ApiModAddMode, ApiModuleState, ApiOptionalReload, ApiRack
+    from fw.consts import ApiEffMode, ApiModAddMode, ApiModMvMode, ApiModuleState, ApiOptionalReload, ApiRack
 
 
 @dataclasses.dataclass(kw_only=True)
@@ -89,12 +89,14 @@ class SolModuleAddCmd(BaseModuleAddCmd):
 @dataclasses.dataclass(kw_only=True)
 class BaseModuleChangeCmd(BaseModuleCmd):
 
+    move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent]
     mutation: MutaAdd | MutaChange | type[Absent] | None
     add_proj_item_ids: list[str] | type[Absent]
     rm_proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
+        conditional_insert(container=body, path=['move'], value=self.move)
         conditional_insert(container=body, path=['mutation'], value=self.mutation)
         conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
         conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)

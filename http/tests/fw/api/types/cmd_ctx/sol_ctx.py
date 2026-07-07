@@ -67,6 +67,7 @@ if typing.TYPE_CHECKING:
         ApiFitInfoMode,
         ApiFleetInfoMode,
         ApiItemInfoMode,
+        ApiModMvMode,
         ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
@@ -541,6 +542,7 @@ class SolCmdCtx(BaseCmdCtx):
             self, *,
             item_id: str,
             type_id: int | type[Absent] = Absent,
+            move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent] = Absent,
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,
@@ -553,6 +555,7 @@ class SolCmdCtx(BaseCmdCtx):
         command = SolModuleChangeCmd(
             item_id=item_id,
             type_id=type_id,
+            move=move,
             state=state,
             mutation=process_muta_change_request(mutation=mutation),
             charge_type_id=charge_type_id,

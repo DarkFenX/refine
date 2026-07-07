@@ -41,36 +41,27 @@ impl SolarSystem {
         // it)
         let pos = match pos_mode {
             // Add to the end of module rack
-            AddMode::Append => Index::from_usize(u_fit_rack.append(module_uid)),
+            AddMode::Append => u_fit_rack.append(module_uid),
             // Take first spare slot in the rack
-            AddMode::Equip => Index::from_usize(u_fit_rack.equip(module_uid)),
+            AddMode::Equip => u_fit_rack.equip(module_uid),
             // Insert at specified position, shifting other modules to the right
             AddMode::Insert(pos) => {
-                // True means inserted module is not the last in the rack
-                if u_fit_rack.insert(pos.into_usize(), module_uid) {
-                    for (i, rack_module_uid) in u_fit_rack.inner()[pos.into_usize() + 1..].iter().enumerate() {
-                        if let Some(rack_module_uid) = rack_module_uid {
-                            self.u_data
-                                .items
-                                .get_mut(*rack_module_uid)
-                                .dc_module_mut()
-                                .unwrap()
-                                .set_pos(Index::from_usize(pos.into_usize() + 1 + i));
-                        }
-                    }
+                for shift_module_uid in u_fit_rack.insert(pos, module_uid) {
+                    let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
+                    shift_u_module.set_pos(shift_u_module.get_pos() + Index::ONE)
                 }
                 pos
             }
             // Check if there is a module on position we want to have module, and if yes, remove it
             // before adding new one
             AddMode::Replace(pos) => {
-                match u_fit_rack.get(pos.into_usize()) {
+                match u_fit_rack.get(pos) {
                     Some(old_module_uid) => {
                         self.internal_remove_module(old_module_uid, RmMode::Free, reuse_eupdates);
                         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
-                        u_fit_rack.place(pos.into_usize(), module_uid);
+                        u_fit_rack.place(pos, module_uid);
                     }
-                    None => u_fit_rack.place(pos.into_usize(), module_uid),
+                    None => u_fit_rack.place(pos, module_uid),
                 }
                 pos
             }

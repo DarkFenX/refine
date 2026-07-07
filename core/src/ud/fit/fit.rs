@@ -63,9 +63,9 @@ impl UFit {
     }
     pub(crate) fn iter_module_uids(&self) -> impl Iterator<Item = UItemId> {
         chain!(
-            self.mods_high.iter_uids().copied(),
-            self.mods_mid.iter_uids().copied(),
-            self.mods_low.iter_uids().copied(),
+            self.mods_high.iter_uids(),
+            self.mods_mid.iter_uids(),
+            self.mods_low.iter_uids(),
         )
     }
     pub(crate) fn all_direct_items(&self) -> Vec<UItemId> {

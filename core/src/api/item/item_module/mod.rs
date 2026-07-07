@@ -5,6 +5,7 @@ pub use sol_get_module::GetModuleError;
 mod fit_add_module;
 mod fit_iter_modules;
 mod module;
+mod module_move;
 mod module_remove;
 mod module_set_charge;
 mod module_set_optional_reload;

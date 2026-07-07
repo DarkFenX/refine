@@ -216,6 +216,63 @@ def test_add_absent(client, consts):
             'message': 'Failed to deserialize the JSON body into the target type: missing field `add_mode`'})
 
 
+def test_move_swap(client, consts):
+    eve_module_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_module1 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        add_mode={consts.ApiModAddMode.replace: 1})
+    api_module2 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        add_mode={consts.ApiModAddMode.replace: 3})
+    api_module3 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        add_mode={consts.ApiModAddMode.replace: 5})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module1.id, None, api_module2.id, None, api_module3.id]
+    assert api_module1.update().pos == 1
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 5
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.swap: 5})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module3.id, None, api_module2.id, None, api_module1.id]
+    assert api_module1.update().pos == 5
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 1
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.swap: 0})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        api_module1.id, api_module3.id, None, api_module2.id]
+    assert api_module1.update().pos == 0
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 1
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.swap: 2})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module3.id, api_module1.id, api_module2.id]
+    assert api_module1.update().pos == 2
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 1
+    # Action
+    api_module1.change_module(move={consts.ApiModMvMode.swap: 6})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module3.id, None, api_module2.id, None, None, api_module1.id]
+    assert api_module1.update().pos == 6
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 1
+
+
 def test_remove_remove(client, consts):
     eve_module_id = client.mk_eve_item()
     client.create_sources()
@@ -233,6 +290,33 @@ def test_remove_remove(client, consts):
         type_id=eve_module_id,
         rack=consts.ApiRack.high,
         add_mode={consts.ApiModAddMode.replace: 5})
+    api_module4 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        add_mode={consts.ApiModAddMode.replace: 6})
+    api_module5 = api_fit.add_module(
+        type_id=eve_module_id,
+        rack=consts.ApiRack.high,
+        add_mode={consts.ApiModAddMode.replace: 7})
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module1.id, None, api_module2.id, None, api_module3.id, api_module4.id, api_module5.id]
+    assert api_module1.update().pos == 1
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 5
+    assert api_module4.update().pos == 6
+    assert api_module5.update().pos == 7
+    # Action
+    api_module4.remove(rm_mode=consts.ApiModRmMode.remove)
+    # Verification
+    assert flatten(rack=api_fit.update().modules.high) == [
+        None, api_module1.id, None, api_module2.id, None, api_module3.id, api_module5.id]
+    assert api_module1.update().pos == 1
+    assert api_module2.update().pos == 3
+    assert api_module3.update().pos == 5
+    assert api_module5.update().pos == 6
+    # Action
+    api_module5.remove(rm_mode=consts.ApiModRmMode.remove)
     # Verification
     assert flatten(rack=api_fit.update().modules.high) == [
         None, api_module1.id, None, api_module2.id, None, api_module3.id]

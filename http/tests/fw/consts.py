@@ -678,6 +678,12 @@ class ApiModAddMode(StrEnum):
 
 
 @unique
+class ApiModMvMode(StrEnum):
+    shift = 'shift'
+    swap = 'swap'
+
+
+@unique
 class ApiModRmMode(StrEnum):
     remove = 'remove'
     free = 'free'

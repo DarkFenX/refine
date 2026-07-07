@@ -120,8 +120,7 @@ impl UFit {
             item.consistency_check(u_data)?;
         }
         // High slot modules
-        self.mods_high.consistency_check()?;
-        for &module_uid in self.mods_high.iter_uids() {
+        for module_uid in self.mods_high.iter_uids() {
             seen_item_uids.push(module_uid);
             let Some(item) = u_data.items.try_get(module_uid) else {
                 return Err(Default::default());
@@ -139,8 +138,7 @@ impl UFit {
             check_module_charge(u_data, fit_uid, module_uid, module, seen_item_uids)?;
         }
         // Mid slot modules
-        self.mods_mid.consistency_check()?;
-        for &module_uid in self.mods_mid.iter_uids() {
+        for module_uid in self.mods_mid.iter_uids() {
             seen_item_uids.push(module_uid);
             let Some(item) = u_data.items.try_get(module_uid) else {
                 return Err(Default::default());
@@ -158,8 +156,7 @@ impl UFit {
             check_module_charge(u_data, fit_uid, module_uid, module, seen_item_uids)?;
         }
         // Low slot modules
-        self.mods_low.consistency_check()?;
-        for &module_uid in self.mods_low.iter_uids() {
+        for module_uid in self.mods_low.iter_uids() {
             seen_item_uids.push(module_uid);
             let Some(item) = u_data.items.try_get(module_uid) else {
                 return Err(Default::default());

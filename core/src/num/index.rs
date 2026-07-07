@@ -14,6 +14,7 @@ impl Index {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Index {
     pub(crate) const ZERO: Self = Self(0);
+    pub(crate) const ONE: Self = Self(1);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,5 +38,16 @@ impl std::ops::Add<Index> for Index {
     type Output = Index;
     fn add(self, rhs: Index) -> Self::Output {
         Index(self.0 + rhs.0)
+    }
+}
+impl std::ops::AddAssign<Index> for Index {
+    fn add_assign(&mut self, rhs: Index) {
+        self.0 += rhs.0;
+    }
+}
+impl std::ops::Sub<Index> for Index {
+    type Output = Index;
+    fn sub(self, rhs: Index) -> Self::Output {
+        Index(self.0 - rhs.0)
     }
 }
