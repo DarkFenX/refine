@@ -3,11 +3,11 @@ use slab::Slab;
 use super::shared::SlabId;
 
 #[derive(Clone)]
-pub(crate) struct SlabPrm<I, V> {
+pub(crate) struct PSlab<I, V> {
     data: Slab<V>,
     phantom: std::marker::PhantomData<I>,
 }
-impl<I, V> SlabPrm<I, V>
+impl<I, V> PSlab<I, V>
 where
     I: SlabId,
 {

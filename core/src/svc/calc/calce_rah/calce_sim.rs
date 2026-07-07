@@ -34,12 +34,12 @@ impl Calc {
             // Since there were no calculated values stored in sim prior to simulation, and we are
             // setting unadapted values - effectively values of resonances do not change, and no
             // updates needed
-            self.set_fit_rahs_unadapted(ctx, &fit_uid, false);
+            self.set_fit_rahs_unadapted(ctx, fit_uid, false);
             return;
         };
         // Keys in this map have to be sorted, since it defines RAH order in simulation history,
         // which hashes vectors with history entries
-        let mut item_datas = self.get_fit_rah_item_datas(ctx, &fit_uid);
+        let mut item_datas = self.get_fit_rah_item_datas(ctx, fit_uid);
         // If the map is empty, no setting fallbacks needed, they were set in the data getter
         if item_datas.is_empty() {
             return;
@@ -195,7 +195,7 @@ impl Calc {
             total_hp: shield_hp + armor_hp + hull_hp,
         })
     }
-    fn get_fit_rah_item_datas(&mut self, ctx: SvcCtx, fit_uid: &UFitId) -> ItemDataVec<ItemData> {
+    fn get_fit_rah_item_datas(&mut self, ctx: SvcCtx, fit_uid: UFitId) -> ItemDataVec<ItemData> {
         let mut rah_datas = ItemDataVec::new();
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
             let Some(rah_attrs) = self.get_rah_item_data(ctx, item_uid) else {
@@ -244,7 +244,7 @@ impl Calc {
         Some(ItemData::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: &UFitId, notify: bool) {
+    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: UFitId, notify: bool) {
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
             self.set_rah_unadapted(ctx, item_uid, notify);
         }

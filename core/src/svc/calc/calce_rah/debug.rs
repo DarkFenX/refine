@@ -10,6 +10,12 @@ impl RahSim {
                 return Err(Default::default());
             }
         }
+        for (fit_uid, item_uids) in self.by_fit.iter() {
+            fit_uid.consistency_check(u_data)?;
+            for item_uid in item_uids {
+                item_uid.consistency_check(u_data, true)?;
+            }
+        }
         Ok(())
     }
 }

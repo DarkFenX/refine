@@ -2,16 +2,16 @@ use super::data::ItemAttrData;
 use crate::{
     svc::calc::ItemAttrPostproc,
     ud::{UData, UItem, UItemId},
-    util::SlabSec,
+    util::SSlab,
 };
 
 #[derive(Clone)]
 pub(in crate::svc::calc) struct AttrValData {
-    pub(super) data: SlabSec<UItemId, ItemAttrData>,
+    pub(super) data: SSlab<UItemId, ItemAttrData>,
 }
 impl AttrValData {
     pub(in crate::svc::calc) fn new() -> Self {
-        Self { data: SlabSec::new() }
+        Self { data: SSlab::new() }
     }
     // Query methods
     pub(in crate::svc::calc) fn get_item_attr_data(&self, item_uid: UItemId) -> Option<&ItemAttrData> {

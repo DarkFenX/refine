@@ -3,7 +3,7 @@ pub(crate) use map_map::RMapRMap;
 pub(crate) use map_map_map::RMapRMapRMap;
 pub(crate) use map_set::{RMapRSet, extend_vec_from_map_set_l1};
 pub(crate) use map_vec::RMapVec;
-pub(crate) use set::RSet;
+pub(crate) use set::{RSet, Set};
 pub(crate) use set_ordered::ROrdSet;
 
 mod map;

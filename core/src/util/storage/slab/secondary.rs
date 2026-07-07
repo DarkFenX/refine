@@ -6,14 +6,14 @@ use super::shared::SlabId;
 // Regular version
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SlabSec<I, V>
+pub(crate) struct SSlab<I, V>
 where
     I: SlabId,
     V: Clone,
 {
     data: SecondaryMap<I, Option<V>>,
 }
-impl<I, V> SlabSec<I, V>
+impl<I, V> SSlab<I, V>
 where
     I: SlabId,
     V: Clone,
@@ -47,20 +47,20 @@ where
 // should be upheld by code using it
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(crate) struct SlabSecUnchecked<I, V>
+pub(crate) struct SSlabUnchecked<I, V>
 where
     I: SlabId,
     V: Clone,
 {
-    inner: SlabSec<I, V>,
+    inner: SSlab<I, V>,
 }
-impl<I, V> SlabSecUnchecked<I, V>
+impl<I, V> SSlabUnchecked<I, V>
 where
     I: SlabId,
     V: Clone,
 {
     pub(crate) fn new() -> Self {
-        Self { inner: SlabSec::new() }
+        Self { inner: SSlab::new() }
     }
     pub(crate) fn get(&self, id: I) -> &V {
         self.inner.get(id).unwrap()

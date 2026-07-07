@@ -5,7 +5,7 @@ use crate::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId,
         RShipKind, RState, RcEffect,
     },
-    util::{LibGetId, RMap, SlabPrm},
+    util::{LibGetId, PSlab, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -90,7 +90,7 @@ impl RItem {
         effect_aid_rid_map: &RMap<AEffectId, REffectId>,
         attr_consts: &RAttrConsts,
         effect_consts: &REffectConsts,
-        r_effects: &SlabPrm<REffectId, RcEffect>,
+        r_effects: &PSlab<REffectId, RcEffect>,
     ) {
         let a_item = a_items.get(&self.aid).unwrap();
         for a_item_attr in a_item.attrs.iter() {

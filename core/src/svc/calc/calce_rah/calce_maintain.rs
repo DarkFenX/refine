@@ -144,7 +144,7 @@ impl Calc {
                 let fit_uid = ctx.u_data.items.get(aspec.item_uid).get_fit_uid().unwrap();
                 // Clear only for fits with 2+ RAHs, since changing cycle duration of 1 RAH does not
                 // change sim results
-                if self.rah.by_fit.get(&fit_uid).len() >= 2 {
+                if self.rah.by_fit.get(fit_uid).len() >= 2 {
                     self.clear_fit_rah_results(ctx, fit_uid);
                 }
             }
@@ -165,7 +165,7 @@ impl Calc {
     }
     // Private methods
     fn clear_fit_rah_results(&mut self, ctx: SvcCtx, fit_uid: UFitId) {
-        let rah_uids = self.rah.by_fit.get(&fit_uid).copied().collect_vec();
+        let rah_uids = self.rah.by_fit.get(fit_uid).copied().collect_vec();
         for rah_uid in rah_uids {
             self.clear_rah_result(ctx, rah_uid);
         }

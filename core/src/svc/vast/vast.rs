@@ -12,13 +12,13 @@ use crate::{
         validators::EffectSecZoneInfo,
     },
     ud::{UFitId, UItemId},
-    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SlabSecUnchecked},
+    util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SSlabUnchecked},
 };
 
 // Vast stands for VAlidation and STats.
 #[derive(Clone)]
 pub(in crate::svc) struct Vast {
-    pub(super) fit_datas: SlabSecUnchecked<UFitId, VastFitData>,
+    pub(super) fit_datas: SSlabUnchecked<UFitId, VastFitData>,
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
     // Stats-related - incoming remote reps
     pub(in crate::svc::vast) irr_shield:
@@ -43,7 +43,7 @@ pub(in crate::svc) struct Vast {
 impl Vast {
     pub(in crate::svc) fn new() -> Self {
         Self {
-            fit_datas: SlabSecUnchecked::new(),
+            fit_datas: SSlabUnchecked::new(),
             not_loaded: RSet::new(),
             irr_shield: RMapRMapRMap::new(),
             irr_shield_limitable: RMapRMapRMap::new(),
