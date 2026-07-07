@@ -285,6 +285,15 @@ impl AppliedBreacherAccum {
                 return;
             }
         };
+        // Resists
+        if let Some(resist) = ospec.resist
+            && let Some(resist_mult) = resist.get_mult_by_projection(ctx, calc, item_uid, projectee_uid)
+        {
+            applied *= resist_mult;
+            if applied == PValue::ZERO {
+                return;
+            }
+        }
         // Cycle sequence conversion
         let Some(ticks) = cseq_to_ticks(cseq, output) else {
             return;

@@ -567,6 +567,7 @@ class EveAttr(IntEnum):
     can_fit_ship_type12 = 5948
     mining_crit_chance = 5967
     mining_crit_bonus_yield = 5969
+    breacher_pod_dmg_resist = 6255
 
 
 @unique

@@ -16,7 +16,9 @@ def test_simple(client, consts):
         client=client, basic_info=eve_basic_info, dmg_abs=600, dmg_rel=1, dmg_duration=60000, volume=0.5,
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(0, 0, 75000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(0, 0, 75000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -62,7 +64,9 @@ def test_reload_gap_realistic(client, consts):
         client=client, basic_info=eve_basic_info, dmg_abs=200, dmg_rel=0.69, dmg_duration=60000, volume=0.1,
         speed=3000, flight_time=2000, mass=100, agility=8)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(0, 0, 33334), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(0, 0, 33334), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit1 = api_sol.create_fit()
@@ -165,7 +169,9 @@ def test_cycle_and_reload_gaps(client, consts):
         client=client, basic_info=eve_basic_info, dmg_abs=500, dmg_rel=1, dmg_duration=10000, volume=1,
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(0, 0, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(0, 0, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()

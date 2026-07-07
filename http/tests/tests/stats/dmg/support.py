@@ -56,6 +56,7 @@ class DmgBasicInfo:
     armor_hp_attr_id: int
     hull_hp_attr_id: int
     resist_ref_attr_id: int
+    breach_resist_attr_id: int
     neut_resist_attr_id: int
     max_ftr_count_attr_id: int
     refuel_duration_attr_id: int
@@ -187,6 +188,7 @@ def setup_dmg_basics(
     armor_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.armor_hp)
     hull_hp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.hp)
     resist_def_attr_id = client.mk_eve_attr(id_=consts.EveAttr.remote_resistance_id)
+    breach_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.breacher_pod_dmg_resist)
     neut_resist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.energy_warfare_resist)
     max_ftr_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_sq_max_size)
     refuel_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.ftr_refueling_time)
@@ -424,6 +426,7 @@ def setup_dmg_basics(
         armor_hp_attr_id=armor_hp_attr_id,
         hull_hp_attr_id=hull_hp_attr_id,
         resist_ref_attr_id=resist_def_attr_id,
+        breach_resist_attr_id=breach_resist_attr_id,
         neut_resist_attr_id=neut_resist_attr_id,
         max_ftr_count_attr_id=max_ftr_count_attr_id,
         refuel_duration_attr_id=refuel_duration_attr_id,
@@ -506,6 +509,7 @@ def make_eve_ship(
         hps: tuple[float | None, float | None, float | None] | None = None,
         speed: float | type[Absent] = Absent,
         sig_radius: float | type[Absent] = Absent,
+        breach_resist: float | type[Absent] = Absent,
         neut_resist: float | type[Absent] = Absent,
         radius: float | type[Absent] = Absent,
         extra_attrs: dict[int, float] | None = None,
@@ -519,6 +523,7 @@ def make_eve_ship(
         attrs.update({k: v for k, v in zip(hp_attr_ids, hps, strict=True) if v is not None})
     conditional_insert(container=attrs, path=[basic_info.max_velocity_attr_id], value=speed)
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=sig_radius)
+    conditional_insert(container=attrs, path=[basic_info.breach_resist_attr_id], value=breach_resist)
     conditional_insert(container=attrs, path=[basic_info.neut_resist_attr_id], value=neut_resist)
     conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
     if extra_attrs:

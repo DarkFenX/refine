@@ -12,9 +12,13 @@ def test_hp(client, consts):
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
     eve_tgt_ship1_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(100000, 300000, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     eve_tgt_ship2_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(10000, 30000, 10000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(10000, 30000, 10000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -75,7 +79,9 @@ def test_range(client, consts):
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(10000, 30000, 10000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(10000, 30000, 10000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -145,6 +151,95 @@ def test_range(client, consts):
     assert api_charge_nonproj_dmg_stats.volley.breacher == 0
 
 
+def test_resist(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_launcher(
+        client=client, basic_info=eve_basic_info, capacity=25, cycle_time=10000, reload_time=30000)
+    eve_charge_id = make_eve_breacher(
+        client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=1, dmg_duration=75000, volume=0.5,
+        speed=3000, flight_time=4000, mass=1000, agility=8)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
+    eve_tgt_ship1_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=0.8,
+        radius=3000, speed=1000, sig_radius=40)
+    eve_tgt_ship2_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=0.1,
+        radius=3000, speed=1000, sig_radius=40)
+    eve_tgt_ship3_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info,
+        hps=(10000, 30000, 10000), breach_resist=0.1,
+        radius=3000, speed=1000, sig_radius=40)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_src_module_proj = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_src_module_nonproj = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id, coordinates=(0, 14975, 0), movement=(0, 0, 1))
+    api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    # Verification - absolute limit, low resist
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(800)
+    assert api_fleet_dmg_stats.volley.breacher == approx(800)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(800)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(800)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(800)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(800)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(800)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(800)
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
+    # Verification - absolute limit, high resist
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(100)
+    assert api_fleet_dmg_stats.volley.breacher == approx(100)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(100)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(100)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(100)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(100)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(100)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(100)
+    # Action
+    api_tgt_ship.change_ship(type_id=eve_tgt_ship3_id)
+    # Verification - relative limit, high resist
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_fleet_dmg_stats.dps.breacher == approx(50)
+    assert api_fleet_dmg_stats.volley.breacher == approx(50)
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_src_fit_dmg_stats.dps.breacher == approx(50)
+    assert api_src_fit_dmg_stats.volley.breacher == approx(50)
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_proj_dmg_stats.dps.breacher == approx(50)
+    assert api_charge_proj_dmg_stats.volley.breacher == approx(50)
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps.breacher == approx(50)
+    assert api_charge_nonproj_dmg_stats.volley.breacher == approx(50)
+
+
 def test_breacher_attr_speed_absent(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
@@ -154,7 +249,9 @@ def test_breacher_attr_speed_absent(client, consts):
         flight_time=4000, mass=1000, agility=8)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(100000, 300000, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -197,7 +294,9 @@ def test_breacher_attr_flight_time_absent(client, consts):
         speed=3000, mass=1000, agility=8)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(100000, 300000, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -252,7 +351,9 @@ def test_breacher_attr_mass_absent(client, consts):
         speed=3000, flight_time=4000, agility=8)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(100000, 300000, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -307,7 +408,9 @@ def test_breacher_attr_agility_absent(client, consts):
         speed=3000, flight_time=4000, mass=1000)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(100000, 300000, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -361,7 +464,9 @@ def test_breacher_ship_not_loaded(client, consts):
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_src_ship_id = client.alloc_item_id()
     eve_tgt_ship_id = make_eve_ship(
-        client=client, basic_info=eve_basic_info, hps=(100000, 300000, 100000), radius=3000, speed=1000, sig_radius=40)
+        client=client, basic_info=eve_basic_info,
+        hps=(100000, 300000, 100000), breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
@@ -393,7 +498,10 @@ def test_tgt_attr_hp_absent(client, consts):
         client=client, basic_info=eve_basic_info, dmg_abs=1000, dmg_rel=1, dmg_duration=75000, volume=0.5,
         speed=3000, flight_time=4000, mass=1000, agility=8)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=246)
-    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=40)
+    eve_tgt_ship_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info,
+        breach_resist=1,
+        radius=3000, speed=1000, sig_radius=40)
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
