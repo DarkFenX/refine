@@ -1,7 +1,7 @@
 pub(crate) use container::UFits;
 pub(crate) use fit::UFit;
 pub use id::{FitFoundError, FitId};
-pub(crate) use item_vec::UItemVec;
+pub(crate) use item_vec::{UItemVec, UItemVecShiftDir};
 pub(crate) use skill::UFitSkill;
 pub(crate) use uid::UFitId;
 

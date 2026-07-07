@@ -6,7 +6,7 @@
 pub(crate) use data::UData;
 pub(crate) use datae_access::ProjecteeUidError;
 pub use fit::FitId;
-pub(crate) use fit::{UFit, UFitId, UFitSkill, UFits, UItemVec};
+pub(crate) use fit::{UFit, UFitId, UFitSkill, UFits, UItemVec, UItemVecShiftDir};
 pub use fleet::FleetId;
 pub(crate) use fleet::{UFleet, UFleetId, UFleets};
 pub use item::ItemId;

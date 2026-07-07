@@ -36,7 +36,12 @@ impl UItemVec {
     pub(crate) fn item_count(&self) -> usize {
         self.data.len()
     }
-    // Modification methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Addition
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemVec {
     pub(crate) fn append(&mut self, item_uid: UItemId) -> Index {
         let pos = Index::from_usize(self.slot_count());
         self.data.insert(pos, item_uid);
@@ -44,7 +49,7 @@ impl UItemVec {
     }
     pub(crate) fn equip(&mut self, item_uid: UItemId) -> Index {
         let mut pos = Index::ZERO;
-        for (&iter_pos, _) in self.data.iter() {
+        for &iter_pos in self.data.keys() {
             if iter_pos > pos {
                 break;
             }
@@ -63,8 +68,8 @@ impl UItemVec {
             .map(|(iter_pos, iter_item_uid)| (*iter_pos, *iter_item_uid))
             .collect_vec();
         for shift in shifts.iter().rev() {
-            let shift_item_uid = self.data.remove(&shift.0).unwrap();
-            self.data.insert(shift.0 + Index::ONE, shift_item_uid);
+            self.data.remove(&shift.0).unwrap();
+            self.data.insert(shift.0 + Index::ONE, shift.1);
         }
         // Insert element itself
         self.data.insert(pos, item_uid);
@@ -73,8 +78,50 @@ impl UItemVec {
     pub(crate) fn place(&mut self, pos: Index, item_uid: UItemId) {
         self.data.insert(pos, item_uid);
     }
-    pub(crate) fn free(&mut self, pos: Index) {
-        self.data.remove(&pos);
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Changing
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemVec {
+    // Returns item UIDs and shift direction
+    pub(crate) fn shift(
+        &mut self,
+        src_pos: Index,
+        tgt_pos: Index,
+    ) -> Option<(impl ExactSizeIterator<Item = UItemId>, UItemVecShiftDir)> {
+        let item_uid = self.data.remove(&src_pos);
+        let (shifts, dir) = match tgt_pos.cmp(&src_pos) {
+            std::cmp::Ordering::Greater => {
+                let shifts = self
+                    .data
+                    .range(src_pos + Index::ONE..=tgt_pos)
+                    .map(|(iter_pos, iter_item_uid)| (*iter_pos, *iter_item_uid))
+                    .collect_vec();
+                for shift in shifts.iter() {
+                    self.data.remove(&shift.0).unwrap();
+                    self.data.insert(shift.0 - Index::ONE, shift.1);
+                }
+                (shifts, UItemVecShiftDir::Left)
+            }
+            std::cmp::Ordering::Equal => return None,
+            std::cmp::Ordering::Less => {
+                let shifts = self
+                    .data
+                    .range(tgt_pos..src_pos)
+                    .map(|(iter_pos, iter_item_uid)| (*iter_pos, *iter_item_uid))
+                    .collect_vec();
+                for shift in shifts.iter().rev() {
+                    self.data.remove(&shift.0).unwrap();
+                    self.data.insert(shift.0 + Index::ONE, shift.1);
+                }
+                (shifts, UItemVecShiftDir::Right)
+            }
+        };
+        if let Some(item_uid) = item_uid {
+            self.data.insert(tgt_pos, item_uid);
+        }
+        Some((shifts.into_iter().map(|(_, item_uid)| item_uid), dir))
     }
     // Returns item ID of target item, if there is one
     pub(crate) fn swap(&mut self, src_pos: Index, tgt_pos: Index) -> Option<UItemId> {
@@ -88,6 +135,20 @@ impl UItemVec {
         }
         tgt_item_uid
     }
+}
+
+pub(crate) enum UItemVecShiftDir {
+    Left,
+    Right,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Removal
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemVec {
+    pub(crate) fn free(&mut self, pos: Index) {
+        self.data.remove(&pos);
+    }
     // Returns item UIDs for items which need their positions shifted left
     pub(crate) fn remove(&mut self, pos: Index) -> impl ExactSizeIterator<Item = UItemId> {
         self.data.remove(&pos);
@@ -98,8 +159,8 @@ impl UItemVec {
             .map(|(iter_pos, iter_item_uid)| (*iter_pos, *iter_item_uid))
             .collect_vec();
         for shift in shifts.iter() {
-            let shift_item_uid = self.data.remove(&shift.0).unwrap();
-            self.data.insert(shift.0 - Index::ONE, shift_item_uid);
+            self.data.remove(&shift.0).unwrap();
+            self.data.insert(shift.0 - Index::ONE, shift.1);
         }
         shifts.into_iter().map(|(_, item_uid)| item_uid)
     }

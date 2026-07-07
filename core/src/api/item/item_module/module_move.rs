@@ -1,8 +1,9 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     api::{ModuleMut, MvMode},
+    num::Index,
     sol::SolarSystem,
-    ud::UItemId,
+    ud::{UItemId, UItemVecShiftDir},
 };
 
 impl SolarSystem {
@@ -14,6 +15,16 @@ impl SolarSystem {
             MvMode::Shift(tgt_pos) => {
                 if init_pos == tgt_pos {
                     return;
+                }
+                u_module.set_pos(tgt_pos);
+                if let Some((shift_item_ids, shift_dir)) = u_fit_rack.shift(init_pos, tgt_pos) {
+                    for shift_item_id in shift_item_ids {
+                        let shift_u_module = self.u_data.items.get_mut(shift_item_id).dc_module_mut().unwrap();
+                        shift_u_module.set_pos(match shift_dir {
+                            UItemVecShiftDir::Left => shift_u_module.get_pos() - Index::ONE,
+                            UItemVecShiftDir::Right => shift_u_module.get_pos() + Index::ONE,
+                        })
+                    }
                 }
             }
             MvMode::Swap(tgt_pos) => {
