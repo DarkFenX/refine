@@ -612,17 +612,11 @@ fn get_combined_attr_value<'a>(
     let value = match mutated_r_item.attrs.get(&attr_rid) {
         Some(&unmutated_value) => Some(unmutated_value),
         None => match base_r_item_cache {
-            Some(opt_base_r_item) => match opt_base_r_item {
-                Some(base_r_item) => base_r_item.attrs.get(&attr_rid).copied(),
-                None => None,
-            },
+            Some(opt_base_r_item) => opt_base_r_item.and_then(|base_r_item| base_r_item.attrs.get(&attr_rid).copied()),
             None => {
                 let opt_base_r_item = r_data.get_item_by_aid(base_type_aid);
                 base_r_item_cache.replace(opt_base_r_item);
-                match opt_base_r_item {
-                    Some(base_r_item) => base_r_item.attrs.get(&attr_rid).copied(),
-                    None => None,
-                }
+                opt_base_r_item.and_then(|base_r_item| base_r_item.attrs.get(&attr_rid).copied())
             }
         },
     }?;
