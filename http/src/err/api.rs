@@ -1,9 +1,15 @@
-use axum::{Json, extract::rejection::JsonRejection, http::StatusCode, response::IntoResponse};
+use axum::{
+    Json,
+    extract::rejection::{JsonRejection, QueryRejection},
+    http::StatusCode,
+    response::IntoResponse,
+};
 use serde::Serialize;
 
 use crate::err::{HBrError, HExecError};
 
 pub(crate) enum HApiError {
+    QueryFailure(QueryRejection),
     JsonFailure(JsonRejection),
     BridgeFailure(HBrErrorPathAware),
 }
@@ -28,6 +34,7 @@ struct HApiErrorResponse {
 impl HApiError {
     fn get_http_code(&self) -> StatusCode {
         match self {
+            HApiError::QueryFailure(_) => StatusCode::BAD_REQUEST,
             HApiError::JsonFailure(_) => StatusCode::BAD_REQUEST,
             HApiError::BridgeFailure(br_err) => match &br_err.err {
                 // Related to source initialization
@@ -60,12 +67,14 @@ impl HApiError {
     }
     fn get_api_code(&self) -> String {
         match self {
+            Self::QueryFailure(_) => "PRM-001".to_string(),
             Self::JsonFailure(_) => "JSN-001".to_string(),
             Self::BridgeFailure(br_err) => br_err.err.get_api_code(),
         }
     }
     fn get_message(&self) -> String {
         match self {
+            Self::QueryFailure(query_err) => query_err.body_text(),
             Self::JsonFailure(json_err) => json_err.body_text(),
             Self::BridgeFailure(br_err) => br_err.err.to_string(),
         }
@@ -131,9 +140,14 @@ impl HApiError {
         })
     }
 }
+impl From<QueryRejection> for HApiError {
+    fn from(query_error: QueryRejection) -> Self {
+        Self::QueryFailure(query_error)
+    }
+}
 impl From<JsonRejection> for HApiError {
-    fn from(json_rejection: JsonRejection) -> Self {
-        Self::JsonFailure(json_rejection)
+    fn from(json_error: JsonRejection) -> Self {
+        Self::JsonFailure(json_error)
     }
 }
 

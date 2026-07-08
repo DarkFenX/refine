@@ -20,7 +20,7 @@ pub(crate) struct HCreateSrcReq {
 pub(crate) async fn create_source(
     State(state): State<HAppState>,
     Path(src_alias): Path<String>,
-    Query(params): Query<HSrcInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HSrcInfoParams>, HApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<HCreateSrcReq>, HApiError>,
 ) -> impl IntoResponse {
     let data_version = payload.data_version;

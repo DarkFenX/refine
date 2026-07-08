@@ -19,7 +19,7 @@ pub(crate) struct HCreateSolReq {
 
 pub(crate) async fn create_sol(
     State(state): State<HAppState>,
-    Query(params): Query<HSolInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HSolInfoParams>, HApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<HCreateSolReq>>, HApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();

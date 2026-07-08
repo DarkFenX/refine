@@ -18,7 +18,7 @@ pub(crate) struct HChangeSolSrcReq {
 pub(crate) async fn change_sol_src(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
-    Query(params): Query<HSolInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HSolInfoParams>, HApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<HChangeSolSrcReq>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

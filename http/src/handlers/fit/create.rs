@@ -12,7 +12,7 @@ use crate::{cmd::HFitAddCmd, err::HApiError, state::HAppState};
 pub(crate) async fn create_fit(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
-    Query(params): Query<HFitInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HFitInfoParams>, HApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<HFitAddCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

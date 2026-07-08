@@ -24,7 +24,7 @@ struct HFitChangeResp {
 pub(crate) async fn change_fit(
     State(state): State<HAppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    Query(params): Query<HFitInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HFitInfoParams>, HApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<HFitChangeReq>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

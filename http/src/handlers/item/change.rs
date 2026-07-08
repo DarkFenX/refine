@@ -12,7 +12,7 @@ use crate::{cmd::HItemChangeCmd, err::HApiError, state::HAppState};
 pub(crate) async fn change_item(
     State(state): State<HAppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    Query(params): Query<HItemInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HItemInfoParams>, HApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<HItemChangeCmd>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

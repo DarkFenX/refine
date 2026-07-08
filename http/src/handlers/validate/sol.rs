@@ -12,7 +12,7 @@ use crate::{cmd::HValidateSolCmd, err::HApiError, state::HAppState};
 pub(crate) async fn validate_sol(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
-    Query(params): Query<HValidInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HValidInfoParams>, HApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<HValidateSolCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

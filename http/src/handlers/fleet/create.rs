@@ -12,7 +12,7 @@ use crate::{cmd::HFleetAddCmd, err::HApiError, state::HAppState};
 pub(crate) async fn create_fleet(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
-    Query(params): Query<HFleetInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HFleetInfoParams>, HApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<HFleetAddCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

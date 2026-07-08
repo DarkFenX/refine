@@ -12,7 +12,7 @@ use crate::{cmd::HValidateFitCmd, err::HApiError, state::HAppState};
 pub(crate) async fn validate_fit(
     State(state): State<HAppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    Query(params): Query<HValidInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HValidInfoParams>, HApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<HValidateFitCmd>>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {

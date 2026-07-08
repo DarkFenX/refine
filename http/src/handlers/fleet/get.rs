@@ -4,6 +4,7 @@ use axum::{
     http::StatusCode,
     response::IntoResponse,
 };
+use axum_extra::extract::WithRejection;
 
 use super::query::HFleetInfoParams;
 use crate::{err::HApiError, state::HAppState};
@@ -11,7 +12,7 @@ use crate::{err::HApiError, state::HAppState};
 pub(crate) async fn get_fleet(
     State(state): State<HAppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    Query(params): Query<HFleetInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HFleetInfoParams>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
         Ok(sol) => sol,

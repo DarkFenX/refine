@@ -12,7 +12,7 @@ use crate::{cmd::HItemAddCmd, err::HApiError, state::HAppState};
 pub(crate) async fn create_item(
     State(state): State<HAppState>,
     Path(sol_id): Path<String>,
-    Query(params): Query<HItemInfoParams>,
+    WithRejection(Query(params), _): WithRejection<Query<HItemInfoParams>, HApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<HItemAddCmd>, HApiError>,
 ) -> impl IntoResponse {
     let sol = match state.sol_mgr.get_sol(&sol_id).await {
