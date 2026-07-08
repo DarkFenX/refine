@@ -1,3 +1,4 @@
+use super::{option::StatJumpRange, stat::StatJump};
 use crate::{
     num::{PValue, Value},
     svc::{
@@ -8,12 +9,12 @@ use crate::{
         vast::{
             Vast,
             stats::item_checks::{
-                check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct,
+                check_drone_fighter_ship, check_drone_fighter_ship_no_struct, check_fighter_ship_no_struct, check_ship,
                 check_ship_no_struct,
             },
         },
     },
-    ud::UItemId,
+    ud::{UFitId, UItemId},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -126,5 +127,15 @@ impl Vast {
             false => None,
         };
         Ok(warp_range)
+    }
+    pub(in crate::svc) fn get_stat_item_jump(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+        range: StatJumpRange,
+        passenger_fit_uids: &[UFitId],
+    ) -> Result<Option<StatJump>, StatItemCheckError> {
+        let ship = check_ship(ctx.u_data, item_uid)?;
+        Ok(None)
     }
 }

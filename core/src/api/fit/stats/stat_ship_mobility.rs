@@ -1,6 +1,8 @@
 use crate::{
     api::{FitMut, FitShipStatError, ItemMutCommon},
     num::PValue,
+    svc::vast::{StatJump, StatJumpRange},
+    ud::FitId,
 };
 
 impl<'a> FitMut<'a> {
@@ -24,5 +26,12 @@ impl<'a> FitMut<'a> {
     }
     pub fn get_stat_max_warp_range(&mut self) -> Result<Option<PValue>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_max_warp_range()?)
+    }
+    pub fn get_stat_jump(
+        &mut self,
+        range: StatJumpRange,
+        passenger_fit_ids: &[FitId],
+    ) -> Result<Option<StatJump>, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_jump(range, passenger_fit_ids)?)
     }
 }

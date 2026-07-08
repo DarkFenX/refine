@@ -6,8 +6,8 @@ use crate::{
         cycle::CseqMap,
         vast::{
             StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcRegen, StatCapBlcRegenOptions,
-            StatCapBlcSrcKindsInt, StatDmgItemKinds, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds,
-            StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+            StatCapBlcSrcKindsInt, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatNeutItemKinds,
+            StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
         },
     },
     ud::ItemId,
@@ -61,6 +61,8 @@ impl<'a> FitMut<'a> {
             incoming_transfers: false,
             incoming_neuts: true,
         };
+        let jump_range = StatJumpRange::Max;
+        let jump_passengers = Vec::new();
         let mut reuse_cseq_map = CseqMap::new();
         for _ in 0..iterations {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -549,6 +551,10 @@ impl<'a> FitMut<'a> {
             self.sol
                 .svc
                 .get_stat_item_max_warp_range(&self.sol.u_data, ship_uid)
+                .unwrap();
+            self.sol
+                .svc
+                .get_stat_item_jump(&self.sol.u_data, ship_uid, jump_range, &jump_passengers)
                 .unwrap();
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Misc

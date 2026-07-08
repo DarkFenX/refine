@@ -1,3 +1,5 @@
+use itertools::Itertools;
+
 use super::{
     err::{
         GetItemAttrError, ItemAppliedStatError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
@@ -15,11 +17,11 @@ use crate::{
         cycle::CseqMap,
         vast::{
             StatCapBlcSrcKinds, StatCapBlcSrcKindsInt, StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg,
-            StatDmgApplied, StatEhp, StatErps, StatHp, StatInJam, StatMining, StatOutReps, StatResists, StatRps,
-            StatSensors, StatTimeOptions,
+            StatDmgApplied, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatJumpRange, StatMining, StatOutReps,
+            StatResists, StatRps, StatSensors, StatTimeOptions,
         },
     },
-    ud::{ItemId, UEffectUpdates},
+    ud::{FitId, ItemId, UEffectUpdates},
 };
 
 #[allow(private_bounds)]
@@ -542,6 +544,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_max_warp_range(&sol.u_data, item_uid)
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+    }
+    fn get_stat_jump(
+        &mut self,
+        range: StatJumpRange,
+        passenger_fit_ids: &[FitId],
+    ) -> Result<Option<StatJump>, ItemStatError> {
+        let item_uid = self.get_uid();
+        let sol = self.get_sol_mut();
+        let passenger_fit_uids = passenger_fit_ids
+            .iter()
+            .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
+            .collect_vec();
+        sol.svc
+            .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////

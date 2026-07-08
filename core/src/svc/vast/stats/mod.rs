@@ -6,6 +6,7 @@ pub(crate) use cap::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSr
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
+pub use mobility::{StatJump, StatJumpBridge, StatJumpConduit, StatJumpRange, StatJumpSelf};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;
