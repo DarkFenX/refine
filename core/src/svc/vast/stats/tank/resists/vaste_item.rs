@@ -6,7 +6,10 @@ use crate::{
         SvcCtx,
         calc::Calc,
         err::StatItemCheckError,
-        vast::{Vast, stats::item_checks::check_drone_fighter_ship},
+        vast::{
+            Vast,
+            stats::item_checks::{check_drone_fighter_ship, check_ship},
+        },
     },
     ud::UItemId,
 };
@@ -63,6 +66,18 @@ impl Vast {
             ctx.ac().kin_dmg_resonance,
             ctx.ac().expl_dmg_resonance,
         )
+    }
+    pub(in crate::svc) fn get_stat_item_breach_resist(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+    ) -> Result<UnitInterval, StatItemCheckError> {
+        check_ship(ctx.u_data, item_uid)?;
+        let neut_resist = Value::ONE
+            - calc
+                .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().breacher_pod_dmg_resist, Value::ZERO)
+                .unwrap();
+        Ok(UnitInterval::from_value_clamped(neut_resist))
     }
 }
 

@@ -40,6 +40,7 @@ pub(crate) struct HGetItemStatsCmd {
     wc_ehp: Option<bool>,
     rps: Option<HStatOption<HStatOptionRps>>,
     erps: Option<HStatOption<HStatOptionErps>>,
+    breach_resist: Option<bool>,
     // Cap
     cap_amount: Option<bool>,
     cap_balance: Option<HStatOption<HStatOptionCapBlc>>,
@@ -125,6 +126,9 @@ impl HGetItemStatsCmd {
         let erps_opt = HStatResolvedOption::new(&self.erps, self.default);
         if erps_opt.enabled {
             stats.erps = get_erps_stats(&mut core_item, erps_opt.options).into();
+        }
+        if self.breach_resist.unwrap_or(self.default) {
+            stats.breach_resist = core_item.get_stat_breach_resist().map(|v| v.into_f64()).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Cap

@@ -34,6 +34,8 @@ pub(crate) struct HItemStats {
     pub(crate) rps: TriStateField<Vec<HStatRps>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) erps: TriStateField<Vec<HStatErps>>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) breach_resist: TriStateField<f64>,
     // Cap
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_amount: TriStateField<f64>,
@@ -107,6 +109,7 @@ impl HItemStats {
             wc_ehp: TriStateField::default(),
             rps: TriStateField::default(),
             erps: TriStateField::default(),
+            breach_resist: TriStateField::default(),
             // Cap
             cap_amount: TriStateField::default(),
             cap_balance: TriStateField::default(),

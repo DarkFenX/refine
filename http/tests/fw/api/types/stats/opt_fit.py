@@ -56,6 +56,7 @@ class FitStatsOptions:
     wc_ehp: bool | type[Absent] = Absent
     rps: bool | tuple[bool, list[StatsOptionRps]] | type[Absent] = Absent
     erps: bool | tuple[bool, list[StatsOptionErps]] | type[Absent] = Absent
+    breach_resist: bool | type[Absent] = Absent
     # Ship cap
     cap_amount: bool | type[Absent] = Absent
     cap_balance: bool | tuple[bool, list[StatsOptionCapBalance]] | type[Absent] = Absent

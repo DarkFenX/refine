@@ -379,6 +379,13 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             )
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
+    fn get_stat_breach_resist(&mut self) -> Result<UnitInterval, ItemStatError> {
+        let item_uid = self.get_uid();
+        let sol = self.get_sol_mut();
+        sol.svc
+            .get_stat_item_breach_resist(&sol.u_data, item_uid)
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - cap
     ////////////////////////////////////////////////////////////////////////////////////////////////

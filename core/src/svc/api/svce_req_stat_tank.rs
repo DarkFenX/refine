@@ -95,4 +95,11 @@ impl Svc {
     ) -> Result<StatResists, StatItemCheckError> {
         Vast::get_stat_item_resists(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
+    pub(crate) fn get_stat_item_breach_resist(
+        &mut self,
+        u_data: &UData,
+        item_uid: UItemId,
+    ) -> Result<UnitInterval, StatItemCheckError> {
+        Vast::get_stat_item_breach_resist(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
+    }
 }

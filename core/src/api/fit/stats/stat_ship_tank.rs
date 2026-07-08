@@ -36,4 +36,7 @@ impl<'a> FitMut<'a> {
             .get_ship_for_stats()?
             .get_stat_erps(incoming_dps, time_options, shield_perc)?)
     }
+    pub fn get_stat_breach_resist(&mut self) -> Result<UnitInterval, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_breach_resist()?)
+    }
 }
