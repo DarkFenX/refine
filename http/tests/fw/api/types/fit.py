@@ -80,6 +80,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fit | None:
         resp = self._client.get_fit_request(
             sol_id=self._sol_id,
@@ -87,43 +88,51 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
         return None
 
-    def remove(self, *, status_code: int = 204) -> None:
+    def remove(
+            self, *,
+            status_code: int = 204,
+            json_predicate: dict | None = None,
+    ) -> None:
         resp = self._client.remove_fit_request(sol_id=self._sol_id, fit_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
 
     def get_stats(
             self, *,
             options: FitStatsOptions | type[Absent],
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> FitStats | None:
         resp = self._client.get_fit_stats_request(
             sol_id=self._sol_id,
             fit_id=self.id,
             options=options).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return FitStats(data=resp.json())
 
     def validate(
             self, *,
             options: ValOptions | type[Absent],
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> FitValResult | None:
         resp_simple = self.__validate_fit(
             options=options,
             val_info_mode=ApiValInfoMode.simple,
-            status_code=status_code)
+            status_code=status_code,
+            json_predicate=json_predicate)
         resp_detailed = self.__validate_fit(
             options=options,
             val_info_mode=ApiValInfoMode.detailed,
-            status_code=status_code)
+            status_code=status_code,
+            json_predicate=json_predicate)
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
             # Ensure simple results are consistent with full results
             result_simple = FitValResult(data=resp_simple.json())
@@ -135,7 +144,8 @@ class Fit(AttrDict):
                 fit_ids=[self.id],
                 options=options,
                 val_info_mode=ApiValInfoMode.detailed,
-                status_code=200)
+                status_code=200,
+                json_predicate=None)
             result_sol_detailed = SolValResult(data=resp_sol_detailed.json())
             # If fit validation passed, fit shouldn't be in results for detailed sol validation
             # results.
@@ -149,7 +159,8 @@ class Fit(AttrDict):
                     fit_ids=[self.id],
                     options=options,
                     val_info_mode=ApiValInfoMode.simple,
-                    status_code=200)
+                    status_code=200,
+                    json_predicate=None)
                 result_sol_simple = SolValResult(data=resp_sol_simple.json())
                 assert result_sol_simple.passed is False
             return result_detailed
@@ -160,6 +171,7 @@ class Fit(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
+            json_predicate: dict | None,
     ) -> Response:
         resp = self._client.validate_fit_request(
             sol_id=self._sol_id,
@@ -167,7 +179,7 @@ class Fit(AttrDict):
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp
 
     def __validate_sol(
@@ -176,6 +188,7 @@ class Fit(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
+            json_predicate: dict | None,
     ) -> Response:
         resp = self._client.validate_sol_request(
             sol_id=self._sol_id,
@@ -183,7 +196,7 @@ class Fit(AttrDict):
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp
 
     def try_fit_items(
@@ -191,6 +204,7 @@ class Fit(AttrDict):
             type_ids: list[int],
             options: ValOptions | type[Absent],
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> list[int] | None:
         resp = self._client.try_fit_items_request(
             sol_id=self._sol_id,
@@ -198,7 +212,7 @@ class Fit(AttrDict):
             options=options,
             type_ids=type_ids).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             return resp.json()
         return None
@@ -211,6 +225,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitFitChangeCmd(
             fleet_id=fleet_id,
@@ -223,7 +238,7 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()['fit']
             return self
@@ -235,10 +250,11 @@ class Fit(AttrDict):
             item_id: str,
             rm_mode: ApiModRmMode | type[Absent] = Absent,
             status_code: int = 204,
+            json_predicate: dict | None = None,
     ) -> None:
         resp = self._client.remove_item_request(sol_id=self._sol_id, item_id=item_id, rm_mode=rm_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
 
     def add_booster(
             self, *,
@@ -248,6 +264,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemBoosterAddCmd(
             fit_id=self.id,
@@ -260,7 +277,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -272,6 +289,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemCharacterSetCmd(
             fit_id=self.id,
@@ -283,7 +301,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -293,6 +311,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitCharacterUnsetCmd()
         resp = self._client.fit_commands_request(
@@ -302,7 +321,7 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()['fit']
             return self
@@ -320,6 +339,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemDroneAddCmd(
             fit_id=self.id,
@@ -336,7 +356,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -354,6 +374,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemFighterAddCmd(
             fit_id=self.id,
@@ -371,7 +392,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -383,6 +404,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemFwEffectAddCmd(
             fit_id=self.id,
@@ -394,7 +416,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -406,6 +428,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemImplantAddCmd(
             fit_id=self.id,
@@ -417,7 +440,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -467,6 +490,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemRigAddCmd(
             fit_id=self.id,
@@ -478,7 +502,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -490,6 +514,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemServiceAddCmd(
             fit_id=self.id,
@@ -501,7 +526,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -515,6 +540,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemShipSetCmd(
             fit_id=self.id,
@@ -528,7 +554,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -538,6 +564,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitShipUnsetCmd()
         resp = self._client.fit_commands_request(
@@ -547,7 +574,7 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()['fit']
             return self
@@ -586,6 +613,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemStanceSetCmd(
             fit_id=self.id,
@@ -597,7 +625,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None
@@ -607,6 +635,7 @@ class Fit(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitStanceUnsetCmd()
         resp = self._client.fit_commands_request(
@@ -616,7 +645,7 @@ class Fit(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()['fit']
             return self
@@ -629,6 +658,7 @@ class Fit(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemSubsystemAddCmd(
             fit_id=self.id,
@@ -640,7 +670,7 @@ class Fit(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self._sol_id)
         return None

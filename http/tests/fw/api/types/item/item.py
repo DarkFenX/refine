@@ -91,10 +91,11 @@ class Item(AttrDict):
             self, *,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.full,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         resp = self._client.get_item_request(sol_id=self._sol_id, item_id=self.id, item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -114,13 +115,14 @@ class Item(AttrDict):
             self, *,
             options: ItemStatsOptions | type[Absent],
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> ItemStats | None:
         resp = self._client.get_item_stats_request(
             sol_id=self._sol_id,
             item_id=self.id,
             options=options).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return ItemStats(data=resp.json())
 
     def change_autocharge(
@@ -129,6 +131,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemAutochargeChangeCmd(
             state=state,
@@ -139,7 +142,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -179,6 +182,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemCharacterChangeCmd(
             type_id=type_id,
@@ -190,7 +194,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -203,6 +207,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemChargeChangeCmd(
             type_id=type_id,
@@ -214,7 +219,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -233,6 +238,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemDroneChangeCmd(
             type_id=type_id,
@@ -250,7 +256,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -270,6 +276,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemFighterChangeCmd(
             type_id=type_id,
@@ -288,7 +295,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -301,6 +308,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemFwEffectChangeCmd(
             type_id=type_id,
@@ -312,7 +320,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -325,6 +333,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemImplantChangeCmd(
             type_id=type_id,
@@ -336,7 +345,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -390,6 +399,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemProjEffectChangeCmd(
             type_id=type_id,
@@ -403,7 +413,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -416,6 +426,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemRigChangeCmd(
             type_id=type_id,
@@ -427,7 +438,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -440,6 +451,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemServiceChangeCmd(
             type_id=type_id,
@@ -451,7 +463,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -466,6 +478,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemShipChangeCmd(
             type_id=type_id,
@@ -479,7 +492,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -493,6 +506,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemSkillChangeCmd(
             type_id=type_id,
@@ -505,7 +519,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -518,6 +532,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemStanceChangeCmd(
             type_id=type_id,
@@ -529,7 +544,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -542,6 +557,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemSubsystemChangeCmd(
             type_id=type_id,
@@ -553,7 +569,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self

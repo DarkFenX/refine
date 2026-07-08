@@ -1,6 +1,18 @@
 from fw.util import Absent
 
 
+def test_params_malformed(client):
+    eve_sw_effect_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id)
+    # Verification
+    api_sw_effect.update(
+        item_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+
+
 def test_no_item_full(client, consts):
     # Send ID in correct format, but there is no fleet with such ID
     client.create_sources()

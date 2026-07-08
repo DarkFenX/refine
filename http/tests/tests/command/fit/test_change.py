@@ -4,18 +4,22 @@ if typing.TYPE_CHECKING:
     from fw.request import Request
 
 
-def test_params_malformed(client):
-    eve_sw_effect_id = client.mk_eve_item()
+def test_error_params_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
-    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id, state=True)
+    api_fit = api_sol.create_fit(sec_status=1.5)
     # Verification
-    api_sw_effect.change_sw_effect(
-        state=False,
+    api_fit.change(
+        sec_status=-5,
+        fit_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_fit.change(
+        sec_status=-5,
         item_info_mode='random',
         status_code=400,
-        json_predicate={'code': 'PRM-001'})
-    assert api_sw_effect.update().state is True
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    assert api_fit.update().sec_status == 1.5
 
 
 def test_execution(client):

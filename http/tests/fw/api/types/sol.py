@@ -61,6 +61,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> SolarSystem | None:
         resp = self._client.get_sol_request(
             sol_id=self.id,
@@ -69,7 +70,7 @@ class SolarSystem(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self.id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -83,6 +84,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> SolarSystem:
         resp = self._client.change_sol_src_request(
             sol_id=self.id,
@@ -92,14 +94,18 @@ class SolarSystem(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self.id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
         return self
 
-    def remove(self, *, status_code: int = 204) -> None:
+    def remove(
+            self, *,
+            status_code: int = 204,
+            json_predicate: dict | None = None,
+    ) -> None:
         resp = self._client.remove_sol_request(sol_id=self.id).send()
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 204:
             self._client.created_sols.remove(self)
 
@@ -116,6 +122,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> SolarSystem:
         command = SolSolChangeCmd(
             sec_zone=sec_zone,
@@ -132,7 +139,7 @@ class SolarSystem(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self.check()
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()['solar_system']
         return self
@@ -142,17 +149,20 @@ class SolarSystem(AttrDict):
             fit_ids: list[str] | type[Absent | Default] = Default,
             options: ValOptions | type[Absent],
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> SolValResult | None:
         resp_simple = self.__validate_sol(
             fit_ids=fit_ids,
             options=options,
             val_info_mode=ApiValInfoMode.simple,
-            status_code=status_code)
+            status_code=status_code,
+            json_predicate=json_predicate)
         resp_detailed = self.__validate_sol(
             fit_ids=fit_ids,
             options=options,
             val_info_mode=ApiValInfoMode.detailed,
-            status_code=status_code)
+            status_code=status_code,
+            json_predicate=json_predicate)
         # Ensure simple results are consistent with full results
         if resp_simple.status_code == 200 and resp_detailed.status_code == 200:
             result_simple = SolValResult(data=resp_simple.json())
@@ -165,14 +175,16 @@ class SolarSystem(AttrDict):
                     fit_id=fit_id,
                     options=options,
                     val_info_mode=ApiValInfoMode.simple,
-                    status_code=200)
+                    status_code=200,
+                    json_predicate=None)
                 result_fit_simple = FitValResult(data=resp_fit_simple.json())
                 assert result_fit_simple.passed is False
                 resp_fit_detailed = self.__validate_fit(
                     fit_id=fit_id,
                     options=options,
                     val_info_mode=ApiValInfoMode.detailed,
-                    status_code=200)
+                    status_code=200,
+                    json_predicate=None)
                 result_fit_detailed = FitValResult(data=resp_fit_detailed.json())
                 assert result_fit_detailed.passed is False
                 assert fit_details.compare(other=result_fit_detailed.details) is True
@@ -185,6 +197,7 @@ class SolarSystem(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
+            json_predicate: dict | None,
     ) -> Response:
         if fit_ids is Default:
             fit_ids = []
@@ -194,7 +207,7 @@ class SolarSystem(AttrDict):
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self.id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp
 
     def __validate_fit(
@@ -203,6 +216,7 @@ class SolarSystem(AttrDict):
             options: ValOptions | type[Absent],
             val_info_mode: ApiValInfoMode | type[Absent],
             status_code: int,
+            json_predicate: dict | None,
     ) -> Response:
         resp = self._client.validate_fit_request(
             sol_id=self.id,
@@ -210,7 +224,7 @@ class SolarSystem(AttrDict):
             options=options,
             val_info_mode=val_info_mode).send()
         self._client.check_sol(sol_id=self.id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return resp
 
     # Fleet methods
@@ -236,13 +250,14 @@ class SolarSystem(AttrDict):
             fit_ids: list[str] | type[Absent] = Absent,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Fleet | None:
         resp = self._client.create_fleet_request(
             sol_id=self.id,
             fit_ids=fit_ids,
             fleet_info_mode=fleet_info_mode).send()
         self.check()
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Fleet(client=self._client, data=resp.json(), sol_id=self.id)
         return None
@@ -275,6 +290,7 @@ class SolarSystem(AttrDict):
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Fit | None:
         resp = self._client.create_fit_request(
             sol_id=self.id,
@@ -284,7 +300,7 @@ class SolarSystem(AttrDict):
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self.check()
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Fit(client=self._client, data=resp.json(), sol_id=self.id)
         return None
@@ -312,6 +328,7 @@ class SolarSystem(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemProjEffectAddCmd(
             type_id=type_id,
@@ -323,7 +340,7 @@ class SolarSystem(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self.check()
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
@@ -335,6 +352,7 @@ class SolarSystem(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 201,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemSwEffectAddCmd(
             type_id=type_id,
@@ -345,7 +363,7 @@ class SolarSystem(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self.check()
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 201:
             return Item(client=self._client, data=resp.json(), sol_id=self.id)
         return None
@@ -354,6 +372,6 @@ class SolarSystem(AttrDict):
     def check(self) -> None:
         self._client.check_sol(sol_id=self.id)
 
-    def benchmark(self, command: dict, status_code: int = 200) -> None:
+    def benchmark(self, *, command: dict, status_code: int = 200) -> None:
         resp = self._client.benchmark_sol_request(sol_id=self.id, command=command).send()
         resp.check(status_code=status_code)

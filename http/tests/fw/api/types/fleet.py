@@ -20,13 +20,14 @@ class Fleet(AttrDict):
             self, *,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fleet | None:
         resp = self._client.get_fleet_request(
             sol_id=self._sol_id,
             fleet_id=self.id,
             fleet_info_mode=fleet_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
@@ -38,6 +39,7 @@ class Fleet(AttrDict):
             rm_fit_ids: list[str] | type[Absent] = Absent,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Fleet | None:
         resp = self._client.change_fleet_request(
             sol_id=self._sol_id,
@@ -46,26 +48,31 @@ class Fleet(AttrDict):
             rm_fit_ids=rm_fit_ids,
             fleet_info_mode=fleet_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self
         return None
 
-    def remove(self, *, status_code: int = 204) -> None:
+    def remove(
+            self, *,
+            status_code: int = 204,
+            json_predicate: dict | None = None,
+    ) -> None:
         resp = self._client.remove_fleet_request(sol_id=self._sol_id, fleet_id=self.id).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
 
     def get_stats(
             self, *,
             options: FleetStatsOptions | type[Absent],
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> FleetStats | None:
         resp = self._client.get_fleet_stats_request(
             sol_id=self._sol_id,
             fleet_id=self.id,
             options=options).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         return FleetStats(data=resp.json())

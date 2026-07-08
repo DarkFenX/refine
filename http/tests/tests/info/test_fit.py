@@ -6,6 +6,21 @@ from fw import check_no_field
 from fw.util import Absent
 
 
+def test_error_params_malformed(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    api_fit.update(
+        fit_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_fit.update(
+        item_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+
+
 def test_fleet(client):
     client.create_sources()
     api_sol = client.create_sol()
