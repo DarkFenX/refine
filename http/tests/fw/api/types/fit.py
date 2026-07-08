@@ -166,6 +166,22 @@ class Fit(AttrDict):
             return result_detailed
         return None
 
+    def validate_direct(
+            self, *,
+            options: ValOptions | type[Absent],
+            val_info_mode: ApiValInfoMode | type[Absent] = Absent,
+            status_code: int = 200,
+            json_predicate: dict | None = None,
+    ) -> FitValResult | None:
+        resp = self.__validate_fit(
+            options=options,
+            val_info_mode=val_info_mode,
+            status_code=status_code,
+            json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return FitValResult(data=resp.json())
+        return None
+
     def __validate_fit(
             self, *,
             options: ValOptions | type[Absent],

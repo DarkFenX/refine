@@ -17,7 +17,14 @@ if typing.TYPE_CHECKING:
     from fw.eve.containers import EvePrimitives, EveStrings
 
 
-def test_types_key_prefix(client, log):
+def test_params_malformed(client):
+    client.create_sources(
+        src_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+
+
+def test_data_types_key_prefix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types = {
@@ -40,7 +47,7 @@ def test_types_key_prefix(client, log):
     assert api_val.details.not_loaded_item == [api_item1.id]
 
 
-def test_types_value_array(client, log):
+def test_data_types_value_array(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.types[eve_item1_id] = [1, 2, 3]
@@ -61,7 +68,7 @@ def test_types_value_array(client, log):
     assert api_val.details.not_loaded_item == [api_item1.id]
 
 
-def test_types_json_closing_brace_absent(client):
+def test_data_types_json_closing_brace_absent(client):
 
     def hook_data_str(str_data: EveStrings):
         # Remove closing brace to make it invalid JSON
@@ -77,7 +84,7 @@ def test_types_json_closing_brace_absent(client):
                        'fsd_built/types.json parsing failed:.+'})
 
 
-def test_typedogma_key_prefix(client, log):
+def test_data_typedogma_key_prefix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.typedogma = {
@@ -109,7 +116,7 @@ def test_typedogma_key_prefix(client, log):
     assert eve_effect_id in api_item2.effects
 
 
-def test_typedogma_value_string(client, log):
+def test_data_typedogma_value_string(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.typedogma[eve_item1_id] = 'random'
@@ -139,7 +146,7 @@ def test_typedogma_value_string(client, log):
     assert eve_effect_id in api_item2.effects
 
 
-def test_typedogma_json_closing_brace_wrong(client):
+def test_data_typedogma_json_closing_brace_wrong(client):
 
     def hook_data_str(str_data: EveStrings):
         # Replace closing brace to make it invalid JSON
@@ -157,7 +164,7 @@ def test_typedogma_json_closing_brace_wrong(client):
                        'fsd_built/typedogma.json parsing failed:.+'})
 
 
-def test_dogmaattributes_key_suffix(client, log):
+def test_data_dogmaattributes_key_suffix(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.dogmaattributes = {
@@ -176,7 +183,7 @@ def test_dogmaattributes_key_suffix(client, log):
     assert eve_attr2_id in api_item.update().attrs
 
 
-def test_dogmaattributes_value_null(client, log):
+def test_data_dogmaattributes_value_null(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.dogmaattributes[eve_attr1_id] = None
@@ -193,7 +200,7 @@ def test_dogmaattributes_value_null(client, log):
     assert eve_attr2_id in api_item.update().attrs
 
 
-def test_dogmaattributes_json_opening_brace_absent(client):
+def test_data_dogmaattributes_json_opening_brace_absent(client):
 
     def hook_data_str(str_data: EveStrings):
         # Remove opening brace to make it invalid JSON
@@ -209,7 +216,7 @@ def test_dogmaattributes_json_opening_brace_absent(client):
                        'fsd_built/dogmaattributes.json parsing failed:.+'})
 
 
-def test_dogmaeffects_key_symbols(client, log):
+def test_data_dogmaeffects_key_symbols(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         prim_data.dogmaeffects = {
@@ -228,7 +235,7 @@ def test_dogmaeffects_key_symbols(client, log):
     assert eve_effect2_id in api_item.update().effects
 
 
-def test_dogmaeffects_value_required_absent(client, log):
+def test_data_dogmaeffects_value_required_absent(client, log):
 
     def hook_data_prim(prim_data: EvePrimitives):
         del prim_data.dogmaeffects[eve_effect1_id]['effectCategory']
@@ -245,7 +252,7 @@ def test_dogmaeffects_value_required_absent(client, log):
     assert eve_effect2_id in api_item.update().effects
 
 
-def test_dogmaeffects_json_opening_brace_wrong(client):
+def test_data_dogmaeffects_json_opening_brace_wrong(client):
 
     def hook_data_str(str_data: EveStrings):
         # Replace opening brace to make it invalid JSON

@@ -191,6 +191,24 @@ class SolarSystem(AttrDict):
             return result_detailed
         return None
 
+    def validate_direct(
+            self, *,
+            fit_ids: list[str] | type[Absent | Default] = Default,
+            options: ValOptions | type[Absent],
+            val_info_mode: ApiValInfoMode | type[Absent] = Absent,
+            status_code: int = 200,
+            json_predicate: dict | None = None,
+    ) -> SolValResult | None:
+        resp = self.__validate_sol(
+            fit_ids=fit_ids,
+            options=options,
+            val_info_mode=val_info_mode,
+            status_code=status_code,
+            json_predicate=json_predicate)
+        if resp.status_code == 200:
+            return SolValResult(data=resp.json())
+        return None
+
     def __validate_sol(
             self, *,
             fit_ids: list[str] | type[Absent | Default],
