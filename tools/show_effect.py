@@ -2,9 +2,6 @@
 Finds effect info in a raw static data dump, and prints it, adding entity names next to their IDs.
 """
 
-# Python 3.13 and earlier compatibility
-from __future__ import annotations
-
 import argparse
 import json
 import re
