@@ -4,6 +4,33 @@ if typing.TYPE_CHECKING:
     from fw.request import Request
 
 
+def test_error_params_malformed(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
+    # Verification
+    api_sol.change(
+        sec_zone=consts.ApiSecZone.nullsec,
+        sol_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_sol.change(
+        sec_zone=consts.ApiSecZone.nullsec,
+        fleet_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_sol.change(
+        sec_zone=consts.ApiSecZone.nullsec,
+        fit_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    api_sol.change(
+        sec_zone=consts.ApiSecZone.nullsec,
+        item_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001', 'message': 're:.+'})
+    assert api_sol.update().sec_zone == consts.ApiSecZone.hisec
+
+
 def test_execution(client):
     eve_ship_id = client.mk_eve_item()
     eve_drone_id = client.mk_eve_item()

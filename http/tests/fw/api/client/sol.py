@@ -91,7 +91,9 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
-    ) -> SolarSystem:
+            status_code: int = 201,
+            json_predicate: dict | None = None,
+    ) -> SolarSystem | None:
         if data is Default:
             data = self._get_default_eve_data()
         resp = self.create_sol_request(
@@ -106,10 +108,12 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
-        assert resp.status_code == 201
-        sol_sys = SolarSystem(client=self, data=resp.json())
-        self.__created_sols.add(sol_sys)
-        return sol_sys
+        resp.check(status_code=status_code, json_predicate=json_predicate)
+        if resp.status_code == 201:
+            sol_sys = SolarSystem(client=self, data=resp.json())
+            self.__created_sols.add(sol_sys)
+            return sol_sys
+        return None
 
     @property
     def created_sols(self) -> set[SolarSystem]:

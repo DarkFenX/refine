@@ -1,7 +1,7 @@
 from fw.api import ValOptions
 
 
-def test_sol_param_malformed(client, consts):
+def test_sol_param_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     # Verification
@@ -12,7 +12,7 @@ def test_sol_param_malformed(client, consts):
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
-def test_fit_param_malformed(client, consts):
+def test_fit_param_malformed(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
