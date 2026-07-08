@@ -43,4 +43,4 @@ def test_no_item_malformed(client):
         item_id='abc',
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'IDC-003', 'message': 'unable to cast string "abc" to id'})
+        json_predicate={'code': 'ITM-001', 'message': 'item abc not found'})

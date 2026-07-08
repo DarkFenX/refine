@@ -64,4 +64,4 @@ def test_error_no_fleet_malformed(client):
         fleet_id='abc',
         fleet_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'IDC-002', 'message': 'unable to cast string "abc" to id'})
+        json_predicate={'code': 'FLT-001', 'message': 'fleet abc not found'})

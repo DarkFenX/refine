@@ -317,4 +317,4 @@ def test_error_no_fit_malformed(client):
         fit_info_mode=Absent,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'IDC-001', 'message': 'unable to cast string "abc" to id'})
+        json_predicate={'code': 'FIT-001', 'message': 'fit abc not found'})

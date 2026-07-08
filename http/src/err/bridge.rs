@@ -12,11 +12,11 @@ pub(crate) enum HBrError {
     SolNotFound(String),
     #[error("unable to take core solar system")]
     NoCoreSol,
-    #[error("unable to cast string \"{0}\" to id")]
+    #[error("fit {0} not found")]
     FitIdCastFailed(String),
-    #[error("unable to cast string \"{0}\" to id")]
+    #[error("fleet {0} not found")]
     FleetIdCastFailed(String),
-    #[error("unable to cast string \"{0}\" to id")]
+    #[error("item {0} not found")]
     ItemIdCastFailed(String),
     #[error("EVE data handler initialization failed: {0}")]
     EdhInitFailed(String),
@@ -43,9 +43,9 @@ impl HBrError {
             Self::NoDefaultSrc => "SRC-003".to_string(),
             Self::SolNotFound(_) => "SOL-001".to_string(),
             Self::NoCoreSol => "SOL-002".to_string(),
-            Self::FitIdCastFailed(_) => "IDC-001".to_string(),
-            Self::FleetIdCastFailed(_) => "IDC-002".to_string(),
-            Self::ItemIdCastFailed(_) => "IDC-003".to_string(),
+            Self::FitIdCastFailed(_) => "FIT-001".to_string(),
+            Self::FleetIdCastFailed(_) => "FLT-001".to_string(),
+            Self::ItemIdCastFailed(_) => "ITM-001".to_string(),
             Self::EdhInitFailed(_) => "EDH-001".to_string(),
             Self::SrcInitFailed(_) => "SIN-001".to_string(),
             Self::ExecFailed(e) => e.get_api_code(),
