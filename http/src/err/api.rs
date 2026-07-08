@@ -9,9 +9,9 @@ use serde::Serialize;
 use crate::err::{HBrError, HExecError};
 
 pub(crate) enum HApiError {
-    QueryFailure(QueryRejection),
-    JsonFailure(JsonRejection),
-    BridgeFailure(HBrErrorPathAware),
+    Query(QueryRejection),
+    Json(JsonRejection),
+    Bridge(HBrErrorPathAware),
 }
 
 pub(crate) struct HBrErrorPathAware {
@@ -34,9 +34,9 @@ struct HApiErrorResponse {
 impl HApiError {
     fn get_http_code(&self) -> StatusCode {
         match self {
-            HApiError::QueryFailure(_) => StatusCode::BAD_REQUEST,
-            HApiError::JsonFailure(_) => StatusCode::BAD_REQUEST,
-            HApiError::BridgeFailure(br_err) => match &br_err.err {
+            HApiError::Query(_) => StatusCode::BAD_REQUEST,
+            HApiError::Json(_) => StatusCode::BAD_REQUEST,
+            HApiError::Bridge(br_err) => match &br_err.err {
                 // Related to source initialization
                 HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
                 HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
@@ -67,16 +67,16 @@ impl HApiError {
     }
     fn get_api_code(&self) -> String {
         match self {
-            Self::QueryFailure(_) => "PRM-001".to_string(),
-            Self::JsonFailure(_) => "JSN-001".to_string(),
-            Self::BridgeFailure(br_err) => br_err.err.get_api_code(),
+            Self::Query(_) => "PRM-001".to_string(),
+            Self::Json(_) => "JSN-001".to_string(),
+            Self::Bridge(br_err) => br_err.err.get_api_code(),
         }
     }
     fn get_message(&self) -> String {
         match self {
-            Self::QueryFailure(query_err) => query_err.body_text(),
-            Self::JsonFailure(json_err) => json_err.body_text(),
-            Self::BridgeFailure(br_err) => br_err.err.to_string(),
+            Self::Query(query_err) => query_err.body_text(),
+            Self::Json(json_err) => json_err.body_text(),
+            Self::Bridge(br_err) => br_err.err.to_string(),
         }
     }
 }
@@ -86,7 +86,7 @@ impl HApiError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HApiError {
     pub(crate) fn from_br_path_empty(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(HBrErrorPathAware {
+        Self::Bridge(HBrErrorPathAware {
             err: bridge_error,
             src_in_path: false,
             fleet_in_path: false,
@@ -95,7 +95,7 @@ impl HApiError {
         })
     }
     pub(crate) fn from_br_path_src(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(HBrErrorPathAware {
+        Self::Bridge(HBrErrorPathAware {
             err: bridge_error,
             src_in_path: true,
             fleet_in_path: false,
@@ -104,7 +104,7 @@ impl HApiError {
         })
     }
     pub(crate) fn from_br_path_sol(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(HBrErrorPathAware {
+        Self::Bridge(HBrErrorPathAware {
             err: bridge_error,
             src_in_path: false,
             fleet_in_path: false,
@@ -113,7 +113,7 @@ impl HApiError {
         })
     }
     pub(crate) fn from_br_path_sol_fleet(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(HBrErrorPathAware {
+        Self::Bridge(HBrErrorPathAware {
             err: bridge_error,
             src_in_path: false,
             fleet_in_path: true,
@@ -122,7 +122,7 @@ impl HApiError {
         })
     }
     pub(crate) fn from_br_path_sol_fit(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(HBrErrorPathAware {
+        Self::Bridge(HBrErrorPathAware {
             err: bridge_error,
             src_in_path: false,
             fleet_in_path: false,
@@ -131,7 +131,7 @@ impl HApiError {
         })
     }
     pub(crate) fn from_br_path_sol_item(bridge_error: HBrError) -> Self {
-        Self::BridgeFailure(HBrErrorPathAware {
+        Self::Bridge(HBrErrorPathAware {
             err: bridge_error,
             src_in_path: false,
             fleet_in_path: false,
@@ -142,12 +142,12 @@ impl HApiError {
 }
 impl From<QueryRejection> for HApiError {
     fn from(query_error: QueryRejection) -> Self {
-        Self::QueryFailure(query_error)
+        Self::Query(query_error)
     }
 }
 impl From<JsonRejection> for HApiError {
     fn from(json_error: JsonRejection) -> Self {
-        Self::JsonFailure(json_error)
+        Self::Json(json_error)
     }
 }
 
