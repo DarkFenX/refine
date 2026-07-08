@@ -11,7 +11,7 @@ pub(crate) struct HRigInfoPartial {
     type_id: i32,
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ impl HRigInfoPartial {
             kind: "rig",
             type_id: core_rig.get_type_id().into_i32(),
             fit_id: core_rig.get_fit().get_fit_id(),
-            enabled: core_rig.get_state(),
+            state: core_rig.get_state(),
         }
     }
 }

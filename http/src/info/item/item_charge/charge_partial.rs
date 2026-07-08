@@ -13,7 +13,7 @@ pub(crate) struct HChargeInfoPartial {
     fit_id: rc::FitId,
     #[serde_as(as = "DisplayFromStr")]
     cont_item_id: rc::ItemId,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ impl HChargeInfoPartial {
             type_id: core_charge.get_type_id().into_i32(),
             fit_id: core_charge.get_fit().get_fit_id(),
             cont_item_id: core_charge.get_cont_item().get_item_id(),
-            enabled: core_charge.get_state(),
+            state: core_charge.get_state(),
         }
     }
 }

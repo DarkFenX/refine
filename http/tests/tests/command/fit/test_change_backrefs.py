@@ -25,7 +25,7 @@ def test_booster_change(client):
         api_booster = api_fit_cmds.add_booster(type_id=eve_booster_id, state=True)
         api_fit_cmds.change_booster(item_id=api_booster.id, state=False)
     # Verification
-    assert api_booster.update().enabled is False
+    assert api_booster.update().state is False
 
 
 def test_charge_change_after_module_add(client):
@@ -38,7 +38,7 @@ def test_charge_change_after_module_add(client):
         api_module = api_fit_cmds.add_module(type_id=eve_module_id, charge_type_id=eve_charge_id)
         api_fit_cmds.change_charge(item_id=api_module.charge.id, state=False)
     # Verification
-    assert api_module.update().charge.enabled is False
+    assert api_module.update().charge.state is False
 
 
 def test_charge_change_after_module_change(client):
@@ -52,7 +52,7 @@ def test_charge_change_after_module_change(client):
         api_charge = api_fit_cmds.change_module(item_id=api_module.id, charge_type_id=eve_charge_id)
         api_fit_cmds.change_charge(item_id=api_charge.id, state=False)
     # Verification
-    assert api_charge.update().enabled is False
+    assert api_charge.update().state is False
 
 
 def test_drone_add(client):
@@ -114,7 +114,7 @@ def test_fw_effect_change(client):
         api_fw_effect = api_fit_cmds.add_fw_effect(type_id=eve_fw_effect_id, state=True)
         api_fit_cmds.change_fw_effect(item_id=api_fw_effect.id, state=False)
     # Verification
-    assert api_fw_effect.update().enabled is False
+    assert api_fw_effect.update().state is False
 
 
 def test_implant_change(client):
@@ -126,7 +126,7 @@ def test_implant_change(client):
         api_implant = api_fit_cmds.add_implant(type_id=eve_implant_id, state=True)
         api_fit_cmds.change_implant(item_id=api_implant.id, state=False)
     # Verification
-    assert api_implant.update().enabled is False
+    assert api_implant.update().state is False
 
 
 def test_module_add(client):
@@ -165,7 +165,7 @@ def test_rig_change(client):
         api_rig = api_fit_cmds.add_rig(type_id=eve_rig_id, state=True)
         api_fit_cmds.change_rig(item_id=api_rig.id, state=False)
     # Verification
-    assert api_rig.update().enabled is False
+    assert api_rig.update().state is False
 
 
 def test_service_change(client, consts):
@@ -201,4 +201,4 @@ def test_subsystem_change(client):
         api_subsystem = api_fit_cmds.add_subsystem(type_id=eve_subsystem_id, state=True)
         api_fit_cmds.change_subsystem(item_id=api_subsystem.id, state=False)
     # Verification
-    assert api_subsystem.update().enabled is False
+    assert api_subsystem.update().state is False

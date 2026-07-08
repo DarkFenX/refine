@@ -9,7 +9,7 @@ pub(crate) struct HSwEffectInfoPartial {
     id: rc::ItemId,
     kind: &'static str,
     type_id: i32,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ impl HSwEffectInfoPartial {
             id: core_sw_effect.get_item_id(),
             kind: "sw_effect",
             type_id: core_sw_effect.get_type_id().into_i32(),
-            enabled: core_sw_effect.get_state(),
+            state: core_sw_effect.get_state(),
         }
     }
 }

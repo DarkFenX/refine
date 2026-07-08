@@ -13,7 +13,7 @@ pub(crate) struct HImplantInfoPartial {
     fit_id: rc::FitId,
     #[serde(skip_serializing_if = "Option::is_none")]
     slot: Option<i32>,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ impl HImplantInfoPartial {
             type_id: core_implant.get_type_id().into_i32(),
             fit_id: core_implant.get_fit().get_fit_id(),
             slot: core_implant.get_slot().map(|v| v.into_i32()),
-            enabled: core_implant.get_state(),
+            state: core_implant.get_state(),
         }
     }
 }

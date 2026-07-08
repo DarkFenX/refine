@@ -11,7 +11,7 @@ pub(crate) struct HProjEffectInfoPartial {
     id: rc::ItemId,
     kind: &'static str,
     type_id: i32,
-    enabled: bool,
+    state: bool,
     #[serde(skip_serializing_if = "Vec::is_empty")]
     proj_item_ids: Vec<HProjInfo>,
 }
@@ -25,7 +25,7 @@ impl HProjEffectInfoPartial {
             id: core_proj_effect.get_item_id(),
             kind: "proj_effect",
             type_id: core_proj_effect.get_type_id().into_i32(),
-            enabled: core_proj_effect.get_state(),
+            state: core_proj_effect.get_state(),
             proj_item_ids: core_proj_effect.iter_projs().map(HProjInfo::from_core).collect(),
         }
     }

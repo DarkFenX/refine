@@ -12,7 +12,7 @@ pub(crate) struct HSkillInfoPartial {
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
     level: u8,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ impl HSkillInfoPartial {
             type_id: core_skill.get_type_id().into_i32(),
             fit_id: core_skill.get_fit().get_fit_id(),
             level: core_skill.get_level().into_u8(),
-            enabled: core_skill.get_state(),
+            state: core_skill.get_state(),
         }
     }
 }

@@ -15,7 +15,7 @@ def test_params_malformed(client):
         item_info_mode='random',
         status_code=400,
         json_predicate={'code': 'PRM-001'})
-    assert api_sw_effect.update().enabled is True
+    assert api_sw_effect.update().state is True
 
 
 def test_execution(client):

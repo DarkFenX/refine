@@ -13,7 +13,7 @@ pub(crate) struct HSubsystemInfoPartial {
     fit_id: rc::FitId,
     #[serde(skip_serializing_if = "Option::is_none")]
     slot: Option<i32>,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,7 +27,7 @@ impl HSubsystemInfoPartial {
             type_id: core_subsystem.get_type_id().into_i32(),
             fit_id: core_subsystem.get_fit().get_fit_id(),
             slot: core_subsystem.get_slot().map(|v| v.into_i32()),
-            enabled: core_subsystem.get_state(),
+            state: core_subsystem.get_state(),
         }
     }
 }

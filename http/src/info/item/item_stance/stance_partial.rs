@@ -11,7 +11,7 @@ pub(crate) struct HStanceInfoPartial {
     type_id: i32,
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
-    enabled: bool,
+    state: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ impl HStanceInfoPartial {
             kind: "stance",
             type_id: core_stance.get_type_id().into_i32(),
             fit_id: core_stance.get_fit().get_fit_id(),
-            enabled: core_stance.get_state(),
+            state: core_stance.get_state(),
         }
     }
 }

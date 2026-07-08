@@ -13,7 +13,7 @@ pub(crate) struct HShipInfoPartial {
     type_id: i32,
     #[serde_as(as = "DisplayFromStr")]
     fit_id: rc::FitId,
-    enabled: bool,
+    state: bool,
     coordinates: HCoordinates,
     movement: HMovement,
 }
@@ -28,7 +28,7 @@ impl HShipInfoPartial {
             kind: "ship",
             type_id: core_ship.get_type_id().into_i32(),
             fit_id: core_ship.get_fit().get_fit_id(),
-            enabled: core_ship.get_state(),
+            state: core_ship.get_state(),
             coordinates: HCoordinates::from_core(core_ship.get_coordinates()),
             movement: HMovement::from_core(core_ship.get_movement()),
         }
