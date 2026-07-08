@@ -4,6 +4,20 @@ if typing.TYPE_CHECKING:
     from fw.request import Request
 
 
+def test_params_malformed(client):
+    eve_sw_effect_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sw_effect = api_sol.add_sw_effect(type_id=eve_sw_effect_id, state=True)
+    # Verification
+    api_sw_effect.change_sw_effect(
+        state=False,
+        item_info_mode='random',
+        status_code=400,
+        json_predicate={'code': 'PRM-001'})
+    assert api_sw_effect.update().enabled is True
+
+
 def test_execution(client):
     eve_ship_id = client.mk_eve_item()
     eve_drone_id = client.mk_eve_item()

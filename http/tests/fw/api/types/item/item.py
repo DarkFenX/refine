@@ -566,6 +566,7 @@ class Item(AttrDict):
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
+            json_predicate: dict | None = None,
     ) -> Item | None:
         command = ItemSwEffectChangeCmd(
             type_id=type_id,
@@ -577,7 +578,7 @@ class Item(AttrDict):
             command=command,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
-        resp.check(status_code=status_code)
+        resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
             self._data = resp.json()
             return self

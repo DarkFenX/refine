@@ -1,7 +1,7 @@
 from fw.util import Absent
 
 
-def test_error_no_item_full(client, consts):
+def test_no_item_full(client, consts):
     # Send ID in correct format, but there is no fleet with such ID
     client.create_sources()
     api_sol = client.create_sol()
@@ -12,7 +12,7 @@ def test_error_no_item_full(client, consts):
         json_predicate={'code': 'ITM-001', 'message': 'item 1 not found'})
 
 
-def test_error_no_item_id(client, consts):
+def test_no_item_id(client, consts):
     # Send ID in correct format, but there is no fleet with such ID
     client.create_sources()
     api_sol = client.create_sol()
@@ -23,7 +23,7 @@ def test_error_no_item_id(client, consts):
         json_predicate={'code': 'ITM-001', 'message': 'item 1 not found'})
 
 
-def test_error_no_item_malformed(client):
+def test_no_item_malformed(client):
     # Send ID in incorrect format
     client.create_sources()
     api_sol = client.create_sol()
