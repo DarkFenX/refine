@@ -14,6 +14,7 @@ from fw.api import (
     StatsOptionCapBalance,
     StatsOptionCapSim,
     StatsOptionFitDmg,
+    StatsOptionJump,
     ValOptions,
 )
 
@@ -429,27 +430,21 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
         api_sol_cmds.set_character(fit_id=api_fit.id, type_id=1373)
         for eve_skill_id in get_skill_type_ids():
             api_sol_cmds.add_skill(fit_id=api_fit.id, type_id=eve_skill_id, level=5)
-        # Rabisu
-        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=42245)
-        # Smokescreen Cloak
-        api_sol_cmds.add_module(fit_id=api_fit.id, type_id=20563, state=consts.ApiModuleState.active)
+        # Widow
+        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=22436)
+        # Blops portal
+        api_sol_cmds.add_module(fit_id=api_fit.id, type_id=28652, state=consts.ApiModuleState.active)
+        # Purifier passenger
+        api_fit_psg = api_sol_cmds.create_fit()
+        api_sol_cmds.set_character(fit_id=api_fit_psg.id, type_id=1373)
+        for eve_skill_id in get_skill_type_ids():
+            api_sol_cmds.add_skill(fit_id=api_fit_psg.id, type_id=eve_skill_id, level=5)
+        api_sol_cmds.set_ship(fit_id=api_fit_psg.id, type_id=12038)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        can_warp=True,
-        can_jump_gate=True,
-        can_jump_wormhole=True,
-        can_jump_drive=True,
-        can_dock_station=True,
-        can_dock_citadel=True,
-        can_tether=True))
-    assert api_fit_stats.can_warp is True
-    assert api_fit_stats.can_jump_gate is False
-    assert api_fit_stats.can_jump_wormhole is False
-    assert api_fit_stats.can_jump_drive is False
-    assert api_fit_stats.can_dock_station is False
-    assert api_fit_stats.can_dock_citadel is False
-    assert api_fit_stats.can_tether is False
+        jump=(True, [StatsOptionJump(range=5, passenger_fit_ids=[api_fit_psg.id])])))
+    print(api_fit_stats.jump)  # noqa: T201
 
 
 def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
