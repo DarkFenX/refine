@@ -172,7 +172,7 @@ fn get_stat_jump_portal(
             Value::ZERO,
         ));
         let fuel_use_base = ship_fuel_use * range * mass_mult;
-        let psg_check = get_psg_check(ctx, calc, ship_uid, ctx.ac().jump_conduit_passenger_required_attr_id);
+        let psg_check = get_psg_check(ctx, calc, portal_uid, ctx.ac().jump_portal_passenger_required_attr_id);
         for &psg_fit_uid in psg_fit_uids {
             let psg_u_fit = ctx.u_data.fits.get(psg_fit_uid);
             let fuel_use = match is_psg(ctx, calc, psg_u_fit, psg_check) {

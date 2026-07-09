@@ -565,6 +565,7 @@ class EveAttr(IntEnum):
     conduit_jump_passenger_count = 3133
     mining_wasted_volume_mult = 3153
     mining_waste_probability = 3154
+    jump_portal_passenger_required_attr_id = 3318
     jump_conduit_passenger_required_attr_id = 3321
     disallow_in_hazard = 5561
     allow_in_fully_corrupted_lowsec = 5599

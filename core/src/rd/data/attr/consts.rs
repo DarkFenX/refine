@@ -177,6 +177,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) jump_drive_range: Option<RAttrId>,
     pub(crate) jump_portal_additional_consumption: Option<RAttrId>,
     pub(crate) jump_portal_consumption_mass_factor: Option<RAttrId>,
+    pub(crate) jump_portal_passenger_required_attr_id: Option<RAttrId>,
     pub(crate) kin_dmg: Option<RAttrId>,
     pub(crate) kin_dmg_resonance: Option<RAttrId>,
     pub(crate) launcher_group: Option<RAttrId>,
@@ -489,6 +490,9 @@ impl RAttrConsts {
                 .copied(),
             jump_portal_consumption_mass_factor: attr_aid_rid_map
                 .get(&AAttrId::JUMP_PORTAL_CONSUMPTION_MASS_FACTOR)
+                .copied(),
+            jump_portal_passenger_required_attr_id: attr_aid_rid_map
+                .get(&AAttrId::JUMP_PORTAL_PASSENGER_REQUIRED_ATTR_ID)
                 .copied(),
             kin_dmg: attr_aid_rid_map.get(&AAttrId::KIN_DMG).copied(),
             kin_dmg_resonance: attr_aid_rid_map.get(&AAttrId::KIN_DMG_RESONANCE).copied(),

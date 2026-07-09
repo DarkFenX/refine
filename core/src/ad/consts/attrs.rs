@@ -374,6 +374,8 @@ impl AAttrId {
     pub(crate) const CONDUIT_JUMP_PASSENGER_COUNT: Self = Self::from_eid(EAttrId::CONDUIT_JUMP_PASSENGER_COUNT);
     pub(crate) const MINING_WASTED_VOLUME_MULT: Self = Self::from_eid(EAttrId::MINING_WASTED_VOLUME_MULT);
     pub(crate) const MINING_WASTE_PROBABILITY: Self = Self::from_eid(EAttrId::MINING_WASTE_PROBABILITY);
+    pub(crate) const JUMP_PORTAL_PASSENGER_REQUIRED_ATTR_ID: Self =
+        Self::from_eid(EAttrId::JUMP_PORTAL_PASSENGER_REQUIRED_ATTR_ID);
     pub(crate) const JUMP_CONDUIT_PASSENGER_REQUIRED_ATTR_ID: Self =
         Self::from_eid(EAttrId::JUMP_CONDUIT_PASSENGER_REQUIRED_ATTR_ID);
     pub(crate) const DOOMSDAY_APPLIED_DBUFF_DURATION: Self = Self::from_eid(EAttrId::DOOMSDAY_APPLIED_DBUFF_DURATION);
