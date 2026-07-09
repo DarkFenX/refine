@@ -184,9 +184,6 @@ impl Vast {
                 {
                     fit_data.mods_cap_consumers.insert(item_uid);
                 }
-                if item_axt.enables_conduit {
-                    fit_data.conduit_enablers.insert(item_uid);
-                }
                 item_vs_ship_kind_add(
                     u_data,
                     fit_data,
@@ -468,9 +465,6 @@ impl Vast {
                     && !cap_consumers.is_empty()
                 {
                     fit_data.mods_cap_consumers.remove(item_uid);
-                }
-                if item_axt.enables_conduit {
-                    fit_data.conduit_enablers.remove(item_uid);
                 }
             }
             UItem::Rig(rig) => {

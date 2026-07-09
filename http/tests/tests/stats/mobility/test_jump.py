@@ -150,7 +150,7 @@ def test_conduit_ship_flag_values(client, consts):
     eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
     eve_fuel_id = client.mk_eve_item()
 
-    def mk_ship(*, conduit_flag: float | None) -> int:
+    def mk_eve_ship(*, conduit_flag: float | None) -> int:
         attrs = {
             eve_range_attr_id: 5,
             eve_fuel_type_attr_id: eve_fuel_id,
@@ -160,12 +160,12 @@ def test_conduit_ship_flag_values(client, consts):
             attrs[eve_conduit_flag_attr_id] = conduit_flag
         return client.mk_eve_ship(attrs=attrs)
 
-    eve_ship1_id = mk_ship(conduit_flag=1)
-    eve_ship2_id = mk_ship(conduit_flag=-0.1)
-    eve_ship3_id = mk_ship(conduit_flag=0.1)
-    eve_ship4_id = mk_ship(conduit_flag=55)
-    eve_ship5_id = mk_ship(conduit_flag=0)
-    eve_ship6_id = mk_ship(conduit_flag=None)
+    eve_ship1_id = mk_eve_ship(conduit_flag=1)
+    eve_ship2_id = mk_eve_ship(conduit_flag=-0.1)
+    eve_ship3_id = mk_eve_ship(conduit_flag=0.1)
+    eve_ship4_id = mk_eve_ship(conduit_flag=55)
+    eve_ship5_id = mk_eve_ship(conduit_flag=0)
+    eve_ship6_id = mk_eve_ship(conduit_flag=None)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -261,13 +261,15 @@ def test_conduit_bridge_flag_values(client, consts):
         api_ship_jump_stats.conduit  # noqa: B018
     # Action
     api_bridge = api_fit.add_module(type_id=eve_bridge1_id, state=consts.ApiModuleState.offline)
-    # Verification - conduit is enabled even when bridge is offline
+    # Verification - bridge needs to be at least online to make conduit work
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
-    assert api_fit_stats.jump.one().conduit.max_passengers == approx(30)
-    assert api_fit_stats.jump.one().conduit.fuel_use_self == approx(15000)
+    api_fit_jump_stats = api_fit_stats.jump.one()
+    with check_no_field():
+        api_fit_jump_stats.conduit  # noqa: B018
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
-    assert api_ship_stats.jump.one().conduit.max_passengers == approx(30)
-    assert api_ship_stats.jump.one().conduit.fuel_use_self == approx(15000)
+    api_ship_jump_stats = api_ship_stats.jump.one()
+    with check_no_field():
+        api_ship_jump_stats.conduit  # noqa: B018
     # Action
     api_bridge.change_module(state=consts.ApiModuleState.online)
     # Verification

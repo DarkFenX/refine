@@ -56,6 +56,9 @@ impl Vast {
                     if let Some(sec_class) = item_axt.online_max_sec_class {
                         fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
+                    if item_axt.enables_conduit {
+                        fit_data.conduit_enablers.insert(item_uid);
+                    }
                     if let RState::Offline = module.get_max_state().unwrap() {
                         fit_data.mods_state.insert(
                             item_uid,
@@ -195,6 +198,9 @@ impl Vast {
                     }
                     if item_axt.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
+                    }
+                    if item_axt.enables_conduit {
+                        fit_data.conduit_enablers.remove(item_uid);
                     }
                     if let RState::Offline = module.get_max_state().unwrap() {
                         fit_data.mods_state.remove(item_uid);
