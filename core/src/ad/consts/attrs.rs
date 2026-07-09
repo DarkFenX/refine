@@ -138,6 +138,8 @@ impl AAttrId {
         Self::from_eid(EAttrId::MISSILE_ENTITY_AOE_CLOUD_SIZE_MULTIPLIER);
     pub(crate) const MISSILE_ENTITY_AOE_VELOCITY_MULTIPLIER: Self =
         Self::from_eid(EAttrId::MISSILE_ENTITY_AOE_VELOCITY_MULTIPLIER);
+    pub(crate) const JUMP_DRIVE_CONSUMPTION_TYPE: Self = Self::from_eid(EAttrId::JUMP_DRIVE_CONSUMPTION_TYPE);
+    pub(crate) const JUMP_DRIVE_RANGE: Self = Self::from_eid(EAttrId::JUMP_DRIVE_RANGE);
     pub(crate) const DISALLOW_OFFENSIVE_MODIFIERS: Self = Self::from_eid(EAttrId::DISALLOW_OFFENSIVE_MODIFIERS);
     pub(crate) const SIG_RADIUS_BONUS_PERCENT: Self = Self::from_eid(EAttrId::SIG_RADIUS_BONUS_PERCENT);
     pub(crate) const HULL_EM_DMG_RESONANCE: Self = Self::from_eid(EAttrId::HULL_EM_DMG_RESONANCE);

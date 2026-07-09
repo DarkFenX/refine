@@ -380,6 +380,8 @@ class EveAttr(IntEnum):
     crystals_get_damaged = 786
     mass_addition = 796
     disallow_assistance = 854
+    jump_drive_consumption_type = 866
+    jump_drive_range = 867
     disallow_offensive_modifiers = 872
     sig_radius_bonus_percent = 973
     max_group_online = 978

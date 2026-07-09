@@ -129,6 +129,8 @@ impl EAttrId {
     pub(crate) const DISALLOW_ASSISTANCE: Self = Self::from_i32(854);
     pub(crate) const MISSILE_ENTITY_AOE_CLOUD_SIZE_MULTIPLIER: Self = Self::from_i32(858);
     pub(crate) const MISSILE_ENTITY_AOE_VELOCITY_MULTIPLIER: Self = Self::from_i32(859);
+    pub(crate) const JUMP_DRIVE_CONSUMPTION_TYPE: Self = Self::from_i32(866);
+    pub(crate) const JUMP_DRIVE_RANGE: Self = Self::from_i32(867);
     pub(crate) const DISALLOW_OFFENSIVE_MODIFIERS: Self = Self::from_i32(872);
     pub(crate) const SIG_RADIUS_BONUS_PERCENT: Self = Self::from_i32(973);
     pub(crate) const HULL_EM_DMG_RESONANCE: Self = Self::from_i32(974);

@@ -22,17 +22,17 @@ pub struct StatJumpSelf {
 pub struct StatJumpConduit {
     pub max_passengers: Count,
     pub fuel_use_self: Count,
-    pub fuel_use_fit: Vec<StatJumpFitInfo>,
+    pub fuel_use_fit: Vec<StatJumpPassenger>,
 }
 
 #[derive(Clone)]
 pub struct StatJumpBridge {
     pub item_id: ItemId,
-    pub fuel_use_fit: Vec<StatJumpFitInfo>,
+    pub fuel_use_fit: Vec<StatJumpPassenger>,
 }
 
 #[derive(Copy, Clone)]
-pub struct StatJumpFitInfo {
+pub struct StatJumpPassenger {
     pub fit_id: FitId,
     pub fuel_use: Option<Count>,
 }

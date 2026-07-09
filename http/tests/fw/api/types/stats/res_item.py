@@ -4,6 +4,7 @@ from .stat_ehp import StatEhp
 from .stat_erps import StatErps
 from .stat_hp import StatHp
 from .stat_jam import StatIncomingJam
+from .stat_jump import StatJump
 from .stat_mining import StatMining
 from .stat_outgoing_rps import StatOutRps
 from .stat_resists import StatResists
@@ -39,4 +40,6 @@ class ItemStats(AttrDict):
             'sensors': AttrHookDef(func=lambda d: StatSensors(data=d) if d is not None else None),
             'incoming_jam': AttrHookDef(func=lambda d: (
                 NttList(StatIncomingJam(data=e) for e in d)
-                if d is not None else None))})
+                if d is not None else None)),
+            # Mobility
+            'jump': AttrHookDef(func=lambda d: (NttList(StatJump(data=e) for e in d) if d is not None else None))})

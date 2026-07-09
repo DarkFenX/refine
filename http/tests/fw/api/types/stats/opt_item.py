@@ -8,6 +8,7 @@ if typing.TYPE_CHECKING:
     from .opt_dmg import StatsOptionItemDmg
     from .opt_ehp import StatsOptionEhp
     from .opt_incoming_jam import StatsOptionInJam
+    from .opt_jump import StatsOptionJump
     from .opt_mining import StatsOptionItemMining
     from .opt_outgoing_cps import StatsOptionItemOutCps
     from .opt_outgoing_nps import StatsOptionItemOutNps
@@ -54,6 +55,7 @@ class ItemStatsOptions:
     mass: bool | type[Absent] = Absent
     warp_speed: bool | type[Absent] = Absent
     max_warp_range: bool | type[Absent] = Absent
+    jump: bool | tuple[bool, list[StatsOptionJump]] | type[Absent] = Absent
     # Misc
     drone_control_range: bool | type[Absent] = Absent
     can_warp: bool | type[Absent] = Absent

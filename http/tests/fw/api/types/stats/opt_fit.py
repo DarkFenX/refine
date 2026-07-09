@@ -8,6 +8,7 @@ if typing.TYPE_CHECKING:
     from .opt_dmg import StatsOptionFitDmg
     from .opt_ehp import StatsOptionEhp
     from .opt_incoming_jam import StatsOptionInJam
+    from .opt_jump import StatsOptionJump
     from .opt_mining import StatsOptionFitMining
     from .opt_outgoing_cps import StatsOptionFitOutCps
     from .opt_outgoing_nps import StatsOptionFitOutNps
@@ -78,6 +79,7 @@ class FitStatsOptions:
     mass: bool | type[Absent] = Absent
     warp_speed: bool | type[Absent] = Absent
     max_warp_range: bool | type[Absent] = Absent
+    jump: bool | tuple[bool, list[StatsOptionJump]] | type[Absent] = Absent
     # Ship misc stats
     drone_control_range: bool | type[Absent] = Absent
     can_warp: bool | type[Absent] = Absent
