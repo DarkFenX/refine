@@ -86,6 +86,9 @@ impl Vast {
                     if let Some(sec_class) = item_axt.online_max_sec_class {
                         fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
+                    if service.enables_portal() {
+                        fit_data.portal_enablers.insert(item_uid);
+                    }
                 }
                 _ => (),
             },
@@ -221,6 +224,9 @@ impl Vast {
                     }
                     if item_axt.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
+                    }
+                    if service.enables_portal() {
+                        fit_data.portal_enablers.remove(item_uid);
                     }
                 }
                 _ => (),

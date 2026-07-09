@@ -115,6 +115,9 @@ impl UService {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
+    pub(crate) fn enables_portal(&self) -> bool {
+        self.base.enables_portal()
+    }
 }
 impl LibNamed for UService {
     fn lib_get_name() -> &'static str {

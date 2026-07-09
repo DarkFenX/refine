@@ -281,9 +281,6 @@ impl Vast {
                 if item_axt.enables_conduit {
                     fit_data.conduit_enablers.insert(item_uid);
                 }
-                if ship.enables_portal() {
-                    fit_data.portal_enablers.insert(item_uid);
-                }
                 // Ship/structure modules are not enforced when ship is not set. When we get one,
                 // fill the data container up
                 for item_uid in chain!(
@@ -533,9 +530,6 @@ impl Vast {
                 }
                 if item_axt.enables_conduit {
                     fit_data.conduit_enablers.remove(item_uid);
-                }
-                if ship.enables_portal() {
-                    fit_data.portal_enablers.remove(item_uid);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.clear();
             }

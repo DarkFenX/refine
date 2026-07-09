@@ -141,9 +141,6 @@ impl UShip {
     pub(crate) fn get_disallowed_in_wspace(&self) -> Option<bool> {
         self.base.get_disallowed_in_wspace()
     }
-    pub(crate) fn enables_portal(&self) -> bool {
-        self.base.enables_portal()
-    }
     pub(crate) fn get_r_kind(&self) -> Option<RShipKind> {
         self.base.get_r_ship_kind()
     }

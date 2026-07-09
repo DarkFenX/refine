@@ -3,7 +3,7 @@ use crate::{
     nd::NItem,
 };
 
-const ITEM_AID: AItemId = AItemId::ANSIBLEX_JUMP_BRIDGE;
+const ITEM_AID: AItemId = AItemId::STANDUP_CONDUIT_GENERATOR;
 
 pub(in crate::nd::item) fn mk_n_item() -> NItem {
     NItem {
