@@ -113,10 +113,10 @@ impl<'de> Deserialize<'de> for HStatJumpRange {
             where
                 E: serde::de::Error,
             {
-                if v == "max" {
-                    return Ok(Self::Value::Max);
+                match v {
+                    "max" => Ok(Self::Value::Max),
+                    _ => Err(serde::de::Error::custom("unexpected string value")),
                 }
-                Err(serde::de::Error::custom("unexpected string value"))
             }
         }
         deserializer.deserialize_any(HStatJumpRangeVisitor)

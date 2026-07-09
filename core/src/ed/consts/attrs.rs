@@ -335,6 +335,7 @@ impl EAttrId {
     pub(crate) const CONDUIT_JUMP_PASSENGER_COUNT: Self = Self::from_i32(3133);
     pub(crate) const MINING_WASTED_VOLUME_MULT: Self = Self::from_i32(3153);
     pub(crate) const MINING_WASTE_PROBABILITY: Self = Self::from_i32(3154);
+    pub(crate) const JUMP_CONDUIT_PASSENGER_REQUIRED_ATTR_ID: Self = Self::from_i32(3321);
     pub(crate) const DOOMSDAY_APPLIED_DBUFF_DURATION: Self = Self::from_i32(5412);
     pub(crate) const DISALLOW_IN_HAZARD: Self = Self::from_i32(5561);
     pub(crate) const ALLOW_IN_FULLY_CORRUPTED_LOWSEC: Self = Self::from_i32(5599);

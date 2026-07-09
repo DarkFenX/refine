@@ -169,6 +169,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) hisec_modifier: Option<RAttrId>,
     pub(crate) hp: Option<RAttrId>,
     pub(crate) implantness: Option<RAttrId>,
+    pub(crate) jump_conduit_passenger_required_attr_id: Option<RAttrId>,
     pub(crate) jump_drive_consumption_amount: Option<RAttrId>,
     pub(crate) jump_drive_consumption_type: Option<RAttrId>,
     pub(crate) jump_drive_range: Option<RAttrId>,
@@ -471,6 +472,9 @@ impl RAttrConsts {
             hisec_modifier: attr_aid_rid_map.get(&AAttrId::HISEC_MODIFIER).copied(),
             hp: attr_aid_rid_map.get(&AAttrId::HP).copied(),
             implantness: attr_aid_rid_map.get(&AAttrId::IMPLANTNESS).copied(),
+            jump_conduit_passenger_required_attr_id: attr_aid_rid_map
+                .get(&AAttrId::JUMP_CONDUIT_PASSENGER_REQUIRED_ATTR_ID)
+                .copied(),
             jump_drive_consumption_amount: attr_aid_rid_map.get(&AAttrId::JUMP_DRIVE_CONSUMPTION_AMOUNT).copied(),
             jump_drive_consumption_type: attr_aid_rid_map.get(&AAttrId::JUMP_DRIVE_CONSUMPTION_TYPE).copied(),
             jump_drive_range: attr_aid_rid_map.get(&AAttrId::JUMP_DRIVE_RANGE).copied(),

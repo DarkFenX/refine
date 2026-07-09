@@ -165,18 +165,18 @@ def test_self_struct(client, consts):
 
 
 def test_conduit_ship_flag_values(client, consts):
-    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
-    eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
-    eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
+    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
+    eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
+    eve_conduit_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
     eve_fuel_id = client.mk_eve_item()
 
     def mk_eve_ship(*, conduit_flag: float | None) -> int:
         attrs = {
             eve_range_attr_id: 5,
             eve_fuel_type_attr_id: eve_fuel_id,
-            eve_fuel_use_attr_id: 3000,
+            eve_conduit_fuel_use_attr_id: 3000,
             eve_conduit_count_attr_id: 30}
         if conduit_flag is not None:
             attrs[eve_conduit_flag_attr_id] = conduit_flag
@@ -251,11 +251,11 @@ def test_conduit_ship_flag_values(client, consts):
 
 
 def test_conduit_bridge_flag_values(client, consts):
-    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
-    eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
-    eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
+    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
+    eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
+    eve_conduit_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
     eve_fuel_id = client.mk_eve_item()
     eve_bridge1_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
     eve_bridge2_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: -0.1})
@@ -266,7 +266,7 @@ def test_conduit_bridge_flag_values(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_range_attr_id: 5,
         eve_fuel_type_attr_id: eve_fuel_id,
-        eve_fuel_use_attr_id: 3000,
+        eve_conduit_fuel_use_attr_id: 3000,
         eve_conduit_count_attr_id: 30})
     client.create_sources()
     api_sol = client.create_sol()
@@ -350,6 +350,64 @@ def test_conduit_bridge_flag_values(client, consts):
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.conduit  # noqa: B018
+
+
+def test_conduit_passenger(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
+    eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
+    eve_conduit_pass_attr_id = client.mk_eve_attr()
+    eve_conduit_pass_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_conduit_passenger_required_attr_id)
+    eve_conduit_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
+    eve_fuel_id = client.mk_eve_item()
+    eve_main_bridge_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
+    eve_main_ship_id = client.mk_eve_ship(attrs={
+        eve_range_attr_id: 5,
+        eve_fuel_type_attr_id: eve_fuel_id,
+        eve_conduit_pass_ref_attr_id: eve_conduit_pass_attr_id,
+        eve_conduit_fuel_use_attr_id: 3000,
+        eve_conduit_count_attr_id: 30})
+    eve_pass_enabled_id = client.mk_eve_ship(attrs={eve_conduit_pass_attr_id: 1})
+    eve_pass_disabled_id = client.mk_eve_ship(attrs={eve_conduit_pass_attr_id: 0})
+    eve_pass_not_set_id = client.mk_eve_ship()
+    eve_pass_not_loaded_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit_main = api_sol.create_fit()
+    api_ship_main = api_fit_main.set_ship(type_id=eve_main_ship_id)
+    api_fit_main.add_module(type_id=eve_main_bridge_id, state=consts.ApiModuleState.online)
+    api_fit_pass_enabled = api_sol.create_fit()
+    api_fit_pass_enabled.set_ship(type_id=eve_pass_enabled_id)
+    api_fit_pass_disabled = api_sol.create_fit()
+    api_fit_pass_disabled.set_ship(type_id=eve_pass_disabled_id)
+    api_fit_pass_not_set = api_sol.create_fit()
+    api_fit_pass_not_set.set_ship(type_id=eve_pass_not_set_id)
+    api_fit_pass_not_loaded = api_sol.create_fit()
+    api_fit_pass_not_loaded.set_ship(type_id=eve_pass_not_loaded_id)
+    # Verification
+    api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
+        jump=(True, [StatsOptionJump(passenger_fit_ids=[
+            api_fit_pass_enabled.id,
+            api_fit_pass_disabled.id,
+            api_fit_pass_not_set.id,
+            api_fit_pass_not_loaded.id])])))
+    api_fit_main_passengers = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
+    assert api_fit_main_passengers[api_fit_pass_enabled.id] == 0
+    assert api_fit_main_passengers[api_fit_pass_disabled.id] is None
+    assert api_fit_main_passengers[api_fit_pass_not_set.id] is None
+    assert api_fit_main_passengers[api_fit_pass_not_loaded.id] is None
+    api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
+        jump=(True, [StatsOptionJump(passenger_fit_ids=[
+            api_fit_pass_enabled.id,
+            api_fit_pass_disabled.id,
+            api_fit_pass_not_set.id,
+            api_fit_pass_not_loaded.id])])))
+    api_ship_main_passengers = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
+    assert api_ship_main_passengers[api_fit_pass_enabled.id] == 0
+    assert api_ship_main_passengers[api_fit_pass_disabled.id] is None
+    assert api_ship_main_passengers[api_fit_pass_not_set.id] is None
+    assert api_ship_main_passengers[api_fit_pass_not_loaded.id] is None
 
 
 def test_not_requested(client, consts):

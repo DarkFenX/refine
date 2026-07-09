@@ -13,6 +13,7 @@ pub(in crate::svc) fn is_oattr_flag_set(
 ) -> Option<bool> {
     is_attr_flag_set(ctx, calc, item_uid, attr_rid?)
 }
+
 pub(in crate::svc) fn is_attr_flag_set(
     ctx: SvcCtx,
     calc: &mut Calc,

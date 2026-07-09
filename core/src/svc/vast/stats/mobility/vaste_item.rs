@@ -1,11 +1,12 @@
 use super::{
     option::StatJumpRange,
-    stat::{StatJump, StatJumpConduit, StatJumpSelf},
+    stat::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpSelf},
 };
 use crate::{
-    Count,
+    ad::AAttrId,
     api::ItemTypeId,
-    num::{PValue, Value},
+    num::{Count, PValue, Value},
+    rd::RAttrId,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -19,7 +20,7 @@ use crate::{
             },
         },
     },
-    ud::{UFitId, UItemId, UShip, UShipKind},
+    ud::{UFit, UFitId, UItemId, UShip, UShipKind},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -189,6 +190,7 @@ impl Vast {
             });
         }
         let fit_data = self.get_fit_data(ship.get_fit_uid());
+        // Expose conduit stats only if fit has any conduit enablers (ship or online bridges)
         if !fit_data.conduit_enablers.is_empty() {
             let conduit_fuel_need = calc.get_item_oattr_ffb_extra(
                 ctx,
@@ -202,12 +204,49 @@ impl Vast {
                 ctx.ac().conduit_jump_passenger_count,
                 Value::ZERO,
             ));
+            let mut passengers = Vec::with_capacity(passenger_fit_uids.len());
+            if !passenger_fit_uids.is_empty() {
+                let pass_attr_rid =
+                    get_pass_attr_rid(ctx, calc, ship_uid, ctx.ac().jump_conduit_passenger_required_attr_id);
+                for &passenger_fit_uid in passenger_fit_uids {
+                    let passenger_u_fit = ctx.u_data.fits.get(passenger_fit_uid);
+                    let passenger = match is_passenger(ctx, calc, passenger_u_fit, pass_attr_rid) {
+                        true => StatJumpPassenger {
+                            fit_id: passenger_u_fit.id,
+                            fuel_use: Some(Count::ZERO),
+                        },
+                        false => StatJumpPassenger {
+                            fit_id: passenger_u_fit.id,
+                            fuel_use: None,
+                        },
+                    };
+                    passengers.push(passenger);
+                }
+            }
             stat.jump_conduit = Some(StatJumpConduit {
                 max_passengers,
                 fuel_use_self: Count::from_value_ceiled(conduit_fuel_need * range),
-                fuel_use_passengers: Vec::new(),
+                fuel_use_passengers: passengers,
             })
         }
         Some(stat)
     }
+}
+
+fn get_pass_attr_rid(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    item_uid: UItemId,
+    ref_attr_rid: Option<RAttrId>,
+) -> Option<RAttrId> {
+    let ref_val = calc.get_item_attr_oextra(ctx, item_uid, ref_attr_rid?)?;
+    let pass_attr_aid = AAttrId::try_eve_from_f64_rounded(ref_val.into_f64())?;
+    ctx.u_data.r_data.get_attr_rid_by_aid(&pass_attr_aid)
+}
+
+fn is_passenger(ctx: SvcCtx, calc: &mut Calc, pass_fit: &UFit, pass_attr_rid: Option<RAttrId>) -> bool {
+    let Some(pass_ship_uid) = pass_fit.ship else {
+        return false;
+    };
+    funcs::is_oattr_flag_set(ctx, calc, pass_ship_uid, pass_attr_rid).unwrap_or(false)
 }
