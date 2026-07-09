@@ -19,7 +19,7 @@ use crate::{
             },
         },
     },
-    ud::{UFitId, UItemId, UShip},
+    ud::{UFitId, UItemId, UShip, UShipKind},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -179,11 +179,15 @@ impl Vast {
             },
             StatJumpRange::Max => max_range,
         };
-        let self_fuel_need =
-            calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO);
-        stat.jump_self = Some(StatJumpSelf {
-            fuel_use: Count::from_value_ceiled(self_fuel_need * range),
-        });
+        // Make self-jump stat for all ships with jump drive, except of structure kind, not to
+        // expose self-jump stats for ansiblexes
+        if !matches!(ship.get_kind(), UShipKind::Structure) {
+            let self_fuel_need =
+                calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO);
+            stat.jump_self = Some(StatJumpSelf {
+                fuel_use: Count::from_value_ceiled(self_fuel_need * range),
+            });
+        }
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.conduit_enablers.is_empty() {
             let conduit_fuel_need = calc.get_item_oattr_ffb_extra(

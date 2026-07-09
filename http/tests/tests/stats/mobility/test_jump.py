@@ -85,7 +85,7 @@ def test_general_fuel_type_values(client, consts):
     assert api_ship_stats.jump is None
 
 
-def test_self_ranges(client, consts):
+def test_self_ship_ranges(client, consts):
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
     eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_amount)
@@ -140,6 +140,28 @@ def test_self_ranges(client, consts):
     assert api_ship_jump_low.self.fuel_use == approx(300)
     assert api_ship_jump_zero.self.fuel_use == approx(0)
     assert api_ship_jump_rounding.self.fuel_use == approx(3001)
+
+
+def test_self_struct(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_amount)
+    eve_fuel_id = client.mk_eve_item()
+    eve_struct_id = client.mk_eve_struct(
+        attrs={eve_range_attr_id: 5, eve_fuel_type_attr_id: eve_fuel_id, eve_fuel_use_attr_id: 3000})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_struct = api_fit.set_ship(type_id=eve_struct_id)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    api_fit_jump_stat = api_fit_stats.jump.one()
+    with check_no_field():
+        api_fit_jump_stat.self  # noqa: B018
+    api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(jump=True))
+    api_struct_jump_stat = api_struct_stats.jump.one()
+    with check_no_field():
+        api_struct_jump_stat.self  # noqa: B018
 
 
 def test_conduit_ship_flag_values(client, consts):
