@@ -1,5 +1,4 @@
 use crate::{
-    num::PValue,
     rd::RAttrId,
     svc::{SvcCtx, calc::Calc},
     ud::UItemId,
@@ -21,5 +20,5 @@ pub(in crate::svc) fn is_attr_flag_set(
     attr_rid: RAttrId,
 ) -> Option<bool> {
     calc.get_item_attr_oextra(ctx, item_uid, attr_rid)
-        .map(|v| v.abs() > PValue::FLOAT_TOLERANCE)
+        .map(|v| v.is_flag_set())
 }

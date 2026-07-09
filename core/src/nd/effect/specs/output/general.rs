@@ -85,7 +85,10 @@ fn get_attr(
 
 fn get_neut_nosf(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, effect: &REffect) -> Option<Output<PValue>> {
     // Not a blood raider ship - not considered as a neut
-    if calc.get_item_oattr_oextra(ctx, item_uid, ctx.ac().nos_override)?.abs() < PValue::FLOAT_TOLERANCE {
+    if !calc
+        .get_item_oattr_oextra(ctx, item_uid, ctx.ac().nos_override)?
+        .is_flag_set()
+    {
         return None;
     }
     get_attr(ctx, calc, item_uid, effect, ctx.ac().power_transfer_amount, false)

@@ -577,6 +577,9 @@ impl VastFitData {
         for item_uid in self.conduit_enablers.iter() {
             item_uid.consistency_check(u_data, true)?;
         }
+        for item_uid in self.portal_enablers.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
         Ok(())
     }
 }

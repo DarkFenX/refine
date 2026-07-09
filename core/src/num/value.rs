@@ -121,6 +121,10 @@ impl Value {
     pub(crate) fn perc_change_to_mult(self) -> Self {
         Self(self.0 / 100.0 + 1.0)
     }
+    // Lib-specific function, moved here since there is no better place for it
+    pub(crate) fn is_flag_set(self) -> bool {
+        self.abs() > PValue::FLOAT_TOLERANCE
+    }
 }
 impl std::ops::Neg for Value {
     type Output = Value;

@@ -15,9 +15,11 @@ pub(crate) use effect::{
     NEffectNeutKind, NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec,
     NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs, NEffectTime,
 };
+pub(crate) use item::{N_ITEM_MAP, NItem};
 pub(crate) use item_list::{N_ITEM_LIST_MAP, NItemList};
 
 mod attr;
 mod buff;
 mod effect;
+mod item;
 mod item_list;

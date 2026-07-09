@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    num::{PValue, Value},
+    num::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -35,7 +35,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_jump_fuel_type_id(
     attr_consts
         .jump_drive_consumption_type
         .and_then(|attr_rid| item_attrs.get(&attr_rid))
-        .and_then(|v| AItemId::try_from_f64_rounded(v.into_f64()))
+        .and_then(|value| AItemId::try_from_f64_rounded(value.into_f64()))
 }
 
 pub(in crate::rd::data::item::attr_extras) fn get_enables_conduit(
@@ -43,7 +43,17 @@ pub(in crate::rd::data::item::attr_extras) fn get_enables_conduit(
     attr_consts: &RAttrConsts,
 ) -> bool {
     match attr_consts.enable_perform_conduit_jump.and_then(|v| item_attrs.get(&v)) {
-        Some(&val) => val.abs() > PValue::FLOAT_TOLERANCE,
+        Some(&value) => value.is_flag_set(),
+        None => false,
+    }
+}
+
+pub(in crate::rd::data::item::attr_extras) fn get_enables_portal(
+    item_attrs: &RMap<RAttrId, Value>,
+    attr_consts: &RAttrConsts,
+) -> bool {
+    match attr_consts.enable_open_jump_portal.and_then(|v| item_attrs.get(&v)) {
+        Some(&value) => value.is_flag_set(),
         None => false,
     }
 }

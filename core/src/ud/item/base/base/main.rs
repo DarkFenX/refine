@@ -152,6 +152,12 @@ impl UItemBase {
             None => false,
         }
     }
+    pub(in crate::ud::item) fn enables_portal(&self) -> bool {
+        match self.base_get_r_item() {
+            Some(r_item) => r_item.enables_portal,
+            None => false,
+        }
+    }
     // Misc methods
     pub(in crate::ud::item) fn get_state(&self) -> RState {
         self.state

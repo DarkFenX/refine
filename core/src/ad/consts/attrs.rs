@@ -362,6 +362,7 @@ impl AAttrId {
     pub(crate) const REP_MULT_BONUS_MAX: Self = Self::from_eid(EAttrId::REP_MULT_BONUS_MAX);
     pub(crate) const ECM_JAM_DURATION: Self = Self::from_eid(EAttrId::ECM_JAM_DURATION);
     pub(crate) const STABILIZE_CLOAK_DURATION: Self = Self::from_eid(EAttrId::STABILIZE_CLOAK_DURATION);
+    pub(crate) const ENABLE_OPEN_JUMP_PORTAL: Self = Self::from_eid(EAttrId::ENABLE_OPEN_JUMP_PORTAL);
     pub(crate) const ENABLE_PERFORM_CONDUIT_JUMP: Self = Self::from_eid(EAttrId::ENABLE_PERFORM_CONDUIT_JUMP);
     pub(crate) const CONDUIT_JUMP_DRIVE_CONSUMPTION_AMOUNT: Self =
         Self::from_eid(EAttrId::CONDUIT_JUMP_DRIVE_CONSUMPTION_AMOUNT);

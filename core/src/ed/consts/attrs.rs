@@ -330,6 +330,7 @@ impl EAttrId {
     pub(crate) const REP_MULT_BONUS_MAX: Self = Self::from_i32(2797);
     pub(crate) const ECM_JAM_DURATION: Self = Self::from_i32(2822);
     pub(crate) const STABILIZE_CLOAK_DURATION: Self = Self::from_i32(3118);
+    pub(crate) const ENABLE_OPEN_JUMP_PORTAL: Self = Self::from_i32(3125);
     pub(crate) const ENABLE_PERFORM_CONDUIT_JUMP: Self = Self::from_i32(3126);
     pub(crate) const CONDUIT_JUMP_DRIVE_CONSUMPTION_AMOUNT: Self = Self::from_i32(3131);
     pub(crate) const CONDUIT_JUMP_PASSENGER_COUNT: Self = Self::from_i32(3133);

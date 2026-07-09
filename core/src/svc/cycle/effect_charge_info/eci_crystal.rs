@@ -35,9 +35,8 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
     let attr_consts = ctx.ac();
     if charge_attrs
         .get_opt(attr_consts.crystals_get_damaged)
-        .map(|v| v.abs())
-        .unwrap_or(PValue::ZERO)
-        < PValue::FLOAT_TOLERANCE
+        .map(|v| !v.is_flag_set())
+        .unwrap_or(true)
     {
         return InfCount::Infinite;
     }

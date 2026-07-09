@@ -125,6 +125,9 @@ impl Vast {
                         fit_data.sec_zone_active.insert(item_uid);
                     }
                     fit_data.mods_active.insert(item_uid);
+                    if item_axt.enables_portal {
+                        fit_data.portal_enablers.insert(item_uid);
+                    }
                 }
                 _ => (),
             },
@@ -249,6 +252,9 @@ impl Vast {
                         fit_data.sec_zone_active.remove(item_uid);
                     }
                     fit_data.mods_active.remove(item_uid);
+                    if item_axt.enables_portal {
+                        fit_data.portal_enablers.remove(item_uid);
+                    }
                 }
                 _ => (),
             },

@@ -178,6 +178,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) mod_effects_disallow_tether: RSet<EffectSpec>,
     // Stats-related - misc
     pub(in crate::svc::vast) conduit_enablers: RSet<UItemId>,
+    pub(in crate::svc::vast) portal_enablers: RSet<UItemId>,
 }
 impl VastFitData {
     pub(in crate::svc) fn new() -> Self {
@@ -291,6 +292,7 @@ impl VastFitData {
             mod_effects_disallow_tether: RSet::new(),
             // Stats-related - misc
             conduit_enablers: RSet::new(),
+            portal_enablers: RSet::new(),
         }
     }
 }

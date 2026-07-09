@@ -38,6 +38,7 @@ pub(crate) struct RItem {
     pub(crate) is_cloak: bool,
     pub(crate) is_ice_harvester: bool,
     pub(crate) disallowed_in_wspace: bool,
+    pub(crate) enables_portal: bool,
     pub(crate) axt: RItemAXt,
 }
 impl LibGetId<AItemId> for RItem {
@@ -68,6 +69,7 @@ impl RItem {
             is_cloak: a_item.is_cloak,
             is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
+            enables_portal: a_item.enables_portal,
             // Fields which depend on data not available during instantiation
             attrs: Default::default(),
             effects: Default::default(),

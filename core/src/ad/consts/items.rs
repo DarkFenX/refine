@@ -28,6 +28,7 @@ impl AItemId {
     pub(crate) const HECATE_DEFENSE_MODE: Self = Self::from_eid(EItemId::HECATE_DEFENSE_MODE);
     pub(crate) const HECATE_PROPULSION_MODE: Self = Self::from_eid(EItemId::HECATE_PROPULSION_MODE);
     pub(crate) const HECATE_SHARPSHOOTER_MODE: Self = Self::from_eid(EItemId::HECATE_SHARPSHOOTER_MODE);
+    pub(crate) const ANSIBLEX_JUMP_BRIDGE: Self = Self::from_eid(EItemId::ANSIBLEX_JUMP_BRIDGE);
     pub(crate) const STASIS_WEBIFICATION_PROBE: Self = Self::from_eid(EItemId::STASIS_WEBIFICATION_PROBE);
     pub(crate) const CAPITAL_MICRO_JUMP_DRIVE_OPERATION: Self =
         Self::from_eid(EItemId::CAPITAL_MICRO_JUMP_DRIVE_OPERATION);
