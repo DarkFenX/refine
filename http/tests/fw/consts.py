@@ -386,6 +386,7 @@ class EveAttr(IntEnum):
     disallow_offensive_modifiers = 872
     sig_radius_bonus_percent = 973
     max_group_online = 978
+    jump_portal_consumption_mass_factor = 1001
     disallow_repeating_activation = 1014
     disallow_in_empire_space = 1074
     boosterness = 1087
@@ -554,6 +555,7 @@ class EveAttr(IntEnum):
     ftr_sq_is_st_support = 2741
     ftr_sq_is_st_heavy = 2742
     can_fit_ship_type11 = 2758
+    jump_portal_additional_consumption = 2793
     repair_mult_bonus_per_cycle = 2796
     repair_mult_bonus_max = 2797
     ecm_jam_duration = 2822
