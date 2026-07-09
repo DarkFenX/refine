@@ -48,7 +48,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_enables_conduit(
     }
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_enables_bridge(
+pub(in crate::rd::data::item::attr_extras) fn get_enables_portal(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

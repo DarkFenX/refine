@@ -21,5 +21,5 @@ pub struct AItem {
     pub is_cloak: bool,
     pub is_ice_harvester: bool,
     pub disallowed_in_wspace: bool,
-    pub enables_bridge: bool,
+    pub enables_portal: bool,
 }

@@ -86,8 +86,8 @@ impl Vast {
                     if let Some(sec_class) = item_axt.online_max_sec_class {
                         fit_data.sec_zone_online_class.insert(item_uid, sec_class);
                     }
-                    if service.enables_bridge() {
-                        fit_data.bridge_enablers.insert(item_uid);
+                    if service.enables_portal() {
+                        fit_data.portal_enablers.insert(item_uid);
                     }
                 }
                 _ => (),
@@ -128,8 +128,8 @@ impl Vast {
                         fit_data.sec_zone_active.insert(item_uid);
                     }
                     fit_data.mods_active.insert(item_uid);
-                    if item_axt.enables_bridge {
-                        fit_data.bridge_enablers.insert(item_uid);
+                    if item_axt.enables_portal {
+                        fit_data.portal_enablers.insert(item_uid);
                     }
                 }
                 _ => (),
@@ -225,8 +225,8 @@ impl Vast {
                     if item_axt.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
                     }
-                    if service.enables_bridge() {
-                        fit_data.bridge_enablers.remove(item_uid);
+                    if service.enables_portal() {
+                        fit_data.portal_enablers.remove(item_uid);
                     }
                 }
                 _ => (),
@@ -258,8 +258,8 @@ impl Vast {
                         fit_data.sec_zone_active.remove(item_uid);
                     }
                     fit_data.mods_active.remove(item_uid);
-                    if item_axt.enables_bridge {
-                        fit_data.bridge_enablers.remove(item_uid);
+                    if item_axt.enables_portal {
+                        fit_data.portal_enablers.remove(item_uid);
                     }
                 }
                 _ => (),

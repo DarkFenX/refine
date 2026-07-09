@@ -1,5 +1,5 @@
 pub use option::StatJumpRange;
-pub use stat::{StatJump, StatJumpBridge, StatJumpConduit, StatJumpPassenger, StatJumpSelf};
+pub use stat::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpSelf};
 
 mod option;
 mod stat;

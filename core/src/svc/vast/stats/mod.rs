@@ -5,7 +5,7 @@ pub use cap::{
 pub(crate) use cap::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
-pub use jump::{StatJump, StatJumpBridge, StatJumpConduit, StatJumpPassenger, StatJumpRange, StatJumpSelf};
+pub use jump::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf};
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};

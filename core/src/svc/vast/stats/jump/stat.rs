@@ -10,7 +10,7 @@ pub struct StatJump {
     pub fuel_type_id: ItemTypeId,
     pub jump_self: Option<StatJumpSelf>,
     pub jump_conduit: Option<StatJumpConduit>,
-    pub jump_bridges: Vec<StatJumpBridge>,
+    pub jump_portals: Vec<StatJumpPortal>,
 }
 
 #[derive(Copy, Clone)]
@@ -26,7 +26,7 @@ pub struct StatJumpConduit {
 }
 
 #[derive(Clone)]
-pub struct StatJumpBridge {
+pub struct StatJumpPortal {
     pub item_id: ItemId,
     pub fuel_use_passengers: Vec<StatJumpPassenger>,
 }

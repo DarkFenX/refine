@@ -1,6 +1,6 @@
 use super::{
     option::StatJumpRange,
-    stat::{StatJump, StatJumpBridge, StatJumpConduit, StatJumpPassenger, StatJumpSelf},
+    stat::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpSelf},
 };
 use crate::{
     ad::AAttrId,
@@ -53,7 +53,7 @@ impl Vast {
             fuel_type_id,
             jump_self: None,
             jump_conduit: None,
-            jump_bridges: Vec::new(),
+            jump_portals: Vec::new(),
         };
         let range = match range {
             // If requested range was higher than item allows, exclude all the jump stats besides
@@ -70,17 +70,17 @@ impl Vast {
             stat.jump_self = Some(get_stat_jump_self(ctx, calc, ship_uid, range));
         }
         let fit_data = self.get_fit_data(ship.get_fit_uid());
-        // Expose conduit stats only if fit has any conduit enablers (ship or online bridges)
+        // Expose conduit stats only if fit has any conduit enablers (ship or online portals)
         if !fit_data.conduit_enablers.is_empty() {
             stat.jump_conduit = Some(get_stat_jump_conduit(ctx, calc, ship_uid, range, psg_fit_uids));
         }
-        // Expose bridge stats, one entry per bridge enabler, since some properties depend on bridge
-        for &bridge_uid in fit_data.bridge_enablers.iter() {
-            stat.jump_bridges.push(get_stat_jump_bridge(
+        // Expose portal stats, one entry per portal enabler, since some properties depend on portal
+        for &portal_uid in fit_data.portal_enablers.iter() {
+            stat.jump_portals.push(get_stat_jump_portal(
                 ctx,
                 calc,
                 ship_uid,
-                bridge_uid,
+                portal_uid,
                 range,
                 psg_fit_uids,
             ));
@@ -134,14 +134,14 @@ fn get_stat_jump_conduit(
         fuel_use_passengers: psgs,
     }
 }
-fn get_stat_jump_bridge(
+fn get_stat_jump_portal(
     ctx: SvcCtx,
     calc: &mut Calc,
     ship_uid: UItemId,
-    bridge_uid: UItemId,
+    portal_uid: UItemId,
     range: PValue,
     psg_fit_uids: &[UFitId],
-) -> StatJumpBridge {
+) -> StatJumpPortal {
     let mut psgs = Vec::with_capacity(psg_fit_uids.len());
     if !psg_fit_uids.is_empty() {
         let mass_limit = match PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
@@ -191,8 +191,8 @@ fn get_stat_jump_bridge(
             });
         }
     }
-    StatJumpBridge {
-        item_id: ctx.u_data.items.get(bridge_uid).get_item_id(),
+    StatJumpPortal {
+        item_id: ctx.u_data.items.get(portal_uid).get_item_id(),
         fuel_use_passengers: psgs,
     }
 }

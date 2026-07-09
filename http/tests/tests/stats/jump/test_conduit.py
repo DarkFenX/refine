@@ -83,7 +83,7 @@ def test_passenger_status(client, consts):
     eve_psg_effect_id = client.mk_eve_effect(mod_info=[eve_psg_mod])
     eve_subsystem_id = client.mk_eve_item(attrs={eve_psg_mod_attr_id: 1}, eff_ids=[eve_psg_effect_id])
     eve_fuel_id = client.mk_eve_item()
-    eve_main_bridge_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
+    eve_main_portal_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
     eve_main_ship_id = client.mk_eve_ship(attrs={
         eve_range_attr_id: 5,
         eve_fuel_type_attr_id: eve_fuel_id,
@@ -98,7 +98,7 @@ def test_passenger_status(client, consts):
     api_sol = client.create_sol()
     api_fit_main = api_sol.create_fit()
     api_ship_main = api_fit_main.set_ship(type_id=eve_main_ship_id)
-    api_fit_main.add_module(type_id=eve_main_bridge_id, state=consts.ApiModuleState.online)
+    api_fit_main.add_module(type_id=eve_main_portal_id, state=consts.ApiModuleState.online)
     api_fit_psg_enabled = api_sol.create_fit()
     api_fit_psg_enabled.set_ship(type_id=eve_psg_enabled_id)
     api_fit_psg_disabled = api_sol.create_fit()
@@ -262,19 +262,19 @@ def test_attr_conduit_flag_values_ship(client, consts):
         api_ship_jump_stats.conduit  # noqa: B018
 
 
-def test_attr_conduit_flag_values_bridge(client, consts):
+def test_attr_conduit_flag_values_portal(client, consts):
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
     eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
     eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
     eve_conduit_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
     eve_fuel_id = client.mk_eve_item()
-    eve_bridge1_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
-    eve_bridge2_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: -0.1})
-    eve_bridge3_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 0.1})
-    eve_bridge4_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 55})
-    eve_bridge5_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 0})
-    eve_bridge6_id = client.mk_eve_item()
+    eve_portal1_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
+    eve_portal2_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: -0.1})
+    eve_portal3_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 0.1})
+    eve_portal4_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 55})
+    eve_portal5_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 0})
+    eve_portal6_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={
         eve_range_attr_id: 5,
         eve_fuel_type_attr_id: eve_fuel_id,
@@ -284,7 +284,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification - no conduit without bridge
+    # Verification - no conduit without portal
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
@@ -294,8 +294,8 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     with check_no_field():
         api_ship_jump_stats.conduit  # noqa: B018
     # Action
-    api_bridge = api_fit.add_module(type_id=eve_bridge1_id, state=consts.ApiModuleState.offline)
-    # Verification - bridge needs to be at least online to make conduit work
+    api_portal = api_fit.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.offline)
+    # Verification - portal needs to be at least online to make conduit work
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
@@ -305,7 +305,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     with check_no_field():
         api_ship_jump_stats.conduit  # noqa: B018
     # Action
-    api_bridge.change_module(state=consts.ApiModuleState.online)
+    api_portal.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     assert api_fit_stats.jump.one().conduit.max_passengers == approx(30)
@@ -314,7 +314,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     assert api_ship_stats.jump.one().conduit.max_passengers == approx(30)
     assert api_ship_stats.jump.one().conduit.fuel_use_self == approx(15000)
     # Action
-    api_bridge.change_module(type_id=eve_bridge2_id)
+    api_portal.change_module(type_id=eve_portal2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     assert api_fit_stats.jump.one().conduit.max_passengers == approx(30)
@@ -323,7 +323,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     assert api_ship_stats.jump.one().conduit.max_passengers == approx(30)
     assert api_ship_stats.jump.one().conduit.fuel_use_self == approx(15000)
     # Action
-    api_bridge.change_module(type_id=eve_bridge3_id)
+    api_portal.change_module(type_id=eve_portal3_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     assert api_fit_stats.jump.one().conduit.max_passengers == approx(30)
@@ -332,7 +332,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     assert api_ship_stats.jump.one().conduit.max_passengers == approx(30)
     assert api_ship_stats.jump.one().conduit.fuel_use_self == approx(15000)
     # Action
-    api_bridge.change_module(type_id=eve_bridge4_id)
+    api_portal.change_module(type_id=eve_portal4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     assert api_fit_stats.jump.one().conduit.max_passengers == approx(30)
@@ -341,7 +341,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     assert api_ship_stats.jump.one().conduit.max_passengers == approx(30)
     assert api_ship_stats.jump.one().conduit.fuel_use_self == approx(15000)
     # Action
-    api_bridge.change_module(type_id=eve_bridge5_id)
+    api_portal.change_module(type_id=eve_portal5_id)
     # Verification - no conduit with 0 flag
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
@@ -352,7 +352,7 @@ def test_attr_conduit_flag_values_bridge(client, consts):
     with check_no_field():
         api_ship_jump_stats.conduit  # noqa: B018
     # Action
-    api_bridge.change_module(type_id=eve_bridge6_id)
+    api_portal.change_module(type_id=eve_portal6_id)
     # Verification - no conduit with no flag
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()

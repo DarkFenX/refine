@@ -11,8 +11,8 @@ pub(crate) struct HStatJump {
     #[serde(rename = "conduit", skip_serializing_if = "Option::is_none")]
     jump_conduit: Option<HStatJumpConduit>,
     #[serde_as(as = "Map<DisplayFromStr, _>")]
-    #[serde(rename = "bridges", skip_serializing_if = "Vec::is_empty")]
-    jump_bridges: Vec<(rc::ItemId, HStatJumpBridge)>,
+    #[serde(rename = "portals", skip_serializing_if = "Vec::is_empty")]
+    jump_portals: Vec<(rc::ItemId, HStatJumpPortal)>,
 }
 
 #[derive(Serialize)]
@@ -31,7 +31,7 @@ struct HStatJumpConduit {
 
 #[serde_as]
 #[derive(Serialize)]
-struct HStatJumpBridge {
+struct HStatJumpPortal {
     #[serde_as(as = "Map<DisplayFromStr, _>")]
     fuel_use_passengers: Vec<(rc::FitId, Option<u32>)>,
 }
@@ -46,10 +46,10 @@ impl HStatJump {
             fuel_type_id: core_stat.fuel_type_id.into_i32(),
             jump_self: core_stat.jump_self.map(HStatJumpSelf::from_core),
             jump_conduit: core_stat.jump_conduit.map(HStatJumpConduit::from_core),
-            jump_bridges: core_stat
-                .jump_bridges
+            jump_portals: core_stat
+                .jump_portals
                 .into_iter()
-                .map(|v| (v.item_id, HStatJumpBridge::from_core(v)))
+                .map(|v| (v.item_id, HStatJumpPortal::from_core(v)))
                 .collect(),
         }
     }
@@ -71,19 +71,19 @@ impl HStatJumpConduit {
             fuel_use_passengers: core_stat
                 .fuel_use_passengers
                 .into_iter()
-                .map(|pass_info| (pass_info.fit_id, pass_info.fuel_use.map(|v| v.into_u32())))
+                .map(|core_psg| (core_psg.fit_id, core_psg.fuel_use.map(|v| v.into_u32())))
                 .collect(),
         }
     }
 }
 
-impl HStatJumpBridge {
-    fn from_core(core_stat: rc::stats::StatJumpBridge) -> Self {
+impl HStatJumpPortal {
+    fn from_core(core_stat: rc::stats::StatJumpPortal) -> Self {
         Self {
             fuel_use_passengers: core_stat
                 .fuel_use_passengers
                 .into_iter()
-                .map(|fit_info| (fit_info.fit_id, fit_info.fuel_use.map(|v| v.into_u32())))
+                .map(|core_psg| (core_psg.fit_id, core_psg.fuel_use.map(|v| v.into_u32())))
                 .collect(),
         }
     }

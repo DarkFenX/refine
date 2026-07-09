@@ -152,9 +152,9 @@ impl UItemBase {
             None => false,
         }
     }
-    pub(in crate::ud::item) fn enables_bridge(&self) -> bool {
+    pub(in crate::ud::item) fn enables_portal(&self) -> bool {
         match self.base_get_r_item() {
-            Some(r_item) => r_item.enables_bridge,
+            Some(r_item) => r_item.enables_portal,
             None => false,
         }
     }

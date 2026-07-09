@@ -115,8 +115,8 @@ impl UService {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn enables_bridge(&self) -> bool {
-        self.base.enables_bridge()
+    pub(crate) fn enables_portal(&self) -> bool {
+        self.base.enables_portal()
     }
 }
 impl LibNamed for UService {
