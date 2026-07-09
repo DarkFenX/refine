@@ -3,7 +3,7 @@ use std::collections::HashMap;
 use crate::{
     api::ItemTypeId,
     num::{Count, PValue},
-    ud::FitId,
+    ud::{FitId, ItemId},
 };
 
 #[derive(Clone)]
@@ -29,5 +29,6 @@ pub struct StatJumpConduit {
 
 #[derive(Clone)]
 pub struct StatJumpBridge {
+    pub item_id: ItemId,
     pub fuel_use_fit: HashMap<FitId, Option<Count>>,
 }

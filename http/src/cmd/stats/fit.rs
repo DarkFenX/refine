@@ -6,7 +6,7 @@ use crate::{
         stats::options::{
             HStatOption, HStatOptionCapBlc, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionFitDmg,
             HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps, HStatOptionFitOutRps,
-            HStatOptionIncomingJam, HStatOptionRps, HStatResolvedOption,
+            HStatOptionIncomingJam, HStatOptionJump, HStatOptionRps, HStatResolvedOption,
         },
     },
     err::HExecError,
@@ -85,6 +85,7 @@ pub(crate) struct HGetFitStatsCmd {
     mass: Option<bool>,
     warp_speed: Option<bool>,
     max_warp_range: Option<bool>,
+    jump: Option<HStatOption<HStatOptionJump>>,
     // Ship misc stats
     drone_control_range: Option<bool>,
     can_warp: Option<bool>,

@@ -7,7 +7,7 @@ use crate::{
         stats::options::{
             HStatOption, HStatOptionCapBlc, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionIncomingJam,
             HStatOptionItemDmg, HStatOptionItemMining, HStatOptionItemOutCps, HStatOptionItemOutNps,
-            HStatOptionItemOutRps, HStatOptionRps, HStatResolvedOption,
+            HStatOptionItemOutRps, HStatOptionJump, HStatOptionRps, HStatResolvedOption,
         },
     },
     err::HExecError,
@@ -62,6 +62,7 @@ pub(crate) struct HGetItemStatsCmd {
     mass: Option<bool>,
     warp_speed: Option<bool>,
     max_warp_range: Option<bool>,
+    jump: Option<HStatOption<HStatOptionJump>>,
     // Misc
     drone_control_range: Option<bool>,
     can_warp: Option<bool>,
