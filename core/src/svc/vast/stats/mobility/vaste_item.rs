@@ -1,6 +1,5 @@
 use super::{option::StatJumpRange, stat::StatJump};
 use crate::{
-    ad::AItemId,
     api::ItemTypeId,
     num::{PValue, Value},
     svc::{
@@ -16,7 +15,7 @@ use crate::{
             },
         },
     },
-    ud::{UFitId, UItemId},
+    ud::{UFitId, UItemId, UShip},
 };
 
 // Result of calculation of -math.log(0.25) / 1000000 using 64-bit python 2.7
@@ -137,12 +136,12 @@ impl Vast {
         range: StatJumpRange,
         passenger_fit_uids: &[UFitId],
     ) -> Result<Option<StatJump>, StatItemCheckError> {
-        let fit_uid = check_ship(ctx.u_data, item_uid)?.get_fit_uid();
+        let ship = check_ship(ctx.u_data, item_uid)?;
         Ok(Vast::internal_get_stat_item_jump_unchecked(
             ctx,
             calc,
-            fit_uid,
             item_uid,
+            ship,
             range,
             passenger_fit_uids,
         ))
@@ -150,23 +149,19 @@ impl Vast {
     fn internal_get_stat_item_jump_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_uid: UFitId,
-        item_uid: UItemId,
+        ship_uid: UItemId,
+        ship: &UShip,
         range: StatJumpRange,
         passenger_fit_uids: &[UFitId],
     ) -> Option<StatJump> {
+        let fuel_type_id = ItemTypeId::from_aid(ship.get_axt().unwrap().jump_fuel_type_id?);
         let max_range = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().jump_drive_range, Value::ZERO)
+            calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().jump_drive_range, Value::ZERO)
                 .unwrap(),
         );
         if max_range < PValue::FLOAT_TOLERANCE {
             return None;
         }
-        let fuel_type_id = ItemTypeId::from_aid(AItemId::try_from_f64_rounded(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().jump_drive_consumption_type, Value::ZERO)
-                .unwrap()
-                .into_f64(),
-        )?);
         Some(StatJump {
             max_range,
             fuel_type_id,
