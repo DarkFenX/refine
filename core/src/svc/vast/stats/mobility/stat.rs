@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::{
     api::ItemTypeId,
     num::{Count, PValue},
@@ -24,11 +22,17 @@ pub struct StatJumpSelf {
 pub struct StatJumpConduit {
     pub max_passengers: Count,
     pub fuel_use_self: Count,
-    pub fuel_use_fit: HashMap<FitId, Option<Count>>,
+    pub fuel_use_fit: Vec<StatJumpFitInfo>,
 }
 
 #[derive(Clone)]
 pub struct StatJumpBridge {
     pub item_id: ItemId,
-    pub fuel_use_fit: HashMap<FitId, Option<Count>>,
+    pub fuel_use_fit: Vec<StatJumpFitInfo>,
+}
+
+#[derive(Copy, Clone)]
+pub struct StatJumpFitInfo {
+    pub fit_id: FitId,
+    pub fuel_use: Option<Count>,
 }

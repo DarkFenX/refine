@@ -14,8 +14,8 @@ use crate::{
     info::{
         HItemStats,
         stats::{
-            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
-            HStatRps, HStatSensors,
+            HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatJump, HStatMining, HStatOutReps,
+            HStatResists, HStatRps, HStatSensors,
         },
     },
     util::default_true,
@@ -216,6 +216,10 @@ impl HGetItemStatsCmd {
                 .unwrap_or_default()
                 .map(|v| v.into_f64())
                 .into();
+        }
+        let jump_opt = HStatResolvedOption::new(&self.jump, self.default);
+        if jump_opt.enabled {
+            stats.jump = get_jump_stats(&mut core_item, jump_opt.options).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Misc
@@ -475,6 +479,21 @@ fn get_incoming_jam_stats(
         match core_item.get_stat_incoming_jam(core_time_options) {
             Ok(core_stat) => results.push(HStatInJam::from_core(core_stat)),
             Err(_) => return None,
+        }
+    }
+    Some(results)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mobility
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_jump_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionJump>) -> Option<Vec<HStatJump>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_range = option.range.into_core();
+        match core_item.get_stat_jump(core_range, &option.passenger_fit_ids) {
+            Ok(Some(core_stat)) => results.push(HStatJump::from_core(core_stat)),
+            _ => return None,
         }
     }
     Some(results)

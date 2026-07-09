@@ -2,8 +2,8 @@ use serde::Serialize;
 
 use crate::{
     info::stats::details::{
-        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatMining, HStatOutReps, HStatResists,
-        HStatRps, HStatSensors,
+        HStatCapSim, HStatDmg, HStatEhp, HStatErps, HStatHp, HStatInJam, HStatJump, HStatMining, HStatOutReps,
+        HStatResists, HStatRps, HStatSensors,
     },
     util::TriStateField,
 };
@@ -75,6 +75,8 @@ pub(crate) struct HItemStats {
     pub(crate) warp_speed: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) max_warp_range: TriStateField<f64>,
+    #[serde(skip_serializing_if = "TriStateField::is_absent")]
+    pub(crate) jump: TriStateField<Vec<HStatJump>>,
     // Misc
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) drone_control_range: TriStateField<f64>,
@@ -131,6 +133,7 @@ impl HItemStats {
             mass: TriStateField::default(),
             warp_speed: TriStateField::default(),
             max_warp_range: TriStateField::default(),
+            jump: TriStateField::default(),
             // Misc
             drone_control_range: TriStateField::default(),
             can_warp: TriStateField::default(),
