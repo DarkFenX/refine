@@ -91,7 +91,6 @@ impl<'de> Deserialize<'de> for HItemAttrMutationValue {
             {
                 Ok(Self::Value::Absolute(v as f64))
             }
-
             fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
             where
                 E: serde::de::Error,

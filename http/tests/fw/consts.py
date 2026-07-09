@@ -382,6 +382,7 @@ class EveAttr(IntEnum):
     disallow_assistance = 854
     jump_drive_consumption_type = 866
     jump_drive_range = 867
+    jump_drive_consumption_amount = 868
     disallow_offensive_modifiers = 872
     sig_radius_bonus_percent = 973
     max_group_online = 978

@@ -25,6 +25,7 @@ from .stats import (
     StatsOptionItemOutCps,
     StatsOptionItemOutNps,
     StatsOptionItemOutRps,
+    StatsOptionJump,
     StatsOptionRps,
     StatTimeBurst,
     StatTimeSim,

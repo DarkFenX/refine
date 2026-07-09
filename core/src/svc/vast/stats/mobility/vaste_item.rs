@@ -1,5 +1,9 @@
-use super::{option::StatJumpRange, stat::StatJump};
+use super::{
+    option::StatJumpRange,
+    stat::{StatJump, StatJumpSelf},
+};
 use crate::{
+    Count,
     api::ItemTypeId,
     num::{PValue, Value},
     svc::{
@@ -162,12 +166,30 @@ impl Vast {
         if max_range < PValue::FLOAT_TOLERANCE {
             return None;
         }
-        Some(StatJump {
+        let mut stat = StatJump {
             max_range,
             fuel_type_id,
             jump_self: None,
             jump_conduit: None,
             jump_bridge: Vec::new(),
-        })
+        };
+        let range = match range {
+            // If requested range was higher than item allows, exclude all the jump stats besides
+            // basic ones
+            StatJumpRange::LightYears(range) => match range > max_range + PValue::FLOAT_TOLERANCE {
+                true => return Some(stat),
+                false => range,
+            },
+            StatJumpRange::Max => max_range,
+        };
+        if let Some(fuel_need) =
+            calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO)
+            && fuel_need > Value::ZERO
+        {
+            stat.jump_self = Some(StatJumpSelf {
+                fuel_use: Count::from_value_ceiled(range * fuel_need),
+            })
+        }
+        Some(stat)
     }
 }
