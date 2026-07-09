@@ -724,24 +724,24 @@ def test_conduit_attr_pass_ref_rounding(client, consts):
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_fit_main_passengers = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
-    assert api_fit_main_passengers[api_fit_pass.id] is None
+    assert api_fit_main_passengers[api_fit_pass.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_ship_main_passengers = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
-    assert api_ship_main_passengers[api_fit_pass.id] is None
+    assert api_ship_main_passengers[api_fit_pass.id] == 0
     # Action
     api_ship_main.change_ship(type_id=eve_main_ship7_id)
     api_ship_pass.change_ship(type_id=eve_pass_ship2_id)
-    # Verification - even if attributes perfectly match, 0 means an invalid reference in EVE terms,
-    # so passengers are not accepted
+    # Verification - even if attributes do not match, 0 means no reference in EVE terms, so
+    # passengers are accepted
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_fit_main_passengers = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
-    assert api_fit_main_passengers[api_fit_pass.id] is None
+    assert api_fit_main_passengers[api_fit_pass.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_ship_main_passengers = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
-    assert api_ship_main_passengers[api_fit_pass.id] is None
+    assert api_ship_main_passengers[api_fit_pass.id] == 0
 
 
 def test_conduit_attr_pass_ref_absent(client, consts):
@@ -771,11 +771,11 @@ def test_conduit_attr_pass_ref_absent(client, consts):
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_fit_main_passengers = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
-    assert api_fit_main_passengers[api_fit_pass.id] is None
+    assert api_fit_main_passengers[api_fit_pass.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_ship_main_passengers = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
-    assert api_ship_main_passengers[api_fit_pass.id] is None
+    assert api_ship_main_passengers[api_fit_pass.id] == 0
 
 
 def test_conduit_attr_pass_flag_values(client, consts):
@@ -880,6 +880,28 @@ def test_conduit_attr_pass_flag_absent(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_pass.id])])))
     api_ship_main_passengers = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_passengers[api_fit_pass.id] is None
+
+
+def test_ship_not_loaded(client, consts):
+    client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
+    eve_bridge_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_open_jump_portal)
+    client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
+    client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
+    eve_bridge_id = client.mk_eve_item(
+        attrs={eve_conduit_flag_attr_id: 1, eve_bridge_flag_attr_id: 1})
+    eve_ship_id = client.alloc_item_id()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_bridge_id, state=consts.ApiModuleState.active)
+    # Verification - no conduit without bridge
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    assert api_fit_stats.jump is None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    assert api_ship_stats.jump is None
 
 
 def test_not_requested(client, consts):

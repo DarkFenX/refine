@@ -165,6 +165,7 @@ pub(crate) struct RAttrConsts {
     pub(crate) ftr_st_support_slots: Option<RAttrId>,
     pub(crate) ftr_support_slots: Option<RAttrId>,
     pub(crate) ftr_tubes: Option<RAttrId>,
+    pub(crate) gate_max_jump_mass: Option<RAttrId>,
     pub(crate) gate_scramble_status: Option<RAttrId>,
     pub(crate) hi_slots: Option<RAttrId>,
     pub(crate) hisec_modifier: Option<RAttrId>,
@@ -174,6 +175,8 @@ pub(crate) struct RAttrConsts {
     pub(crate) jump_drive_consumption_amount: Option<RAttrId>,
     pub(crate) jump_drive_consumption_type: Option<RAttrId>,
     pub(crate) jump_drive_range: Option<RAttrId>,
+    pub(crate) jump_portal_additional_consumption: Option<RAttrId>,
+    pub(crate) jump_portal_consumption_mass_factor: Option<RAttrId>,
     pub(crate) kin_dmg: Option<RAttrId>,
     pub(crate) kin_dmg_resonance: Option<RAttrId>,
     pub(crate) launcher_group: Option<RAttrId>,
@@ -469,6 +472,7 @@ impl RAttrConsts {
             ftr_st_support_slots: attr_aid_rid_map.get(&AAttrId::FTR_ST_SUPPORT_SLOTS).copied(),
             ftr_support_slots: attr_aid_rid_map.get(&AAttrId::FTR_SUPPORT_SLOTS).copied(),
             ftr_tubes: attr_aid_rid_map.get(&AAttrId::FTR_TUBES).copied(),
+            gate_max_jump_mass: attr_aid_rid_map.get(&AAttrId::GATE_MAX_JUMP_MASS).copied(),
             gate_scramble_status: attr_aid_rid_map.get(&AAttrId::GATE_SCRAMBLE_STATUS).copied(),
             hi_slots: attr_aid_rid_map.get(&AAttrId::HI_SLOTS).copied(),
             hisec_modifier: attr_aid_rid_map.get(&AAttrId::HISEC_MODIFIER).copied(),
@@ -480,6 +484,12 @@ impl RAttrConsts {
             jump_drive_consumption_amount: attr_aid_rid_map.get(&AAttrId::JUMP_DRIVE_CONSUMPTION_AMOUNT).copied(),
             jump_drive_consumption_type: attr_aid_rid_map.get(&AAttrId::JUMP_DRIVE_CONSUMPTION_TYPE).copied(),
             jump_drive_range: attr_aid_rid_map.get(&AAttrId::JUMP_DRIVE_RANGE).copied(),
+            jump_portal_additional_consumption: attr_aid_rid_map
+                .get(&AAttrId::JUMP_PORTAL_ADDITIONAL_CONSUMPTION)
+                .copied(),
+            jump_portal_consumption_mass_factor: attr_aid_rid_map
+                .get(&AAttrId::JUMP_PORTAL_CONSUMPTION_MASS_FACTOR)
+                .copied(),
             kin_dmg: attr_aid_rid_map.get(&AAttrId::KIN_DMG).copied(),
             kin_dmg_resonance: attr_aid_rid_map.get(&AAttrId::KIN_DMG_RESONANCE).copied(),
             launcher_group: attr_aid_rid_map.get(&AAttrId::LAUNCHER_GROUP).copied(),

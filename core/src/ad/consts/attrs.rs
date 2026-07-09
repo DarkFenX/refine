@@ -148,6 +148,8 @@ impl AAttrId {
     pub(crate) const HULL_KIN_DMG_RESONANCE: Self = Self::from_eid(EAttrId::HULL_KIN_DMG_RESONANCE);
     pub(crate) const HULL_THERM_DMG_RESONANCE: Self = Self::from_eid(EAttrId::HULL_THERM_DMG_RESONANCE);
     pub(crate) const MAX_GROUP_ONLINE: Self = Self::from_eid(EAttrId::MAX_GROUP_ONLINE);
+    pub(crate) const JUMP_PORTAL_CONSUMPTION_MASS_FACTOR: Self =
+        Self::from_eid(EAttrId::JUMP_PORTAL_CONSUMPTION_MASS_FACTOR);
     pub(crate) const DISALLOW_REPEATING_ACTIVATION: Self = Self::from_eid(EAttrId::DISALLOW_REPEATING_ACTIVATION);
     pub(crate) const SCAN_GRAVIMETRIC_STRENGTH_PERCENT: Self =
         Self::from_eid(EAttrId::SCAN_GRAVIMETRIC_STRENGTH_PERCENT);
@@ -358,8 +360,11 @@ impl AAttrId {
     pub(crate) const FTR_SQ_IS_ST_SUPPORT: Self = Self::from_eid(EAttrId::FTR_SQ_IS_ST_SUPPORT);
     pub(crate) const FTR_SQ_IS_ST_HEAVY: Self = Self::from_eid(EAttrId::FTR_SQ_IS_ST_HEAVY);
     pub(crate) const CAN_FIT_SHIP_TYPE11: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_TYPE11);
+    pub(crate) const JUMP_PORTAL_ADDITIONAL_CONSUMPTION: Self =
+        Self::from_eid(EAttrId::JUMP_PORTAL_ADDITIONAL_CONSUMPTION);
     pub(crate) const REP_MULT_BONUS_PER_CYCLE: Self = Self::from_eid(EAttrId::REP_MULT_BONUS_PER_CYCLE);
     pub(crate) const REP_MULT_BONUS_MAX: Self = Self::from_eid(EAttrId::REP_MULT_BONUS_MAX);
+    pub(crate) const GATE_MAX_JUMP_MASS: Self = Self::from_eid(EAttrId::GATE_MAX_JUMP_MASS);
     pub(crate) const ECM_JAM_DURATION: Self = Self::from_eid(EAttrId::ECM_JAM_DURATION);
     pub(crate) const STABILIZE_CLOAK_DURATION: Self = Self::from_eid(EAttrId::STABILIZE_CLOAK_DURATION);
     pub(crate) const ENABLE_OPEN_JUMP_PORTAL: Self = Self::from_eid(EAttrId::ENABLE_OPEN_JUMP_PORTAL);

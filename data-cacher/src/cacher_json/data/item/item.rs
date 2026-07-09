@@ -24,7 +24,7 @@ pub(in crate::cacher_json::data) struct CItem {
     is_cloak: bool,
     is_ice_harvester: bool,
     disallowed_in_wspace: bool,
-    enables_portal: bool,
+    enables_bridge: bool,
 }
 
 #[serde_with::serde_as]
@@ -86,7 +86,7 @@ impl AdaptedConv for CItem {
             is_cloak: a_item.is_cloak,
             is_ice_harvester: a_item.is_ice_harvester,
             disallowed_in_wspace: a_item.disallowed_in_wspace,
-            enables_portal: a_item.enables_portal,
+            enables_bridge: a_item.enables_bridge,
         }
     }
 
@@ -130,7 +130,7 @@ impl AdaptedConv for CItem {
             is_cloak: self.is_cloak,
             is_ice_harvester: self.is_ice_harvester,
             disallowed_in_wspace: self.disallowed_in_wspace,
-            enables_portal: self.enables_portal,
+            enables_bridge: self.enables_bridge,
         }
     }
 }

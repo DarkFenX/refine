@@ -51,7 +51,7 @@ impl ADataGenerator {
                 is_cloak: false,
                 is_ice_harvester: false,
                 disallowed_in_wspace: false,
-                enables_portal: false,
+                enables_bridge: false,
             };
             a_items.insert(a_item.id, a_item);
         }

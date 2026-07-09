@@ -5,8 +5,8 @@ pub use cap::{
 pub(crate) use cap::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
+pub use jump::{StatJump, StatJumpBridge, StatJumpConduit, StatJumpPassenger, StatJumpRange, StatJumpSelf};
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
-pub use mobility::{StatJump, StatJumpBridge, StatJumpConduit, StatJumpPassenger, StatJumpRange, StatJumpSelf};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;
@@ -22,6 +22,7 @@ mod cap;
 mod dmg;
 mod in_jam;
 mod item_checks;
+mod jump;
 mod mining;
 mod misc;
 mod mobility;

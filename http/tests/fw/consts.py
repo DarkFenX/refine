@@ -557,6 +557,7 @@ class EveAttr(IntEnum):
     repair_mult_bonus_per_cycle = 2796
     repair_mult_bonus_max = 2797
     ecm_jam_duration = 2822
+    enable_open_jump_portal = 3125
     enable_perform_conduit_jump = 3126
     conduit_jump_drive_consumption_amount = 3131
     conduit_jump_passenger_count = 3133

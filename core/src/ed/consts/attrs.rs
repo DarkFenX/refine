@@ -139,6 +139,7 @@ impl EAttrId {
     pub(crate) const HULL_KIN_DMG_RESONANCE: Self = Self::from_i32(976);
     pub(crate) const HULL_THERM_DMG_RESONANCE: Self = Self::from_i32(977);
     pub(crate) const MAX_GROUP_ONLINE: Self = Self::from_i32(978);
+    pub(crate) const JUMP_PORTAL_CONSUMPTION_MASS_FACTOR: Self = Self::from_i32(1001);
     pub(crate) const DISALLOW_REPEATING_ACTIVATION: Self = Self::from_i32(1014);
     pub(crate) const SCAN_GRAVIMETRIC_STRENGTH_PERCENT: Self = Self::from_i32(1027);
     pub(crate) const SCAN_LADAR_STRENGTH_PERCENT: Self = Self::from_i32(1028);
@@ -326,8 +327,10 @@ impl EAttrId {
     pub(crate) const FTR_SQ_IS_ST_SUPPORT: Self = Self::from_i32(2741);
     pub(crate) const FTR_SQ_IS_ST_HEAVY: Self = Self::from_i32(2742);
     pub(crate) const CAN_FIT_SHIP_TYPE11: Self = Self::from_i32(2758);
+    pub(crate) const JUMP_PORTAL_ADDITIONAL_CONSUMPTION: Self = Self::from_i32(2793);
     pub(crate) const REP_MULT_BONUS_PER_CYCLE: Self = Self::from_i32(2796);
     pub(crate) const REP_MULT_BONUS_MAX: Self = Self::from_i32(2797);
+    pub(crate) const GATE_MAX_JUMP_MASS: Self = Self::from_i32(2798);
     pub(crate) const ECM_JAM_DURATION: Self = Self::from_i32(2822);
     pub(crate) const STABILIZE_CLOAK_DURATION: Self = Self::from_i32(3118);
     pub(crate) const ENABLE_OPEN_JUMP_PORTAL: Self = Self::from_i32(3125);

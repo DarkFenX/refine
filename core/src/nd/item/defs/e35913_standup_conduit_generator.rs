@@ -14,5 +14,5 @@ pub(in crate::nd::item) fn mk_n_item() -> NItem {
 }
 
 fn update_item(a_item: &mut AItem) {
-    a_item.enables_portal = true;
+    a_item.enables_bridge = true;
 }

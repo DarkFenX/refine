@@ -15,7 +15,7 @@ use super::info::{
     },
     kind::get_item_kind,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
-    mobility::{get_enables_conduit, get_enables_portal, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
+    mobility::{get_enables_bridge, get_enables_conduit, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
     sec_zone::is_sec_zone_limitable,
     ship_kind::get_item_ship_kind,
     ship_limit::get_item_ship_limit,
@@ -56,7 +56,7 @@ pub(crate) struct RItemAXt {
     pub(crate) entity_mwd: bool, // Used to differentiate between single/dual-prop drones
     pub(crate) jump_fuel_type_id: Option<AItemId>,
     pub(crate) enables_conduit: bool,
-    pub(crate) enables_portal: bool,
+    pub(crate) enables_bridge: bool,
     // Module cycle flags
     pub(crate) specs_reactivation_delay: bool,
     pub(crate) specs_disallow_repeats: bool,
@@ -118,7 +118,7 @@ impl RItemAXt {
         self.entity_mwd = get_entity_has_mwd(item_attrs, attr_consts);
         self.jump_fuel_type_id = get_jump_fuel_type_id(item_attrs, attr_consts);
         self.enables_conduit = get_enables_conduit(item_attrs, attr_consts);
-        self.enables_portal = get_enables_portal(item_attrs, attr_consts);
+        self.enables_bridge = get_enables_bridge(item_attrs, attr_consts);
         // Module cycle flags
         self.specs_reactivation_delay = specifies_reactivation_delay(item_attrs, attr_consts);
         self.specs_disallow_repeats = specifies_disallow_repeats(item_attrs, attr_consts);
