@@ -6,13 +6,13 @@ use serde_with::{DisplayFromStr, Map, serde_as};
 pub(crate) struct HStatJump {
     max_range: f64,
     fuel_type_id: i32,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "self", skip_serializing_if = "Option::is_none")]
     jump_self: Option<HStatJumpSelf>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[serde(rename = "conduit", skip_serializing_if = "Option::is_none")]
     jump_conduit: Option<HStatJumpConduit>,
     #[serde_as(as = "Map<DisplayFromStr, _>")]
-    #[serde(skip_serializing_if = "Vec::is_empty")]
-    jump_bridge: Vec<(rc::ItemId, HStatJumpBridge)>,
+    #[serde(rename = "bridges", skip_serializing_if = "Vec::is_empty")]
+    jump_bridges: Vec<(rc::ItemId, HStatJumpBridge)>,
 }
 
 #[derive(Serialize)]
@@ -23,16 +23,17 @@ struct HStatJumpSelf {
 #[serde_as]
 #[derive(Serialize)]
 struct HStatJumpConduit {
+    max_passengers: u32,
     fuel_use_self: u32,
     #[serde_as(as = "Map<DisplayFromStr, _>")]
-    fuel_use_passenger: Vec<(rc::FitId, Option<u32>)>,
+    fuel_use_passengers: Vec<(rc::FitId, Option<u32>)>,
 }
 
 #[serde_as]
 #[derive(Serialize)]
 struct HStatJumpBridge {
     #[serde_as(as = "Map<DisplayFromStr, _>")]
-    fuel_use_passenger: Vec<(rc::FitId, Option<u32>)>,
+    fuel_use_passengers: Vec<(rc::FitId, Option<u32>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -45,8 +46,8 @@ impl HStatJump {
             fuel_type_id: core_stat.fuel_type_id.into_i32(),
             jump_self: core_stat.jump_self.map(HStatJumpSelf::from_core),
             jump_conduit: core_stat.jump_conduit.map(HStatJumpConduit::from_core),
-            jump_bridge: core_stat
-                .jump_bridge
+            jump_bridges: core_stat
+                .jump_bridges
                 .into_iter()
                 .map(|v| (v.item_id, HStatJumpBridge::from_core(v)))
                 .collect(),
@@ -65,9 +66,10 @@ impl HStatJumpSelf {
 impl HStatJumpConduit {
     fn from_core(core_stat: rc::stats::StatJumpConduit) -> Self {
         Self {
+            max_passengers: core_stat.max_passengers.into_u32(),
             fuel_use_self: core_stat.fuel_use_self.into_u32(),
-            fuel_use_passenger: core_stat
-                .fuel_use_fit
+            fuel_use_passengers: core_stat
+                .fuel_use_passengers
                 .into_iter()
                 .map(|pass_info| (pass_info.fit_id, pass_info.fuel_use.map(|v| v.into_u32())))
                 .collect(),
@@ -78,8 +80,8 @@ impl HStatJumpConduit {
 impl HStatJumpBridge {
     fn from_core(core_stat: rc::stats::StatJumpBridge) -> Self {
         Self {
-            fuel_use_passenger: core_stat
-                .fuel_use_fit
+            fuel_use_passengers: core_stat
+                .fuel_use_passengers
                 .into_iter()
                 .map(|fit_info| (fit_info.fit_id, fit_info.fuel_use.map(|v| v.into_u32())))
                 .collect(),

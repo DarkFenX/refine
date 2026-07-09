@@ -184,6 +184,9 @@ impl Vast {
                 {
                     fit_data.mods_cap_consumers.insert(item_uid);
                 }
+                if item_axt.enables_conduit {
+                    fit_data.conduit_enablers.insert(item_uid);
+                }
                 item_vs_ship_kind_add(
                     u_data,
                     fit_data,
@@ -277,6 +280,9 @@ impl Vast {
                 }
                 if ship.get_disallowed_in_wspace().unwrap() {
                     fit_data.sec_zone_fitted_wspace_banned.insert(item_uid);
+                }
+                if item_axt.enables_conduit {
+                    fit_data.conduit_enablers.insert(item_uid);
                 }
                 // Ship/structure modules are not enforced when ship is not set. When we get one,
                 // fill the data container up
@@ -463,6 +469,9 @@ impl Vast {
                 {
                     fit_data.mods_cap_consumers.remove(item_uid);
                 }
+                if item_axt.enables_conduit {
+                    fit_data.conduit_enablers.remove(item_uid);
+                }
             }
             UItem::Rig(rig) => {
                 let item_axt = rig.get_axt().unwrap();
@@ -524,6 +533,9 @@ impl Vast {
                 }
                 if ship.get_disallowed_in_wspace().unwrap() {
                     fit_data.sec_zone_fitted_wspace_banned.remove(item_uid);
+                }
+                if item_axt.enables_conduit {
+                    fit_data.conduit_enablers.remove(item_uid);
                 }
                 fit_data.mods_rigs_svcs_vs_ship_kind.clear();
             }

@@ -571,6 +571,12 @@ impl VastFitData {
         for espec in self.mod_effects_disallow_tether.iter() {
             espec.consistency_check(u_data, true)?;
         }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Stats-related - misc
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        for item_uid in self.conduit_enablers.iter() {
+            item_uid.consistency_check(u_data, true)?;
+        }
         Ok(())
     }
 }

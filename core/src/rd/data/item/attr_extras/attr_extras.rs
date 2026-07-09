@@ -15,7 +15,7 @@ use super::info::{
     },
     kind::get_item_kind,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
-    mobility::{entity_has_mwd, is_mobile, jump_fuel_type_id},
+    mobility::{get_enables_conduit, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
     sec_zone::is_sec_zone_limitable,
     ship_kind::get_item_ship_kind,
     ship_limit::get_item_ship_limit,
@@ -52,9 +52,10 @@ pub(crate) struct RItemAXt {
     pub(crate) fighter_refuel_duration: PValue,
     pub(crate) remote_resist_attr_rid: Option<RAttrId>,
     // Mobility
-    pub(crate) jump_fuel_type_id: Option<AItemId>,
     pub(crate) is_mobile: bool,  // Used to differentiate between mobile and sentry drones
     pub(crate) entity_mwd: bool, // Used to differentiate between single/dual-prop drones
+    pub(crate) jump_fuel_type_id: Option<AItemId>,
+    pub(crate) enables_conduit: bool,
     // Module cycle flags
     pub(crate) specs_reactivation_delay: bool,
     pub(crate) specs_disallow_repeats: bool,
@@ -112,9 +113,10 @@ impl RItemAXt {
         self.fighter_refuel_duration = get_fighter_refuel_duration(item_attrs, attr_consts);
         self.remote_resist_attr_rid = get_remote_resist_attr_id(item_attrs, attr_consts, attr_aid_rid_map);
         // Mobility
-        self.jump_fuel_type_id = jump_fuel_type_id(item_attrs, attr_consts);
-        self.is_mobile = is_mobile(item_attrs, attr_consts);
-        self.entity_mwd = entity_has_mwd(item_attrs, attr_consts);
+        self.is_mobile = get_is_mobile(item_attrs, attr_consts);
+        self.entity_mwd = get_entity_has_mwd(item_attrs, attr_consts);
+        self.jump_fuel_type_id = get_jump_fuel_type_id(item_attrs, attr_consts);
+        self.enables_conduit = get_enables_conduit(item_attrs, attr_consts);
         // Module cycle flags
         self.specs_reactivation_delay = specifies_reactivation_delay(item_attrs, attr_consts);
         self.specs_disallow_repeats = specifies_disallow_repeats(item_attrs, attr_consts);

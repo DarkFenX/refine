@@ -1,6 +1,6 @@
 use super::{
     option::StatJumpRange,
-    stat::{StatJump, StatJumpSelf},
+    stat::{StatJump, StatJumpConduit, StatJumpSelf},
 };
 use crate::{
     Count,
@@ -134,6 +134,7 @@ impl Vast {
         Ok(warp_range)
     }
     pub(in crate::svc) fn get_stat_item_jump(
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
@@ -141,16 +142,10 @@ impl Vast {
         passenger_fit_uids: &[UFitId],
     ) -> Result<Option<StatJump>, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
-        Ok(Vast::internal_get_stat_item_jump_unchecked(
-            ctx,
-            calc,
-            item_uid,
-            ship,
-            range,
-            passenger_fit_uids,
-        ))
+        Ok(self.internal_get_stat_item_jump_unchecked(ctx, calc, item_uid, ship, range, passenger_fit_uids))
     }
     fn internal_get_stat_item_jump_unchecked(
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         ship_uid: UItemId,
@@ -159,10 +154,12 @@ impl Vast {
         passenger_fit_uids: &[UFitId],
     ) -> Option<StatJump> {
         let fuel_type_id = ItemTypeId::from_aid(ship.get_axt().unwrap().jump_fuel_type_id?);
-        let max_range = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().jump_drive_range, Value::ZERO)
-                .unwrap(),
-        );
+        let max_range = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            ship_uid,
+            ctx.ac().jump_drive_range,
+            Value::ZERO,
+        ));
         if max_range < PValue::FLOAT_TOLERANCE {
             return None;
         }
@@ -171,7 +168,7 @@ impl Vast {
             fuel_type_id,
             jump_self: None,
             jump_conduit: None,
-            jump_bridge: Vec::new(),
+            jump_bridges: Vec::new(),
         };
         let range = match range {
             // If requested range was higher than item allows, exclude all the jump stats besides
@@ -182,12 +179,29 @@ impl Vast {
             },
             StatJumpRange::Max => max_range,
         };
-        if let Some(fuel_need) =
-            calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO)
-            && fuel_need > Value::ZERO
-        {
-            stat.jump_self = Some(StatJumpSelf {
-                fuel_use: Count::from_value_ceiled(range * fuel_need),
+        let self_fuel_need =
+            calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO);
+        stat.jump_self = Some(StatJumpSelf {
+            fuel_use: Count::from_value_ceiled(self_fuel_need * range),
+        });
+        let fit_data = self.get_fit_data(ship.get_fit_uid());
+        if !fit_data.conduit_enablers.is_empty() {
+            let conduit_fuel_need = calc.get_item_oattr_ffb_extra(
+                ctx,
+                ship_uid,
+                ctx.ac().conduit_jump_drive_consumption_amount,
+                Value::ZERO,
+            );
+            let max_passengers = Count::from_value_rounded(calc.get_item_oattr_ffb_extra(
+                ctx,
+                ship_uid,
+                ctx.ac().conduit_jump_passenger_count,
+                Value::ZERO,
+            ));
+            stat.jump_conduit = Some(StatJumpConduit {
+                max_passengers,
+                fuel_use_self: Count::from_value_ceiled(conduit_fuel_need * range),
+                fuel_use_passengers: Vec::new(),
             })
         }
         Some(stat)

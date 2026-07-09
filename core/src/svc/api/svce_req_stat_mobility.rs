@@ -65,7 +65,7 @@ impl Svc {
         range: StatJumpRange,
         passenger_fit_uids: &[UFitId],
     ) -> Result<Option<StatJump>, StatItemCheckError> {
-        Vast::get_stat_item_jump(
+        self.vast.get_stat_item_jump(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,
             item_uid,
