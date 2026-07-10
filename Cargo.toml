@@ -3,7 +3,7 @@ members = [
     "core",
     "data-cacher",
     "data-handler",
-    "rs",
+    "rust",
     "http",
     "examples/playground",
 ]

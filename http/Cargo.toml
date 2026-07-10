@@ -8,7 +8,7 @@ edition = "2024"
 rc = { package = "refine-core", path = "../core" }
 redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http"] }
 radc = { package = "refine-adc", path = "../data-cacher", features = ["json-zfile"] }
-rs = { package = "refine-rs", path = "../rs" }
+rs = { package = "refine-rs", path = "../rust" }
 axum = { version = ">=0.8.9", features = ["query"] }
 axum-extra = { version = "0.12.6", features = ["with-rejection"] }
 chrono = ">=0.4.45"
