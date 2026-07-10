@@ -30,8 +30,9 @@ In no particular order:
   - auto-charges are exposed as regular items so that it's possible to check their attributes and effects (but there are some limits, e.g. you cannot remove them)
 - fast & flexible fit validation
   - "try fit items" functionality which accepts list of items, checks which can be fit to a fit according to passed validation settings, and returns those which can be fit
-- fleet, fit and item stats
-  - some stats support various options, e.g. it is possible to get raw DPS output of a fit, or only vorton DPS of a fit applied to a specific item
+- fleet, fit and item stats. Some stats support various options, e.g.:
+  - it is possible to get raw DPS output of a fit, or only vorton DPS of a fit applied to a specific item
+  - some options allow temporary item changes, e.g. you can get combined mass of a fleet with prop modules shut down, or can get dps of a fighter which is not active
 - reactive armor hardener support
   - it is possible to fit multiple RAHs with different attributes (validation fails, but they are properly simulated nevertheless)
 - modifications applied via space component EVE system: things like insurgency tackle range, skyhook silo link, nexus event buff "mines", Pochven subpylons, Odysseus-specific buffs are defined via it
