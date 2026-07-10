@@ -63,7 +63,7 @@ impl SolarSystem {
             };
             // Ignore modifications with empty or complex affector definitions
             let affector = match mod_info.affectors.len() {
-                1 => mod_info.affectors.get(1).unwrap(),
+                1 => mod_info.affectors.first().unwrap(),
                 _ => continue,
             };
             // Ignore non-module item kinds
