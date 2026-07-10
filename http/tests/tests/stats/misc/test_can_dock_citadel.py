@@ -21,23 +21,23 @@ def test_ship_dock_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is False
+    assert api_fit_stats.can_dock_citadel.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is False
+    assert api_ship_stats.can_dock_citadel.one() is False
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_warp_modified(client, consts):
@@ -59,23 +59,23 @@ def test_ship_warp_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is False
+    assert api_fit_stats.can_dock_citadel.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is False
+    assert api_ship_stats.can_dock_citadel.one() is False
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_aggro(client, consts):
@@ -91,23 +91,23 @@ def test_ship_aggro(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is False
+    assert api_fit_stats.can_dock_citadel.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is False
+    assert api_ship_stats.can_dock_citadel.one() is False
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_dock_values(client, consts):
@@ -123,30 +123,30 @@ def test_ship_dock_values(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship3_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is False
+    assert api_fit_stats.can_dock_citadel.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is False
+    assert api_ship_stats.can_dock_citadel.one() is False
     # Action
     api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_dock_no_attr(client, consts):
@@ -159,9 +159,9 @@ def test_ship_dock_no_attr(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification - value is ignored if attribute does not exist
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_warp_values(client, consts):
@@ -177,30 +177,30 @@ def test_ship_warp_values(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship3_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is False
+    assert api_fit_stats.can_dock_citadel.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is False
+    assert api_ship_stats.can_dock_citadel.one() is False
     # Action
     api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_warp_no_attr(client, consts):
@@ -213,9 +213,9 @@ def test_ship_warp_no_attr(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification - value is ignored if attribute does not exist
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is True
+    assert api_fit_stats.can_dock_citadel.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_dock_citadel.one() is True
 
 
 def test_ship_absent(client, consts):
@@ -226,7 +226,7 @@ def test_ship_absent(client, consts):
     api_fit = api_sol.create_fit()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is None
+    assert api_fit_stats.can_dock_citadel.one() is None
 
 
 def test_ship_not_loaded(client, consts):
@@ -239,9 +239,9 @@ def test_ship_not_loaded(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is None
+    assert api_fit_stats.can_dock_citadel.one() is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is None
+    assert api_ship_stats.can_dock_citadel.one() is None
 
 
 def test_struct(client, consts):
@@ -254,9 +254,9 @@ def test_struct(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_citadel=True))
-    assert api_fit_stats.can_dock_citadel is None
+    assert api_fit_stats.can_dock_citadel.one() is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_ship_stats.can_dock_citadel is None
+    assert api_ship_stats.can_dock_citadel.one() is None
 
 
 def test_incorrect_item_kind(client, consts):
@@ -269,7 +269,7 @@ def test_incorrect_item_kind(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_drone_stats = api_fighter.get_stats(options=ItemStatsOptions(can_dock_citadel=True))
-    assert api_drone_stats.can_dock_citadel is None
+    assert api_drone_stats.can_dock_citadel.one() is None
 
 
 def test_not_requested(client, consts):

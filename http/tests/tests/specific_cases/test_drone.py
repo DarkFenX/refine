@@ -32,4 +32,4 @@ def test_sig_radius_stacking(client, consts):
     # value is exposed in attributes
     assert api_drone.update().attrs[eve_sig_radius_attr_id].modified == approx(39.5)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sig_radius=True))
-    assert api_drone_stats.sig_radius == approx(237)
+    assert api_drone_stats.sig_radius.one() == approx(237)

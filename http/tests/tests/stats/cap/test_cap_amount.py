@@ -20,23 +20,23 @@ def test_ship_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
-    assert api_fit_stats.cap_amount == approx(500)
+    assert api_fit_stats.cap_amount.one() == approx(500)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
-    assert api_ship_stats.cap_amount == approx(500)
+    assert api_ship_stats.cap_amount.one() == approx(500)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
-    assert api_fit_stats.cap_amount == approx(575)
+    assert api_fit_stats.cap_amount.one() == approx(575)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
-    assert api_ship_stats.cap_amount == approx(575)
+    assert api_ship_stats.cap_amount.one() == approx(575)
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
-    assert api_fit_stats.cap_amount == approx(500)
+    assert api_fit_stats.cap_amount.one() == approx(500)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
-    assert api_ship_stats.cap_amount == approx(500)
+    assert api_ship_stats.cap_amount.one() == approx(500)
 
 
 def test_ship_no_value(client, consts):
@@ -48,9 +48,9 @@ def test_ship_no_value(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
-    assert api_fit_stats.cap_amount == 0
+    assert api_fit_stats.cap_amount.one() == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
-    assert api_ship_stats.cap_amount == 0
+    assert api_ship_stats.cap_amount.one() == 0
 
 
 def test_ship_absent(client, consts):
@@ -72,9 +72,9 @@ def test_struct(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_amount=True))
-    assert api_fit_stats.cap_amount == approx(500)
+    assert api_fit_stats.cap_amount.one() == approx(500)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_amount=True))
-    assert api_ship_stats.cap_amount == approx(500)
+    assert api_ship_stats.cap_amount.one() == approx(500)
 
 
 def test_incorrect_item_kind(client, consts):

@@ -22,13 +22,13 @@ def test_self_effect_stats(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_projector.change_module(state=consts.ApiModuleState.active)
     # Verification - burst projectors seem to have normal restrictions from aggression and not much
@@ -41,13 +41,13 @@ def test_self_effect_stats(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
 
 
 def test_self_effect_cloak(client, consts):
@@ -90,10 +90,10 @@ def test_remote_effect(client, consts):
         can_tether=True,
         can_jump_drive=True,
         can_dock_citadel=True))
-    assert api_tgt_ship_stats.can_warp is True
-    assert api_tgt_ship_stats.can_tether is True
-    assert api_tgt_ship_stats.can_jump_drive is True
-    assert api_tgt_ship_stats.can_dock_citadel is True
+    assert api_tgt_ship_stats.can_warp.one() is True
+    assert api_tgt_ship_stats.can_tether.one() is True
+    assert api_tgt_ship_stats.can_jump_drive.one() is True
+    assert api_tgt_ship_stats.can_dock_citadel.one() is True
     # Action
     api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
@@ -102,10 +102,10 @@ def test_remote_effect(client, consts):
         can_tether=True,
         can_jump_drive=True,
         can_dock_citadel=True))
-    assert api_tgt_ship_stats.can_warp is False
-    assert api_tgt_ship_stats.can_tether is True
-    assert api_tgt_ship_stats.can_jump_drive is False
-    assert api_tgt_ship_stats.can_dock_citadel is True
+    assert api_tgt_ship_stats.can_warp.one() is False
+    assert api_tgt_ship_stats.can_tether.one() is True
+    assert api_tgt_ship_stats.can_jump_drive.one() is False
+    assert api_tgt_ship_stats.can_dock_citadel.one() is True
 
 
 def test_remote_range_vs_ship(client, consts):
@@ -129,12 +129,12 @@ def test_remote_range_vs_ship(client, consts):
     api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_tgt_ship_stats.can_warp is False
+    assert api_tgt_ship_stats.can_warp.one() is False
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 511501, 0))
     # Verification
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_tgt_ship_stats.can_warp is True
+    assert api_tgt_ship_stats.can_warp.one() is True
 
 
 def test_remote_range_vs_fighter(client, consts):
@@ -160,9 +160,9 @@ def test_remote_range_vs_fighter(client, consts):
     api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_fighter.id])
     # Verification
     api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_tgt_fighter_stats.can_warp is False
+    assert api_tgt_fighter_stats.can_warp.one() is False
     # Action
     api_tgt_fighter.change_fighter(coordinates=(0, 510036, 0))
     # Verification
     api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_tgt_fighter_stats.can_warp is True
+    assert api_tgt_fighter_stats.can_warp.one() is True

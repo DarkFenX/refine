@@ -30,14 +30,14 @@ def test_module_self(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.speed == approx(1000)
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.speed.one() == approx(1000)
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_module_charge_uncharge(client, consts):
@@ -62,17 +62,17 @@ def test_module_charge_uncharge(client, consts):
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(1000)
+    assert api_affectee_ship_stats.speed.one() == approx(1000)
     # Action
     api_affector_module.change_module(charge_type_id=eve_charge_id)
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(600)
+    assert api_affectee_ship_stats.speed.one() == approx(600)
     # Action
     api_affector_module.change_module(charge_type_id=None)
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(1000)
+    assert api_affectee_ship_stats.speed.one() == approx(1000)
 
 
 def test_module_state_up_state_down(client, consts):
@@ -100,17 +100,17 @@ def test_module_state_up_state_down(client, consts):
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(1000)
+    assert api_affectee_ship_stats.speed.one() == approx(1000)
     # Action
     api_affector_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(600)
+    assert api_affectee_ship_stats.speed.one() == approx(600)
     # Action
     api_affector_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(1000)
+    assert api_affectee_ship_stats.speed.one() == approx(1000)
 
 
 def test_module_range(client, consts):
@@ -145,17 +145,17 @@ def test_module_range(client, consts):
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(1000)
+    assert api_affectee_ship_stats.speed.one() == approx(1000)
     # Action
     api_affectee_ship.change_ship(coordinates=(15499, 0, 0))
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(600)
+    assert api_affectee_ship_stats.speed.one() == approx(600)
     # Action
     api_affectee_ship.change_ship(coordinates=(15501, 0, 0))
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(1000)
+    assert api_affectee_ship_stats.speed.one() == approx(1000)
 
 
 def test_module_resist(client, consts):
@@ -186,7 +186,7 @@ def test_module_resist(client, consts):
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_ship_stats = api_affectee_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_affectee_ship_stats.speed == approx(700)
+    assert api_affectee_ship_stats.speed.one() == approx(700)
 
 
 def test_charge_proj_effect(client, consts):
@@ -207,4 +207,4 @@ def test_charge_proj_effect(client, consts):
     api_sol.add_proj_effect(type_id=eve_charge_id, proj_item_ids=[api_ship.id])
     # Verification
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(speed=True))
-    assert api_ship_stats.speed == approx(600)
+    assert api_ship_stats.speed.one() == approx(600)

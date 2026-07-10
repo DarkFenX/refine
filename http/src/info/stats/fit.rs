@@ -23,123 +23,123 @@ pub(crate) struct HFitStats {
     pub(crate) outgoing_cps: Option<Vec<Option<f64>>>,
     // Fit resources
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) cpu: Option<HStatResource>,
+    pub(crate) cpu: Option<Vec<HStatResource>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) powergrid: Option<HStatResource>,
+    pub(crate) powergrid: Option<Vec<HStatResource>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) calibration: Option<HStatResource>,
+    pub(crate) calibration: Option<Vec<HStatResource>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) drone_bay_volume: Option<HStatResource>,
+    pub(crate) drone_bay_volume: Option<Vec<HStatResource>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) drone_bandwidth: Option<HStatResource>,
+    pub(crate) drone_bandwidth: Option<Vec<HStatResource>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) fighter_bay_volume: Option<HStatResource>,
+    pub(crate) fighter_bay_volume: Option<Vec<HStatResource>>,
     // Fit slots
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) high_slots: Option<HStatSlot>,
+    pub(crate) high_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) mid_slots: Option<HStatSlot>,
+    pub(crate) mid_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) low_slots: Option<HStatSlot>,
+    pub(crate) low_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) turret_slots: Option<HStatSlot>,
+    pub(crate) turret_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launcher_slots: Option<HStatSlot>,
+    pub(crate) launcher_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) rig_slots: Option<HStatSlot>,
+    pub(crate) rig_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) service_slots: Option<HStatSlot>,
+    pub(crate) service_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) subsystem_slots: Option<HStatSlot>,
+    pub(crate) subsystem_slots: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_drones: Option<HStatSlot>,
+    pub(crate) launched_drones: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_fighters: Option<HStatSlot>,
+    pub(crate) launched_fighters: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_light_fighters: Option<HStatSlot>,
+    pub(crate) launched_light_fighters: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_heavy_fighters: Option<HStatSlot>,
+    pub(crate) launched_heavy_fighters: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_support_fighters: Option<HStatSlot>,
+    pub(crate) launched_support_fighters: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_st_light_fighters: Option<HStatSlot>,
+    pub(crate) launched_st_light_fighters: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_st_heavy_fighters: Option<HStatSlot>,
+    pub(crate) launched_st_heavy_fighters: Option<Vec<HStatSlot>>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    pub(crate) launched_st_support_fighters: Option<HStatSlot>,
+    pub(crate) launched_st_support_fighters: Option<Vec<HStatSlot>>,
     // Ship tank
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) resists: TriStateField<HStatResists>,
+    pub(crate) resists: TriStateField<Vec<HStatResists>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) hp: TriStateField<HStatHp>,
+    pub(crate) hp: TriStateField<Vec<HStatHp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) ehp: TriStateField<Vec<HStatEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) wc_ehp: TriStateField<HStatEhp>,
+    pub(crate) wc_ehp: TriStateField<Vec<HStatEhp>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) rps: TriStateField<Vec<HStatRps>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) erps: TriStateField<Vec<HStatErps>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) breach_resist: TriStateField<f64>,
+    pub(crate) breach_resist: TriStateField<Vec<f64>>,
     // Ship cap
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) cap_amount: TriStateField<f64>,
+    pub(crate) cap_amount: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_balance: TriStateField<Vec<Option<f64>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) cap_sim: TriStateField<Vec<Option<HStatCapSim>>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) neut_resist: TriStateField<f64>,
+    pub(crate) neut_resist: TriStateField<Vec<f64>>,
     // Ship sensors
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) locks: TriStateField<u32>,
+    pub(crate) locks: TriStateField<Vec<u32>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) lock_range: TriStateField<f64>,
+    pub(crate) lock_range: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) scan_res: TriStateField<f64>,
+    pub(crate) scan_res: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) sensors: TriStateField<HStatSensors>,
+    pub(crate) sensors: TriStateField<Vec<HStatSensors>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) dscan_range: TriStateField<f64>,
+    pub(crate) dscan_range: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) probing_size: TriStateField<f64>,
+    pub(crate) probing_size: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) incoming_jam: TriStateField<Vec<HStatInJam>>,
     // Ship mobility
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) speed: TriStateField<f64>,
+    pub(crate) speed: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) agility: TriStateField<f64>,
+    pub(crate) agility: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) align_time: TriStateField<f64>,
+    pub(crate) align_time: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) sig_radius: TriStateField<f64>,
+    pub(crate) sig_radius: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) mass: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) warp_speed: TriStateField<f64>,
+    pub(crate) warp_speed: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) max_warp_range: TriStateField<f64>,
+    pub(crate) max_warp_range: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) jump: TriStateField<Vec<HStatJump>>,
     // Ship misc stats
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) drone_control_range: TriStateField<f64>,
+    pub(crate) drone_control_range: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_warp: TriStateField<bool>,
+    pub(crate) can_warp: TriStateField<Vec<bool>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_jump_gate: TriStateField<bool>,
+    pub(crate) can_jump_gate: TriStateField<Vec<bool>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_jump_wormhole: TriStateField<bool>,
+    pub(crate) can_jump_wormhole: TriStateField<Vec<bool>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_jump_drive: TriStateField<bool>,
+    pub(crate) can_jump_drive: TriStateField<Vec<bool>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_dock_station: TriStateField<bool>,
+    pub(crate) can_dock_station: TriStateField<Vec<bool>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_dock_citadel: TriStateField<bool>,
+    pub(crate) can_dock_citadel: TriStateField<Vec<bool>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) can_tether: TriStateField<bool>,
+    pub(crate) can_tether: TriStateField<Vec<bool>>,
 }
 impl HFitStats {
     pub(crate) fn new() -> Self {

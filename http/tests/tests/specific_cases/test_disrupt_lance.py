@@ -71,9 +71,9 @@ def test_debuff_warp(client, consts):
     # Verification
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is False
+    assert api_affectee_fit_stats.can_warp.one() is False
+    assert api_affectee_fit_stats.can_jump_drive.one() is False
+    assert api_affectee_fit_stats.can_dock_citadel.one() is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -92,9 +92,9 @@ def test_debuff_warp(client, consts):
     # Verification - no stacking, lances are applied via debuff
     api_affectee_fit_stats = api_affectee_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True))
-    assert api_affectee_fit_stats.can_warp is False
-    assert api_affectee_fit_stats.can_jump_drive is False
-    assert api_affectee_fit_stats.can_dock_citadel is False
+    assert api_affectee_fit_stats.can_warp.one() is False
+    assert api_affectee_fit_stats.can_jump_drive.one() is False
+    assert api_affectee_fit_stats.can_dock_citadel.one() is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(100)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -136,11 +136,11 @@ def test_debuff_dock_jump(client, consts):
             can_jump_gate=True,
             can_jump_wormhole=True,
             can_jump_drive=True))
-    assert api_affectee_fit_stats.can_dock_station is False
-    assert api_affectee_fit_stats.can_dock_citadel is False
-    assert api_affectee_fit_stats.can_jump_gate is False
-    assert api_affectee_fit_stats.can_jump_wormhole is True
-    assert api_affectee_fit_stats.can_jump_drive is False
+    assert api_affectee_fit_stats.can_dock_station.one() is False
+    assert api_affectee_fit_stats.can_dock_citadel.one() is False
+    assert api_affectee_fit_stats.can_jump_gate.one() is False
+    assert api_affectee_fit_stats.can_jump_wormhole.one() is True
+    assert api_affectee_fit_stats.can_jump_drive.one() is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].modified == approx(1)
     assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].modified == approx(1)
@@ -172,11 +172,11 @@ def test_debuff_dock_jump(client, consts):
             can_jump_gate=True,
             can_jump_wormhole=True,
             can_jump_drive=True))
-    assert api_affectee_fit_stats.can_dock_station is False
-    assert api_affectee_fit_stats.can_dock_citadel is False
-    assert api_affectee_fit_stats.can_jump_gate is False
-    assert api_affectee_fit_stats.can_jump_wormhole is True
-    assert api_affectee_fit_stats.can_jump_drive is False
+    assert api_affectee_fit_stats.can_dock_station.one() is False
+    assert api_affectee_fit_stats.can_dock_citadel.one() is False
+    assert api_affectee_fit_stats.can_jump_gate.one() is False
+    assert api_affectee_fit_stats.can_jump_wormhole.one() is True
+    assert api_affectee_fit_stats.can_jump_drive.one() is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_dock_attr_id].modified == approx(1)
     assert api_affectee_ship.attrs[eve_affectee_jump_attr_id].modified == approx(1)
@@ -217,7 +217,7 @@ def test_debuff_tether(client, consts):
     api_affector_module1.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_affectee_fit_stats.can_tether is False
+    assert api_affectee_fit_stats.can_tether.one() is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()
@@ -235,7 +235,7 @@ def test_debuff_tether(client, consts):
     api_affector_module2.change_module(add_proj_item_ids=[api_affectee_ship.id])
     # Verification - no stacking, lances are applied via debuff
     api_affectee_fit_stats = api_affectee_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_affectee_fit_stats.can_tether is False
+    assert api_affectee_fit_stats.can_tether.one() is False
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(1)
     api_mod = api_affectee_ship.mods[eve_affectee_attr_id].one()

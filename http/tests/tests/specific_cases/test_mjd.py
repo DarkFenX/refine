@@ -30,16 +30,16 @@ def test_module_mjd_stats(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.sig_radius == approx(412.5)
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.sig_radius.one() == approx(412.5)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is True
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.can_warp.one() is True
 
 
 def test_module_mjd_cloak(client, consts):
@@ -98,16 +98,16 @@ def test_module_mjfg_stats(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.sig_radius == approx(412.5)
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.sig_radius.one() == approx(412.5)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.can_warp.one() is True
     # Action
     api_mjd_subcap.change_module(state=consts.ApiModuleState.online)
     api_mjd_cap.change_module(state=consts.ApiModuleState.active)
@@ -121,16 +121,16 @@ def test_module_mjfg_stats(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.sig_radius == approx(412.5)
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.sig_radius.one() == approx(412.5)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.can_warp.one() is True
 
 
 def test_module_mjfg_cloak(client, consts):
@@ -195,17 +195,17 @@ def test_fighter_mjd_stats(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.sig_radius == approx(18640)
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.sig_radius.one() == approx(18640)
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
+    assert api_ship_stats.can_tether.one() is False
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(sig_radius=True, can_warp=True))
-    assert api_fighter_stats.sig_radius == approx(120)
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.sig_radius.one() == approx(120)
+    assert api_fighter_stats.can_warp.one() is True
 
 
 def test_fighter_mjd_cloak(client, consts):

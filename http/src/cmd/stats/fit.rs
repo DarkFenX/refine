@@ -127,76 +127,83 @@ impl HGetFitStatsCmd {
         // Fit resources
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cpu.unwrap_or(self.default) {
-            stats.cpu = Some(HStatResource::from_core(core_fit.get_stat_cpu()));
+            stats.cpu = Some(vec![HStatResource::from_core(core_fit.get_stat_cpu())]);
         }
         if self.powergrid.unwrap_or(self.default) {
-            stats.powergrid = Some(HStatResource::from_core(core_fit.get_stat_powergrid()));
+            stats.powergrid = Some(vec![HStatResource::from_core(core_fit.get_stat_powergrid())]);
         }
         if self.calibration.unwrap_or(self.default) {
-            stats.calibration = Some(HStatResource::from_core(core_fit.get_stat_calibration()));
+            stats.calibration = Some(vec![HStatResource::from_core(core_fit.get_stat_calibration())]);
         }
         if self.drone_bay_volume.unwrap_or(self.default) {
-            stats.drone_bay_volume = Some(HStatResource::from_core(core_fit.get_stat_drone_bay_volume()));
+            stats.drone_bay_volume = Some(vec![HStatResource::from_core(core_fit.get_stat_drone_bay_volume())]);
         }
         if self.drone_bandwidth.unwrap_or(self.default) {
-            stats.drone_bandwidth = Some(HStatResource::from_core(core_fit.get_stat_drone_bandwidth()));
+            stats.drone_bandwidth = Some(vec![HStatResource::from_core(core_fit.get_stat_drone_bandwidth())]);
         }
         if self.fighter_bay_volume.unwrap_or(self.default) {
-            stats.fighter_bay_volume = Some(HStatResource::from_core(core_fit.get_stat_fighter_bay_volume()));
+            stats.fighter_bay_volume = Some(vec![HStatResource::from_core(core_fit.get_stat_fighter_bay_volume())]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit slots
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.high_slots.unwrap_or(self.default) {
-            stats.high_slots = Some(HStatSlot::from_core(core_fit.get_stat_high_slots()));
+            stats.high_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_high_slots())]);
         }
         if self.mid_slots.unwrap_or(self.default) {
-            stats.mid_slots = Some(HStatSlot::from_core(core_fit.get_stat_mid_slots()));
+            stats.mid_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_mid_slots())]);
         }
         if self.low_slots.unwrap_or(self.default) {
-            stats.low_slots = Some(HStatSlot::from_core(core_fit.get_stat_low_slots()));
+            stats.low_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_low_slots())]);
         }
         if self.turret_slots.unwrap_or(self.default) {
-            stats.turret_slots = Some(HStatSlot::from_core(core_fit.get_stat_turret_slots()));
+            stats.turret_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_turret_slots())]);
         }
         if self.launcher_slots.unwrap_or(self.default) {
-            stats.launcher_slots = Some(HStatSlot::from_core(core_fit.get_stat_launcher_slots()));
+            stats.launcher_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_launcher_slots())]);
         }
         if self.rig_slots.unwrap_or(self.default) {
-            stats.rig_slots = Some(HStatSlot::from_core(core_fit.get_stat_rig_slots()));
+            stats.rig_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_rig_slots())]);
         }
         if self.service_slots.unwrap_or(self.default) {
-            stats.service_slots = Some(HStatSlot::from_core(core_fit.get_stat_service_slots()));
+            stats.service_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_service_slots())]);
         }
         if self.subsystem_slots.unwrap_or(self.default) {
-            stats.subsystem_slots = Some(HStatSlot::from_core(core_fit.get_stat_subsystem_slots()));
+            stats.subsystem_slots = Some(vec![HStatSlot::from_core(core_fit.get_stat_subsystem_slots())]);
         }
         if self.launched_drones.unwrap_or(self.default) {
-            stats.launched_drones = Some(HStatSlot::from_core(core_fit.get_stat_launched_drones()));
+            stats.launched_drones = Some(vec![HStatSlot::from_core(core_fit.get_stat_launched_drones())]);
         }
         if self.launched_fighters.unwrap_or(self.default) {
-            stats.launched_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_fighters()));
+            stats.launched_fighters = Some(vec![HStatSlot::from_core(core_fit.get_stat_launched_fighters())]);
         }
         if self.launched_light_fighters.unwrap_or(self.default) {
-            stats.launched_light_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_light_fighters()));
+            stats.launched_light_fighters =
+                Some(vec![HStatSlot::from_core(core_fit.get_stat_launched_light_fighters())]);
         }
         if self.launched_heavy_fighters.unwrap_or(self.default) {
-            stats.launched_heavy_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_heavy_fighters()));
+            stats.launched_heavy_fighters =
+                Some(vec![HStatSlot::from_core(core_fit.get_stat_launched_heavy_fighters())]);
         }
         if self.launched_support_fighters.unwrap_or(self.default) {
-            stats.launched_support_fighters = Some(HStatSlot::from_core(core_fit.get_stat_launched_support_fighters()));
+            stats.launched_support_fighters = Some(vec![HStatSlot::from_core(
+                core_fit.get_stat_launched_support_fighters(),
+            )]);
         }
         if self.launched_st_light_fighters.unwrap_or(self.default) {
-            stats.launched_st_light_fighters =
-                Some(HStatSlot::from_core(core_fit.get_stat_launched_st_light_fighters()));
+            stats.launched_st_light_fighters = Some(vec![HStatSlot::from_core(
+                core_fit.get_stat_launched_st_light_fighters(),
+            )]);
         }
         if self.launched_st_heavy_fighters.unwrap_or(self.default) {
-            stats.launched_st_heavy_fighters =
-                Some(HStatSlot::from_core(core_fit.get_stat_launched_st_heavy_fighters()));
+            stats.launched_st_heavy_fighters = Some(vec![HStatSlot::from_core(
+                core_fit.get_stat_launched_st_heavy_fighters(),
+            )]);
         }
         if self.launched_st_support_fighters.unwrap_or(self.default) {
-            stats.launched_st_support_fighters =
-                Some(HStatSlot::from_core(core_fit.get_stat_launched_st_support_fighters()));
+            stats.launched_st_support_fighters = Some(vec![HStatSlot::from_core(
+                core_fit.get_stat_launched_st_support_fighters(),
+            )]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship tank

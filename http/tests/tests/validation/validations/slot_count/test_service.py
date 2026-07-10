@@ -13,7 +13,7 @@ def test_fail_single(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -33,7 +33,7 @@ def test_fail_multiple_ship(client, consts):
     api_service2 = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (2, 1)
+    assert api_stats.service_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 2
@@ -53,7 +53,7 @@ def test_fail_multiple_struct(client, consts):
     api_service2 = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (2, 1)
+    assert api_stats.service_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 2
@@ -72,7 +72,7 @@ def test_equal(client, consts):
     api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 1)
+    assert api_stats.service_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -93,7 +93,7 @@ def test_known_failures(client, consts):
     api_service2 = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (2, 1)
+    assert api_stats.service_slots.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=(True, [api_service1.id])))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 2
@@ -137,7 +137,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -148,7 +148,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(1)
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 1)
+    assert api_stats.service_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -167,7 +167,7 @@ def test_fractional_max(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -177,7 +177,7 @@ def test_fractional_max(client, consts):
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 1)
+    assert api_stats.service_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -193,7 +193,7 @@ def test_no_ship(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, None)
+    assert api_stats.service_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -212,7 +212,7 @@ def test_no_value_max(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -249,7 +249,7 @@ def test_not_loaded_user(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -268,7 +268,7 @@ def test_not_loaded_ship(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, None)
+    assert api_stats.service_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -288,7 +288,7 @@ def test_criterion_service_state(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -298,7 +298,7 @@ def test_criterion_service_state(client, consts):
     api_service.change_service(state=consts.ApiServiceState.disabled)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (1, 0)
+    assert api_stats.service_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.service_slot_count.used == 1
@@ -332,7 +332,7 @@ def test_criterion_item_kind(client, consts):
     # Verification
     assert len(api_fighter.autocharges) == 1
     api_stats = api_fit.get_stats(options=FitStatsOptions(service_slots=True))
-    assert api_stats.service_slots == (0, 0)
+    assert api_stats.service_slots.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(service_slot_count=True))
     assert api_val.passed is True
     with check_no_field():

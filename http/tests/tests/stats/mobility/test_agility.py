@@ -21,29 +21,29 @@ def test_ship_modified_mass(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
-    assert api_fit_stats.agility == approx(4.657949)
-    assert api_fit_stats.align_time == 5
+    assert api_fit_stats.agility.one() == approx(4.657949)
+    assert api_fit_stats.align_time.one() == 5
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_ship_stats.agility == approx(4.657949)
-    assert api_ship_stats.align_time == 5
+    assert api_ship_stats.agility.one() == approx(4.657949)
+    assert api_ship_stats.align_time.one() == 5
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
-    assert api_fit_stats.agility == approx(6.87602)
-    assert api_fit_stats.align_time == 7
+    assert api_fit_stats.agility.one() == approx(6.87602)
+    assert api_fit_stats.align_time.one() == 7
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_ship_stats.agility == approx(6.87602)
-    assert api_ship_stats.align_time == 7
+    assert api_ship_stats.agility.one() == approx(6.87602)
+    assert api_ship_stats.align_time.one() == 7
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
-    assert api_fit_stats.agility == approx(4.657949)
-    assert api_fit_stats.align_time == 5
+    assert api_fit_stats.agility.one() == approx(4.657949)
+    assert api_fit_stats.align_time.one() == 5
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_ship_stats.agility == approx(4.657949)
-    assert api_ship_stats.align_time == 5
+    assert api_ship_stats.agility.one() == approx(4.657949)
+    assert api_ship_stats.align_time.one() == 5
 
 
 def test_ship_modified_agility(client, consts):
@@ -65,29 +65,29 @@ def test_ship_modified_agility(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
-    assert api_fit_stats.agility == approx(4.657949)
-    assert api_fit_stats.align_time == 5
+    assert api_fit_stats.agility.one() == approx(4.657949)
+    assert api_fit_stats.align_time.one() == 5
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_ship_stats.agility == approx(4.657949)
-    assert api_ship_stats.align_time == 5
+    assert api_ship_stats.agility.one() == approx(4.657949)
+    assert api_ship_stats.align_time.one() == 5
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
-    assert api_fit_stats.agility == approx(3.726359)
-    assert api_fit_stats.align_time == 4
+    assert api_fit_stats.agility.one() == approx(3.726359)
+    assert api_fit_stats.align_time.one() == 4
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_ship_stats.agility == approx(3.726359)
-    assert api_ship_stats.align_time == 4
+    assert api_ship_stats.agility.one() == approx(3.726359)
+    assert api_ship_stats.align_time.one() == 4
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(agility=True, align_time=True))
-    assert api_fit_stats.agility == approx(4.657949)
-    assert api_fit_stats.align_time == 5
+    assert api_fit_stats.agility.one() == approx(4.657949)
+    assert api_fit_stats.align_time.one() == 5
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_ship_stats.agility == approx(4.657949)
-    assert api_ship_stats.align_time == 5
+    assert api_ship_stats.agility.one() == approx(4.657949)
+    assert api_ship_stats.align_time.one() == 5
 
 
 def test_ship_value_mass(client, consts):
@@ -210,20 +210,20 @@ def test_drone_modified_agility(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_drone_stats.agility == approx(1.386294)
-    assert api_drone_stats.align_time == 2
+    assert api_drone_stats.agility.one() == approx(1.386294)
+    assert api_drone_stats.align_time.one() == 2
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_drone_stats.agility == approx(0.6931472)
-    assert api_drone_stats.align_time == 1
+    assert api_drone_stats.agility.one() == approx(0.6931472)
+    assert api_drone_stats.align_time.one() == 1
     # Action
     api_fw_effect.remove()
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_drone_stats.agility == approx(1.386294)
-    assert api_drone_stats.align_time == 2
+    assert api_drone_stats.agility.one() == approx(1.386294)
+    assert api_drone_stats.align_time.one() == 2
 
 
 def test_fighter_modified_agility(client, consts):
@@ -248,20 +248,20 @@ def test_fighter_modified_agility(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_fighter_stats.agility == approx(0.9704061)
-    assert api_fighter_stats.align_time == 1
+    assert api_fighter_stats.agility.one() == approx(0.9704061)
+    assert api_fighter_stats.align_time.one() == 1
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_fighter_stats.agility == approx(0.485203)
-    assert api_fighter_stats.align_time == 1
+    assert api_fighter_stats.agility.one() == approx(0.485203)
+    assert api_fighter_stats.align_time.one() == 1
     # Action
     api_fw_effect.remove()
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(agility=True, align_time=True))
-    assert api_fighter_stats.agility == approx(0.9704061)
-    assert api_fighter_stats.align_time == 1
+    assert api_fighter_stats.agility.one() == approx(0.9704061)
+    assert api_fighter_stats.align_time.one() == 1
 
 
 def test_incorrect_item_kind(client, consts):

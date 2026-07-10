@@ -39,51 +39,51 @@ def test_ship_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(570.287995)
+    assert api_fit_stats.max_warp_range.one() == approx(570.287995)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(570.287995)
+    assert api_ship_stats.max_warp_range.one() == approx(570.287995)
     # Action
     api_cap_rig = api_fit.add_rig(type_id=eve_cap_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(712.859994)
+    assert api_fit_stats.max_warp_range.one() == approx(712.859994)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(712.859994)
+    assert api_ship_stats.max_warp_range.one() == approx(712.859994)
     # Action
     api_mass_rig = api_fit.add_rig(type_id=eve_mass_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(482.905157)
+    assert api_fit_stats.max_warp_range.one() == approx(482.905157)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(482.905157)
+    assert api_ship_stats.max_warp_range.one() == approx(482.905157)
     # Action
     api_cap_need_rig = api_fit.add_rig(type_id=eve_cap_need_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(643.873543)
+    assert api_fit_stats.max_warp_range.one() == approx(643.873543)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(643.873543)
+    assert api_ship_stats.max_warp_range.one() == approx(643.873543)
     # Action
     api_cap_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(515.098835)
+    assert api_fit_stats.max_warp_range.one() == approx(515.098835)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(515.098835)
+    assert api_ship_stats.max_warp_range.one() == approx(515.098835)
     # Action
     api_mass_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(760.383994)
+    assert api_fit_stats.max_warp_range.one() == approx(760.383994)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(760.383994)
+    assert api_ship_stats.max_warp_range.one() == approx(760.383994)
     # Action
     api_cap_need_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(max_warp_range=True))
-    assert api_fit_stats.max_warp_range == approx(570.287995)
+    assert api_fit_stats.max_warp_range.one() == approx(570.287995)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(max_warp_range=True))
-    assert api_ship_stats.max_warp_range == approx(570.287995)
+    assert api_ship_stats.max_warp_range.one() == approx(570.287995)
 
 
 def test_ship_cap_value(client, consts):

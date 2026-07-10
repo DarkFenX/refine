@@ -14,7 +14,7 @@ def test_fail_single(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -35,7 +35,7 @@ def test_fail_multiple_ship(client, consts):
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (2, 1)
+    assert api_stats.launched_st_light_fighters.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 2
@@ -56,7 +56,7 @@ def test_fail_multiple_struct(client, consts):
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (2, 1)
+    assert api_stats.launched_st_light_fighters.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 2
@@ -76,7 +76,7 @@ def test_equal(client, consts):
     api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 1)
+    assert api_stats.launched_st_light_fighters.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -98,7 +98,7 @@ def test_known_failures(client, consts):
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (2, 1)
+    assert api_stats.launched_st_light_fighters.one() == (2, 1)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=(True, [api_fighter1.id])))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 2
@@ -148,7 +148,7 @@ def test_modified_fighter_type(client, consts):
     # Verification
     assert api_fighter.update().attrs[eve_ftr_type_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -159,7 +159,7 @@ def test_modified_fighter_type(client, consts):
     # Verification
     assert api_fighter.update().attrs[eve_ftr_type_attr_id].modified == approx(1)
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -190,7 +190,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -201,7 +201,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(1)
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 1)
+    assert api_stats.launched_st_light_fighters.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -224,7 +224,7 @@ def test_fractional_fighter_type(client, consts):
     api_fighter3 = api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (3, 2)
+    assert api_stats.launched_st_light_fighters.one() == (3, 2)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 3
@@ -246,7 +246,7 @@ def test_fractional_max(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -256,7 +256,7 @@ def test_fractional_max(client, consts):
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification - value is rounded up to int
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 1)
+    assert api_stats.launched_st_light_fighters.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -273,7 +273,7 @@ def test_no_ship(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, None)
+    assert api_stats.launched_st_light_fighters.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -293,7 +293,7 @@ def test_no_value_max(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -347,7 +347,7 @@ def test_not_loaded_user(client, consts):
     api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (0, 0)
+    assert api_stats.launched_st_light_fighters.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -366,7 +366,7 @@ def test_not_loaded_ship(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, None)
+    assert api_stats.launched_st_light_fighters.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -386,7 +386,7 @@ def test_criterion_fighter_state(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (0, 0)
+    assert api_stats.launched_st_light_fighters.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -395,7 +395,7 @@ def test_criterion_fighter_state(client, consts):
     api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (1, 0)
+    assert api_stats.launched_st_light_fighters.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is False
     assert api_val.details.launched_st_light_fighter_count.used == 1
@@ -405,7 +405,7 @@ def test_criterion_fighter_state(client, consts):
     api_fighter.change_fighter(state=consts.ApiMinionState.in_bay)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (0, 0)
+    assert api_stats.launched_st_light_fighters.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -429,7 +429,7 @@ def test_criterion_fighter_type(client, consts):
     api_fit.add_fighter(type_id=eve_fighter3_id, state=consts.ApiMinionState.in_space)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (0, 0)
+    assert api_stats.launched_st_light_fighters.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -467,7 +467,7 @@ def test_criterion_item_kind(client, consts):
     # Verification - KF fighter itself, we still check its autocharge
     assert len(api_fighter.autocharges) == 1
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_light_fighters=True))
-    assert api_stats.launched_st_light_fighters == (0, 0)
+    assert api_stats.launched_st_light_fighters.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(launched_st_light_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():

@@ -20,23 +20,23 @@ def test_ship_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(warp_speed=True))
-    assert api_fit_stats.warp_speed == approx(3)
+    assert api_fit_stats.warp_speed.one() == approx(3)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(warp_speed=True))
-    assert api_ship_stats.warp_speed == approx(3)
+    assert api_ship_stats.warp_speed.one() == approx(3)
     # Action
     api_mult_rig = api_fit.add_rig(type_id=eve_mult_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(warp_speed=True))
-    assert api_fit_stats.warp_speed == approx(4.5)
+    assert api_fit_stats.warp_speed.one() == approx(4.5)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(warp_speed=True))
-    assert api_ship_stats.warp_speed == approx(4.5)
+    assert api_ship_stats.warp_speed.one() == approx(4.5)
     # Action
     api_mult_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(warp_speed=True))
-    assert api_fit_stats.warp_speed == approx(3)
+    assert api_fit_stats.warp_speed.one() == approx(3)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(warp_speed=True))
-    assert api_ship_stats.warp_speed == approx(3)
+    assert api_ship_stats.warp_speed.one() == approx(3)
 
 
 def test_ship_value(client, consts):
@@ -131,17 +131,17 @@ def test_fighter_modified(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(warp_speed=True))
-    assert api_fighter_stats.warp_speed == approx(1.5)
+    assert api_fighter_stats.warp_speed.one() == approx(1.5)
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(warp_speed=True))
-    assert api_fighter_stats.warp_speed == approx(1.8)
+    assert api_fighter_stats.warp_speed.one() == approx(1.8)
     # Action
     api_fw_effect.remove()
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(warp_speed=True))
-    assert api_fighter_stats.warp_speed == approx(1.5)
+    assert api_fighter_stats.warp_speed.one() == approx(1.5)
 
 
 def test_incorrect_item_kind(client, consts):

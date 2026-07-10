@@ -33,13 +33,13 @@ def test_module_self(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification - assuming surgical probe is the same
@@ -51,13 +51,13 @@ def test_module_self(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
+    assert api_ship_stats.can_tether.one() is False
 
 
 def test_module_charge_uncharge(client, consts):
@@ -82,13 +82,13 @@ def test_module_charge_uncharge(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is True
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is True
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is True
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is True
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
     # Action
     api_affector_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
@@ -100,13 +100,13 @@ def test_module_charge_uncharge(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is False
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is False
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is False
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is False
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
     # Action
     api_affector_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
@@ -118,13 +118,13 @@ def test_module_charge_uncharge(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is False
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is False
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is False
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is False
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
     # Action
     api_affector_module.change_module(charge_type_id=None)
     # Verification
@@ -136,13 +136,13 @@ def test_module_charge_uncharge(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is True
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is True
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is True
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is True
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
 
 
 def test_module_state_up_state_down(client, consts):
@@ -169,13 +169,13 @@ def test_module_state_up_state_down(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is True
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is True
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is True
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is True
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
     # Action
     api_affector_module.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -187,13 +187,13 @@ def test_module_state_up_state_down(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is False
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is False
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is False
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is False
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
     # Action
     api_affector_module.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -205,13 +205,13 @@ def test_module_state_up_state_down(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is True
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is True
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is True
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is True
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
 
 
 def test_module_range_vs_ship(client, consts):
@@ -244,13 +244,13 @@ def test_module_range_vs_ship(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is False
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is False
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is False
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is False
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
     # Action
     api_affectee_ship.change_ship(coordinates=(0, 20501, 0))
     # Verification
@@ -262,13 +262,13 @@ def test_module_range_vs_ship(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_affectee_ship_stats.can_warp is True
-    assert api_affectee_ship_stats.can_jump_gate is True
-    assert api_affectee_ship_stats.can_jump_wormhole is True
-    assert api_affectee_ship_stats.can_jump_drive is True
-    assert api_affectee_ship_stats.can_dock_station is True
-    assert api_affectee_ship_stats.can_dock_citadel is True
-    assert api_affectee_ship_stats.can_tether is True
+    assert api_affectee_ship_stats.can_warp.one() is True
+    assert api_affectee_ship_stats.can_jump_gate.one() is True
+    assert api_affectee_ship_stats.can_jump_wormhole.one() is True
+    assert api_affectee_ship_stats.can_jump_drive.one() is True
+    assert api_affectee_ship_stats.can_dock_station.one() is True
+    assert api_affectee_ship_stats.can_dock_citadel.one() is True
+    assert api_affectee_ship_stats.can_tether.one() is True
 
 
 def test_module_range_vs_fighter(client, consts):
@@ -296,12 +296,12 @@ def test_module_range_vs_fighter(client, consts):
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id, api_affectee_fighter.id])
     # Verification
     api_affectee_fighter_stats = api_affectee_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_affectee_fighter_stats.can_warp is False
+    assert api_affectee_fighter_stats.can_warp.one() is False
     # Action
     api_affectee_fighter.change_fighter(coordinates=(0, 20501, 0))
     # Verification
     api_affectee_fighter_stats = api_affectee_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_affectee_fighter_stats.can_warp is True
+    assert api_affectee_fighter_stats.can_warp.one() is True
 
 
 def test_charge_proj_effect(client, consts):
@@ -322,10 +322,10 @@ def test_charge_proj_effect(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_jump_gate is True
-    assert api_ship_stats.can_jump_wormhole is True
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is True
-    assert api_ship_stats.can_dock_citadel is True
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
+    assert api_ship_stats.can_tether.one() is True

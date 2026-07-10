@@ -31,15 +31,15 @@ def test_restrictions(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.can_warp.one() is True
     # Action
     api_cloak.change_module(type_id=eve_cloak_t2_id)
     # Verification
@@ -51,15 +51,15 @@ def test_restrictions(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.can_warp.one() is True
     # Action
     api_cloak.change_module(type_id=eve_cloak_covops_id)
     # Verification
@@ -71,12 +71,12 @@ def test_restrictions(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_jump_gate is False
-    assert api_ship_stats.can_jump_wormhole is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_station is False
-    assert api_ship_stats.can_dock_citadel is False
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_fighter_stats.can_warp is True
+    assert api_fighter_stats.can_warp.one() is True

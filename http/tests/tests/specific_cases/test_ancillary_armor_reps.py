@@ -53,7 +53,7 @@ def test_chargedness_local(client, consts):
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled))])))
-    assert api_stats.hp.armor.ancil_local == approx(4864.5)
+    assert api_stats.hp.one().armor.ancil_local == approx(4864.5)
     assert api_stats.rps.map(lambda i: i.armor.local) == [approx(69), approx(36.852273), approx(23)]
     # Action
     api_module.change_module(type_id=eve_module2_id)
@@ -62,7 +62,7 @@ def test_chargedness_local(client, consts):
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled))])))
-    assert api_stats.hp.armor.ancil_local == approx(517.5)
+    assert api_stats.hp.one().armor.ancil_local == approx(517.5)
     assert api_stats.rps.map(lambda i: i.armor.local) == [approx(57.5), approx(7.5), approx(23)]
 
 
@@ -115,7 +115,7 @@ def test_chargedness_remote(client, consts):
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled))])))
-    assert api_tgt_stats.hp.armor.ancil_remote == approx(6887.5)
+    assert api_tgt_stats.hp.one().armor.ancil_remote == approx(6887.5)
     assert api_tgt_stats.rps.map(lambda i: i.armor.remote) == [approx(145), approx(63.773148), approx(48.333333)]
     # Action
     api_src_module.change_module(type_id=eve_module2_id)
@@ -129,5 +129,5 @@ def test_chargedness_remote(client, consts):
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(optional_reloads=consts.ApiOptionalReload.disabled))])))
-    assert api_tgt_stats.hp.armor.ancil_remote == approx(652.5)
+    assert api_tgt_stats.hp.one().armor.ancil_remote == approx(652.5)
     assert api_tgt_stats.rps.map(lambda i: i.armor.remote) == [approx(108.75), approx(9.886364), approx(48.333333)]

@@ -13,7 +13,7 @@ def test_fail_single(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -41,7 +41,7 @@ def test_fail_multiple_ship(client, consts):
         state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (3, 1)
+    assert api_stats.mid_slots.one() == (3, 1)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 3
@@ -69,7 +69,7 @@ def test_fail_multiple_struct(client, consts):
         state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (3, 1)
+    assert api_stats.mid_slots.one() == (3, 1)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 3
@@ -93,7 +93,7 @@ def test_holes(client, consts):
         add_mode={consts.ApiModAddMode.insert: 5})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (6, 3)
+    assert api_stats.mid_slots.one() == (6, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 6
@@ -107,7 +107,7 @@ def test_holes(client, consts):
         add_mode={consts.ApiModAddMode.insert: 2})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (7, 3)
+    assert api_stats.mid_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
@@ -117,7 +117,7 @@ def test_holes(client, consts):
     api_module1.remove()
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (3, 3)
+    assert api_stats.mid_slots.one() == (3, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -135,7 +135,7 @@ def test_equal(client, consts):
     api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 1)
+    assert api_stats.mid_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -159,7 +159,7 @@ def test_known_failures(client, consts):
         add_mode={consts.ApiModAddMode.replace: 0})
     # Verification - check case with KF specified, but used <= max being true
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 3)
+    assert api_stats.mid_slots.one() == (1, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module1.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -172,7 +172,7 @@ def test_known_failures(client, consts):
         add_mode={consts.ApiModAddMode.replace: 2})
     # Verification - check case with KF specified, but used <= max being true
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (3, 3)
+    assert api_stats.mid_slots.one() == (3, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -185,7 +185,7 @@ def test_known_failures(client, consts):
         add_mode={consts.ApiModAddMode.replace: 6})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (7, 3)
+    assert api_stats.mid_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
@@ -203,7 +203,7 @@ def test_known_failures(client, consts):
         add_mode={consts.ApiModAddMode.replace: 4})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (7, 3)
+    assert api_stats.mid_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id])))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
@@ -231,7 +231,7 @@ def test_known_failures(client, consts):
         add_mode={consts.ApiModAddMode.replace: 1})
     # Verification - module has been added within slot limit, so it does not trigger anything
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (7, 3)
+    assert api_stats.mid_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id, api_module4.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -244,7 +244,7 @@ def test_known_failures(client, consts):
         add_mode={consts.ApiModAddMode.replace: 3})
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (7, 3)
+    assert api_stats.mid_slots.one() == (7, 3)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id, api_module4.id])))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
@@ -273,7 +273,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(0)
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -284,7 +284,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == approx(1)
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 1)
+    assert api_stats.mid_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -303,7 +303,7 @@ def test_fractional_max(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -313,7 +313,7 @@ def test_fractional_max(client, consts):
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 1)
+    assert api_stats.mid_slots.one() == (1, 1)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -329,7 +329,7 @@ def test_no_ship(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, None)
+    assert api_stats.mid_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -348,7 +348,7 @@ def test_no_value_max(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -385,7 +385,7 @@ def test_not_loaded_user(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -404,7 +404,7 @@ def test_not_loaded_ship(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, None)
+    assert api_stats.mid_slots.one() == (1, None)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -424,7 +424,7 @@ def test_criterion_module_state(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.mid, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -434,7 +434,7 @@ def test_criterion_module_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.disabled)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 1
@@ -455,7 +455,7 @@ def test_criterion_rack(client, consts):
     api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.low, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (0, 0)
+    assert api_stats.mid_slots.one() == (0, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=True))
     assert api_val.passed is True
     with check_no_field():
@@ -494,7 +494,7 @@ def test_criterion_item_kind(client, consts):
     # Verification - KF module itself, we still check its charge
     assert len(api_fighter.autocharges) == 1
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
-    assert api_stats.mid_slots == (1, 0)
+    assert api_stats.mid_slots.one() == (1, 0)
     api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module.id])))
     assert api_val.passed is True
     with check_no_field():

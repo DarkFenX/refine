@@ -77,16 +77,16 @@ def test_warp_dscript(client, consts):
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_src_stats.can_warp is False
-    assert api_src_stats.can_jump_drive is False
-    assert api_src_stats.can_dock_citadel is False
-    assert api_src_stats.can_tether is False
+    assert api_src_stats.can_warp.one() is False
+    assert api_src_stats.can_jump_drive.one() is False
+    assert api_src_stats.can_dock_citadel.one() is False
+    assert api_src_stats.can_tether.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target, HIC should be
@@ -95,16 +95,16 @@ def test_warp_dscript(client, consts):
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_src_stats.can_warp is True
-    assert api_src_stats.can_jump_drive is True
-    assert api_src_stats.can_dock_citadel is False
-    assert api_src_stats.can_tether is False
+    assert api_src_stats.can_warp.one() is True
+    assert api_src_stats.can_jump_drive.one() is True
+    assert api_src_stats.can_dock_citadel.one() is False
+    assert api_src_stats.can_tether.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is False
-    assert api_tgt_stats.can_tether is False
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is False
+    assert api_tgt_stats.can_tether.one() is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
@@ -112,16 +112,16 @@ def test_warp_dscript(client, consts):
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_src_stats.can_warp is False
-    assert api_src_stats.can_jump_drive is False
-    assert api_src_stats.can_dock_citadel is False
-    assert api_src_stats.can_tether is False
+    assert api_src_stats.can_warp.one() is False
+    assert api_src_stats.can_jump_drive.one() is False
+    assert api_src_stats.can_dock_citadel.one() is False
+    assert api_src_stats.can_tether.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
 
 
 def test_warp_sscript(client, consts):
@@ -158,16 +158,16 @@ def test_warp_sscript(client, consts):
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_src_stats.can_warp is False
-    assert api_src_stats.can_jump_drive is False
-    assert api_src_stats.can_dock_citadel is False
-    assert api_src_stats.can_tether is False
+    assert api_src_stats.can_warp.one() is False
+    assert api_src_stats.can_jump_drive.one() is False
+    assert api_src_stats.can_dock_citadel.one() is False
+    assert api_src_stats.can_tether.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
@@ -175,16 +175,16 @@ def test_warp_sscript(client, consts):
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_src_stats.can_warp is True
-    assert api_src_stats.can_jump_drive is True
-    assert api_src_stats.can_dock_citadel is False
-    assert api_src_stats.can_tether is False
+    assert api_src_stats.can_warp.one() is True
+    assert api_src_stats.can_jump_drive.one() is True
+    assert api_src_stats.can_dock_citadel.one() is False
+    assert api_src_stats.can_tether.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is False
-    assert api_tgt_stats.can_tether is False
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is False
+    assert api_tgt_stats.can_tether.one() is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
@@ -192,16 +192,16 @@ def test_warp_sscript(client, consts):
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_src_stats.can_warp is False
-    assert api_src_stats.can_jump_drive is False
-    assert api_src_stats.can_dock_citadel is False
-    assert api_src_stats.can_tether is False
+    assert api_src_stats.can_warp.one() is False
+    assert api_src_stats.can_jump_drive.one() is False
+    assert api_src_stats.can_dock_citadel.one() is False
+    assert api_src_stats.can_tether.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
 
 
 def test_gate_dscript(client, consts):
@@ -235,27 +235,27 @@ def test_gate_dscript(client, consts):
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_src_stats.can_jump_gate is False
+    assert api_src_stats.can_jump_gate.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_tgt_stats.can_jump_gate is True
+    assert api_tgt_stats.can_jump_gate.one() is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_src_stats.can_jump_gate is False
+    assert api_src_stats.can_jump_gate.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_tgt_stats.can_jump_gate is False
+    assert api_tgt_stats.can_jump_gate.one() is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_src_stats.can_jump_gate is False
+    assert api_src_stats.can_jump_gate.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_tgt_stats.can_jump_gate is True
+    assert api_tgt_stats.can_jump_gate.one() is True
 
 
 def test_gate_sscript(client, consts):
@@ -289,27 +289,27 @@ def test_gate_sscript(client, consts):
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_src_stats.can_jump_gate is False
+    assert api_src_stats.can_jump_gate.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_tgt_stats.can_jump_gate is True
+    assert api_tgt_stats.can_jump_gate.one() is True
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_src_stats.can_jump_gate is False
+    assert api_src_stats.can_jump_gate.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_tgt_stats.can_jump_gate is False
+    assert api_tgt_stats.can_jump_gate.one() is False
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
     api_src_val = api_src_fit.validate(options=ValOptions(offense_immunity=True))
     assert api_src_val.passed is True
     api_src_stats = api_src_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_src_stats.can_jump_gate is False
+    assert api_src_stats.can_jump_gate.one() is False
     api_tgt_stats = api_tgt_fit.get_stats(options=FitStatsOptions(can_jump_gate=True))
-    assert api_tgt_stats.can_jump_gate is True
+    assert api_tgt_stats.can_jump_gate.one() is True
 
 
 def test_block_module_mwd_dscript(client, consts):
@@ -641,19 +641,19 @@ def test_range_bubble_vs_ship(client, consts):
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
     # Action
     api_tgt_ship.change_ship(coordinates=(24489, 0, 0))
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is True
-    assert api_tgt_stats.can_jump_drive is True
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is True
+    assert api_tgt_stats.can_jump_drive.one() is True
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
 
 
 def test_range_bubble_vs_fighter(client, consts):
@@ -682,12 +682,12 @@ def test_range_bubble_vs_fighter(client, consts):
     api_wdfg.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_fighter.id])
     # Verification
     api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_tgt_fighter_stats.can_warp is False
+    assert api_tgt_fighter_stats.can_warp.one() is False
     # Action
     api_tgt_fighter.change_fighter(coordinates=(20124, 0, 0))
     # Verification
     api_tgt_fighter_stats = api_tgt_fighter.get_stats(options=ItemStatsOptions(can_warp=True))
-    assert api_tgt_fighter_stats.can_warp is True
+    assert api_tgt_fighter_stats.can_warp.one() is True
 
 
 def test_range_dscript(client, consts):
@@ -751,19 +751,19 @@ def test_range_dscript(client, consts):
     # ships
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is False
-    assert api_tgt_stats.can_jump_drive is False
-    assert api_tgt_stats.can_dock_citadel is False
-    assert api_tgt_stats.can_tether is False
+    assert api_tgt_stats.can_warp.one() is False
+    assert api_tgt_stats.can_jump_drive.one() is False
+    assert api_tgt_stats.can_dock_citadel.one() is False
+    assert api_tgt_stats.can_tether.one() is False
     # Action
     api_tgt_ship.change_ship(coordinates=(34489, 0, 0))
     # Verification
     api_tgt_stats = api_tgt_fit.get_stats(
         options=FitStatsOptions(can_warp=True, can_jump_drive=True, can_dock_citadel=True, can_tether=True))
-    assert api_tgt_stats.can_warp is True
-    assert api_tgt_stats.can_jump_drive is True
-    assert api_tgt_stats.can_dock_citadel is True
-    assert api_tgt_stats.can_tether is True
+    assert api_tgt_stats.can_warp.one() is True
+    assert api_tgt_stats.can_jump_drive.one() is True
+    assert api_tgt_stats.can_dock_citadel.one() is True
+    assert api_tgt_stats.can_tether.one() is True
 
 
 def test_range_sscript(client, consts):

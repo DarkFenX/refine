@@ -108,17 +108,17 @@ impl HGetItemStatsCmd {
         // Tank
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.resists.unwrap_or(self.default) {
-            stats.resists = core_item.get_stat_resists().ok().map(HStatResists::from_core).into();
+            stats.resists = core_item.get_stat_resists().map(HStatResists::from_core).into();
         }
         if self.hp.unwrap_or(self.default) {
-            stats.hp = core_item.get_stat_hp().ok().map(HStatHp::from_core).into();
+            stats.hp = core_item.get_stat_hp().map(HStatHp::from_core).into();
         }
         let ehp_opt = HStatResolvedOption::new(&self.ehp, self.default);
         if ehp_opt.enabled {
             stats.ehp = get_ehp_stats(&mut core_item, ehp_opt.options).into()
         }
         if self.wc_ehp.unwrap_or(self.default) {
-            stats.wc_ehp = core_item.get_stat_wc_ehp().ok().map(HStatEhp::from_core).into();
+            stats.wc_ehp = core_item.get_stat_wc_ehp().map(HStatEhp::from_core).into();
         }
         let rps_opt = HStatResolvedOption::new(&self.rps, self.default);
         if rps_opt.enabled {

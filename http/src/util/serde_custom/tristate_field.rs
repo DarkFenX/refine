@@ -22,6 +22,10 @@ impl<T> TriStateField<T> {
         matches!(self, Self::Absent)
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> From<Option<T>> for TriStateField<T> {
     fn from(val: Option<T>) -> Self {
         match val {
@@ -39,6 +43,26 @@ impl<T, E> From<Result<T, E>> for TriStateField<T> {
     }
 }
 
+impl<T> From<Option<T>> for TriStateField<Vec<T>> {
+    fn from(val: Option<T>) -> Self {
+        match val {
+            Some(inner) => Self::Value(vec![inner]),
+            None => Self::None,
+        }
+    }
+}
+impl<T, E> From<Result<T, E>> for TriStateField<Vec<T>> {
+    fn from(val: Result<T, E>) -> Self {
+        match val {
+            Ok(inner) => Self::Value(vec![inner]),
+            Err(_) => Self::None,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T> Serialize for TriStateField<T>
 where
     T: Serialize,
@@ -57,6 +81,9 @@ where
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct TriStateFieldVisitor<T> {
     marker: std::marker::PhantomData<T>,
 }

@@ -20,23 +20,23 @@ def test_char_modified(client, consts):
     api_char = api_fit.set_character(type_id=eve_char_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(drone_control_range=True))
-    assert api_fit_stats.drone_control_range == approx(20000)
+    assert api_fit_stats.drone_control_range.one() == approx(20000)
     api_char_stats = api_char.get_stats(options=ItemStatsOptions(drone_control_range=True))
-    assert api_char_stats.drone_control_range == approx(20000)
+    assert api_char_stats.drone_control_range.one() == approx(20000)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(drone_control_range=True))
-    assert api_fit_stats.drone_control_range == approx(50000)
+    assert api_fit_stats.drone_control_range.one() == approx(50000)
     api_char_stats = api_char.get_stats(options=ItemStatsOptions(drone_control_range=True))
-    assert api_char_stats.drone_control_range == approx(50000)
+    assert api_char_stats.drone_control_range.one() == approx(50000)
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(drone_control_range=True))
-    assert api_fit_stats.drone_control_range == approx(20000)
+    assert api_fit_stats.drone_control_range.one() == approx(20000)
     api_char_stats = api_char.get_stats(options=ItemStatsOptions(drone_control_range=True))
-    assert api_char_stats.drone_control_range == approx(20000)
+    assert api_char_stats.drone_control_range.one() == approx(20000)
 
 
 def test_char_no_value(client, consts):
@@ -48,9 +48,9 @@ def test_char_no_value(client, consts):
     api_char = api_fit.set_character(type_id=eve_char_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(drone_control_range=True))
-    assert api_fit_stats.drone_control_range == 0
+    assert api_fit_stats.drone_control_range.one() == 0
     api_char_stats = api_char.get_stats(options=ItemStatsOptions(drone_control_range=True))
-    assert api_char_stats.drone_control_range == 0
+    assert api_char_stats.drone_control_range.one() == 0
 
 
 def test_char_absent(client, consts):

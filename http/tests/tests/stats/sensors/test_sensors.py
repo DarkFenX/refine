@@ -57,23 +57,23 @@ def test_ship_modified_radar(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(25)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(25)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(25)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(25)]
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
 
 
 def test_ship_modified_gravimetric(client, consts):
@@ -94,23 +94,23 @@ def test_ship_modified_gravimetric(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.gravimetric, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.gravimetric, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.gravimetric, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.gravimetric, approx(20)]
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.gravimetric, approx(25)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.gravimetric, approx(25)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.gravimetric, approx(25)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.gravimetric, approx(25)]
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.gravimetric, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.gravimetric, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.gravimetric, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.gravimetric, approx(20)]
 
 
 def test_ship_modified_magnetometric(client, consts):
@@ -131,23 +131,23 @@ def test_ship_modified_magnetometric(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(20)]
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(25)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(25)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(25)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(25)]
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(20)]
 
 
 def test_ship_modified_ladar(client, consts):
@@ -168,23 +168,23 @@ def test_ship_modified_ladar(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.ladar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.ladar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(20)]
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.ladar, approx(25)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(25)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.ladar, approx(25)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(25)]
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.ladar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.ladar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(20)]
 
 
 def test_ship_no_value(client, consts):
@@ -199,9 +199,9 @@ def test_ship_no_value(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, 0]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, 0]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, 0]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, 0]
 
 
 def test_ship_absent(client, consts):
@@ -252,23 +252,23 @@ def test_struct_modified(client, consts):
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     api_ship_stats = api_struct.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(25)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(25)]
     api_ship_stats = api_struct.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(25)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(25)]
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     api_ship_stats = api_struct.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
 
 
 def test_drone_modified(client, consts):
@@ -290,17 +290,17 @@ def test_drone_modified(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_drone_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_drone_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_drone_stats.sensors == [consts.ApiSensorKind.radar, approx(25)]
+    assert api_drone_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(25)]
     # Action
     api_fw_effect.remove()
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_drone_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_drone_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
 
 
 def test_fighter_modified(client, consts):
@@ -323,17 +323,17 @@ def test_fighter_modified(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_fighter_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fighter_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_fighter_stats.sensors == [consts.ApiSensorKind.radar, approx(25)]
+    assert api_fighter_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(25)]
     # Action
     api_fw_effect.remove()
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_fighter_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fighter_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
 
 
 def test_incorrect_item_kind(client, consts):
@@ -365,9 +365,9 @@ def test_tie_resolution_omni(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
 
 
 def test_tie_resolution_radar_ladar(client, consts):
@@ -380,9 +380,9 @@ def test_tie_resolution_radar_ladar(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.radar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.radar, approx(20)]
 
 
 def test_tie_resolution_ladar_magnetometric(client, consts):
@@ -395,9 +395,9 @@ def test_tie_resolution_ladar_magnetometric(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.ladar, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.ladar, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.ladar, approx(20)]
 
 
 def test_tie_resolution_magnetometric_gravimetric(client, consts):
@@ -410,9 +410,9 @@ def test_tie_resolution_magnetometric_gravimetric(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(sensors=True))
-    assert api_fit_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(20)]
+    assert api_fit_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(20)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(sensors=True))
-    assert api_ship_stats.sensors == [consts.ApiSensorKind.magnetometric, approx(20)]
+    assert api_ship_stats.sensors.one() == [consts.ApiSensorKind.magnetometric, approx(20)]
 
 
 def test_not_requested(client, consts):

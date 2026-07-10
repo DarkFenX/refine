@@ -20,23 +20,23 @@ def test_ship_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(neut_resist=True))
-    assert api_fit_stats.neut_resist == approx(0)
+    assert api_fit_stats.neut_resist.one() == approx(0)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(neut_resist=True))
-    assert api_ship_stats.neut_resist == approx(0)
+    assert api_ship_stats.neut_resist.one() == approx(0)
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(neut_resist=True))
-    assert api_fit_stats.neut_resist == approx(0.24)
+    assert api_fit_stats.neut_resist.one() == approx(0.24)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(neut_resist=True))
-    assert api_ship_stats.neut_resist == approx(0.24)
+    assert api_ship_stats.neut_resist.one() == approx(0.24)
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(neut_resist=True))
-    assert api_fit_stats.neut_resist == approx(0)
+    assert api_fit_stats.neut_resist.one() == approx(0)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(neut_resist=True))
-    assert api_ship_stats.neut_resist == approx(0)
+    assert api_ship_stats.neut_resist.one() == approx(0)
 
 
 def test_ship_no_value(client, consts):
@@ -48,9 +48,9 @@ def test_ship_no_value(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(neut_resist=True))
-    assert api_fit_stats.neut_resist == 0
+    assert api_fit_stats.neut_resist.one() == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(neut_resist=True))
-    assert api_ship_stats.neut_resist == 0
+    assert api_ship_stats.neut_resist.one() == 0
 
 
 def test_ship_absent(client, consts):
@@ -72,9 +72,9 @@ def test_struct(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(neut_resist=True))
-    assert api_fit_stats.neut_resist == approx(0.4)
+    assert api_fit_stats.neut_resist.one() == approx(0.4)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(neut_resist=True))
-    assert api_ship_stats.neut_resist == approx(0.4)
+    assert api_ship_stats.neut_resist.one() == approx(0.4)
 
 
 def test_incorrect_item_kind(client, consts):

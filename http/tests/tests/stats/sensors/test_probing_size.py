@@ -29,37 +29,37 @@ def test_ship_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(2)
+    assert api_fit_stats.probing_size.one() == approx(2)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(2)
+    assert api_ship_stats.probing_size.one() == approx(2)
     # Action
     api_sensor_rig = api_fit.add_rig(type_id=eve_sensor_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.6)
+    assert api_fit_stats.probing_size.one() == approx(1.6)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.6)
+    assert api_ship_stats.probing_size.one() == approx(1.6)
     # Action
     api_sig_rig = api_fit.add_rig(type_id=eve_sig_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.44)
+    assert api_fit_stats.probing_size.one() == approx(1.44)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.44)
+    assert api_ship_stats.probing_size.one() == approx(1.44)
     # Action
     api_sensor_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.8)
+    assert api_fit_stats.probing_size.one() == approx(1.8)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.8)
+    assert api_ship_stats.probing_size.one() == approx(1.8)
     # Action
     api_sig_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(2)
+    assert api_fit_stats.probing_size.one() == approx(2)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(2)
+    assert api_ship_stats.probing_size.one() == approx(2)
 
 
 def test_ship_highest(client, consts):
@@ -83,16 +83,16 @@ def test_ship_highest(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(10)
+    assert api_fit_stats.probing_size.one() == approx(10)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(10)
+    assert api_ship_stats.probing_size.one() == approx(10)
     # Action
     api_fit.add_implant(type_id=eve_sensor_implant_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(5.714286)
+    assert api_fit_stats.probing_size.one() == approx(5.714286)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(5.714286)
+    assert api_ship_stats.probing_size.one() == approx(5.714286)
 
 
 def test_ship_sensors_value(client, consts):
@@ -129,16 +129,16 @@ def test_ship_sig_radius_value(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.08)
+    assert api_fit_stats.probing_size.one() == approx(1.08)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.08)
+    assert api_ship_stats.probing_size.one() == approx(1.08)
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.08)
+    assert api_fit_stats.probing_size.one() == approx(1.08)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.08)
+    assert api_ship_stats.probing_size.one() == approx(1.08)
 
 
 def test_ship_both_values(client, consts):
@@ -217,37 +217,37 @@ def test_struct_modified(client, consts):
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(2)
+    assert api_fit_stats.probing_size.one() == approx(2)
     api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_struct_stats.probing_size == approx(2)
+    assert api_struct_stats.probing_size.one() == approx(2)
     # Action
     api_sensor_rig = api_fit.add_rig(type_id=eve_sensor_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.6)
+    assert api_fit_stats.probing_size.one() == approx(1.6)
     api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_struct_stats.probing_size == approx(1.6)
+    assert api_struct_stats.probing_size.one() == approx(1.6)
     # Action
     api_sig_rig = api_fit.add_rig(type_id=eve_sig_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.44)
+    assert api_fit_stats.probing_size.one() == approx(1.44)
     api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_struct_stats.probing_size == approx(1.44)
+    assert api_struct_stats.probing_size.one() == approx(1.44)
     # Action
     api_sensor_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.8)
+    assert api_fit_stats.probing_size.one() == approx(1.8)
     api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_struct_stats.probing_size == approx(1.8)
+    assert api_struct_stats.probing_size.one() == approx(1.8)
     # Action
     api_sig_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(2)
+    assert api_fit_stats.probing_size.one() == approx(2)
     api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_struct_stats.probing_size == approx(2)
+    assert api_struct_stats.probing_size.one() == approx(2)
 
 
 def test_drone_modified(client, consts):
@@ -280,32 +280,32 @@ def test_drone_modified(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_drone_stats.probing_size == approx(2)
+    assert api_drone_stats.probing_size.one() == approx(2)
     # Action
     api_sensor_fw_effect = api_fit.add_fw_effect(type_id=eve_sensor_fw_effect_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_drone_stats.probing_size == approx(1.6)
+    assert api_drone_stats.probing_size.one() == approx(1.6)
     # Action
     api_sig_fw_effect = api_fit.add_fw_effect(type_id=eve_sig_fw_effect_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_drone_stats.probing_size == approx(1.44)
+    assert api_drone_stats.probing_size.one() == approx(1.44)
     # Action
     api_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_drone_stats.probing_size == approx(8.64)
+    assert api_drone_stats.probing_size.one() == approx(8.64)
     # Action
     api_sensor_fw_effect.remove()
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_drone_stats.probing_size == approx(10.8)
+    assert api_drone_stats.probing_size.one() == approx(10.8)
     # Action
     api_sig_fw_effect.remove()
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_drone_stats.probing_size == approx(12)
+    assert api_drone_stats.probing_size.one() == approx(12)
 
 
 def test_fighter_modified(client, consts):
@@ -337,27 +337,27 @@ def test_fighter_modified(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_fighter_stats.probing_size == approx(2)
+    assert api_fighter_stats.probing_size.one() == approx(2)
     # Action
     api_sensor_fw_effect = api_fit.add_fw_effect(type_id=eve_sensor_fw_effect_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_fighter_stats.probing_size == approx(1.6)
+    assert api_fighter_stats.probing_size.one() == approx(1.6)
     # Action
     api_sig_fw_effect = api_fit.add_fw_effect(type_id=eve_sig_fw_effect_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_fighter_stats.probing_size == approx(1.44)
+    assert api_fighter_stats.probing_size.one() == approx(1.44)
     # Action
     api_sensor_fw_effect.remove()
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_fighter_stats.probing_size == approx(1.8)
+    assert api_fighter_stats.probing_size.one() == approx(1.8)
     # Action
     api_sig_fw_effect.remove()
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_fighter_stats.probing_size == approx(2)
+    assert api_fighter_stats.probing_size.one() == approx(2)
 
 
 def test_incorrect_item_kind(client, consts):
@@ -394,9 +394,9 @@ def test_limit(client, consts):
     api_fit.add_rig(type_id=eve_sensor_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(probing_size=True))
-    assert api_fit_stats.probing_size == approx(1.08)
+    assert api_fit_stats.probing_size.one() == approx(1.08)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(probing_size=True))
-    assert api_ship_stats.probing_size == approx(1.08)
+    assert api_ship_stats.probing_size.one() == approx(1.08)
 
 
 def test_not_requested(client, consts):

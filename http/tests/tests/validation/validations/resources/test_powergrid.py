@@ -14,7 +14,7 @@ def test_fail_single(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -36,7 +36,7 @@ def test_fail_multiple_ship(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -59,7 +59,7 @@ def test_fail_multiple_struct(client, consts):
     api_service = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -79,7 +79,7 @@ def test_equal(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 150)
+    assert api_stats.powergrid.one() == (150, 150)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -104,7 +104,7 @@ def test_known_failures(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module1_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=(True, [api_module1.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -113,7 +113,7 @@ def test_known_failures(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (250, 125)
+    assert api_stats.powergrid.one() == (250, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=(True, [api_module1.id])))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 250
@@ -136,7 +136,7 @@ def test_known_failures(client, consts):
     api_module3 = api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (240, 125)
+    assert api_stats.powergrid.one() == (240, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -146,7 +146,7 @@ def test_known_failures(client, consts):
     api_module4 = api_fit.add_module(type_id=eve_module4_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (250, 125)
+    assert api_stats.powergrid.one() == (250, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is True
     with check_no_field():
@@ -156,7 +156,7 @@ def test_known_failures(client, consts):
     api_module5 = api_fit.add_module(type_id=eve_module5_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (250.5, 125)
+    assert api_stats.powergrid.one() == (250.5, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=(True, [api_module1.id, api_module2.id])))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 250.5
@@ -186,7 +186,7 @@ def test_modified_use(client, consts):
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].modified == 150
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -197,7 +197,7 @@ def test_modified_use(client, consts):
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].modified == 75
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (75, 125)
+    assert api_stats.powergrid.one() == (75, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -226,7 +226,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == 120
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 120)
+    assert api_stats.powergrid.one() == (150, 120)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -237,7 +237,7 @@ def test_modified_max(client, consts):
     # Verification
     assert api_ship.update().attrs[eve_max_attr_id].modified == 180
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 180)
+    assert api_stats.powergrid.one() == (150, 180)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -261,7 +261,7 @@ def test_mutation_use(client, consts):
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].modified == 120
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (120, 125)
+    assert api_stats.powergrid.one() == (120, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -271,7 +271,7 @@ def test_mutation_use(client, consts):
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].modified == 129.6
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (129.6, 125)
+    assert api_stats.powergrid.one() == (129.6, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 129.6
@@ -282,7 +282,7 @@ def test_mutation_use(client, consts):
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].modified == 134.4
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (134.4, 125)
+    assert api_stats.powergrid.one() == (134.4, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 134.4
@@ -293,7 +293,7 @@ def test_mutation_use(client, consts):
     # Verification
     assert api_module.update().attrs[eve_use_attr_id].modified == 120
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (120, 125)
+    assert api_stats.powergrid.one() == (120, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -314,7 +314,7 @@ def test_rounding(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (5.24, 5.23)
+    assert api_stats.powergrid.one() == (5.24, 5.23)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 5.24
@@ -341,7 +341,7 @@ def test_sum_rounding(client, consts):
             continue
         # Verification
         api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-        assert api_stats.powergrid == (round(i / 10, 1), 0.15)
+        assert api_stats.powergrid.one() == (round(i / 10, 1), 0.15)
         api_val = api_fit.validate(options=ValOptions(powergrid=True))
         assert api_val.passed is False
         assert api_val.details.powergrid.used == round(i / 10, 1)
@@ -359,7 +359,7 @@ def test_no_ship(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (5, None)
+    assert api_stats.powergrid.one() == (5, None)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 5
@@ -379,7 +379,7 @@ def test_not_loaded_ship(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (5, None)
+    assert api_stats.powergrid.one() == (5, None)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 5
@@ -400,7 +400,7 @@ def test_not_loaded_user(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (0, 125)
+    assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -423,7 +423,7 @@ def test_non_positive(client, consts):
     api_fit.add_module(type_id=eve_module3_id, state=consts.ApiModuleState.online)
     # Verification - items with negative and 0 use are not exposed
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (140, 125)
+    assert api_stats.powergrid.one() == (140, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 140
@@ -445,7 +445,7 @@ def test_no_value_use(client, consts):
     api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -465,7 +465,7 @@ def test_no_value_max(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 0)
+    assert api_stats.powergrid.one() == (150, 0)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -520,7 +520,7 @@ def test_criterion_module_state(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (0, 125)
+    assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -529,7 +529,7 @@ def test_criterion_module_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (150, 125)
+    assert api_stats.powergrid.one() == (150, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is False
     assert api_val.details.powergrid.used == 150
@@ -539,7 +539,7 @@ def test_criterion_module_state(client, consts):
     api_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (0, 125)
+    assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():
@@ -578,7 +578,7 @@ def test_criterion_item_kind(client, consts):
     # Verification
     assert len(api_fighter.autocharges) == 1
     api_stats = api_fit.get_stats(options=FitStatsOptions(powergrid=True))
-    assert api_stats.powergrid == (0, 125)
+    assert api_stats.powergrid.one() == (0, 125)
     api_val = api_fit.validate(options=ValOptions(powergrid=True))
     assert api_val.passed is True
     with check_no_field():

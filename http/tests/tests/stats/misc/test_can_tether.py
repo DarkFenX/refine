@@ -21,23 +21,23 @@ def test_ship_tether_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_warp_modified(client, consts):
@@ -59,23 +59,23 @@ def test_ship_warp_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_rig.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_aggro(client, consts):
@@ -91,23 +91,23 @@ def test_ship_aggro(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_module.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_released_minion(client, consts):
@@ -123,38 +123,38 @@ def test_ship_released_minion(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.in_space)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_drone.remove()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_fighter.remove()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_tether_values(client, consts):
@@ -170,30 +170,30 @@ def test_ship_tether_values(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship3_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_tether_no_attr(client, consts):
@@ -206,9 +206,9 @@ def test_ship_tether_no_attr(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification - value is ignored if attribute does not exist
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_warp_values(client, consts):
@@ -224,30 +224,30 @@ def test_ship_warp_values(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
     # Action
     api_ship.change_ship(type_id=eve_ship3_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is False
+    assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is False
+    assert api_ship_stats.can_tether.one() is False
     # Action
     api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_warp_no_attr(client, consts):
@@ -260,9 +260,9 @@ def test_ship_warp_no_attr(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification - value is ignored if attribute does not exist
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is True
+    assert api_fit_stats.can_tether.one() is True
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is True
+    assert api_ship_stats.can_tether.one() is True
 
 
 def test_ship_absent(client, consts):
@@ -273,7 +273,7 @@ def test_ship_absent(client, consts):
     api_fit = api_sol.create_fit()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is None
+    assert api_fit_stats.can_tether.one() is None
 
 
 def test_ship_not_loaded(client, consts):
@@ -286,9 +286,9 @@ def test_ship_not_loaded(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is None
+    assert api_fit_stats.can_tether.one() is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is None
+    assert api_ship_stats.can_tether.one() is None
 
 
 def test_struct(client, consts):
@@ -301,9 +301,9 @@ def test_struct(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether is None
+    assert api_fit_stats.can_tether.one() is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether is None
+    assert api_ship_stats.can_tether.one() is None
 
 
 def test_incorrect_item_kind(client, consts):
@@ -316,7 +316,7 @@ def test_incorrect_item_kind(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_drone_stats = api_fighter.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_drone_stats.can_tether is None
+    assert api_drone_stats.can_tether.one() is None
 
 
 def test_not_requested(client, consts):

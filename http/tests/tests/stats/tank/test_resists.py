@@ -63,24 +63,24 @@ def test_ship_modified(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
-    assert api_fit_stats.resists.shield == (approx(0), approx(0.2), approx(0.4), approx(0.6))
-    assert api_fit_stats.resists.armor == (approx(0.5), approx(0.35), approx(0.25), approx(0.3))
-    assert api_fit_stats.resists.hull == (approx(0.33), approx(0.33), approx(0.33), approx(0.33))
+    assert api_fit_stats.resists.one().shield == (approx(0), approx(0.2), approx(0.4), approx(0.6))
+    assert api_fit_stats.resists.one().armor == (approx(0.5), approx(0.35), approx(0.25), approx(0.3))
+    assert api_fit_stats.resists.one().hull == (approx(0.33), approx(0.33), approx(0.33), approx(0.33))
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_ship_stats.resists.shield == (approx(0), approx(0.2), approx(0.4), approx(0.6))
-    assert api_ship_stats.resists.armor == (approx(0.5), approx(0.35), approx(0.25), approx(0.3))
-    assert api_ship_stats.resists.hull == (approx(0.33), approx(0.33), approx(0.33), approx(0.33))
+    assert api_ship_stats.resists.one().shield == (approx(0), approx(0.2), approx(0.4), approx(0.6))
+    assert api_ship_stats.resists.one().armor == (approx(0.5), approx(0.35), approx(0.25), approx(0.3))
+    assert api_ship_stats.resists.one().hull == (approx(0.33), approx(0.33), approx(0.33), approx(0.33))
     # Action
     api_module = api_fit.add_module(type_id=eve_base_module_id, state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
-    assert api_fit_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
-    assert api_fit_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
-    assert api_fit_stats.resists.hull == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
+    assert api_fit_stats.resists.one().shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
+    assert api_fit_stats.resists.one().armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
+    assert api_fit_stats.resists.one().hull == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_ship_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
-    assert api_ship_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
-    assert api_ship_stats.resists.hull == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
+    assert api_ship_stats.resists.one().shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
+    assert api_ship_stats.resists.one().armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
+    assert api_ship_stats.resists.one().hull == (approx(0.598), approx(0.598), approx(0.598), approx(0.598))
     # Action
     api_module.change_module(mutation=(eve_mutator_id, {
         eve_hull_em_mod_attr_id: Muta.roll_to_api(val=0.22),
@@ -89,13 +89,13 @@ def test_ship_modified(client, consts):
         eve_hull_expl_mod_attr_id: Muta.roll_to_api(val=0.43)}))
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(resists=True))
-    assert api_fit_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
-    assert api_fit_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
-    assert api_fit_stats.resists.hull == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
+    assert api_fit_stats.resists.one().shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
+    assert api_fit_stats.resists.one().armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
+    assert api_fit_stats.resists.one().hull == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_ship_stats.resists.shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
-    assert api_ship_stats.resists.armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
-    assert api_ship_stats.resists.hull == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
+    assert api_ship_stats.resists.one().shield == (approx(0.125), approx(0.3), approx(0.475), approx(0.65))
+    assert api_ship_stats.resists.one().armor == (approx(0.575), approx(0.4475), approx(0.3625), approx(0.405))
+    assert api_ship_stats.resists.one().hull == (approx(0.624934), approx(0.585739), approx(0.599608), approx(0.612271))
 
 
 def test_drone_modified(client, consts):
@@ -126,23 +126,23 @@ def test_drone_modified(client, consts):
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_drone_stats.resists.shield == (approx(0), approx(0.2), approx(0.4), approx(0.5))
-    assert api_drone_stats.resists.armor == (approx(0.5), approx(0.45), approx(0.25), approx(0.1))
-    assert api_drone_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+    assert api_drone_stats.resists.one().shield == (approx(0), approx(0.2), approx(0.4), approx(0.5))
+    assert api_drone_stats.resists.one().armor == (approx(0.5), approx(0.45), approx(0.25), approx(0.1))
+    assert api_drone_stats.resists.one().hull == (approx(0), approx(0), approx(0), approx(0))
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_drone_stats.resists.shield == (approx(0), approx(0), approx(0.4), approx(0.5))
-    assert api_drone_stats.resists.armor == (approx(0.5), approx(0.065), approx(0.25), approx(0.1))
-    assert api_drone_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+    assert api_drone_stats.resists.one().shield == (approx(0), approx(0), approx(0.4), approx(0.5))
+    assert api_drone_stats.resists.one().armor == (approx(0.5), approx(0.065), approx(0.25), approx(0.1))
+    assert api_drone_stats.resists.one().hull == (approx(0), approx(0), approx(0), approx(0))
     # Action
     api_fw_effect.remove()
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_drone_stats.resists.shield == (approx(0), approx(0.2), approx(0.4), approx(0.5))
-    assert api_drone_stats.resists.armor == (approx(0.5), approx(0.45), approx(0.25), approx(0.1))
-    assert api_drone_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+    assert api_drone_stats.resists.one().shield == (approx(0), approx(0.2), approx(0.4), approx(0.5))
+    assert api_drone_stats.resists.one().armor == (approx(0.5), approx(0.45), approx(0.25), approx(0.1))
+    assert api_drone_stats.resists.one().hull == (approx(0), approx(0), approx(0), approx(0))
 
 
 def test_fighter_modified(client, consts):
@@ -172,23 +172,23 @@ def test_fighter_modified(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_fighter_stats.resists.shield == (approx(0.3), approx(0.15), approx(0), approx(0))
-    assert api_fighter_stats.resists.armor == (approx(0), approx(0), approx(0), approx(0))
-    assert api_fighter_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().shield == (approx(0.3), approx(0.15), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().armor == (approx(0), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().hull == (approx(0), approx(0), approx(0), approx(0))
     # Action
     api_fw_effect = api_fit.add_fw_effect(type_id=eve_fw_effect_id)
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_fighter_stats.resists.shield == (approx(0.3), approx(0), approx(0), approx(0))
-    assert api_fighter_stats.resists.armor == (approx(0), approx(0), approx(0), approx(0))
-    assert api_fighter_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().shield == (approx(0.3), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().armor == (approx(0), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().hull == (approx(0), approx(0), approx(0), approx(0))
     # Action
     api_fw_effect.remove()
     # Verification
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(resists=True))
-    assert api_fighter_stats.resists.shield == (approx(0.3), approx(0.15), approx(0), approx(0))
-    assert api_fighter_stats.resists.armor == (approx(0), approx(0), approx(0), approx(0))
-    assert api_fighter_stats.resists.hull == (approx(0), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().shield == (approx(0.3), approx(0.15), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().armor == (approx(0), approx(0), approx(0), approx(0))
+    assert api_fighter_stats.resists.one().hull == (approx(0), approx(0), approx(0), approx(0))
 
 
 def test_no_ship(client, consts):

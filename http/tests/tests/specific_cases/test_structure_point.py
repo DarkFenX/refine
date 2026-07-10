@@ -26,10 +26,10 @@ def test_warp_scram_status(client, consts):
         can_tether=True,
         can_jump_drive=True,
         can_dock_citadel=True))
-    assert api_ship_stats.can_warp is True
-    assert api_ship_stats.can_tether is True
-    assert api_ship_stats.can_jump_drive is True
-    assert api_ship_stats.can_dock_citadel is True
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_tether.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is True
     # Action
     api_point.change_module(add_proj_item_ids=[api_ship.id])
     # Verification
@@ -39,10 +39,10 @@ def test_warp_scram_status(client, consts):
         can_tether=True,
         can_jump_drive=True,
         can_dock_citadel=True))
-    assert api_ship_stats.can_warp is False
-    assert api_ship_stats.can_tether is False
-    assert api_ship_stats.can_jump_drive is False
-    assert api_ship_stats.can_dock_citadel is False
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
 
 
 def test_module_mwd_block(client, consts):
