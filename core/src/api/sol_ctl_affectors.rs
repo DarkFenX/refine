@@ -29,7 +29,17 @@ pub(in crate::api) enum AffectionDir {
 }
 
 impl SolarSystem {
-    // For now, it processes just direct modifications
+    // This function attempts to disable modifications upon certain attribute. Only modifications
+    // which are isolated within the same fit are considered.
+    //
+    // The function is extremely naive for simplicity:
+    // - it considers only modules
+    // - it considers only affectors which modify requested attribute directly
+    // - it ignores base attribute value - e.g. multiplications by >1 are considered as increases
+    // - it ignores possibility of complex math interactions (e.g. during calculation attribute can
+    //   flip sign of its value multiple times)
+    // - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying
+    //   effect is in force-run mode
     pub(in crate::api) fn internal_ctl_affectors_switch(
         &mut self,
         item_uid: UItemId,
@@ -94,6 +104,7 @@ impl SolarSystem {
             *new_state = saved_state;
         }
     }
+    // Reverts changes done by the controllable affector function.
     pub(in crate::api) fn internal_ctl_affectors_restore(
         &mut self,
         reuse_saved_states: &mut RMap<UItemId, RState>,
@@ -107,8 +118,6 @@ impl SolarSystem {
 }
 
 fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
-    // Implementation of this function is naive: it assumes base value is positive, and ignores
-    // various complex math interactions (which are possible, but do not occur in EVE)
     match mod_info.op {
         Op::Add | Op::ExtraAdd | Op::PostPerc => match mod_info.initial_str.cmp(&Value::ZERO) {
             Ordering::Greater => matches!(dir, AffectionDir::Increase),
