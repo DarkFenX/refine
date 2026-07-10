@@ -1,0 +1,10 @@
+[package]
+name = "refine-rs"
+version = "0.1.0"
+authors = ["DarkPhoenix <phoenix@mail.ru>"]
+edition = "2024"
+
+[dependencies]
+rc = { package = "refine-core", path = "../core" }
+redh = { package = "refine-edh", path = "../data-handler", features = ["phb-http"] }
+radc = { package = "refine-adc", path = "../data-cacher", features = ["json-zfile"] }

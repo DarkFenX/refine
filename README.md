@@ -9,9 +9,11 @@ Core calculation library with Rust interface.
 ### refine-edh
 Data handlers for core library, which provide access to EVE data.
 ### refine-adc
-Data cachers for core library, which allow it to cache adapted data. Adapted data is processed EVE data, adapted for needs of the library.
+Data cachers for core library, which allow it to store adapted data. Adapted data is EVE data which was processed for needs of the library.
+### refine-rs
+High-level async Rust interface. Manages thread pools and multi-threading, allows to unify multiple elementary requests in command batches, to mitigate overhead which comes with abstractions.
 ### refine-http
-HTTP interface to the library.
+High-level HTTP interface built on top of `refine-rs`.
 
 # Documentation
 HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client, as well as [non-synthetic-data tests](http/tests/playground/actual_data.py) which use it.
