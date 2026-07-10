@@ -14,14 +14,14 @@ use crate::{
     ad::AItemCatId,
     api::Op,
     num::{PValue, Value},
-    svc::calc::{Affector, AggrKey, AggrMode, CalcOp, Modification},
+    svc::calc::{AggrKey, AggrMode, CalcModInfo, CalcModInfoAffector, CalcOp},
     util::RMap,
 };
 
 pub(in crate::svc::calc) struct AttrValInfo {
     pub(in crate::svc::calc) value: Value,
-    pub(in crate::svc::calc) effective_infos: Vec<Modification>,
-    pub(in crate::svc::calc) filtered_infos: Vec<Modification>,
+    pub(in crate::svc::calc) effective_infos: Vec<CalcModInfo>,
+    pub(in crate::svc::calc) filtered_infos: Vec<CalcModInfo>,
 }
 impl AttrValInfo {
     pub(in crate::svc::calc) fn new(value: Value) -> Self {
@@ -31,7 +31,7 @@ impl AttrValInfo {
             filtered_infos: Vec::new(),
         }
     }
-    fn from_effective_info(value: Value, info: Modification) -> Self {
+    fn from_effective_info(value: Value, info: CalcModInfo) -> Self {
         Self {
             value,
             effective_infos: vec![info],
@@ -89,7 +89,7 @@ impl ModAccumInfo {
         attr_pen: bool,
         item_cat: AItemCatId,
         aggr_mode: AggrMode,
-        affectors: SmallVec<[Affector; 1]>,
+        affectors: SmallVec<[CalcModInfoAffector; 1]>,
     ) {
         match op {
             CalcOp::PreAssign => self
@@ -199,7 +199,7 @@ impl AccumAssign {
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
         aggr_mode: AggrMode,
-        affectors: SmallVec<[Affector; 1]>,
+        affectors: SmallVec<[CalcModInfoAffector; 1]>,
     ) {
         // Projection/resist multipliers affect assign operations differently: if any of multipliers
         // is 0.0, then modification is not applied altogether, otherwise it is applied fully. There
@@ -216,14 +216,14 @@ impl AccumAssign {
         };
         let info = AttrValInfo::from_effective_info(
             added_raw,
-            Modification {
+            CalcModInfo {
                 op: Op::from_calc_op(op),
                 initial_str: added_raw,
                 range_mult: proj_mult,
                 resist_mult: res_mult,
                 stacking_mult: None,
                 applied_str: added_raw,
-                affectors: affectors.into_vec(),
+                affectors,
             },
         );
         match aggr_mode {
@@ -293,19 +293,19 @@ where
         proj_mult: Option<PValue>,
         res_mult: Option<PValue>,
         aggr_mode: AggrMode,
-        affectors: SmallVec<[Affector; 1]>,
+        affectors: SmallVec<[CalcModInfoAffector; 1]>,
     ) {
         let diminished_raw = M::diminish_raw(added_raw, proj_mult, res_mult);
         let info = AttrValInfo::from_effective_info(
             diminished_raw,
-            Modification {
+            CalcModInfo {
                 op: Op::from_calc_op(op),
                 initial_str: added_raw,
                 range_mult: proj_mult,
                 resist_mult: res_mult,
                 stacking_mult: None,
                 applied_str: diminished_raw,
-                affectors: affectors.into_vec(),
+                affectors,
             },
         );
         match aggr_mode {
@@ -384,7 +384,7 @@ where
         res_mult: Option<PValue>,
         aggr_mode: AggrMode,
         pen: bool,
-        affectors: SmallVec<[Affector; 1]>,
+        affectors: SmallVec<[CalcModInfoAffector; 1]>,
     ) {
         if !M::check_raw(added_raw) {
             return;
@@ -392,14 +392,14 @@ where
         let diminished_raw = M::diminish_raw(added_raw, proj_mult, res_mult);
         let info_raw = AttrValInfo::from_effective_info(
             diminished_raw,
-            Modification {
+            CalcModInfo {
                 op: Op::from_calc_op(op),
                 initial_str: added_raw,
                 range_mult: proj_mult,
                 resist_mult: res_mult,
                 stacking_mult: None,
                 applied_str: diminished_raw,
-                affectors: affectors.into_vec(),
+                affectors,
             },
         );
         match aggr_mode {

@@ -3,15 +3,14 @@ use smallvec::SmallVec;
 use super::CalcCustomModStrength;
 use crate::{
     ad::AItemId,
-    api::AttrId,
     misc::EffectSpec,
     num::Value,
     rd::RAttrConsts,
     svc::{
         SvcCtx,
         calc::{
-            AffecteeFilter, Affector, AggrMode, Calc, CalcCustomModifier, CalcOp, Location, ModifierKind, RawModifier,
-            modifier::ModStrength,
+            AffecteeFilter, AggrMode, Calc, CalcCustomModifier, CalcModInfoAffector, CalcOp, Location, ModifierKind,
+            RawModifier, modifier::ModStrength,
         },
     },
     ud::{UItem, UItemId},
@@ -44,12 +43,12 @@ pub(super) fn get_mod_val(calc: &mut Calc, ctx: SvcCtx, espec: EffectSpec) -> Op
     Some(Value::ONE)
 }
 
-pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Affector; 1]> {
+pub(super) fn get_affector_info(ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
     let mut info = SmallVec::new();
     if let Some(mult_attr_rid) = ctx.ac().charged_armor_dmg_mult {
-        info.push(Affector {
-            item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-            attr_id: Some(AttrId::from_aid(ctx.u_data.r_data.get_attr_by_rid(mult_attr_rid).aid)),
+        info.push(CalcModInfoAffector {
+            item_uid,
+            attr_rid: Some(mult_attr_rid),
         });
     }
     info

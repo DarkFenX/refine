@@ -2,7 +2,7 @@ use crate::{
     rd::RAttrId,
     svc::{
         Svc, SvcCtx,
-        calc::{CalcAttrVals, Modification},
+        calc::{CalcAttrVals, CalcModInfo},
         err::UItemLoadedError,
     },
     ud::{UData, UItemId},
@@ -30,7 +30,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<Modification>)>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<CalcModInfo>)>, UItemLoadedError> {
         self.calc.iter_item_mods(SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
     pub(crate) fn iter_item_attr_mods(
@@ -38,7 +38,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         attr_rid: RAttrId,
-    ) -> Result<impl ExactSizeIterator<Item = Modification>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = CalcModInfo>, UItemLoadedError> {
         self.calc
             .iter_item_attr_mods(SvcCtx::new(u_data, &self.eff_projs), item_uid, attr_rid)
     }

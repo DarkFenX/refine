@@ -1,11 +1,11 @@
 use std::cmp::Ordering;
 
 use crate::{
-    api::{ModuleState, Op},
+    api::{Modification, ModuleState, Op},
     num::Value,
     rd::RAttrId,
     sol::SolarSystem,
-    svc::calc::Modification,
+    svc::calc::CalcModInfo,
     ud::{UEffectUpdates, UItemId},
     util::RMap,
 };
@@ -37,17 +37,17 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         // For now, process only direct modifications
-        let Ok(modifications) = self.svc.iter_item_attr_mods(&self.u_data, item_uid, attr_rid) else {
+        let Ok(mod_infos) = self.svc.iter_item_attr_mods(&self.u_data, item_uid, attr_rid) else {
             return;
         };
-        for modification in modifications {
+        for mod_info in mod_infos {
             // Ignore modifications which are not impacting requested direction
-            if !needs_switch(&modification, direction) {
+            if !needs_switch(&mod_info, direction) {
                 continue;
             }
             // Ignore modifications with empty or complex affector definitions
-            let affector = match modification.affectors.len() {
-                1 => modification.affectors.get(1).unwrap(),
+            let affector = match mod_info.affectors.len() {
+                1 => mod_info.affectors.get(1).unwrap(),
                 _ => continue,
             };
             // Ignore non-module item kinds
@@ -56,26 +56,26 @@ impl SolarSystem {
     }
 }
 
-fn needs_switch(modification: &Modification, dir: AffectionDir) -> bool {
+fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
     // Implementation of this function is naive: it assumes base value is positive, and ignores
     // various complex math interactions (which are possible, but do not occur in EVE)
-    match modification.op {
-        Op::Add | Op::ExtraAdd | Op::PostPerc => match modification.initial_str.cmp(&Value::ZERO) {
+    match mod_info.op {
+        Op::Add | Op::ExtraAdd | Op::PostPerc => match mod_info.initial_str.cmp(&Value::ZERO) {
             Ordering::Greater => matches!(dir, AffectionDir::Increase),
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Decrease),
         },
-        Op::Sub => match modification.initial_str.cmp(&Value::ZERO) {
+        Op::Sub => match mod_info.initial_str.cmp(&Value::ZERO) {
             Ordering::Greater => matches!(dir, AffectionDir::Decrease),
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Increase),
         },
-        Op::PreMul | Op::PostMul | Op::ExtraMul => match modification.initial_str.cmp(&Value::ONE) {
+        Op::PreMul | Op::PostMul | Op::ExtraMul => match mod_info.initial_str.cmp(&Value::ONE) {
             Ordering::Greater => matches!(dir, AffectionDir::Increase),
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Decrease),
         },
-        Op::PreDiv | Op::PostDiv => match modification.initial_str.cmp(&Value::ONE) {
+        Op::PreDiv | Op::PostDiv => match mod_info.initial_str.cmp(&Value::ONE) {
             Ordering::Greater => matches!(dir, AffectionDir::Decrease),
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Increase),

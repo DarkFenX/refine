@@ -8,12 +8,11 @@ use super::{
     sealed::{ItemMutSealed, ItemSealed},
 };
 use crate::{
-    api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId},
+    api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId, Modification},
     err::basic::{AttrFoundError, ItemLoadedError},
     misc::{DpsProfile, EffectMode, OptionalReload},
     num::{Count, PValue, UnitInterval, Value},
     svc::{
-        calc::Modification,
         cycle::CseqMap,
         vast::{
             StatCapBlcSrcKinds, StatCapBlcSrcKindsInt, StatCapSim, StatCapSimStagger, StatCapSimStaggerInt, StatDmg,
@@ -91,14 +90,19 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     }
     fn iter_modifiers(
         &mut self,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)>, IterItemModifiersError> {
+    ) -> Result<
+        impl ExactSizeIterator<Item = (AttrId, impl ExactSizeIterator<Item = Modification>)>,
+        IterItemModifiersError,
+    > {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_mods(&sol.u_data, item_uid) {
             Ok(mods_iter) => Ok(mods_iter.into_iter().map(|(attr_rid, modifications)| {
                 (
                     AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
-                    modifications,
+                    modifications
+                        .into_iter()
+                        .map(|calc_mod_info| Modification::from_calc(calc_mod_info, &sol.u_data)),
                 )
             })),
             Err(err) => Err(ItemLoadedError {

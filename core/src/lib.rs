@@ -27,16 +27,16 @@
 //!   items, and fetch data and stats
 
 pub use api::{
-    AbilId, Ability, AbilityIter, AbilityMut, AddMode, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
+    AbilId, Ability, AbilityIter, AbilityMut, AddMode, Affector, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
     BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CtlAffectors, CustomEffectId, Direction,
     DogmaEffectId, Drone, DroneMut, EffectId, EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut,
     Fit, FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut,
     IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemTypeId, MinionState,
-    Module, ModuleIter, ModuleMut, ModuleState, Movement, MutIter, Mutation, MutationMut, MvMode, Op, Proj, ProjEffect,
-    ProjEffectMut, ProjIter, ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,
-    RawMAttrMut, Rig, RigMut, RmMode, Service, ServiceMut, ServiceState, Ship, ShipMut, SideEffect, SideEffectIter,
-    SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut,
-    SwEffect, SwEffectMut,
+    Modification, Module, ModuleIter, ModuleMut, ModuleState, Movement, MutIter, Mutation, MutationMut, MvMode, Op,
+    Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr,
+    RawMAttrIter, RawMAttrMut, Rig, RigMut, RmMode, Service, ServiceMut, ServiceState, Ship, ShipMut, SideEffect,
+    SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, Subsystem,
+    SubsystemMut, SwEffect, SwEffectMut,
 };
 pub use def::VERSION;
 pub use lender::Lender;
@@ -48,7 +48,6 @@ pub use misc::{
 pub use num::{Count, FighterCount, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::SolarSystem;
 pub use src::Src;
-pub use svc::calc::{Affector, Modification};
 pub use ud::{FitId, FleetId, ItemId};
 
 pub mod ad;

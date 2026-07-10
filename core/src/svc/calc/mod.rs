@@ -32,8 +32,7 @@
 
 use accum::{AttrValInfo, ModAccumFast, ModAccumInfo};
 pub(crate) use calc::Calc;
-pub use info::{Affector, Modification};
-pub(crate) use misc::CalcAttrVals;
+pub(crate) use misc::{CalcAttrVals, CalcModInfo, CalcModInfoAffector};
 use misc::{CalcModification, CalcModificationKey, ItemAttrPostproc, LocationKind};
 use modifier::{
     AffecteeFilter, AggrKey, AggrMode, CtxModifier, ItemAddRemoveReviser, Location, ModContext, ModifierKind,
@@ -47,7 +46,6 @@ mod calce_attr;
 mod calce_maintain;
 mod calce_modgen;
 mod calce_rah;
-mod info;
 mod misc;
 mod modifier;
 mod registers;

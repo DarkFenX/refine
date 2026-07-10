@@ -2,14 +2,13 @@ use smallvec::{SmallVec, smallvec};
 
 use super::custom::CalcCustomModStrength;
 use crate::{
-    api::AttrId,
     dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
     rd::RAttrId,
     svc::{
         SvcCtx,
-        calc::{Affector, Calc, ItemAddRemoveReviser},
+        calc::{Calc, CalcModInfoAffector, ItemAddRemoveReviser},
     },
     ud::{UData, UItemId},
 };
@@ -32,15 +31,15 @@ impl ModStrength {
         }
     }
     // More expensive, but comprehensive info about affecting items/attributes
-    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[Affector; 1]> {
+    pub(super) fn get_affector_info(&self, ctx: SvcCtx, item_uid: UItemId) -> SmallVec<[CalcModInfoAffector; 1]> {
         match self {
-            Self::Attr(attr_rid) => smallvec![Affector {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                attr_id: Some(AttrId::from_aid(ctx.u_data.r_data.get_attr_by_rid(*attr_rid).aid)),
+            Self::Attr(attr_rid) => smallvec![CalcModInfoAffector {
+                item_uid,
+                attr_rid: Some(*attr_rid),
             }],
-            Self::Hardcoded(_) => smallvec![Affector {
-                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
-                attr_id: None
+            Self::Hardcoded(_) => smallvec![CalcModInfoAffector {
+                item_uid,
+                attr_rid: None
             }],
             Self::Custom(custom_str) => custom_str.get_affector_info(ctx, item_uid),
         }

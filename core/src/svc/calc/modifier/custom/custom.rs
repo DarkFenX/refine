@@ -10,7 +10,7 @@ use crate::{
     rd::{RAttrConsts, RAttrId},
     svc::{
         SvcCtx,
-        calc::{Affector, Calc, RawModifier},
+        calc::{Calc, CalcModInfoAffector, RawModifier},
     },
     ud::{UData, UItemId},
 };
@@ -58,7 +58,7 @@ impl CalcCustomModStrength {
         &self,
         ctx: SvcCtx,
         item_uid: UItemId,
-    ) -> SmallVec<[Affector; 1]> {
+    ) -> SmallVec<[CalcModInfoAffector; 1]> {
         match &self.kind {
             CalcCustomModifier::PropSpeed => prop_speed::get_affector_info(ctx, item_uid),
             CalcCustomModifier::AarPaste => aar_paste::get_affector_info(ctx, item_uid),
