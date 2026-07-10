@@ -18,8 +18,8 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_sig_radius(&mut self) -> Result<PValue, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_sig_radius()?)
     }
-    pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> Result<PValue, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_mass(ctl_affectors)?)
+    pub fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_mass(affectors)?)
     }
     pub fn get_stat_warp_speed(&mut self) -> Result<Option<PValue>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_warp_speed()?)
@@ -31,7 +31,10 @@ impl<'a> FitMut<'a> {
         &mut self,
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
+        passenger_fuel_affectors: CtlAffectors,
     ) -> Result<Option<StatJump>, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_jump(range, passenger_fit_ids)?)
+        Ok(self
+            .get_ship_for_stats()?
+            .get_stat_jump(range, passenger_fit_ids, passenger_fuel_affectors)?)
     }
 }

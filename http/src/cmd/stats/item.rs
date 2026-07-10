@@ -504,7 +504,8 @@ fn get_jump_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionJump>) ->
     let mut results = Vec::with_capacity(options.len());
     for option in options {
         let core_range = option.range.into_core();
-        match core_item.get_stat_jump(core_range, &option.passenger_fit_ids) {
+        let core_psg_affectors = option.passenger_fuel_affectors.into_core();
+        match core_item.get_stat_jump(core_range, &option.passenger_fit_ids, core_psg_affectors) {
             Ok(Some(core_stat)) => results.push(HStatJump::from_core(core_stat)),
             _ => return None,
         }

@@ -535,7 +535,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_sig_radius(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> Result<PValue, ItemStatError> {
+    fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, ItemStatError> {
         let item_uid = self.get_uid();
         let mut saved_states = RMap::new();
         let mut reuse_eupdates = UEffectUpdates::new();
@@ -543,7 +543,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         sol.internal_ctl_affectors_switch(
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
-            ctl_affectors,
+            affectors,
             AffectionDir::Increase,
             &mut saved_states,
             &mut reuse_eupdates,
@@ -573,16 +573,36 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
+        passenger_fuel_affectors: CtlAffectors,
     ) -> Result<Option<StatJump>, ItemStatError> {
+        let mut saved_states = RMap::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let passenger_fit_uids = passenger_fit_ids
             .iter()
             .filter_map(|fit_id| sol.u_data.fits.int_id_by_ext_id(fit_id))
             .collect_vec();
-        sol.svc
+        let passenger_ship_uids = sol.u_data.get_fits_ship_uids(passenger_fit_uids.iter().copied());
+        // Work on item states according to request
+        for &passenger_ship_uid in passenger_ship_uids.iter() {
+            sol.internal_ctl_affectors_switch(
+                passenger_ship_uid,
+                sol.u_data.r_data.get_attr_consts().mass,
+                passenger_fuel_affectors,
+                AffectionDir::Increase,
+                &mut saved_states,
+                &mut reuse_eupdates,
+            );
+        }
+        // Collect stats
+        let result = sol
+            .svc
             .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        // Revert item state changes
+        sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
+        result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - misc

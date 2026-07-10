@@ -10,17 +10,7 @@ impl<'a> FleetMut<'a> {
         let mut fleet_mass = PValue::ZERO;
         let mut saved_states = RMap::new();
         let mut reuse_eupdates = UEffectUpdates::new();
-        // Collect IDs of fleet ships
-        let u_fleet = self.sol.u_data.fleets.get(self.uid);
-        let fit_uids = u_fleet.iter_fits();
-        let mut ship_uids = Vec::with_capacity(fit_uids.len());
-        for fit_uid in fit_uids {
-            let u_fit = self.sol.u_data.fits.get(fit_uid);
-            let Some(ship_uid) = u_fit.ship else {
-                continue;
-            };
-            ship_uids.push(ship_uid);
-        }
+        let ship_uids = self.sol.u_data.get_fleet_ship_uids(self.uid);
         // Work on item states according to request
         for &ship_uid in ship_uids.iter() {
             self.sol.internal_ctl_affectors_switch(

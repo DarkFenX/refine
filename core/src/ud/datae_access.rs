@@ -2,13 +2,28 @@ use crate::{
     err::basic::{ItemFoundError, ItemReceiveProjError},
     misc::{DpsProfile, NpcProp, OptionalReload, RearmMinion, Spool},
     num::PValue,
-    ud::{ItemId, UData, UFit, UFitId, UItem, UItemId, UPhysics},
+    ud::{ItemId, UData, UFit, UFitId, UFleetId, UItem, UItemId, UPhysics},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Some basic/uncategorized access methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UData {
+    pub(crate) fn get_fits_ship_uids(&self, fit_uids: impl ExactSizeIterator<Item = UFitId>) -> Vec<UItemId> {
+        let mut ship_uids = Vec::with_capacity(fit_uids.len());
+        for fit_uid in fit_uids {
+            let u_fit = self.fits.get(fit_uid);
+            let Some(ship_uid) = u_fit.ship else {
+                continue;
+            };
+            ship_uids.push(ship_uid);
+        }
+        ship_uids
+    }
+    pub(crate) fn get_fleet_ship_uids(&self, fleet_uid: UFleetId) -> Vec<UItemId> {
+        let u_fleet = self.fleets.get(fleet_uid);
+        self.get_fits_ship_uids(u_fleet.iter_fits())
+    }
     pub(crate) fn get_item_fit_ship_uid(&self, item_uid: UItemId) -> Option<UItemId> {
         let item = self.items.get(item_uid);
         let fit_uid = item.get_fit_uid()?;

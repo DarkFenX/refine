@@ -1,6 +1,8 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
+use super::shared_affectors::HStatAffectors;
+
 #[serde_as]
 #[derive(Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatOptionJump {
@@ -9,6 +11,8 @@ pub(in crate::cmd) struct HStatOptionJump {
     #[serde(default)]
     #[serde_as(as = "Vec<DisplayFromStr>")]
     pub(in crate::cmd) passenger_fit_ids: Vec<rc::FitId>,
+    #[serde(default)]
+    pub(in crate::cmd) passenger_fuel_affectors: HStatAffectors,
 }
 
 #[derive(Copy, Clone, Default)]
