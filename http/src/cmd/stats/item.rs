@@ -493,7 +493,7 @@ fn get_mass_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionMass>) ->
     for option in options {
         let core_affectors = option.affectors.into_core();
         match core_item.get_stat_mass(core_affectors) {
-            Ok(value) => results.push(value.into_f64()),
+            Ok(core_stat) => results.push(core_stat.into_f64()),
             _ => return None,
         }
     }

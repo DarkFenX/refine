@@ -16,4 +16,5 @@ class FleetStats(AttrDict):
             'outgoing_rps': AttrHookDef(func=lambda d: (
                 NttList(StatOutRps(data=e) if e is not None else None for e in d)
                 if d is not None else None)),
-            'outgoing_cps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None)})
+            'outgoing_cps': AttrHookDef(func=lambda d: NttList(d) if d is not None else None),
+            'mass': AttrHookDef(func=lambda d: (NttList(d)if d is not None else None))})

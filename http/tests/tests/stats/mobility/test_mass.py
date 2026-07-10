@@ -1,5 +1,5 @@
 from fw import approx, check_no_field
-from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionMass
+from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionMass
 
 
 def test_ship_affectors(client, consts):
@@ -24,7 +24,8 @@ def test_ship_affectors(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_online_module_id, state=consts.ApiModuleState.online)
     api_fit.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.active)
@@ -35,6 +36,8 @@ def test_ship_affectors(client, consts):
         StatsOptionMass(affectors=consts.ApiCtlAffector.offline),
         StatsOptionMass(affectors=consts.ApiCtlAffector.deactivate),
         StatsOptionMass(affectors=consts.ApiCtlAffector.unmodified)]
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=(True, api_options)))
+    assert api_fleet_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=(True, api_options)))
     assert api_fit_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=(True, api_options)))
@@ -46,9 +49,12 @@ def test_ship_no_value(client, consts):
     eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
     assert api_fit_stats.mass.one() == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=True))
@@ -59,8 +65,11 @@ def test_ship_absent(client, consts):
     client.mk_eve_attr(id_=consts.EveAttr.mass)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
     assert api_fit_stats.mass is None
 
@@ -70,9 +79,12 @@ def test_ship_not_loaded(client, consts):
     eve_ship_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
     assert api_fit_stats.mass is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=True))
@@ -93,9 +105,12 @@ def test_struct_modified(client, consts):
     eve_struct_id = client.mk_eve_struct(attrs={eve_mass_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_struct = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == approx(100)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
     assert api_fit_stats.mass.one() == approx(100)
     api_ship_stats = api_struct.get_stats(options=ItemStatsOptions(mass=True))
@@ -103,6 +118,8 @@ def test_struct_modified(client, consts):
     # Action
     api_rig = api_fit.add_rig(type_id=eve_rig_id)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == approx(125)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
     assert api_fit_stats.mass.one() == approx(125)
     api_ship_stats = api_struct.get_stats(options=ItemStatsOptions(mass=True))
@@ -110,6 +127,8 @@ def test_struct_modified(client, consts):
     # Action
     api_rig.remove()
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == approx(100)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
     assert api_fit_stats.mass.one() == approx(100)
     api_ship_stats = api_struct.get_stats(options=ItemStatsOptions(mass=True))
@@ -131,9 +150,14 @@ def test_drone_modified(client, consts):
     eve_drone_id = client.mk_eve_drone(attrs={eve_mass_attr_id: 1350})
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
-    # Verification
+    # Verification - drone does not add to fleet/fit mass
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
+    assert api_fit_stats.mass is None
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(mass=True))
     assert api_drone_stats.mass.one() == approx(1350)
     # Action
@@ -164,9 +188,14 @@ def test_fighter_modified(client, consts):
     eve_fighter_id = client.mk_eve_fighter(attrs={eve_mass_attr_id: 873, eve_max_count_attr_id: 9})
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
-    # Verification
+    # Verification - fighter does not add to fleet/fit mass
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=True))
+    assert api_fleet_stats.mass.one() == 0
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
+    assert api_fit_stats.mass is None
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(mass=True))
     assert api_fighter_stats.mass.one() == approx(873)
     # Action
@@ -198,9 +227,13 @@ def test_not_requested(client, consts):
     eve_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
+    api_fleet = api_sol.create_fleet()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=False))
+    with check_no_field():
+        api_fleet_stats.mass  # noqa: B018
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=False))
     with check_no_field():
         api_fit_stats.mass  # noqa: B018

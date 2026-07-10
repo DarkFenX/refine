@@ -5,7 +5,7 @@ use crate::{
         shared::get_primary_fleet,
         stats::options::{
             HStatOption, HStatOptionFitDmg, HStatOptionFitMining, HStatOptionFitOutCps, HStatOptionFitOutNps,
-            HStatOptionFitOutRps, HStatResolvedOption,
+            HStatOptionFitOutRps, HStatOptionMass, HStatResolvedOption,
         },
     },
     err::HExecError,
@@ -27,6 +27,7 @@ pub(crate) struct HGetFleetStatsCmd {
     outgoing_nps: Option<HStatOption<HStatOptionFitOutNps>>,
     outgoing_rps: Option<HStatOption<HStatOptionFitOutRps>>,
     outgoing_cps: Option<HStatOption<HStatOptionFitOutCps>>,
+    mass: Option<HStatOption<HStatOptionMass>>,
 }
 impl HGetFleetStatsCmd {
     pub(crate) fn execute(
@@ -55,6 +56,10 @@ impl HGetFleetStatsCmd {
         let out_cps_opt = HStatResolvedOption::new(&self.outgoing_cps, self.default);
         if out_cps_opt.enabled {
             stats.outgoing_cps = Some(get_outgoing_cps_stats(&mut core_fleet, out_cps_opt.options));
+        }
+        let mass_opt = HStatResolvedOption::new(&self.mass, self.default);
+        if mass_opt.enabled {
+            stats.mass = Some(get_mass_stats(&mut core_fleet, mass_opt.options));
         }
         Ok(stats)
     }
@@ -98,13 +103,13 @@ fn get_outgoing_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptio
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_nps_applied(core_item_kinds, core_time_options, projectee_item_id) {
-                    Ok(result) => results.push(Some(result.into_f64())),
+                    Ok(core_stat) => results.push(Some(core_stat.into_f64())),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let result = core_fleet.get_stat_outgoing_nps(core_item_kinds, core_time_options);
-                results.push(Some(result.into_f64()));
+                let core_stat = core_fleet.get_stat_outgoing_nps(core_item_kinds, core_time_options);
+                results.push(Some(core_stat.into_f64()));
             }
         }
     }
@@ -140,15 +145,24 @@ fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptio
         match &option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_cps_applied(core_time_options, projectee_item_id) {
-                    Ok(result) => results.push(Some(result.into_f64())),
+                    Ok(core_stat) => results.push(Some(core_stat.into_f64())),
                     Err(_) => results.push(None),
                 }
             }
             None => {
-                let result = core_fleet.get_stat_outgoing_cps(core_time_options);
-                results.push(Some(result.into_f64()));
+                let core_stat = core_fleet.get_stat_outgoing_cps(core_time_options);
+                results.push(Some(core_stat.into_f64()));
             }
         }
+    }
+    results
+}
+fn get_mass_stats(core_fleet: &mut rc::FleetMut, options: Vec<HStatOptionMass>) -> Vec<f64> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_affectors = option.affectors.into_core();
+        let core_stat = core_fleet.get_stat_mass(core_affectors);
+        results.push(core_stat.into_f64());
     }
     results
 }

@@ -543,7 +543,7 @@ fn get_mass_stats(core_fit: &mut rc::FitMut, options: Vec<HStatOptionMass>) -> O
     for option in options {
         let core_affectors = option.affectors.into_core();
         match core_fit.get_stat_mass(core_affectors) {
-            Ok(value) => results.push(value.into_f64()),
+            Ok(core_stat) => results.push(core_stat.into_f64()),
             _ => return None,
         }
     }

@@ -14,6 +14,8 @@ pub(crate) struct HFleetStats {
     pub(crate) outgoing_rps: Option<Vec<Option<HStatOutReps>>>,
     #[serde(skip_serializing_if = "Option::is_none")]
     pub(crate) outgoing_cps: Option<Vec<Option<f64>>>,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    pub(crate) mass: Option<Vec<f64>>,
 }
 impl HFleetStats {
     pub(crate) fn new() -> Self {
@@ -23,6 +25,7 @@ impl HFleetStats {
             outgoing_rps: Option::default(),
             outgoing_cps: Option::default(),
             outgoing_nps: Option::default(),
+            mass: Option::default(),
         }
     }
 }

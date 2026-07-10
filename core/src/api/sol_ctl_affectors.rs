@@ -6,7 +6,7 @@ use crate::{
     rd::{RAttrId, RState},
     sol::SolarSystem,
     svc::calc::CalcModInfo,
-    ud::{UData, UEffectUpdates, UItemId},
+    ud::{UData, UEffectUpdates, UItem, UItemId},
     util::RMap,
 };
 
@@ -76,12 +76,14 @@ impl SolarSystem {
                 1 => mod_info.affectors.first().unwrap(),
                 _ => continue,
             };
+            let affector_item = self.u_data.items.get(affector.item_uid);
             // Ignore non-module item kinds
-            let Ok(affector_module) = self.u_data.items.get(affector.item_uid).dc_module() else {
-                continue;
-            };
+            match affector_item {
+                UItem::Module(_) => (),
+                _ => continue,
+            }
             // Ignore modules from other fits
-            if affector_module.get_fit_uid() != fit_uid {
+            if affector_item.get_fit_uid() != Some(fit_uid) {
                 continue;
             }
             match reuse_saved_states.entry(affector.item_uid) {
@@ -139,7 +141,7 @@ fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
             Ordering::Equal => false,
             Ordering::Less => matches!(dir, AffectionDir::Increase),
         },
-        // Just ignore those modification types
+        // Just ignore modifications with those operators, hard to analyze them
         Op::BaseAssign | Op::PreAssign | Op::PostAssign | Op::MinLimit | Op::MaxLimit => false,
     }
 }
