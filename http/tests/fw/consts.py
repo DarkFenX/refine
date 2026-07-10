@@ -28,6 +28,7 @@ class EveItem(IntEnum):
     hecate_defense_mode = 35686
     hecate_propulsion_mode = 35687
     hecate_sharpshooter_mode = 35688
+    st_conduit_generator = 35913
     stasis_webification_probe = 56748
     capital_micro_jump_drive_operation = 83464
     electric_stability_generator = 87950
@@ -558,6 +559,7 @@ class EveAttr(IntEnum):
     jump_portal_additional_consumption = 2793
     repair_mult_bonus_per_cycle = 2796
     repair_mult_bonus_max = 2797
+    gate_max_jump_mass = 2798
     ecm_jam_duration = 2822
     enable_open_jump_portal = 3125
     enable_perform_conduit_jump = 3126
