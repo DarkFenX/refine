@@ -143,7 +143,7 @@ def test_ship_absent(client, consts):
     api_fit = api_sol.create_fit()
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_station=True))
-    assert api_fit_stats.can_dock_station.one() is None
+    assert api_fit_stats.can_dock_station is None
 
 
 def test_ship_not_loaded(client, consts):
@@ -155,9 +155,9 @@ def test_ship_not_loaded(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_station=True))
-    assert api_fit_stats.can_dock_station.one() is None
+    assert api_fit_stats.can_dock_station is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_station=True))
-    assert api_ship_stats.can_dock_station.one() is None
+    assert api_ship_stats.can_dock_station is None
 
 
 def test_struct(client, consts):
@@ -169,9 +169,9 @@ def test_struct(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_struct_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_dock_station=True))
-    assert api_fit_stats.can_dock_station.one() is None
+    assert api_fit_stats.can_dock_station is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_dock_station=True))
-    assert api_ship_stats.can_dock_station.one() is None
+    assert api_ship_stats.can_dock_station is None
 
 
 def test_incorrect_item_kind(client, consts):
@@ -183,7 +183,7 @@ def test_incorrect_item_kind(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
     api_drone_stats = api_fighter.get_stats(options=ItemStatsOptions(can_dock_station=True))
-    assert api_drone_stats.can_dock_station.one() is None
+    assert api_drone_stats.can_dock_station is None
 
 
 def test_not_requested(client, consts):
