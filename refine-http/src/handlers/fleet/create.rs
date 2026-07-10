@@ -23,7 +23,7 @@ pub(crate) async fn create_fleet(
     match sol
         .lock()
         .await
-        .add_fleet(&state.tpool, payload, params.fleet.unwrap_or_default())
+        .add_fleet(&state.refine.tpool, payload, params.fleet.unwrap_or_default())
         .await
     {
         Ok(fleet_info) => (StatusCode::CREATED, Json(fleet_info)).into_response(),

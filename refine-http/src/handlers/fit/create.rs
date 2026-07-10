@@ -24,7 +24,7 @@ pub(crate) async fn create_fit(
         .lock()
         .await
         .add_fit(
-            &state.tpool,
+            &state.refine.tpool,
             payload,
             params.fit.unwrap_or_default(),
             params.item.unwrap_or_default(),

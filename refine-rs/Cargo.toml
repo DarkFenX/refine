@@ -5,6 +5,4 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
-rc = { package = "refine-core", path = "../refine-core" }
-redh = { package = "refine-edh", path = "../refine-edh", features = ["phb-http"] }
-radc = { package = "refine-adc", path = "../refine-adc", features = ["json-zfile"] }
+tokio-rayon = ">=2.1.0"

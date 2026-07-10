@@ -21,7 +21,7 @@ pub(crate) async fn get_item(
     match sol
         .lock()
         .await
-        .get_item(&state.tpool, &item_id, params.item.unwrap_or_default())
+        .get_item(&state.refine.tpool, &item_id, params.item.unwrap_or_default())
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),

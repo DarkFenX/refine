@@ -30,7 +30,7 @@ pub(crate) async fn create_sol(
     let sol_info = state
         .sol_mgr
         .add_sol(
-            &state.tpool,
+            &state.refine.tpool,
             payload.cmd,
             src,
             params.sol.unwrap_or_default(),

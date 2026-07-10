@@ -33,7 +33,7 @@ pub(crate) async fn change_sol_src(
         .lock()
         .await
         .change_sol_src(
-            &state.tpool,
+            &state.refine.tpool,
             src,
             params.sol.unwrap_or_default(),
             params.fleet.unwrap_or_default(),

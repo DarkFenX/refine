@@ -1735,9 +1735,7 @@ dependencies = [
 name = "refine-rs"
 version = "0.1.0"
 dependencies = [
- "refine-adc",
- "refine-core",
- "refine-edh",
+ "tokio-rayon",
 ]
 
 [[package]]

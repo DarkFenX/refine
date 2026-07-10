@@ -18,7 +18,12 @@ pub(crate) async fn get_item_stats(
         Err(br_err) => return HApiError::from_br_path_sol_item(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    match sol.lock().await.get_item_stats(&state.tpool, &item_id, payload).await {
+    match sol
+        .lock()
+        .await
+        .get_item_stats(&state.refine.tpool, &item_id, payload)
+        .await
+    {
         Ok(stats) => (StatusCode::OK, Json(stats)).into_response(),
         Err(br_err) => HApiError::from_br_path_sol_item(br_err).into_response(),
     }

@@ -22,7 +22,7 @@ pub(crate) async fn get_fit(
         .lock()
         .await
         .get_fit(
-            &state.tpool,
+            &state.refine.tpool,
             &fit_id,
             params.fit.unwrap_or_default(),
             params.item.unwrap_or_default(),

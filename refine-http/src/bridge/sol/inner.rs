@@ -1,7 +1,7 @@
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::{HSrc, HThreadPool},
+    bridge::HSrc,
     cmd::{
         HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmd,
         HFitRemoveCmd, HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd, HGetFitStatsCmd, HGetFleetStatsCmd,
@@ -95,7 +95,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-sol-get", level = "trace", skip_all)]
     pub(crate) async fn get_sol(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,
@@ -120,7 +120,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-sol-chg", level = "trace", skip_all)]
     pub(crate) async fn change_sol(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         commands: Vec<serde_json::Value>,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
@@ -165,7 +165,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-sol-chg-src", level = "trace", skip_all)]
     pub(crate) async fn change_sol_src(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         src: HSrc,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
@@ -192,7 +192,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-sol-val", level = "trace", skip_all)]
     pub(crate) async fn validate_sol(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: HValidateSolCmd,
         valid_mode: HValidInfoMode,
     ) -> Result<HSolValResult, HBrError> {
@@ -219,7 +219,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fleet-get", level = "trace", skip_all)]
     pub(crate) async fn get_fleet(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fleet_id: &str,
         fleet_mode: HFleetInfoMode,
     ) -> Result<HFleetInfo, HBrError> {
@@ -244,7 +244,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fleet-add", level = "trace", skip_all)]
     pub(crate) async fn add_fleet(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: HFleetAddCmd,
         fleet_mode: HFleetInfoMode,
     ) -> Result<HFleetInfo, HBrError> {
@@ -276,7 +276,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fleet-chg", level = "trace", skip_all)]
     pub(crate) async fn change_fleet(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fleet_id: &str,
         command: HFleetChangeCmd,
         fleet_mode: HFleetInfoMode,
@@ -310,7 +310,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fleet-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fleet(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fleet_id: &str,
         command: HFleetRemoveCmd,
     ) -> Result<(), HBrError> {
@@ -332,7 +332,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fleet-stat", level = "trace", skip_all)]
     pub(crate) async fn get_fleet_stats(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fleet_id: &str,
         command: HGetFleetStatsCmd,
     ) -> Result<HFleetStats, HBrError> {
@@ -360,7 +360,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-get", level = "trace", skip_all)]
     pub(crate) async fn get_fit(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fit_id: &str,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
@@ -386,7 +386,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-add", level = "trace", skip_all)]
     pub(crate) async fn add_fit(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: HFitAddCmd,
         fit_mode: HFitInfoMode,
         item_mode: HItemInfoMode,
@@ -415,7 +415,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-chg", level = "trace", skip_all)]
     pub(crate) async fn change_fit(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fit_id: &str,
         commands: Vec<serde_json::Value>,
         fit_mode: HFitInfoMode,
@@ -459,7 +459,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-del", level = "trace", skip_all)]
     pub(crate) async fn remove_fit(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fit_id: &str,
         command: HFitRemoveCmd,
     ) -> Result<(), HBrError> {
@@ -481,7 +481,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-stat", level = "trace", skip_all)]
     pub(crate) async fn get_fit_stats(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fit_id: &str,
         command: HGetFitStatsCmd,
     ) -> Result<HFitStats, HBrError> {
@@ -503,7 +503,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-val", level = "trace", skip_all)]
     pub(crate) async fn validate_fit(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fit_id: &str,
         command: HValidateFitCmd,
         valid_mode: HValidInfoMode,
@@ -526,7 +526,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-fit-try", level = "trace", skip_all)]
     pub(crate) async fn try_fit_items(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         fit_id: &str,
         command: HTryFitItemsCmd,
     ) -> Result<Vec<i32>, HBrError> {
@@ -557,7 +557,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-item-get", level = "trace", skip_all)]
     pub(crate) async fn get_item(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         item_id: &str,
         item_mode: HItemInfoMode,
     ) -> Result<HItemInfo, HBrError> {
@@ -589,7 +589,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-item-add", level = "trace", skip_all)]
     pub(crate) async fn add_item(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: HItemAddCmd,
         item_mode: HItemInfoMode,
     ) -> Result<HItemInfo, HBrError> {
@@ -621,7 +621,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-item-chg", level = "trace", skip_all)]
     pub(crate) async fn change_item(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         item_id: &str,
         command: HItemChangeCmd,
         item_mode: HItemInfoMode,
@@ -657,7 +657,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-item-del", level = "trace", skip_all)]
     pub(crate) async fn remove_item(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         item_id: &str,
         command: HItemRemoveCmd,
     ) -> Result<(), HBrError> {
@@ -679,7 +679,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-item-stat", level = "trace", skip_all)]
     pub(crate) async fn get_item_stats(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         item_id: &str,
         command: HGetItemStatsCmd,
     ) -> Result<HItemStats, HBrError> {
@@ -705,7 +705,7 @@ impl HSolarSystemInner {
 impl HSolarSystemInner {
     /// Infallible
     #[tracing::instrument(name = "sol-dev-check", level = "trace", skip_all)]
-    pub(crate) async fn dev_consistency_check(&mut self, tpool: &HThreadPool) -> Result<bool, HBrError> {
+    pub(crate) async fn dev_consistency_check(&mut self, tpool: &rs::ThreadPool) -> Result<bool, HBrError> {
         let core_sol = self.take_sol()?;
         let sync_span = tracing::trace_span!("sync");
         let (core_sol, result) = tpool
@@ -723,7 +723,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
     pub(crate) async fn dev_benchmark_attrs(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: HBenchmarkAttrCalcCmd,
     ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;
@@ -743,7 +743,7 @@ impl HSolarSystemInner {
     #[tracing::instrument(name = "sol-dev-bench", level = "trace", skip_all)]
     pub(crate) async fn dev_benchmark_stats(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: HBenchmarkStatsCmd,
     ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;
@@ -762,7 +762,7 @@ impl HSolarSystemInner {
     /// Infallible
     pub(crate) async fn dev_benchmark_try_fit_items(
         &mut self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         command: Box<HBenchmarkTryFitItemsCmd>,
     ) -> Result<(), HBrError> {
         let mut core_sol = self.take_sol()?;

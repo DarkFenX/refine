@@ -23,7 +23,7 @@ pub(crate) async fn validate_sol(
     match sol
         .lock()
         .await
-        .validate_sol(&state.tpool, payload, params.validation.unwrap_or_default())
+        .validate_sol(&state.refine.tpool, payload, params.validation.unwrap_or_default())
         .await
     {
         Ok(valid_info) => (StatusCode::OK, Json(valid_info)).into_response(),

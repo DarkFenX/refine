@@ -22,7 +22,7 @@ pub(crate) async fn create_item(
     match sol
         .lock()
         .await
-        .add_item(&state.tpool, payload, params.item.unwrap_or_default())
+        .add_item(&state.refine.tpool, payload, params.item.unwrap_or_default())
         .await
     {
         Ok(item_info) => (StatusCode::CREATED, Json(item_info)).into_response(),

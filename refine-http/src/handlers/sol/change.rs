@@ -43,7 +43,7 @@ pub(crate) async fn change_sol(
         .lock()
         .await
         .change_sol(
-            &state.tpool,
+            &state.refine.tpool,
             payload.commands,
             params.sol.unwrap_or_default(),
             params.fleet.unwrap_or_default(),

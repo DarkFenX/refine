@@ -23,7 +23,12 @@ pub(crate) async fn validate_fit(
     match sol
         .lock()
         .await
-        .validate_fit(&state.tpool, &fit_id, payload, params.validation.unwrap_or_default())
+        .validate_fit(
+            &state.refine.tpool,
+            &fit_id,
+            payload,
+            params.validation.unwrap_or_default(),
+        )
         .await
     {
         Ok(valid_info) => (StatusCode::OK, Json(valid_info)).into_response(),

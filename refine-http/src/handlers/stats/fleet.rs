@@ -18,7 +18,12 @@ pub(crate) async fn get_fleet_stats(
         Err(br_err) => return HApiError::from_br_path_sol_fleet(br_err).into_response(),
     };
     let Json(payload) = payload.unwrap_or_default();
-    match sol.lock().await.get_fleet_stats(&state.tpool, &fleet_id, payload).await {
+    match sol
+        .lock()
+        .await
+        .get_fleet_stats(&state.refine.tpool, &fleet_id, payload)
+        .await
+    {
         Ok(stats) => (StatusCode::OK, Json(stats)).into_response(),
         Err(br_err) => HApiError::from_br_path_sol_fleet(br_err).into_response(),
     }

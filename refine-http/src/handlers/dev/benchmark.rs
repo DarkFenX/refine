@@ -18,9 +18,14 @@ pub(crate) async fn dev_benchmark_sol(
         Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
     match match payload {
-        HBenchmarkCmd::AttrCalc(cmd) => sol.lock().await.dev_benchmark_attrs(&state.tpool, cmd).await,
-        HBenchmarkCmd::Stats(cmd) => sol.lock().await.dev_benchmark_stats(&state.tpool, cmd).await,
-        HBenchmarkCmd::TryFitItems(cmd) => sol.lock().await.dev_benchmark_try_fit_items(&state.tpool, cmd).await,
+        HBenchmarkCmd::AttrCalc(cmd) => sol.lock().await.dev_benchmark_attrs(&state.refine.tpool, cmd).await,
+        HBenchmarkCmd::Stats(cmd) => sol.lock().await.dev_benchmark_stats(&state.refine.tpool, cmd).await,
+        HBenchmarkCmd::TryFitItems(cmd) => {
+            sol.lock()
+                .await
+                .dev_benchmark_try_fit_items(&state.refine.tpool, cmd)
+                .await
+        }
     } {
         Ok(_) => StatusCode::OK.into_response(),
         Err(br_err) => HApiError::from_br_path_sol(br_err).into_response(),

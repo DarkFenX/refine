@@ -22,7 +22,7 @@ pub(crate) async fn get_sol(
         .lock()
         .await
         .get_sol(
-            &state.tpool,
+            &state.refine.tpool,
             params.sol.unwrap_or_default(),
             params.fleet.unwrap_or_default(),
             params.fit.unwrap_or_default(),

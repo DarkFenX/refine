@@ -4,7 +4,7 @@ use tokio::sync::RwLock;
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::{HSrc, HThreadPool},
+    bridge::HSrc,
     err::HBrError,
     info::{HSrcInfo, HSrcInfoMode},
 };
@@ -28,7 +28,7 @@ impl HSrcMgr {
     #[tracing::instrument(name = "srcmgr-add", level = "trace", skip_all)]
     pub(crate) async fn add(
         &self,
-        tpool: &HThreadPool,
+        tpool: &rs::ThreadPool,
         alias: String,
         data_version: String,
         data_base_url: String,

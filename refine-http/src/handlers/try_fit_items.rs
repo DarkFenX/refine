@@ -17,7 +17,12 @@ pub(crate) async fn try_fit_items(
         Ok(sol) => sol,
         Err(br_err) => return HApiError::from_br_path_sol_fit(br_err).into_response(),
     };
-    match sol.lock().await.try_fit_items(&state.tpool, &fit_id, payload).await {
+    match sol
+        .lock()
+        .await
+        .try_fit_items(&state.refine.tpool, &fit_id, payload)
+        .await
+    {
         Ok(valid_type_ids) => (StatusCode::OK, Json(valid_type_ids)).into_response(),
         Err(br_err) => HApiError::from_br_path_sol_fit(br_err).into_response(),
     }

@@ -35,7 +35,7 @@ pub(crate) async fn change_fit(
         .lock()
         .await
         .change_fit(
-            &state.tpool,
+            &state.refine.tpool,
             &fit_id,
             payload.commands,
             params.fit.unwrap_or_default(),

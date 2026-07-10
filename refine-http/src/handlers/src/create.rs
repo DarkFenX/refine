@@ -29,7 +29,7 @@ pub(crate) async fn create_source(
     match state
         .src_mgr
         .add(
-            &state.tpool,
+            &state.refine.tpool,
             src_alias,
             data_version,
             data_base_url,

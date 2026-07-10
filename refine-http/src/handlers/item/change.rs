@@ -22,7 +22,7 @@ pub(crate) async fn change_item(
     match sol
         .lock()
         .await
-        .change_item(&state.tpool, &item_id, payload, params.item.unwrap_or_default())
+        .change_item(&state.refine.tpool, &item_id, payload, params.item.unwrap_or_default())
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),

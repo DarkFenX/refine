@@ -22,7 +22,12 @@ pub(crate) async fn change_fleet(
     match sol
         .lock()
         .await
-        .change_fleet(&state.tpool, &fleet_id, payload, params.fleet.unwrap_or_default())
+        .change_fleet(
+            &state.refine.tpool,
+            &fleet_id,
+            payload,
+            params.fleet.unwrap_or_default(),
+        )
         .await
     {
         Ok(item_info) => (StatusCode::OK, Json(item_info)).into_response(),
