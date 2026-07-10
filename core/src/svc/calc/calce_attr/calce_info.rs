@@ -31,7 +31,7 @@ impl Calc {
         &mut self,
         ctx: SvcCtx,
         item_uid: UItemId,
-    ) -> Result<impl ExactSizeIterator<Item = (AttrId, Vec<Modification>)> + use<>, UItemLoadedError> {
+    ) -> Result<impl ExactSizeIterator<Item = (RAttrId, Vec<Modification>)> + use<>, UItemLoadedError> {
         let mut info_map = RMapVec::new();
         for attr_rid in self.iter_item_attr_rids(ctx, item_uid)? {
             let mut attr_info = self.calc_item_attr_info(ctx, item_uid, attr_rid);
@@ -39,11 +39,24 @@ impl Calc {
             info_vec.extend(attr_info.effective_infos.extract_if(.., |_| true));
             // info_vec.extend(attr_info.filtered_infos.extract_if(.., |_| true));
             if !info_vec.is_empty() {
-                let attr_id = AttrId::from_aid(ctx.u_data.r_data.get_attr_by_rid(attr_rid).aid);
-                info_map.extend_entries(attr_id, info_vec.into_iter());
+                info_map.extend_entries(attr_rid, info_vec.into_iter());
             }
         }
         Ok(info_map.into_iter())
+    }
+    pub(in crate::svc) fn iter_item_attr_mods(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+    ) -> Result<impl ExactSizeIterator<Item = Modification>, UItemLoadedError> {
+        match ctx.u_data.items.get(item_uid).is_loaded() {
+            true => Ok(self
+                .calc_item_attr_info(ctx, item_uid, attr_rid)
+                .effective_infos
+                .into_iter()),
+            false => Err(UItemLoadedError { item_uid }),
+        }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Private methods

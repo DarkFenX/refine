@@ -95,7 +95,12 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_mods(&sol.u_data, item_uid) {
-            Ok(mods_iter) => Ok(mods_iter),
+            Ok(mods_iter) => Ok(mods_iter.into_iter().map(|(attr_rid, modifications)| {
+                (
+                    AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
+                    modifications,
+                )
+            })),
             Err(err) => Err(ItemLoadedError {
                 item_id: sol.u_data.items.ext_id_by_int_id(err.item_uid),
             }

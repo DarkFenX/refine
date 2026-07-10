@@ -24,6 +24,7 @@ pub use misc::{
     EffectId, EffectIdParseError, EffectInfo, ItemGrpId, ItemTypeId, MinionState, ModuleState, Movement, MvMode, Op,
     ProjRange, RmMode, ServiceState,
 };
+pub use sol_ctl_affectors::CtlAffectors;
 pub use util::MutIter;
 
 mod default;
@@ -33,6 +34,7 @@ mod fleet;
 mod item;
 mod misc;
 mod sec_zone;
+mod sol_ctl_affectors;
 mod sol_set_src;
 mod sol_validate;
 mod util;

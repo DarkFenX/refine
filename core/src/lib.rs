@@ -1,12 +1,12 @@
 #![feature(default_field_values)]
 #![feature(structural_match)]
+#![feature(step_trait)]
+#![feature(option_reduce)]
 #![feature(const_trait_impl)]
 #![feature(const_cmp)]
 #![feature(const_ops)]
 #![feature(const_convert)]
 #![feature(const_result_trait_fn)]
-#![feature(step_trait)]
-#![feature(option_reduce)]
 
 //! # refine
 //! Refine is a library built to simulate EVE Online ship and citadel fits.
@@ -28,9 +28,9 @@
 
 pub use api::{
     AbilId, Ability, AbilityIter, AbilityMut, AddMode, AttrId, AttrVals, Autocharge, AutochargeMut, Booster,
-    BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CustomEffectId, Direction, DogmaEffectId,
-    Drone, DroneMut, EffectId, EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit, FitMut,
-    Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut,
+    BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CtlAffectors, CustomEffectId, Direction,
+    DogmaEffectId, Drone, DroneMut, EffectId, EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut,
+    Fit, FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut,
     IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemTypeId, MinionState,
     Module, ModuleIter, ModuleMut, ModuleState, Movement, MutIter, Mutation, MutationMut, MvMode, Op, Proj, ProjEffect,
     ProjEffectMut, ProjIter, ProjMut, ProjRange, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,

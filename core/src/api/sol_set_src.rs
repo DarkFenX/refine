@@ -15,8 +15,8 @@ struct ItemUIds {
     implants: Vec<UItemId>,
     modules: Vec<UItemId>,
     proj_effects: Vec<UItemId>,
-    services: Vec<UItemId>,
     rigs: Vec<UItemId>,
+    services: Vec<UItemId>,
     ships: Vec<UItemId>,
     skills: Vec<UItemId>,
     stances: Vec<UItemId>,
@@ -35,8 +35,8 @@ impl ItemUIds {
             implants: Vec::new(),
             modules: Vec::new(),
             proj_effects: Vec::new(),
-            services: Vec::new(),
             rigs: Vec::new(),
+            services: Vec::new(),
             ships: Vec::new(),
             skills: Vec::new(),
             stances: Vec::new(),
@@ -56,8 +56,8 @@ impl ItemUIds {
                 UItem::Implant(_) => data.implants.push(item_uid),
                 UItem::Module(_) => data.modules.push(item_uid),
                 UItem::ProjEffect(_) => data.proj_effects.push(item_uid),
-                UItem::Service(_) => data.services.push(item_uid),
                 UItem::Rig(_) => data.rigs.push(item_uid),
+                UItem::Service(_) => data.services.push(item_uid),
                 UItem::Ship(_) => data.ships.push(item_uid),
                 UItem::Skill(_) => data.skills.push(item_uid),
                 UItem::Stance(_) => data.stances.push(item_uid),
@@ -129,11 +129,11 @@ impl SolarSystem {
         for &proj_effect_uid in item_uids.proj_effects.iter() {
             SolarSystem::util_remove_proj_effect(&mut self.u_data, &mut self.svc, proj_effect_uid, reuse_eupdates);
         }
-        for &service_uid in item_uids.services.iter() {
-            SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, reuse_eupdates);
-        }
         for &rig_uid in item_uids.rigs.iter() {
             SolarSystem::util_remove_rig(&mut self.u_data, &mut self.svc, rig_uid, reuse_eupdates);
+        }
+        for &service_uid in item_uids.services.iter() {
+            SolarSystem::util_remove_service(&mut self.u_data, &mut self.svc, service_uid, reuse_eupdates);
         }
         for &ship_uid in item_uids.ships.iter() {
             SolarSystem::util_remove_ship(&mut self.u_data, &mut self.svc, ship_uid, reuse_eupdates);
@@ -185,11 +185,11 @@ impl SolarSystem {
         for &proj_effect_uid in item_uids.proj_effects.iter() {
             SolarSystem::util_add_proj_effect(&mut self.u_data, &mut self.svc, proj_effect_uid, reuse_eupdates);
         }
-        for &service_uid in item_uids.services.iter() {
-            SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, reuse_eupdates);
-        }
         for &rig_uid in item_uids.rigs.iter() {
             SolarSystem::util_add_rig(&mut self.u_data, &mut self.svc, rig_uid, reuse_eupdates);
+        }
+        for &service_uid in item_uids.services.iter() {
+            SolarSystem::util_add_service(&mut self.u_data, &mut self.svc, service_uid, reuse_eupdates);
         }
         for &ship_uid in item_uids.ships.iter() {
             SolarSystem::util_add_ship(&mut self.u_data, &mut self.svc, ship_uid, reuse_eupdates);
