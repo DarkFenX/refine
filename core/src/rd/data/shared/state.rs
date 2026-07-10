@@ -9,7 +9,7 @@ const STATES: [RState; 6] = [
     RState::Overload,
 ];
 
-#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord)]
+#[derive(Copy, Clone, PartialEq, Eq, PartialOrd, Ord, Hash)]
 pub(crate) enum RState {
     Ghost,
     Disabled,

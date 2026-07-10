@@ -99,6 +99,7 @@ impl Calc {
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = CalcModificationKey::from_cmod(cmod);
             let modification = CalcModification {
+                state: cmod.raw.state,
                 op: cmod.raw.op,
                 val,
                 res_mult: self.calc_resist_mult(ctx, cmod),
@@ -121,8 +122,9 @@ impl Calc {
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(ctx, &item_uid, item, attr_rid) {
             accumulator.add_val(
-                affection.modification.val,
+                affection.modification.state,
                 affection.modification.op,
+                affection.modification.val,
                 affection.modification.proj_mult,
                 affection.modification.res_mult,
                 attr.penalizable,
@@ -140,6 +142,7 @@ impl Calc {
             if limiter_val.dogma > dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(CalcModInfo {
+                    state: None,
                     op: Op::MinLimit,
                     initial_str: limiter_val.dogma,
                     range_mult: None,
@@ -161,6 +164,7 @@ impl Calc {
             if limiter_val.dogma < dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(CalcModInfo {
+                    state: None,
                     op: Op::MaxLimit,
                     initial_str: limiter_val.dogma,
                     range_mult: None,
@@ -207,6 +211,7 @@ impl Calc {
                 self.deps.add_anonymous(item_uid, security_attr_rid, attr.rid);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                 base_attr_info.effective_infos.push(CalcModInfo {
+                    state: None,
                     // Technically this modification is not pre-assignment, it is base value
                     // overwrite (which later will be overwritten by any other pre-assignment
                     // regardless of its value), but pre-assignment is still used in info for

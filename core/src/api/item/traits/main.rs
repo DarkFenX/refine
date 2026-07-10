@@ -8,7 +8,7 @@ use super::{
     sealed::{ItemMutSealed, ItemSealed},
 };
 use crate::{
-    api::{AttrId, AttrVals, EffectId, EffectInfo, ItemTypeId, Modification},
+    api::{AffectionDir, AttrId, AttrVals, CtlAffectors, EffectId, EffectInfo, ItemTypeId, Modification},
     err::basic::{AttrFoundError, ItemLoadedError},
     misc::{DpsProfile, EffectMode, OptionalReload},
     num::{Count, PValue, UnitInterval, Value},
@@ -21,6 +21,7 @@ use crate::{
         },
     },
     ud::{FitId, ItemId, UEffectUpdates},
+    util::RMap,
 };
 
 #[allow(private_bounds)]
@@ -534,12 +535,25 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_item_sig_radius(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_mass(&mut self) -> Result<PValue, ItemStatError> {
+    fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> Result<PValue, ItemStatError> {
         let item_uid = self.get_uid();
+        let mut saved_states = RMap::new();
+        let mut reuse_eupdates = UEffectUpdates::new();
         let sol = self.get_sol_mut();
-        sol.svc
+        sol.internal_ctl_affectors_switch(
+            item_uid,
+            sol.u_data.r_data.get_attr_consts().mass,
+            AffectionDir::Increase,
+            ctl_affectors,
+            &mut saved_states,
+            &mut reuse_eupdates,
+        );
+        let result = sol
+            .svc
             .get_stat_item_mass(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+        sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
+        result
     }
     fn get_stat_warp_speed(&mut self) -> Result<Option<PValue>, ItemStatError> {
         let item_uid = self.get_uid();

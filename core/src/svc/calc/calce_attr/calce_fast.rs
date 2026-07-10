@@ -265,6 +265,7 @@ impl Calc {
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = CalcModificationKey::from_cmod(cmod);
             let modification = CalcModification {
+                state: cmod.raw.state,
                 op: cmod.raw.op,
                 val,
                 proj_mult: self.calc_proj_mult(ctx, cmod),

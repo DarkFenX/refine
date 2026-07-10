@@ -5,7 +5,7 @@ use crate::{
     ad::AItemId,
     misc::EffectSpec,
     num::Value,
-    rd::RAttrConsts,
+    rd::{RAttrConsts, RState},
     svc::{
         SvcCtx,
         calc::{
@@ -16,9 +16,10 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
+pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec, state: RState) -> Option<RawModifier> {
     Some(RawModifier {
         kind: ModifierKind::Local,
+        state,
         affector_espec: espec,
         strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::AarPaste,

@@ -1,5 +1,5 @@
 use crate::{
-    api::{FitMut, FitShipStatError, ItemMutCommon},
+    api::{CtlAffectors, FitMut, FitShipStatError, ItemMutCommon},
     num::PValue,
     svc::vast::{StatJump, StatJumpRange},
     ud::FitId,
@@ -18,8 +18,8 @@ impl<'a> FitMut<'a> {
     pub fn get_stat_sig_radius(&mut self) -> Result<PValue, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_sig_radius()?)
     }
-    pub fn get_stat_mass(&mut self) -> Result<PValue, FitShipStatError> {
-        Ok(self.get_ship_for_stats()?.get_stat_mass()?)
+    pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> Result<PValue, FitShipStatError> {
+        Ok(self.get_ship_for_stats()?.get_stat_mass(ctl_affectors)?)
     }
     pub fn get_stat_warp_speed(&mut self) -> Result<Option<PValue>, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_warp_speed()?)

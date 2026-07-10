@@ -7,7 +7,7 @@ use crate::{
     dbg::DebugResult,
     misc::EffectSpec,
     num::Value,
-    rd::{RAttrConsts, RAttrId},
+    rd::{RAttrConsts, RAttrId, RState},
     svc::{
         SvcCtx,
         calc::{Calc, CalcModInfoAffector, RawModifier},
@@ -22,11 +22,16 @@ pub(crate) enum CalcCustomModifier {
     MissileFlightTime,
 }
 impl CalcCustomModifier {
-    pub(in crate::svc::calc) fn make_rmod(&self, attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
+    pub(in crate::svc::calc) fn make_rmod(
+        &self,
+        attr_consts: &RAttrConsts,
+        espec: EffectSpec,
+        state: RState,
+    ) -> Option<RawModifier> {
         match self {
-            Self::PropSpeed => prop_speed::make_rmod(attr_consts, espec),
-            Self::AarPaste => aar_paste::make_rmod(attr_consts, espec),
-            Self::MissileFlightTime => missile_flight_time::make_rmod(attr_consts, espec),
+            Self::PropSpeed => prop_speed::make_rmod(attr_consts, espec, state),
+            Self::AarPaste => aar_paste::make_rmod(attr_consts, espec, state),
+            Self::MissileFlightTime => missile_flight_time::make_rmod(attr_consts, espec, state),
         }
     }
 }

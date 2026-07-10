@@ -24,6 +24,7 @@ pub use misc::{
     DogmaEffectId, EffectId, EffectIdParseError, EffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification,
     ModuleState, Movement, MvMode, Op, ProjRange, RmMode, ServiceState,
 };
+use sol_ctl_affectors::AffectionDir;
 pub use sol_ctl_affectors::CtlAffectors;
 pub use util::MutIter;
 
