@@ -1,21 +1,23 @@
+use std::num::NonZeroU32;
+
 use crate::num::{PValue, Value};
 
-const COUNT_MIN: u32 = 1;
+const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
-pub struct FighterCount(u32);
+pub struct FighterCount(NonZeroU32);
 impl FighterCount {
     pub fn from_u32_checked(count: u32) -> Result<Self, FighterCountError> {
-        match (COUNT_MIN..).contains(&count) {
-            true => Ok(Self(count)),
-            false => Err(FighterCountError { count }),
+        match NonZeroU32::try_from(count) {
+            Ok(count) => Ok(Self(count)),
+            Err(_) => Err(FighterCountError { count }),
         }
     }
     pub const fn from_u32_clamped(count: u32) -> Self {
-        Self(count.max(COUNT_MIN))
+        Self(NonZeroU32::try_from(count).unwrap_or(DEFAULT))
     }
     pub const fn into_u32(self) -> u32 {
-        self.0
+        self.0.get()
     }
 }
 #[derive(thiserror::Error, Debug)]
@@ -28,7 +30,7 @@ pub struct FighterCountError {
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterCount {
-    pub(crate) const ONE: Self = Self(1);
+    pub(crate) const ONE: Self = Self(NonZeroU32::MIN);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,18 +38,25 @@ impl FighterCount {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterCount {
     pub(crate) fn from_f64_rounded(count: f64) -> Self {
-        Self(count.clamp(1.0, u32::MAX as f64).round() as u32)
+        Self(
+            NonZeroU32::try_from(
+                count
+                    .clamp(NonZeroU32::MIN.get() as f64, NonZeroU32::MAX.get() as f64)
+                    .round() as u32,
+            )
+            .unwrap(),
+        )
     }
     pub(crate) fn into_value(self) -> Value {
-        Value::from_f64(self.0 as f64)
+        Value::from_f64(self.0.get() as f64)
     }
     pub(crate) fn into_pvalue(self) -> PValue {
-        PValue::from_f64_unchecked(self.0 as f64)
+        PValue::from_f64_unchecked(self.0.get() as f64)
     }
 }
 impl From<FighterCount> for u32 {
     fn from(v: FighterCount) -> Self {
-        v.0
+        v.0.get()
     }
 }
 
@@ -56,6 +65,6 @@ impl From<FighterCount> for u32 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Default for FighterCount {
     fn default() -> Self {
-        Self(COUNT_MIN)
+        Self(DEFAULT)
     }
 }

@@ -2,8 +2,10 @@
 #![feature(structural_match)]
 #![feature(const_trait_impl)]
 #![feature(const_cmp)]
-#![feature(step_trait)]
 #![feature(const_ops)]
+#![feature(const_convert)]
+#![feature(const_result_trait_fn)]
+#![feature(step_trait)]
 #![feature(option_reduce)]
 
 //! # refine
