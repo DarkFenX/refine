@@ -7,7 +7,7 @@ use crate::{
         stats::options::{
             HStatOption, HStatOptionCapBlc, HStatOptionCapSim, HStatOptionEhp, HStatOptionErps, HStatOptionIncomingJam,
             HStatOptionItemDmg, HStatOptionItemMining, HStatOptionItemOutCps, HStatOptionItemOutNps,
-            HStatOptionItemOutRps, HStatOptionJump, HStatOptionRps, HStatResolvedOption,
+            HStatOptionItemOutRps, HStatOptionJump, HStatOptionMass, HStatOptionRps, HStatResolvedOption,
         },
     },
     err::HExecError,
@@ -59,7 +59,7 @@ pub(crate) struct HGetItemStatsCmd {
     agility: Option<bool>,
     align_time: Option<bool>,
     sig_radius: Option<bool>,
-    mass: Option<bool>,
+    mass: Option<HStatOption<HStatOptionMass>>,
     warp_speed: Option<bool>,
     max_warp_range: Option<bool>,
     jump: Option<HStatOption<HStatOptionJump>>,
@@ -200,8 +200,9 @@ impl HGetItemStatsCmd {
         if self.sig_radius.unwrap_or(self.default) {
             stats.sig_radius = core_item.get_stat_sig_radius().map(|v| v.into_f64()).into();
         }
-        if self.mass.unwrap_or(self.default) {
-            stats.mass = core_item.get_stat_mass().map(|v| v.into_f64()).into();
+        let mass_opt = HStatResolvedOption::new(&self.mass, self.default);
+        if mass_opt.enabled {
+            stats.mass = get_mass_stats(&mut core_item, mass_opt.options).into();
         }
         if self.warp_speed.unwrap_or(self.default) {
             stats.warp_speed = core_item
@@ -487,6 +488,18 @@ fn get_incoming_jam_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_mass_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionMass>) -> Option<Vec<f64>> {
+    let mut results = Vec::with_capacity(options.len());
+    for option in options {
+        let core_affectors = option.affectors.into_core();
+        match core_item.get_stat_mass(core_affectors) {
+            Ok(value) => results.push(value.into_f64()),
+            _ => return None,
+        }
+    }
+    Some(results)
+}
+
 fn get_jump_stats(core_item: &mut rc::ItemMut, options: Vec<HStatOptionJump>) -> Option<Vec<HStatJump>> {
     let mut results = Vec::with_capacity(options.len());
     for option in options {

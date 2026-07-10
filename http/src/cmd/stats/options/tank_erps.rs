@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::shared::HStatTimeOptions;
+use super::shared_time::HStatTimeOptions;
 use crate::{shared::HDpsProfile, util::default_quarter};
 
 #[derive(Copy, Clone, educe::Educe, Deserialize)]

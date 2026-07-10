@@ -116,7 +116,7 @@ pub(crate) struct HFitStats {
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) sig_radius: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
-    pub(crate) mass: TriStateField<f64>,
+    pub(crate) mass: TriStateField<Vec<f64>>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]
     pub(crate) warp_speed: TriStateField<f64>,
     #[serde(skip_serializing_if = "TriStateField::is_absent")]

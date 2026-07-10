@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-use super::shared::HStatTimeOptions;
+use super::shared_time::HStatTimeOptions;
 
 #[serde_as]
 #[derive(Copy, Clone, Default, Deserialize)]

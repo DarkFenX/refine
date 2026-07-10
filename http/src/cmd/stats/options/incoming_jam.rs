@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::shared::HStatTimeOptions;
+use super::shared_time::HStatTimeOptions;
 
 #[derive(Copy, Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatOptionIncomingJam {

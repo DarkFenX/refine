@@ -1,27 +1,27 @@
 use serde::Deserialize;
 use serde_with::{DisplayFromStr, serde_as};
 
-#[derive(Copy, Clone, Default)]
-pub enum HStatJumpRange {
-    LightYears(f64),
-    #[default]
-    Max,
-}
-
 #[serde_as]
 #[derive(Clone, Default, Deserialize)]
 pub(in crate::cmd) struct HStatOptionJump {
     #[serde(default)]
-    pub(in crate::cmd) range: HStatJumpRange,
+    pub(in crate::cmd) range: HStatOptionJumpRange,
     #[serde(default)]
     #[serde_as(as = "Vec<DisplayFromStr>")]
     pub(in crate::cmd) passenger_fit_ids: Vec<rc::FitId>,
 }
 
+#[derive(Copy, Clone, Default)]
+pub enum HStatOptionJumpRange {
+    LightYears(f64),
+    #[default]
+    Max,
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Serialization support
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'de> Deserialize<'de> for HStatJumpRange {
+impl<'de> Deserialize<'de> for HStatOptionJumpRange {
     fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
     where
         D: serde::de::Deserializer<'de>,
@@ -29,7 +29,7 @@ impl<'de> Deserialize<'de> for HStatJumpRange {
         struct HStatJumpRangeVisitor;
 
         impl<'de> serde::de::Visitor<'de> for HStatJumpRangeVisitor {
-            type Value = HStatJumpRange;
+            type Value = HStatOptionJumpRange;
 
             fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                 formatter.write_str("distance in light-years as a number, or \"max\"")
@@ -126,7 +126,7 @@ impl<'de> Deserialize<'de> for HStatJumpRange {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HStatJumpRange {
+impl HStatOptionJumpRange {
     pub(in crate::cmd::stats) fn into_core(self) -> rc::stats::StatJumpRange {
         match self {
             Self::LightYears(range) => rc::stats::StatJumpRange::LightYears(rc::PValue::from_f64_clamped(range)),

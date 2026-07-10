@@ -67,4 +67,5 @@ class FitStats(AttrDict):
                 NttList(StatIncomingJam(data=e) for e in d)
                 if d is not None else None)),
             # Mobility
+            'mass': AttrHookDef(func=lambda d: (NttList(d)if d is not None else None)),
             'jump': AttrHookDef(func=lambda d: (NttList(AttrDict(data=e) for e in d)if d is not None else None))})

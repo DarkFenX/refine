@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
-use super::shared::HStatTimeOptions;
+use super::shared_time::HStatTimeOptions;
 use crate::util::default_true;
 
 #[derive(Copy, Clone, Default, Deserialize)]
