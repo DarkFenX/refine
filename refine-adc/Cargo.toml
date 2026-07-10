@@ -20,7 +20,7 @@ json-zfile = [
 ]
 
 [dependencies]
-rc = { package = "refine-core", path = "../core" }
+rc = { package = "refine-core", path = "../refine-core" }
 serde = { version = ">=1.0.228", features = ["derive"], optional = true }
 serde_json = { version = ">=1.0.150", optional = true }
 serde_repr = { version = ">=0.1.20", optional = true }

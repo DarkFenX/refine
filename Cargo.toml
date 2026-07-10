@@ -1,10 +1,10 @@
 [workspace]
 members = [
-    "core",
-    "data-cacher",
-    "data-handler",
-    "rust",
-    "http",
+    "refine-core",
+    "refine-adc",
+    "refine-edh",
+    "refine-rs",
+    "refine-http",
     "examples/playground",
 ]
 resolver = "2"
