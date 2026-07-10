@@ -303,11 +303,8 @@ fn fill_module_effect_info(
 fn get_reload_duration(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> PValue {
     // All reloads can't take less than server tick realistically. E.g. lasers have almost 0 reload
     // duration but take 1-2 seconds to reload in EVE
-    PValue::SERVER_TICK_S.max_value(
-        calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().reload_time, Value::ZERO)
-            .unwrap()
-            / Value::THOUSAND,
-    )
+    PValue::SERVER_TICK_S
+        .max_value(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().reload_time, Value::ZERO) / Value::THOUSAND)
 }
 
 fn part_r(
@@ -427,8 +424,7 @@ impl CycleSoftDtFull {
             });
         }
         let reactivation_delay = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
-                .unwrap()
+            calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                 / Value::THOUSAND,
         );
         if reactivation_delay > total_duration {
@@ -445,8 +441,7 @@ impl CycleSoftDtFull {
         // When item reloads, reactivation delay always kicks in, if set
         if axt.specs_reactivation_delay {
             let reactivation_delay = PValue::from_value_clamped(
-                calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
-                    .unwrap()
+                calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                     / Value::THOUSAND,
             );
             if reactivation_delay > total_duration {
@@ -487,8 +482,7 @@ impl SoftDts {
         // longer than reload duration, it extends reload soft downtime as well.
         if axt.specs_reactivation_delay {
             let reactivation_delay = PValue::from_value_clamped(
-                calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
-                    .unwrap()
+                calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                     / Value::THOUSAND,
             );
             if reactivation_delay > soft_dt_reload.duration {

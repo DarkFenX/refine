@@ -38,16 +38,12 @@ impl Vast {
     }
     fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
         let attr_consts = ctx.ac();
-        let agility = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.agility, Value::ZERO)
-            .unwrap();
+        let agility = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.agility, Value::ZERO);
         let agility = match agility > Value::ZERO {
             true => PValue::from_value_unchecked(agility),
             false => return None,
         };
-        let mass = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.mass, Value::ZERO)
-            .unwrap();
+        let mass = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.mass, Value::ZERO);
         let mass = match mass > Value::ZERO {
             true => PValue::from_value_unchecked(mass),
             false => return None,
@@ -101,9 +97,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<Option<PValue>, StatItemCheckError> {
         check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
-        let warp_speed = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_speed_mult, Value::ZERO)
-            .unwrap();
+        let warp_speed = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_speed_mult, Value::ZERO);
         let warp_speed = match warp_speed > Value::FLOAT_TOLERANCE {
             true => Some(PValue::from_value_unchecked(warp_speed)),
             false => None,
@@ -118,10 +112,12 @@ impl Vast {
         check_ship_no_struct(ctx.u_data, item_uid)?;
         let cap = Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
         let mass = Self::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);
-        let cap_need = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_capacitor_need, Value::ZERO)
-                .unwrap(),
-        );
+        let cap_need = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            ctx.ac().warp_capacitor_need,
+            Value::ZERO,
+        ));
         let warp_range = cap / mass / cap_need;
         let warp_range = match warp_range.is_finite() && warp_range > PValue::FLOAT_TOLERANCE {
             true => Some(warp_range),

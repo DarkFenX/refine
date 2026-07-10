@@ -34,9 +34,7 @@ impl Vast {
     ) -> Result<StatCapSim, StatItemCheckError> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let max_cap = Self::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
-        let recharge_time_ms = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO)
-            .unwrap();
+        let recharge_time_ms = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO);
         let recharge_time_s = match recharge_time_ms < Value::FLOAT_TOLERANCE {
             true => None,
             false => Some(PValue::from_value_clamped(recharge_time_ms / Value::THOUSAND)),

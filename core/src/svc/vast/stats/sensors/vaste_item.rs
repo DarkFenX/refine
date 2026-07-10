@@ -20,9 +20,7 @@ impl Vast {
     ) -> Result<Count, StatItemCheckError> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let attr_consts = ctx.ac();
-        let mut item_locks = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, attr_consts.max_locked_targets, Value::ZERO)
-            .unwrap();
+        let mut item_locks = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.max_locked_targets, Value::ZERO);
         // Ship (ship kind) locks are limited by character locks. Anything else, including
         // structures, drones and fighter are not limited by it
         let u_item = ctx.u_data.items.get(item_uid);
@@ -30,6 +28,7 @@ impl Vast {
             && let UShipKind::Ship = u_ship.get_kind()
         {
             let u_fit = ctx.u_data.fits.get(u_ship.get_fit_uid());
+            // No limit when no character or it is not loaded
             if let Some(character_uid) = u_fit.character
                 && let Some(character_locks) =
                     calc.get_item_oattr_afb_oextra(ctx, character_uid, attr_consts.max_locked_targets, Value::ZERO)
@@ -37,7 +36,7 @@ impl Vast {
                 item_locks = item_locks.min(character_locks)
             }
         }
-        // Noninteger locks can happen in Pochven where locks are halved, halves are rounded up
+        // Non-integer locks can happen in Pochven where locks are halved, halves are rounded up
         Ok(Count::from_value_rounded(item_locks))
     }
     pub(in crate::svc) fn get_stat_item_lock_range(
@@ -46,9 +45,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_fighter_ship(ctx.u_data, item_uid)?;
-        let lock_range = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().max_target_range, Value::ZERO)
-            .unwrap();
+        let lock_range = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().max_target_range, Value::ZERO);
         Ok(PValue::from_value_clamped(lock_range))
     }
     pub(in crate::svc) fn get_stat_item_scan_res(
@@ -57,9 +54,7 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_fighter_ship(ctx.u_data, item_uid)?;
-        let scan_res = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_resolution, Value::ZERO)
-            .unwrap();
+        let scan_res = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().scan_resolution, Value::ZERO);
         Ok(PValue::from_value_clamped(scan_res))
     }
     pub(in crate::svc) fn get_stat_item_sensors(
@@ -77,22 +72,30 @@ impl Vast {
     ) -> StatSensors {
         // Strength ties are resolved using the following order:
         // Radar > ladar > magnetometric > gravimetric
-        let str_radar = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_radar_strength, Value::ZERO)
-                .unwrap(),
-        );
-        let str_ladar = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_ladar_strength, Value::ZERO)
-                .unwrap(),
-        );
-        let str_magnet = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_magnetometric_strength, Value::ZERO)
-                .unwrap(),
-        );
-        let str_grav = PValue::from_value_clamped(
-            calc.get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().scan_gravimetric_strength, Value::ZERO)
-                .unwrap(),
-        );
+        let str_radar = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_radar_strength,
+            Value::ZERO,
+        ));
+        let str_ladar = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_ladar_strength,
+            Value::ZERO,
+        ));
+        let str_magnet = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_magnetometric_strength,
+            Value::ZERO,
+        ));
+        let str_grav = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
+            ctx,
+            item_uid,
+            ctx.ac().scan_gravimetric_strength,
+            Value::ZERO,
+        ));
         let mut sensors = StatSensors {
             kind: StatSensorsKind::Radar,
             strength: str_radar,
@@ -117,10 +120,8 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_ship(ctx.u_data, item_uid)?;
-        let dscan_range = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().max_directional_scan_range, Value::ZERO)
-            .unwrap()
-            / Value::AU;
+        let dscan_range =
+            calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().max_directional_scan_range, Value::ZERO) / Value::AU;
         Ok(PValue::from_value_clamped(dscan_range))
     }
     pub(in crate::svc) fn get_stat_item_probing_size(

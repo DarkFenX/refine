@@ -73,10 +73,8 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<UnitInterval, StatItemCheckError> {
         check_ship(ctx.u_data, item_uid)?;
-        let neut_resist = Value::ONE
-            - calc
-                .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().breacher_pod_dmg_resist, Value::ZERO)
-                .unwrap();
+        let neut_resist =
+            Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().breacher_pod_dmg_resist, Value::ZERO);
         Ok(UnitInterval::from_value_clamped(neut_resist))
     }
 }
@@ -92,28 +90,16 @@ fn get_item_layer_resists(
 ) -> StatResistsLayer {
     StatResistsLayer {
         em: UnitInterval::from_value_clamped(
-            Value::ONE
-                - calc
-                    .get_item_oattr_afb_oextra(ctx, item_uid, em_attr_rid, Value::ONE)
-                    .unwrap(),
+            Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, em_attr_rid, Value::ONE),
         ),
         thermal: UnitInterval::from_value_clamped(
-            Value::ONE
-                - calc
-                    .get_item_oattr_afb_oextra(ctx, item_uid, therm_attr_rid, Value::ONE)
-                    .unwrap(),
+            Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, therm_attr_rid, Value::ONE),
         ),
         kinetic: UnitInterval::from_value_clamped(
-            Value::ONE
-                - calc
-                    .get_item_oattr_afb_oextra(ctx, item_uid, kin_attr_rid, Value::ONE)
-                    .unwrap(),
+            Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, kin_attr_rid, Value::ONE),
         ),
         explosive: UnitInterval::from_value_clamped(
-            Value::ONE
-                - calc
-                    .get_item_oattr_afb_oextra(ctx, item_uid, expl_attr_rid, Value::ONE)
-                    .unwrap(),
+            Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, expl_attr_rid, Value::ONE),
         ),
     }
 }

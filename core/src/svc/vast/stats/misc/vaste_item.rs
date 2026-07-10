@@ -19,9 +19,8 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, StatItemCheckError> {
         check_character(ctx.u_data, item_uid)?;
-        let drone_control_range = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().drone_control_distance, Value::ZERO)
-            .unwrap();
+        let drone_control_range =
+            calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().drone_control_distance, Value::ZERO);
         Ok(PValue::from_value_clamped(drone_control_range))
     }
     pub(in crate::svc) fn get_stat_item_can_warp(
@@ -43,9 +42,7 @@ impl Vast {
                 return Ok(false);
             }
         }
-        let warp_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
-            .unwrap();
+        let warp_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO);
         if warp_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
@@ -55,9 +52,7 @@ impl Vast {
         {
             return Ok(false);
         }
-        let warp_jump_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_warping, Value::ZERO)
-            .unwrap();
+        let warp_jump_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_warping, Value::ZERO);
         if warp_jump_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
@@ -83,15 +78,11 @@ impl Vast {
         if !fit_data.mod_effects_disallow_jump_gate.is_empty() {
             return Ok(false);
         }
-        let gate_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().gate_scramble_status, Value::ZERO)
-            .unwrap();
+        let gate_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().gate_scramble_status, Value::ZERO);
         if gate_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
-        let dock_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_drive_jumping, Value::ZERO)
-            .unwrap();
+        let dock_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_drive_jumping, Value::ZERO);
         if dock_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
@@ -132,21 +123,16 @@ impl Vast {
         if !fit_data.mod_effects_disallow_jump_drive.is_empty() {
             return Ok(false);
         }
-        let warp_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
-            .unwrap();
+        let warp_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO);
         if warp_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
-        let jump_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_drive_jumping, Value::ZERO)
-            .unwrap();
+        let jump_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_drive_jumping, Value::ZERO);
         if jump_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
-        let jump_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_drive_jumping_only, Value::ZERO)
-            .unwrap();
+        let jump_status =
+            calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_drive_jumping_only, Value::ZERO);
         if jump_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
@@ -170,9 +156,7 @@ impl Vast {
         if !fit_data.mod_effects_disallow_dock.is_empty() {
             return Ok(false);
         }
-        let dock_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_docking, Value::ZERO)
-            .unwrap();
+        let dock_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_docking, Value::ZERO);
         if dock_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
@@ -197,15 +181,11 @@ impl Vast {
         if !fit_data.mod_effects_disallow_dock.is_empty() {
             return Ok(false);
         }
-        let warp_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
-            .unwrap();
+        let warp_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO);
         if warp_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
-        let dock_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_docking, Value::ZERO)
-            .unwrap();
+        let dock_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_docking, Value::ZERO);
         if dock_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
@@ -234,15 +214,11 @@ impl Vast {
         if fit_data.get_launched_drone_count() > Count::ZERO || fit_data.get_launched_fighter_count() > Count::ZERO {
             return Ok(false);
         }
-        let warp_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO)
-            .unwrap();
+        let warp_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO);
         if warp_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }
-        let tether_status = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, ctx.ac().disallow_tethering, Value::ZERO)
-            .unwrap();
+        let tether_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_tethering, Value::ZERO);
         if tether_status > Value::FLOAT_TOLERANCE {
             return Ok(false);
         }

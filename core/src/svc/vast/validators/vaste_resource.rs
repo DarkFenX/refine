@@ -231,9 +231,7 @@ fn validate_fast_fitting(
     let mut total_use = Value::ZERO;
     let mut force_pass = true;
     for item_uid in items {
-        let item_use = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, use_attr_rid, Value::ZERO)
-            .unwrap();
+        let item_use = calc.get_item_oattr_ffb_extra(ctx, item_uid, use_attr_rid, Value::ZERO);
         if force_pass && item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
             force_pass = false;
         }
@@ -280,9 +278,7 @@ fn validate_verbose_fitting(
     let mut total_use = Value::ZERO;
     let mut users = HashMap::with_capacity(items.len());
     for item_uid in items {
-        let item_use = calc
-            .get_item_oattr_afb_oextra(ctx, item_uid, use_attr_rid, Value::ZERO)
-            .unwrap();
+        let item_use = calc.get_item_oattr_ffb_extra(ctx, item_uid, use_attr_rid, Value::ZERO);
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
             users.insert(ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);

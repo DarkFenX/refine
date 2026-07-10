@@ -164,26 +164,22 @@ impl Calc {
             attr_consts.armor_expl_dmg_resonance,
         )?);
         // Do not require breacher resist and HP attributes
-        let breach_reso = PValue::from_value_clamped(self.get_item_oattr_afb_oextra(
+        let breach_reso = PValue::from_value_clamped(self.get_item_oattr_ffb_extra(
             ctx,
             ship_uid,
             attr_consts.breacher_pod_dmg_resist,
             Value::ONE,
-        )?);
-        let shield_hp = PValue::from_value_clamped(self.get_item_oattr_afb_oextra(
+        ));
+        let shield_hp = PValue::from_value_clamped(self.get_item_oattr_ffb_extra(
             ctx,
             ship_uid,
             attr_consts.shield_capacity,
             Value::ZERO,
-        )?);
-        let armor_hp = PValue::from_value_clamped(self.get_item_oattr_afb_oextra(
-            ctx,
-            ship_uid,
-            attr_consts.armor_hp,
-            Value::ZERO,
-        )?);
+        ));
+        let armor_hp =
+            PValue::from_value_clamped(self.get_item_oattr_ffb_extra(ctx, ship_uid, attr_consts.armor_hp, Value::ZERO));
         let hull_hp =
-            PValue::from_value_clamped(self.get_item_oattr_afb_oextra(ctx, ship_uid, attr_consts.hp, Value::ZERO)?);
+            PValue::from_value_clamped(self.get_item_oattr_ffb_extra(ctx, ship_uid, attr_consts.hp, Value::ZERO));
         Some(RahShipStats {
             resos: DmgKinds {
                 em: em_reso,

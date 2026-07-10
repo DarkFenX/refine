@@ -57,24 +57,6 @@ impl Calc {
     }
     // - Optional attribute
     // - Fallback in case of missing attribute argument
-    // - Dogma value as an option
-    pub(crate) fn get_item_oattr_afb_odogma(
-        &mut self,
-        ctx: SvcCtx,
-        item_uid: UItemId,
-        attr_rid: Option<RAttrId>,
-        fallback: Value,
-    ) -> Option<Value> {
-        match self.get_item_oattr_rfull(ctx, item_uid, attr_rid) {
-            Ok(full) => Some(full.dogma),
-            Err(error) => match error {
-                GetOAttrError::ItemNotLoaded(_) => None,
-                GetOAttrError::NoAttr(_) => Some(fallback),
-            },
-        }
-    }
-    // - Optional attribute
-    // - Fallback in case of missing attribute argument
     // - Extra value as an option
     pub(crate) fn get_item_oattr_afb_oextra(
         &mut self,
@@ -89,6 +71,21 @@ impl Calc {
                 GetOAttrError::ItemNotLoaded(_) => None,
                 GetOAttrError::NoAttr(_) => Some(fallback),
             },
+        }
+    }
+    // - Optional attribute
+    // - Fallback for all cases
+    // - Dogma value
+    pub(crate) fn get_item_oattr_ffb_dogma(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        fallback: Value,
+    ) -> Value {
+        match self.get_item_oattr_rfull(ctx, item_uid, attr_rid) {
+            Ok(full) => full.dogma,
+            Err(_) => fallback,
         }
     }
     // - Optional attribute
