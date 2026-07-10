@@ -1,42 +1,44 @@
 from fw import approx, check_no_field
-from fw.api import FitStatsOptions, ItemStatsOptions
+from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionMass
 
 
-def test_ship_modified(client, consts):
+def test_ship_affectors(client, consts):
     eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
     eve_mod_attr_id = client.mk_eve_attr()
     eve_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
-        op=consts.EveModOp.post_percent,
+        op=consts.EveModOp.mod_add,
         affector_attr_id=eve_mod_attr_id,
         affectee_attr_id=eve_mass_attr_id)
-    eve_mod_effect_id = client.mk_eve_effect(mod_info=[eve_mod])
-    eve_rig_id = client.mk_eve_item(attrs={eve_mod_attr_id: 25}, eff_ids=[eve_mod_effect_id])
+    eve_online_effect_id = client.mk_eve_online_effect()
+    eve_mod_online_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.online, mod_info=[eve_mod])
+    eve_mod_active_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.active, mod_info=[eve_mod])
+    eve_online_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: 25},
+        eff_ids=[eve_mod_online_effect_id, eve_online_effect_id])
+    eve_active_module_id = client.mk_eve_item(
+        attrs={eve_mod_attr_id: 25},
+        eff_ids=[eve_mod_active_effect_id],
+        defeff_id=eve_mod_active_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_online_module_id, state=consts.ApiModuleState.online)
+    api_fit.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_active_module_id, state=consts.ApiModuleState.overload)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
-    assert api_fit_stats.mass.one() == approx(100)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=True))
-    assert api_ship_stats.mass.one() == approx(100)
-    # Action
-    api_rig = api_fit.add_rig(type_id=eve_rig_id)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
-    assert api_fit_stats.mass.one() == approx(125)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=True))
-    assert api_ship_stats.mass.one() == approx(125)
-    # Action
-    api_rig.remove()
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=True))
-    assert api_fit_stats.mass.one() == approx(100)
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=True))
-    assert api_ship_stats.mass.one() == approx(100)
+    api_options = [
+        StatsOptionMass(),
+        StatsOptionMass(affectors=consts.ApiCtlAffector.offline),
+        StatsOptionMass(affectors=consts.ApiCtlAffector.deactivate),
+        StatsOptionMass(affectors=consts.ApiCtlAffector.unmodified)]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=(True, api_options)))
+    assert api_fit_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=(True, api_options)))
+    assert api_ship_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
 
 
 def test_ship_no_value(client, consts):

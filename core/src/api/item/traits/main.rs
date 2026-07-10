@@ -543,8 +543,8 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         sol.internal_ctl_affectors_switch(
             item_uid,
             sol.u_data.r_data.get_attr_consts().mass,
-            AffectionDir::Increase,
             ctl_affectors,
+            AffectionDir::Increase,
             &mut saved_states,
             &mut reuse_eupdates,
         );

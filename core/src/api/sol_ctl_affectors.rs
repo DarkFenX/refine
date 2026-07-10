@@ -34,8 +34,8 @@ impl SolarSystem {
         &mut self,
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
-        direction: AffectionDir,
         action: CtlAffectors,
+        direction: AffectionDir,
         reuse_saved_states: &mut RMap<UItemId, RState>,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
@@ -136,9 +136,7 @@ fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
 }
 
 fn can_be_switched(mod_info: &CalcModInfo, action: CtlAffectors) -> Option<RState> {
-    let Some(state) = mod_info.state else {
-        return None;
-    };
+    let state = mod_info.state?;
     match action {
         CtlAffectors::Unmodified => None,
         CtlAffectors::Deactivate => match state {

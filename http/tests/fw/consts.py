@@ -768,6 +768,13 @@ class ApiCapSimResult(StrEnum):
 
 
 @unique
+class ApiCtlAffector(StrEnum):
+    unmodified = 'unmodified'
+    deactivate = 'deactivate'
+    offline = 'offline'
+
+
+@unique
 class ApiSrcInfoMode(StrEnum):
     partial = 'partial'
     full = 'full'

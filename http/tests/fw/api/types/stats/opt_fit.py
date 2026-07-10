@@ -9,6 +9,7 @@ if typing.TYPE_CHECKING:
     from .opt_ehp import StatsOptionEhp
     from .opt_incoming_jam import StatsOptionInJam
     from .opt_jump import StatsOptionJump
+    from .opt_mass import StatsOptionMass
     from .opt_mining import StatsOptionFitMining
     from .opt_outgoing_cps import StatsOptionFitOutCps
     from .opt_outgoing_nps import StatsOptionFitOutNps
@@ -76,7 +77,7 @@ class FitStatsOptions:
     agility: bool | type[Absent] = Absent
     align_time: bool | type[Absent] = Absent
     sig_radius: bool | type[Absent] = Absent
-    mass: bool | type[Absent] = Absent
+    mass: bool | tuple[bool, list[StatsOptionMass]] | type[Absent] = Absent
     warp_speed: bool | type[Absent] = Absent
     max_warp_range: bool | type[Absent] = Absent
     jump: bool | tuple[bool, list[StatsOptionJump]] | type[Absent] = Absent
