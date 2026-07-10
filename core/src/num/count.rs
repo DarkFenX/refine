@@ -75,8 +75,16 @@ impl std::iter::Step for Count {
     fn forward_checked(start: Self, count: usize) -> Option<Self> {
         u32::forward_checked(start.0, count).map(Self)
     }
+    fn forward_overflowing(start: Self, count: usize) -> (Self, bool) {
+        let (value, overflow) = u32::forward_overflowing(start.0, count);
+        (Self(value), overflow)
+    }
     fn backward_checked(start: Self, count: usize) -> Option<Self> {
         u32::backward_checked(start.0, count).map(Self)
+    }
+    fn backward_overflowing(start: Self, count: usize) -> (Self, bool) {
+        let (value, overflow) = u32::backward_overflowing(start.0, count);
+        (Self(value), overflow)
     }
 }
 
