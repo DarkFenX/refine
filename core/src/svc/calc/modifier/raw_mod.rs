@@ -9,7 +9,7 @@ use crate::{
     num::Value,
     rd::{
         RAttrId, RBuff, RBuffModifier, REffect, REffectBuffScope, REffectModStrength, REffectModifier,
-        REffectProjModSpec, RState,
+        REffectProjModSpec,
     },
     svc::{
         SvcCtx,
@@ -24,7 +24,6 @@ use crate::{
 #[derive(Copy, Clone)]
 pub(in crate::svc::calc) struct RawModifier {
     pub(in crate::svc::calc) kind: ModifierKind,
-    pub(in crate::svc::calc) state: RState,
     pub(in crate::svc::calc) affector_espec: EffectSpec,
     pub(in crate::svc::calc::modifier) strength: ModStrength,
     pub(in crate::svc::calc) op: CalcOp,
@@ -40,7 +39,6 @@ pub(in crate::svc::calc) struct RawModifier {
 impl PartialEq for RawModifier {
     fn eq(&self, other: &Self) -> bool {
         self.kind.eq(&other.kind)
-            && self.state.eq(&other.state)
             && self.affector_espec.eq(&other.affector_espec)
             && self.strength.eq(&other.strength)
             && self.op.eq(&other.op)
@@ -54,7 +52,6 @@ impl Eq for RawModifier {}
 impl Hash for RawModifier {
     fn hash<H: Hasher>(&self, state: &mut H) {
         self.kind.hash(state);
-        self.state.hash(state);
         self.affector_espec.hash(state);
         self.strength.hash(state);
         self.op.hash(state);
@@ -87,7 +84,6 @@ impl RawModifier {
         };
         Some(Self {
             kind,
-            state: effect.state,
             affector_espec: EffectSpec::new(affector_uid, effect.rid),
             strength: match effect_mod.strength {
                 REffectModStrength::Attr(attr_rid) => ModStrength::Attr(attr_rid),
@@ -168,7 +164,6 @@ impl RawModifier {
             // local modifiers which affect just ship for simplicity of further processing
             REffectBuffScope::Carrier => Self {
                 kind: ModifierKind::Local,
-                state: effect.state,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
                 strength: buff_str,
                 op: CalcOp::from_a_op(buff.op),
@@ -185,7 +180,6 @@ impl RawModifier {
             // Projected modifiers can be range-reduced and resisted
             REffectBuffScope::Projected(item_list_rid) => Self {
                 kind: ModifierKind::Buff,
-                state: effect.state,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
                 strength: buff_str,
                 op: CalcOp::from_a_op(buff.op),
@@ -207,7 +201,6 @@ impl RawModifier {
             // Fleet buffs cannot be resisted and range-reduced regardless of what effect says
             REffectBuffScope::Fleet(item_list_rid) => Self {
                 kind: ModifierKind::FleetBuff,
-                state: effect.state,
                 affector_espec: EffectSpec::new(affector_uid, effect.rid),
                 strength: buff_str,
                 op: CalcOp::from_a_op(buff.op),

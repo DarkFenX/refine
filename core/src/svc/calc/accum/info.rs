@@ -14,7 +14,7 @@ use crate::{
     ad::AItemCatId,
     api::Op,
     num::{PValue, Value},
-    rd::RState,
+    rd::REffectId,
     svc::calc::{AggrKey, AggrMode, CalcModInfo, CalcModInfoAffector, CalcOp},
     util::RMap,
 };
@@ -83,7 +83,7 @@ impl ModAccumInfo {
     }
     pub(in crate::svc::calc) fn add_val(
         &mut self,
-        state: RState,
+        effect_rid: REffectId,
         op: CalcOp,
         val: Value,
         proj_mult: Option<PValue>,
@@ -96,9 +96,9 @@ impl ModAccumInfo {
         match op {
             CalcOp::PreAssign => self
                 .pre_assign
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::PreMul => self.pre_mul.add_raw_val(
-                state,
+                effect_rid,
                 op,
                 val,
                 proj_mult,
@@ -108,7 +108,7 @@ impl ModAccumInfo {
                 affectors,
             ),
             CalcOp::PreDiv => self.pre_div.add_raw_val(
-                state,
+                effect_rid,
                 op,
                 val,
                 proj_mult,
@@ -119,12 +119,12 @@ impl ModAccumInfo {
             ),
             CalcOp::Add => self
                 .add
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::Sub => self
                 .sub
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::PostMul => self.post_mul.add_raw_val(
-                state,
+                effect_rid,
                 op,
                 val,
                 proj_mult,
@@ -135,9 +135,9 @@ impl ModAccumInfo {
             ),
             CalcOp::PostMulImmune => self
                 .post_mul
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, false, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, false, affectors),
             CalcOp::PostDiv => self.post_div.add_raw_val(
-                state,
+                effect_rid,
                 op,
                 val,
                 proj_mult,
@@ -147,7 +147,7 @@ impl ModAccumInfo {
                 affectors,
             ),
             CalcOp::PostPerc => self.post_perc.add_raw_val(
-                state,
+                effect_rid,
                 op,
                 val,
                 proj_mult,
@@ -158,16 +158,16 @@ impl ModAccumInfo {
             ),
             CalcOp::PostPercImmune => self
                 .post_perc
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, false, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, false, affectors),
             CalcOp::PostAssign => self
                 .post_assign
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::ExtraAdd => self
                 .extra_add
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, affectors),
             CalcOp::ExtraMul => self
                 .extra_mul
-                .add_raw_val(state, op, val, proj_mult, res_mult, aggr_mode, false, affectors),
+                .add_raw_val(effect_rid, op, val, proj_mult, res_mult, aggr_mode, false, affectors),
         };
     }
     pub(in crate::svc::calc) fn apply_dogma_mods(&mut self, attr_info: AttrValInfo, hig: bool) -> AttrValInfo {
@@ -205,7 +205,7 @@ impl AccumAssign {
     }
     fn add_raw_val(
         &mut self,
-        state: RState,
+        effect_rid: REffectId,
         op: CalcOp,
         added_raw: Value,
         proj_mult: Option<PValue>,
@@ -229,7 +229,7 @@ impl AccumAssign {
         let info = AttrValInfo::from_effective_info(
             added_raw,
             CalcModInfo {
-                state: Some(state),
+                effect_rid: Some(effect_rid),
                 op: Op::from_calc_op(op),
                 initial_str: added_raw,
                 range_mult: proj_mult,
@@ -301,7 +301,7 @@ where
     }
     fn add_raw_val(
         &mut self,
-        state: RState,
+        effect_rid: REffectId,
         op: CalcOp,
         added_raw: Value,
         proj_mult: Option<PValue>,
@@ -313,7 +313,7 @@ where
         let info = AttrValInfo::from_effective_info(
             diminished_raw,
             CalcModInfo {
-                state: Some(state),
+                effect_rid: Some(effect_rid),
                 op: Op::from_calc_op(op),
                 initial_str: added_raw,
                 range_mult: proj_mult,
@@ -393,7 +393,7 @@ where
     }
     fn add_raw_val(
         &mut self,
-        state: RState,
+        effect_rid: REffectId,
         op: CalcOp,
         added_raw: Value,
         proj_mult: Option<PValue>,
@@ -409,7 +409,7 @@ where
         let info_raw = AttrValInfo::from_effective_info(
             diminished_raw,
             CalcModInfo {
-                state: Some(state),
+                effect_rid: Some(effect_rid),
                 op: Op::from_calc_op(op),
                 initial_str: added_raw,
                 range_mult: proj_mult,

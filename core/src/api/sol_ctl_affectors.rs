@@ -6,7 +6,7 @@ use crate::{
     rd::{RAttrId, RState},
     sol::SolarSystem,
     svc::calc::CalcModInfo,
-    ud::{UEffectUpdates, UItemId},
+    ud::{UData, UEffectUpdates, UItemId},
     util::RMap,
 };
 
@@ -36,10 +36,10 @@ impl SolarSystem {
     // - it considers only modules
     // - it considers only affectors which modify requested attribute directly
     // - it ignores base attribute value - e.g. multiplications by >1 are considered as increases
-    // - it ignores possibility of complex math interactions (e.g. during calculation attribute can
-    //   flip sign of its value multiple times)
-    // - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying
-    //   effect is in force-run mode
+    // - it ignores possibility of complex math interactions (e.g. during calculation attribute can flip
+    //   sign of its value multiple times)
+    // - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying effect
+    //   is in force-run mode
     pub(in crate::api) fn internal_ctl_affectors_switch(
         &mut self,
         item_uid: UItemId,
@@ -68,7 +68,7 @@ impl SolarSystem {
                 continue;
             }
             // Ignore modifications which cannot be switched off
-            let Some(new_state) = can_be_switched(&mod_info, action) else {
+            let Some(new_state) = can_be_switched(&self.u_data, &mod_info, action) else {
                 continue;
             };
             // Ignore modifications with empty or complex affector definitions
@@ -144,15 +144,16 @@ fn needs_switch(mod_info: &CalcModInfo, dir: AffectionDir) -> bool {
     }
 }
 
-fn can_be_switched(mod_info: &CalcModInfo, action: CtlAffectors) -> Option<RState> {
-    let state = mod_info.state?;
+fn can_be_switched(u_data: &UData, mod_info: &CalcModInfo, action: CtlAffectors) -> Option<RState> {
+    let effect_rid = mod_info.effect_rid?;
+    let effect_state = u_data.r_data.get_effect_by_rid(effect_rid).state;
     match action {
         CtlAffectors::Unmodified => None,
-        CtlAffectors::Deactivate => match state {
+        CtlAffectors::Deactivate => match effect_state {
             RState::Overload | RState::Active => Some(RState::Online),
             _ => None,
         },
-        CtlAffectors::Offline => match state {
+        CtlAffectors::Offline => match effect_state {
             RState::Overload | RState::Active => Some(RState::Online),
             RState::Online => Some(RState::Offline),
             _ => None,

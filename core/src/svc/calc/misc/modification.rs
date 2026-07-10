@@ -1,12 +1,10 @@
 use crate::{
     ad::AItemCatId,
     num::{PValue, Value},
-    rd::RState,
     svc::calc::{AggrMode, CalcOp},
 };
 
 pub(in crate::svc::calc) struct CalcModification {
-    pub(in crate::svc::calc) state: RState,
     pub(in crate::svc::calc) op: CalcOp,
     pub(in crate::svc::calc) val: Value,
     pub(in crate::svc::calc) proj_mult: Option<PValue>,

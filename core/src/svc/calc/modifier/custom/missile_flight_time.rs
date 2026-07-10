@@ -4,7 +4,7 @@ use super::CalcCustomModStrength;
 use crate::{
     misc::EffectSpec,
     num::Value,
-    rd::{RAttrConsts, RState},
+    rd::RAttrConsts,
     svc::{
         SvcCtx,
         calc::{
@@ -15,11 +15,10 @@ use crate::{
     ud::{UItem, UItemId},
 };
 
-pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec, state: RState) -> Option<RawModifier> {
+pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
     attr_consts.radius?;
     Some(RawModifier {
         kind: ModifierKind::Local,
-        state,
         affector_espec: espec,
         strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::MissileFlightTime,

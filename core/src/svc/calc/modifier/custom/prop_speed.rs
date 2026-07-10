@@ -4,7 +4,7 @@ use super::CalcCustomModStrength;
 use crate::{
     misc::{AttrSpec, EffectSpec},
     num::Value,
-    rd::{RAttrConsts, RState},
+    rd::RAttrConsts,
     svc::{
         SvcCtx,
         calc::{
@@ -15,13 +15,12 @@ use crate::{
     ud::UItemId,
 };
 
-pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec, state: RState) -> Option<RawModifier> {
+pub(super) fn make_rmod(attr_consts: &RAttrConsts, espec: EffectSpec) -> Option<RawModifier> {
     if attr_consts.speed_boost_factor.is_none() || attr_consts.mass.is_none() {
         return None;
     }
     Some(RawModifier {
         kind: ModifierKind::Local,
-        state,
         affector_espec: espec,
         strength: ModStrength::Custom(CalcCustomModStrength {
             kind: CalcCustomModifier::PropSpeed,

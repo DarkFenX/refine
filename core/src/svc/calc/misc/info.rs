@@ -3,12 +3,12 @@ use smallvec::SmallVec;
 use crate::{
     api::Op,
     num::{PValue, Value},
-    rd::{RAttrId, RState},
+    rd::{RAttrId, REffectId},
     ud::UItemId,
 };
 
 pub(crate) struct CalcModInfo {
-    pub(crate) state: Option<RState>,
+    pub(crate) effect_rid: Option<REffectId>,
     // Public operator serves even internal purposes well
     pub(crate) op: Op,
     pub(crate) initial_str: Value,

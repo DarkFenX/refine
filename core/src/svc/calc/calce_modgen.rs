@@ -92,7 +92,6 @@ impl Calc {
             && let Some(rmod) = custom_mod.make_rmod(
                 ctx.u_data.r_data.get_attr_consts(),
                 EffectSpec::new(item_uid, effect.rid),
-                effect.state,
             )
         {
             reuse_rmods.push(rmod);

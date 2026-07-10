@@ -8,7 +8,7 @@ use super::calce_shared::get_base_attr_value;
 use crate::{
     api::Op,
     misc::SecZone,
-    rd::{RAttr, RAttrId},
+    rd::{RAttr, RAttrId, REffectId},
     svc::{
         SvcCtx,
         calc::{
@@ -21,6 +21,7 @@ use crate::{
 };
 
 struct Affection {
+    effect_rid: REffectId,
     modification: CalcModification,
     affectors: SmallVec<[CalcModInfoAffector; 1]>,
 }
@@ -99,7 +100,6 @@ impl Calc {
             let affector_item_cat_id = affector_item.get_category_id().unwrap();
             let mod_key = CalcModificationKey::from_cmod(cmod);
             let modification = CalcModification {
-                state: cmod.raw.state,
                 op: cmod.raw.op,
                 val,
                 res_mult: self.calc_resist_mult(ctx, cmod),
@@ -108,6 +108,7 @@ impl Calc {
                 affector_item_cat_id,
             };
             let affection = Affection {
+                effect_rid: cmod.raw.affector_espec.effect_rid,
                 modification,
                 affectors: cmod.raw.get_affector_info(ctx),
             };
@@ -122,7 +123,7 @@ impl Calc {
         let mut accumulator = ModAccumInfo::new();
         for affection in self.iter_affections(ctx, &item_uid, item, attr_rid) {
             accumulator.add_val(
-                affection.modification.state,
+                affection.effect_rid,
                 affection.modification.op,
                 affection.modification.val,
                 affection.modification.proj_mult,
@@ -142,7 +143,7 @@ impl Calc {
             if limiter_val.dogma > dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(CalcModInfo {
-                    state: None,
+                    effect_rid: None,
                     op: Op::MinLimit,
                     initial_str: limiter_val.dogma,
                     range_mult: None,
@@ -164,7 +165,7 @@ impl Calc {
             if limiter_val.dogma < dogma_attr_info.value {
                 dogma_attr_info.value = limiter_val.dogma;
                 dogma_attr_info.effective_infos.push(CalcModInfo {
-                    state: None,
+                    effect_rid: None,
                     op: Op::MaxLimit,
                     initial_str: limiter_val.dogma,
                     range_mult: None,
@@ -211,7 +212,7 @@ impl Calc {
                 self.deps.add_anonymous(item_uid, security_attr_rid, attr.rid);
                 let mut base_attr_info = AttrValInfo::new(security_full_val.dogma);
                 base_attr_info.effective_infos.push(CalcModInfo {
-                    state: None,
+                    effect_rid: None,
                     // Technically this modification is not pre-assignment, it is base value
                     // overwrite (which later will be overwritten by any other pre-assignment
                     // regardless of its value), but pre-assignment is still used in info for
