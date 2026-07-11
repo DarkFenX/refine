@@ -102,10 +102,13 @@ fn generate_and_cache(
     fingerprint: AFingerprint,
 ) -> Result<Src, SrcInitError> {
     let mut a_data = ADataGenerator::new().generate(ed_handler)?;
+    // Cache first, then make warnings container, since it drains all the info from adapted data
+    let cache_write_warning = ad_cacher
+        .write_cache(&a_data, fingerprint)
+        .map_err(|error| error.to_string())
+        .err();
     let mut warnings = SrcWarnings::from_adapted_warnings(&mut a_data);
-    if let Err(error) = ad_cacher.write_cache(&a_data, fingerprint) {
-        warnings.cache_write = Some(error.to_string());
-    }
+    warnings.cache_write = cache_write_warning;
     let r_data = RData::from_a_data(a_data);
     let src_info = SrcInfo { origin, warnings };
     Ok(Src {

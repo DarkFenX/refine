@@ -111,10 +111,10 @@ fn log_reason(core_src: &rc::Src) {
                     tracing::info!("{prefix}: caching is disabled")
                 }
                 rc::src::SrcOriginGeneratedReason::NoEveDataVersion(msg) => {
-                    tracing::info!("{prefix}: caching is disabled: {msg}")
+                    tracing::info!("{prefix}: failed to get EVE data version: {msg}")
                 }
                 rc::src::SrcOriginGeneratedReason::NoCachedFingerprint(msg) => {
-                    tracing::info!("{prefix}: cannot get cached fingerprint: {msg}")
+                    tracing::info!("{prefix}: failed to get cache fingerprint: {msg}")
                 }
                 rc::src::SrcOriginGeneratedReason::FingerprintMismatch(msg) => {
                     tracing::info!("{prefix}: fingerprint mismatch: {msg}")

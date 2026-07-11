@@ -7,7 +7,7 @@ use std::{
 
 use super::{
     data::CData,
-    error::{JsonZfileAdcReadError, JsonZfileAdcWriteError},
+    error::{JsonZfileAdcDataReadError, JsonZfileAdcFpReadError, JsonZfileAdcWriteError},
 };
 use crate::VERSION;
 
@@ -76,7 +76,7 @@ impl fmt::Debug for JsonZfileAdc {
 impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
     fn get_cache_fingerprint(&mut self) -> Result<rc::ad::AFingerprint, Box<dyn std::error::Error>> {
         let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
-            .map_err(|e| JsonZfileAdcReadError::FpReadFailed(e.to_string()))?;
+            .map_err(|e| JsonZfileAdcFpReadError::ReadFailed(e.to_string()))?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
     fn load_from_cache(&mut self) -> Result<rc::ad::AData, Box<dyn std::error::Error>> {
@@ -84,9 +84,9 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| JsonZfileAdcReadError::DataReadFailed(e.to_string()))?;
+            .map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
         let reader =
-            zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcReadError::DataReadFailed(e.to_string()))?;
+            zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
         let c_data = CData::try_deserialize(reader)?;
         Ok(c_data.into_adapted())
     }

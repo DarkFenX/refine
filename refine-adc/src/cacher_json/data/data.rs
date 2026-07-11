@@ -5,7 +5,7 @@ use struson::{
 
 use crate::cacher_json::{
     data::{AdaptedConv, CAbil, CAttr, CBuff, CDataWarnings, CEffect, CItem, CItemList, CMuta},
-    error::{JsonZfileAdcReadError, JsonZfileAdcWriteError},
+    error::{JsonZfileAdcDataReadError, JsonZfileAdcWriteError},
 };
 
 #[derive(Default)]
@@ -106,7 +106,7 @@ where
 // Deserialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CData {
-    pub(in crate::cacher_json) fn try_deserialize<R>(reader: R) -> Result<Self, JsonZfileAdcReadError>
+    pub(in crate::cacher_json) fn try_deserialize<R>(reader: R) -> Result<Self, JsonZfileAdcDataReadError>
     where
         R: std::io::Read,
     {
@@ -131,7 +131,7 @@ impl CData {
     }
 }
 
-fn read_array<R, C>(c_entities: &mut Vec<C>, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcReadError>
+fn read_array<R, C>(c_entities: &mut Vec<C>, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcDataReadError>
 where
     R: std::io::Read,
     C: serde::de::DeserializeOwned,
