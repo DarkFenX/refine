@@ -1733,6 +1733,7 @@ dependencies = [
 name = "refine-rs"
 version = "0.1.0"
 dependencies = [
+ "chrono",
  "refine-adc",
  "refine-core",
  "refine-edh",
@@ -1744,6 +1745,7 @@ dependencies = [
  "tokio",
  "tokio-rayon",
  "tracing",
+ "uuid",
 ]
 
 [[package]]

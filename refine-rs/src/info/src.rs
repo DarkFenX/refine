@@ -1,27 +1,27 @@
 use crate::info::SrcInfoMode;
 
-#[derive(serde::Serialize)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SrcInfo {
     pub origin: SrcOrigin,
-    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SrcInfoExt>,
 }
 
-#[derive(serde::Serialize)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SrcInfoExt {
-    #[serde(skip_serializing_if = "SrcWarnings::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "SrcWarnings::is_empty"))]
     pub warnings: SrcWarnings,
 }
 
-#[derive(serde::Serialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename_all = "snake_case"))]
 pub enum SrcOrigin {
     Generated { reason: SrcOriginGeneratedReason },
     Cached { fingerprint: String },
 }
 
-#[derive(serde::Serialize)]
-#[serde(tag = "type", rename_all = "snake_case")]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", serde(tag = "type", rename_all = "snake_case"))]
 pub enum SrcOriginGeneratedReason {
     NoCacher,
     NoEveDataVersion { message: String },
@@ -30,23 +30,23 @@ pub enum SrcOriginGeneratedReason {
     CacheLoadFailed { message: String },
 }
 
-#[derive(serde::Serialize)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SrcWarnings {
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub eve_data_fetch: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub adg_pk_duplicates: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub adg_cleanup: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub adg_validation: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub adg_conversion_main: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub adg_customization: Vec<String>,
-    #[serde(skip_serializing_if = "Vec::is_empty")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub adg_conversion_aux: Vec<String>,
-    #[serde(skip_serializing_if = "Option::is_none")]
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub cache_write: Option<String>,
 }
 impl SrcWarnings {

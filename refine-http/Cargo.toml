@@ -6,7 +6,7 @@ edition = "2024"
 
 [dependencies]
 rc = { package = "refine-core", path = "../refine-core" }
-rs = { package = "refine-rs", path = "../refine-rs" }
+rs = { package = "refine-rs", path = "../refine-rs", features = ["serde"] }
 axum = { version = ">=0.8.9", features = ["query"] }
 axum-extra = { version = "0.12.6", features = ["with-rejection"] }
 chrono = ">=0.4.45"
