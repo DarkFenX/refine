@@ -38,8 +38,10 @@ impl HApiError {
             HApiError::Json(_) => StatusCode::BAD_REQUEST,
             HApiError::Bridge(br_err) => match &br_err.err {
                 // Related to source initialization
-                // HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
-                // HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                HBrError::SrcCreateFailed(rs::err::CreateSrcError::EdhInitFailed(_)) => StatusCode::BAD_REQUEST,
+                HBrError::SrcCreateFailed(rs::err::CreateSrcError::SrcInitFailed(_)) => {
+                    StatusCode::UNPROCESSABLE_ENTITY
+                }
                 HBrError::SolNotFound(_) => StatusCode::NOT_FOUND,
                 HBrError::NoCoreSol => StatusCode::INTERNAL_SERVER_ERROR,
                 // Source-related issues
