@@ -1,7 +1,7 @@
 pub mod basic;
 pub use crate::{
     api::{
-        AddMutationError, AddProjError, AddSkillError, AttrIdParseError, AttrMutateRawError, EffectIdParseError,
+        AddMutationError, AddProjError, AttrIdParseError, AttrMutateRawError, CreateSkillError, EffectIdParseError,
         FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError, FleetAddFitError,
         FleetRemoveFitError, FleetStatAppliedError, GetAbilityError, GetAutochargeError, GetBoosterError,
         GetCharacterError, GetChargeError, GetDroneError, GetFighterError, GetFitError, GetFleetError,

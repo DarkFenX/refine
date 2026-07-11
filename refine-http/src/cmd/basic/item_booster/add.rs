@@ -60,7 +60,7 @@ impl HBoosterAddCmdICtx {
     ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
-        let mut core_booster = core_fit.add_booster(core_type_id);
+        let mut core_booster = core_fit.create_booster(core_type_id);
         if let Some(state) = self.state {
             core_booster.set_state(state);
         }

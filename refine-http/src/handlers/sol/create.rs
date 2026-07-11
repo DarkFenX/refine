@@ -23,9 +23,9 @@ pub(crate) async fn create_sol(
     WithRejection(payload, _): WithRejection<Option<Json<HCreateSolReq>>, HApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
-    let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
+    let src = match state.refine.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,
-        Err(br_err) => return HApiError::from_br_path_empty(br_err).into_response(),
+        Err(br_err) => return HApiError::from_br_path_empty(br_err.into()).into_response(),
     };
     let sol_info = state
         .sol_mgr

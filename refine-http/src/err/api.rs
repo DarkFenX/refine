@@ -38,13 +38,13 @@ impl HApiError {
             HApiError::Json(_) => StatusCode::BAD_REQUEST,
             HApiError::Bridge(br_err) => match &br_err.err {
                 // Related to source initialization
-                HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
-                HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                // HBrError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
+                // HBrError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
                 HBrError::SolNotFound(_) => StatusCode::NOT_FOUND,
                 HBrError::NoCoreSol => StatusCode::INTERNAL_SERVER_ERROR,
                 // Source-related issues
-                HBrError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                HBrError::SrcNotFound(_) if br_err.src_in_path => StatusCode::NOT_FOUND,
+                // HBrError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
+                // HBrError::SrcNotFound(_) if br_err.src_in_path => StatusCode::NOT_FOUND,
                 // Casts happen only when those IDs are in HTTP paths; if they fail, can safely
                 // assume that it's 404
                 HBrError::FleetIdCastFailed(_) | HBrError::FitIdCastFailed(_) | HBrError::ItemIdCastFailed(_) => {

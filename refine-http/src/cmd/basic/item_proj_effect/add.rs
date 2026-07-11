@@ -48,7 +48,7 @@ impl HProjEffectAddCmdFCtxBIds {
 impl HProjEffectAddCmdFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedItemIdsResp, HExecError> {
         let core_type_id = rc::ItemTypeId::from_i32(self.shared.type_id);
-        let mut core_proj_effect = core_sol.add_proj_effect(core_type_id);
+        let mut core_proj_effect = core_sol.create_proj_effect(core_type_id);
         if let Some(state) = self.shared.state {
             core_proj_effect.set_state(state);
         }

@@ -59,7 +59,7 @@ impl HSubsystemAddCmdICtx {
     ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
-        let mut core_subsystem = core_fit.add_subsystem(core_type_id);
+        let mut core_subsystem = core_fit.create_subsystem(core_type_id);
         if let Some(state) = self.state {
             core_subsystem.set_state(state);
         }

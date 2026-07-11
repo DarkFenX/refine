@@ -8,7 +8,7 @@ mod drone_set_movement;
 mod drone_set_npc_prop;
 mod drone_set_state;
 mod drone_set_type_id;
-mod fit_add_drone;
+mod fit_create_drone;
 mod fit_iter_drones;
 mod mutation;
 mod ranged_proj;

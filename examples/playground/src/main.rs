@@ -61,8 +61,8 @@ fn main() {
 fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
     let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
     let mut sol_sys = SolarSystem::new(&src);
-    let mut fit = sol_sys.add_fit();
-    let mut fighter = fit.add_fighter(ItemTypeId::from_i32(40562), MinionState::InBay, None, None);
+    let mut fit = sol_sys.create_fit();
+    let mut fighter = fit.create_fighter(ItemTypeId::from_i32(40562), MinionState::InBay, None, None);
     let autocharges: Vec<_> = fighter
         .iter_autocharges_mut()
         .map_into_iter(|v| v.get_item_id())
@@ -79,10 +79,10 @@ fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCac
         SrcOrigin::Generated(_) => tracing::info!("source: generated"),
     }
     let mut sol_sys = SolarSystem::new(&src);
-    let mut fit = sol_sys.add_fit();
+    let mut fit = sol_sys.create_fit();
     let ship_id = fit.set_ship(ItemTypeId::from_i32(11184), None, None).get_item_id();
     for skill_id in skill_ids.iter() {
-        fit.add_skill(
+        fit.create_skill(
             ItemTypeId::from_i32(skill_id.into_i32()),
             SkillLevel::from_i32_clamped(5),
         );
@@ -110,7 +110,7 @@ fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCac
         let anp_id = sol_sys
             .get_fit_mut(&fit_id)
             .unwrap()
-            .add_module(
+            .create_module(
                 ModRack::Low,
                 AddMode::Equip,
                 ItemTypeId::from_i32(1306),
@@ -148,30 +148,30 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
 
     let mut sol_sys = SolarSystem::new(&src);
     sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
-    let mut fit = sol_sys.add_fit();
+    let mut fit = sol_sys.create_fit();
 
     // Character
     fit.set_character(ItemTypeId::from_i32(1373));
 
     // Skills
     for skill_id in skill_ids.iter() {
-        fit.add_skill(
+        fit.create_skill(
             ItemTypeId::from_i32(skill_id.into_i32()),
             SkillLevel::from_i32_clamped(5),
         );
     }
 
     // Implants
-    fit.add_implant(ItemTypeId::from_i32(13231)); // TD-603
-    fit.add_implant(ItemTypeId::from_i32(10228)); // SM-703
-    fit.add_implant(ItemTypeId::from_i32(24663)); // Zor hyperlink
-    fit.add_implant(ItemTypeId::from_i32(13244)); // SS-903
-    fit.add_implant(ItemTypeId::from_i32(13219)); // LP-1003
+    fit.create_implant(ItemTypeId::from_i32(13231)); // TD-603
+    fit.create_implant(ItemTypeId::from_i32(10228)); // SM-703
+    fit.create_implant(ItemTypeId::from_i32(24663)); // Zor hyperlink
+    fit.create_implant(ItemTypeId::from_i32(13244)); // SS-903
+    fit.create_implant(ItemTypeId::from_i32(13219)); // LP-1003
 
     // Boosters
-    fit.add_booster(ItemTypeId::from_i32(28674)); // Synth drop
-    fit.add_booster(ItemTypeId::from_i32(28672)); // Synth crash
-    fit.add_booster(ItemTypeId::from_i32(45999)); // Pyro 2
+    fit.create_booster(ItemTypeId::from_i32(28674)); // Synth drop
+    fit.create_booster(ItemTypeId::from_i32(28672)); // Synth crash
+    fit.create_booster(ItemTypeId::from_i32(45999)); // Pyro 2
 
     // Ship
     fit.set_ship(ItemTypeId::from_i32(32311), None, None); // NTyphoon
@@ -179,7 +179,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     // High slots
     for _ in 0..2 {
         // T2 800mm with hail
-        fit.add_module(
+        fit.create_module(
             ModRack::High,
             AddMode::Equip,
             ItemTypeId::from_i32(2929),
@@ -189,7 +189,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     }
     for _ in 0..2 {
         // T2 torps with thermal rages
-        fit.add_module(
+        fit.create_module(
             ModRack::High,
             AddMode::Equip,
             ItemTypeId::from_i32(2420),
@@ -199,27 +199,27 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     }
 
     // Mid slots
-    fit.add_module(
+    fit.create_module(
         ModRack::Mid,
         AddMode::Equip,
         ItemTypeId::from_i32(5945),
         ModuleState::Active,
     ); // Enduring 500MN
     // T2 med cap booster with navy 800
-    fit.add_module(
+    fit.create_module(
         ModRack::Mid,
         AddMode::Equip,
         ItemTypeId::from_i32(2024),
         ModuleState::Active,
     )
     .set_charge_type_id(ItemTypeId::from_i32(32014));
-    fit.add_module(
+    fit.create_module(
         ModRack::Mid,
         AddMode::Equip,
         ItemTypeId::from_i32(2301),
         ModuleState::Active,
     ); // T2 EM hardener
-    fit.add_module(
+    fit.create_module(
         ModRack::Mid,
         AddMode::Equip,
         ItemTypeId::from_i32(448),
@@ -238,14 +238,14 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     //     .unwrap(); // T2 invuln
 
     // Low slots
-    fit.add_module(
+    fit.create_module(
         ModRack::Low,
         AddMode::Equip,
         ItemTypeId::from_i32(2048),
         ModuleState::Online,
     ); // T2 DC
     for _ in 0..2 {
-        fit.add_module(
+        fit.create_module(
             ModRack::Low,
             AddMode::Equip,
             ItemTypeId::from_i32(519),
@@ -253,7 +253,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
         ); // T2 gyrostab
     }
     for _ in 0..2 {
-        fit.add_module(
+        fit.create_module(
             ModRack::Low,
             AddMode::Equip,
             ItemTypeId::from_i32(22291),
@@ -261,7 +261,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
         ); // T2 BCS
     }
     for _ in 0..1 {
-        fit.add_module(
+        fit.create_module(
             ModRack::Low,
             AddMode::Equip,
             ItemTypeId::from_i32(4405),
@@ -270,17 +270,17 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     }
 
     // Rigs
-    fit.add_rig(ItemTypeId::from_i32(26436)); // T2 therm rig
+    fit.create_rig(ItemTypeId::from_i32(26436)); // T2 therm rig
     for _ in 0..1 {
-        fit.add_rig(ItemTypeId::from_i32(26088)); // T1 CDFE
+        fit.create_rig(ItemTypeId::from_i32(26088)); // T1 CDFE
     }
 
     // Drones
     for _ in 0..5 {
-        fit.add_drone(ItemTypeId::from_i32(2446), MinionState::Engaging, None, None); // T2 ogre
+        fit.create_drone(ItemTypeId::from_i32(2446), MinionState::Engaging, None, None); // T2 ogre
     }
     for _ in 0..2 {
-        fit.add_drone(ItemTypeId::from_i32(2446), MinionState::InBay, None, None); // T2 ogre
+        fit.create_drone(ItemTypeId::from_i32(2446), MinionState::InBay, None, None); // T2 ogre
     }
 
     let val_options = ValOptions::all_enabled();

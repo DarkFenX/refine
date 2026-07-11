@@ -1,24 +1,28 @@
-use serde::Serialize;
+use crate::info::SrcInfoMode;
 
-use crate::info::HSrcInfoMode;
-
-#[derive(Serialize)]
-pub(crate) struct HSrcInfo {
-    origin: HSrcOrigin,
-    #[serde(skip_serializing_if = "HSrcWarnings::is_empty")]
-    warnings: HSrcWarnings,
+#[derive(serde::Serialize)]
+pub struct SrcInfo {
+    pub origin: SrcOrigin,
+    #[serde(flatten, skip_serializing_if = "Option::is_none")]
+    pub extended: Option<SrcInfoExt>,
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
+pub struct SrcInfoExt {
+    #[serde(skip_serializing_if = "SrcWarnings::is_empty")]
+    pub warnings: SrcWarnings,
+}
+
+#[derive(serde::Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-enum HSrcOrigin {
-    Generated { reason: HSrcOriginGeneratedReason },
+pub enum SrcOrigin {
+    Generated { reason: SrcOriginGeneratedReason },
     Cached { fingerprint: String },
 }
 
-#[derive(Serialize)]
+#[derive(serde::Serialize)]
 #[serde(tag = "type", rename_all = "snake_case")]
-enum HSrcOriginGeneratedReason {
+pub enum SrcOriginGeneratedReason {
     NoCacher,
     NoEveDataVersion { message: String },
     NoCachedFingerprint { message: String },
@@ -26,26 +30,26 @@ enum HSrcOriginGeneratedReason {
     CacheLoadFailed { message: String },
 }
 
-#[derive(Default, Serialize)]
-struct HSrcWarnings {
+#[derive(serde::Serialize)]
+pub struct SrcWarnings {
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    eve_data_fetch: Vec<String>,
+    pub eve_data_fetch: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    adg_pk_duplicates: Vec<String>,
+    pub adg_pk_duplicates: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    adg_cleanup: Vec<String>,
+    pub adg_cleanup: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    adg_validation: Vec<String>,
+    pub adg_validation: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    adg_conversion_main: Vec<String>,
+    pub adg_conversion_main: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    adg_customization: Vec<String>,
+    pub adg_customization: Vec<String>,
     #[serde(skip_serializing_if = "Vec::is_empty")]
-    adg_conversion_aux: Vec<String>,
+    pub adg_conversion_aux: Vec<String>,
     #[serde(skip_serializing_if = "Option::is_none")]
-    cache_write: Option<String>,
+    pub cache_write: Option<String>,
 }
-impl HSrcWarnings {
+impl SrcWarnings {
     fn is_empty(&self) -> bool {
         self.eve_data_fetch.is_empty()
             && self.adg_pk_duplicates.is_empty()
@@ -61,23 +65,25 @@ impl HSrcWarnings {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HSrcInfo {
-    pub(crate) fn from_core(core_info: &rc::src::SrcInfo, src_mode: HSrcInfoMode) -> Self {
+impl SrcInfo {
+    pub(crate) fn from_core(core_info: &rc::src::SrcInfo, src_mode: SrcInfoMode) -> Self {
         Self {
-            origin: HSrcOrigin::from_core(&core_info.origin),
-            warnings: match src_mode {
-                HSrcInfoMode::Partial => HSrcWarnings::default(),
-                HSrcInfoMode::Full => HSrcWarnings::from_core(&core_info.warnings),
+            origin: SrcOrigin::from_core(&core_info.origin),
+            extended: match src_mode {
+                SrcInfoMode::Partial => None,
+                SrcInfoMode::Full => Some(SrcInfoExt {
+                    warnings: SrcWarnings::from_core(&core_info.warnings),
+                }),
             },
         }
     }
 }
 
-impl HSrcOrigin {
+impl SrcOrigin {
     fn from_core(core_origin: &rc::src::SrcOrigin) -> Self {
         match core_origin {
             rc::src::SrcOrigin::Generated(core_reason) => Self::Generated {
-                reason: HSrcOriginGeneratedReason::from_core(core_reason),
+                reason: SrcOriginGeneratedReason::from_core(core_reason),
             },
             rc::src::SrcOrigin::Cached(fingerprint) => Self::Cached {
                 fingerprint: fingerprint.to_string(),
@@ -86,7 +92,7 @@ impl HSrcOrigin {
     }
 }
 
-impl HSrcOriginGeneratedReason {
+impl SrcOriginGeneratedReason {
     fn from_core(core_reason: &rc::src::SrcOriginGeneratedReason) -> Self {
         match core_reason {
             rc::src::SrcOriginGeneratedReason::NoCacher => Self::NoCacher,
@@ -106,7 +112,7 @@ impl HSrcOriginGeneratedReason {
     }
 }
 
-impl HSrcWarnings {
+impl SrcWarnings {
     fn from_core(core_warnings: &rc::src::SrcWarnings) -> Self {
         Self {
             eve_data_fetch: core_warnings.eve_data_fetch.to_vec(),

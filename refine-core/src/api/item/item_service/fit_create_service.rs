@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_add_service(
+    pub(in crate::api) fn internal_create_service(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -25,11 +25,11 @@ impl SolarSystem {
 }
 
 impl<'a> FitMut<'a> {
-    pub fn add_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'_> {
+    pub fn create_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let service_uid = self
             .sol
-            .internal_add_service(self.uid, type_id.into_aid(), state, &mut reuse_eupdates);
+            .internal_create_service(self.uid, type_id.into_aid(), state, &mut reuse_eupdates);
         ServiceMut::new(self.sol, service_uid)
     }
 }

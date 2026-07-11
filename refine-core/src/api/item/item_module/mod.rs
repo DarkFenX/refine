@@ -2,7 +2,7 @@ pub use fit_iter_modules::ModuleIter;
 pub use module::{Module, ModuleMut};
 pub use sol_get_module::GetModuleError;
 
-mod fit_add_module;
+mod fit_create_module;
 mod fit_iter_modules;
 mod module;
 mod module_move;

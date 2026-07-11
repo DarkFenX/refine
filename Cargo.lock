@@ -1735,7 +1735,17 @@ dependencies = [
 name = "refine-rs"
 version = "0.1.0"
 dependencies = [
+ "refine-adc",
+ "refine-core",
+ "refine-edh",
+ "serde",
+ "serde_json",
+ "serde_tuple",
+ "serde_with",
+ "thiserror",
+ "tokio",
  "tokio-rayon",
+ "tracing",
 ]
 
 [[package]]

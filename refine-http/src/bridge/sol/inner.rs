@@ -1,7 +1,6 @@
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    bridge::HSrc,
     cmd::{
         HBenchmarkAttrCalcCmd, HBenchmarkStatsCmd, HBenchmarkTryFitItemsCmd, HCmdResps, HFitAddCmd, HFitChangeCmd,
         HFitRemoveCmd, HFleetAddCmd, HFleetChangeCmd, HFleetRemoveCmd, HGetFitStatsCmd, HGetFleetStatsCmd,
@@ -166,7 +165,7 @@ impl HSolarSystemInner {
     pub(crate) async fn change_sol_src(
         &mut self,
         tpool: &rs::ThreadPool,
-        src: HSrc,
+        src: rs::Src,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,

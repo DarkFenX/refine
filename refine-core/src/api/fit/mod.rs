@@ -11,7 +11,7 @@ mod fit_validate;
 mod fleet;
 mod rah_incoming_dps;
 mod sec_status;
-mod sol_add_fit;
+mod sol_create_fit;
 mod sol_get_fit;
 mod sol_iter_fits;
 mod stats;

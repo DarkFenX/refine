@@ -45,7 +45,7 @@ impl ItemUIds {
         };
         for (item_uid, u_item) in u_data.items.iter() {
             match u_item {
-                // Autocharges are added/removed by whichever item is carrying them (e.g. fighter)
+                // Autocharges are created/removed by whichever item is carrying them (e.g. fighter)
                 UItem::Autocharge(_) => (),
                 UItem::Booster(_) => data.boosters.push(item_uid),
                 UItem::Character(_) => data.characters.push(item_uid),

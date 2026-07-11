@@ -59,7 +59,7 @@ impl HFwEffectAddCmdICtx {
     ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
-        let mut core_fw_effect = core_fit.add_fw_effect(core_type_id);
+        let mut core_fw_effect = core_fit.create_fw_effect(core_type_id);
         if let Some(state) = self.state {
             core_fw_effect.set_state(state);
         }

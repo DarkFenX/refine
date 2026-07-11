@@ -1,11 +1,11 @@
 use std::sync::Arc;
 
 #[derive(Clone)]
-pub(crate) struct HSrc {
+pub struct Src {
     inner: Arc<rc::Src>,
 }
-impl HSrc {
-    pub(super) fn get_core(&self) -> &rc::Src {
+impl Src {
+    pub fn get_core(&self) -> &rc::Src {
         &self.inner
     }
 }
@@ -13,7 +13,7 @@ impl HSrc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HSrc {
+impl Src {
     pub(super) fn from_core(core_src: rc::Src) -> Self {
         Self {
             inner: Arc::new(core_src),

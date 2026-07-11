@@ -62,9 +62,9 @@ impl HSkillAddCmdICtx {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_level = rc::SkillLevel::from_i32_clamped(self.level);
         let mut core_skill = core_fit
-            .add_skill(core_type_id, core_level)
+            .create_skill(core_type_id, core_level)
             .map_err(|error| match error {
-                rc::err::AddSkillError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
+                rc::err::CreateSkillError::SkillIdCollision(e) => HExecError::SkillIdCollision(e),
             })?;
         if let Some(state) = self.state {
             core_skill.set_state(state);

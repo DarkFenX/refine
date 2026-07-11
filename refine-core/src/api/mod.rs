@@ -4,11 +4,11 @@ pub use fit::{
 };
 pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, FleetStatAppliedError, GetFleetError};
 pub use item::{
-    Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, Autocharge,
-    AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut, EffectiveMutation,
-    EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut,
-    GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError,
-    GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
+    Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AttrMutateRawError, Autocharge, AutochargeMut,
+    Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, CreateSkillError, Drone, DroneMut,
+    EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect,
+    FwEffectMut, GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError,
+    GetDroneError, GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
     GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError,
     GetSideEffectError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant, ImplantMut,
     IncompleteMutation, IncompleteMutationMut, Item, ItemAppliedStatError, ItemCommon, ItemMut, ItemMutCommon,

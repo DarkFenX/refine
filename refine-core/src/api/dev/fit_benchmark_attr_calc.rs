@@ -23,7 +23,7 @@ impl<'a> FitMut<'a> {
         }
         let type_aid = type_id.into_aid();
         for _ in 0..iterations {
-            let item_uid = self.sol.internal_add_module(
+            let item_uid = self.sol.internal_create_module(
                 self.uid,
                 ModRack::Low,
                 AddMode::Equip,

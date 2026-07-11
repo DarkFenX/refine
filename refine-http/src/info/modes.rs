@@ -2,14 +2,6 @@ use serde::Deserialize;
 
 #[derive(Copy, Clone, Default, Deserialize)]
 #[serde(rename_all = "snake_case")]
-pub(crate) enum HSrcInfoMode {
-    Partial,
-    #[default]
-    Full,
-}
-
-#[derive(Copy, Clone, Default, Deserialize)]
-#[serde(rename_all = "snake_case")]
 pub(crate) enum HSolInfoMode {
     Id,
     #[default]

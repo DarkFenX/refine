@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn add_sw_effect(&mut self, type_id: ItemTypeId) -> SwEffectMut<'_> {
+    pub fn create_sw_effect(&mut self, type_id: ItemTypeId) -> SwEffectMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let sw_effect_uid = self.internal_add_sw_effect(type_id.into_aid(), &mut reuse_eupdates);
+        let sw_effect_uid = self.internal_create_sw_effect(type_id.into_aid(), &mut reuse_eupdates);
         SwEffectMut::new(self, sw_effect_uid)
     }
-    pub(in crate::api) fn internal_add_sw_effect(
+    pub(in crate::api) fn internal_create_sw_effect(
         &mut self,
         type_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,

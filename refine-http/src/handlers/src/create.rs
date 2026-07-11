@@ -27,8 +27,9 @@ pub(crate) async fn create_source(
     let data_base_url = payload.data_base_url;
     let make_default = payload.make_default.unwrap_or(false);
     match state
+        .refine
         .src_mgr
-        .add(
+        .create(
             &state.refine.tpool,
             src_alias,
             data_version,
@@ -39,6 +40,6 @@ pub(crate) async fn create_source(
         .await
     {
         Ok(src_info) => (StatusCode::CREATED, Json(src_info)).into_response(),
-        Err(br_err) => HApiError::from_br_path_src(br_err).into_response(),
+        Err(br_err) => HApiError::from_br_path_src(br_err.into()).into_response(),
     }
 }

@@ -25,9 +25,9 @@ pub(crate) async fn change_sol_src(
         Ok(sol) => sol,
         Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
     };
-    let src = match state.src_mgr.get(payload.src_alias.as_deref()).await {
+    let src = match state.refine.src_mgr.get(payload.src_alias.as_deref()).await {
         Ok(src) => src,
-        Err(br_err) => return HApiError::from_br_path_sol(br_err).into_response(),
+        Err(rs_err) => return HApiError::from_br_path_sol(rs_err.into()).into_response(),
     };
     match sol
         .lock()

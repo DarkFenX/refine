@@ -5,7 +5,7 @@ use tokio_rayon::AsyncThreadPool;
 use uuid::Uuid;
 
 use crate::{
-    bridge::{HSolarSystem, HSrc},
+    bridge::HSolarSystem,
     cmd::HSolAddCmd,
     err::HBrError,
     info::{HFitInfoMode, HFleetInfoMode, HItemInfoMode, HSolInfo, HSolInfoMode},
@@ -26,7 +26,7 @@ impl HSolMgr {
         &self,
         tpool: &rs::ThreadPool,
         command: HSolAddCmd,
-        src: HSrc,
+        src: rs::Src,
         sol_mode: HSolInfoMode,
         fleet_mode: HFleetInfoMode,
         fit_mode: HFitInfoMode,

@@ -3,10 +3,6 @@
 
 pub(crate) use sol::HSolarSystem;
 pub(crate) use sol_mgr::HSolMgr;
-pub(crate) use src::HSrc;
-pub(crate) use src_mgr::HSrcMgr;
 
 mod sol;
 mod sol_mgr;
-mod src;
-mod src_mgr;

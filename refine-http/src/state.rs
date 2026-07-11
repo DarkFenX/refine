@@ -2,18 +2,16 @@ use std::sync::Arc;
 
 use rs::Refine;
 
-use crate::bridge::{HSolMgr, HSrcMgr};
+use crate::bridge::HSolMgr;
 
 pub(crate) struct HInnerAppState {
     pub(crate) refine: Refine,
-    pub(crate) src_mgr: HSrcMgr,
     pub(crate) sol_mgr: HSolMgr,
 }
 impl HInnerAppState {
     pub(crate) fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
         Self {
-            refine: Refine::new(standard_threads, heavy_threads),
-            src_mgr: HSrcMgr::new(cache_folder),
+            refine: Refine::new(cache_folder, standard_threads, heavy_threads),
             sol_mgr: HSolMgr::new(),
         }
     }

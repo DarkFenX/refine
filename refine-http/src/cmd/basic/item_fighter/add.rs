@@ -91,7 +91,7 @@ impl HFighterAddCmdICtxRIds {
         fit_id: &rc::FitId,
     ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_fighter = core_fit.add_fighter(
+        let mut core_fighter = core_fit.create_fighter(
             rc::ItemTypeId::from_i32(self.shared.type_id),
             self.shared.state.into_core(),
             self.shared.coordinates.map(|v| v.into_core()),
