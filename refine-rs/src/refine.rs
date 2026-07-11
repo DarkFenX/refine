@@ -1,15 +1,28 @@
-use crate::{src::SrcMgr, tpool::ThreadPool};
+use std::{
+    collections::{HashMap, HashSet},
+    sync::Arc,
+};
 
-// TODO: remove pub from things which are not supposed to be public
+use tokio::sync::RwLock;
+
+use crate::{src::SrcAlias, tpool::ThreadPool};
+
 pub struct Refine {
-    pub tpool: ThreadPool,
-    pub src_mgr: SrcMgr,
+    pub(crate) tpool: ThreadPool,
+    // Source-related fields
+    pub(crate) cache_folder: Option<String>,
+    pub(super) core_src_map: RwLock<HashMap<SrcAlias, Arc<rc::Src>>>,
+    pub(super) default_src_alias: RwLock<Option<SrcAlias>>,
+    pub(super) locked_src_aliases: RwLock<HashSet<SrcAlias>>,
 }
 impl Refine {
     pub fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
         Self {
             tpool: ThreadPool::new(standard_threads, heavy_threads),
-            src_mgr: SrcMgr::new(cache_folder),
+            cache_folder,
+            core_src_map: RwLock::new(HashMap::new()),
+            default_src_alias: RwLock::new(None),
+            locked_src_aliases: RwLock::new(HashSet::new()),
         }
     }
 }

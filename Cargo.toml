@@ -5,7 +5,8 @@ members = [
     "refine-edh",
     "refine-rs",
     "refine-http",
-    "examples/playground",
+    "examples/pg-core",
+    "examples/pg-rs",
 ]
 resolver = "2"
 

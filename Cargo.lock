@@ -1686,7 +1686,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "refine-example-playground"
+name = "refine-example-playground-core"
 version = "0.1.0"
 dependencies = [
  "chrono",
@@ -1695,6 +1695,18 @@ dependencies = [
  "refine-core",
  "refine-edh",
  "time",
+ "tracing",
+ "tracing-subscriber",
+]
+
+[[package]]
+name = "refine-example-playground-rs"
+version = "0.1.0"
+dependencies = [
+ "chrono",
+ "refine-rs",
+ "time",
+ "tokio",
  "tracing",
  "tracing-subscriber",
 ]
@@ -1734,6 +1746,7 @@ name = "refine-rs"
 version = "0.1.0"
 dependencies = [
  "chrono",
+ "derive_more",
  "refine-adc",
  "refine-core",
  "refine-edh",

@@ -1,0 +1,13 @@
+[package]
+name = "refine-example-playground-rs"
+version = "0.1.0"
+authors = ["DarkPhoenix <phoenix@mail.ru>"]
+edition = "2024"
+
+[dependencies]
+rs = { package = "refine-rs", path = "../../refine-rs" }
+chrono = ">=0.4.45"
+time = { version = ">=0.3.49", features = ["macros"] }
+tokio = { version = ">=1.52.3", features = ["full"] }
+tracing = ">=0.1.44"
+tracing-subscriber = { version = ">=0.3.23", features = ["time"] }

@@ -1,5 +1,5 @@
 [package]
-name = "refine-example-playground"
+name = "refine-example-playground-core"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"

@@ -1,22 +1,18 @@
 use std::sync::Arc;
 
-#[derive(Clone)]
-pub struct Src {
-    inner: Arc<rc::Src>,
-}
-impl Src {
-    pub fn get_core(&self) -> &rc::Src {
-        &self.inner
-    }
-}
+use crate::{refine::Refine, src::SrcAlias};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Src {
-    pub(super) fn from_core(core_src: rc::Src) -> Self {
+pub struct Src<'a> {
+    pub(super) refine: &'a mut Refine,
+    pub(super) alias: SrcAlias,
+    core_src: Arc<rc::Src>,
+}
+impl<'a> Src<'a> {
+    pub(super) fn new(refine: &'a mut Refine, alias: SrcAlias, core_src: Arc<rc::Src>) -> Self {
         Self {
-            inner: Arc::new(core_src),
+            refine,
+            alias,
+            core_src,
         }
     }
 }

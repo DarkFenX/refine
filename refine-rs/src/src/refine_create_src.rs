@@ -1,22 +1,21 @@
+use std::sync::Arc;
+
 use tokio_rayon::AsyncThreadPool;
 
-use super::{mgr::SrcMgr, src::Src};
 use crate::{
-    info::{SrcInfo, SrcInfoMode},
-    tpool::ThreadPool,
+    refine::Refine,
+    src::{Src, SrcAlias},
 };
 
-impl SrcMgr {
-    #[tracing::instrument(name = "srcm-add", level = "trace", skip_all)]
-    pub async fn create(
-        &self,
-        tpool: &ThreadPool,
-        alias: String,
+impl Refine {
+    #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
+    pub async fn create_src(
+        &mut self,
+        alias: SrcAlias,
         data_version: String,
         data_base_url: String,
         make_default: bool,
-        src_mode: SrcInfoMode,
-    ) -> Result<SrcInfo, CreateSrcError> {
+    ) -> Result<Src<'_>, CreateSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Disallow creating of sources with the same name until this one is created/fails
         if !self.check_alias_availability(&alias).await {
@@ -27,48 +26,60 @@ impl SrcMgr {
         let alias_cloned = alias.clone();
         let cache_folder_cloned = self.cache_folder.clone();
         let sync_span = tracing::trace_span!("sync");
-        let result = tpool
+        let result = self
+            .tpool
             .heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                create_core_src(alias_cloned, data_base_url, data_version, cache_folder_cloned).map(|core_src| {
-                    let src_info = SrcInfo::from_core(core_src.get_info(), src_mode);
-                    let src = Src::from_core(core_src);
-                    (src, src_info)
-                })
+                create_core_src(alias_cloned, data_base_url, data_version, cache_folder_cloned).map(Arc::new)
             })
             .await;
         // Write results and unlock alias
-        let result = match result {
-            Ok((src, src_info)) => {
+        match result {
+            Ok(core_src) => {
                 if make_default {
-                    *self.default_alias.write().await = Some(alias.clone())
+                    *self.default_src_alias.write().await = Some(alias.clone())
                 };
-                self.alias_src_map.write().await.insert(alias.clone(), src);
-                Ok(src_info)
+                self.core_src_map.write().await.insert(alias.clone(), core_src.clone());
+                self.unlock_alias(&alias).await;
+                Ok(Src::new(self, alias, core_src))
             }
-            Err(e) => Err(e),
-        };
-        self.unlock_alias(&alias).await;
-        result
+            Err(e) => {
+                self.unlock_alias(&alias).await;
+                Err(e)
+            }
+        }
     }
-    async fn check_alias_availability(&self, alias: &str) -> bool {
-        !self.alias_src_map.read().await.contains_key(alias) && !self.locked_aliases.read().await.contains(alias)
+    async fn check_alias_availability(&self, alias: &SrcAlias) -> bool {
+        !self.core_src_map.read().await.contains_key(alias) && !self.locked_src_aliases.read().await.contains(alias)
     }
-    async fn lock_alias(&self, alias: &str) {
+    async fn lock_alias(&self, alias: &SrcAlias) {
         tracing::trace!("locking alias \"{alias}\"");
-        self.locked_aliases.write().await.insert(alias.into());
+        self.locked_src_aliases.write().await.insert(alias.clone());
     }
-    async fn unlock_alias(&self, alias: &str) {
+    async fn unlock_alias(&self, alias: &SrcAlias) {
         tracing::trace!("unlocking alias \"{alias}\"");
-        if !self.locked_aliases.write().await.remove(alias) {
+        if !self.locked_src_aliases.write().await.remove(alias) {
             tracing::warn!("attempt to unlock alias which is not locked")
         }
     }
 }
 
+#[derive(thiserror::Error, Debug)]
+pub enum CreateSrcError {
+    #[error("alias \"{0}\" already exists")]
+    SrcAliasNotAvailable(SrcAlias),
+    #[error("EVE data handler initialization failed: {0}")]
+    EdhInitFailed(String),
+    #[error("source initialization failed: {0}")]
+    SrcInitFailed(String),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sync processing
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
-    alias: String,
+    alias: SrcAlias,
     data_base_url: String,
     data_version: String,
     cache_folder: Option<String>,
@@ -78,7 +89,7 @@ fn create_core_src(
             .map_err(|e| CreateSrcError::EdhInitFailed(e.to_string()))?,
     );
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
-        Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias))),
+        Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias.into_string()))),
         None => None,
     };
     tracing::info!(
@@ -136,14 +147,4 @@ fn log_warnings(core_src: &rc::Src) {
             tracing::warn!("{}", warning);
         });
     }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum CreateSrcError {
-    #[error("unable to create source: source with alias \"{0}\" already exists")]
-    SrcAliasNotAvailable(String),
-    #[error("EVE data handler initialization failed: {0}")]
-    EdhInitFailed(String),
-    #[error("source initialization failed: {0}")]
-    SrcInitFailed(String),
 }

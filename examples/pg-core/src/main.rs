@@ -27,7 +27,7 @@ fn setup_logger() -> () {
         version = 2,
         r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
     );
-    // We always log warnings and higher to stdout
+    // Always log warnings and higher to stdout
     let stdout_log = tracing_subscriber::fmt::layer()
         .with_writer(std::io::stdout.with_max_level(tracing::Level::TRACE))
         .with_ansi(true)
@@ -36,13 +36,7 @@ fn setup_logger() -> () {
         .pretty();
     tracing_subscriber::registry()
         .with(stdout_log)
-        .with(
-            tracing_subscriber::filter::Targets::new()
-                .with_default(tracing::Level::INFO)
-                .with_target("refine_core", tracing::Level::TRACE)
-                .with_target("refine_dh_eve", tracing::Level::TRACE)
-                .with_target("refine_dh_adapted", tracing::Level::TRACE),
-        )
+        .with(tracing_subscriber::filter::Targets::new().with_default(tracing::Level::INFO))
         .init();
 }
 
