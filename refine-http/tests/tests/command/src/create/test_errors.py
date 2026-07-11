@@ -37,7 +37,7 @@ def test_data_types_key_prefix(client, log):
     eve_item2_id = client.mk_eve_item(grp_id=eve_group_id)
     warning = f'failed to fetch EItem: failed to cast key "str{eve_item1_id}" to integer'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
-    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -58,7 +58,7 @@ def test_data_types_value_array(client, log):
     eve_item2_id = client.mk_eve_item(grp_id=eve_group_id)
     warning = f're:failed to fetch EItem: failed to parse value with key "{eve_item1_id}":.+'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
-    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -100,8 +100,8 @@ def test_data_typedogma_key_prefix(client, log):
     client.create_sources(
         hook_data_prim=hook_data_prim,
         json_predicate={'warnings': {'eve_data_fetch': [warning1, warning2]}})
-    log.wait_log_entry(msg=warning1, level='WARN', span='srcmgr-add:sync:edh')
-    log.wait_log_entry(msg=warning2, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning1, level='WARN', span='srcm-add:sync:edh')
+    log.wait_log_entry(msg=warning2, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_item2 = api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -130,8 +130,8 @@ def test_data_typedogma_value_string(client, log):
     client.create_sources(
         hook_data_prim=hook_data_prim,
         json_predicate={'warnings': {'eve_data_fetch': [warning1, warning2]}})
-    log.wait_log_entry(msg=warning1, level='WARN', span='srcmgr-add:sync:edh')
-    log.wait_log_entry(msg=warning2, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning1, level='WARN', span='srcm-add:sync:edh')
+    log.wait_log_entry(msg=warning2, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item1 = api_sol.add_sw_effect(type_id=eve_item1_id)
     api_item2 = api_sol.add_sw_effect(type_id=eve_item2_id)
@@ -176,7 +176,7 @@ def test_data_dogmaattributes_key_suffix(client, log):
     eve_item_id = client.mk_eve_item(attrs={eve_attr2_id: 5})
     warning = f'failed to fetch EAttr: failed to cast key "{eve_attr1_id}suf" to integer'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
-    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item = api_sol.add_sw_effect(type_id=eve_item_id)
     # Verification - malformed attribute entry did not prevent other attributes from being processed
@@ -193,7 +193,7 @@ def test_data_dogmaattributes_value_null(client, log):
     eve_item_id = client.mk_eve_item(attrs={eve_attr2_id: 5})
     warning = f're:failed to fetch EAttr: failed to parse value with key "{eve_attr1_id}":.+'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
-    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item = api_sol.add_sw_effect(type_id=eve_item_id)
     # Verification - malformed attribute entry did not prevent other attributes from being processed
@@ -228,7 +228,7 @@ def test_data_dogmaeffects_key_symbols(client, log):
     eve_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
     warning = 'failed to fetch EEffect: failed to cast key "#&!" to integer'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
-    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item = api_sol.add_sw_effect(type_id=eve_item_id)
     # Verification - malformed effect entry did not prevent other effects from being processed
@@ -245,7 +245,7 @@ def test_data_dogmaeffects_value_required_absent(client, log):
     eve_item_id = client.mk_eve_item(eff_ids=[eve_effect2_id])
     warning = f're:failed to fetch EEffect: failed to parse value with key "{eve_effect1_id}":.+'
     client.create_sources(hook_data_prim=hook_data_prim, json_predicate={'warnings': {'eve_data_fetch': [warning]}})
-    log.wait_log_entry(msg=warning, level='WARN', span='srcmgr-add:sync:edh')
+    log.wait_log_entry(msg=warning, level='WARN', span='srcm-add:sync:edh')
     api_sol = client.create_sol()
     api_item = api_sol.add_sw_effect(type_id=eve_item_id)
     # Verification - malformed effect entry did not prevent other effects from being processed

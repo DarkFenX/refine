@@ -49,9 +49,7 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
         .with(
             Targets::new()
                 .with_default(None)
-                .with_target("refine_core", Level::TRACE)
-                .with_target("refine_dh_eve", Level::TRACE)
-                .with_target("refine_dh_adapted", Level::TRACE)
+                .with_target("refine_rs", Level::TRACE)
                 .with_target("refine_http", Level::TRACE),
         )
         .init();
