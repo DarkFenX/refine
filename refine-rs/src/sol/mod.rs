@@ -5,3 +5,4 @@ pub(crate) use sol::SolarSystemInner;
 mod id;
 mod refine_create_sol;
 mod sol;
+mod sol_remove;

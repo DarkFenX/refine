@@ -9,7 +9,7 @@ use crate::{refine::Refine, sol::SolarSystemId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SolarSystem<'a> {
     pub(super) refine: &'a mut Refine,
-    id: SolarSystemId,
+    pub(super) id: SolarSystemId,
     inner: Arc<Mutex<SolarSystemInner>>,
 }
 impl<'a> SolarSystem<'a> {
@@ -43,5 +43,8 @@ impl SolarSystemInner {
             accessed: chrono::Utc::now(),
             core_sol: Some(Box::new(core_sol)),
         }
+    }
+    pub(super) fn touch(&mut self) {
+        self.accessed = chrono::Utc::now();
     }
 }
