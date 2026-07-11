@@ -5,6 +5,7 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
+redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-file"] }
 rs = { package = "refine-rs", path = "../../refine-rs" }
 chrono = ">=0.4.45"
 time = { version = ">=0.3.49", features = ["macros"] }

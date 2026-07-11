@@ -1,4 +1,5 @@
 pub use info::{SrcInfo, SrcInfoMode};
+pub use rc::ed::EveDataHandler;
 pub use refine::Refine;
 pub use src::{Src, SrcAlias};
 

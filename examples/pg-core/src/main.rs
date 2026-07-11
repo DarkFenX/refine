@@ -43,10 +43,8 @@ fn setup_logger() -> () {
 fn main() {
     setup_logger();
     let edh: Box<dyn EveDataHandler> = Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let mut adc: Box<dyn AdaptedDataCacher> = Box::new(radc::JsonZfileAdc::new(
-        PathBuf::from("/home/dfx/Workspace/eve/refine/examples/playground/cache/"),
-        "tq".to_string(),
-    ));
+    let mut adc: Box<dyn AdaptedDataCacher> =
+        Box::new(radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()));
     // test_random(&edh, &mut adc);
     test_crusader(&edh, &mut adc);
     // test_nphoon(&edh, &mut adc);

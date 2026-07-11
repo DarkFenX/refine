@@ -12,8 +12,7 @@ impl Refine {
     pub async fn create_src(
         &mut self,
         alias: SrcAlias,
-        data_version: String,
-        data_base_url: String,
+        ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
         make_default: bool,
     ) -> Result<Src<'_>, CreateSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
@@ -31,7 +30,7 @@ impl Refine {
             .heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                create_core_src(alias_cloned, data_base_url, data_version, cache_folder_cloned).map(Arc::new)
+                create_core_src(alias_cloned, ed_handler, cache_folder_cloned).map(Arc::new)
             })
             .await;
         // Write results and unlock alias
@@ -80,28 +79,23 @@ pub enum CreateSrcError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
     alias: SrcAlias,
-    data_base_url: String,
-    data_version: String,
+    ed_handler: Box<dyn rc::ed::EveDataHandler>,
     cache_folder: Option<String>,
 ) -> Result<rc::Src, CreateSrcError> {
-    let edh: Box<dyn rc::ed::EveDataHandler> = Box::new(
-        redh::PhbHttpEdh::try_new(data_base_url.as_str(), data_version)
-            .map_err(|e| CreateSrcError::EdhInitFailed(e.to_string()))?,
-    );
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
         Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias.into_string()))),
         None => None,
     };
     tracing::info!(
         "initializing new source with {:?} and {}",
-        edh,
+        ed_handler,
         match adc.as_ref() {
             Some(adc) => format!("{:?}", adc),
             None => "no caching".to_string(),
         }
     );
     let core_src =
-        rc::Src::new(edh.as_ref(), adc.as_mut()).map_err(|e| CreateSrcError::SrcInitFailed(e.to_string()))?;
+        rc::Src::new(ed_handler.as_ref(), adc.as_mut()).map_err(|e| CreateSrcError::SrcInitFailed(e.to_string()))?;
     log_warnings(&core_src);
     Ok(core_src)
 }

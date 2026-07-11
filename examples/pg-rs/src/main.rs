@@ -21,18 +21,16 @@ fn setup_logger() -> () {
         .with(
             tracing_subscriber::filter::Targets::new()
                 .with_default(tracing::Level::INFO)
-                .with_target("refine_core", tracing::Level::TRACE)
-                .with_target("refine_dh_eve", tracing::Level::TRACE)
-                .with_target("refine_dh_adapted", tracing::Level::TRACE),
+                .with_target("refine_rs", tracing::Level::TRACE),
         )
         .init();
 }
 
 #[tokio::main]
 async fn main() {
-    let mut refine = Refine::new(None, 2, 4);
-    let src = refine
-        .create_src("tq".into(), "111".to_string(), "bad_url".to_string(), true)
-        .await;
-    println!("{}", src.err().unwrap());
+    setup_logger();
+    let mut refine = Refine::new(Some(String::from("./cache/")), 2, 4);
+    let edh: Box<dyn rs::EveDataHandler + Send> =
+        Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
+    let src = refine.create_src("tq".into(), edh, true).await;
 }
