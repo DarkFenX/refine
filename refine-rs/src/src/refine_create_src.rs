@@ -96,8 +96,36 @@ fn create_core_src(
     );
     let core_src =
         rc::Src::new(ed_handler.as_ref(), adc.as_mut()).map_err(|e| CreateSrcError::SrcInitFailed(e.to_string()))?;
+
+    log_reason(&core_src);
     log_warnings(&core_src);
     Ok(core_src)
+}
+
+fn log_reason(core_src: &rc::Src) {
+    match &core_src.get_info().origin {
+        rc::src::SrcOrigin::Generated(reason) => {
+            let prefix = "source data was generated";
+            match reason {
+                rc::src::SrcOriginGeneratedReason::NoCacher => {
+                    tracing::info!("{prefix}: caching is disabled")
+                }
+                rc::src::SrcOriginGeneratedReason::NoEveDataVersion(msg) => {
+                    tracing::info!("{prefix}: caching is disabled: {msg}")
+                }
+                rc::src::SrcOriginGeneratedReason::NoCachedFingerprint(msg) => {
+                    tracing::info!("{prefix}: cannot get cached fingerprint: {msg}")
+                }
+                rc::src::SrcOriginGeneratedReason::FingerprintMismatch(msg) => {
+                    tracing::info!("{prefix}: fingerprint mismatch: {msg}")
+                }
+                rc::src::SrcOriginGeneratedReason::CacheLoadFailed(msg) => {
+                    tracing::info!("{prefix}: failed to load cache: {msg}")
+                }
+            }
+        }
+        rc::src::SrcOrigin::Cached(_) => tracing::info!("source data was loaded from cache"),
+    }
 }
 
 fn log_warnings(core_src: &rc::Src) {
