@@ -1,10 +1,16 @@
+use std::sync::Arc;
+
 use crate::{
     refine::Refine,
-    src::{Src, SrcAlias},
+    src::{Src, SrcAlias, SrcInner},
 };
 
 impl Refine {
     pub async fn get_src(&mut self, alias: Option<SrcAlias>) -> Result<Src<'_>, GetSrcError> {
+        let inner_src = self.internal_get_inner_src(alias).await?;
+        Ok(Src::new(self, inner_src))
+    }
+    pub(crate) async fn internal_get_inner_src(&self, alias: Option<SrcAlias>) -> Result<SrcInner, GetSrcError> {
         let alias = match alias {
             Some(alias) => alias,
             None => match self.default_src_alias.read().await.as_ref() {
@@ -12,11 +18,23 @@ impl Refine {
                 None => return Err(GetSrcError::DefaultNotDefined),
             },
         };
-        let core_src = match self.core_src_map.read().await.get(&alias) {
-            Some(core_src) => core_src.clone(),
-            None => return Err(GetSrcError::SrcNotFound(alias)),
+        match self.core_src_map.read().await.get(&alias) {
+            Some(core_src) => Ok(SrcInner::new(alias, core_src.clone())),
+            None => Err(GetSrcError::SrcNotFound(alias)),
+        }
+    }
+    pub(crate) async fn internal_get_core_src(&self, alias: Option<SrcAlias>) -> Result<Arc<rc::Src>, GetSrcError> {
+        let alias = match alias {
+            Some(alias) => alias,
+            None => match self.default_src_alias.read().await.as_ref() {
+                Some(alias) => alias.clone(),
+                None => return Err(GetSrcError::DefaultNotDefined),
+            },
         };
-        Ok(Src::new(self, alias, core_src))
+        match self.core_src_map.read().await.get(&alias) {
+            Some(core_src) => Ok(core_src.clone()),
+            None => Err(GetSrcError::SrcNotFound(alias)),
+        }
     }
 }
 

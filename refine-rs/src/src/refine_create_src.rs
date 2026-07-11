@@ -4,7 +4,7 @@ use tokio_rayon::AsyncThreadPool;
 
 use crate::{
     refine::Refine,
-    src::{Src, SrcAlias},
+    src::{Src, SrcAlias, SrcInner},
 };
 
 impl Refine {
@@ -41,7 +41,7 @@ impl Refine {
                 };
                 self.core_src_map.write().await.insert(alias.clone(), core_src.clone());
                 self.unlock_alias(&alias).await;
-                Ok(Src::new(self, alias, core_src))
+                Ok(Src::new(self, SrcInner::new(alias, core_src)))
             }
             Err(e) => {
                 self.unlock_alias(&alias).await;

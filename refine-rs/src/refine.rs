@@ -3,9 +3,13 @@ use std::{
     sync::Arc,
 };
 
-use tokio::sync::RwLock;
+use tokio::sync::{Mutex, RwLock};
 
-use crate::{src::SrcAlias, tpool::ThreadPool};
+use crate::{
+    sol::{SolarSystemId, SolarSystemInner},
+    src::SrcAlias,
+    tpool::ThreadPool,
+};
 
 pub struct Refine {
     pub(crate) tpool: ThreadPool,
@@ -14,6 +18,8 @@ pub struct Refine {
     pub(super) core_src_map: RwLock<HashMap<SrcAlias, Arc<rc::Src>>>,
     pub(super) default_src_alias: RwLock<Option<SrcAlias>>,
     pub(super) locked_src_aliases: RwLock<HashSet<SrcAlias>>,
+    // Sol-related fields
+    pub(super) id_sol_map: RwLock<HashMap<SolarSystemId, Arc<Mutex<SolarSystemInner>>>>,
 }
 impl Refine {
     pub fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
@@ -23,6 +29,7 @@ impl Refine {
             core_src_map: RwLock::new(HashMap::new()),
             default_src_alias: RwLock::new(None),
             locked_src_aliases: RwLock::new(HashSet::new()),
+            id_sol_map: RwLock::new(HashMap::new()),
         }
     }
 }

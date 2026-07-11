@@ -1,4 +1,7 @@
-mod mgr;
-mod sol_guarded;
-mod sol_id;
-mod sol_inner;
+pub use id::SolarSystemId;
+pub use sol::SolarSystem;
+pub(crate) use sol::SolarSystemInner;
+
+mod id;
+mod refine_create_sol;
+mod sol;

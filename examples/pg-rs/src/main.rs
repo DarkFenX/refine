@@ -32,5 +32,6 @@ async fn main() {
     let mut refine = Refine::new(Some(String::from("./cache/")), 2, 4);
     let edh: Box<dyn rs::EveDataHandler + Send> =
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let src = refine.create_src("tq".into(), edh, true).await;
+    refine.create_src("tq".into(), edh, true).await.unwrap();
+    let sol = refine.create_sol(None).await.unwrap();
 }

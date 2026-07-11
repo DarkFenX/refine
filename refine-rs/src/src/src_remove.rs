@@ -17,6 +17,6 @@ impl Refine {
 
 impl Src<'_> {
     pub async fn remove(self) {
-        self.refine.remove_src(self.alias).await;
+        self.refine.remove_src(self.inner.alias).await;
     }
 }

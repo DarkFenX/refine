@@ -49,6 +49,7 @@ pub struct SrcWarnings {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub cache_write: Option<String>,
 }
+#[cfg(feature = "serde")]
 impl SrcWarnings {
     fn is_empty(&self) -> bool {
         self.eve_data_fetch.is_empty()
