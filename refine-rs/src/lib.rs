@@ -1,4 +1,4 @@
-pub use cmd::CreateSolCmd;
+pub use cmd::{ChangedItemIdsResp, CmdResp, CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp};
 pub use info::{SrcInfo, SrcInfoMode};
 pub use rc::{
     BreacherProfile, Count, DpsProfile, FitId, Fleet, FleetId, ItemId, NpcProp, OptionalReload, PValue, RearmMinion,

@@ -1,0 +1,28 @@
+use crate::cmd::{CreatedFleetIdResp, basic::FleetCreateCmdFCtxRIds};
+
+#[derive(Default)]
+pub struct CreateFleetCmd {
+    basic: FleetCreateCmdFCtxRIds,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CreateFleetCmd {
+    pub fn new() -> Self {
+        CreateFleetCmd::default()
+    }
+    pub fn fit_ids(mut self, fit_ids: impl ExactSizeIterator<Item = rc::FitId>) -> Self {
+        self.basic.fit_ids.extend(fit_ids);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CreateFleetCmd {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFleetIdResp, HExecError> {
+        self.basic.execute(core_sol)
+    }
+}
