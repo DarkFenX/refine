@@ -4,10 +4,10 @@ use tokio::sync::{Mutex, RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use crate::sol::{SolarSystemId, SolarSystemInner};
 
-pub(crate) struct SolMap {
+pub(crate) struct GuardedSolMap {
     inner: RwLock<HashMap<SolarSystemId, Arc<Mutex<SolarSystemInner>>>>,
 }
-impl SolMap {
+impl GuardedSolMap {
     pub(crate) fn new() -> Self {
         Self {
             inner: RwLock::new(HashMap::new()),

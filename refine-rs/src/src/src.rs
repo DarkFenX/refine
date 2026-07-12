@@ -7,7 +7,7 @@ use crate::{refine::Refine, src::SrcAlias};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Src<'a> {
     pub(super) refine: &'a mut Refine,
-    pub(super) inner: SrcInner,
+    pub(super) inner: Arc<SrcInner>,
 }
 impl<'a> Src<'a> {
     pub fn get_alias(&self) -> &SrcAlias {
@@ -15,7 +15,7 @@ impl<'a> Src<'a> {
     }
 }
 impl<'a> Src<'a> {
-    pub(super) fn new(refine: &'a mut Refine, inner: SrcInner) -> Self {
+    pub(super) fn new(refine: &'a mut Refine, inner: Arc<SrcInner>) -> Self {
         Self { refine, inner }
     }
 }
@@ -30,5 +30,8 @@ pub(crate) struct SrcInner {
 impl SrcInner {
     pub(super) fn new(alias: SrcAlias, core_src: Arc<rc::Src>) -> Self {
         Self { alias, core_src }
+    }
+    pub(crate) fn get_core(&self) -> &Arc<rc::Src> {
+        &self.core_src
     }
 }

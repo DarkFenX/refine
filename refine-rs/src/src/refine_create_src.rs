@@ -30,20 +30,21 @@ impl Refine {
             .heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
-                create_core_src(alias_cloned, ed_handler, cache_folder_cloned).map(Arc::new)
+                create_core_src(&alias_cloned, ed_handler, cache_folder_cloned)
+                    .map(|core_src| Arc::new(SrcInner::new(alias_cloned, Arc::new(core_src))))
             })
             .await;
         // Write results and unlock alias
         match result {
-            Ok(core_src) => {
+            Ok(inner_src) => {
                 let mut alias_data = self.src_alias_data.write().await;
-                alias_data.map.insert(alias.clone(), core_src.clone());
+                alias_data.map.insert(alias.clone(), inner_src.clone());
                 if make_default {
-                    alias_data.default = Some(alias.clone());
+                    alias_data.default = Some(inner_src.clone());
                 }
                 drop(alias_data);
                 self.unlock_alias(&alias).await;
-                Ok(Src::new(self, SrcInner::new(alias, core_src)))
+                Ok(Src::new(self, inner_src))
             }
             Err(e) => {
                 self.unlock_alias(&alias).await;
@@ -80,12 +81,12 @@ pub enum CreateSrcError {
 // Sync processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
-    alias: SrcAlias,
+    alias: &SrcAlias,
     ed_handler: Box<dyn rc::ed::EveDataHandler>,
     cache_folder: Option<String>,
 ) -> Result<rc::Src, CreateSrcError> {
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
-        Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias.into_string()))),
+        Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias.into()))),
         None => None,
     };
     tracing::info!(

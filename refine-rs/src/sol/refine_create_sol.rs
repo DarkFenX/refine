@@ -14,10 +14,10 @@ impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
     pub async fn create_sol(
         &mut self,
-        src_alias: Option<SrcAlias>,
+        src_alias: Option<&SrcAlias>,
         cmd: SolAddCmd,
     ) -> Result<SolarSystem<'_>, CreateSolError> {
-        let core_src = self.internal_get_core_src(src_alias).await?;
+        let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
         let sync_span = tracing::trace_span!("sync");
         let guarded_inner_sol = self
             .tpool

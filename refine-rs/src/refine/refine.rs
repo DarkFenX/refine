@@ -1,6 +1,6 @@
 use super::tpool::ThreadPool;
 use crate::{
-    sol::SolMap,
+    sol::GuardedSolMap,
     src::{GuardedSrcAliasData, GuardedSrcAliasLocks},
 };
 
@@ -11,7 +11,7 @@ pub struct Refine {
     pub(crate) src_alias_data: GuardedSrcAliasData,
     pub(crate) src_alias_locks: GuardedSrcAliasLocks,
     // Sol-related fields
-    pub(crate) id_sol_map: SolMap,
+    pub(crate) id_sol_map: GuardedSolMap,
 }
 impl Refine {
     pub fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
@@ -20,7 +20,7 @@ impl Refine {
             cache_folder,
             src_alias_data: GuardedSrcAliasData::new(),
             src_alias_locks: GuardedSrcAliasLocks::new(),
-            id_sol_map: SolMap::new(),
+            id_sol_map: GuardedSolMap::new(),
         }
     }
 }

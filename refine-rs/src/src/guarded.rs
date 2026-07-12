@@ -5,7 +5,7 @@ use std::{
 
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-use crate::src::SrcAlias;
+use crate::src::{SrcAlias, SrcInner};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alias data
@@ -28,8 +28,8 @@ impl GuardedSrcAliasData {
 }
 
 pub(super) struct SrcAliasData {
-    pub(super) map: HashMap<SrcAlias, Arc<rc::Src>>,
-    pub(super) default: Option<SrcAlias>,
+    pub(super) map: HashMap<SrcAlias, Arc<SrcInner>>,
+    pub(super) default: Option<Arc<SrcInner>>,
 }
 impl SrcAliasData {
     fn new() -> Self {
