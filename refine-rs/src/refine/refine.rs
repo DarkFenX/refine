@@ -1,10 +1,6 @@
-use std::{collections::HashMap, sync::Arc};
-
-use tokio::sync::{Mutex, RwLock};
-
 use super::tpool::ThreadPool;
 use crate::{
-    sol::{SolarSystemId, SolarSystemInner},
+    sol::SolMap,
     src::{SrcAliasData, SrcAliasLocks},
 };
 
@@ -15,7 +11,7 @@ pub struct Refine {
     pub(crate) src_alias_data: SrcAliasData,
     pub(crate) src_alias_locks: SrcAliasLocks,
     // Sol-related fields
-    pub(crate) id_sol_map: RwLock<HashMap<SolarSystemId, Arc<Mutex<SolarSystemInner>>>>,
+    pub(crate) id_sol_map: SolMap,
 }
 impl Refine {
     pub fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
@@ -24,7 +20,7 @@ impl Refine {
             cache_folder,
             src_alias_data: SrcAliasData::new(),
             src_alias_locks: SrcAliasLocks::new(),
-            id_sol_map: RwLock::new(HashMap::new()),
+            id_sol_map: SolMap::new(),
         }
     }
 }

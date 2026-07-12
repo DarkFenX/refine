@@ -6,7 +6,7 @@ use crate::{
 impl Refine {
     #[tracing::instrument(name = "sol-rm", level = "trace", skip_all)]
     async fn remove_sol(&mut self, id: SolarSystemId) {
-        self.id_sol_map.write().await.remove(&id);
+        self.id_sol_map.inner.write().await.remove(&id);
     }
 }
 

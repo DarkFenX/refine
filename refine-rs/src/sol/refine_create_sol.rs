@@ -29,7 +29,7 @@ impl Refine {
             })
             .await;
         let mut id = SolarSystemId::new();
-        let mut map_lock = self.id_sol_map.write().await;
+        let mut map_lock = self.id_sol_map.inner.write().await;
         while map_lock.contains_key(&id) {
             id = SolarSystemId::new();
         }
