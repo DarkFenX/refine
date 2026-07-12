@@ -29,9 +29,17 @@ fn setup_logger() -> () {
 #[tokio::main]
 async fn main() {
     setup_logger();
+    // Initial setup
     let mut refine = Refine::new(Some(String::from("./cache/")), 2, 4);
     let edh: Box<dyn rs::EveDataHandler + Send> =
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     refine.create_src("tq".into(), edh, true).await.unwrap();
-    let sol = refine.create_sol(None, rs::SolAddCmd::new()).await.unwrap();
+    // Main part
+    let sol = refine
+        .create_sol(None, rs::SolAddCmd::new().sec_zone(rs::SecZone::WSpace))
+        .await
+        .unwrap();
+    // Cleanup
+    sol.remove();
+    refine.get_src(None).await.unwrap().remove().await;
 }
