@@ -1,22 +1,22 @@
-use std::{collections::HashMap, sync::Arc};
+use std::collections::HashMap;
 
-use tokio::sync::{Mutex, RwLock, RwLockReadGuard, RwLockWriteGuard};
+use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-use crate::sol::{SolarSystemId, SolarSystemInner};
+use crate::sol::{SolarSystemId, SolarSystemInnerGuarded};
 
-pub(crate) struct GuardedSolMap {
-    inner: RwLock<HashMap<SolarSystemId, Arc<Mutex<SolarSystemInner>>>>,
+pub(crate) struct SolMapGuarded {
+    inner: RwLock<HashMap<SolarSystemId, SolarSystemInnerGuarded>>,
 }
-impl GuardedSolMap {
+impl SolMapGuarded {
     pub(crate) fn new() -> Self {
         Self {
             inner: RwLock::new(HashMap::new()),
         }
     }
-    pub(super) async fn read(&self) -> RwLockReadGuard<'_, HashMap<SolarSystemId, Arc<Mutex<SolarSystemInner>>>> {
+    pub(super) async fn read(&self) -> RwLockReadGuard<'_, HashMap<SolarSystemId, SolarSystemInnerGuarded>> {
         self.inner.read().await
     }
-    pub(super) async fn write(&self) -> RwLockWriteGuard<'_, HashMap<SolarSystemId, Arc<Mutex<SolarSystemInner>>>> {
+    pub(super) async fn write(&self) -> RwLockWriteGuard<'_, HashMap<SolarSystemId, SolarSystemInnerGuarded>> {
         self.inner.write().await
     }
 }

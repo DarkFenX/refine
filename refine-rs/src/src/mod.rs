@@ -1,5 +1,5 @@
 pub use alias::SrcAlias;
-pub(crate) use containers::{GuardedSrcAliasData, GuardedSrcAliasLocks};
+pub(crate) use containers::{SrcAliasDataGuarded, SrcAliasLocksGuarded};
 pub use refine_create_src::CreateSrcError;
 pub use refine_get_src::GetSrcError;
 pub use src::Src;

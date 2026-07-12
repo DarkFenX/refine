@@ -7,10 +7,10 @@ use crate::src::{SrcAlias, SrcInnerGuarded};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alias data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) struct GuardedSrcAliasData {
+pub(crate) struct SrcAliasDataGuarded {
     inner: RwLock<SrcAliasData>,
 }
-impl GuardedSrcAliasData {
+impl SrcAliasDataGuarded {
     pub(crate) fn new() -> Self {
         Self {
             inner: RwLock::new(SrcAliasData::new()),
@@ -40,10 +40,10 @@ impl SrcAliasData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Locked aliases
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) struct GuardedSrcAliasLocks {
+pub(crate) struct SrcAliasLocksGuarded {
     inner: RwLock<HashSet<SrcAlias>>,
 }
-impl GuardedSrcAliasLocks {
+impl SrcAliasLocksGuarded {
     pub(crate) fn new() -> Self {
         Self {
             inner: RwLock::new(HashSet::new()),
