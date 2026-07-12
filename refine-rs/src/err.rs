@@ -1,5 +1,5 @@
 pub use crate::{
-    cmd::CreateFleetError,
+    cmd::{BackrefRenderError, CreateFleetError},
     sol::{CreateSolError, GetSolError, RemoveSolError},
     src::{CreateSrcError, GetSrcError, RemoveSrcError},
 };

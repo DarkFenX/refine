@@ -1,6 +1,10 @@
-use crate::cmd::CreatedFleetIdResp;
+use crate::cmd::{BackrefRenderError, CmdResps, CreatedFleetIdResp, FitIdBackref};
 
 // Commands with full context
+pub(in crate::cmd) struct FleetCreateCmdFCtxBIds {
+    fit_ids: Vec<FitIdBackref>,
+}
+
 #[derive(Default)]
 pub(in crate::cmd) struct FleetCreateCmdFCtxRIds {
     pub(in crate::cmd) fit_ids: Vec<rc::FitId>,
@@ -9,6 +13,13 @@ pub(in crate::cmd) struct FleetCreateCmdFCtxRIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetCreateCmdFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<FleetCreateCmdFCtxRIds, BackrefRenderError> {
+        Ok(FleetCreateCmdFCtxRIds {
+            fit_ids: resps.render_fit_ids(self.fit_ids)?,
+        })
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
