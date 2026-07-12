@@ -1,4 +1,4 @@
-use crate::cmd::{CreatedFleetIdResp, basic::FleetCreateCmdFCtxRIds};
+use crate::cmd::{CreateFleetError, CreatedFleetIdResp, basic::FleetCreateCmdFCtxRIds};
 
 #[derive(Default)]
 pub struct CreateFleetCmd {
@@ -22,7 +22,7 @@ impl CreateFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CreateFleetCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFleetIdResp, HExecError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFleetIdResp, CreateFleetError> {
         self.basic.execute(core_sol)
     }
 }
