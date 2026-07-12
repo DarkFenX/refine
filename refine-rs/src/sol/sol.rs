@@ -36,8 +36,31 @@ impl SolarSystemInnerGuarded {
     fn try_lock(&self) -> Result<MutexGuard<'_, SolarSystemInner>, TryLockError> {
         self.0.try_lock()
     }
-    async fn lock(&self) -> MutexGuard<'_, SolarSystemInner> {
-        self.0.lock().await
+    // Like regular lock, but updates timestamp on inner sol during drop
+    async fn lock_touch(&self) -> TouchingMutexGuard<'_> {
+        TouchingMutexGuard {
+            guard: self.0.lock().await,
+        }
+    }
+}
+
+struct TouchingMutexGuard<'a> {
+    guard: MutexGuard<'a, SolarSystemInner>,
+}
+impl<'a> Drop for TouchingMutexGuard<'a> {
+    fn drop(&mut self) {
+        self.guard.accessed = chrono::Utc::now();
+    }
+}
+impl<'a> std::ops::Deref for TouchingMutexGuard<'a> {
+    type Target = SolarSystemInner;
+    fn deref(&self) -> &Self::Target {
+        &self.guard
+    }
+}
+impl<'a> std::ops::DerefMut for TouchingMutexGuard<'a> {
+    fn deref_mut(&mut self) -> &mut Self::Target {
+        &mut self.guard
     }
 }
 
