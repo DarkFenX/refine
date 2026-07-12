@@ -5,17 +5,17 @@ use crate::{refine::Refine, src::SrcAlias};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct Src<'a> {
-    pub(super) refine: &'a Refine,
+pub struct Src<'r> {
+    pub(super) refine: &'r Refine,
     pub(super) inner: SrcInnerGuarded,
 }
-impl<'a> Src<'a> {
+impl<'r> Src<'r> {
     pub fn get_alias(&self) -> &SrcAlias {
         &self.inner.get_alias()
     }
 }
-impl<'a> Src<'a> {
-    pub(super) fn new(refine: &'a Refine, inner: SrcInnerGuarded) -> Self {
+impl<'r> Src<'r> {
+    pub(super) fn new(refine: &'r Refine, inner: SrcInnerGuarded) -> Self {
         Self { refine, inner }
     }
 }

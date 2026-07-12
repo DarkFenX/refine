@@ -10,7 +10,7 @@ use crate::{
 impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
     pub async fn create_sol(
-        &mut self,
+        &self,
         src_alias: Option<&SrcAlias>,
         cmd: SolAddCmd,
     ) -> Result<SolarSystem<'_>, CreateSolError> {

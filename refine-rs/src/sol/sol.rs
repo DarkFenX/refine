@@ -7,19 +7,19 @@ use crate::{refine::Refine, sol::SolarSystemId};
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct SolarSystem<'a> {
-    pub(super) refine: &'a mut Refine,
+pub struct SolarSystem<'r> {
+    pub(super) refine: &'r Refine,
     pub(super) id: SolarSystemId,
     inner: SolarSystemInnerGuarded,
 }
-impl<'a> SolarSystem<'a> {
+impl<'r> SolarSystem<'r> {
     pub fn get_id(&self) -> SolarSystemId {
         self.id
     }
 }
 // Private part
-impl<'a> SolarSystem<'a> {
-    pub(super) fn new(refine: &'a mut Refine, id: SolarSystemId, inner: SolarSystemInnerGuarded) -> Self {
+impl<'r> SolarSystem<'r> {
+    pub(super) fn new(refine: &'r Refine, id: SolarSystemId, inner: SolarSystemInnerGuarded) -> Self {
         Self { refine, id, inner }
     }
 }
@@ -49,7 +49,7 @@ struct TouchingMutexGuard<'a> {
 }
 impl<'a> Drop for TouchingMutexGuard<'a> {
     fn drop(&mut self) {
-        self.guard.accessed = chrono::Utc::now();
+        self.guard.touch();
     }
 }
 impl<'a> std::ops::Deref for TouchingMutexGuard<'a> {
@@ -78,7 +78,7 @@ impl SolarSystemInner {
             core_sol: Some(Box::new(core_sol)),
         }
     }
-    pub(super) fn touch(&mut self) {
+    fn touch(&mut self) {
         self.accessed = chrono::Utc::now();
     }
 }
