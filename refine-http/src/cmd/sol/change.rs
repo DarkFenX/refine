@@ -9,9 +9,9 @@ use crate::{
             HCharacterUnsetCmdFCtxBIds, HCharacterUnsetCmdFCtxRIds, HChargeChangeCmdFCtxBIds, HChargeChangeCmdFCtxRIds,
             HDroneAddCmdFCtxBIds, HDroneAddCmdFCtxRIds, HDroneChangeCmdFCtxBIds, HDroneChangeCmdFCtxRIds,
             HFighterAddCmdFCtxBIds, HFighterAddCmdFCtxRIds, HFighterChangeCmdFCtxBIds, HFighterChangeCmdFCtxRIds,
-            HFitAddCmdFCtxBIds, HFitAddCmdFCtxRIds, HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds,
-            HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFleetAddCmdFCtxBIds, HFleetAddCmdFCtxRIds,
-            HFleetChangeCmdFCtxBIds, HFleetChangeCmdFCtxRIds, HFleetRemoveCmdFCtxBIds, HFleetRemoveCmdFCtxRIds,
+            HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitCreateCmdFCtxBIds, HFitCreateCmdFCtxRIds,
+            HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFleetChangeCmdFCtxBIds, HFleetChangeCmdFCtxRIds,
+            HFleetCreateCmdFCtxBIds, HFleetCreateCmdFCtxRIds, HFleetRemoveCmdFCtxBIds, HFleetRemoveCmdFCtxRIds,
             HFwEffectAddCmdFCtxBIds, HFwEffectAddCmdFCtxRIds, HFwEffectChangeCmdFCtxBIds, HFwEffectChangeCmdFCtxRIds,
             HImplantAddCmdFCtxBIds, HImplantAddCmdFCtxRIds, HImplantChangeCmdFCtxBIds, HImplantChangeCmdFCtxRIds,
             HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HModuleAddCmdFCtxBIds, HModuleAddCmdFCtxRIds,
@@ -37,11 +37,11 @@ pub(crate) enum HSolChangeCmdBIds {
     // Solar system
     ChangeSol(HSolChangeCmdFCtx),
     // Fleet
-    AddFleet(HFleetAddCmdFCtxBIds),
+    AddFleet(HFleetCreateCmdFCtxBIds),
     ChangeFleet(HFleetChangeCmdFCtxBIds),
     RemoveFleet(HFleetRemoveCmdFCtxBIds),
     // Fit
-    AddFit(HFitAddCmdFCtxBIds),
+    AddFit(HFitCreateCmdFCtxBIds),
     ChangeFit(HFitChangeCmdFCtxBIds),
     RemoveFit(HFitRemoveCmdFCtxBIds),
     // Item
@@ -104,11 +104,11 @@ pub(crate) enum HSolChangeCmdRIds {
     // Solar system
     ChangeSol(HSolChangeCmdFCtx),
     // Fleet
-    AddFleet(HFleetAddCmdFCtxRIds),
+    AddFleet(HFleetCreateCmdFCtxRIds),
     ChangeFleet(HFleetChangeCmdFCtxRIds),
     RemoveFleet(HFleetRemoveCmdFCtxRIds),
     // Fit
-    AddFit(HFitAddCmdFCtxRIds),
+    AddFit(HFitCreateCmdFCtxRIds),
     ChangeFit(HFitChangeCmdFCtxRIds),
     RemoveFit(HFitRemoveCmdFCtxRIds),
     // Item

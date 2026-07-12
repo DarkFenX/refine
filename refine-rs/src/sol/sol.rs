@@ -26,6 +26,9 @@ impl<'r> SolarSystem<'r> {
             inner: inner.into_lock_touch_owned().await,
         }
     }
+    pub(crate) fn get_inner(&mut self) -> &mut SolarSystemInner {
+        &mut self.inner
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -78,7 +81,8 @@ impl<'m> std::ops::DerefMut for SolOwnedMutexGuard {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SolarSystemInner {
     accessed: chrono::DateTime<chrono::Utc>,
-    core_sol: Option<Box<rc::SolarSystem>>,
+    // TODO: check if it needs to be public
+    pub(crate) core_sol: Option<Box<rc::SolarSystem>>,
 }
 impl SolarSystemInner {
     fn new(core_sol: rc::SolarSystem) -> Self {

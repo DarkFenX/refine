@@ -35,10 +35,12 @@ async fn main() {
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     refine.create_src("tq".into(), edh, true).await.unwrap();
     // Main part
-    let sol = refine
+    let mut sol = refine
         .create_sol(None, rs::SolAddCmd::new().sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
+    let fleet = sol.create_fleet().await;
+    println!("fleet ID: {}", fleet.get_fleet_id());
     // Cleanup
     sol.remove();
     refine.get_src(None).await.unwrap().remove().await;

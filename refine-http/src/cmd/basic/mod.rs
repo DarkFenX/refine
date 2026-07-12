@@ -1,10 +1,10 @@
 pub(crate) use fit::{
-    HFitAddCmdFCtxBIds, HFitAddCmdFCtxRIds, HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitChangeCmdICtxBIds,
-    HFitChangeCmdICtxRIds, HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFitRemoveCmdICtx,
+    HFitChangeCmdFCtxBIds, HFitChangeCmdFCtxRIds, HFitChangeCmdICtxBIds, HFitChangeCmdICtxRIds, HFitCreateCmdFCtxBIds,
+    HFitCreateCmdFCtxRIds, HFitRemoveCmdFCtxBIds, HFitRemoveCmdFCtxRIds, HFitRemoveCmdICtx,
 };
 pub(crate) use fleet::{
-    HFleetAddCmdFCtxBIds, HFleetAddCmdFCtxRIds, HFleetChangeCmdFCtxBIds, HFleetChangeCmdFCtxRIds,
-    HFleetChangeCmdICtxRIds, HFleetRemoveCmdFCtxBIds, HFleetRemoveCmdFCtxRIds, HFleetRemoveCmdICtx,
+    HFleetChangeCmdFCtxBIds, HFleetChangeCmdFCtxRIds, HFleetChangeCmdICtxRIds, HFleetCreateCmdFCtxBIds,
+    HFleetCreateCmdFCtxRIds, HFleetRemoveCmdFCtxBIds, HFleetRemoveCmdFCtxRIds, HFleetRemoveCmdICtx,
 };
 pub(crate) use item::{HItemRemoveCmdFCtxBIds, HItemRemoveCmdFCtxRIds, HItemRemoveCmdICtx};
 pub(crate) use item_autocharge::{

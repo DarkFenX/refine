@@ -10,21 +10,21 @@ use crate::{
 // Commands with full context
 #[serde_as]
 #[derive(Deserialize)]
-pub(crate) struct HFitAddCmdFCtxBIds {
+pub(crate) struct HFitCreateCmdFCtxBIds {
     #[serde(flatten)]
-    shared: HFitAddCmdShared,
+    shared: HFitCreateCmdShared,
     fleet_id: Option<HFleetIdBackref>,
 }
 #[serde_as]
 #[derive(Default, Deserialize)]
-pub(crate) struct HFitAddCmdFCtxRIds {
+pub(crate) struct HFitCreateCmdFCtxRIds {
     #[serde(flatten)]
-    shared: HFitAddCmdShared,
+    shared: HFitCreateCmdShared,
     #[serde_as(as = "Option<DisplayFromStr>")]
     fleet_id: Option<rc::FleetId>,
 }
 #[derive(Default, Deserialize)]
-struct HFitAddCmdShared {
+struct HFitCreateCmdShared {
     sec_status: Option<f64>,
     rah_incoming_dps: Option<HDpsProfile>,
 }
@@ -32,9 +32,9 @@ struct HFitAddCmdShared {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HFitAddCmdFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HFitAddCmdFCtxRIds, HExecError> {
-        Ok(HFitAddCmdFCtxRIds {
+impl HFitCreateCmdFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HFitCreateCmdFCtxRIds, HExecError> {
+        Ok(HFitCreateCmdFCtxRIds {
             shared: self.shared,
             fleet_id: match self.fleet_id {
                 Some(fleet_id) => Some(resps.render_fleet_id(fleet_id)?),
@@ -47,7 +47,7 @@ impl HFitAddCmdFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HFitAddCmdFCtxRIds {
+impl HFitCreateCmdFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFitIdResp, HExecError> {
         let mut core_fit = core_sol.create_fit();
         if let Some(fleet_id) = self.fleet_id {

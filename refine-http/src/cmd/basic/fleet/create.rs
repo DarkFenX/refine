@@ -8,13 +8,13 @@ use crate::{
 
 // Commands with full context
 #[derive(Deserialize)]
-pub(crate) struct HFleetAddCmdFCtxBIds {
+pub(crate) struct HFleetCreateCmdFCtxBIds {
     #[serde(default)]
     fit_ids: Vec<HFitIdBackref>,
 }
 #[serde_as]
 #[derive(Default, Deserialize)]
-pub(crate) struct HFleetAddCmdFCtxRIds {
+pub(crate) struct HFleetCreateCmdFCtxRIds {
     #[serde_as(as = "Vec<DisplayFromStr>")]
     #[serde(default)]
     fit_ids: Vec<rc::FitId>,
@@ -23,9 +23,9 @@ pub(crate) struct HFleetAddCmdFCtxRIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HFleetAddCmdFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HFleetAddCmdFCtxRIds, HExecError> {
-        Ok(HFleetAddCmdFCtxRIds {
+impl HFleetCreateCmdFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &HCmdResps) -> Result<HFleetCreateCmdFCtxRIds, HExecError> {
+        Ok(HFleetCreateCmdFCtxRIds {
             fit_ids: resps.render_fit_ids(self.fit_ids)?,
         })
     }
@@ -34,7 +34,7 @@ impl HFleetAddCmdFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl HFleetAddCmdFCtxRIds {
+impl HFleetCreateCmdFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFleetIdResp, HExecError> {
         let mut core_fleet = core_sol.create_fleet();
         for fit_id in &self.fit_ids {
