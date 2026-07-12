@@ -1,4 +1,4 @@
-pub use sol::SolAddCmd;
+pub use sol::CreateSolCmd;
 
 mod basic;
 mod sol;

@@ -1,16 +1,16 @@
-use crate::cmd::basic::SolAddCmdFCtx;
+use crate::cmd::basic::SolCreateCmdFCtx;
 
 #[derive(Default)]
-pub struct SolAddCmd {
-    basic: SolAddCmdFCtx,
+pub struct CreateSolCmd {
+    basic: SolCreateCmdFCtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolAddCmd {
+impl CreateSolCmd {
     pub fn new() -> Self {
-        SolAddCmd::default()
+        CreateSolCmd::default()
     }
     pub fn sec_zone(mut self, sec_zone: rc::SecZone) -> Self {
         self.basic.sec_zone = Some(sec_zone);
@@ -41,7 +41,7 @@ impl SolAddCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolAddCmd {
+impl CreateSolCmd {
     pub(crate) fn execute(&self, core_src: &rc::Src) -> rc::SolarSystem {
         self.basic.execute(core_src)
     }

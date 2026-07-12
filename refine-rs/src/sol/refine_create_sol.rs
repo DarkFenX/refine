@@ -1,7 +1,7 @@
 use tokio_rayon::AsyncThreadPool;
 
 use crate::{
-    cmd::SolAddCmd,
+    cmd::CreateSolCmd,
     refine::Refine,
     sol::{SolarSystem, SolarSystemId, SolarSystemInnerGuarded},
     src::{GetSrcError, SrcAlias},
@@ -12,7 +12,7 @@ impl Refine {
     pub async fn create_sol(
         &self,
         src_alias: Option<&SrcAlias>,
-        cmd: SolAddCmd,
+        cmd: CreateSolCmd,
     ) -> Result<SolarSystem<'_>, CreateSolError> {
         let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
         let sync_span = tracing::trace_span!("sync");

@@ -1,3 +1,3 @@
-pub(in crate::cmd) use sol::SolAddCmdFCtx;
+pub(in crate::cmd) use sol::SolCreateCmdFCtx;
 
 mod sol;

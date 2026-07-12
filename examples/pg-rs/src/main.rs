@@ -36,7 +36,7 @@ async fn main() {
     refine.create_src("tq".into(), edh, true).await.unwrap();
     // Main part
     let mut sol = refine
-        .create_sol(None, rs::SolAddCmd::new().sec_zone(rs::SecZone::WSpace))
+        .create_sol(None, rs::CreateSolCmd::new().sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
     let fleet = sol.create_fleet().await;

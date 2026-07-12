@@ -1,3 +1,3 @@
-pub use add::SolAddCmd;
+pub use create::CreateSolCmd;
 
-mod add;
+mod create;
