@@ -11,27 +11,29 @@ impl Refine {
         Ok(Src::new(self, inner_src))
     }
     pub(crate) async fn internal_get_inner_src(&self, alias: Option<SrcAlias>) -> Result<SrcInner, GetSrcError> {
+        let alias_data = self.src_alias_data.inner.read().await;
         let alias = match alias {
             Some(alias) => alias,
-            None => match self.default_src_alias.read().await.as_ref() {
+            None => match alias_data.default.as_ref() {
                 Some(alias) => alias.clone(),
                 None => return Err(GetSrcError::DefaultNotDefined),
             },
         };
-        match self.core_src_map.read().await.get(&alias) {
+        match alias_data.map.get(&alias) {
             Some(core_src) => Ok(SrcInner::new(alias, core_src.clone())),
             None => Err(GetSrcError::SrcNotFound(alias)),
         }
     }
     pub(crate) async fn internal_get_core_src(&self, alias: Option<SrcAlias>) -> Result<Arc<rc::Src>, GetSrcError> {
+        let alias_data = self.src_alias_data.inner.read().await;
         let alias = match alias {
             Some(alias) => alias,
-            None => match self.default_src_alias.read().await.as_ref() {
+            None => match alias_data.default.as_ref() {
                 Some(alias) => alias.clone(),
                 None => return Err(GetSrcError::DefaultNotDefined),
             },
         };
-        match self.core_src_map.read().await.get(&alias) {
+        match alias_data.map.get(&alias) {
             Some(core_src) => Ok(core_src.clone()),
             None => Err(GetSrcError::SrcNotFound(alias)),
         }

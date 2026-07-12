@@ -20,7 +20,7 @@ impl Refine {
         if !self.check_alias_availability(&alias).await {
             return Err(CreateSrcError::SrcAliasNotAvailable(alias));
         }
-        self.lock_alias(&alias).await;
+        self.lock_alias(alias.clone()).await;
         // Create source and info in heavy threadpool
         let alias_cloned = alias.clone();
         let cache_folder_cloned = self.cache_folder.clone();
@@ -36,10 +36,12 @@ impl Refine {
         // Write results and unlock alias
         match result {
             Ok(core_src) => {
+                let mut alias_data = self.src_alias_data.inner.write().await;
+                alias_data.map.insert(alias.clone(), core_src.clone());
                 if make_default {
-                    *self.default_src_alias.write().await = Some(alias.clone())
-                };
-                self.core_src_map.write().await.insert(alias.clone(), core_src.clone());
+                    alias_data.default = Some(alias.clone());
+                }
+                drop(alias_data);
                 self.unlock_alias(&alias).await;
                 Ok(Src::new(self, SrcInner::new(alias, core_src)))
             }
@@ -50,15 +52,16 @@ impl Refine {
         }
     }
     async fn check_alias_availability(&self, alias: &SrcAlias) -> bool {
-        !self.core_src_map.read().await.contains_key(alias) && !self.locked_src_aliases.read().await.contains(alias)
+        !self.src_alias_data.inner.read().await.map.contains_key(alias)
+            && !self.src_alias_locks.inner.read().await.contains(alias)
     }
-    async fn lock_alias(&self, alias: &SrcAlias) {
+    async fn lock_alias(&self, alias: SrcAlias) {
         tracing::trace!("locking alias \"{alias}\"");
-        self.locked_src_aliases.write().await.insert(alias.clone());
+        self.src_alias_locks.inner.write().await.insert(alias);
     }
     async fn unlock_alias(&self, alias: &SrcAlias) {
         tracing::trace!("unlocking alias \"{alias}\"");
-        if !self.locked_src_aliases.write().await.remove(alias) {
+        if !self.src_alias_locks.inner.write().await.remove(alias) {
             tracing::warn!("attempt to unlock alias which is not locked")
         }
     }

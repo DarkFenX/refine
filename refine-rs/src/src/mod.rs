@@ -1,10 +1,12 @@
 pub use alias::SrcAlias;
+pub(crate) use containers::{SrcAliasData, SrcAliasLocks};
 pub use refine_create_src::CreateSrcError;
 pub use refine_get_src::GetSrcError;
 pub use src::Src;
 pub(crate) use src::SrcInner;
 
 mod alias;
+mod containers;
 mod refine_create_src;
 mod refine_get_src;
 mod src;
