@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Refine {
-    pub async fn get_src(&mut self, alias: Option<&SrcAlias>) -> Result<Src<'_>, GetSrcError> {
+    pub async fn get_src(&self, alias: Option<&SrcAlias>) -> Result<Src<'_>, GetSrcError> {
         let inner_src = self.internal_get_src(alias).await?;
         Ok(Src::new(self, inner_src))
     }

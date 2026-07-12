@@ -10,7 +10,7 @@ use crate::{
 impl Refine {
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
     pub async fn create_src(
-        &mut self,
+        &self,
         alias: SrcAlias,
         ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
         make_default: bool,

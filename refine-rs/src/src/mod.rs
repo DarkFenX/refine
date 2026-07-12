@@ -4,6 +4,7 @@ pub use refine_create_src::CreateSrcError;
 pub use refine_get_src::GetSrcError;
 pub use src::Src;
 pub(crate) use src::SrcInnerGuarded;
+pub use src_remove::RemoveSrcError;
 
 mod alias;
 mod containers;

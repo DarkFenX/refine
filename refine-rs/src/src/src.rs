@@ -6,7 +6,7 @@ use crate::{refine::Refine, src::SrcAlias};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct Src<'a> {
-    pub(super) refine: &'a mut Refine,
+    pub(super) refine: &'a Refine,
     pub(super) inner: SrcInnerGuarded,
 }
 impl<'a> Src<'a> {
@@ -15,7 +15,7 @@ impl<'a> Src<'a> {
     }
 }
 impl<'a> Src<'a> {
-    pub(super) fn new(refine: &'a mut Refine, inner: SrcInnerGuarded) -> Self {
+    pub(super) fn new(refine: &'a Refine, inner: SrcInnerGuarded) -> Self {
         Self { refine, inner }
     }
 }
