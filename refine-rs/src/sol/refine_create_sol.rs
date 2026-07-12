@@ -32,7 +32,7 @@ impl Refine {
         }
         map_lock.insert(id, inner_sol.clone());
         drop(map_lock);
-        Ok(SolarSystem::new(self, id, inner_sol))
+        Ok(SolarSystem::new(self, id, inner_sol).await)
     }
 }
 

@@ -9,7 +9,7 @@ impl Refine {
             Some(sol) => sol.clone(),
             None => return Err(GetSolError::SolNotFound(id)),
         };
-        Ok(SolarSystem::new(self, id, guarded_inner_sol))
+        Ok(SolarSystem::new(self, id, guarded_inner_sol).await)
     }
 }
 

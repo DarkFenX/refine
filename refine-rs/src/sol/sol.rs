@@ -1,6 +1,6 @@
 use std::sync::Arc;
 
-use tokio::sync::{Mutex, MutexGuard, TryLockError};
+use tokio::sync::{Mutex, MutexGuard, OwnedMutexGuard, TryLockError};
 
 use crate::{refine::Refine, sol::SolarSystemId};
 
@@ -10,7 +10,7 @@ use crate::{refine::Refine, sol::SolarSystemId};
 pub struct SolarSystem<'r> {
     pub(super) refine: &'r Refine,
     pub(super) id: SolarSystemId,
-    inner: SolarSystemInnerGuarded,
+    inner: SolOwnedMutexGuard,
 }
 impl<'r> SolarSystem<'r> {
     pub fn get_id(&self) -> SolarSystemId {
@@ -19,8 +19,12 @@ impl<'r> SolarSystem<'r> {
 }
 // Private part
 impl<'r> SolarSystem<'r> {
-    pub(super) fn new(refine: &'r Refine, id: SolarSystemId, inner: SolarSystemInnerGuarded) -> Self {
-        Self { refine, id, inner }
+    pub(super) async fn new(refine: &'r Refine, id: SolarSystemId, inner: SolarSystemInnerGuarded) -> Self {
+        Self {
+            refine,
+            id,
+            inner: inner.into_lock_touch_owned().await,
+        }
     }
 }
 
@@ -37,28 +41,33 @@ impl SolarSystemInnerGuarded {
         self.0.try_lock()
     }
     // Like regular lock, but updates timestamp on inner sol during drop
-    pub(super) async fn lock_touch(&self) -> SolInnerTouchingMutexGuard<'_> {
-        SolInnerTouchingMutexGuard {
-            guard: self.0.lock().await,
+    pub(super) async fn lock_touch_owned(&self) -> SolOwnedMutexGuard {
+        SolOwnedMutexGuard {
+            guard: self.0.clone().lock_owned().await,
+        }
+    }
+    pub(super) async fn into_lock_touch_owned(self) -> SolOwnedMutexGuard {
+        SolOwnedMutexGuard {
+            guard: self.0.lock_owned().await,
         }
     }
 }
 
-struct SolInnerTouchingMutexGuard<'m> {
-    guard: MutexGuard<'m, SolarSystemInner>,
+struct SolOwnedMutexGuard {
+    guard: OwnedMutexGuard<SolarSystemInner>,
 }
-impl<'m> Drop for SolInnerTouchingMutexGuard<'m> {
+impl Drop for SolOwnedMutexGuard {
     fn drop(&mut self) {
         self.guard.touch();
     }
 }
-impl<'m> std::ops::Deref for SolInnerTouchingMutexGuard<'m> {
+impl std::ops::Deref for SolOwnedMutexGuard {
     type Target = SolarSystemInner;
     fn deref(&self) -> &Self::Target {
         &self.guard
     }
 }
-impl<'m> std::ops::DerefMut for SolInnerTouchingMutexGuard<'m> {
+impl<'m> std::ops::DerefMut for SolOwnedMutexGuard {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.guard
     }
