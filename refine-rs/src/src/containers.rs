@@ -1,11 +1,8 @@
-use std::{
-    collections::{HashMap, HashSet},
-    sync::Arc,
-};
+use std::collections::{HashMap, HashSet};
 
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
-use crate::src::{SrcAlias, SrcInner};
+use crate::src::{SrcAlias, SrcInnerGuarded};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alias data
@@ -28,8 +25,8 @@ impl GuardedSrcAliasData {
 }
 
 pub(super) struct SrcAliasData {
-    pub(super) map: HashMap<SrcAlias, Arc<SrcInner>>,
-    pub(super) default: Option<Arc<SrcInner>>,
+    pub(super) map: HashMap<SrcAlias, SrcInnerGuarded>,
+    pub(super) default: Option<SrcInnerGuarded>,
 }
 impl SrcAliasData {
     fn new() -> Self {

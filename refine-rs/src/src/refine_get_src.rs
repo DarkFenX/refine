@@ -1,8 +1,6 @@
-use std::sync::Arc;
-
 use crate::{
     refine::Refine,
-    src::{Src, SrcAlias, SrcInner},
+    src::{Src, SrcAlias, SrcInnerGuarded},
 };
 
 impl Refine {
@@ -10,7 +8,7 @@ impl Refine {
         let inner_src = self.internal_get_src(alias).await?;
         Ok(Src::new(self, inner_src))
     }
-    pub(crate) async fn internal_get_src(&self, alias: Option<&SrcAlias>) -> Result<Arc<SrcInner>, GetSrcError> {
+    pub(crate) async fn internal_get_src(&self, alias: Option<&SrcAlias>) -> Result<SrcInnerGuarded, GetSrcError> {
         let alias_data = self.src_alias_data.read().await;
         let alias = match alias {
             Some(alias) => alias,

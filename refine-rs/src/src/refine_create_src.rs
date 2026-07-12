@@ -4,7 +4,7 @@ use tokio_rayon::AsyncThreadPool;
 
 use crate::{
     refine::Refine,
-    src::{Src, SrcAlias, SrcInner},
+    src::{Src, SrcAlias, SrcInnerGuarded},
 };
 
 impl Refine {
@@ -31,7 +31,7 @@ impl Refine {
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 create_core_src(&alias_cloned, ed_handler, cache_folder_cloned)
-                    .map(|core_src| Arc::new(SrcInner::new(alias_cloned, Arc::new(core_src))))
+                    .map(|core_src| SrcInnerGuarded::new(alias_cloned, Arc::new(core_src)))
             })
             .await;
         // Write results and unlock alias
