@@ -36,7 +36,7 @@ impl ThreadPool {
         R: Send + 'static,
     {
         let sync_span = tracing::trace_span!("sync");
-        self.standard
+        self.heavy
             .spawn_fifo_async(move || {
                 let _sg = sync_span.enter();
                 func()
