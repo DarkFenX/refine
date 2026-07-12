@@ -39,8 +39,8 @@ async fn main() {
         .create_sol(None, rs::CreateSolCmd::new().sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
-    let fleet = sol.create_fleet().await;
-    println!("fleet ID: {}", fleet.get_fleet_id());
+    let fleet = sol.create_fleet(rs::CreateFleetCmd::new()).await.unwrap();
+    tracing::error!("fleet ID: {}", fleet.get_fleet_id());
     // Cleanup
     sol.remove();
     refine.get_src(None).await.unwrap().remove().await;

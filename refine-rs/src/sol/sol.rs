@@ -8,7 +8,7 @@ use crate::{refine::Refine, sol::SolarSystemId};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SolarSystem<'r> {
-    pub(super) refine: &'r Refine,
+    pub(crate) refine: &'r Refine,
     pub(super) id: SolarSystemId,
     inner: SolOwnedMutexGuard,
 }
@@ -28,6 +28,12 @@ impl<'r> SolarSystem<'r> {
     }
     pub(crate) fn get_inner(&mut self) -> &mut SolarSystemInner {
         &mut self.inner
+    }
+    pub(crate) fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
+        self.inner.take_core()
+    }
+    pub(crate) fn put_core_back(&mut self, core_sol: Box<rc::SolarSystem>) {
+        self.inner.put_core_back(core_sol);
     }
 }
 
@@ -81,8 +87,7 @@ impl<'m> std::ops::DerefMut for SolOwnedMutexGuard {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SolarSystemInner {
     accessed: chrono::DateTime<chrono::Utc>,
-    // TODO: check if it needs to be public
-    pub(crate) core_sol: Option<Box<rc::SolarSystem>>,
+    core_sol: Option<Box<rc::SolarSystem>>,
 }
 impl SolarSystemInner {
     fn new(core_sol: rc::SolarSystem) -> Self {
@@ -93,5 +98,11 @@ impl SolarSystemInner {
     }
     fn touch(&mut self) {
         self.accessed = chrono::Utc::now();
+    }
+    fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
+        self.core_sol.take()
+    }
+    fn put_core_back(&mut self, core_sol: Box<rc::SolarSystem>) {
+        self.core_sol = Some(core_sol);
     }
 }
