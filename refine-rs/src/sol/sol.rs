@@ -37,28 +37,28 @@ impl SolarSystemInnerGuarded {
         self.0.try_lock()
     }
     // Like regular lock, but updates timestamp on inner sol during drop
-    async fn lock_touch(&self) -> TouchingMutexGuard<'_> {
-        TouchingMutexGuard {
+    pub(super) async fn lock_touch(&self) -> SolInnerTouchingMutexGuard<'_> {
+        SolInnerTouchingMutexGuard {
             guard: self.0.lock().await,
         }
     }
 }
 
-struct TouchingMutexGuard<'a> {
-    guard: MutexGuard<'a, SolarSystemInner>,
+struct SolInnerTouchingMutexGuard<'m> {
+    guard: MutexGuard<'m, SolarSystemInner>,
 }
-impl<'a> Drop for TouchingMutexGuard<'a> {
+impl<'m> Drop for SolInnerTouchingMutexGuard<'m> {
     fn drop(&mut self) {
         self.guard.touch();
     }
 }
-impl<'a> std::ops::Deref for TouchingMutexGuard<'a> {
+impl<'m> std::ops::Deref for SolInnerTouchingMutexGuard<'m> {
     type Target = SolarSystemInner;
     fn deref(&self) -> &Self::Target {
         &self.guard
     }
 }
-impl<'a> std::ops::DerefMut for TouchingMutexGuard<'a> {
+impl<'m> std::ops::DerefMut for SolInnerTouchingMutexGuard<'m> {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.guard
     }
