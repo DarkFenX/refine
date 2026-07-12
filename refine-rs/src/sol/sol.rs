@@ -1,6 +1,7 @@
 use std::sync::Arc;
 
 use tokio::sync::{Mutex, MutexGuard, OwnedMutexGuard, TryLockError};
+use tokio_rayon::AsyncThreadPool;
 
 use crate::{refine::Refine, sol::SolarSystemId};
 
@@ -26,13 +27,43 @@ impl<'r> SolarSystem<'r> {
             inner: inner.into_lock_touch_owned().await,
         }
     }
+    pub(crate) async fn exec_std_fallible<T, E, F>(&mut self, func: F) -> Result<T, E>
+    where
+        T: Send + 'static,
+        E: Send + 'static,
+        F: Fn(&mut rc::SolarSystem) -> Result<T, E> + Send + Sync + 'static,
+    {
+        let mut core_sol = self.take_core().unwrap();
+        let core_sol_backup = core_sol.clone();
+        let sync_span = tracing::trace_span!("sync");
+        match self
+            .refine
+            .tpool
+            .standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                let ret = func(&mut core_sol)?;
+                Ok((core_sol, ret))
+            })
+            .await
+        {
+            Ok((core_sol, ret)) => {
+                self.put_core_back(core_sol);
+                Ok(ret)
+            }
+            Err(error) => {
+                self.put_core_back(core_sol_backup);
+                Err(error)
+            }
+        }
+    }
     pub(crate) fn get_inner(&mut self) -> &mut SolarSystemInner {
         &mut self.inner
     }
-    pub(crate) fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
+    fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
         self.inner.take_core()
     }
-    pub(crate) fn put_core_back(&mut self, core_sol: Box<rc::SolarSystem>) {
+    fn put_core_back(&mut self, core_sol: Box<rc::SolarSystem>) {
         self.inner.put_core_back(core_sol);
     }
 }
