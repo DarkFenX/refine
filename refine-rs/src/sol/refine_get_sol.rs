@@ -5,7 +5,7 @@ use crate::{
 
 impl Refine {
     pub async fn get_sol(&mut self, id: SolarSystemId) -> Result<SolarSystem<'_>, GetSolError> {
-        let guarded_inner_sol = match self.id_sol_map.write().await.get(&id) {
+        let guarded_inner_sol = match self.id_sol_map.read().await.get(&id) {
             Some(sol) => sol.clone(),
             None => return Err(GetSolError::SolNotFound(id)),
         };
