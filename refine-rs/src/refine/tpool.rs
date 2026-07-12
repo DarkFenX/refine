@@ -1,3 +1,5 @@
+use tokio_rayon::AsyncThreadPool;
+
 pub(crate) struct ThreadPool {
     pub(crate) standard: tokio_rayon::rayon::ThreadPool,
     pub(crate) heavy: tokio_rayon::rayon::ThreadPool,
@@ -14,5 +16,31 @@ impl ThreadPool {
                 .build()
                 .unwrap(),
         }
+    }
+    pub(crate) async fn exec_standard<F, R>(&self, func: F) -> R
+    where
+        F: FnOnce() -> R + Send + 'static,
+        R: Send + 'static,
+    {
+        let sync_span = tracing::trace_span!("sync");
+        self.standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                func()
+            })
+            .await
+    }
+    pub(crate) async fn exec_heavy<F, R>(&self, func: F) -> R
+    where
+        F: FnOnce() -> R + Send + 'static,
+        R: Send + 'static,
+    {
+        let sync_span = tracing::trace_span!("sync");
+        self.standard
+            .spawn_fifo_async(move || {
+                let _sg = sync_span.enter();
+                func()
+            })
+            .await
     }
 }

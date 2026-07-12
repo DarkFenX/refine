@@ -1,7 +1,5 @@
 use std::sync::Arc;
 
-use tokio_rayon::AsyncThreadPool;
-
 use crate::{
     refine::Refine,
     src::{Src, SrcAlias, SrcInnerGuarded},
@@ -21,15 +19,12 @@ impl Refine {
             return Err(CreateSrcError::SrcAliasNotAvailable(alias));
         }
         self.lock_alias(alias.clone()).await;
-        // Create source and info in heavy threadpool
+        // Create source in a heavy threadpool
         let alias_cloned = alias.clone();
         let cache_folder_cloned = self.cache_folder.clone();
-        let sync_span = tracing::trace_span!("sync");
         let result = self
             .tpool
-            .heavy
-            .spawn_fifo_async(move || {
-                let _sg = sync_span.enter();
+            .exec_heavy(move || {
                 create_core_src(&alias_cloned, ed_handler, cache_folder_cloned)
                     .map(|core_src| SrcInnerGuarded::new(alias_cloned, Arc::new(core_src)))
             })

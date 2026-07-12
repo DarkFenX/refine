@@ -1,5 +1,3 @@
-use tokio_rayon::AsyncThreadPool;
-
 use crate::{
     cmd::CreateSolCmd,
     refine::Refine,
@@ -15,12 +13,9 @@ impl Refine {
         cmd: CreateSolCmd,
     ) -> Result<SolarSystem<'_>, CreateSolError> {
         let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
-        let sync_span = tracing::trace_span!("sync");
         let inner_sol = self
             .tpool
-            .standard
-            .spawn_fifo_async(move || {
-                let _sg = sync_span.enter();
+            .exec_standard(move || {
                 let core_sol = cmd.execute(&core_src);
                 SolarSystemInnerGuarded::new(core_sol)
             })
