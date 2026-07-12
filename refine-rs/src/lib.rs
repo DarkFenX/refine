@@ -1,9 +1,11 @@
+pub use cmd::SolAddCmd;
 pub use info::{SrcInfo, SrcInfoMode};
 pub use rc::ed::EveDataHandler;
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
 pub use src::{Src, SrcAlias};
 
+mod cmd;
 pub mod err;
 mod info;
 mod refine;

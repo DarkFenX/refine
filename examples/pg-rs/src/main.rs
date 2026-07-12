@@ -33,5 +33,5 @@ async fn main() {
     let edh: Box<dyn rs::EveDataHandler + Send> =
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     refine.create_src("tq".into(), edh, true).await.unwrap();
-    let sol = refine.create_sol(None).await.unwrap();
+    let sol = refine.create_sol(None, rs::SolAddCmd::new()).await.unwrap();
 }
