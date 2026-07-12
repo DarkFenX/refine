@@ -1,1 +1,4 @@
-pub use crate::src::{CreateSrcError, GetSrcError};
+pub use crate::{
+    sol::{CreateSolError, GetSolError},
+    src::{CreateSrcError, GetSrcError},
+};
