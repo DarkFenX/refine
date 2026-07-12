@@ -1,15 +1,15 @@
 use super::tpool::ThreadPool;
 use crate::{
     sol::SolMap,
-    src::{SrcAliasData, SrcAliasLocks},
+    src::{GuardedSrcAliasData, GuardedSrcAliasLocks},
 };
 
 pub struct Refine {
     pub(crate) tpool: ThreadPool,
     // Source-related fields
     pub(crate) cache_folder: Option<String>,
-    pub(crate) src_alias_data: SrcAliasData,
-    pub(crate) src_alias_locks: SrcAliasLocks,
+    pub(crate) src_alias_data: GuardedSrcAliasData,
+    pub(crate) src_alias_locks: GuardedSrcAliasLocks,
     // Sol-related fields
     pub(crate) id_sol_map: SolMap,
 }
@@ -18,8 +18,8 @@ impl Refine {
         Self {
             tpool: ThreadPool::new(standard_threads, heavy_threads),
             cache_folder,
-            src_alias_data: SrcAliasData::new(),
-            src_alias_locks: SrcAliasLocks::new(),
+            src_alias_data: GuardedSrcAliasData::new(),
+            src_alias_locks: GuardedSrcAliasLocks::new(),
             id_sol_map: SolMap::new(),
         }
     }

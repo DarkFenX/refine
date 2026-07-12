@@ -11,7 +11,7 @@ impl Refine {
         Ok(Src::new(self, inner_src))
     }
     pub(crate) async fn internal_get_inner_src(&self, alias: Option<SrcAlias>) -> Result<SrcInner, GetSrcError> {
-        let alias_data = self.src_alias_data.inner.read().await;
+        let alias_data = self.src_alias_data.read().await;
         let alias = match alias {
             Some(alias) => alias,
             None => match alias_data.default.as_ref() {
@@ -25,7 +25,7 @@ impl Refine {
         }
     }
     pub(crate) async fn internal_get_core_src(&self, alias: Option<SrcAlias>) -> Result<Arc<rc::Src>, GetSrcError> {
-        let alias_data = self.src_alias_data.inner.read().await;
+        let alias_data = self.src_alias_data.read().await;
         let alias = match alias {
             Some(alias) => alias,
             None => match alias_data.default.as_ref() {

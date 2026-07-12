@@ -7,7 +7,7 @@ impl Refine {
     #[tracing::instrument(name = "src-rm", level = "trace", skip_all)]
     async fn remove_src(&mut self, alias: SrcAlias) {
         tracing::debug!("removing source with alias \"{alias}\"");
-        let mut alias_data = self.src_alias_data.inner.write().await;
+        let mut alias_data = self.src_alias_data.write().await;
         alias_data.map.remove(&alias);
         if alias_data.default == Some(alias) {
             alias_data.default = None;

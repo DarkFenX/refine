@@ -3,29 +3,35 @@ use std::{
     sync::Arc,
 };
 
-use tokio::sync::RwLock;
+use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use crate::src::SrcAlias;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alias data
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) struct SrcAliasData {
-    pub(super) inner: RwLock<SrcAliasDataInner>,
+pub(crate) struct GuardedSrcAliasData {
+    inner: RwLock<SrcAliasData>,
 }
-impl SrcAliasData {
+impl GuardedSrcAliasData {
     pub(crate) fn new() -> Self {
         Self {
-            inner: RwLock::new(SrcAliasDataInner::new()),
+            inner: RwLock::new(SrcAliasData::new()),
         }
+    }
+    pub(super) async fn read(&self) -> RwLockReadGuard<'_, SrcAliasData> {
+        self.inner.read().await
+    }
+    pub(super) async fn write(&self) -> RwLockWriteGuard<'_, SrcAliasData> {
+        self.inner.write().await
     }
 }
 
-pub(super) struct SrcAliasDataInner {
+pub(super) struct SrcAliasData {
     pub(super) map: HashMap<SrcAlias, Arc<rc::Src>>,
     pub(super) default: Option<SrcAlias>,
 }
-impl SrcAliasDataInner {
+impl SrcAliasData {
     fn new() -> Self {
         Self {
             map: HashMap::new(),
@@ -37,13 +43,19 @@ impl SrcAliasDataInner {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Locked aliases
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) struct SrcAliasLocks {
-    pub(super) inner: RwLock<HashSet<SrcAlias>>,
+pub(crate) struct GuardedSrcAliasLocks {
+    inner: RwLock<HashSet<SrcAlias>>,
 }
-impl SrcAliasLocks {
+impl GuardedSrcAliasLocks {
     pub(crate) fn new() -> Self {
         Self {
             inner: RwLock::new(HashSet::new()),
         }
+    }
+    pub(super) async fn read(&self) -> RwLockReadGuard<'_, HashSet<SrcAlias>> {
+        self.inner.read().await
+    }
+    pub(super) async fn write(&self) -> RwLockWriteGuard<'_, HashSet<SrcAlias>> {
+        self.inner.write().await
     }
 }

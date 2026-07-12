@@ -36,7 +36,7 @@ impl Refine {
         // Write results and unlock alias
         match result {
             Ok(core_src) => {
-                let mut alias_data = self.src_alias_data.inner.write().await;
+                let mut alias_data = self.src_alias_data.write().await;
                 alias_data.map.insert(alias.clone(), core_src.clone());
                 if make_default {
                     alias_data.default = Some(alias.clone());
@@ -52,16 +52,15 @@ impl Refine {
         }
     }
     async fn check_alias_availability(&self, alias: &SrcAlias) -> bool {
-        !self.src_alias_data.inner.read().await.map.contains_key(alias)
-            && !self.src_alias_locks.inner.read().await.contains(alias)
+        !self.src_alias_data.read().await.map.contains_key(alias) && !self.src_alias_locks.read().await.contains(alias)
     }
     async fn lock_alias(&self, alias: SrcAlias) {
         tracing::trace!("locking alias \"{alias}\"");
-        self.src_alias_locks.inner.write().await.insert(alias);
+        self.src_alias_locks.write().await.insert(alias);
     }
     async fn unlock_alias(&self, alias: &SrcAlias) {
         tracing::trace!("unlocking alias \"{alias}\"");
-        if !self.src_alias_locks.inner.write().await.remove(alias) {
+        if !self.src_alias_locks.write().await.remove(alias) {
             tracing::warn!("attempt to unlock alias which is not locked")
         }
     }
