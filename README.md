@@ -11,7 +11,7 @@ Data handlers for core library, which provide access to EVE data.
 ### refine-adc
 Data cachers for core library, which allow it to store adapted data. Adapted data is EVE data which was processed for needs of the library.
 ### refine-rs
-High-level async Rust interface. Manages thread pools and multi-threading, allows to unify multiple elementary requests in command batches, to mitigate overhead which comes with abstractions and thread management.
+High-level async Rust interface. Manages thread pools and multi-threading, allows to unify multiple elementary requests into command batches, to mitigate overhead which comes with abstractions and thread management.
 ### refine-http
 High-level HTTP interface built on top of `refine-rs`.
 
