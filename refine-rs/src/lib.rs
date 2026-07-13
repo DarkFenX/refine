@@ -5,6 +5,7 @@ pub use cmd::{
 pub use fit::Fit;
 pub use fleet::Fleet;
 pub use info::{SrcInfo, SrcInfoMode};
+pub use item::Item;
 pub use rc::{
     BreacherProfile, Count, DpsProfile, FitId, FleetId, ItemId, NpcProp, OptionalReload, PValue, RearmMinion, SecZone,
     SecZoneCorruption, Spool, UnitInterval, Value, ed::EveDataHandler,
@@ -18,6 +19,7 @@ pub mod err;
 mod fit;
 mod fleet;
 mod info;
+mod item;
 mod refine;
 mod sol;
 mod src;

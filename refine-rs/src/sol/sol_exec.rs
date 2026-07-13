@@ -63,7 +63,7 @@ impl<'r> SolarSystem<'r> {
             }
         }
     }
-    pub(crate) async fn exec_inplace<F, R>(&mut self, func: F) -> R
+    pub(crate) fn exec_inplace<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R,
     {
