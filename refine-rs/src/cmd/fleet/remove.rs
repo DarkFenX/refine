@@ -1,4 +1,4 @@
-use crate::cmd::{BasicRemoveFleetError, basic::CmdFleetRemoveICtx};
+use crate::cmd::basic::CmdFleetRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFleetCmd {
@@ -18,11 +18,7 @@ impl RemoveFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveFleetCmd {
-    pub(crate) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::FleetId,
-    ) -> Result<(), BasicRemoveFleetError> {
-        self.basic.execute(core_sol, fleet_id)
+    pub(crate) fn execute(&self, core_fleet: rc::FleetMut) {
+        self.basic.execute(core_fleet)
     }
 }
