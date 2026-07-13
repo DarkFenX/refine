@@ -14,17 +14,19 @@ struct CmdFitChangeFCtxRIds {
 }
 
 // Commands with incomplete context
+#[derive(Default)]
 pub(in crate::cmd) struct CmdFitChangeICtxBIds {
-    shared: CmdFitChangeShared,
-    fleet_id: TriStateField<FleetIdBackref>,
+    pub(in crate::cmd) shared: CmdFitChangeShared,
+    pub(in crate::cmd) fleet_id: TriStateField<FleetIdBackref>,
 }
 pub(in crate::cmd) struct CmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<rc::FleetId>,
 }
-struct CmdFitChangeShared {
-    sec_status: Option<rc::FitSecStatus>,
-    rah_incoming_dps: TriStateField<rc::DpsProfile>,
+#[derive(Default)]
+pub(in crate::cmd) struct CmdFitChangeShared {
+    pub(in crate::cmd) sec_status: Option<rc::FitSecStatus>,
+    pub(in crate::cmd) rah_incoming_dps: TriStateField<rc::DpsProfile>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,22 +58,22 @@ impl CmdFitChangeICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdFitChangeFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetChangeFitError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitChangeFitError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit)?)
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetChangeFitError {
+pub enum GetFitChangeFitError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFitError),
     #[error("{0}")]
-    ChangeFailed(#[from] ChangeFitError),
+    ChangeFailed(#[from] FitChangeFitError),
 }
 
 impl CmdFitChangeICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<(), ChangeFitError> {
+    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeFitError> {
         match self.fleet_id {
             TriStateField::Value(fleet_id) => core_fit.set_fleet(&fleet_id)?,
             TriStateField::None => match core_fit.unset_fleet() {
@@ -98,7 +100,7 @@ impl CmdFitChangeICtxRIds {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeFitError {
+pub enum FitChangeFitError {
     #[error("failed to set fleet: {0}")]
     FleetSetFailed(#[from] rc::err::SetFitFleetError),
 }

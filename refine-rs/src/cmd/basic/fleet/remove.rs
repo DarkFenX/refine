@@ -30,14 +30,14 @@ impl CmdFleetRemoveFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdFleetRemoveFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetRemoveFleetError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetRemoveFleetError> {
         let core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
         Ok(self.ictx_cmd.execute(core_fleet))
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetRemoveFleetError {
+pub enum GetFleetRemoveFleetError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFleetError),
 }

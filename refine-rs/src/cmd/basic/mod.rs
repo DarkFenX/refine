@@ -1,9 +1,9 @@
-pub use fit::{ChangeFitError, CreateFitError, GetChangeFitError, GetRemoveFitError};
 pub(in crate::cmd) use fit::{CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdFitCreateFCtxRIds, CmdFitRemoveICtx};
-pub use fleet::{ChangeFleetError, CreateFleetError, GetChangeFleetError, GetRemoveFleetError};
+pub use fit::{CreateFitError, FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError};
+pub use fleet::{ChangeFleetError, CreateFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
 pub(in crate::cmd) use fleet::{CmdFleetChangeICtxRIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveICtx};
 pub(in crate::cmd) use item::CmdItemRemoveICtx;
-pub use item::{GetRemoveItemError, RemoveItemError};
+pub use item::{GetItemRemoveItemError, RemoveItemError};
 pub use item_rig::CreateRigError;
 pub(in crate::cmd) use sol::CmdSolCreateFCtx;
 

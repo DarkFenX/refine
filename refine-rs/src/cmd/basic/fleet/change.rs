@@ -46,14 +46,14 @@ impl CmdFleetChangeICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdFleetChangeFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetChangeFleetError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetChangeFleetError> {
         let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fleet)?)
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetChangeFleetError {
+pub enum GetFleetChangeFleetError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFleetError),
     #[error("{0}")]

@@ -32,14 +32,14 @@ impl CmdItemRemoveFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdItemRemoveFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetRemoveItemError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetItemRemoveItemError> {
         let core_item = core_sol.get_item_mut(&self.item_id)?;
         Ok(self.ictx_cmd.execute(core_item)?)
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum GetRemoveItemError {
+pub enum GetItemRemoveItemError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
