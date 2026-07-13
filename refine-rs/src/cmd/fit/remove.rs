@@ -1,4 +1,4 @@
-use crate::cmd::{RemoveFitError, basic::CmdFitRemoveICtx};
+use crate::cmd::{BasicRemoveFitError, basic::CmdFitRemoveICtx};
 
 #[derive(Default)]
 pub struct RemoveFitCmd {
@@ -18,7 +18,11 @@ impl RemoveFitCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveFitCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<(), RemoveFitError> {
+    pub(crate) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        fit_id: &rc::FitId,
+    ) -> Result<(), BasicRemoveFitError> {
         self.basic.execute(core_sol, fit_id)
     }
 }

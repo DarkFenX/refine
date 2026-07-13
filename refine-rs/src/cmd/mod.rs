@@ -1,6 +1,8 @@
-pub use basic::{CreateFitError, CreateFleetError, RemoveFitError, RemoveFleetError};
+pub use basic::{
+    BasicChangeFleetError, BasicCreateFitError, BasicCreateFleetError, BasicRemoveFitError, BasicRemoveFleetError,
+};
 pub use fit::{CreateFitCmd, RemoveFitCmd};
-pub use fleet::{CreateFleetCmd, RemoveFleetCmd};
+pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
 pub use shared::{
     BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
     CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,

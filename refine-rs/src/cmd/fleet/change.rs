@@ -1,0 +1,38 @@
+use crate::cmd::{BasicChangeFleetError, basic::CmdFleetChangeICtxRIds};
+
+#[derive(Default)]
+pub struct ChangeFleetCmd {
+    basic: CmdFleetChangeICtxRIds,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ChangeFleetCmd {
+    pub fn new() -> Self {
+        ChangeFleetCmd::default()
+    }
+    pub fn with_add_fit_ids(mut self, add_fit_ids: impl ExactSizeIterator<Item = rc::FitId>) -> Self {
+        self.basic.add_fit_ids.clear();
+        self.basic.add_fit_ids.extend(add_fit_ids);
+        self
+    }
+    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl ExactSizeIterator<Item = rc::FitId>) -> Self {
+        self.basic.rm_fit_ids.clear();
+        self.basic.rm_fit_ids.extend(rm_fit_ids);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ChangeFleetCmd {
+    pub(crate) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+        fleet_id: &rc::FleetId,
+    ) -> Result<(), BasicChangeFleetError> {
+        self.basic.execute(core_sol, fleet_id)
+    }
+}

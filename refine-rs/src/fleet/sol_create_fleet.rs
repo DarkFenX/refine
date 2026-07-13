@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{CreateFleetCmd, CreateFleetError},
+    cmd::{BasicCreateFleetError, CreateFleetCmd},
     fleet::Fleet,
     sol::SolarSystem,
 };
@@ -7,8 +7,13 @@ use crate::{
 impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "flt-crt", level = "trace", skip_all)]
     pub async fn create_fleet(&'s mut self, cmd: CreateFleetCmd) -> Result<Fleet<'r, 's>, CreateFleetError> {
-        self.exec_standard_fallible(move |core_sol| cmd.execute(core_sol))
-            .await
-            .map(|cmd_resp| Fleet::new(self, cmd_resp.fleet_id))
+        let cmd_resp = self
+            .exec_standard_fallible(move |core_sol| cmd.execute(core_sol))
+            .await?;
+        Ok(Fleet::new(self, cmd_resp.fleet_id))
     }
 }
+
+#[derive(thiserror::Error, Debug)]
+#[error("{0}")]
+pub struct CreateFleetError(#[from] pub BasicCreateFleetError);

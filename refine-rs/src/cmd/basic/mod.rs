@@ -1,7 +1,7 @@
+pub use fit::{BasicCreateFitError, BasicRemoveFitError};
 pub(in crate::cmd) use fit::{CmdFitCreateFCtxRIds, CmdFitRemoveICtx};
-pub use fit::{CreateFitError, RemoveFitError};
-pub(in crate::cmd) use fleet::{CmdFleetCreateFCtxRIds, CmdFleetRemoveICtx};
-pub use fleet::{CreateFleetError, RemoveFleetError};
+pub use fleet::{BasicChangeFleetError, BasicCreateFleetError, BasicRemoveFleetError};
+pub(in crate::cmd) use fleet::{CmdFleetChangeICtxRIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveICtx};
 pub(in crate::cmd) use sol::CmdSolCreateFCtx;
 
 mod fit;
