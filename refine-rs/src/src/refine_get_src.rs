@@ -5,6 +5,7 @@ use crate::{
 
 impl Refine {
     // TODO: consider splitting into 2 methods, and making alias parameter generic for convenience
+    #[tracing::instrument(name = "src-get", level = "trace", skip_all)]
     pub async fn get_src(&self, alias: Option<&SrcAlias>) -> Result<Src<'_>, GetSrcError> {
         let inner_src = self.internal_get_src(alias).await?;
         Ok(Src::new(self, inner_src))

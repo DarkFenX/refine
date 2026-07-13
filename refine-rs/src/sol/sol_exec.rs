@@ -63,6 +63,15 @@ impl<'r> SolarSystem<'r> {
             }
         }
     }
+    pub(crate) async fn exec_inplace<F, R>(&mut self, func: F) -> R
+    where
+        F: FnOnce(&mut rc::SolarSystem) -> R,
+    {
+        let mut core_sol = self.take_core().unwrap();
+        let result = func(&mut core_sol);
+        self.put_core_back(core_sol);
+        result
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

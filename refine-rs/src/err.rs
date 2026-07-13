@@ -3,8 +3,8 @@ pub use crate::{
         BackrefRenderError, BasicChangeFleetError, BasicCreateFitError, BasicCreateFleetError, BasicRemoveFitError,
         BasicRemoveFleetError,
     },
-    fit::CreateFitError,
-    fleet::{ChangeFleetError, CreateFleetError},
+    fit::{CreateFitError, GetFitError},
+    fleet::{ChangeFleetError, CreateFleetError, GetFleetError},
     sol::{CreateSolError, GetSolError, RemoveSolError},
     src::{CreateSrcError, GetSrcError, RemoveSrcError},
 };
