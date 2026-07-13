@@ -8,8 +8,8 @@ pub use fleet::Fleet;
 pub use info::{SrcInfo, SrcInfoMode};
 pub use item::Item;
 pub use rc::{
-    BreacherProfile, Count, DpsProfile, FitId, FleetId, ItemId, NpcProp, OptionalReload, PValue, RearmMinion, RmMode,
-    SecZone, SecZoneCorruption, Spool, UnitInterval, Value, ed::EveDataHandler,
+    BreacherProfile, Count, DpsProfile, EffectId, EffectMode, FitId, FleetId, ItemId, NpcProp, OptionalReload, PValue,
+    RearmMinion, RmMode, SecZone, SecZoneCorruption, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
