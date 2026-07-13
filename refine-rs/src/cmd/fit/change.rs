@@ -1,6 +1,6 @@
 use crate::cmd::{
-    BackrefRenderError, CmdResp, CmdResps, FitChangeFitError, FleetIdBackref,
-    basic::{CmdFitChangeICtxBIds, CmdFitChangeICtxRIds},
+    basic::{CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, FitChangeFitError},
+    shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref},
 };
 
 pub enum ChangeFitEnumCmd {

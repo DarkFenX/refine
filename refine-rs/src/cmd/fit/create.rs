@@ -1,4 +1,7 @@
-use crate::cmd::{CreateFitError, CreatedFitIdResp, basic::CmdFitCreateFCtxRIds};
+use crate::cmd::{
+    basic::{CmdFitCreateFCtxRIds, CreateFitError},
+    shared::CreatedFitIdResp,
+};
 
 #[derive(Default)]
 pub struct CreateFitCmd {

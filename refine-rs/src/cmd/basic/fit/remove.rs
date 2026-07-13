@@ -1,11 +1,11 @@
 use crate::cmd::{BackrefRenderError, CmdResps, FitIdBackref};
 
 // Commands with full context
-struct CmdFitRemoveFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: CmdFitRemoveICtx,
+pub(in crate::cmd) struct CmdFitRemoveFCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: CmdFitRemoveICtx,
 }
-struct CmdFitRemoveFCtxRIds {
+pub(crate) struct CmdFitRemoveFCtxRIds {
     fit_id: rc::FitId,
     ictx_cmd: CmdFitRemoveICtx,
 }

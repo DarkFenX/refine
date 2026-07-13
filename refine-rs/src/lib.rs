@@ -2,7 +2,7 @@ pub use cmd::{
     ChangeFitEnumCmd, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp, CmdResps, CreateFitCmd, CreateFleetCmd,
     CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp, FitChangeFitCmd, FitIdBackref,
     FleetIdBackref, ItemIdBackref, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolChangeFitCmd, SolChangeFleetCmd,
-    SolChangeSolCmd, SolCreateFleetCmd, SolRemoveFleetCmd,
+    SolChangeSolCmd, SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;

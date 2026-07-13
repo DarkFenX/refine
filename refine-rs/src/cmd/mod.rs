@@ -11,7 +11,7 @@ pub use shared::{
 };
 pub use sol::{
     ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd,
-    SolCreateFleetCmd, SolRemoveFleetCmd,
+    SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
 };
 
 mod basic;

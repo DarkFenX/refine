@@ -1,11 +1,12 @@
 use crate::cmd::{
-    BackrefRenderError, CmdResp, CmdResps, CreateFleetError, FitIdBackref, FleetIdBackref, GetFitChangeFitError,
-    GetFleetChangeFleetError, GetFleetRemoveFleetError,
     basic::{
-        CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFleetChangeFCtxBIds,
-        CmdFleetChangeFCtxRIds, CmdFleetChangeICtxBIds, CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds,
-        CmdFleetRemoveFCtxBIds, CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx, CmdSolChangeFCtx,
+        CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitCreateFCtxBIds, CmdFitCreateFCtxRIds,
+        CmdFitRemoveFCtxBIds, CmdFitRemoveFCtxRIds, CmdFitRemoveICtx, CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds,
+        CmdFleetChangeICtxBIds, CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveFCtxBIds,
+        CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx, CmdSolChangeFCtx, CreateFitError, CreateFleetError,
+        GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
     },
+    shared::{BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref},
 };
 
 pub enum ChangeSolEnumCmd {
@@ -16,7 +17,9 @@ pub enum ChangeSolEnumCmd {
     ChangeFleet(SolChangeFleetCmd),
     RemoveFleet(SolRemoveFleetCmd),
     // Fit
+    CreateFit(SolCreateFitCmd),
     ChangeFit(SolChangeFitCmd),
+    RemoveFit(SolRemoveFitCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -27,7 +30,9 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     ChangeFleet(CmdFleetChangeFCtxRIds),
     RemoveFleet(CmdFleetRemoveFCtxRIds),
     // Fit
+    CreateFit(CmdFitCreateFCtxRIds),
     ChangeFit(CmdFitChangeFCtxRIds),
+    RemoveFit(CmdFitRemoveFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,7 +48,9 @@ impl ChangeSolEnumCmd {
             Self::ChangeFleet(cmd) => ChangeSolEnumCmdRIds::ChangeFleet(cmd.basic.render(resps)?),
             Self::RemoveFleet(cmd) => ChangeSolEnumCmdRIds::RemoveFleet(cmd.basic.render(resps)?),
             // Fit
+            Self::CreateFit(cmd) => ChangeSolEnumCmdRIds::CreateFit(cmd.basic.render(resps)?),
             Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
+            Self::RemoveFit(cmd) => ChangeSolEnumCmdRIds::RemoveFit(cmd.basic.render(resps)?),
         })
     }
 }
@@ -61,7 +68,9 @@ impl ChangeSolEnumCmdRIds {
             Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::RemoveFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Fit
+            Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RemoveFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -76,8 +85,12 @@ pub enum ChangeSolEnumError {
     #[error("failed to remove fleet: {0}")]
     FleetRemoveFailed(#[from] GetFleetRemoveFleetError),
     // Fit
+    #[error("failed to create fit: {0}")]
+    FitCreateFailed(#[from] CreateFitError),
     #[error("failed to change fit: {0}")]
     FitChangeFailed(#[from] GetFitChangeFitError),
+    #[error("failed to remove fit: {0}")]
+    FitRemoveFailed(#[from] GetFitRemoveFitError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -196,6 +209,33 @@ impl From<SolRemoveFleetCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sub-commands - fit
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
+pub struct SolCreateFitCmd {
+    basic: CmdFitCreateFCtxBIds,
+}
+impl SolCreateFitCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
+        self.basic.fleet_id = fleet_id;
+        self
+    }
+    pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
+        self.basic.shared.sec_status = Some(sec_status);
+        self
+    }
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: rc::DpsProfile) -> Self {
+        self.basic.shared.rah_incoming_dps = Some(rah_incoming_dps);
+        self
+    }
+}
+impl From<SolCreateFitCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolCreateFitCmd) -> Self {
+        Self::CreateFit(sub_cmd)
+    }
+}
+
 pub struct SolChangeFitCmd {
     basic: CmdFitChangeFCtxBIds,
 }
@@ -224,5 +264,24 @@ impl SolChangeFitCmd {
 impl From<SolChangeFitCmd> for ChangeSolEnumCmd {
     fn from(sub_cmd: SolChangeFitCmd) -> Self {
         Self::ChangeFit(sub_cmd)
+    }
+}
+
+pub struct SolRemoveFitCmd {
+    basic: CmdFitRemoveFCtxBIds,
+}
+impl SolRemoveFitCmd {
+    pub fn new(fit_id: FitIdBackref) -> Self {
+        Self {
+            basic: CmdFitRemoveFCtxBIds {
+                fit_id,
+                ictx_cmd: CmdFitRemoveICtx::default(),
+            },
+        }
+    }
+}
+impl From<SolRemoveFitCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolRemoveFitCmd) -> Self {
+        Self::RemoveFit(sub_cmd)
     }
 }

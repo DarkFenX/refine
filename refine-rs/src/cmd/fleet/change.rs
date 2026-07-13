@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeFleetError, basic::CmdFleetChangeICtxRIds};
+use crate::cmd::basic::{ChangeFleetError, CmdFleetChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ChangeFleetCmd {

@@ -1,4 +1,4 @@
-use crate::cmd::{RemoveItemError, basic::CmdItemRemoveICtx};
+use crate::cmd::basic::{CmdItemRemoveICtx, RemoveItemError};
 
 #[derive(Default)]
 pub struct RemoveItemCmd {

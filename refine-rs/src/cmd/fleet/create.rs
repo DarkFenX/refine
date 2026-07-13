@@ -1,4 +1,7 @@
-use crate::cmd::{CreateFleetError, CreatedFleetIdResp, basic::CmdFleetCreateFCtxRIds};
+use crate::cmd::{
+    basic::{CmdFleetCreateFCtxRIds, CreateFleetError},
+    shared::CreatedFleetIdResp,
+};
 
 #[derive(Default)]
 pub struct CreateFleetCmd {

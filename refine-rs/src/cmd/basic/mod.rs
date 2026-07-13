@@ -1,6 +1,6 @@
 pub(in crate::cmd) use fit::{
-    CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdFitCreateFCtxRIds,
-    CmdFitRemoveICtx,
+    CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdFitCreateFCtxBIds,
+    CmdFitCreateFCtxRIds, CmdFitRemoveFCtxBIds, CmdFitRemoveFCtxRIds, CmdFitRemoveICtx,
 };
 pub use fit::{CreateFitError, FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError};
 pub use fleet::{ChangeFleetError, CreateFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
