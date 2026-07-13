@@ -8,7 +8,7 @@ impl Fleet<'_, '_> {
     pub async fn change(&mut self, cmd: ChangeFleetCmd) -> Result<(), ChangeFleetError> {
         let fleet_id = self.id;
         self.sol
-            .exec_standard_safe(move |core_sol| cmd.execute(core_sol, &fleet_id))
+            .exec_standard_fallible(move |core_sol| cmd.execute(core_sol, &fleet_id))
             .await?;
         Ok(())
     }
@@ -24,7 +24,8 @@ pub enum ChangeFleetError {
 impl From<BasicChangeFleetError> for ChangeFleetError {
     fn from(error: BasicChangeFleetError) -> Self {
         match error {
-            // Holding mutex on sol - nothing can remove the fleet before we do
+            // Holding mutex on sol - nothing can remove the core fleet without consuming the
+            // high-level Fleet
             BasicChangeFleetError::FleetGetFailed(_) => unreachable!(),
             BasicChangeFleetError::FitAddFailed(core_error) => Self::FitAddFailed(core_error),
             BasicChangeFleetError::FitRemoveFailed(core_error) => Self::FitRemoveFailed(core_error),

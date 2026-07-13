@@ -36,6 +36,7 @@ impl<'r> SolarSystem<'r> {
             }
         }
     }
+    // TODO: review all calls to safe and check that they are actually safe
     pub(crate) async fn exec_standard_safe<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
