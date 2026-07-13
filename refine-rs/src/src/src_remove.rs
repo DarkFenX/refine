@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Refine {
-    #[tracing::instrument(name = "src-rm", level = "trace", skip_all)]
+    #[tracing::instrument(name = "src-rmv", level = "trace", skip_all)]
     async fn remove_src(&self, alias: &SrcAlias) -> Result<(), RemoveSrcError> {
         tracing::debug!("removing source with alias \"{alias}\"");
         let mut alias_data = self.src_alias_data.write().await;

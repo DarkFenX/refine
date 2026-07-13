@@ -1,5 +1,5 @@
-pub use basic::CreateFleetError;
-pub use fleet::CreateFleetCmd;
+pub use basic::{CreateFleetError, RemoveFleetError};
+pub use fleet::{CreateFleetCmd, RemoveFleetCmd};
 pub use shared::{
     BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
     CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,

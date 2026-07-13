@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl Refine {
-    #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "src-crt", level = "trace", skip_all)]
     pub async fn create_src(
         &self,
         alias: SrcAlias,

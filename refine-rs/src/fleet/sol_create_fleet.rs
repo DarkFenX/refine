@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl<'r, 's> SolarSystem<'r> {
-    #[tracing::instrument(name = "sol-fleet-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-crt", level = "trace", skip_all)]
     pub async fn create_fleet(&'s mut self, cmd: CreateFleetCmd) -> Result<Fleet<'r, 's>, CreateFleetError> {
         self.exec_standard_fallible(move |core_sol| cmd.execute(core_sol))
             .await

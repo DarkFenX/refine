@@ -1,8 +1,8 @@
 use tokio_rayon::AsyncThreadPool;
 
 pub(crate) struct ThreadPool {
-    pub(crate) standard: tokio_rayon::rayon::ThreadPool,
-    pub(crate) heavy: tokio_rayon::rayon::ThreadPool,
+    standard: tokio_rayon::rayon::ThreadPool,
+    heavy: tokio_rayon::rayon::ThreadPool,
 }
 impl ThreadPool {
     pub(super) fn new(standard_threads: usize, heavy_threads: usize) -> Self {

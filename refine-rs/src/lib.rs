@@ -1,6 +1,6 @@
 pub use cmd::{
     ChangedItemIdsResp, CmdResp, CmdResps, CreateFleetCmd, CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp,
-    CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,
+    CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref, RemoveFleetCmd,
 };
 pub use info::{SrcInfo, SrcInfoMode};
 pub use rc::{

@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl Refine {
-    #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-crt", level = "trace", skip_all)]
     pub async fn create_sol(
         &self,
         src_alias: Option<&SrcAlias>,

@@ -41,6 +41,7 @@ async fn main() {
         .unwrap();
     let fleet = sol.create_fleet(rs::CreateFleetCmd::new()).await.unwrap();
     tracing::error!("fleet ID: {}", fleet.get_fleet_id());
+    fleet.remove(rs::RemoveFleetCmd::new());
     // Cleanup
     sol.remove();
     refine.get_src(None).await.unwrap().remove().await;
