@@ -1,6 +1,6 @@
+pub(in crate::cmd) use create::CmdFleetCreateFCtxRIds;
 pub use create::CreateFleetError;
-pub(in crate::cmd) use create::FleetCreateCmdFCtxRIds;
-pub(in crate::cmd) use remove::FleetRemoveCmdICtx;
+pub(in crate::cmd) use remove::CmdFleetRemoveICtx;
 pub use remove::RemoveFleetError;
 
 mod create;

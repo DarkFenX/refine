@@ -1,21 +1,21 @@
 use crate::cmd::{BackrefRenderError, CmdResps, CreatedFleetIdResp, FitIdBackref};
 
 // Commands with full context
-pub(in crate::cmd) struct FleetCreateCmdFCtxBIds {
+pub(in crate::cmd) struct CmdFleetCreateFCtxBIds {
     fit_ids: Vec<FitIdBackref>,
 }
 
 #[derive(Default)]
-pub(in crate::cmd) struct FleetCreateCmdFCtxRIds {
+pub(in crate::cmd) struct CmdFleetCreateFCtxRIds {
     pub(in crate::cmd) fit_ids: Vec<rc::FitId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetCreateCmdFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<FleetCreateCmdFCtxRIds, BackrefRenderError> {
-        Ok(FleetCreateCmdFCtxRIds {
+impl CmdFleetCreateFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFleetCreateFCtxRIds, BackrefRenderError> {
+        Ok(CmdFleetCreateFCtxRIds {
             fit_ids: resps.render_fit_ids(self.fit_ids)?,
         })
     }
@@ -24,7 +24,7 @@ impl FleetCreateCmdFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetCreateCmdFCtxRIds {
+impl CmdFleetCreateFCtxRIds {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
@@ -39,6 +39,6 @@ impl FleetCreateCmdFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum CreateFleetError {
-    #[error("failed to create fleet: {0}")]
+    #[error("failed to add fit to fleet: {0}")]
     FitAddFailed(#[from] rc::err::FleetAddFitError),
 }

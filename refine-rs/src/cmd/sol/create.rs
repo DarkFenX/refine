@@ -1,8 +1,8 @@
-use crate::cmd::basic::SolCreateCmdFCtx;
+use crate::cmd::basic::CmdSolCreateFCtx;
 
 #[derive(Default)]
 pub struct CreateSolCmd {
-    basic: SolCreateCmdFCtx,
+    basic: CmdSolCreateFCtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -12,27 +12,27 @@ impl CreateSolCmd {
     pub fn new() -> Self {
         CreateSolCmd::default()
     }
-    pub fn sec_zone(mut self, sec_zone: rc::SecZone) -> Self {
+    pub fn with_sec_zone(mut self, sec_zone: rc::SecZone) -> Self {
         self.basic.sec_zone = Some(sec_zone);
         self
     }
-    pub fn default_incoming_dps(mut self, incoming_dps: rc::DpsProfile) -> Self {
+    pub fn with_default_incoming_dps(mut self, incoming_dps: rc::DpsProfile) -> Self {
         self.basic.default_incoming_dps = Some(incoming_dps);
         self
     }
-    pub fn default_spool(mut self, spool: rc::Spool) -> Self {
+    pub fn with_default_spool(mut self, spool: rc::Spool) -> Self {
         self.basic.default_spool = Some(spool);
         self
     }
-    pub fn default_npc_prop(mut self, npc_prop: rc::NpcProp) -> Self {
+    pub fn with_default_npc_prop(mut self, npc_prop: rc::NpcProp) -> Self {
         self.basic.default_npc_prop = Some(npc_prop);
         self
     }
-    pub fn default_optional_reloads(mut self, optional_reload: rc::OptionalReload) -> Self {
+    pub fn with_default_optional_reloads(mut self, optional_reload: rc::OptionalReload) -> Self {
         self.basic.default_optional_reloads = Some(optional_reload);
         self
     }
-    pub fn default_rearm_minions(mut self, rearm_minion: rc::RearmMinion) -> Self {
+    pub fn with_default_rearm_minions(mut self, rearm_minion: rc::RearmMinion) -> Self {
         self.basic.default_rearm_minions = Some(rearm_minion);
         self
     }

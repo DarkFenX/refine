@@ -36,12 +36,15 @@ async fn main() {
     refine.create_src("tq".into(), edh, true).await.unwrap();
     // Main part
     let mut sol = refine
-        .create_sol(None, rs::CreateSolCmd::new().sec_zone(rs::SecZone::WSpace))
+        .create_sol(None, rs::CreateSolCmd::new().with_sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
     let fleet = sol.create_fleet(rs::CreateFleetCmd::new()).await.unwrap();
     tracing::error!("fleet ID: {}", fleet.get_fleet_id());
-    fleet.remove(rs::RemoveFleetCmd::new());
+    let fit = sol.create_fit(rs::CreateFitCmd::new()).await.unwrap();
+    tracing::error!("fit ID: {}", fit.get_fit_id());
+    fit.remove(rs::RemoveFitCmd::new());
+    // fleet.remove(rs::RemoveFleetCmd::new());
     // Cleanup
     sol.remove();
     refine.get_src(None).await.unwrap().remove().await;

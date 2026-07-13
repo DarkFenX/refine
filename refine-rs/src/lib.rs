@@ -1,11 +1,13 @@
 pub use cmd::{
-    ChangedItemIdsResp, CmdResp, CmdResps, CreateFleetCmd, CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp,
-    CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref, RemoveFleetCmd,
+    ChangedItemIdsResp, CmdResp, CmdResps, CreateFitCmd, CreateFleetCmd, CreateSolCmd, CreatedFitIdResp,
+    CreatedFleetIdResp, CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref, RemoveFitCmd, RemoveFleetCmd,
 };
+pub use fit::Fit;
+pub use fleet::Fleet;
 pub use info::{SrcInfo, SrcInfoMode};
 pub use rc::{
-    BreacherProfile, Count, DpsProfile, FitId, Fleet, FleetId, ItemId, NpcProp, OptionalReload, PValue, RearmMinion,
-    SecZone, SecZoneCorruption, Spool, UnitInterval, Value, ed::EveDataHandler,
+    BreacherProfile, Count, DpsProfile, FitId, FleetId, ItemId, NpcProp, OptionalReload, PValue, RearmMinion, SecZone,
+    SecZoneCorruption, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
@@ -13,6 +15,7 @@ pub use src::{Src, SrcAlias};
 
 mod cmd;
 pub mod err;
+mod fit;
 mod fleet;
 mod info;
 mod refine;

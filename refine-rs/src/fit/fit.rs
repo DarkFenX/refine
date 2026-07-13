@@ -1,11 +1,11 @@
 use crate::sol::SolarSystem;
 
-pub struct Fleet<'r, 's> {
+pub struct Fit<'r, 's> {
     pub(super) sol: &'s mut SolarSystem<'r>,
-    pub(super) id: rc::FleetId,
+    pub(super) id: rc::FitId,
 }
-impl<'r, 's> Fleet<'r, 's> {
-    pub fn get_fleet_id(&self) -> rc::FleetId {
+impl<'r, 's> Fit<'r, 's> {
+    pub fn get_fit_id(&self) -> rc::FitId {
         self.id
     }
 }
@@ -13,8 +13,8 @@ impl<'r, 's> Fleet<'r, 's> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<'r, 's> Fleet<'r, 's> {
-    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: rc::FleetId) -> Self {
+impl<'r, 's> Fit<'r, 's> {
+    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: rc::FitId) -> Self {
         Self { sol, id }
     }
 }
