@@ -1,6 +1,6 @@
 pub use basic::{
-    BasicChangeFleetError, BasicCreateFitError, BasicCreateFleetError, BasicRemoveItemError, CreateRigError,
-    RemoveFitError, RemoveFleetError,
+    BasicCreateFitError, BasicCreateFleetError, BasicRemoveItemError, ChangeFleetError, CreateRigError,
+    GetChangeFleetError, RemoveFitError, RemoveFleetError,
 };
 pub use fit::{CreateFitCmd, RemoveFitCmd};
 pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};

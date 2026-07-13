@@ -46,18 +46,22 @@ impl CmdFleetChangeICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdFleetChangeFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), BasicChangeFleetError> {
-        self.ictx_cmd.execute(core_sol, &self.fleet_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetChangeFleetError> {
+        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        Ok(self.ictx_cmd.execute(&mut core_fleet)?)
     }
 }
 
+#[derive(thiserror::Error, Debug)]
+pub enum GetChangeFleetError {
+    #[error("{0}")]
+    GetFailed(#[from] rc::err::GetFleetError),
+    #[error("{0}")]
+    ChangeFailed(#[from] ChangeFleetError),
+}
+
 impl CmdFleetChangeICtxRIds {
-    pub(in crate::cmd) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::FleetId,
-    ) -> Result<(), BasicChangeFleetError> {
-        let mut core_fleet = core_sol.get_fleet_mut(fleet_id)?;
+    pub(in crate::cmd) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), ChangeFleetError> {
         for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id)?;
         }
@@ -69,9 +73,7 @@ impl CmdFleetChangeICtxRIds {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum BasicChangeFleetError {
-    #[error("{0}")]
-    FleetGetFailed(#[from] rc::err::GetFleetError),
+pub enum ChangeFleetError {
     #[error("failed to add fit: {0}")]
     FitAddFailed(#[from] rc::err::FleetAddFitError),
     #[error("failed to remove fit: {0}")]

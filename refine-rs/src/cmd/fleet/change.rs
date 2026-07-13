@@ -1,4 +1,4 @@
-use crate::cmd::{BasicChangeFleetError, basic::CmdFleetChangeICtxRIds};
+use crate::cmd::{ChangeFleetError, basic::CmdFleetChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ChangeFleetCmd {
@@ -28,11 +28,7 @@ impl ChangeFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFleetCmd {
-    pub(crate) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        fleet_id: &rc::FleetId,
-    ) -> Result<(), BasicChangeFleetError> {
-        self.basic.execute(core_sol, fleet_id)
+    pub(crate) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), ChangeFleetError> {
+        self.basic.execute(core_fleet)
     }
 }
