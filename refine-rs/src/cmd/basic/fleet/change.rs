@@ -1,19 +1,20 @@
 use crate::cmd::{BackrefRenderError, CmdResps, FitIdBackref, FleetIdBackref};
 
 // Commands with full context
-struct CmdFleetChangeFCtxBIds {
-    fleet_id: FleetIdBackref,
-    ictx_cmd: CmdFleetChangeICtxBIds,
+pub(in crate::cmd) struct CmdFleetChangeFCtxBIds {
+    pub(in crate::cmd) fleet_id: FleetIdBackref,
+    pub(in crate::cmd) ictx_cmd: CmdFleetChangeICtxBIds,
 }
-struct CmdFleetChangeFCtxRIds {
+pub(crate) struct CmdFleetChangeFCtxRIds {
     fleet_id: rc::FleetId,
     ictx_cmd: CmdFleetChangeICtxRIds,
 }
 
 // Commands with incomplete context
-struct CmdFleetChangeICtxBIds {
-    add_fit_ids: Vec<FitIdBackref>,
-    rm_fit_ids: Vec<FitIdBackref>,
+#[derive(Default)]
+pub(in crate::cmd) struct CmdFleetChangeICtxBIds {
+    pub(in crate::cmd) add_fit_ids: Vec<FitIdBackref>,
+    pub(in crate::cmd) rm_fit_ids: Vec<FitIdBackref>,
 }
 #[derive(Default)]
 pub(in crate::cmd) struct CmdFleetChangeICtxRIds {

@@ -1,12 +1,13 @@
 use crate::cmd::{BackrefRenderError, CmdResps, CreatedFleetIdResp, FitIdBackref};
 
 // Commands with full context
+#[derive(Default)]
 pub(in crate::cmd) struct CmdFleetCreateFCtxBIds {
-    fit_ids: Vec<FitIdBackref>,
+    pub(in crate::cmd) fit_ids: Vec<FitIdBackref>,
 }
 
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFleetCreateFCtxRIds {
+pub(crate) struct CmdFleetCreateFCtxRIds {
     pub(in crate::cmd) fit_ids: Vec<rc::FitId>,
 }
 

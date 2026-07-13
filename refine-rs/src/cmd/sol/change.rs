@@ -1,11 +1,20 @@
 use crate::cmd::{
-    BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, GetFitChangeFitError,
-    basic::{CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdSolChangeFCtx},
+    BackrefRenderError, CmdResp, CmdResps, CreateFleetError, FitIdBackref, FleetIdBackref, GetFitChangeFitError,
+    GetFleetChangeFleetError, GetFleetRemoveFleetError,
+    basic::{
+        CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFleetChangeFCtxBIds,
+        CmdFleetChangeFCtxRIds, CmdFleetChangeICtxBIds, CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds,
+        CmdFleetRemoveFCtxBIds, CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx, CmdSolChangeFCtx,
+    },
 };
 
 pub enum ChangeSolEnumCmd {
     // Solar system
     ChangeSol(SolChangeSolCmd),
+    // Fleet
+    CreateFleet(SolCreateFleetCmd),
+    ChangeFleet(SolChangeFleetCmd),
+    RemoveFleet(SolRemoveFleetCmd),
     // Fit
     ChangeFit(SolChangeFitCmd),
 }
@@ -13,6 +22,10 @@ pub enum ChangeSolEnumCmd {
 pub(crate) enum ChangeSolEnumCmdRIds {
     // Solar system
     ChangeSol(CmdSolChangeFCtx),
+    // Fleet
+    CreateFleet(CmdFleetCreateFCtxRIds),
+    ChangeFleet(CmdFleetChangeFCtxRIds),
+    RemoveFleet(CmdFleetRemoveFCtxRIds),
     // Fit
     ChangeFit(CmdFitChangeFCtxRIds),
 }
@@ -25,6 +38,10 @@ impl ChangeSolEnumCmd {
         Ok(match self {
             // Solar system
             Self::ChangeSol(cmd) => ChangeSolEnumCmdRIds::ChangeSol(cmd.basic),
+            // Fleet
+            Self::CreateFleet(cmd) => ChangeSolEnumCmdRIds::CreateFleet(cmd.basic.render(resps)?),
+            Self::ChangeFleet(cmd) => ChangeSolEnumCmdRIds::ChangeFleet(cmd.basic.render(resps)?),
+            Self::RemoveFleet(cmd) => ChangeSolEnumCmdRIds::RemoveFleet(cmd.basic.render(resps)?),
             // Fit
             Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
         })
@@ -39,6 +56,10 @@ impl ChangeSolEnumCmdRIds {
         match self {
             // Solar system
             Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
+            // Fleet
+            Self::CreateFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RemoveFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Fit
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
@@ -47,8 +68,15 @@ impl ChangeSolEnumCmdRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeSolEnumError {
-    // Fit
+    // Fleet
+    #[error("failed to create fleet: {0}")]
+    FleetCreateFailed(#[from] CreateFleetError),
     #[error("failed to change fleet: {0}")]
+    FleetChangeFailed(#[from] GetFleetChangeFleetError),
+    #[error("failed to remove fleet: {0}")]
+    FleetRemoveFailed(#[from] GetFleetRemoveFleetError),
+    // Fit
+    #[error("failed to change fit: {0}")]
     FitChangeFailed(#[from] GetFitChangeFitError),
 }
 
@@ -91,6 +119,77 @@ impl SolChangeSolCmd {
 impl From<SolChangeSolCmd> for ChangeSolEnumCmd {
     fn from(sub_cmd: SolChangeSolCmd) -> Self {
         Self::ChangeSol(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - fleet
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
+pub struct SolCreateFleetCmd {
+    basic: CmdFleetCreateFCtxBIds,
+}
+impl SolCreateFleetCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_fit_ids(mut self, fit_ids: impl ExactSizeIterator<Item = FitIdBackref>) -> Self {
+        self.basic.fit_ids.clear();
+        self.basic.fit_ids.extend(fit_ids);
+        self
+    }
+}
+impl From<SolCreateFleetCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolCreateFleetCmd) -> Self {
+        Self::CreateFleet(sub_cmd)
+    }
+}
+
+pub struct SolChangeFleetCmd {
+    basic: CmdFleetChangeFCtxBIds,
+}
+impl SolChangeFleetCmd {
+    pub fn new(fleet_id: FleetIdBackref) -> Self {
+        Self {
+            basic: CmdFleetChangeFCtxBIds {
+                fleet_id,
+                ictx_cmd: CmdFleetChangeICtxBIds::default(),
+            },
+        }
+    }
+    pub fn with_add_fit_ids(mut self, add_fit_ids: impl ExactSizeIterator<Item = FitIdBackref>) -> Self {
+        self.basic.ictx_cmd.add_fit_ids.clear();
+        self.basic.ictx_cmd.add_fit_ids.extend(add_fit_ids);
+        self
+    }
+    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl ExactSizeIterator<Item = FitIdBackref>) -> Self {
+        self.basic.ictx_cmd.rm_fit_ids.clear();
+        self.basic.ictx_cmd.rm_fit_ids.extend(rm_fit_ids);
+        self
+    }
+}
+impl From<SolChangeFleetCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolChangeFleetCmd) -> Self {
+        Self::ChangeFleet(sub_cmd)
+    }
+}
+
+pub struct SolRemoveFleetCmd {
+    basic: CmdFleetRemoveFCtxBIds,
+}
+impl SolRemoveFleetCmd {
+    pub fn new(fleet_id: FleetIdBackref) -> Self {
+        Self {
+            basic: CmdFleetRemoveFCtxBIds {
+                fleet_id,
+                ictx_cmd: CmdFleetRemoveICtx::default(),
+            },
+        }
+    }
+}
+impl From<SolRemoveFleetCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolRemoveFleetCmd) -> Self {
+        Self::RemoveFleet(sub_cmd)
     }
 }
 

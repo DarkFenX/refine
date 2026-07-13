@@ -1,11 +1,11 @@
 use crate::cmd::{BackrefRenderError, CmdResps, FleetIdBackref};
 
 // Commands with full context
-struct CmdFleetRemoveFCtxBIds {
-    fleet_id: FleetIdBackref,
-    ictx_cmd: CmdFleetRemoveICtx,
+pub(in crate::cmd) struct CmdFleetRemoveFCtxBIds {
+    pub(in crate::cmd) fleet_id: FleetIdBackref,
+    pub(in crate::cmd) ictx_cmd: CmdFleetRemoveICtx,
 }
-struct CmdFleetRemoveFCtxRIds {
+pub(crate) struct CmdFleetRemoveFCtxRIds {
     fleet_id: rc::FleetId,
     ictx_cmd: CmdFleetRemoveICtx,
 }

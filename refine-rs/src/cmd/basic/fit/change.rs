@@ -19,7 +19,7 @@ pub(in crate::cmd) struct CmdFitChangeICtxBIds {
     pub(in crate::cmd) shared: CmdFitChangeShared,
     pub(in crate::cmd) fleet_id: TriStateField<FleetIdBackref>,
 }
-pub(in crate::cmd) struct CmdFitChangeICtxRIds {
+pub(crate) struct CmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<rc::FleetId>,
 }
