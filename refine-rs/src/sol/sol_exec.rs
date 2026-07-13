@@ -67,10 +67,7 @@ impl<'r> SolarSystem<'r> {
     where
         F: FnOnce(&mut rc::SolarSystem) -> R,
     {
-        let mut core_sol = self.take_core().unwrap();
-        let result = func(&mut core_sol);
-        self.put_core_back(core_sol);
-        result
+        func(self.inner.core_sol.as_mut().unwrap())
     }
 }
 
