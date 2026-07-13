@@ -1,5 +1,5 @@
 use crate::cmd::{
-    basic::{
+    inner::{
         CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitCreateFCtxBIds, CmdFitCreateFCtxRIds,
         CmdFitRemoveFCtxBIds, CmdFitRemoveFCtxRIds, CmdFitRemoveICtx, CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds,
         CmdFleetChangeICtxBIds, CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveFCtxBIds,
@@ -47,17 +47,17 @@ impl ChangeSolEnumCmd {
     pub(crate) fn render(self, resps: &CmdResps) -> Result<ChangeSolEnumCmdRIds, BackrefRenderError> {
         Ok(match self {
             // Solar system
-            Self::ChangeSol(cmd) => ChangeSolEnumCmdRIds::ChangeSol(cmd.basic),
+            Self::ChangeSol(cmd) => ChangeSolEnumCmdRIds::ChangeSol(cmd.inner),
             // Fleet
-            Self::CreateFleet(cmd) => ChangeSolEnumCmdRIds::CreateFleet(cmd.basic.render(resps)?),
-            Self::ChangeFleet(cmd) => ChangeSolEnumCmdRIds::ChangeFleet(cmd.basic.render(resps)?),
-            Self::RemoveFleet(cmd) => ChangeSolEnumCmdRIds::RemoveFleet(cmd.basic.render(resps)?),
+            Self::CreateFleet(cmd) => ChangeSolEnumCmdRIds::CreateFleet(cmd.inner.render(resps)?),
+            Self::ChangeFleet(cmd) => ChangeSolEnumCmdRIds::ChangeFleet(cmd.inner.render(resps)?),
+            Self::RemoveFleet(cmd) => ChangeSolEnumCmdRIds::RemoveFleet(cmd.inner.render(resps)?),
             // Fit
-            Self::CreateFit(cmd) => ChangeSolEnumCmdRIds::CreateFit(cmd.basic.render(resps)?),
-            Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
-            Self::RemoveFit(cmd) => ChangeSolEnumCmdRIds::RemoveFit(cmd.basic.render(resps)?),
+            Self::CreateFit(cmd) => ChangeSolEnumCmdRIds::CreateFit(cmd.inner.render(resps)?),
+            Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),
+            Self::RemoveFit(cmd) => ChangeSolEnumCmdRIds::RemoveFit(cmd.inner.render(resps)?),
             // Item
-            Self::RemoveItem(cmd) => ChangeSolEnumCmdRIds::RemoveItem(cmd.basic.render(resps)?),
+            Self::RemoveItem(cmd) => ChangeSolEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
         })
     }
 }
@@ -110,34 +110,34 @@ pub enum ChangeSolEnumError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct SolChangeSolCmd {
-    basic: CmdSolChangeFCtx,
+    inner: CmdSolChangeFCtx,
 }
 impl SolChangeSolCmd {
     pub fn new() -> Self {
         Self::default()
     }
     pub fn with_sec_zone(mut self, sec_zone: rc::SecZone) -> Self {
-        self.basic.sec_zone = Some(sec_zone);
+        self.inner.sec_zone = Some(sec_zone);
         self
     }
     pub fn with_default_incoming_dps(mut self, incoming_dps: rc::DpsProfile) -> Self {
-        self.basic.default_incoming_dps = Some(incoming_dps);
+        self.inner.default_incoming_dps = Some(incoming_dps);
         self
     }
     pub fn with_default_spool(mut self, spool: rc::Spool) -> Self {
-        self.basic.default_spool = Some(spool);
+        self.inner.default_spool = Some(spool);
         self
     }
     pub fn with_default_npc_prop(mut self, npc_prop: rc::NpcProp) -> Self {
-        self.basic.default_npc_prop = Some(npc_prop);
+        self.inner.default_npc_prop = Some(npc_prop);
         self
     }
     pub fn with_default_optional_reloads(mut self, optional_reload: rc::OptionalReload) -> Self {
-        self.basic.default_optional_reloads = Some(optional_reload);
+        self.inner.default_optional_reloads = Some(optional_reload);
         self
     }
     pub fn with_default_rearm_minions(mut self, rearm_minion: rc::RearmMinion) -> Self {
-        self.basic.default_rearm_minions = Some(rearm_minion);
+        self.inner.default_rearm_minions = Some(rearm_minion);
         self
     }
 }
@@ -152,15 +152,15 @@ impl From<SolChangeSolCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct SolCreateFleetCmd {
-    basic: CmdFleetCreateFCtxBIds,
+    inner: CmdFleetCreateFCtxBIds,
 }
 impl SolCreateFleetCmd {
     pub fn new() -> Self {
         Self::default()
     }
     pub fn with_fit_ids(mut self, fit_ids: impl ExactSizeIterator<Item = FitIdBackref>) -> Self {
-        self.basic.fit_ids.clear();
-        self.basic.fit_ids.extend(fit_ids);
+        self.inner.fit_ids.clear();
+        self.inner.fit_ids.extend(fit_ids);
         self
     }
 }
@@ -171,25 +171,25 @@ impl From<SolCreateFleetCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolChangeFleetCmd {
-    basic: CmdFleetChangeFCtxBIds,
+    inner: CmdFleetChangeFCtxBIds,
 }
 impl SolChangeFleetCmd {
     pub fn new(fleet_id: FleetIdBackref) -> Self {
         Self {
-            basic: CmdFleetChangeFCtxBIds {
+            inner: CmdFleetChangeFCtxBIds {
                 fleet_id,
                 ictx_cmd: CmdFleetChangeICtxBIds::default(),
             },
         }
     }
     pub fn with_add_fit_ids(mut self, add_fit_ids: impl ExactSizeIterator<Item = FitIdBackref>) -> Self {
-        self.basic.ictx_cmd.add_fit_ids.clear();
-        self.basic.ictx_cmd.add_fit_ids.extend(add_fit_ids);
+        self.inner.ictx_cmd.add_fit_ids.clear();
+        self.inner.ictx_cmd.add_fit_ids.extend(add_fit_ids);
         self
     }
     pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl ExactSizeIterator<Item = FitIdBackref>) -> Self {
-        self.basic.ictx_cmd.rm_fit_ids.clear();
-        self.basic.ictx_cmd.rm_fit_ids.extend(rm_fit_ids);
+        self.inner.ictx_cmd.rm_fit_ids.clear();
+        self.inner.ictx_cmd.rm_fit_ids.extend(rm_fit_ids);
         self
     }
 }
@@ -200,12 +200,12 @@ impl From<SolChangeFleetCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolRemoveFleetCmd {
-    basic: CmdFleetRemoveFCtxBIds,
+    inner: CmdFleetRemoveFCtxBIds,
 }
 impl SolRemoveFleetCmd {
     pub fn new(fleet_id: FleetIdBackref) -> Self {
         Self {
-            basic: CmdFleetRemoveFCtxBIds {
+            inner: CmdFleetRemoveFCtxBIds {
                 fleet_id,
                 ictx_cmd: CmdFleetRemoveICtx::default(),
             },
@@ -223,22 +223,22 @@ impl From<SolRemoveFleetCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct SolCreateFitCmd {
-    basic: CmdFitCreateFCtxBIds,
+    inner: CmdFitCreateFCtxBIds,
 }
 impl SolCreateFitCmd {
     pub fn new() -> Self {
         Self::default()
     }
     pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
-        self.basic.fleet_id = fleet_id;
+        self.inner.fleet_id = fleet_id;
         self
     }
     pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
-        self.basic.shared.sec_status = Some(sec_status);
+        self.inner.shared.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: rc::DpsProfile) -> Self {
-        self.basic.shared.rah_incoming_dps = Some(rah_incoming_dps);
+        self.inner.shared.rah_incoming_dps = Some(rah_incoming_dps);
         self
     }
 }
@@ -249,27 +249,27 @@ impl From<SolCreateFitCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolChangeFitCmd {
-    basic: CmdFitChangeFCtxBIds,
+    inner: CmdFitChangeFCtxBIds,
 }
 impl SolChangeFitCmd {
     pub fn new(fit_id: FitIdBackref) -> Self {
         Self {
-            basic: CmdFitChangeFCtxBIds {
+            inner: CmdFitChangeFCtxBIds {
                 fit_id,
                 ictx_cmd: CmdFitChangeICtxBIds::default(),
             },
         }
     }
     pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
-        self.basic.ictx_cmd.fleet_id = fleet_id.into();
+        self.inner.ictx_cmd.fleet_id = fleet_id.into();
         self
     }
     pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
-        self.basic.ictx_cmd.shared.sec_status = Some(sec_status);
+        self.inner.ictx_cmd.shared.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<rc::DpsProfile>) -> Self {
-        self.basic.ictx_cmd.shared.rah_incoming_dps = rah_incoming_dps.into();
+        self.inner.ictx_cmd.shared.rah_incoming_dps = rah_incoming_dps.into();
         self
     }
 }
@@ -280,12 +280,12 @@ impl From<SolChangeFitCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolRemoveFitCmd {
-    basic: CmdFitRemoveFCtxBIds,
+    inner: CmdFitRemoveFCtxBIds,
 }
 impl SolRemoveFitCmd {
     pub fn new(fit_id: FitIdBackref) -> Self {
         Self {
-            basic: CmdFitRemoveFCtxBIds {
+            inner: CmdFitRemoveFCtxBIds {
                 fit_id,
                 ictx_cmd: CmdFitRemoveICtx::default(),
             },
@@ -302,19 +302,19 @@ impl From<SolRemoveFitCmd> for ChangeSolEnumCmd {
 // Sub-commands - item
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SolRemoveItemCmd {
-    basic: CmdItemRemoveFCtxBIds,
+    inner: CmdItemRemoveFCtxBIds,
 }
 impl SolRemoveItemCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
-            basic: CmdItemRemoveFCtxBIds {
+            inner: CmdItemRemoveFCtxBIds {
                 item_id,
                 ictx_cmd: CmdItemRemoveICtx::default(),
             },
         }
     }
     pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
-        self.basic.ictx_cmd.rm_mode = Some(rm_mode);
+        self.inner.ictx_cmd.rm_mode = Some(rm_mode);
         self
     }
 }

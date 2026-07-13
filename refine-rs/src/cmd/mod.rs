@@ -1,9 +1,9 @@
-pub use basic::{
+pub use fit::{ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeFitCmd, FitRemoveItemCmd, RemoveFitCmd};
+pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
+pub use inner::{
     ChangeFleetError, CreateFitError, CreateFleetError, CreateRigError, FitChangeFitError, GetFitChangeFitError,
     GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemRemoveItemError, RemoveItemError,
 };
-pub use fit::{ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeFitCmd, FitRemoveItemCmd, RemoveFitCmd};
-pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
 pub use item::RemoveItemCmd;
 pub use shared::{
     BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
@@ -14,9 +14,9 @@ pub use sol::{
     SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 
-mod basic;
 mod fit;
 mod fleet;
+mod inner;
 mod item;
 mod shared;
 mod sol;

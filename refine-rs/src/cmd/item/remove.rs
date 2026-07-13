@@ -1,8 +1,8 @@
-use crate::cmd::basic::{CmdItemRemoveICtx, RemoveItemError};
+use crate::cmd::inner::{CmdItemRemoveICtx, RemoveItemError};
 
 #[derive(Default)]
 pub struct RemoveItemCmd {
-    basic: CmdItemRemoveICtx,
+    inner: CmdItemRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -13,7 +13,7 @@ impl RemoveItemCmd {
         Self::default()
     }
     pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
-        self.basic.rm_mode = Some(rm_mode);
+        self.inner.rm_mode = Some(rm_mode);
         self
     }
 }
@@ -23,6 +23,6 @@ impl RemoveItemCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveItemCmd {
     pub(crate) fn execute(&self, core_item: rc::ItemMut) -> Result<(), RemoveItemError> {
-        self.basic.execute(core_item)
+        self.inner.execute(core_item)
     }
 }

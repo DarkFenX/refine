@@ -1,8 +1,8 @@
-use crate::cmd::basic::CmdFleetRemoveICtx;
+use crate::cmd::inner::CmdFleetRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFleetCmd {
-    basic: CmdFleetRemoveICtx,
+    inner: CmdFleetRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,6 @@ impl RemoveFleetCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveFleetCmd {
     pub(crate) fn execute(&self, core_fleet: rc::FleetMut) {
-        self.basic.execute(core_fleet)
+        self.inner.execute(core_fleet)
     }
 }

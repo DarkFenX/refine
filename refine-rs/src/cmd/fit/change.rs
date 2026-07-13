@@ -1,5 +1,5 @@
 use crate::cmd::{
-    basic::{
+    inner::{
         CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx,
         FitChangeFitError, GetItemRemoveItemError,
     },
@@ -27,9 +27,9 @@ impl ChangeFitEnumCmd {
     pub(crate) fn render(self, resps: &CmdResps) -> Result<ChangeFitEnumCmdRIds, BackrefRenderError> {
         Ok(match self {
             // Fit
-            Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
+            Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),
             // Item
-            Self::RemoveItem(cmd) => ChangeFitEnumCmdRIds::RemoveItem(cmd.basic.render(resps)?),
+            Self::RemoveItem(cmd) => ChangeFitEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
         })
     }
 }
@@ -61,22 +61,22 @@ pub enum ChangeFitEnumError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct FitChangeFitCmd {
-    basic: CmdFitChangeICtxBIds,
+    inner: CmdFitChangeICtxBIds,
 }
 impl FitChangeFitCmd {
     pub fn new() -> Self {
         Self::default()
     }
     pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
-        self.basic.fleet_id = fleet_id.into();
+        self.inner.fleet_id = fleet_id.into();
         self
     }
     pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
-        self.basic.shared.sec_status = Some(sec_status);
+        self.inner.shared.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<rc::DpsProfile>) -> Self {
-        self.basic.shared.rah_incoming_dps = rah_incoming_dps.into();
+        self.inner.shared.rah_incoming_dps = rah_incoming_dps.into();
         self
     }
 }
@@ -90,19 +90,19 @@ impl From<FitChangeFitCmd> for ChangeFitEnumCmd {
 // Sub-commands - item
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct FitRemoveItemCmd {
-    basic: CmdItemRemoveFCtxBIds,
+    inner: CmdItemRemoveFCtxBIds,
 }
 impl FitRemoveItemCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
-            basic: CmdItemRemoveFCtxBIds {
+            inner: CmdItemRemoveFCtxBIds {
                 item_id,
                 ictx_cmd: CmdItemRemoveICtx::default(),
             },
         }
     }
     pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
-        self.basic.ictx_cmd.rm_mode = Some(rm_mode);
+        self.inner.ictx_cmd.rm_mode = Some(rm_mode);
         self
     }
 }

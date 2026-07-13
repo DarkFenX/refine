@@ -1,8 +1,8 @@
-use crate::cmd::basic::CmdFitRemoveICtx;
+use crate::cmd::inner::CmdFitRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFitCmd {
-    basic: CmdFitRemoveICtx,
+    inner: CmdFitRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -19,6 +19,6 @@ impl RemoveFitCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveFitCmd {
     pub(crate) fn execute(&self, core_fit: rc::FitMut) {
-        self.basic.execute(core_fit)
+        self.inner.execute(core_fit)
     }
 }
