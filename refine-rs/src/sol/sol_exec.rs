@@ -8,8 +8,8 @@ impl<'r> SolarSystem<'r> {
     ///     any changes;
     ///   - attempt to mutate a module makes core library to unregister existing module from
     ///     services before realizing it cannot be mutated (because it already is mutated). In this
-    ///     case, this specific operation is still considered safe, because core library has
-    ///     code which restores state (register the module in services again).
+    ///     case, this specific operation is still considered safe, because core library has code
+    ///     which restores state (register the module in services again).
     ///   Note that for a command to be safe, solar system state does not have to be exactly equal
     ///   to what it was before command execution. Failed operations can increment ID counters, but
     ///   it since it does not affect anything but IDs of newly created entities, it is considered
@@ -35,12 +35,6 @@ impl<'r> SolarSystem<'r> {
             .await;
         self.put_core_back(core_sol);
         result
-    }
-    fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
-        self.inner.take_core()
-    }
-    fn put_core_back(&mut self, core_sol: Box<rc::SolarSystem>) {
-        self.inner.put_core_back(core_sol);
     }
     pub(crate) async fn exec_standard_fallible<F, T, E>(&mut self, func: F) -> Result<T, E>
     where
@@ -68,6 +62,18 @@ impl<'r> SolarSystem<'r> {
                 Err(error)
             }
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<'r> SolarSystem<'r> {
+    fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
+        self.inner.take_core()
+    }
+    fn put_core_back(&mut self, core_sol: Box<rc::SolarSystem>) {
+        self.inner.put_core_back(core_sol);
     }
 }
 
