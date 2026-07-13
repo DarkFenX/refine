@@ -26,11 +26,17 @@ impl PhbHttpEdh {
     /// This data handler assumes that data version is known before its construction.
     pub fn try_new<U>(base_url: U, data_version: String) -> Result<Self, PhbHttpEdhInitError>
     where
-        U: IntoUrl + Copy + Into<String>,
+        U: Clone + IntoUrl + Into<String>,
     {
-        let base_url_conv = base_url.into_url().map_err(|e| {
-            PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(base_url.into(), format!("failed to interpret: {e}"))
-        })?;
+        let base_url_conv = match base_url.clone().into_url() {
+            Ok(base_url_conv) => base_url_conv,
+            Err(error) => {
+                return Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
+                    base_url.into(),
+                    format!("failed to interpret: {error}"),
+                ));
+            }
+        };
         match base_url_conv.cannot_be_a_base() {
             true => Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
                 base_url.into(),

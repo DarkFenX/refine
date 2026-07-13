@@ -33,7 +33,7 @@ async fn main() {
     let mut refine = Refine::new(Some(String::from("./cache/")), 2, 4);
     let edh: Box<dyn rs::EveDataHandler + Send> =
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    refine.create_src("tq".into(), edh, true).await.unwrap();
+    refine.create_src("tq", edh, true).await.unwrap();
     // Main part
     let mut sol = refine
         .create_sol(None, rs::CreateSolCmd::new().with_sec_zone(rs::SecZone::WSpace))

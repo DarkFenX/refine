@@ -7,12 +7,16 @@ use crate::{
 
 impl Refine {
     #[tracing::instrument(name = "src-crt", level = "trace", skip_all)]
-    pub async fn create_src(
+    pub async fn create_src<A>(
         &self,
-        alias: SrcAlias,
+        alias: A,
         ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
         make_default: bool,
-    ) -> Result<Src<'_>, CreateSrcError> {
+    ) -> Result<Src<'_>, CreateSrcError>
+    where
+        A: Into<SrcAlias>,
+    {
+        let alias = alias.into();
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Disallow creating of sources with the same name until this one is created/fails
         if !self.check_alias_availability(&alias).await {
