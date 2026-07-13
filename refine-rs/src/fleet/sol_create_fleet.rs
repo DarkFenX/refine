@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{BasicCreateFleetError, CreateFleetCmd},
+    cmd::{CreateFleetCmd, CreateFleetError},
     fleet::Fleet,
     sol::SolarSystem,
 };
@@ -13,7 +13,3 @@ impl<'r, 's> SolarSystem<'r> {
         Ok(Fleet::new(self, cmd_resp.fleet_id))
     }
 }
-
-#[derive(thiserror::Error, Debug)]
-#[error("{0}")]
-pub struct CreateFleetError(#[from] pub BasicCreateFleetError);

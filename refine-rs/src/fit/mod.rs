@@ -1,5 +1,4 @@
 pub use fit::Fit;
-pub use sol_create_fit::CreateFitError;
 pub use sol_get_fit::GetFitError;
 
 mod fit;

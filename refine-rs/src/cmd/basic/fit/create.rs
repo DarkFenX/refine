@@ -36,10 +36,7 @@ impl CmdFitCreateFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdFitCreateFCtxRIds {
-    pub(in crate::cmd) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<CreatedFitIdResp, BasicCreateFitError> {
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFitIdResp, CreateFitError> {
         let mut core_fit = core_sol.create_fit();
         if let Some(fleet_id) = self.fleet_id {
             core_fit.set_fleet(&fleet_id)?;
@@ -55,7 +52,7 @@ impl CmdFitCreateFCtxRIds {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum BasicCreateFitError {
+pub enum CreateFitError {
     #[error("failed to set fleet: {0}")]
     FleetSetFailed(#[from] rc::err::SetFitFleetError),
 }

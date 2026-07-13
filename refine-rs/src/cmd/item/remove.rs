@@ -1,4 +1,4 @@
-use crate::cmd::{BasicRemoveItemError, basic::CmdItemRemoveICtx};
+use crate::cmd::{RemoveItemError, basic::CmdItemRemoveICtx};
 
 #[derive(Default)]
 pub struct RemoveItemCmd {
@@ -22,11 +22,7 @@ impl RemoveItemCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveItemCmd {
-    pub(crate) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        item_id: &rc::ItemId,
-    ) -> Result<(), BasicRemoveItemError> {
-        self.basic.execute(core_sol, item_id)
+    pub(crate) fn execute(&self, core_item: rc::ItemMut) -> Result<(), RemoveItemError> {
+        self.basic.execute(core_item)
     }
 }

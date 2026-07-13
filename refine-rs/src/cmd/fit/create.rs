@@ -1,4 +1,4 @@
-use crate::cmd::{BasicCreateFitError, CreatedFitIdResp, basic::CmdFitCreateFCtxRIds};
+use crate::cmd::{CreateFitError, CreatedFitIdResp, basic::CmdFitCreateFCtxRIds};
 
 #[derive(Default)]
 pub struct CreateFitCmd {
@@ -30,7 +30,7 @@ impl CreateFitCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CreateFitCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFitIdResp, BasicCreateFitError> {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFitIdResp, CreateFitError> {
         self.basic.execute(core_sol)
     }
 }

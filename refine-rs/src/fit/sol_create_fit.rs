@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{BasicCreateFitError, CreateFitCmd},
+    cmd::{CreateFitCmd, CreateFitError},
     fit::Fit,
     sol::SolarSystem,
 };
@@ -13,7 +13,3 @@ impl<'r, 's> SolarSystem<'r> {
         Ok(Fit::new(self, cmd_resp.fit_id))
     }
 }
-
-#[derive(thiserror::Error, Debug)]
-#[error("{0}")]
-pub struct CreateFitError(#[from] pub BasicCreateFitError);

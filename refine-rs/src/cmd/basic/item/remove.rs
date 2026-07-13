@@ -32,27 +32,29 @@ impl CmdItemRemoveFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdItemRemoveFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), BasicRemoveItemError> {
-        self.ictx_cmd.execute(core_sol, &self.item_id)
+    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetRemoveItemError> {
+        let core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.ictx_cmd.execute(core_item)?)
     }
 }
 
+#[derive(thiserror::Error, Debug)]
+pub enum GetRemoveItemError {
+    #[error("{0}")]
+    GetFailed(#[from] rc::err::GetItemError),
+    #[error("{0}")]
+    RemoveFailed(#[from] RemoveItemError),
+}
+
 impl CmdItemRemoveICtx {
-    pub(in crate::cmd) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-        item_id: &rc::ItemId,
-    ) -> Result<(), BasicRemoveItemError> {
-        let core_item = core_sol.get_item_mut(item_id)?;
+    pub(in crate::cmd) fn execute(&self, core_item: rc::ItemMut) -> Result<(), RemoveItemError> {
         core_item.remove(self.rm_mode.unwrap_or(rc::RmMode::Free))?;
         Ok(())
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum BasicRemoveItemError {
+pub enum RemoveItemError {
     #[error("{0}")]
-    ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemRemoveFailed(#[from] rc::err::RemoveItemError),
+    RemoveFailed(#[from] rc::err::RemoveItemError),
 }
