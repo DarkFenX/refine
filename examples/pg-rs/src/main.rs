@@ -39,11 +39,17 @@ async fn main() {
         .create_sol(None, rs::CreateSolCmd::new().with_sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
-    let fleet = sol.create_fleet(rs::CreateFleetCmd::new()).await.unwrap();
-    tracing::error!("fleet ID: {}", fleet.get_fleet_id());
-    let fit = sol.create_fit(rs::CreateFitCmd::new()).await.unwrap();
-    tracing::error!("fit ID: {}", fit.get_fit_id());
-    fit.remove(rs::RemoveFitCmd::new());
+    let resps = sol
+        .change(vec![
+            rs::SolCreateFleetCmd::new().into(),
+            rs::SolCreateFitCmd::new()
+                .with_fleet_id(rs::FleetIdBackref::Backref(0))
+                .into(),
+        ])
+        .await
+        .unwrap();
+    let fit = sol.get_fit(resps.get(1).unwrap().get_fit_id().unwrap()).await.unwrap();
+    tracing::error!("fit ID {}", fit.get_fit_id());
     // fleet.remove(rs::RemoveFleetCmd::new());
     // Cleanup
     sol.remove();

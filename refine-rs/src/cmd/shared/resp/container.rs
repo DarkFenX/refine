@@ -4,6 +4,15 @@ pub struct CmdResps {
     data: Vec<CmdResp>,
 }
 impl CmdResps {
+    pub fn get(&self, index: usize) -> Option<&CmdResp> {
+        self.data.get(index)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CmdResps {
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
             data: Vec::with_capacity(capacity),

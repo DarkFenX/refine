@@ -229,8 +229,8 @@ impl SolCreateFitCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
-        self.inner.fleet_id = fleet_id;
+    pub fn with_fleet_id(mut self, fleet_id: FleetIdBackref) -> Self {
+        self.inner.fleet_id = Some(fleet_id);
         self
     }
     pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {

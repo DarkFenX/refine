@@ -1,12 +1,39 @@
 use rc::ItemCommon;
 
 pub enum CmdResp {
-    CreatedFitId(CreatedFitIdResp),
     CreatedFleetId(CreatedFleetIdResp),
+    CreatedFitId(CreatedFitIdResp),
     CreatedItemIds(CreatedItemIdsResp),
     ChangedItemIds(ChangedItemIdsResp),
     // TODO: this variant serializes into null in JSON, but NoData {} is ugly, write custom ser impl
     NoData,
+}
+impl CmdResp {
+    pub fn get_fleet_id(&self) -> Option<rc::FleetId> {
+        match self {
+            Self::CreatedFleetId(resp) => Some(resp.fleet_id),
+            _ => None,
+        }
+    }
+    pub fn get_fit_id(&self) -> Option<rc::FitId> {
+        match self {
+            Self::CreatedFitId(resp) => Some(resp.fit_id),
+            _ => None,
+        }
+    }
+    pub fn get_item_id(&self) -> Option<rc::ItemId> {
+        match self {
+            Self::CreatedItemIds(resp) => Some(resp.item_id),
+            _ => None,
+        }
+    }
+    pub fn get_charge_item_id(&self) -> Option<rc::ItemId> {
+        match self {
+            Self::CreatedItemIds(resp) => resp.charge_item_id,
+            Self::ChangedItemIds(resp) => resp.charge_item_id,
+            _ => None,
+        }
+    }
 }
 
 pub struct CreatedFleetIdResp {
