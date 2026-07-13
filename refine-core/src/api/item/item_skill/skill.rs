@@ -5,12 +5,12 @@ use crate::{
     ud::{UItemId, USkill},
 };
 
-pub struct Skill<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Skill<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Skill<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Skill<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> Skill<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Skill<'a> {
+impl<'s> ItemSealed for Skill<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -31,14 +31,14 @@ impl<'a> ItemSealed for Skill<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Skill<'a> {}
+impl<'s> ItemCommon for Skill<'s> {}
 
-pub struct SkillMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct SkillMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> SkillMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> SkillMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -55,7 +55,7 @@ impl<'a> SkillMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for SkillMut<'a> {
+impl<'s> ItemSealed for SkillMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -63,13 +63,13 @@ impl<'a> ItemSealed for SkillMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for SkillMut<'a> {
+impl<'s> ItemMutSealed for SkillMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for SkillMut<'a> {}
-impl<'a> ItemMutCommon for SkillMut<'a> {}
+impl<'s> ItemCommon for SkillMut<'s> {}
+impl<'s> ItemMutCommon for SkillMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, skill_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_skill(sol, skill_uid).get_fit_uid();

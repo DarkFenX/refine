@@ -1,6 +1,6 @@
 pub use change::{
     ChangeSolEnumCmd, ChangeSolEnumError, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolCreateFitCmd,
-    SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
+    SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 pub use create::CreateSolCmd;
 

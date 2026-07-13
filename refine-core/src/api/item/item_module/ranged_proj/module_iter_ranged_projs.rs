@@ -1,13 +1,13 @@
 use crate::api::{Module, ModuleMut, RangedProj, RangedProjIter, iter_ranged_projs};
 
-impl<'a> Module<'a> {
+impl<'s> Module<'s> {
     /// Iterates over module's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = RangedProj<'_>> {
         iter_ranged_projs(self.sol, self.uid)
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     /// Iterates over module's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = RangedProj<'_>> {
         iter_ranged_projs(self.sol, self.uid)

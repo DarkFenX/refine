@@ -7,7 +7,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     /// Set drone propulsion mode.
     pub fn set_npc_prop(&mut self, npc_prop: Option<NpcProp>) {
         self.sol.internal_set_drone_npc_prop(self.uid, npc_prop);

@@ -32,7 +32,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_fighter(
         &mut self,
         type_id: ItemTypeId,

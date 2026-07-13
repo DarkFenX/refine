@@ -41,7 +41,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     pub fn set_state(&mut self, state: ModuleState) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_set_module_state(self.uid, state, &mut reuse_eupdates)

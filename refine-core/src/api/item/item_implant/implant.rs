@@ -5,12 +5,12 @@ use crate::{
     ud::{UImplant, UItemId},
 };
 
-pub struct Implant<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Implant<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Implant<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Implant<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> Implant<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Implant<'a> {
+impl<'s> ItemSealed for Implant<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -31,14 +31,14 @@ impl<'a> ItemSealed for Implant<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Implant<'a> {}
+impl<'s> ItemCommon for Implant<'s> {}
 
-pub struct ImplantMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct ImplantMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ImplantMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ImplantMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -55,7 +55,7 @@ impl<'a> ImplantMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for ImplantMut<'a> {
+impl<'s> ItemSealed for ImplantMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -63,13 +63,13 @@ impl<'a> ItemSealed for ImplantMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for ImplantMut<'a> {
+impl<'s> ItemMutSealed for ImplantMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for ImplantMut<'a> {}
-impl<'a> ItemMutCommon for ImplantMut<'a> {}
+impl<'s> ItemCommon for ImplantMut<'s> {}
+impl<'s> ItemMutCommon for ImplantMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, implant_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_implant(sol, implant_uid).get_fit_uid();

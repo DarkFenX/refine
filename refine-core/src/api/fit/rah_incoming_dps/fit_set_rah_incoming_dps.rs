@@ -16,7 +16,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn set_rah_incoming_dps(&mut self, dps_profile: DpsProfile) {
         self.sol.internal_set_fit_rah_incoming_dps(self.uid, dps_profile)
     }

@@ -4,12 +4,12 @@ use crate::{
     ud::{UCharacter, UItemId},
 };
 
-pub struct Character<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Character<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Character<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Character<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -19,7 +19,7 @@ impl<'a> Character<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Character<'a> {
+impl<'s> ItemSealed for Character<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -27,14 +27,14 @@ impl<'a> ItemSealed for Character<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Character<'a> {}
+impl<'s> ItemCommon for Character<'s> {}
 
-pub struct CharacterMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct CharacterMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> CharacterMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> CharacterMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -48,7 +48,7 @@ impl<'a> CharacterMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for CharacterMut<'a> {
+impl<'s> ItemSealed for CharacterMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -56,13 +56,13 @@ impl<'a> ItemSealed for CharacterMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for CharacterMut<'a> {
+impl<'s> ItemMutSealed for CharacterMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for CharacterMut<'a> {}
-impl<'a> ItemMutCommon for CharacterMut<'a> {}
+impl<'s> ItemCommon for CharacterMut<'s> {}
+impl<'s> ItemMutCommon for CharacterMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, character_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_character(sol, character_uid).get_fit_uid();

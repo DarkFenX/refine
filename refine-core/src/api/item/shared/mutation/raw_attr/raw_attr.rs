@@ -8,13 +8,13 @@ use crate::{ad::AAttrId, api::AttrId, sol::SolarSystem, ud::UItemId};
 /// Raw mutated attributes do not necessarily affect attributes of their parent item. However, they
 /// are the only way to access item attribute mutations which are not available on current data
 /// source.
-pub struct RawMAttr<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct RawMAttr<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) item_uid: UItemId,
     pub(in crate::api) attr_aid: AAttrId,
 }
-impl<'a> RawMAttr<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
+impl<'s> RawMAttr<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
             sol,
             item_uid,
@@ -35,13 +35,13 @@ impl<'a> RawMAttr<'a> {
 /// Raw mutated attributes do not necessarily affect attributes of their parent item. However, they
 /// are the only way to access item attribute mutations which are not available on current data
 /// source.
-pub struct RawMAttrMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct RawMAttrMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) item_uid: UItemId,
     pub(in crate::api) attr_aid: AAttrId,
 }
-impl<'a> RawMAttrMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
+impl<'s> RawMAttrMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Self {
         Self {
             sol,
             item_uid,

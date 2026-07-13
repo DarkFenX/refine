@@ -24,7 +24,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> RangedProjMut<'a> {
+impl<'s> RangedProjMut<'s> {
     pub fn remove(self) {
         self.sol
             .internal_remove_projection(self.projector_uid, self.projectee_uid)

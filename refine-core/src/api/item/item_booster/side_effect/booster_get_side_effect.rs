@@ -6,13 +6,13 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> Booster<'a> {
+impl<'s> Booster<'s> {
     pub fn get_side_effect(&self, effect_id: &EffectId) -> Result<SideEffect<'_>, GetSideEffectError> {
         get_side_effect(self.sol, self.uid, effect_id)
     }
 }
 
-impl<'a> BoosterMut<'a> {
+impl<'s> BoosterMut<'s> {
     pub fn get_side_effect(&self, effect_id: &EffectId) -> Result<SideEffect<'_>, GetSideEffectError> {
         get_side_effect(self.sol, self.uid, effect_id)
     }
@@ -29,11 +29,11 @@ impl<'a> BoosterMut<'a> {
     }
 }
 
-fn get_side_effect<'a>(
-    sol: &'a SolarSystem,
+fn get_side_effect<'s>(
+    sol: &'s SolarSystem,
     booster_uid: UItemId,
     effect_id: &EffectId,
-) -> Result<SideEffect<'a>, GetSideEffectError> {
+) -> Result<SideEffect<'s>, GetSideEffectError> {
     let effect_aid = effect_id.into_aid();
     match get_se_chance_attr_aid_by_effect_aid(&sol.u_data.r_data, &effect_aid) {
         Some(chance_attr_aid) => Ok(SideEffect::new(sol, booster_uid, effect_aid, chance_attr_aid)),

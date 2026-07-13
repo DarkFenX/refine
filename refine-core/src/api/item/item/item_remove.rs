@@ -37,7 +37,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ItemMut<'a> {
+impl<'s> ItemMut<'s> {
     pub fn remove(self, pos_mode: RmMode) -> Result<(), RemoveItemError> {
         match self {
             // Autocharge can not be removed no matter what

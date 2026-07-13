@@ -24,7 +24,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ProjMut<'a> {
+impl<'s> ProjMut<'s> {
     pub fn remove(self) {
         self.sol
             .internal_remove_proj_effect_proj(self.projector_uid, self.projectee_uid)

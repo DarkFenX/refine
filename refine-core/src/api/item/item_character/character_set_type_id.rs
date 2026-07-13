@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> CharacterMut<'a> {
+impl<'s> CharacterMut<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {
         let mut reuse_eupdates = UEffectUpdates::new();

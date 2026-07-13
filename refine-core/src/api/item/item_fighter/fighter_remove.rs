@@ -40,7 +40,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_fighter(self.uid, &mut reuse_eupdates);

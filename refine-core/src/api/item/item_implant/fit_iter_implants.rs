@@ -4,13 +4,13 @@ use crate::{
     ud::UFitId,
 };
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn iter_implants(&self) -> impl ExactSizeIterator<Item = Implant<'_>> {
         iter_implants(self.sol, self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn iter_implants(&self) -> impl ExactSizeIterator<Item = Implant<'_>> {
         iter_implants(self.sol, self.uid)
     }

@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffectMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let fw_effect_uid = self

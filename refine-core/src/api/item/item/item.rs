@@ -9,31 +9,31 @@ use crate::{
     ud::UItemId,
 };
 
-pub enum Item<'a> {
-    Autocharge(Autocharge<'a>),
-    Booster(Booster<'a>),
-    Character(Character<'a>),
-    Charge(Charge<'a>),
-    Drone(Drone<'a>),
-    Fighter(Fighter<'a>),
-    FwEffect(FwEffect<'a>),
-    Implant(Implant<'a>),
-    Module(Module<'a>),
-    ProjEffect(ProjEffect<'a>),
-    Rig(Rig<'a>),
-    Service(Service<'a>),
-    Ship(Ship<'a>),
-    Skill(Skill<'a>),
-    Stance(Stance<'a>),
-    Subsystem(Subsystem<'a>),
-    SwEffect(SwEffect<'a>),
+pub enum Item<'s> {
+    Autocharge(Autocharge<'s>),
+    Booster(Booster<'s>),
+    Character(Character<'s>),
+    Charge(Charge<'s>),
+    Drone(Drone<'s>),
+    Fighter(Fighter<'s>),
+    FwEffect(FwEffect<'s>),
+    Implant(Implant<'s>),
+    Module(Module<'s>),
+    ProjEffect(ProjEffect<'s>),
+    Rig(Rig<'s>),
+    Service(Service<'s>),
+    Ship(Ship<'s>),
+    Skill(Skill<'s>),
+    Stance(Stance<'s>),
+    Subsystem(Subsystem<'s>),
+    SwEffect(SwEffect<'s>),
 }
-impl<'a> Item<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Item<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         sol.internal_get_item(uid)
     }
 }
-impl<'a> ItemSealed for Item<'a> {
+impl<'s> ItemSealed for Item<'s> {
     fn get_sol(&self) -> &SolarSystem {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_sol(),
@@ -77,33 +77,33 @@ impl<'a> ItemSealed for Item<'a> {
         }
     }
 }
-impl<'a> ItemCommon for Item<'a> {}
+impl<'s> ItemCommon for Item<'s> {}
 
-pub enum ItemMut<'a> {
-    Autocharge(AutochargeMut<'a>),
-    Booster(BoosterMut<'a>),
-    Character(CharacterMut<'a>),
-    Charge(ChargeMut<'a>),
-    Drone(DroneMut<'a>),
-    Fighter(FighterMut<'a>),
-    FwEffect(FwEffectMut<'a>),
-    Implant(ImplantMut<'a>),
-    Module(ModuleMut<'a>),
-    ProjEffect(ProjEffectMut<'a>),
-    Rig(RigMut<'a>),
-    Service(ServiceMut<'a>),
-    Ship(ShipMut<'a>),
-    Skill(SkillMut<'a>),
-    Stance(StanceMut<'a>),
-    Subsystem(SubsystemMut<'a>),
-    SwEffect(SwEffectMut<'a>),
+pub enum ItemMut<'s> {
+    Autocharge(AutochargeMut<'s>),
+    Booster(BoosterMut<'s>),
+    Character(CharacterMut<'s>),
+    Charge(ChargeMut<'s>),
+    Drone(DroneMut<'s>),
+    Fighter(FighterMut<'s>),
+    FwEffect(FwEffectMut<'s>),
+    Implant(ImplantMut<'s>),
+    Module(ModuleMut<'s>),
+    ProjEffect(ProjEffectMut<'s>),
+    Rig(RigMut<'s>),
+    Service(ServiceMut<'s>),
+    Ship(ShipMut<'s>),
+    Skill(SkillMut<'s>),
+    Stance(StanceMut<'s>),
+    Subsystem(SubsystemMut<'s>),
+    SwEffect(SwEffectMut<'s>),
 }
-impl<'a> ItemMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ItemMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         sol.internal_get_item_mut(uid)
     }
 }
-impl<'a> ItemSealed for ItemMut<'a> {
+impl<'s> ItemSealed for ItemMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         match self {
             ItemMut::Autocharge(autocharge) => autocharge.get_sol(),
@@ -147,7 +147,7 @@ impl<'a> ItemSealed for ItemMut<'a> {
         }
     }
 }
-impl<'a> ItemMutSealed for ItemMut<'a> {
+impl<'s> ItemMutSealed for ItemMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         match self {
             ItemMut::Autocharge(autocharge) => autocharge.get_sol_mut(),
@@ -170,5 +170,5 @@ impl<'a> ItemMutSealed for ItemMut<'a> {
         }
     }
 }
-impl<'a> ItemCommon for ItemMut<'a> {}
-impl<'a> ItemMutCommon for ItemMut<'a> {}
+impl<'s> ItemCommon for ItemMut<'s> {}
+impl<'s> ItemMutCommon for ItemMut<'s> {}

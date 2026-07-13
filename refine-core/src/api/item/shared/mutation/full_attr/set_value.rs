@@ -4,7 +4,7 @@ use crate::{
     ud::UItem,
 };
 
-impl<'a> FullMAttrMut<'a> {
+impl<'s> FullMAttrMut<'s> {
     /// Set value for the attribute.
     ///
     /// If value is out of bounds allowed by mutator, it will be clamped. None as value removes

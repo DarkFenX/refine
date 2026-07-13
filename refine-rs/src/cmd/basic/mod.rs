@@ -8,7 +8,7 @@ pub(in crate::cmd) use fleet::{
     CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds, CmdFleetChangeICtxBIds, CmdFleetChangeICtxRIds,
     CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveFCtxBIds, CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx,
 };
-pub(in crate::cmd) use item::CmdItemRemoveICtx;
+pub(in crate::cmd) use item::{CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx};
 pub use item::{GetItemRemoveItemError, RemoveItemError};
 pub use item_rig::CreateRigError;
 pub(in crate::cmd) use sol::{CmdSolChangeFCtx, CmdSolCreateFCtx};

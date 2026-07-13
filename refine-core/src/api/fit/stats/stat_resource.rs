@@ -1,6 +1,6 @@
 use crate::{api::FitMut, svc::vast::StatResource};
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stat_cpu(&mut self) -> StatResource {
         let fit = self.sol.u_data.fits.get(self.uid);
         self.sol.svc.get_stat_fit_cpu(&self.sol.u_data, self.uid, fit)

@@ -4,13 +4,13 @@ use crate::{
     ud::UFitId,
 };
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn get_stance(&self) -> Option<Stance<'_>> {
         get_stance(self.sol, self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stance(&self) -> Option<Stance<'_>> {
         get_stance(self.sol, self.uid)
     }

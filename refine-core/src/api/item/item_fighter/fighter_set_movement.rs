@@ -24,7 +24,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     /// Set fighter movement.
     pub fn set_movement(&mut self, movement: Movement) {
         self.sol

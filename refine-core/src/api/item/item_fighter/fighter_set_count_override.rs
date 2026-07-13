@@ -20,7 +20,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn set_count_override(&mut self, count_override: Option<FighterCount>) {
         self.sol.internal_set_fighter_count_override(self.uid, count_override);
     }

@@ -102,7 +102,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     pub fn set_charge_type_id(&mut self, charge_type_id: ItemTypeId) -> ChargeMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let charge_uid = self

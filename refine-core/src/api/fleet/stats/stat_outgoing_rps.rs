@@ -8,7 +8,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn get_stat_outgoing_rps(
         &mut self,
         item_kinds: StatOutRepItemKinds,

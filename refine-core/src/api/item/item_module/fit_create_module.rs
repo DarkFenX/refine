@@ -104,7 +104,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_module(
         &mut self,
         rack: ModRack,

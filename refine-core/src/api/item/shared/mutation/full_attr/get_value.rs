@@ -6,14 +6,14 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> FullMAttr<'a> {
+impl<'s> FullMAttr<'s> {
     /// Return mutated attribute value.
     pub fn get_value(&self) -> Value {
         get_value(self.sol, self.item_uid, &self.attr_aid)
     }
 }
 
-impl<'a> FullMAttrMut<'a> {
+impl<'s> FullMAttrMut<'s> {
     /// Return mutated attribute value.
     pub fn get_value(&self) -> Value {
         get_value(self.sol, self.item_uid, &self.attr_aid)

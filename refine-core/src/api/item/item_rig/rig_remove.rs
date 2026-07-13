@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> RigMut<'a> {
+impl<'s> RigMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_rig(self.uid, &mut reuse_eupdates)

@@ -3,14 +3,14 @@ use crate::{
     num::UnitInterval,
 };
 
-impl<'a> SideEffect<'a> {
+impl<'s> SideEffect<'s> {
     /// Get side effect chance attribute ID.
     pub fn get_chance_attr_id(&self) -> AttrId {
         AttrId::from_aid(self.chance_attr_aid)
     }
 }
 
-impl<'a> SideEffectMut<'a> {
+impl<'s> SideEffectMut<'s> {
     /// Get side effect chance attribute ID.
     pub fn get_chance_attr_id(&self) -> AttrId {
         AttrId::from_aid(self.chance_attr_aid)

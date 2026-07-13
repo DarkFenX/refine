@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ChargeMut<'a> {
+impl<'s> ChargeMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_charge(self.uid, &mut reuse_eupdates)

@@ -3,13 +3,13 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> Drone<'a> {
+impl<'s> Drone<'s> {
     pub fn get_proj(&self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, GetRangedProjError> {
         self.sol.internal_get_ranged_proj(self.uid, projectee_item_id)
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, GetRangedProjError> {
         self.sol.internal_get_ranged_proj(self.uid, projectee_item_id)
     }

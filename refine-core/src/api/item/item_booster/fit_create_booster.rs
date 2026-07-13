@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let booster_uid = self

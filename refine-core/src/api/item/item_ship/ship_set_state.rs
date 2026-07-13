@@ -27,7 +27,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ShipMut<'a> {
+impl<'s> ShipMut<'s> {
     pub fn set_state(&mut self, state: bool) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_set_ship_state(self.uid, state, &mut reuse_eupdates)

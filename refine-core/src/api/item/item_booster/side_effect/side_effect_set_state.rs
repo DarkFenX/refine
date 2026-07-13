@@ -1,6 +1,6 @@
 use crate::{api::SideEffectMut, misc::EffectMode, sol::SolarSystem, ud::UEffectUpdates};
 
-impl<'a> SideEffectMut<'a> {
+impl<'s> SideEffectMut<'s> {
     /// Set side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.

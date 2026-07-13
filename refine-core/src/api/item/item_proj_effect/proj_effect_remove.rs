@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ProjEffectMut<'a> {
+impl<'s> ProjEffectMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_proj_effect(self.uid, &mut reuse_eupdates)

@@ -39,7 +39,7 @@ impl SideEffectStr {
     }
 }
 
-impl<'a> SideEffect<'a> {
+impl<'s> SideEffect<'s> {
     /// Get side effect strength as an operator and attribute ID which contains strength value.
     ///
     /// Returns something only if all the side effect modifiers use the same operator and attribute
@@ -49,7 +49,7 @@ impl<'a> SideEffect<'a> {
     }
 }
 
-impl<'a> SideEffectMut<'a> {
+impl<'s> SideEffectMut<'s> {
     /// Get side effect strength as an operator and attribute ID which contains strength value.
     ///
     /// Returns something only if all the side effect modifiers use the same operator and attribute

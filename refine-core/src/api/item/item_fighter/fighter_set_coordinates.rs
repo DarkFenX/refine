@@ -16,7 +16,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     /// Set fighter position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
         self.sol

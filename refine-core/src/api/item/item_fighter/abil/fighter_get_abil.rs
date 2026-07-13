@@ -5,14 +5,14 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> Fighter<'a> {
+impl<'s> Fighter<'s> {
     pub fn get_ability(&self, ability_id: &AbilId) -> Result<Ability<'_>, GetAbilityError> {
         check_ability(self.sol, self.uid, ability_id)?;
         Ok(Ability::new(self.sol, self.uid, ability_id.into_aid()))
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn get_ability(&mut self, ability_id: &AbilId) -> Result<Ability<'_>, GetAbilityError> {
         check_ability(self.sol, self.uid, ability_id)?;
         Ok(Ability::new(self.sol, self.uid, ability_id.into_aid()))

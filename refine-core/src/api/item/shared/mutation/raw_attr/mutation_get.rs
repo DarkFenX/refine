@@ -9,7 +9,7 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> Mutation<'a> {
+impl<'s> Mutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
         match self {
@@ -19,7 +19,7 @@ impl<'a> Mutation<'a> {
     }
 }
 
-impl<'a> MutationMut<'a> {
+impl<'s> MutationMut<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
         match self {
@@ -36,14 +36,14 @@ impl<'a> MutationMut<'a> {
     }
 }
 
-impl<'a> EffectiveMutation<'a> {
+impl<'s> EffectiveMutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
@@ -54,14 +54,14 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-impl<'a> IncompleteMutation<'a> {
+impl<'s> IncompleteMutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
-impl<'a> IncompleteMutationMut<'a> {
+impl<'s> IncompleteMutationMut<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, GetRawMAttrError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())

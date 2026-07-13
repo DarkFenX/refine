@@ -4,7 +4,7 @@ use crate::{
     ud::{ItemId, UItemId},
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub(super) fn get_stat_applied_projectee_uid(
         &self,
         projectee_item_id: &ItemId,

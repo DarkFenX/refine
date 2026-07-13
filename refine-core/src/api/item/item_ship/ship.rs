@@ -4,12 +4,12 @@ use crate::{
     ud::{UItemId, UShip},
 };
 
-pub struct Ship<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Ship<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Ship<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Ship<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -25,7 +25,7 @@ impl<'a> Ship<'a> {
         get_movement(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Ship<'a> {
+impl<'s> ItemSealed for Ship<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -33,14 +33,14 @@ impl<'a> ItemSealed for Ship<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Ship<'a> {}
+impl<'s> ItemCommon for Ship<'s> {}
 
-pub struct ShipMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct ShipMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ShipMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ShipMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -60,7 +60,7 @@ impl<'a> ShipMut<'a> {
         get_movement(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for ShipMut<'a> {
+impl<'s> ItemSealed for ShipMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -68,13 +68,13 @@ impl<'a> ItemSealed for ShipMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for ShipMut<'a> {
+impl<'s> ItemMutSealed for ShipMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for ShipMut<'a> {}
-impl<'a> ItemMutCommon for ShipMut<'a> {}
+impl<'s> ItemCommon for ShipMut<'s> {}
+impl<'s> ItemMutCommon for ShipMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, ship_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_ship(sol, ship_uid).get_fit_uid();

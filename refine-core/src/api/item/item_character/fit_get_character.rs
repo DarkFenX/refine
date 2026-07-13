@@ -4,13 +4,13 @@ use crate::{
     ud::UFitId,
 };
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn get_character(&self) -> Option<Character<'_>> {
         get_character(self.sol, self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_character(&self) -> Option<Character<'_>> {
         get_character(self.sol, self.uid)
     }

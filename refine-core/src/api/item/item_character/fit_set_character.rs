@@ -29,7 +29,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn set_character(&mut self, type_id: ItemTypeId) -> CharacterMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let character_uid = self

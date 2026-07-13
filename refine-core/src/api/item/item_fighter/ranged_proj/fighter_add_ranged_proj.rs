@@ -64,7 +64,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, AddProjError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_fighter_proj(self.uid, projectee_uid)?;

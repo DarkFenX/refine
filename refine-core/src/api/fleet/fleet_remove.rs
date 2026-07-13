@@ -15,7 +15,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn remove(self) {
         self.sol.internal_remove_fleet(self.uid);
     }

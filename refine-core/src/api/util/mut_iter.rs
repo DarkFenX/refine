@@ -73,7 +73,7 @@ pub(crate) trait New: RefFamily {
 
 // Implementations for non-item entities
 impl RefFamily for FleetMut<'_> {
-    type Ref<'a> = FleetMut<'a>;
+    type Ref<'s> = FleetMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -89,7 +89,7 @@ impl New for FleetMut<'_> {
     }
 }
 impl RefFamily for FitMut<'_> {
-    type Ref<'a> = FitMut<'a>;
+    type Ref<'s> = FitMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -106,7 +106,7 @@ impl New for FitMut<'_> {
 }
 // Implementations for items
 impl RefFamily for AutochargeMut<'_> {
-    type Ref<'a> = AutochargeMut<'a>;
+    type Ref<'s> = AutochargeMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -122,7 +122,7 @@ impl New for AutochargeMut<'_> {
     }
 }
 impl RefFamily for BoosterMut<'_> {
-    type Ref<'a> = BoosterMut<'a>;
+    type Ref<'s> = BoosterMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -138,7 +138,7 @@ impl New for BoosterMut<'_> {
     }
 }
 impl RefFamily for DroneMut<'_> {
-    type Ref<'a> = DroneMut<'a>;
+    type Ref<'s> = DroneMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -154,7 +154,7 @@ impl New for DroneMut<'_> {
     }
 }
 impl RefFamily for FighterMut<'_> {
-    type Ref<'a> = FighterMut<'a>;
+    type Ref<'s> = FighterMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -170,7 +170,7 @@ impl New for FighterMut<'_> {
     }
 }
 impl RefFamily for FwEffectMut<'_> {
-    type Ref<'a> = FwEffectMut<'a>;
+    type Ref<'s> = FwEffectMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -186,7 +186,7 @@ impl New for FwEffectMut<'_> {
     }
 }
 impl RefFamily for ImplantMut<'_> {
-    type Ref<'a> = ImplantMut<'a>;
+    type Ref<'s> = ImplantMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -202,7 +202,7 @@ impl New for ImplantMut<'_> {
     }
 }
 impl RefFamily for ProjEffectMut<'_> {
-    type Ref<'a> = ProjEffectMut<'a>;
+    type Ref<'s> = ProjEffectMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -218,7 +218,7 @@ impl New for ProjEffectMut<'_> {
     }
 }
 impl RefFamily for RigMut<'_> {
-    type Ref<'a> = RigMut<'a>;
+    type Ref<'s> = RigMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -234,7 +234,7 @@ impl New for RigMut<'_> {
     }
 }
 impl RefFamily for ServiceMut<'_> {
-    type Ref<'a> = ServiceMut<'a>;
+    type Ref<'s> = ServiceMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -250,7 +250,7 @@ impl New for ServiceMut<'_> {
     }
 }
 impl RefFamily for SkillMut<'_> {
-    type Ref<'a> = SkillMut<'a>;
+    type Ref<'s> = SkillMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -266,7 +266,7 @@ impl New for SkillMut<'_> {
     }
 }
 impl RefFamily for SubsystemMut<'_> {
-    type Ref<'a> = SubsystemMut<'a>;
+    type Ref<'s> = SubsystemMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,
@@ -282,7 +282,7 @@ impl New for SubsystemMut<'_> {
     }
 }
 impl RefFamily for SwEffectMut<'_> {
-    type Ref<'a> = SwEffectMut<'a>;
+    type Ref<'s> = SwEffectMut<'s>;
     #[inline(always)]
     fn __check_covariance<'long: 'short, 'short>(
         proof: CovariantProof<Self::Ref<'long>>,

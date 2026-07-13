@@ -20,7 +20,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> SkillMut<'a> {
+impl<'s> SkillMut<'s> {
     pub fn set_level(&mut self, level: SkillLevel) {
         self.sol.internal_set_skill_level(self.uid, level);
     }

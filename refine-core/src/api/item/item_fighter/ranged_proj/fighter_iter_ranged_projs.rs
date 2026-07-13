@@ -1,13 +1,13 @@
 use crate::api::{Fighter, FighterMut, RangedProj, RangedProjIter, iter_ranged_projs};
 
-impl<'a> Fighter<'a> {
+impl<'s> Fighter<'s> {
     /// Iterates over fighter's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = RangedProj<'_>> {
         iter_ranged_projs(self.sol, self.uid)
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     /// Iterates over fighter's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = RangedProj<'_>> {
         iter_ranged_projs(self.sol, self.uid)

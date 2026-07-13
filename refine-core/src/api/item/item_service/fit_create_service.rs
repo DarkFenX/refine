@@ -24,7 +24,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_service(&mut self, type_id: ItemTypeId, state: ServiceState) -> ServiceMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let service_uid = self

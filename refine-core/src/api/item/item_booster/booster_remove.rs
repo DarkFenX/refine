@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> BoosterMut<'a> {
+impl<'s> BoosterMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_booster(self.uid, &mut reuse_eupdates);

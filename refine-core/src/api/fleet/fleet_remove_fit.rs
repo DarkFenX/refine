@@ -4,7 +4,7 @@ use crate::{
     ud::FitId,
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), FleetRemoveFitError> {
         let fit_uid = self.sol.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         let u_fit = self.sol.u_data.fits.get(fit_uid);

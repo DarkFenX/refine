@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
         let mutation = UItemMutationRequest {
             mutator_type_aid: mutator_type_id.into_aid(),

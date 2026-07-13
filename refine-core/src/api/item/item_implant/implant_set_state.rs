@@ -27,7 +27,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ImplantMut<'a> {
+impl<'s> ImplantMut<'s> {
     pub fn set_state(&mut self, state: bool) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol

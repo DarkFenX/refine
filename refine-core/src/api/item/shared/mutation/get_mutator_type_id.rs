@@ -20,7 +20,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> Mutation<'a> {
+impl<'s> Mutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_mutator_type_id(),
@@ -29,7 +29,7 @@ impl<'a> Mutation<'a> {
     }
 }
 
-impl<'a> MutationMut<'a> {
+impl<'s> MutationMut<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_mutator_type_id(),
@@ -38,23 +38,23 @@ impl<'a> MutationMut<'a> {
     }
 }
 
-impl<'a> EffectiveMutation<'a> {
+impl<'s> EffectiveMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
 
-impl<'a> IncompleteMutation<'a> {
+impl<'s> IncompleteMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
-impl<'a> IncompleteMutationMut<'a> {
+impl<'s> IncompleteMutationMut<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }

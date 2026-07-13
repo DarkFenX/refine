@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_rig(&mut self, type_id: ItemTypeId) -> RigMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let rig_uid = self

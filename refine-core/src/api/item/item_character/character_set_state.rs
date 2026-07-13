@@ -27,7 +27,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> CharacterMut<'a> {
+impl<'s> CharacterMut<'s> {
     pub fn set_state(&mut self, state: bool) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol

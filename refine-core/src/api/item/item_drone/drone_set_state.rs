@@ -27,7 +27,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     pub fn set_state(&mut self, state: MinionState) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_set_drone_state(self.uid, state, &mut reuse_eupdates)

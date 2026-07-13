@@ -6,7 +6,7 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> FullMAttr<'a> {
+impl<'s> FullMAttr<'s> {
     /// Return roll quality for the mutated attribute.
     ///
     /// Almost always returns result, even if roll quality wasn't set by the user for the attribute,
@@ -17,7 +17,7 @@ impl<'a> FullMAttr<'a> {
     }
 }
 
-impl<'a> FullMAttrMut<'a> {
+impl<'s> FullMAttrMut<'s> {
     /// Return roll quality for the mutated attribute.
     ///
     /// Almost always returns result, even if roll quality wasn't set by the user for the attribute,

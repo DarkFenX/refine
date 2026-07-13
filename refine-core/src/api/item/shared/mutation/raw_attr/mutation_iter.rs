@@ -10,7 +10,7 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> Mutation<'a> {
+impl<'s> Mutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         let (sol, item_uid) = match self {
@@ -21,7 +21,7 @@ impl<'a> Mutation<'a> {
     }
 }
 
-impl<'a> MutationMut<'a> {
+impl<'s> MutationMut<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         let (sol, item_uid) = match self {
@@ -39,14 +39,14 @@ impl<'a> MutationMut<'a> {
     }
 }
 
-impl<'a> EffectiveMutation<'a> {
+impl<'s> EffectiveMutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         iter_raw_mattrs(self.sol, self.item_uid)
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         iter_raw_mattrs(self.sol, self.item_uid)
@@ -57,14 +57,14 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-impl<'a> IncompleteMutation<'a> {
+impl<'s> IncompleteMutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         iter_raw_mattrs(self.sol, self.item_uid)
     }
 }
 
-impl<'a> IncompleteMutationMut<'a> {
+impl<'s> IncompleteMutationMut<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         iter_raw_mattrs(self.sol, self.item_uid)

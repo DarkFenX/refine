@@ -5,12 +5,12 @@ use crate::{
     ud::{UDrone, UItemId},
 };
 
-pub struct Drone<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Drone<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Drone<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Drone<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -29,7 +29,7 @@ impl<'a> Drone<'a> {
         get_movement(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Drone<'a> {
+impl<'s> ItemSealed for Drone<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -37,14 +37,14 @@ impl<'a> ItemSealed for Drone<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Drone<'a> {}
+impl<'s> ItemCommon for Drone<'s> {}
 
-pub struct DroneMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct DroneMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> DroneMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> DroneMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -67,7 +67,7 @@ impl<'a> DroneMut<'a> {
         get_movement(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for DroneMut<'a> {
+impl<'s> ItemSealed for DroneMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -75,13 +75,13 @@ impl<'a> ItemSealed for DroneMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for DroneMut<'a> {
+impl<'s> ItemMutSealed for DroneMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for DroneMut<'a> {}
-impl<'a> ItemMutCommon for DroneMut<'a> {}
+impl<'s> ItemCommon for DroneMut<'s> {}
+impl<'s> ItemMutCommon for DroneMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, drone_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_drone(sol, drone_uid).get_fit_uid();

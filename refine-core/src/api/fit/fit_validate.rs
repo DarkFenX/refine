@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn validate_fast(&mut self, options: &ValOptions) -> bool {
         let int_options = ValOptionsInt::from_pub(options, self.sol);
         self.sol.internal_validate_fit_fast(self.uid, &int_options)

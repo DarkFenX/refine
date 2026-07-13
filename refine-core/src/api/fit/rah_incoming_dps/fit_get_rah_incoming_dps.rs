@@ -11,13 +11,13 @@ impl SolarSystem {
     }
 }
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn get_rah_incoming_dps(&self) -> Option<DpsProfile> {
         self.sol.internal_get_fit_rah_incoming_dps(self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_rah_incoming_dps(&self) -> Option<DpsProfile> {
         self.sol.internal_get_fit_rah_incoming_dps(self.uid)
     }

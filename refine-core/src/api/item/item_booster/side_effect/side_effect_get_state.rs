@@ -6,7 +6,7 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> SideEffect<'a> {
+impl<'s> SideEffect<'s> {
     /// Get side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.
@@ -15,7 +15,7 @@ impl<'a> SideEffect<'a> {
     }
 }
 
-impl<'a> SideEffectMut<'a> {
+impl<'s> SideEffectMut<'s> {
     /// Get side effect state.
     ///
     /// Disabled side effects are not applied when parent item is in effect, while enabled do.

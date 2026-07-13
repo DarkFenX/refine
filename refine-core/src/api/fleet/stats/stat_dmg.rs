@@ -7,7 +7,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn get_stat_dmg(&mut self, item_kinds: StatDmgItemKinds, time_options: StatTimeOptions) -> StatDmg {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol.svc.get_stat_fits_dmg_raw(

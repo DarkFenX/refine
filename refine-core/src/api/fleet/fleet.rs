@@ -3,26 +3,35 @@ use crate::{
     ud::{FleetId, UFleetId},
 };
 
-pub struct Fleet<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Fleet<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UFleetId,
 }
-impl<'a> Fleet<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UFleetId) -> Self {
+impl<'s> Fleet<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UFleetId) -> Self {
         Self { sol, uid }
+    }
+    pub fn get_sol(&self) -> &SolarSystem {
+        self.sol
     }
     pub fn get_fleet_id(&self) -> FleetId {
         get_fleet_id(self.sol, self.uid)
     }
 }
 
-pub struct FleetMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct FleetMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UFleetId,
 }
-impl<'a> FleetMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UFleetId) -> Self {
+impl<'s> FleetMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UFleetId) -> Self {
         Self { sol, uid }
+    }
+    pub fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+    pub fn get_sol_mut(&mut self) -> &mut SolarSystem {
+        self.sol
     }
     pub fn get_fleet_id(&self) -> FleetId {
         get_fleet_id(self.sol, self.uid)

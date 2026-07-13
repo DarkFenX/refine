@@ -1,12 +1,12 @@
 use crate::api::{Drone, DroneMut, Mutation, MutationMut};
 
-impl<'a> Drone<'a> {
+impl<'s> Drone<'s> {
     pub fn get_mutation(&mut self) -> Option<Mutation<'_>> {
         self.sol.api_get_item_mutation(self.uid)
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     pub fn get_mutation(&mut self) -> Option<Mutation<'_>> {
         self.sol.api_get_item_mutation(self.uid)
     }

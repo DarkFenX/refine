@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> MutationMut<'a> {
+impl<'s> MutationMut<'s> {
     pub fn remove(self) {
         match self {
             MutationMut::Effective(effective_mutation) => effective_mutation.remove(),
@@ -27,7 +27,7 @@ impl<'a> MutationMut<'a> {
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
@@ -36,7 +36,7 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-impl<'a> IncompleteMutationMut<'a> {
+impl<'s> IncompleteMutationMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol

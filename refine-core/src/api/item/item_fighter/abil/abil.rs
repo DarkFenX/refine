@@ -1,13 +1,13 @@
 use crate::{ad::AAbilId, api::AbilId, num::Count, sol::SolarSystem, ud::UItemId};
 
 /// Fighter ability.
-pub struct Ability<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Ability<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) fighter_uid: UItemId,
     pub(in crate::api) abil_aid: AAbilId,
 }
-impl<'a> Ability<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
+impl<'s> Ability<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
         Self {
             sol,
             fighter_uid,
@@ -23,13 +23,13 @@ impl<'a> Ability<'a> {
 }
 
 /// Fighter ability which allows changing its state.
-pub struct AbilityMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct AbilityMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) fighter_uid: UItemId,
     pub(in crate::api) abil_aid: AAbilId,
 }
-impl<'a> AbilityMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
+impl<'s> AbilityMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, fighter_uid: UItemId, abil_aid: AAbilId) -> Self {
         Self {
             sol,
             fighter_uid,

@@ -16,7 +16,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn unset_fleet(&mut self) -> Result<(), UnsetFitFleetError> {
         self.sol.internal_unset_fit_fleet(self.uid)?;
         Ok(())

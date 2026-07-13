@@ -8,7 +8,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn get_stat_outgoing_nps(&mut self, item_kinds: StatNeutItemKinds, time_options: StatTimeOptions) -> PValue {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol.svc.get_stat_fits_outgoing_nps(

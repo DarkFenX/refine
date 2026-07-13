@@ -5,12 +5,12 @@ use crate::{
     ud::{UItemId, USubsystem},
 };
 
-pub struct Subsystem<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Subsystem<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Subsystem<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Subsystem<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> Subsystem<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Subsystem<'a> {
+impl<'s> ItemSealed for Subsystem<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -31,14 +31,14 @@ impl<'a> ItemSealed for Subsystem<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Subsystem<'a> {}
+impl<'s> ItemCommon for Subsystem<'s> {}
 
-pub struct SubsystemMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct SubsystemMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> SubsystemMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> SubsystemMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -55,7 +55,7 @@ impl<'a> SubsystemMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for SubsystemMut<'a> {
+impl<'s> ItemSealed for SubsystemMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -63,13 +63,13 @@ impl<'a> ItemSealed for SubsystemMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for SubsystemMut<'a> {
+impl<'s> ItemMutSealed for SubsystemMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for SubsystemMut<'a> {}
-impl<'a> ItemMutCommon for SubsystemMut<'a> {}
+impl<'s> ItemCommon for SubsystemMut<'s> {}
+impl<'s> ItemMutCommon for SubsystemMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, subsystem_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_subsystem(sol, subsystem_uid).get_fit_uid();

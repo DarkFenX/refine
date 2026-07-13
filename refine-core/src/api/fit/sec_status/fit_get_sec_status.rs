@@ -11,13 +11,13 @@ impl SolarSystem {
     }
 }
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn get_sec_status(&self) -> FitSecStatus {
         self.sol.internal_get_fit_sec_status(self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_sec_status(&self) -> FitSecStatus {
         self.sol.internal_get_fit_sec_status(self.uid)
     }

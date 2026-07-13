@@ -2,7 +2,7 @@ pub use basic::{
     ChangeFleetError, CreateFitError, CreateFleetError, CreateRigError, FitChangeFitError, GetFitChangeFitError,
     GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemRemoveItemError, RemoveItemError,
 };
-pub use fit::{ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeFitCmd, RemoveFitCmd};
+pub use fit::{ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeFitCmd, FitRemoveItemCmd, RemoveFitCmd};
 pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
 pub use item::RemoveItemCmd;
 pub use shared::{
@@ -11,7 +11,7 @@ pub use shared::{
 };
 pub use sol::{
     ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd,
-    SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
+    SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 
 mod basic;

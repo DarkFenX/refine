@@ -3,10 +3,11 @@ use crate::cmd::{
         CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitCreateFCtxBIds, CmdFitCreateFCtxRIds,
         CmdFitRemoveFCtxBIds, CmdFitRemoveFCtxRIds, CmdFitRemoveICtx, CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds,
         CmdFleetChangeICtxBIds, CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveFCtxBIds,
-        CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx, CmdSolChangeFCtx, CreateFitError, CreateFleetError,
-        GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
+        CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx,
+        CmdSolChangeFCtx, CreateFitError, CreateFleetError, GetFitChangeFitError, GetFitRemoveFitError,
+        GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemRemoveItemError,
     },
-    shared::{BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref},
+    shared::{BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref},
 };
 
 pub enum ChangeSolEnumCmd {
@@ -20,6 +21,8 @@ pub enum ChangeSolEnumCmd {
     CreateFit(SolCreateFitCmd),
     ChangeFit(SolChangeFitCmd),
     RemoveFit(SolRemoveFitCmd),
+    // Item
+    RemoveItem(SolRemoveItemCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -33,6 +36,8 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     CreateFit(CmdFitCreateFCtxRIds),
     ChangeFit(CmdFitChangeFCtxRIds),
     RemoveFit(CmdFitRemoveFCtxRIds),
+    // Item
+    RemoveItem(CmdItemRemoveFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,6 +56,8 @@ impl ChangeSolEnumCmd {
             Self::CreateFit(cmd) => ChangeSolEnumCmdRIds::CreateFit(cmd.basic.render(resps)?),
             Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
             Self::RemoveFit(cmd) => ChangeSolEnumCmdRIds::RemoveFit(cmd.basic.render(resps)?),
+            // Item
+            Self::RemoveItem(cmd) => ChangeSolEnumCmdRIds::RemoveItem(cmd.basic.render(resps)?),
         })
     }
 }
@@ -71,6 +78,8 @@ impl ChangeSolEnumCmdRIds {
             Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::RemoveFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item
+            Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -91,6 +100,9 @@ pub enum ChangeSolEnumError {
     FitChangeFailed(#[from] GetFitChangeFitError),
     #[error("failed to remove fit: {0}")]
     FitRemoveFailed(#[from] GetFitRemoveFitError),
+    // Item
+    #[error("failed to remove item: {0}")]
+    ItemRemoveFailed(#[from] GetItemRemoveItemError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -283,5 +295,31 @@ impl SolRemoveFitCmd {
 impl From<SolRemoveFitCmd> for ChangeSolEnumCmd {
     fn from(sub_cmd: SolRemoveFitCmd) -> Self {
         Self::RemoveFit(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct SolRemoveItemCmd {
+    basic: CmdItemRemoveFCtxBIds,
+}
+impl SolRemoveItemCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            basic: CmdItemRemoveFCtxBIds {
+                item_id,
+                ictx_cmd: CmdItemRemoveICtx::default(),
+            },
+        }
+    }
+    pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
+        self.basic.ictx_cmd.rm_mode = Some(rm_mode);
+        self
+    }
+}
+impl From<SolRemoveItemCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolRemoveItemCmd) -> Self {
+        Self::RemoveItem(sub_cmd)
     }
 }

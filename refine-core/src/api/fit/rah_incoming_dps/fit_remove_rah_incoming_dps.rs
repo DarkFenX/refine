@@ -21,7 +21,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn remove_rah_incoming_dps(&mut self) -> Result<(), RemoveFitRahIncomingDpsError> {
         self.sol.internal_remove_fit_rah_incoming_dps(self.uid)?;
         Ok(())

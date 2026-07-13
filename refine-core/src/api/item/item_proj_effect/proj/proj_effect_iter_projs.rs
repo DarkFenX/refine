@@ -36,14 +36,14 @@ impl<'iter> Lender for ProjIter<'iter> {
     }
 }
 
-impl<'a> ProjEffect<'a> {
+impl<'s> ProjEffect<'s> {
     /// Iterates over projected effect's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj<'_>> {
         iter_projs(self.sol, self.uid)
     }
 }
 
-impl<'a> ProjEffectMut<'a> {
+impl<'s> ProjEffectMut<'s> {
     /// Iterates over projected effect's projections.
     pub fn iter_projs(&self) -> impl ExactSizeIterator<Item = Proj<'_>> {
         iter_projs(self.sol, self.uid)

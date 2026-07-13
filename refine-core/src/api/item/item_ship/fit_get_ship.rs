@@ -4,13 +4,13 @@ use crate::{
     ud::UFitId,
 };
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn get_ship(&self) -> Option<Ship<'_>> {
         get_ship(self.sol, self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_ship(&self) -> Option<Ship<'_>> {
         get_ship(self.sol, self.uid)
     }

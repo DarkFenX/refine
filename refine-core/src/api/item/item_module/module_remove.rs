@@ -66,7 +66,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     pub fn remove(self, pos_mode: RmMode) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_module(self.uid, pos_mode, &mut reuse_eupdates)

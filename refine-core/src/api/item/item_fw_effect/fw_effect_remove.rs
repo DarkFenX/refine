@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FwEffectMut<'a> {
+impl<'s> FwEffectMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_fw_effect(self.uid, &mut reuse_eupdates);

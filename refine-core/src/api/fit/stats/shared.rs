@@ -7,7 +7,7 @@ use crate::{
     ud::ProjecteeUidError,
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub(super) fn get_character_for_stats(&mut self) -> Result<CharacterMut<'_>, FitHasCharacterError> {
         let Some(char_uid) = self.sol.u_data.fits.get(self.uid).character else {
             return Err(FitHasCharacterError {

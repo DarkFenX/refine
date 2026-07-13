@@ -4,13 +4,13 @@ use crate::{
     ud::UFleetId,
 };
 
-impl<'a> Fleet<'a> {
+impl<'s> Fleet<'s> {
     pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit<'_>> {
         iter_fits(self.sol, self.uid)
     }
 }
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn iter_fits(&self) -> impl ExactSizeIterator<Item = Fit<'_>> {
         iter_fits(self.sol, self.uid)
     }

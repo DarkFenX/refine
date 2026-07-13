@@ -5,7 +5,7 @@ use crate::{
     util::RMap,
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn get_stat_mass(&mut self, ctl_affectors: CtlAffectors) -> PValue {
         let mut fleet_mass = PValue::ZERO;
         let mut saved_states = RMap::new();

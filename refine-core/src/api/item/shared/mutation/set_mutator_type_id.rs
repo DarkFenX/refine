@@ -21,8 +21,8 @@ impl SolarSystem {
     }
 }
 
-impl<'a> MutationMut<'a> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'a> {
+impl<'s> MutationMut<'s> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.set_mutator_type_id(mutator_type_id),
             Self::Incomplete(incomplete_mutation) => incomplete_mutation.set_mutator_type_id(mutator_type_id),
@@ -30,8 +30,8 @@ impl<'a> MutationMut<'a> {
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
             .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid(), &mut reuse_eupdates)
@@ -40,8 +40,8 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-impl<'a> IncompleteMutationMut<'a> {
-    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'a> {
+impl<'s> IncompleteMutationMut<'s> {
+    pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
             .internal_set_mutator_aid(self.item_uid, mutator_type_id.into_aid(), &mut reuse_eupdates)

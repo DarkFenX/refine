@@ -4,12 +4,12 @@ use crate::{
     ud::{UItemId, URig},
 };
 
-pub struct Rig<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Rig<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Rig<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Rig<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -19,7 +19,7 @@ impl<'a> Rig<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Rig<'a> {
+impl<'s> ItemSealed for Rig<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -27,14 +27,14 @@ impl<'a> ItemSealed for Rig<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Rig<'a> {}
+impl<'s> ItemCommon for Rig<'s> {}
 
-pub struct RigMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct RigMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> RigMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> RigMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -48,7 +48,7 @@ impl<'a> RigMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for RigMut<'a> {
+impl<'s> ItemSealed for RigMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -56,13 +56,13 @@ impl<'a> ItemSealed for RigMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for RigMut<'a> {
+impl<'s> ItemMutSealed for RigMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for RigMut<'a> {}
-impl<'a> ItemMutCommon for RigMut<'a> {}
+impl<'s> ItemCommon for RigMut<'s> {}
+impl<'s> ItemMutCommon for RigMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, rig_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_rig(sol, rig_uid).get_fit_uid();

@@ -5,7 +5,7 @@ use crate::{
     ud::FitId,
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stat_speed(&mut self) -> Result<PValue, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_speed()?)
     }

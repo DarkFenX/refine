@@ -11,7 +11,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stat_dmg(&mut self, item_kinds: StatDmgItemKinds, time_options: StatTimeOptions) -> StatDmg {
         self.sol.svc.get_stat_fit_dmg_raw(
             &mut CseqMap::new(),

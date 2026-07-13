@@ -4,13 +4,13 @@ use crate::{
     ud::UFitId,
 };
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn iter_boosters(&self) -> impl ExactSizeIterator<Item = Booster<'_>> {
         iter_boosters(self.sol, self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn iter_boosters(&self) -> impl ExactSizeIterator<Item = Booster<'_>> {
         iter_boosters(self.sol, self.uid)
     }

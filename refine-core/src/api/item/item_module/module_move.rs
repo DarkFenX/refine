@@ -41,7 +41,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     pub fn move_(&mut self, pos_mode: MvMode) {
         self.sol.internal_move_module(self.uid, pos_mode)
     }

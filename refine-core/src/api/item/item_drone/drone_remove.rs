@@ -28,7 +28,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_drone(self.uid, &mut reuse_eupdates);

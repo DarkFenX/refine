@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ImplantMut<'a> {
+impl<'s> ImplantMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_implant(self.uid, &mut reuse_eupdates);

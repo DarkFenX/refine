@@ -7,12 +7,12 @@ use crate::{
     ud::{UEffectUpdates, UItemId, UModule},
 };
 
-pub struct Module<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Module<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Module<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Module<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -37,7 +37,7 @@ impl<'a> Module<'a> {
         get_optional_reload(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Module<'a> {
+impl<'s> ItemSealed for Module<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -45,14 +45,14 @@ impl<'a> ItemSealed for Module<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Module<'a> {}
+impl<'s> ItemCommon for Module<'s> {}
 
-pub struct ModuleMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct ModuleMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ModuleMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ModuleMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -103,7 +103,7 @@ impl<'a> ModuleMut<'a> {
         self.sol.svc.get_effect_spool_cycle_count(&self.sol.u_data, self.uid)
     }
 }
-impl<'a> ItemSealed for ModuleMut<'a> {
+impl<'s> ItemSealed for ModuleMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -111,13 +111,13 @@ impl<'a> ItemSealed for ModuleMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for ModuleMut<'a> {
+impl<'s> ItemMutSealed for ModuleMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for ModuleMut<'a> {}
-impl<'a> ItemMutCommon for ModuleMut<'a> {}
+impl<'s> ItemCommon for ModuleMut<'s> {}
+impl<'s> ItemMutCommon for ModuleMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, module_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_module(sol, module_uid).get_fit_uid();

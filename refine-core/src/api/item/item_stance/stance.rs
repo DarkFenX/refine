@@ -4,12 +4,12 @@ use crate::{
     ud::{UItemId, UStance},
 };
 
-pub struct Stance<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Stance<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Stance<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Stance<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -19,7 +19,7 @@ impl<'a> Stance<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Stance<'a> {
+impl<'s> ItemSealed for Stance<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -27,14 +27,14 @@ impl<'a> ItemSealed for Stance<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Stance<'a> {}
+impl<'s> ItemCommon for Stance<'s> {}
 
-pub struct StanceMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct StanceMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> StanceMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> StanceMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -48,7 +48,7 @@ impl<'a> StanceMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for StanceMut<'a> {
+impl<'s> ItemSealed for StanceMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -56,13 +56,13 @@ impl<'a> ItemSealed for StanceMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for StanceMut<'a> {
+impl<'s> ItemMutSealed for StanceMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for StanceMut<'a> {}
-impl<'a> ItemMutCommon for StanceMut<'a> {}
+impl<'s> ItemCommon for StanceMut<'s> {}
+impl<'s> ItemMutCommon for StanceMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, stance_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_stance(sol, stance_uid).get_fit_uid();

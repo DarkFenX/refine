@@ -30,7 +30,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn set_fleet(&mut self, fleet_id: &FleetId) -> Result<(), SetFitFleetError> {
         let fleet_uid = self.sol.u_data.fleets.int_id_by_ext_id_err(fleet_id)?;
         self.sol.internal_set_fit_fleet(self.uid, fleet_uid);

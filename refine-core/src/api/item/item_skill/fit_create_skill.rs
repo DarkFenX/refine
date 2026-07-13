@@ -37,7 +37,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, CreateSkillError> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let skill_uid = self

@@ -5,12 +5,12 @@ use crate::{
     ud::{UFighter, UItemId},
 };
 
-pub struct Fighter<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Fighter<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Fighter<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Fighter<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -32,7 +32,7 @@ impl<'a> Fighter<'a> {
         get_rearm_minion(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Fighter<'a> {
+impl<'s> ItemSealed for Fighter<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -40,14 +40,14 @@ impl<'a> ItemSealed for Fighter<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Fighter<'a> {}
+impl<'s> ItemCommon for Fighter<'s> {}
 
-pub struct FighterMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct FighterMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> FighterMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> FighterMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -73,7 +73,7 @@ impl<'a> FighterMut<'a> {
         get_rearm_minion(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for FighterMut<'a> {
+impl<'s> ItemSealed for FighterMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -81,13 +81,13 @@ impl<'a> ItemSealed for FighterMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for FighterMut<'a> {
+impl<'s> ItemMutSealed for FighterMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for FighterMut<'a> {}
-impl<'a> ItemMutCommon for FighterMut<'a> {}
+impl<'s> ItemCommon for FighterMut<'s> {}
+impl<'s> ItemMutCommon for FighterMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, fighter_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_fighter(sol, fighter_uid).get_fit_uid();

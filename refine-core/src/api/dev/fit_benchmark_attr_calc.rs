@@ -4,7 +4,7 @@ use crate::{
     ud::UEffectUpdates,
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn benchmark_attr_calc(&mut self, type_id: ItemTypeId, iterations: usize) {
         let mut reuse_eupdates = UEffectUpdates::new();
         let ship_uid = self.sol.u_data.fits.get(self.uid).ship.unwrap();

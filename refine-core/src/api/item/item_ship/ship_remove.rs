@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ShipMut<'a> {
+impl<'s> ShipMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_ship(self.uid, &mut reuse_eupdates)

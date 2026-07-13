@@ -4,19 +4,19 @@ use crate::{
     ud::{UItemId, UProjEffect},
 };
 
-pub struct ProjEffect<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct ProjEffect<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ProjEffect<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> ProjEffect<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for ProjEffect<'a> {
+impl<'s> ItemSealed for ProjEffect<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -24,21 +24,21 @@ impl<'a> ItemSealed for ProjEffect<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for ProjEffect<'a> {}
+impl<'s> ItemCommon for ProjEffect<'s> {}
 
-pub struct ProjEffectMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct ProjEffectMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ProjEffectMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ProjEffectMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for ProjEffectMut<'a> {
+impl<'s> ItemSealed for ProjEffectMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -46,13 +46,13 @@ impl<'a> ItemSealed for ProjEffectMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for ProjEffectMut<'a> {
+impl<'s> ItemMutSealed for ProjEffectMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for ProjEffectMut<'a> {}
-impl<'a> ItemMutCommon for ProjEffectMut<'a> {}
+impl<'s> ItemCommon for ProjEffectMut<'s> {}
+impl<'s> ItemMutCommon for ProjEffectMut<'s> {}
 
 fn get_state(sol: &SolarSystem, proj_effect_uid: UItemId) -> bool {
     get_u_proj_effect(sol, proj_effect_uid).get_proj_effect_state()

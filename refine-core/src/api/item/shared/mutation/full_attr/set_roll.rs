@@ -1,6 +1,6 @@
 use crate::{api::FullMAttrMut, num::UnitInterval, ud::UAttrMutationRequest};
 
-impl<'a> FullMAttrMut<'a> {
+impl<'s> FullMAttrMut<'s> {
     /// Set roll for the attribute.
     ///
     /// None as value removes user-defined mutation.

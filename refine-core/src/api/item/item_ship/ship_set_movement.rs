@@ -19,7 +19,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ShipMut<'a> {
+impl<'s> ShipMut<'s> {
     /// Set ship movement.
     pub fn set_movement(&mut self, movement: Movement) {
         self.sol

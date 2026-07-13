@@ -7,14 +7,14 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> EffectiveMutation<'a> {
+impl<'s> EffectiveMutation<'s> {
     /// Iterates over mutation's full mutated attributes.
     pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr<'_>> {
         iter_full_mattrs(self.sol, self.item_uid)
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     /// Iterates over mutation's full mutated attributes.
     pub fn iter_full_mattrs(&self) -> impl Iterator<Item = FullMAttr<'_>> {
         iter_full_mattrs(self.sol, self.item_uid)

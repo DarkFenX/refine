@@ -6,7 +6,7 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> EffectiveMutation<'a> {
+impl<'s> EffectiveMutation<'s> {
     /// Get mutation's full mutated attribute for requested attribute ID.
     pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, GetFullMAttrError> {
         let attr_aid = attr_id.into_aid();
@@ -15,7 +15,7 @@ impl<'a> EffectiveMutation<'a> {
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     /// Get mutation's full mutated attribute for requested attribute ID.
     pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, GetFullMAttrError> {
         let attr_aid = attr_id.into_aid();

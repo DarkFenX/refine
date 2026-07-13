@@ -5,12 +5,12 @@ use crate::{
     ud::{UBooster, UItemId},
 };
 
-pub struct Booster<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Booster<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Booster<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Booster<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> Booster<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Booster<'a> {
+impl<'s> ItemSealed for Booster<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -31,14 +31,14 @@ impl<'a> ItemSealed for Booster<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Booster<'a> {}
+impl<'s> ItemCommon for Booster<'s> {}
 
-pub struct BoosterMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct BoosterMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> BoosterMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> BoosterMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -55,7 +55,7 @@ impl<'a> BoosterMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for BoosterMut<'a> {
+impl<'s> ItemSealed for BoosterMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -63,13 +63,13 @@ impl<'a> ItemSealed for BoosterMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for BoosterMut<'a> {
+impl<'s> ItemMutSealed for BoosterMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for BoosterMut<'a> {}
-impl<'a> ItemMutCommon for BoosterMut<'a> {}
+impl<'s> ItemCommon for BoosterMut<'s> {}
+impl<'s> ItemMutCommon for BoosterMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, booster_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_booster(sol, booster_uid).get_fit_uid();

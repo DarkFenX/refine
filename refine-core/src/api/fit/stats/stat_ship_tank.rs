@@ -6,7 +6,7 @@ use crate::{
     svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stat_resists(&mut self) -> Result<StatResists, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }

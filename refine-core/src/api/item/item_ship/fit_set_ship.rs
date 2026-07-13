@@ -36,7 +36,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn set_ship(
         &mut self,
         type_id: ItemTypeId,

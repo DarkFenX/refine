@@ -6,7 +6,7 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stat_cap_amount(&mut self) -> Result<PValue, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_cap_amount()?)
     }

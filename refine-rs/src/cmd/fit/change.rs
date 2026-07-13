@@ -1,16 +1,23 @@
 use crate::cmd::{
-    basic::{CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, FitChangeFitError},
-    shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref},
+    basic::{
+        CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx,
+        FitChangeFitError, GetItemRemoveItemError,
+    },
+    shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref, ItemIdBackref},
 };
 
 pub enum ChangeFitEnumCmd {
     // Fit
     ChangeFit(FitChangeFitCmd),
+    // Item
+    RemoveItem(FitRemoveItemCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
     // Fit
     ChangeFit(CmdFitChangeICtxRIds),
+    // Item
+    RemoveItem(CmdItemRemoveFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +28,8 @@ impl ChangeFitEnumCmd {
         Ok(match self {
             // Fit
             Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
+            // Item
+            Self::RemoveItem(cmd) => ChangeFitEnumCmdRIds::RemoveItem(cmd.basic.render(resps)?),
         })
     }
 }
@@ -33,6 +42,8 @@ impl ChangeFitEnumCmdRIds {
         match self {
             // Fit
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_fit)?.into()),
+            // Item
+            Self::RemoveItem(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
         }
     }
 }
@@ -41,6 +52,8 @@ impl ChangeFitEnumCmdRIds {
 pub enum ChangeFitEnumError {
     #[error("failed to change fleet: {0}")]
     FitChangeFailed(#[from] FitChangeFitError),
+    #[error("failed to remove item: {0}")]
+    ItemRemoveFailed(#[from] GetItemRemoveItemError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,5 +83,31 @@ impl FitChangeFitCmd {
 impl From<FitChangeFitCmd> for ChangeFitEnumCmd {
     fn from(sub_cmd: FitChangeFitCmd) -> Self {
         Self::ChangeFit(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct FitRemoveItemCmd {
+    basic: CmdItemRemoveFCtxBIds,
+}
+impl FitRemoveItemCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            basic: CmdItemRemoveFCtxBIds {
+                item_id,
+                ictx_cmd: CmdItemRemoveICtx::default(),
+            },
+        }
+    }
+    pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
+        self.basic.ictx_cmd.rm_mode = Some(rm_mode);
+        self
+    }
+}
+impl From<FitRemoveItemCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitRemoveItemCmd) -> Self {
+        Self::RemoveItem(sub_cmd)
     }
 }

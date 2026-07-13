@@ -34,7 +34,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_drone(
         &mut self,
         type_id: ItemTypeId,

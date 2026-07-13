@@ -16,7 +16,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     /// Set drone position in its solar system.
     pub fn set_coordinates(&mut self, coordinates: Coordinates) {
         self.sol

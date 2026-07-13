@@ -14,7 +14,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> SkillMut<'a> {
+impl<'s> SkillMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_skill(self.uid, &mut reuse_eupdates);

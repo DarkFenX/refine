@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> ModuleMut<'a> {
+impl<'s> ModuleMut<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data. If
     /// item is mutated, base item type ID is updated.
     pub fn set_type_id(&mut self, type_id: ItemTypeId) {

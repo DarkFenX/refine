@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_implant(&mut self, type_id: ItemTypeId) -> ImplantMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let implant_uid = self

@@ -5,12 +5,12 @@ use crate::{
 };
 
 // Charges expose no projection info, since it fully matches projections of the parent item
-pub struct Charge<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Charge<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Charge<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Charge<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -23,7 +23,7 @@ impl<'a> Charge<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Charge<'a> {
+impl<'s> ItemSealed for Charge<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -31,14 +31,14 @@ impl<'a> ItemSealed for Charge<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Charge<'a> {}
+impl<'s> ItemCommon for Charge<'s> {}
 
-pub struct ChargeMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct ChargeMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ChargeMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ChargeMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -59,7 +59,7 @@ impl<'a> ChargeMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for ChargeMut<'a> {
+impl<'s> ItemSealed for ChargeMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -67,13 +67,13 @@ impl<'a> ItemSealed for ChargeMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for ChargeMut<'a> {
+impl<'s> ItemMutSealed for ChargeMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for ChargeMut<'a> {}
-impl<'a> ItemMutCommon for ChargeMut<'a> {}
+impl<'s> ItemCommon for ChargeMut<'s> {}
+impl<'s> ItemMutCommon for ChargeMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, charge_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_charge(sol, charge_uid).get_fit_uid();

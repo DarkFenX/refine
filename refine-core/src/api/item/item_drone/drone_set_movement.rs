@@ -19,7 +19,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> DroneMut<'a> {
+impl<'s> DroneMut<'s> {
     /// Set drone movement.
     pub fn set_movement(&mut self, movement: Movement) {
         self.sol

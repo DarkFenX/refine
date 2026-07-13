@@ -7,7 +7,7 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> MutationMut<'a> {
+impl<'s> MutationMut<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
@@ -20,7 +20,7 @@ impl<'a> MutationMut<'a> {
     }
 }
 
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll
@@ -30,7 +30,7 @@ impl<'a> EffectiveMutationMut<'a> {
     }
 }
 
-impl<'a> IncompleteMutationMut<'a> {
+impl<'s> IncompleteMutationMut<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll

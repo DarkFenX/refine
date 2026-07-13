@@ -6,13 +6,13 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> Ability<'a> {
+impl<'s> Ability<'s> {
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.fighter_uid, &self.abil_aid)
     }
 }
 
-impl<'a> AbilityMut<'a> {
+impl<'s> AbilityMut<'s> {
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.fighter_uid, &self.abil_aid)
     }

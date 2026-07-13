@@ -3,13 +3,13 @@ use crate::{
     ud::ItemId,
 };
 
-impl<'a> Fighter<'a> {
+impl<'s> Fighter<'s> {
     pub fn get_proj(&self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, GetRangedProjError> {
         self.sol.internal_get_ranged_proj(self.uid, projectee_item_id)
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProj<'_>, GetRangedProjError> {
         self.sol.internal_get_ranged_proj(self.uid, projectee_item_id)
     }

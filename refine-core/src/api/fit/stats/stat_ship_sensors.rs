@@ -4,7 +4,7 @@ use crate::{
     svc::vast::{StatInJam, StatSensors, StatTimeOptions},
 };
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn get_stat_locks(&mut self) -> Result<Count, FitShipStatError> {
         Ok(self.get_ship_for_stats()?.get_stat_locks()?)
     }

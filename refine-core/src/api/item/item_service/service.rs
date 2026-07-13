@@ -4,12 +4,12 @@ use crate::{
     ud::{UItemId, UService},
 };
 
-pub struct Service<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Service<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Service<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Service<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -19,7 +19,7 @@ impl<'a> Service<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Service<'a> {
+impl<'s> ItemSealed for Service<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -27,14 +27,14 @@ impl<'a> ItemSealed for Service<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Service<'a> {}
+impl<'s> ItemCommon for Service<'s> {}
 
-pub struct ServiceMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct ServiceMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> ServiceMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> ServiceMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -48,7 +48,7 @@ impl<'a> ServiceMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for ServiceMut<'a> {
+impl<'s> ItemSealed for ServiceMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -56,13 +56,13 @@ impl<'a> ItemSealed for ServiceMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for ServiceMut<'a> {
+impl<'s> ItemMutSealed for ServiceMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for ServiceMut<'a> {}
-impl<'a> ItemMutCommon for ServiceMut<'a> {}
+impl<'s> ItemCommon for ServiceMut<'s> {}
+impl<'s> ItemMutCommon for ServiceMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, service_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_service(sol, service_uid).get_fit_uid();

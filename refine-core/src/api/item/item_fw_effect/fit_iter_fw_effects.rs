@@ -4,13 +4,13 @@ use crate::{
     ud::UFitId,
 };
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
         iter_fw_effects(self.sol, self.uid)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn iter_fw_effects(&self) -> impl ExactSizeIterator<Item = FwEffect<'_>> {
         iter_fw_effects(self.sol, self.uid)
     }

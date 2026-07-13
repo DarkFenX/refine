@@ -6,14 +6,14 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> RawMAttr<'a> {
+impl<'s> RawMAttr<'s> {
     /// Return roll quality for the mutated attribute.
     pub fn get_roll(&self) -> UnitInterval {
         get_roll(self.sol, self.item_uid, &self.attr_aid)
     }
 }
 
-impl<'a> RawMAttrMut<'a> {
+impl<'s> RawMAttrMut<'s> {
     /// Return roll quality for the mutated attribute.
     pub fn get_roll(&self) -> UnitInterval {
         get_roll(self.sol, self.item_uid, &self.attr_aid)

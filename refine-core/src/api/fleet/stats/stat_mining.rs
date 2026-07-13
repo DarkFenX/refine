@@ -6,7 +6,7 @@ use crate::{
     },
 };
 
-impl<'a> FleetMut<'a> {
+impl<'s> FleetMut<'s> {
     pub fn get_stat_mps(
         &mut self,
         item_kinds: StatMiningItemKinds,

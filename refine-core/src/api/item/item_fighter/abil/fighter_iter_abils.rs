@@ -37,14 +37,14 @@ impl<'iter> Lender for AbilityIter<'iter> {
     }
 }
 
-impl<'a> Fighter<'a> {
+impl<'s> Fighter<'s> {
     /// Iterates over fighter's abilities.
     pub fn iter_abilities(&self) -> impl Iterator<Item = Ability<'_>> {
         iter_abils(self.sol, self.uid)
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     /// Iterates over fighter's abilities.
     pub fn iter_abilities(&self) -> impl Iterator<Item = Ability<'_>> {
         iter_abils(self.sol, self.uid)

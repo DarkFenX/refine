@@ -29,7 +29,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn set_stance(&mut self, type_id: ItemTypeId) -> StanceMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let stance_uid = self

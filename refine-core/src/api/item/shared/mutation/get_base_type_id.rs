@@ -19,12 +19,12 @@ impl SolarSystem {
     }
 }
 
-impl<'a> EffectiveMutation<'a> {
+impl<'s> EffectiveMutation<'s> {
     pub fn get_base_type_id(&self) -> ItemTypeId {
         self.sol.api_get_base_type_id(self.item_uid)
     }
 }
-impl<'a> EffectiveMutationMut<'a> {
+impl<'s> EffectiveMutationMut<'s> {
     pub fn get_base_type_id(&self) -> ItemTypeId {
         self.sol.api_get_base_type_id(self.item_uid)
     }

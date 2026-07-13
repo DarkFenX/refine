@@ -4,19 +4,19 @@ use crate::{
     ud::{UItemId, USwEffect},
 };
 
-pub struct SwEffect<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct SwEffect<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> SwEffect<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> SwEffect<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for SwEffect<'a> {
+impl<'s> ItemSealed for SwEffect<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -24,21 +24,21 @@ impl<'a> ItemSealed for SwEffect<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for SwEffect<'a> {}
+impl<'s> ItemCommon for SwEffect<'s> {}
 
-pub struct SwEffectMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct SwEffectMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> SwEffectMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> SwEffectMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_state(&self) -> bool {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for SwEffectMut<'a> {
+impl<'s> ItemSealed for SwEffectMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -46,13 +46,13 @@ impl<'a> ItemSealed for SwEffectMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for SwEffectMut<'a> {
+impl<'s> ItemMutSealed for SwEffectMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for SwEffectMut<'a> {}
-impl<'a> ItemMutCommon for SwEffectMut<'a> {}
+impl<'s> ItemCommon for SwEffectMut<'s> {}
+impl<'s> ItemMutCommon for SwEffectMut<'s> {}
 
 fn get_state(sol: &SolarSystem, sw_effect_uid: UItemId) -> bool {
     get_u_sw_effect(sol, sw_effect_uid).get_sw_effect_state()

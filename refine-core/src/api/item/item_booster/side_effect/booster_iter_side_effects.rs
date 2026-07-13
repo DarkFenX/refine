@@ -38,14 +38,14 @@ impl<'iter> Lender for SideEffectIter<'iter> {
     }
 }
 
-impl<'a> Booster<'a> {
+impl<'s> Booster<'s> {
     /// Iterates over booster's side effects.
     pub fn iter_side_effects(&self) -> impl Iterator<Item = SideEffect<'_>> {
         iter_side_effects(self.sol, self.uid)
     }
 }
 
-impl<'a> BoosterMut<'a> {
+impl<'s> BoosterMut<'s> {
     /// Iterates over booster's side effects.
     pub fn iter_side_effects(&self) -> impl Iterator<Item = SideEffect<'_>> {
         iter_side_effects(self.sol, self.uid)

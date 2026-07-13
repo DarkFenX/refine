@@ -4,13 +4,13 @@ use crate::{
     ud::UItemId,
 };
 
-impl<'a> Fighter<'a> {
+impl<'s> Fighter<'s> {
     pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge<'_>> {
         iter_autocharges(self.sol, self.uid)
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge<'_>> {
         iter_autocharges(self.sol, self.uid)
     }

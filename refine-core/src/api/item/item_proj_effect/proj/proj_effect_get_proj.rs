@@ -5,14 +5,14 @@ use crate::{
     ud::{ItemId, UItemId},
 };
 
-impl<'a> ProjEffect<'a> {
+impl<'s> ProjEffect<'s> {
     pub fn get_proj(&self, projectee_item_id: &ItemId) -> Result<Proj<'_>, GetProjError> {
         let projectee_uid = get_projectee_uid(self.sol, self.uid, projectee_item_id)?;
         Ok(Proj::new(self.sol, projectee_uid))
     }
 }
 
-impl<'a> ProjEffectMut<'a> {
+impl<'s> ProjEffectMut<'s> {
     pub fn get_proj(&mut self, projectee_item_id: &ItemId) -> Result<Proj<'_>, GetProjError> {
         let projectee_uid = get_projectee_uid(self.sol, self.uid, projectee_item_id)?;
         Ok(Proj::new(self.sol, projectee_uid))

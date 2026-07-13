@@ -5,12 +5,12 @@ use crate::{
 };
 
 // Autocharges expose no projection info, since it fully matches projections of the parent item
-pub struct Autocharge<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct Autocharge<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> Autocharge<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> Autocharge<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -26,7 +26,7 @@ impl<'a> Autocharge<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for Autocharge<'a> {
+impl<'s> ItemSealed for Autocharge<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -34,14 +34,14 @@ impl<'a> ItemSealed for Autocharge<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for Autocharge<'a> {}
+impl<'s> ItemCommon for Autocharge<'s> {}
 
-pub struct AutochargeMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct AutochargeMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> AutochargeMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> AutochargeMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -65,7 +65,7 @@ impl<'a> AutochargeMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for AutochargeMut<'a> {
+impl<'s> ItemSealed for AutochargeMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -73,13 +73,13 @@ impl<'a> ItemSealed for AutochargeMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for AutochargeMut<'a> {
+impl<'s> ItemMutSealed for AutochargeMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for AutochargeMut<'a> {}
-impl<'a> ItemMutCommon for AutochargeMut<'a> {}
+impl<'s> ItemCommon for AutochargeMut<'s> {}
+impl<'s> ItemMutCommon for AutochargeMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, autocharge_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_autocharge(sol, autocharge_uid).get_fit_uid();

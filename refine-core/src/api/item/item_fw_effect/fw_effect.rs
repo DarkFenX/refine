@@ -4,12 +4,12 @@ use crate::{
     ud::{UFwEffect, UItemId},
 };
 
-pub struct FwEffect<'a> {
-    pub(in crate::api) sol: &'a SolarSystem,
+pub struct FwEffect<'s> {
+    pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> FwEffect<'a> {
-    pub(in crate::api) fn new(sol: &'a SolarSystem, uid: UItemId) -> Self {
+impl<'s> FwEffect<'s> {
+    pub(in crate::api) fn new(sol: &'s SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -19,7 +19,7 @@ impl<'a> FwEffect<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for FwEffect<'a> {
+impl<'s> ItemSealed for FwEffect<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -27,14 +27,14 @@ impl<'a> ItemSealed for FwEffect<'a> {
         self.uid
     }
 }
-impl<'a> ItemCommon for FwEffect<'a> {}
+impl<'s> ItemCommon for FwEffect<'s> {}
 
-pub struct FwEffectMut<'a> {
-    pub(in crate::api) sol: &'a mut SolarSystem,
+pub struct FwEffectMut<'s> {
+    pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) uid: UItemId,
 }
-impl<'a> FwEffectMut<'a> {
-    pub(in crate::api) fn new(sol: &'a mut SolarSystem, uid: UItemId) -> Self {
+impl<'s> FwEffectMut<'s> {
+    pub(in crate::api) fn new(sol: &'s mut SolarSystem, uid: UItemId) -> Self {
         Self { sol, uid }
     }
     pub fn get_fit(&self) -> Fit<'_> {
@@ -48,7 +48,7 @@ impl<'a> FwEffectMut<'a> {
         get_state(self.sol, self.uid)
     }
 }
-impl<'a> ItemSealed for FwEffectMut<'a> {
+impl<'s> ItemSealed for FwEffectMut<'s> {
     fn get_sol(&self) -> &SolarSystem {
         self.sol
     }
@@ -56,13 +56,13 @@ impl<'a> ItemSealed for FwEffectMut<'a> {
         self.uid
     }
 }
-impl<'a> ItemMutSealed for FwEffectMut<'a> {
+impl<'s> ItemMutSealed for FwEffectMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'a> ItemCommon for FwEffectMut<'a> {}
-impl<'a> ItemMutCommon for FwEffectMut<'a> {}
+impl<'s> ItemCommon for FwEffectMut<'s> {}
+impl<'s> ItemMutCommon for FwEffectMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, fw_effect_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_fw_effect(sol, fw_effect_uid).get_fit_uid();

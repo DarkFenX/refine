@@ -35,13 +35,13 @@ impl<'iter> Lender for ModuleIter<'iter> {
     }
 }
 
-impl<'a> Fit<'a> {
+impl<'s> Fit<'s> {
     pub fn iter_modules(&self, rack: ModRack) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
         iter_modules(self.sol, self.uid, rack)
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn iter_modules(&self, rack: ModRack) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {
         iter_modules(self.sol, self.uid, rack)
     }

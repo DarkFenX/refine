@@ -23,7 +23,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FitMut<'a> {
+impl<'s> FitMut<'s> {
     pub fn create_subsystem(&mut self, type_id: ItemTypeId) -> SubsystemMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let subsystem_uid = self

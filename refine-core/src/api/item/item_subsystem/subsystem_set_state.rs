@@ -27,7 +27,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> SubsystemMut<'a> {
+impl<'s> SubsystemMut<'s> {
     pub fn set_state(&mut self, state: bool) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol

@@ -48,7 +48,7 @@ impl SolarSystem {
     }
 }
 
-impl<'a> FighterMut<'a> {
+impl<'s> FighterMut<'s> {
     pub fn set_state(&mut self, state: MinionState) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
