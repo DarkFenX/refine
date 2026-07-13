@@ -8,7 +8,7 @@ pub enum ChangeFitEnumCmd {
     ChangeFit(FitChangeFitCmd),
 }
 
-pub(crate) enum ChangeFitCmdRIds {
+pub(crate) enum ChangeFitEnumCmdRIds {
     // Fit
     ChangeFit(CmdFitChangeICtxRIds),
 }
@@ -17,10 +17,10 @@ pub(crate) enum ChangeFitCmdRIds {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFitEnumCmd {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<ChangeFitCmdRIds, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<ChangeFitEnumCmdRIds, BackrefRenderError> {
         Ok(match self {
             // Fit
-            Self::ChangeFit(cmd) => ChangeFitCmdRIds::ChangeFit(cmd.basic.render(resps)?),
+            Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.basic.render(resps)?),
         })
     }
 }
@@ -28,7 +28,7 @@ impl ChangeFitEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ChangeFitCmdRIds {
+impl ChangeFitEnumCmdRIds {
     pub(crate) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<CmdResp, ChangeFitEnumError> {
         match self {
             // Fit

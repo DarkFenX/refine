@@ -1,7 +1,7 @@
 pub use cmd::{
-    ChangeFitEnumCmd, ChangedItemIdsResp, CmdResp, CmdResps, CreateFitCmd, CreateFleetCmd, CreateSolCmd,
-    CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp, FitChangeFitCmd, FitIdBackref, FleetIdBackref,
-    ItemIdBackref, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd,
+    ChangeFitEnumCmd, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp, CmdResps, CreateFitCmd, CreateFleetCmd,
+    CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp, FitChangeFitCmd, FitIdBackref,
+    FleetIdBackref, ItemIdBackref, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolChangeFitCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;

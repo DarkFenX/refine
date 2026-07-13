@@ -35,8 +35,8 @@ pub enum ChangeFitError {
     ExecFailed(usize, #[source] ChangeFitEnumError),
 }
 impl ChangeFitError {
-    fn from_render(cmd_idx: usize, exec_err: BackrefRenderError) -> Self {
-        Self::RenderFailed(cmd_idx, exec_err)
+    fn from_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
+        Self::RenderFailed(cmd_idx, render_err)
     }
     fn from_exec(cmd_idx: usize, exec_err: ChangeFitEnumError) -> Self {
         Self::ExecFailed(cmd_idx, exec_err)

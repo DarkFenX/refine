@@ -5,6 +5,7 @@ pub use refine_get_sol::GetSolError;
 pub use sol::SolarSystem;
 use sol::SolarSystemInner;
 pub(crate) use sol::SolarSystemInnerGuarded;
+pub use sol_change::ChangeSolError;
 pub use sol_remove::RemoveSolError;
 
 mod containers;
@@ -12,5 +13,6 @@ mod id;
 mod refine_create_sol;
 mod refine_get_sol;
 mod sol;
+mod sol_change;
 mod sol_exec;
 mod sol_remove;

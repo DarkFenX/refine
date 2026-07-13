@@ -4,11 +4,11 @@ use crate::{
 };
 
 // Commands with full context
-struct CmdFitChangeFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: CmdFitChangeICtxBIds,
+pub(in crate::cmd) struct CmdFitChangeFCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: CmdFitChangeICtxBIds,
 }
-struct CmdFitChangeFCtxRIds {
+pub(in crate::cmd) struct CmdFitChangeFCtxRIds {
     fit_id: rc::FitId,
     ictx_cmd: CmdFitChangeICtxRIds,
 }

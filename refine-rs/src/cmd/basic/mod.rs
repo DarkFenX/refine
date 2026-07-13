@@ -1,4 +1,7 @@
-pub(in crate::cmd) use fit::{CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdFitCreateFCtxRIds, CmdFitRemoveICtx};
+pub(in crate::cmd) use fit::{
+    CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdFitCreateFCtxRIds,
+    CmdFitRemoveICtx,
+};
 pub use fit::{CreateFitError, FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError};
 pub use fleet::{ChangeFleetError, CreateFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
 pub(in crate::cmd) use fleet::{CmdFleetChangeICtxRIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveICtx};

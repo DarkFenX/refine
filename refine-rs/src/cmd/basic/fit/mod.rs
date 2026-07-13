@@ -1,4 +1,6 @@
-pub(in crate::cmd) use change::{CmdFitChangeICtxBIds, CmdFitChangeICtxRIds};
+pub(in crate::cmd) use change::{
+    CmdFitChangeFCtxBIds, CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitChangeICtxRIds,
+};
 pub use change::{FitChangeFitError, GetFitChangeFitError};
 pub(in crate::cmd) use create::CmdFitCreateFCtxRIds;
 pub use create::CreateFitError;
