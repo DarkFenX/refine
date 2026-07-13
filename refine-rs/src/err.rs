@@ -1,7 +1,8 @@
 pub use crate::{
     cmd::{
-        BackrefRenderError, ChangeFleetError, CreateFitError, CreateFleetError, CreateRigError, GetChangeFleetError,
-        GetRemoveFitError, GetRemoveFleetError, GetRemoveItemError, RemoveItemError,
+        BackrefRenderError, ChangeFitError, ChangeFleetError, CreateFitError, CreateFleetError, CreateRigError,
+        GetChangeFitError, GetChangeFleetError, GetRemoveFitError, GetRemoveFleetError, GetRemoveItemError,
+        RemoveItemError,
     },
     fit::GetFitError,
     fleet::GetFleetError,
