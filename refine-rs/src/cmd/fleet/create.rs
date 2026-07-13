@@ -10,7 +10,7 @@ pub struct CreateFleetCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CreateFleetCmd {
     pub fn new() -> Self {
-        CreateFleetCmd::default()
+        Self::default()
     }
     pub fn with_fit_ids(mut self, fit_ids: impl ExactSizeIterator<Item = rc::FitId>) -> Self {
         self.basic.fit_ids.clear();

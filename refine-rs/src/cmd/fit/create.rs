@@ -10,7 +10,7 @@ pub struct CreateFitCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CreateFitCmd {
     pub fn new() -> Self {
-        Default::default()
+        Self::default()
     }
     pub fn with_fleet_id(mut self, fleet_id: rc::FleetId) -> Self {
         self.basic.fleet_id = Some(fleet_id);

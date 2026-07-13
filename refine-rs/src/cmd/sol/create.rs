@@ -10,7 +10,7 @@ pub struct CreateSolCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CreateSolCmd {
     pub fn new() -> Self {
-        CreateSolCmd::default()
+        Self::default()
     }
     pub fn with_sec_zone(mut self, sec_zone: rc::SecZone) -> Self {
         self.basic.sec_zone = Some(sec_zone);

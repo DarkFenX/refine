@@ -9,7 +9,7 @@ pub use shared::{
     BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
     CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
-pub use sol::{ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeFitCmd};
+pub use sol::{ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeFitCmd, SolChangeSolCmd};
 
 mod basic;
 mod fit;

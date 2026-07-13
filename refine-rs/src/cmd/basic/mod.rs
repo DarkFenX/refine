@@ -8,7 +8,7 @@ pub(in crate::cmd) use fleet::{CmdFleetChangeICtxRIds, CmdFleetCreateFCtxRIds, C
 pub(in crate::cmd) use item::CmdItemRemoveICtx;
 pub use item::{GetItemRemoveItemError, RemoveItemError};
 pub use item_rig::CreateRigError;
-pub(in crate::cmd) use sol::CmdSolCreateFCtx;
+pub(in crate::cmd) use sol::{CmdSolChangeFCtx, CmdSolCreateFCtx};
 
 mod fit;
 mod fleet;
