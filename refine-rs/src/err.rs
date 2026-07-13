@@ -4,7 +4,7 @@ pub use crate::{
         FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError,
         GetFleetRemoveFleetError, GetItemRemoveItemError, RemoveItemError,
     },
-    fit::GetFitError,
+    fit::{ChangeFitError, GetFitError},
     fleet::GetFleetError,
     item::GetItemError,
     sol::{CreateSolError, GetSolError, RemoveSolError},

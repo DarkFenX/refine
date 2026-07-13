@@ -2,7 +2,7 @@ pub use basic::{
     ChangeFleetError, CreateFitError, CreateFleetError, CreateRigError, FitChangeFitError, GetFitChangeFitError,
     GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemRemoveItemError, RemoveItemError,
 };
-pub use fit::{ChangeFitEnumError, CreateFitCmd, RemoveFitCmd, ChangeFitEnumCmd, FitChangeFitCmd};
+pub use fit::{ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeFitCmd, RemoveFitCmd};
 pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
 pub use item::RemoveItemCmd;
 pub use shared::{

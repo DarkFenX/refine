@@ -4,12 +4,12 @@ pub struct CmdResps {
     data: Vec<CmdResp>,
 }
 impl CmdResps {
-    fn with_capacity(capacity: usize) -> Self {
+    pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
             data: Vec::with_capacity(capacity),
         }
     }
-    fn append(&mut self, resp: CmdResp) {
+    pub(crate) fn append(&mut self, resp: CmdResp) {
         self.data.push(resp);
     }
     pub(in crate::cmd) fn render_fleet_id(&self, fleet_id: FleetIdBackref) -> Result<rc::FleetId, BackrefRenderError> {
