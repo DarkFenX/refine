@@ -196,7 +196,7 @@ impl HFitChangeCmdBIds {
 impl HFitChangeCmdRIds {
     pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem, fit_id: &rc::FitId) -> Result<HCmdResp, HExecError> {
         match self {
-            // Item
+            // Fit
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol, fit_id)?.into()),
             // Item
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),

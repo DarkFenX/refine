@@ -14,11 +14,11 @@ struct CmdFitChangeFCtxRIds {
 }
 
 // Commands with incomplete context
-struct CmdFitChangeICtxBIds {
+pub(in crate::cmd) struct CmdFitChangeICtxBIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<FleetIdBackref>,
 }
-struct CmdFitChangeICtxRIds {
+pub(in crate::cmd) struct CmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<rc::FleetId>,
 }
