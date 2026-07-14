@@ -1,7 +1,8 @@
 use crate::cmd::{
     inner::{
-        CmdFitChangeICtxBIds, CmdFitChangeICtxRIds, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx,
-        FitChangeFitError, GetItemRemoveItemError,
+        CmdAutochargeChangeFCtxBIds, CmdAutochargeChangeFCtxRIds, CmdAutochargeChangeICtx, CmdFitChangeICtxBIds,
+        CmdFitChangeICtxRIds, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx, FitChangeFitError,
+        GetItemChangeAutochargeError, GetItemRemoveItemError,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref, ItemIdBackref},
 };
@@ -11,6 +12,8 @@ pub enum ChangeFitEnumCmd {
     ChangeFit(FitChangeFitCmd),
     // Item
     RemoveItem(FitRemoveItemCmd),
+    // Item - autocharge
+    ChangeAutocharge(FitChangeAutochargeCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -18,6 +21,8 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     ChangeFit(CmdFitChangeICtxRIds),
     // Item
     RemoveItem(CmdItemRemoveFCtxRIds),
+    // Item - autocharge
+    ChangeAutocharge(CmdAutochargeChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,6 +35,8 @@ impl ChangeFitEnumCmd {
             Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),
             // Item
             Self::RemoveItem(cmd) => ChangeFitEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
+            // Item - autocharge
+            Self::ChangeAutocharge(cmd) => ChangeFitEnumCmdRIds::ChangeAutocharge(cmd.inner.render(resps)?),
         })
     }
 }
@@ -44,16 +51,23 @@ impl ChangeFitEnumCmdRIds {
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_fit)?.into()),
             // Item
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - autocharge
+            Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
         }
     }
 }
 
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeFitEnumError {
+    // Fit
     #[error("failed to change fleet: {0}")]
     FitChangeFailed(#[from] FitChangeFitError),
+    // Item
     #[error("failed to remove item: {0}")]
     ItemRemoveFailed(#[from] GetItemRemoveItemError),
+    // Item - autocharge
+    #[error("failed to change autocharge: {0}")]
+    AutochargeChangeFailed(#[from] GetItemChangeAutochargeError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -109,5 +123,36 @@ impl FitRemoveItemCmd {
 impl From<FitRemoveItemCmd> for ChangeFitEnumCmd {
     fn from(sub_cmd: FitRemoveItemCmd) -> Self {
         Self::RemoveItem(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item - autocharge
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct FitChangeAutochargeCmd {
+    inner: CmdAutochargeChangeFCtxBIds,
+}
+impl FitChangeAutochargeCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            inner: CmdAutochargeChangeFCtxBIds {
+                item_id,
+                ictx_cmd: CmdAutochargeChangeICtx::default(),
+            },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<FitChangeAutochargeCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitChangeAutochargeCmd) -> Self {
+        Self::ChangeAutocharge(sub_cmd)
     }
 }

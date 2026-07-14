@@ -10,6 +10,10 @@ pub(in crate::cmd) use fleet::{
 };
 pub(in crate::cmd) use item::{CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx};
 pub use item::{GetItemRemoveItemError, RemoveItemError};
+pub use item_autocharge::{ChangeAutochargeError, GetItemChangeAutochargeError};
+pub(in crate::cmd) use item_autocharge::{
+    CmdAutochargeChangeFCtxBIds, CmdAutochargeChangeFCtxRIds, CmdAutochargeChangeICtx,
+};
 pub use item_rig::CreateRigError;
 pub(in crate::cmd) use sol::{CmdSolChangeFCtx, CmdSolCreateFCtx};
 

@@ -1,4 +1,4 @@
-pub use change::{ChangeFitEnumCmd, ChangeFitEnumError, FitChangeFitCmd, FitRemoveItemCmd};
+pub use change::{ChangeFitEnumCmd, ChangeFitEnumError, FitChangeAutochargeCmd, FitChangeFitCmd, FitRemoveItemCmd};
 pub use create::CreateFitCmd;
 pub use remove::RemoveFitCmd;
 

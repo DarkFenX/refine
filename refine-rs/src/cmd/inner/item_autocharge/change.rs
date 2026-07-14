@@ -1,19 +1,20 @@
 use crate::cmd::shared::{BackrefRenderError, ChangedItemIdsResp, CmdResps, EffectModes, ItemIdBackref};
 
 // Commands with full context
-struct CmdAutochargeChangeFCtxBIds {
-    item_id: ItemIdBackref,
-    ictx_cmd: CmdAutochargeChangeICtx,
+pub(in crate::cmd) struct CmdAutochargeChangeFCtxBIds {
+    pub(in crate::cmd) item_id: ItemIdBackref,
+    pub(in crate::cmd) ictx_cmd: CmdAutochargeChangeICtx,
 }
-struct CmdAutochargeChangeFCtxRIds {
+pub(crate) struct CmdAutochargeChangeFCtxRIds {
     item_id: rc::ItemId,
     ictx_cmd: CmdAutochargeChangeICtx,
 }
 
 // Commands with incomplete context
-struct CmdAutochargeChangeICtx {
-    state: Option<bool>,
-    effect_modes: Option<EffectModes>,
+#[derive(Default)]
+pub(in crate::cmd) struct CmdAutochargeChangeICtx {
+    pub(in crate::cmd) state: Option<bool>,
+    pub(in crate::cmd) effect_modes: EffectModes,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,9 +59,7 @@ impl CmdAutochargeChangeICtx {
         if let Some(state) = self.state {
             core_autocharge.set_state(state);
         }
-        if let Some(effect_modes) = self.effect_modes.as_ref() {
-            effect_modes.apply(core_autocharge);
-        }
+        self.effect_modes.apply(core_autocharge);
         Ok(ChangedItemIdsResp::default())
     }
 }
