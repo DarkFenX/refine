@@ -4,8 +4,9 @@ use crate::cmd::{
         CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitCreateFCtxBIds, CmdFitCreateFCtxRIds, CmdFitRemoveFCtxBIds,
         CmdFitRemoveFCtxRIds, CmdFitRemoveICtx, CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds, CmdFleetChangeICtxBIds,
         CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveFCtxBIds, CmdFleetRemoveFCtxRIds,
-        CmdFleetRemoveICtx, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx, CmdSolChangeFCtx,
-        CreateFitError, CreateFleetError, GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError,
+        CmdFleetRemoveICtx, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx, CmdRigCreateFCtxBIds,
+        CmdRigCreateFCtxRIds, CmdRigCreateICtx, CmdSolChangeFCtx, CreateFitError, CreateFleetError,
+        GetFitChangeFitError, GetFitCreateRigError, GetFitRemoveFitError, GetFleetChangeFleetError,
         GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemRemoveItemError,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref},
@@ -26,6 +27,8 @@ pub enum ChangeSolEnumCmd {
     RemoveItem(SolRemoveItemCmd),
     // Item - autocharge
     ChangeAutocharge(SolChangeAutochargeCmd),
+    // Item - rig
+    CreateRig(SolCreateRigCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -43,6 +46,8 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     RemoveItem(CmdItemRemoveFCtxRIds),
     // Item - autocharge
     ChangeAutocharge(CmdAutochargeChangeFCtxRIds),
+    // Item - rig
+    CreateRig(CmdRigCreateFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,6 +70,8 @@ impl ChangeSolEnumCmd {
             Self::RemoveItem(cmd) => ChangeSolEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => ChangeSolEnumCmdRIds::ChangeAutocharge(cmd.inner.render(resps)?),
+            // Item - rig
+            Self::CreateRig(cmd) => ChangeSolEnumCmdRIds::CreateRig(cmd.inner.render(resps)?),
         })
     }
 }
@@ -89,6 +96,8 @@ impl ChangeSolEnumCmdRIds {
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - rig
+            Self::CreateRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -115,6 +124,9 @@ pub enum ChangeSolEnumError {
     // Item - autocharge
     #[error("failed to change autocharge: {0}")]
     AutochargeChangeFailed(#[from] GetItemChangeAutochargeError),
+    // Item - rig
+    #[error("failed to create rig: {0}")]
+    RigCreateFailed(#[from] GetFitCreateRigError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -364,5 +376,36 @@ impl SolChangeAutochargeCmd {
 impl From<SolChangeAutochargeCmd> for ChangeSolEnumCmd {
     fn from(sub_cmd: SolChangeAutochargeCmd) -> Self {
         Self::ChangeAutocharge(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item - rig
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct SolCreateRigCmd {
+    inner: CmdRigCreateFCtxBIds,
+}
+impl SolCreateRigCmd {
+    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
+        Self {
+            inner: CmdRigCreateFCtxBIds {
+                fit_id,
+                ictx_cmd: CmdRigCreateICtx { type_id, .. },
+            },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolCreateRigCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolCreateRigCmd) -> Self {
+        Self::CreateRig(sub_cmd)
     }
 }

@@ -1,8 +1,8 @@
 use crate::cmd::{
     inner::{
         CmdAutochargeChangeFCtxBIds, CmdAutochargeChangeFCtxRIds, CmdAutochargeChangeICtx, CmdFitChangeICtxBIds,
-        CmdFitChangeICtxRIds, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx, FitChangeFitError,
-        GetItemChangeAutochargeError, GetItemRemoveItemError,
+        CmdFitChangeICtxRIds, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx, CmdRigCreateICtx,
+        FitChangeFitError, GetItemChangeAutochargeError, GetItemRemoveItemError,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref, ItemIdBackref},
 };
@@ -14,6 +14,8 @@ pub enum ChangeFitEnumCmd {
     RemoveItem(FitRemoveItemCmd),
     // Item - autocharge
     ChangeAutocharge(FitChangeAutochargeCmd),
+    // Item - rig
+    CreateRig(FitCreateRigCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -23,6 +25,8 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     RemoveItem(CmdItemRemoveFCtxRIds),
     // Item - autocharge
     ChangeAutocharge(CmdAutochargeChangeFCtxRIds),
+    // Item - rig
+    CreateRig(CmdRigCreateICtx),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +41,8 @@ impl ChangeFitEnumCmd {
             Self::RemoveItem(cmd) => ChangeFitEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => ChangeFitEnumCmdRIds::ChangeAutocharge(cmd.inner.render(resps)?),
+            // Item - rig
+            Self::CreateRig(cmd) => ChangeFitEnumCmdRIds::CreateRig(cmd.inner),
         })
     }
 }
@@ -53,6 +59,8 @@ impl ChangeFitEnumCmdRIds {
             Self::RemoveItem(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - autocharge
+            Self::CreateRig(cmd) => Ok(cmd.execute(core_fit).into()),
         }
     }
 }
@@ -154,5 +162,33 @@ impl FitChangeAutochargeCmd {
 impl From<FitChangeAutochargeCmd> for ChangeFitEnumCmd {
     fn from(sub_cmd: FitChangeAutochargeCmd) -> Self {
         Self::ChangeAutocharge(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item - rig
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct FitCreateRigCmd {
+    inner: CmdRigCreateICtx,
+}
+impl FitCreateRigCmd {
+    pub fn new(type_id: rc::ItemTypeId) -> Self {
+        Self {
+            inner: CmdRigCreateICtx { type_id, .. },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.effect_modes.clear();
+        self.inner.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<FitCreateRigCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitCreateRigCmd) -> Self {
+        Self::CreateRig(sub_cmd)
     }
 }

@@ -4,11 +4,14 @@ pub use fit::{
 };
 pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
 pub use inner::{
-    ChangeAutochargeError, ChangeFleetError, CreateFitError, CreateFleetError, CreateRigError, FitChangeFitError,
-    GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
+    ChangeAutochargeError, ChangeFleetError, CreateFitError, CreateFleetError, FitChangeFitError, GetFitChangeFitError,
+    GetFitCreateRigError, GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
     GetItemChangeAutochargeError, GetItemRemoveItemError, RemoveItemError,
 };
-pub use item::{ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd, RemoveItemCmd};
+pub use item::{
+    ChangeItemEnumCmd, ChangeItemEnumError, CreateItemEnumCmd, CreateItemEnumError, ItemChangeAutochargeCmd,
+    ItemCreateRigCmd, RemoveItemCmd,
+};
 pub use shared::{
     BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
     CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,

@@ -5,7 +5,7 @@ use crate::{
 
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
-    pub async fn change(self, cmd: ChangeItemEnumCmd) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
+    pub async fn change(&mut self, cmd: ChangeItemEnumCmd) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
         let item_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {

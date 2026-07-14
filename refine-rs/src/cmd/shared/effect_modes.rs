@@ -5,6 +5,9 @@ pub(in crate::cmd) struct EffectModes {
     data: Vec<(rc::EffectId, rc::EffectMode)>,
 }
 impl EffectModes {
+    pub(in crate::cmd) const fn new() -> Self {
+        Self { data: Vec::new() }
+    }
     pub(in crate::cmd) fn clear(&mut self) {
         self.data.clear();
     }

@@ -1,20 +1,20 @@
 use crate::cmd::{BackrefRenderError, CmdResps, CreatedItemIdsResp, FitIdBackref, shared::EffectModes};
 
 // Commands with full context
-struct CmdRigCreateFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: CmdRigCreateICtx,
+pub(in crate::cmd) struct CmdRigCreateFCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: CmdRigCreateICtx,
 }
-struct CmdRigCreateFCtxRIds {
-    fit_id: rc::FitId,
-    ictx_cmd: CmdRigCreateICtx,
+pub(crate) struct CmdRigCreateFCtxRIds {
+    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) ictx_cmd: CmdRigCreateICtx,
 }
 
 // Commands with incomplete context
-struct CmdRigCreateICtx {
-    type_id: rc::ItemTypeId,
-    state: Option<bool>,
-    effect_modes: EffectModes,
+pub(crate) struct CmdRigCreateICtx {
+    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) state: Option<bool> = None,
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -33,14 +33,17 @@ impl CmdRigCreateFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdRigCreateFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedItemIdsResp, CreateRigError> {
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<CreatedItemIdsResp, GetFitCreateRigError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit))
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum CreateRigError {
+pub enum GetFitCreateRigError {
     #[error("{0}")]
     FitGetFailed(#[from] rc::err::GetFitError),
 }

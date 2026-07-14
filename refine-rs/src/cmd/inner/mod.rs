@@ -14,7 +14,8 @@ pub use item_autocharge::{ChangeAutochargeError, GetItemChangeAutochargeError};
 pub(in crate::cmd) use item_autocharge::{
     CmdAutochargeChangeFCtxBIds, CmdAutochargeChangeFCtxRIds, CmdAutochargeChangeICtx,
 };
-pub use item_rig::CreateRigError;
+pub use item_rig::GetFitCreateRigError;
+pub(in crate::cmd) use item_rig::{CmdRigCreateFCtxBIds, CmdRigCreateFCtxRIds, CmdRigCreateICtx};
 pub(in crate::cmd) use sol::{CmdSolChangeFCtx, CmdSolCreateFCtx};
 
 mod fit;
