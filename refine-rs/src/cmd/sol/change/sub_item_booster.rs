@@ -1,0 +1,72 @@
+use crate::cmd::{
+    ChangeSolEnumCmd,
+    inner::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds},
+    shared::{FitIdBackref, ItemIdBackref},
+};
+
+pub struct SolAddBoosterCmd {
+    pub(super) inner: ICmdBoosterAddFCtxBIds,
+}
+impl SolAddBoosterCmd {
+    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
+        Self {
+            inner: ICmdBoosterAddFCtxBIds {
+                fit_id,
+                ictx_cmd: ICmdBoosterAddICtx { type_id, .. },
+            },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_side_effects(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
+        self.inner.ictx_cmd.side_effects.clear();
+        self.inner.ictx_cmd.side_effects.extend(effect_modes);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolAddBoosterCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolAddBoosterCmd) -> Self {
+        Self::AddBooster(sub_cmd)
+    }
+}
+
+pub struct SolChangeBoosterCmd {
+    pub(super) inner: ICmdBoosterChangeFCtxBIds,
+}
+impl SolChangeBoosterCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            inner: ICmdBoosterChangeFCtxBIds { item_id, .. },
+        }
+    }
+    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+        self.inner.ictx_cmd.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_side_effects(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
+        self.inner.ictx_cmd.side_effects.clear();
+        self.inner.ictx_cmd.side_effects.extend(effect_modes);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolChangeBoosterCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolChangeBoosterCmd) -> Self {
+        Self::ChangeBooster(sub_cmd)
+    }
+}

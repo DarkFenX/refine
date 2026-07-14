@@ -20,10 +20,10 @@ pub use shared::{
     FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
-    AddSolCmd, ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd,
-    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd,
-    SolChangeCharacterViaItemCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd,
-    SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
+    AddSolCmd, ChangeCharacterError, ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddFitCmd,
+    SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd,
+    SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd,
+    SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
 
 mod fit;
