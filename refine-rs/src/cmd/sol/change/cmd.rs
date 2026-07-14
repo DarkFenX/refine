@@ -2,15 +2,15 @@ use super::sub_item_character::SolChangeCharacterCmdRIds;
 use crate::cmd::{
     AddFitError, AddFleetError, ChangeCharacterError, GetFitAddBoosterError, GetFitAddRigError, GetFitChangeFitError,
     GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError,
-    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemRemoveItemError,
-    SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
-    SolChangeCharacterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
-    SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
+    GetItemRemoveItemError, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd,
+    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeFitCmd, SolChangeFleetCmd,
+    SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
-        ICmdCharacterUnsetFCtxRIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxRIds, ICmdFitRemoveFCtxRIds,
-        ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds, ICmdItemRemoveFCtxRIds,
-        ICmdRigAddFCtxRIds, ICmdSolChangeFCtx,
+        ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxRIds,
+        ICmdFitRemoveFCtxRIds, ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds,
+        ICmdItemRemoveFCtxRIds, ICmdRigAddFCtxRIds, ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -37,6 +37,8 @@ pub enum ChangeSolEnumCmd {
     SetCharacter(SolSetCharacterCmd),
     ChangeCharacter(SolChangeCharacterCmd),
     UnsetCharacter(SolUnsetCharacterCmd),
+    // Item - charge
+    ChangeCharge(SolChangeChargeCmd),
     // Item - rig
     AddRig(SolAddRigCmd),
 }
@@ -63,6 +65,8 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     SetCharacter(ICmdCharacterSetFCtxRIds),
     ChangeCharacter(SolChangeCharacterCmdRIds),
     UnsetCharacter(ICmdCharacterUnsetFCtxRIds),
+    // Item - charge
+    ChangeCharge(ICmdChargeChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddFCtxRIds),
 }
@@ -94,6 +98,8 @@ impl ChangeSolEnumCmd {
             Self::SetCharacter(cmd) => ChangeSolEnumCmdRIds::SetCharacter(cmd.inner.render(resps)?),
             Self::ChangeCharacter(cmd) => ChangeSolEnumCmdRIds::ChangeCharacter(cmd.render(resps)?),
             Self::UnsetCharacter(cmd) => ChangeSolEnumCmdRIds::UnsetCharacter(cmd.inner.render(resps)?),
+            // Item - charge
+            Self::ChangeCharge(cmd) => ChangeSolEnumCmdRIds::ChangeCharge(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeSolEnumCmdRIds::AddRig(cmd.inner.render(resps)?),
         })
@@ -127,6 +133,8 @@ impl ChangeSolEnumCmdRIds {
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - charge
+            Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
@@ -167,6 +175,9 @@ pub enum ChangeSolEnumError {
     CharacterChangeFailed(#[from] ChangeCharacterError),
     #[error("failed to unset character: {0}")]
     CharacterUnsetFailed(#[from] GetFitUnsetCharacterError),
+    // Item - charge
+    #[error("failed to change charge: {0}")]
+    ChargeChangeFailed(#[from] GetItemChangeChargeError),
     // Item - rig
     #[error("failed to add rig: {0}")]
     RigAddFailed(#[from] GetFitAddRigError),

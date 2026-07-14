@@ -8,6 +8,7 @@ pub use sub_item_character::{
     ChangeCharacterError, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
     SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
+pub use sub_item_charge::SolChangeChargeCmd;
 pub use sub_item_rig::SolAddRigCmd;
 pub use sub_sol::SolChangeSolCmd;
 
@@ -18,5 +19,6 @@ mod sub_item;
 mod sub_item_autocharge;
 mod sub_item_booster;
 mod sub_item_character;
+mod sub_item_charge;
 mod sub_item_rig;
 mod sub_sol;

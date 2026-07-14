@@ -28,6 +28,8 @@ pub(in crate::cmd) use item_character::{
     ICmdCharacterChangeFItemCtxRIds, ICmdCharacterChangeICtx, ICmdCharacterSetFCtxBIds, ICmdCharacterSetFCtxRIds,
     ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds, ICmdCharacterUnsetFCtxRIds, ICmdCharacterUnsetICtx,
 };
+pub use item_charge::{GetItemChangeChargeError, ItemChangeChargeError};
+pub(in crate::cmd) use item_charge::{ICmdChargeChangeFCtxBIds, ICmdChargeChangeFCtxRIds, ICmdChargeChangeICtx};
 pub use item_rig::GetFitAddRigError;
 pub(in crate::cmd) use item_rig::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
@@ -38,5 +40,6 @@ mod item;
 mod item_autocharge;
 mod item_booster;
 mod item_character;
+mod item_charge;
 mod item_rig;
 mod sol;

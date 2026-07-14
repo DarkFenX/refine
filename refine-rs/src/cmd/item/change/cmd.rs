@@ -1,12 +1,14 @@
 use crate::cmd::{
     ItemChangeAutochargeCmd, ItemChangeAutochargeError, ItemChangeBoosterCmd, ItemChangeBoosterError,
-    ItemChangeCharacterCmd, ItemChangeCharacterError, shared::ChangedItemIdsResp,
+    ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError,
+    shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
     Autocharge(ItemChangeAutochargeCmd),
     Booster(ItemChangeBoosterCmd),
     Character(ItemChangeCharacterCmd),
+    Charge(ItemChangeChargeCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,6 +20,7 @@ impl ChangeItemEnumCmd {
             Self::Autocharge(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
+            Self::Charge(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
 }
@@ -30,4 +33,6 @@ pub enum ChangeItemEnumError {
     BoosterFailed(#[from] ItemChangeBoosterError),
     #[error("failed to change character: {0}")]
     CharacterFailed(#[from] ItemChangeCharacterError),
+    #[error("failed to change charge: {0}")]
+    ChargeFailed(#[from] ItemChangeChargeError),
 }

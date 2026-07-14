@@ -1,10 +1,12 @@
 use crate::cmd::{
     FitAddBoosterCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
-    FitChangeCharacterError, FitChangeFitCmd, FitChangeFitError, FitRemoveItemCmd, FitSetCharacterCmd,
-    FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemRemoveItemError,
+    FitChangeCharacterError, FitChangeChargeCmd, FitChangeFitCmd, FitChangeFitError, FitRemoveItemCmd,
+    FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+    GetItemChangeChargeError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
-        ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddICtx,
+        ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdFitChangeICtxRIds,
+        ICmdItemRemoveFCtxRIds, ICmdRigAddICtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -23,6 +25,8 @@ pub enum ChangeFitEnumCmd {
     SetCharacter(FitSetCharacterCmd),
     ChangeCharacter(FitChangeCharacterCmd),
     UnsetCharacter(FitUnsetCharacterCmd),
+    // Item - charge
+    ChangeCharge(FitChangeChargeCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
 }
@@ -41,6 +45,8 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     SetCharacter(ICmdCharacterSetICtx),
     ChangeCharacter(ICmdCharacterChangeICtx),
     UnsetCharacter(ICmdCharacterUnsetICtx),
+    // Item - charge
+    ChangeCharge(ICmdChargeChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddICtx),
 }
@@ -64,6 +70,8 @@ impl ChangeFitEnumCmd {
             Self::SetCharacter(cmd) => ChangeFitEnumCmdRIds::SetCharacter(cmd.inner),
             Self::ChangeCharacter(cmd) => ChangeFitEnumCmdRIds::ChangeCharacter(cmd.inner),
             Self::UnsetCharacter(cmd) => ChangeFitEnumCmdRIds::UnsetCharacter(cmd.inner),
+            // Item - charge
+            Self::ChangeCharge(cmd) => ChangeFitEnumCmdRIds::ChangeCharge(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
         })
@@ -89,6 +97,8 @@ impl ChangeFitEnumCmdRIds {
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_fit).into()),
+            // Item - charge
+            Self::ChangeCharge(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
         }
@@ -112,4 +122,7 @@ pub enum ChangeFitEnumError {
     // Item - character
     #[error("failed to change character: {0}")]
     CharacterChangeFailed(#[from] FitChangeCharacterError),
+    // Item - character
+    #[error("failed to change charge: {0}")]
+    ChargeChangeFailed(#[from] GetItemChangeChargeError),
 }
