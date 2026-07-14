@@ -49,6 +49,7 @@ pub struct CreatedItemIdsResp {
     pub charge_item_id: Option<rc::ItemId>,
 }
 
+#[derive(Default)]
 pub struct ChangedItemIdsResp {
     pub charge_item_id: Option<rc::ItemId>,
 }

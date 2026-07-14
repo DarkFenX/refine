@@ -1,4 +1,5 @@
-pub mod basic;
+pub use basic::ItemKindMatchError;
+
 pub use crate::{
     api::{
         AddMutationError, AddProjError, AttrIdParseError, AttrMutateRawError, CreateSkillError, EffectIdParseError,
@@ -14,3 +15,5 @@ pub use crate::{
     misc::{BreacherProfileError, DpsProfileError},
     num::{FighterCountError, FitSecStatusError, SkillLevelError, UnitIntervalError},
 };
+
+pub mod basic;

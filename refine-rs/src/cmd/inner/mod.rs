@@ -16,5 +16,6 @@ pub(in crate::cmd) use sol::{CmdSolChangeFCtx, CmdSolCreateFCtx};
 mod fit;
 mod fleet;
 mod item;
+mod item_autocharge;
 mod item_rig;
 mod sol;
