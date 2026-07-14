@@ -1,8 +1,8 @@
-use crate::cmd::inner::CmdFleetRemoveICtx;
+use crate::cmd::inner::ICmdFleetRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFleetCmd {
-    inner: CmdFleetRemoveICtx,
+    inner: ICmdFleetRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

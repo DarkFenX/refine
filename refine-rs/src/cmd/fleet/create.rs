@@ -1,11 +1,11 @@
 use crate::cmd::{
-    inner::{CmdFleetCreateFCtxRIds, CreateFleetError},
+    inner::{CreateFleetError, ICmdFleetCreateFCtxRIds},
     shared::CreatedFleetIdResp,
 };
 
 #[derive(Default)]
 pub struct CreateFleetCmd {
-    inner: CmdFleetCreateFCtxRIds,
+    inner: ICmdFleetCreateFCtxRIds,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

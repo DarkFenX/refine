@@ -1,5 +1,5 @@
 use crate::cmd::{
-    inner::{CmdRigCreateFCtxRIds, CmdRigCreateICtx, GetFitCreateRigError},
+    inner::{GetFitCreateRigError, ICmdRigCreateFCtxRIds, ICmdRigCreateICtx},
     shared::CreatedItemIdsResp,
 };
 
@@ -29,14 +29,14 @@ pub enum CreateItemEnumError {
 // Sub-commands - item - rig
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct ItemCreateRigCmd {
-    inner: CmdRigCreateFCtxRIds,
+    inner: ICmdRigCreateFCtxRIds,
 }
 impl ItemCreateRigCmd {
     pub fn new(fit_id: rc::FitId, type_id: rc::ItemTypeId) -> Self {
         Self {
-            inner: CmdRigCreateFCtxRIds {
+            inner: ICmdRigCreateFCtxRIds {
                 fit_id,
-                ictx_cmd: CmdRigCreateICtx { type_id, .. },
+                ictx_cmd: ICmdRigCreateICtx { type_id, .. },
             },
         }
     }

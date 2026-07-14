@@ -1,17 +1,17 @@
 use crate::cmd::{BackrefRenderError, CmdResps, CreatedItemIdsResp, FitIdBackref, shared::EffectModes};
 
 // Commands with full context
-pub(in crate::cmd) struct CmdRigCreateFCtxBIds {
+pub(in crate::cmd) struct ICmdRigCreateFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
-    pub(in crate::cmd) ictx_cmd: CmdRigCreateICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdRigCreateICtx,
 }
-pub(crate) struct CmdRigCreateFCtxRIds {
+pub(crate) struct ICmdRigCreateFCtxRIds {
     pub(in crate::cmd) fit_id: rc::FitId,
-    pub(in crate::cmd) ictx_cmd: CmdRigCreateICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdRigCreateICtx,
 }
 
 // Commands with incomplete context
-pub(crate) struct CmdRigCreateICtx {
+pub(crate) struct ICmdRigCreateICtx {
     pub(in crate::cmd) type_id: rc::ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
@@ -20,9 +20,9 @@ pub(crate) struct CmdRigCreateICtx {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdRigCreateFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdRigCreateFCtxRIds, BackrefRenderError> {
-        Ok(CmdRigCreateFCtxRIds {
+impl ICmdRigCreateFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdRigCreateFCtxRIds, BackrefRenderError> {
+        Ok(ICmdRigCreateFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,
         })
@@ -32,7 +32,7 @@ impl CmdRigCreateFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdRigCreateFCtxRIds {
+impl ICmdRigCreateFCtxRIds {
     pub(in crate::cmd) fn execute(
         &self,
         core_sol: &mut rc::SolarSystem,
@@ -48,7 +48,7 @@ pub enum GetFitCreateRigError {
     FitGetFailed(#[from] rc::err::GetFitError),
 }
 
-impl CmdRigCreateICtx {
+impl ICmdRigCreateICtx {
     pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> CreatedItemIdsResp {
         let mut core_rig = core_fit.create_rig(self.type_id);
         if let Some(state) = self.state {

@@ -1,5 +1,5 @@
 use crate::cmd::{
-    inner::{ChangeAutochargeError, CmdAutochargeChangeICtx},
+    inner::{ChangeAutochargeError, ICmdAutochargeChangeICtx},
     shared::ChangedItemIdsResp,
 };
 
@@ -30,7 +30,7 @@ pub enum ChangeItemEnumError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct ItemChangeAutochargeCmd {
-    inner: CmdAutochargeChangeICtx,
+    inner: ICmdAutochargeChangeICtx,
 }
 impl ItemChangeAutochargeCmd {
     pub fn new() -> Self {

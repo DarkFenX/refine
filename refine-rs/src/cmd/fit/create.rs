@@ -1,11 +1,11 @@
 use crate::cmd::{
-    inner::{CmdFitCreateFCtxRIds, CreateFitError},
+    inner::{CreateFitError, ICmdFitCreateFCtxRIds},
     shared::CreatedFitIdResp,
 };
 
 #[derive(Default)]
 pub struct CreateFitCmd {
-    inner: CmdFitCreateFCtxRIds,
+    inner: ICmdFitCreateFCtxRIds,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,11 +1,11 @@
 pub use change::{ChangeFleetError, GetFleetChangeFleetError};
 pub(in crate::cmd) use change::{
-    CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds, CmdFleetChangeICtxBIds, CmdFleetChangeICtxRIds,
+    ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxBIds, ICmdFleetChangeICtxRIds,
 };
 pub use create::CreateFleetError;
-pub(in crate::cmd) use create::{CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds};
+pub(in crate::cmd) use create::{ICmdFleetCreateFCtxBIds, ICmdFleetCreateFCtxRIds};
 pub use remove::GetFleetRemoveFleetError;
-pub(in crate::cmd) use remove::{CmdFleetRemoveFCtxBIds, CmdFleetRemoveFCtxRIds, CmdFleetRemoveICtx};
+pub(in crate::cmd) use remove::{ICmdFleetRemoveFCtxBIds, ICmdFleetRemoveFCtxRIds, ICmdFleetRemoveICtx};
 
 mod change;
 mod create;

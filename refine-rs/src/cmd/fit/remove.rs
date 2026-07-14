@@ -1,8 +1,8 @@
-use crate::cmd::inner::CmdFitRemoveICtx;
+use crate::cmd::inner::ICmdFitRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFitCmd {
-    inner: CmdFitRemoveICtx,
+    inner: ICmdFitRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

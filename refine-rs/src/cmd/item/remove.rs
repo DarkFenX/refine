@@ -1,8 +1,8 @@
-use crate::cmd::inner::{CmdItemRemoveICtx, RemoveItemError};
+use crate::cmd::inner::{ICmdItemRemoveICtx, RemoveItemError};
 
 #[derive(Default)]
 pub struct RemoveItemCmd {
-    inner: CmdItemRemoveICtx,
+    inner: ICmdItemRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

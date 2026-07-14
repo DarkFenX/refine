@@ -4,22 +4,22 @@ use crate::{
 };
 
 // Commands with full context
-pub(in crate::cmd) struct CmdFitChangeFCtxBIds {
+pub(in crate::cmd) struct ICmdFitChangeFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
-    pub(in crate::cmd) ictx_cmd: CmdFitChangeICtxBIds,
+    pub(in crate::cmd) ictx_cmd: ICmdFitChangeICtxBIds,
 }
-pub(crate) struct CmdFitChangeFCtxRIds {
+pub(crate) struct ICmdFitChangeFCtxRIds {
     fit_id: rc::FitId,
-    ictx_cmd: CmdFitChangeICtxRIds,
+    ictx_cmd: ICmdFitChangeICtxRIds,
 }
 
 // Commands with incomplete context
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFitChangeICtxBIds {
+pub(in crate::cmd) struct ICmdFitChangeICtxBIds {
     pub(in crate::cmd) shared: CmdFitChangeShared,
     pub(in crate::cmd) fleet_id: TriStateField<FleetIdBackref>,
 }
-pub(crate) struct CmdFitChangeICtxRIds {
+pub(crate) struct ICmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<rc::FleetId>,
 }
@@ -32,18 +32,18 @@ pub(in crate::cmd) struct CmdFitChangeShared {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFitChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFitChangeFCtxRIds, BackrefRenderError> {
-        Ok(CmdFitChangeFCtxRIds {
+impl ICmdFitChangeFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFitChangeFCtxRIds, BackrefRenderError> {
+        Ok(ICmdFitChangeFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
         })
     }
 }
 
-impl CmdFitChangeICtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFitChangeICtxRIds, BackrefRenderError> {
-        Ok(CmdFitChangeICtxRIds {
+impl ICmdFitChangeICtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFitChangeICtxRIds, BackrefRenderError> {
+        Ok(ICmdFitChangeICtxRIds {
             shared: self.shared,
             fleet_id: match self.fleet_id {
                 TriStateField::Value(fleet_id) => TriStateField::Value(resps.render_fleet_id(fleet_id)?),
@@ -57,7 +57,7 @@ impl CmdFitChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFitChangeFCtxRIds {
+impl ICmdFitChangeFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitChangeFitError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit)?)
@@ -72,7 +72,7 @@ pub enum GetFitChangeFitError {
     ChangeFailed(#[from] FitChangeFitError),
 }
 
-impl CmdFitChangeICtxRIds {
+impl ICmdFitChangeICtxRIds {
     pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeFitError> {
         match self.fleet_id {
             TriStateField::Value(fleet_id) => core_fit.set_fleet(&fleet_id)?,

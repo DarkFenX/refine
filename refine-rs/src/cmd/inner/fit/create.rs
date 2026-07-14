@@ -2,17 +2,17 @@ use crate::cmd::{BackrefRenderError, CmdResps, CreatedFitIdResp, FleetIdBackref}
 
 // Commands with full context
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFitCreateFCtxBIds {
-    pub(in crate::cmd) shared: CmdFitCreateShared,
+pub(in crate::cmd) struct ICmdFitCreateFCtxBIds {
+    pub(in crate::cmd) shared: ICmdFitCreateShared,
     pub(in crate::cmd) fleet_id: Option<FleetIdBackref>,
 }
 #[derive(Default)]
-pub(crate) struct CmdFitCreateFCtxRIds {
-    pub(in crate::cmd) shared: CmdFitCreateShared,
+pub(crate) struct ICmdFitCreateFCtxRIds {
+    pub(in crate::cmd) shared: ICmdFitCreateShared,
     pub(in crate::cmd) fleet_id: Option<rc::FleetId>,
 }
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFitCreateShared {
+pub(in crate::cmd) struct ICmdFitCreateShared {
     pub(in crate::cmd) sec_status: Option<rc::FitSecStatus>,
     pub(in crate::cmd) rah_incoming_dps: Option<rc::DpsProfile>,
 }
@@ -20,9 +20,9 @@ pub(in crate::cmd) struct CmdFitCreateShared {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFitCreateFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFitCreateFCtxRIds, BackrefRenderError> {
-        Ok(CmdFitCreateFCtxRIds {
+impl ICmdFitCreateFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFitCreateFCtxRIds, BackrefRenderError> {
+        Ok(ICmdFitCreateFCtxRIds {
             shared: self.shared,
             fleet_id: match self.fleet_id {
                 Some(fleet_id) => Some(resps.render_fleet_id(fleet_id)?),
@@ -35,7 +35,7 @@ impl CmdFitCreateFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFitCreateFCtxRIds {
+impl ICmdFitCreateFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFitIdResp, CreateFitError> {
         let mut core_fit = core_sol.create_fit();
         if let Some(fleet_id) = self.fleet_id {

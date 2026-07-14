@@ -1,8 +1,8 @@
-use crate::cmd::inner::{ChangeFleetError, CmdFleetChangeICtxRIds};
+use crate::cmd::inner::{ChangeFleetError, ICmdFleetChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ChangeFleetCmd {
-    inner: CmdFleetChangeICtxRIds,
+    inner: ICmdFleetChangeICtxRIds,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

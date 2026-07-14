@@ -1,25 +1,25 @@
 use crate::cmd::{BackrefRenderError, CmdResps, FitIdBackref};
 
 // Commands with full context
-pub(in crate::cmd) struct CmdFitRemoveFCtxBIds {
+pub(in crate::cmd) struct ICmdFitRemoveFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
-    pub(in crate::cmd) ictx_cmd: CmdFitRemoveICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdFitRemoveICtx,
 }
-pub(crate) struct CmdFitRemoveFCtxRIds {
+pub(crate) struct ICmdFitRemoveFCtxRIds {
     fit_id: rc::FitId,
-    ictx_cmd: CmdFitRemoveICtx,
+    ictx_cmd: ICmdFitRemoveICtx,
 }
 
 // Commands with incomplete context
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFitRemoveICtx;
+pub(in crate::cmd) struct ICmdFitRemoveICtx;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFitRemoveFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFitRemoveFCtxRIds, BackrefRenderError> {
-        Ok(CmdFitRemoveFCtxRIds {
+impl ICmdFitRemoveFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFitRemoveFCtxRIds, BackrefRenderError> {
+        Ok(ICmdFitRemoveFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,
         })
@@ -29,7 +29,7 @@ impl CmdFitRemoveFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFitRemoveFCtxRIds {
+impl ICmdFitRemoveFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitRemoveFitError> {
         let core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(core_fit))
@@ -42,7 +42,7 @@ pub enum GetFitRemoveFitError {
     GetFailed(#[from] rc::err::GetFitError),
 }
 
-impl CmdFitRemoveICtx {
+impl ICmdFitRemoveICtx {
     pub(in crate::cmd) fn execute(&self, core_fit: rc::FitMut) {
         core_fit.remove()
     }

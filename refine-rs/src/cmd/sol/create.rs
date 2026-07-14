@@ -1,8 +1,8 @@
-use crate::cmd::inner::CmdSolCreateFCtx;
+use crate::cmd::inner::ICmdSolCreateFCtx;
 
 #[derive(Default)]
 pub struct CreateSolCmd {
-    inner: CmdSolCreateFCtx,
+    inner: ICmdSolCreateFCtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

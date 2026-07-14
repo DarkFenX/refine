@@ -1,13 +1,14 @@
 use crate::cmd::{
     inner::{
-        CmdAutochargeChangeFCtxBIds, CmdAutochargeChangeFCtxRIds, CmdAutochargeChangeICtx, CmdFitChangeFCtxBIds,
-        CmdFitChangeFCtxRIds, CmdFitChangeICtxBIds, CmdFitCreateFCtxBIds, CmdFitCreateFCtxRIds, CmdFitRemoveFCtxBIds,
-        CmdFitRemoveFCtxRIds, CmdFitRemoveICtx, CmdFleetChangeFCtxBIds, CmdFleetChangeFCtxRIds, CmdFleetChangeICtxBIds,
-        CmdFleetCreateFCtxBIds, CmdFleetCreateFCtxRIds, CmdFleetRemoveFCtxBIds, CmdFleetRemoveFCtxRIds,
-        CmdFleetRemoveICtx, CmdItemRemoveFCtxBIds, CmdItemRemoveFCtxRIds, CmdItemRemoveICtx, CmdRigCreateFCtxBIds,
-        CmdRigCreateFCtxRIds, CmdRigCreateICtx, CmdSolChangeFCtx, CreateFitError, CreateFleetError,
-        GetFitChangeFitError, GetFitCreateRigError, GetFitRemoveFitError, GetFleetChangeFleetError,
-        GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemRemoveItemError,
+        CreateFitError, CreateFleetError, GetFitChangeFitError, GetFitCreateRigError, GetFitRemoveFitError,
+        GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemRemoveItemError,
+        ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds, ICmdAutochargeChangeICtx, ICmdFitChangeFCtxBIds,
+        ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitCreateFCtxBIds, ICmdFitCreateFCtxRIds,
+        ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFitRemoveICtx, ICmdFleetChangeFCtxBIds,
+        ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxBIds, ICmdFleetCreateFCtxBIds, ICmdFleetCreateFCtxRIds,
+        ICmdFleetRemoveFCtxBIds, ICmdFleetRemoveFCtxRIds, ICmdFleetRemoveICtx, ICmdItemRemoveFCtxBIds,
+        ICmdItemRemoveFCtxRIds, ICmdItemRemoveICtx, ICmdRigCreateFCtxBIds, ICmdRigCreateFCtxRIds, ICmdRigCreateICtx,
+        ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref},
 };
@@ -33,21 +34,21 @@ pub enum ChangeSolEnumCmd {
 
 pub(crate) enum ChangeSolEnumCmdRIds {
     // Solar system
-    ChangeSol(CmdSolChangeFCtx),
+    ChangeSol(ICmdSolChangeFCtx),
     // Fleet
-    CreateFleet(CmdFleetCreateFCtxRIds),
-    ChangeFleet(CmdFleetChangeFCtxRIds),
-    RemoveFleet(CmdFleetRemoveFCtxRIds),
+    CreateFleet(ICmdFleetCreateFCtxRIds),
+    ChangeFleet(ICmdFleetChangeFCtxRIds),
+    RemoveFleet(ICmdFleetRemoveFCtxRIds),
     // Fit
-    CreateFit(CmdFitCreateFCtxRIds),
-    ChangeFit(CmdFitChangeFCtxRIds),
-    RemoveFit(CmdFitRemoveFCtxRIds),
+    CreateFit(ICmdFitCreateFCtxRIds),
+    ChangeFit(ICmdFitChangeFCtxRIds),
+    RemoveFit(ICmdFitRemoveFCtxRIds),
     // Item
-    RemoveItem(CmdItemRemoveFCtxRIds),
+    RemoveItem(ICmdItemRemoveFCtxRIds),
     // Item - autocharge
-    ChangeAutocharge(CmdAutochargeChangeFCtxRIds),
+    ChangeAutocharge(ICmdAutochargeChangeFCtxRIds),
     // Item - rig
-    CreateRig(CmdRigCreateFCtxRIds),
+    CreateRig(ICmdRigCreateFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -134,7 +135,7 @@ pub enum ChangeSolEnumError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct SolChangeSolCmd {
-    inner: CmdSolChangeFCtx,
+    inner: ICmdSolChangeFCtx,
 }
 impl SolChangeSolCmd {
     pub fn new() -> Self {
@@ -176,7 +177,7 @@ impl From<SolChangeSolCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct SolCreateFleetCmd {
-    inner: CmdFleetCreateFCtxBIds,
+    inner: ICmdFleetCreateFCtxBIds,
 }
 impl SolCreateFleetCmd {
     pub fn new() -> Self {
@@ -195,14 +196,14 @@ impl From<SolCreateFleetCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolChangeFleetCmd {
-    inner: CmdFleetChangeFCtxBIds,
+    inner: ICmdFleetChangeFCtxBIds,
 }
 impl SolChangeFleetCmd {
     pub fn new(fleet_id: FleetIdBackref) -> Self {
         Self {
-            inner: CmdFleetChangeFCtxBIds {
+            inner: ICmdFleetChangeFCtxBIds {
                 fleet_id,
-                ictx_cmd: CmdFleetChangeICtxBIds::default(),
+                ictx_cmd: ICmdFleetChangeICtxBIds::default(),
             },
         }
     }
@@ -224,14 +225,14 @@ impl From<SolChangeFleetCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolRemoveFleetCmd {
-    inner: CmdFleetRemoveFCtxBIds,
+    inner: ICmdFleetRemoveFCtxBIds,
 }
 impl SolRemoveFleetCmd {
     pub fn new(fleet_id: FleetIdBackref) -> Self {
         Self {
-            inner: CmdFleetRemoveFCtxBIds {
+            inner: ICmdFleetRemoveFCtxBIds {
                 fleet_id,
-                ictx_cmd: CmdFleetRemoveICtx::default(),
+                ictx_cmd: ICmdFleetRemoveICtx::default(),
             },
         }
     }
@@ -247,7 +248,7 @@ impl From<SolRemoveFleetCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct SolCreateFitCmd {
-    inner: CmdFitCreateFCtxBIds,
+    inner: ICmdFitCreateFCtxBIds,
 }
 impl SolCreateFitCmd {
     pub fn new() -> Self {
@@ -273,14 +274,14 @@ impl From<SolCreateFitCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolChangeFitCmd {
-    inner: CmdFitChangeFCtxBIds,
+    inner: ICmdFitChangeFCtxBIds,
 }
 impl SolChangeFitCmd {
     pub fn new(fit_id: FitIdBackref) -> Self {
         Self {
-            inner: CmdFitChangeFCtxBIds {
+            inner: ICmdFitChangeFCtxBIds {
                 fit_id,
-                ictx_cmd: CmdFitChangeICtxBIds::default(),
+                ictx_cmd: ICmdFitChangeICtxBIds::default(),
             },
         }
     }
@@ -304,14 +305,14 @@ impl From<SolChangeFitCmd> for ChangeSolEnumCmd {
 }
 
 pub struct SolRemoveFitCmd {
-    inner: CmdFitRemoveFCtxBIds,
+    inner: ICmdFitRemoveFCtxBIds,
 }
 impl SolRemoveFitCmd {
     pub fn new(fit_id: FitIdBackref) -> Self {
         Self {
-            inner: CmdFitRemoveFCtxBIds {
+            inner: ICmdFitRemoveFCtxBIds {
                 fit_id,
-                ictx_cmd: CmdFitRemoveICtx::default(),
+                ictx_cmd: ICmdFitRemoveICtx::default(),
             },
         }
     }
@@ -326,14 +327,14 @@ impl From<SolRemoveFitCmd> for ChangeSolEnumCmd {
 // Sub-commands - item
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SolRemoveItemCmd {
-    inner: CmdItemRemoveFCtxBIds,
+    inner: ICmdItemRemoveFCtxBIds,
 }
 impl SolRemoveItemCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
-            inner: CmdItemRemoveFCtxBIds {
+            inner: ICmdItemRemoveFCtxBIds {
                 item_id,
-                ictx_cmd: CmdItemRemoveICtx::default(),
+                ictx_cmd: ICmdItemRemoveICtx::default(),
             },
         }
     }
@@ -352,14 +353,14 @@ impl From<SolRemoveItemCmd> for ChangeSolEnumCmd {
 // Sub-commands - item - autocharge
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SolChangeAutochargeCmd {
-    inner: CmdAutochargeChangeFCtxBIds,
+    inner: ICmdAutochargeChangeFCtxBIds,
 }
 impl SolChangeAutochargeCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
-            inner: CmdAutochargeChangeFCtxBIds {
+            inner: ICmdAutochargeChangeFCtxBIds {
                 item_id,
-                ictx_cmd: CmdAutochargeChangeICtx::default(),
+                ictx_cmd: ICmdAutochargeChangeICtx::default(),
             },
         }
     }
@@ -383,14 +384,14 @@ impl From<SolChangeAutochargeCmd> for ChangeSolEnumCmd {
 // Sub-commands - item - rig
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub struct SolCreateRigCmd {
-    inner: CmdRigCreateFCtxBIds,
+    inner: ICmdRigCreateFCtxBIds,
 }
 impl SolCreateRigCmd {
     pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
         Self {
-            inner: CmdRigCreateFCtxBIds {
+            inner: ICmdRigCreateFCtxBIds {
                 fit_id,
-                ictx_cmd: CmdRigCreateICtx { type_id, .. },
+                ictx_cmd: ICmdRigCreateICtx { type_id, .. },
             },
         }
     }

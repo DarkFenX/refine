@@ -1,9 +1,10 @@
 pub use crate::{
     cmd::{
-        BackrefRenderError, ChangeAutochargeError, ChangeFitEnumError, ChangeFleetError, ChangeItemEnumError,
-        ChangeSolEnumError, CreateFitError, CreateFleetError, CreateItemEnumError, FitChangeFitError,
-        GetFitChangeFitError, GetFitCreateRigError, GetFitRemoveFitError, GetFleetChangeFleetError,
-        GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemRemoveItemError, RemoveItemError,
+        BackrefRenderError, ChangeAutochargeError, ChangeBoosterError, ChangeFitEnumError, ChangeFleetError,
+        ChangeItemEnumError, ChangeSolEnumError, CreateFitError, CreateFleetError, CreateItemEnumError,
+        FitChangeFitError, GetFitChangeFitError, GetFitCreateBoosterError, GetFitCreateRigError, GetFitRemoveFitError,
+        GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+        GetItemRemoveItemError, RemoveItemError,
     },
     fit::{ChangeFitError, GetFitError},
     fleet::GetFleetError,

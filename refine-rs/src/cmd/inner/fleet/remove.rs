@@ -1,25 +1,25 @@
 use crate::cmd::{BackrefRenderError, CmdResps, FleetIdBackref};
 
 // Commands with full context
-pub(in crate::cmd) struct CmdFleetRemoveFCtxBIds {
+pub(in crate::cmd) struct ICmdFleetRemoveFCtxBIds {
     pub(in crate::cmd) fleet_id: FleetIdBackref,
-    pub(in crate::cmd) ictx_cmd: CmdFleetRemoveICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdFleetRemoveICtx,
 }
-pub(crate) struct CmdFleetRemoveFCtxRIds {
+pub(crate) struct ICmdFleetRemoveFCtxRIds {
     fleet_id: rc::FleetId,
-    ictx_cmd: CmdFleetRemoveICtx,
+    ictx_cmd: ICmdFleetRemoveICtx,
 }
 
 // Commands with incomplete context
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFleetRemoveICtx;
+pub(in crate::cmd) struct ICmdFleetRemoveICtx;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFleetRemoveFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFleetRemoveFCtxRIds, BackrefRenderError> {
-        Ok(CmdFleetRemoveFCtxRIds {
+impl ICmdFleetRemoveFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFleetRemoveFCtxRIds, BackrefRenderError> {
+        Ok(ICmdFleetRemoveFCtxRIds {
             fleet_id: resps.render_fleet_id(self.fleet_id)?,
             ictx_cmd: self.ictx_cmd,
         })
@@ -29,7 +29,7 @@ impl CmdFleetRemoveFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFleetRemoveFCtxRIds {
+impl ICmdFleetRemoveFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetRemoveFleetError> {
         let core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
         Ok(self.ictx_cmd.execute(core_fleet))
@@ -42,7 +42,7 @@ pub enum GetFleetRemoveFleetError {
     GetFailed(#[from] rc::err::GetFleetError),
 }
 
-impl CmdFleetRemoveICtx {
+impl ICmdFleetRemoveICtx {
     pub(in crate::cmd) fn execute(&self, core_fleet: rc::FleetMut) {
         core_fleet.remove()
     }

@@ -1,23 +1,23 @@
 use crate::cmd::{BackrefRenderError, CmdResps, FitIdBackref, FleetIdBackref};
 
 // Commands with full context
-pub(in crate::cmd) struct CmdFleetChangeFCtxBIds {
+pub(in crate::cmd) struct ICmdFleetChangeFCtxBIds {
     pub(in crate::cmd) fleet_id: FleetIdBackref,
-    pub(in crate::cmd) ictx_cmd: CmdFleetChangeICtxBIds,
+    pub(in crate::cmd) ictx_cmd: ICmdFleetChangeICtxBIds,
 }
-pub(crate) struct CmdFleetChangeFCtxRIds {
+pub(crate) struct ICmdFleetChangeFCtxRIds {
     fleet_id: rc::FleetId,
-    ictx_cmd: CmdFleetChangeICtxRIds,
+    ictx_cmd: ICmdFleetChangeICtxRIds,
 }
 
 // Commands with incomplete context
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFleetChangeICtxBIds {
+pub(in crate::cmd) struct ICmdFleetChangeICtxBIds {
     pub(in crate::cmd) add_fit_ids: Vec<FitIdBackref>,
     pub(in crate::cmd) rm_fit_ids: Vec<FitIdBackref>,
 }
 #[derive(Default)]
-pub(in crate::cmd) struct CmdFleetChangeICtxRIds {
+pub(in crate::cmd) struct ICmdFleetChangeICtxRIds {
     pub(in crate::cmd) add_fit_ids: Vec<rc::FitId>,
     pub(in crate::cmd) rm_fit_ids: Vec<rc::FitId>,
 }
@@ -25,18 +25,18 @@ pub(in crate::cmd) struct CmdFleetChangeICtxRIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFleetChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<CmdFleetChangeFCtxRIds, BackrefRenderError> {
-        Ok(CmdFleetChangeFCtxRIds {
+impl ICmdFleetChangeFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFleetChangeFCtxRIds, BackrefRenderError> {
+        Ok(ICmdFleetChangeFCtxRIds {
             fleet_id: resps.render_fleet_id(self.fleet_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
         })
     }
 }
 
-impl CmdFleetChangeICtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<CmdFleetChangeICtxRIds, BackrefRenderError> {
-        Ok(CmdFleetChangeICtxRIds {
+impl ICmdFleetChangeICtxBIds {
+    fn render(self, resps: &CmdResps) -> Result<ICmdFleetChangeICtxRIds, BackrefRenderError> {
+        Ok(ICmdFleetChangeICtxRIds {
             add_fit_ids: resps.render_fit_ids(self.add_fit_ids)?,
             rm_fit_ids: resps.render_fit_ids(self.rm_fit_ids)?,
         })
@@ -46,7 +46,7 @@ impl CmdFleetChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdFleetChangeFCtxRIds {
+impl ICmdFleetChangeFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetChangeFleetError> {
         let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fleet)?)
@@ -61,7 +61,7 @@ pub enum GetFleetChangeFleetError {
     ChangeFailed(#[from] ChangeFleetError),
 }
 
-impl CmdFleetChangeICtxRIds {
+impl ICmdFleetChangeICtxRIds {
     pub(in crate::cmd) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), ChangeFleetError> {
         for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id)?;
