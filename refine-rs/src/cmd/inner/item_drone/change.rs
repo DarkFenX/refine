@@ -21,19 +21,19 @@ struct ICmdDroneChangeICtxBIds {
     add_proj_item_ids: Vec<ItemIdBackref>,
     rm_proj_item_ids: Vec<ItemIdBackref>,
 }
-struct ICmdDroneChangeICtxRIds {
-    shared: ICmdDroneChangeShared,
-    add_proj_item_ids: Vec<rc::ItemId>,
-    rm_proj_item_ids: Vec<rc::ItemId>,
+pub(in crate::cmd) struct ICmdDroneChangeICtxRIds {
+    pub(in crate::cmd) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
+    pub(in crate::cmd) add_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) rm_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
 }
-struct ICmdDroneChangeShared {
-    type_id: Option<rc::ItemTypeId>,
-    state: Option<rc::MinionState>,
-    mutation: TriStateField<ChangeMutation>,
-    npc_prop: TriStateField<rc::NpcProp>,
-    coordinates: Option<rc::Coordinates>,
-    movement: Option<rc::Movement>,
-    effect_modes: EffectModes,
+pub(in crate::cmd) struct ICmdDroneChangeShared {
+    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) state: Option<rc::MinionState> = None,
+    pub(in crate::cmd) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    pub(in crate::cmd) npc_prop: TriStateField<rc::NpcProp> = TriStateField::Absent,
+    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
+    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

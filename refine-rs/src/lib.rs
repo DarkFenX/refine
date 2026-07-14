@@ -5,12 +5,12 @@ pub use cmd::{
     AttrMutation, ChangeFitEnumCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp,
     CmdResps, FitAddBoosterCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
     FitChangeChargeCmd, FitChangeFitCmd, FitIdBackref, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
-    FleetIdBackref, ItemAddBoosterCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd,
-    ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemIdBackref, ItemSetCharacterCmd, RemoveFitCmd, RemoveFleetCmd,
-    RemoveItemCmd, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd,
-    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
-    SolChangeChargeCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
-    SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
+    FleetIdBackref, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd,
+    ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd, ItemIdBackref, ItemSetCharacterCmd, RemoveFitCmd,
+    RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd,
+    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd,
+    SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd,
+    SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;

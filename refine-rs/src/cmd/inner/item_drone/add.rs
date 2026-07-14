@@ -7,9 +7,9 @@ struct ICmdDroneAddFCtxBIds {
     fit_id: FitIdBackref,
     ictx_cmd: ICmdDroneAddICtxBIds,
 }
-struct ICmdDroneAddFCtxRIds {
-    fit_id: rc::FitId,
-    ictx_cmd: ICmdDroneAddICtxRIds,
+pub(in crate::cmd) struct ICmdDroneAddFCtxRIds {
+    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) ictx_cmd: ICmdDroneAddICtxRIds,
 }
 
 // Commands with incomplete context
@@ -17,18 +17,18 @@ struct ICmdDroneAddICtxBIds {
     shared: ICmdDroneAddShared,
     proj_item_ids: Vec<ItemIdBackref>,
 }
-struct ICmdDroneAddICtxRIds {
-    shared: ICmdDroneAddShared,
-    proj_item_ids: Vec<rc::ItemId>,
+pub(in crate::cmd) struct ICmdDroneAddICtxRIds {
+    pub(in crate::cmd) shared: ICmdDroneAddShared,
+    pub(in crate::cmd) proj_item_ids: Vec<rc::ItemId> = Vec::new(),
 }
-struct ICmdDroneAddShared {
-    type_id: rc::ItemTypeId,
-    state: rc::MinionState,
-    mutation: Option<AddMutation>,
-    npc_prop: Option<rc::NpcProp>,
-    coordinates: Option<rc::Coordinates>,
-    movement: Option<rc::Movement>,
-    effect_modes: EffectModes,
+pub(in crate::cmd) struct ICmdDroneAddShared {
+    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) state: rc::MinionState,
+    pub(in crate::cmd) mutation: Option<AddMutation> = None,
+    pub(in crate::cmd) npc_prop: Option<rc::NpcProp> = None,
+    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
+    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

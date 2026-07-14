@@ -1,7 +1,9 @@
-pub use add::{AddItemEnumCmd, AddItemEnumError, ItemAddBoosterCmd, ItemAddRigCmd, ItemSetCharacterCmd};
+pub use add::{
+    AddItemEnumCmd, AddItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddRigCmd, ItemSetCharacterCmd,
+};
 pub use change::{
     ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
-    ItemChangeChargeCmd,
+    ItemChangeChargeCmd, ItemChangeDroneCmd,
 };
 pub use remove::RemoveItemCmd;
 

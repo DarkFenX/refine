@@ -1,11 +1,12 @@
 use crate::cmd::{
-    GetFitAddBoosterError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd, ItemAddRigCmd,
-    ItemSetCharacterCmd, shared::AddedItemIdsResp,
+    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd,
+    ItemAddDroneCmd, ItemAddRigCmd, ItemSetCharacterCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
     Booster(ItemAddBoosterCmd),
     Character(ItemSetCharacterCmd),
+    Drone(ItemAddDroneCmd),
     Rig(ItemAddRigCmd),
 }
 
@@ -17,6 +18,7 @@ impl AddItemEnumCmd {
         match self {
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
@@ -28,6 +30,8 @@ pub enum AddItemEnumError {
     BoosterFailed(#[from] GetFitAddBoosterError),
     #[error("failed to set character: {0}")]
     CharacterFailed(#[from] GetFitSetCharacterError),
+    #[error("failed to add drone: {0}")]
+    DroneFailed(#[from] GetFitAddDroneError),
     #[error("failed to add rig: {0}")]
     RigFailed(#[from] GetFitAddRigError),
 }

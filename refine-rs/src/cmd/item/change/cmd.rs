@@ -1,7 +1,7 @@
 use crate::cmd::{
     ItemChangeAutochargeCmd, ItemChangeAutochargeError, ItemChangeBoosterCmd, ItemChangeBoosterError,
-    ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError,
-    shared::ChangedItemIdsResp,
+    ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError, ItemChangeDroneCmd,
+    ItemChangeDroneError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -9,6 +9,7 @@ pub enum ChangeItemEnumCmd {
     Booster(ItemChangeBoosterCmd),
     Character(ItemChangeCharacterCmd),
     Charge(ItemChangeChargeCmd),
+    Drone(ItemChangeDroneCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -21,6 +22,7 @@ impl ChangeItemEnumCmd {
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
             Self::Charge(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
+            Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
 }
@@ -35,4 +37,6 @@ pub enum ChangeItemEnumError {
     CharacterFailed(#[from] ItemChangeCharacterError),
     #[error("failed to change charge: {0}")]
     ChargeFailed(#[from] ItemChangeChargeError),
+    #[error("failed to change drone: {0}")]
+    DroneFailed(#[from] ItemChangeDroneError),
 }
