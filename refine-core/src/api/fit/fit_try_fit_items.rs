@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{
     ad::AItemId,
     api::{AddMode, FitMut, ItemTypeId, MinionState, ModuleState, RmMode, ServiceState},
-    misc::{ItemKind, ModRack},
+    misc::{DetectedItemKind, ModRack},
     num::PValue,
     rd::RState,
     sol::SolarSystem,
@@ -30,14 +30,14 @@ impl SolarSystem {
                 continue;
             };
             match item_kind {
-                ItemKind::Booster => {
+                DetectedItemKind::Booster => {
                     let booster_uid = self.internal_create_booster(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_booster(booster_uid, reuse_eupdates);
                 }
-                ItemKind::Drone => {
+                DetectedItemKind::Drone => {
                     let drone_uid = self.internal_create_drone(
                         fit_uid,
                         *type_aid,
@@ -51,7 +51,7 @@ impl SolarSystem {
                     }
                     self.internal_remove_drone(drone_uid, reuse_eupdates);
                 }
-                ItemKind::Fighter => {
+                DetectedItemKind::Fighter => {
                     let fighter_uid =
                         self.internal_create_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
@@ -59,14 +59,14 @@ impl SolarSystem {
                     }
                     self.internal_remove_fighter(fighter_uid, reuse_eupdates);
                 }
-                ItemKind::Implant => {
+                DetectedItemKind::Implant => {
                     let implant_uid = self.internal_create_implant(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_implant(implant_uid, reuse_eupdates);
                 }
-                ItemKind::ModuleHigh => {
+                DetectedItemKind::ModuleHigh => {
                     let module_uid = self.internal_create_module(
                         fit_uid,
                         ModRack::High,
@@ -82,7 +82,7 @@ impl SolarSystem {
                     }
                     self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
                 }
-                ItemKind::ModuleMid => {
+                DetectedItemKind::ModuleMid => {
                     let module_uid = self.internal_create_module(
                         fit_uid,
                         ModRack::Mid,
@@ -98,7 +98,7 @@ impl SolarSystem {
                     }
                     self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
                 }
-                ItemKind::ModuleLow => {
+                DetectedItemKind::ModuleLow => {
                     let module_uid = self.internal_create_module(
                         fit_uid,
                         ModRack::Low,
@@ -117,7 +117,7 @@ impl SolarSystem {
                 // TODO: setting charge is a destructive action (since it removes old charge with
                 // TODO: all its settings), rework it to be non-destructive, unless it is too
                 // TODO: expensive - HTTP module copies solar system before trying to fit anyway
-                ItemKind::Charge => {
+                DetectedItemKind::Charge => {
                     for &module_uid in chargeable_module_uids.iter() {
                         let charge_uid = self.internal_set_module_charge(module_uid, *type_aid, reuse_eupdates);
                         if self.internal_validate_fit_fast(fit_uid, val_options) {
@@ -128,14 +128,14 @@ impl SolarSystem {
                         self.internal_remove_charge(charge_uid, reuse_eupdates);
                     }
                 }
-                ItemKind::Rig => {
+                DetectedItemKind::Rig => {
                     let rig_uid = self.internal_create_rig(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_rig(rig_uid, reuse_eupdates);
                 }
-                ItemKind::Service => {
+                DetectedItemKind::Service => {
                     let service_uid =
                         self.internal_create_service(fit_uid, *type_aid, ServiceState::Online, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
@@ -143,7 +143,7 @@ impl SolarSystem {
                     }
                     self.internal_remove_service(service_uid, reuse_eupdates);
                 }
-                ItemKind::Subsystem => {
+                DetectedItemKind::Subsystem => {
                     let subsystem_uid = self.internal_create_subsystem(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)

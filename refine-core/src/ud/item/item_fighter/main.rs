@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::MinionState,
-    misc::{EffectMode, FighterCountInfo, RearmMinion},
+    misc::{EffectMode, FighterCountInfo, ItemKind, RearmMinion},
     num::{FighterCount, PValue, SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RItemListId, RState},
     ud::{
@@ -41,7 +41,31 @@ impl UFighter {
             rearm_minion: None,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Fighter
+    }
+}
+impl LibNamed for UFighter {
+    fn lib_get_name() -> &'static str {
+        "UFighter"
+    }
+}
+impl std::fmt::Display for UFighter {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UFighter {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -118,7 +142,12 @@ impl UFighter {
         self.base.r_data_changed(r_data);
         self.autocharges.clear();
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UFighter {
     pub(crate) fn get_fighter_state(&self) -> MinionState {
         MinionState::from_r_state(self.base.get_state())
     }
@@ -186,21 +215,5 @@ impl UFighter {
     }
     pub(crate) fn set_rearm_minion(&mut self, rearm_minion: Option<RearmMinion>) {
         self.rearm_minion = rearm_minion
-    }
-}
-impl LibNamed for UFighter {
-    fn lib_get_name() -> &'static str {
-        "UFighter"
-    }
-}
-impl std::fmt::Display for UFighter {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

@@ -147,7 +147,7 @@ impl StandardRegister {
         }
         // Indirect changes can be applied only via ships
         let (fit_uid, loc_kind) = match ship {
-            Some(ship) => match ship.get_kind().try_into() {
+            Some(ship) => match ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => (ship.get_fit_uid(), loc_kind),
                 Err(_) => return,
             },
@@ -197,7 +197,7 @@ impl StandardRegister {
         }
         // Indirect changes can be applied only via ships
         let (fit_uid, loc_kind) = match ship {
-            Some(ship) => match ship.get_kind().try_into() {
+            Some(ship) => match ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => (ship.get_fit_uid(), loc_kind),
                 Err(_) => return,
             },

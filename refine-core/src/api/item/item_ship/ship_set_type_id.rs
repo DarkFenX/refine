@@ -21,7 +21,7 @@ impl SolarSystem {
         let fit_uid = u_ship.get_fit_uid();
         u_ship.set_type_aid(type_aid, &self.u_data.r_data);
         // Update on-fit ship kind
-        let ship_kind = u_ship.get_kind();
+        let ship_kind = u_ship.get_ship_kind();
         let u_fit = self.u_data.fits.get_mut(fit_uid);
         u_fit.ship_kind = ship_kind;
         // Update outgoing projections for all on-ship items

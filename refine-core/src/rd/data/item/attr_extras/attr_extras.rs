@@ -13,7 +13,7 @@ use super::info::{
         get_heavy_fighter_flag, get_light_fighter_flag, get_st_heavy_fighter_flag, get_st_light_fighter_flag,
         get_st_support_fighter_flag, get_support_fighter_flag,
     },
-    kind::get_item_kind,
+    kind::detect_item_kind,
     max_group::{get_max_group_active_limited, get_max_group_fitted_limited, get_max_group_online_limited},
     mobility::{get_enables_conduit, get_enables_portal, get_entity_has_mwd, get_is_mobile, get_jump_fuel_type_id},
     sec_zone::is_sec_zone_limitable,
@@ -24,7 +24,7 @@ use super::info::{
 use crate::{
     ad::{AAttrId, AItemCatId, AItemGrpId, AItemId},
     dbg::DebugResult,
-    misc::ItemKind,
+    misc::DetectedItemKind,
     num::{Count, FighterCount, PValue, SkillLevel, SlotIndex, Value},
     rd::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemChargeLimit, RItemContLimit, RItemEffectData,
@@ -81,7 +81,7 @@ pub(crate) struct RItemAXt {
     pub(crate) max_group_online_limited: bool,
     pub(crate) max_group_active_limited: bool,
     // Misc
-    pub(crate) kind: Option<ItemKind>,
+    pub(crate) kind: Option<DetectedItemKind>,
     pub(crate) item_ship_kind: Option<RShipKind>, // Which ship type this item fits to
     pub(crate) max_type_fitted: Option<Count>,    // Max amount of fit items of this type ID
     pub(crate) overload_td_lvl: Option<SkillLevel>, // Required thermodynamics level for overheat
@@ -143,7 +143,7 @@ impl RItemAXt {
         self.max_group_online_limited = get_max_group_online_limited(item_attrs, attr_consts);
         self.max_group_active_limited = get_max_group_active_limited(item_attrs, attr_consts);
         // Misc
-        self.kind = get_item_kind(
+        self.kind = detect_item_kind(
             item_grp_id,
             item_cat_id,
             item_attrs,

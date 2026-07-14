@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
@@ -22,7 +22,31 @@ impl URig {
             fit_uid,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Rig
+    }
+}
+impl LibNamed for URig {
+    fn lib_get_name() -> &'static str {
+        "URig"
+    }
+}
+impl std::fmt::Display for URig {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl URig {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -95,7 +119,12 @@ impl URig {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl URig {
     pub(crate) fn get_rig_state(&self) -> bool {
         state_to_bool(self.base.get_state())
     }
@@ -104,21 +133,5 @@ impl URig {
     }
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
-    }
-}
-impl LibNamed for URig {
-    fn lib_get_name() -> &'static str {
-        "URig"
-    }
-}
-impl std::fmt::Display for URig {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

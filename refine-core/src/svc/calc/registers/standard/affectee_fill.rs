@@ -108,7 +108,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(_) => {
                 let projectee_item = ctx.u_data.items.get(projectee_uid);
                 if let UItem::Ship(projectee_ship) = projectee_item
-                    && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
+                    && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into()
                 {
                     let key = (projectee_ship.get_fit_uid(), loc_kind);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc, &key);
@@ -117,7 +117,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(_, item_grp_id) => {
                 let projectee_item = ctx.u_data.items.get(projectee_uid);
                 if let UItem::Ship(projectee_ship) = projectee_item
-                    && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
+                    && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into()
                 {
                     let key = (projectee_ship.get_fit_uid(), loc_kind, item_grp_id);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_grp, &key);
@@ -126,7 +126,7 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(_, srq_type_aid) => {
                 let projectee_item = ctx.u_data.items.get(projectee_uid);
                 if let UItem::Ship(projectee_ship) = projectee_item
-                    && let Ok(loc_kind) = projectee_ship.get_kind().try_into()
+                    && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into()
                 {
                     let key = (projectee_ship.get_fit_uid(), loc_kind, srq_type_aid);
                     extend_vec_from_map_set_l1(affectees, &self.affectee_loc_srq, &key);

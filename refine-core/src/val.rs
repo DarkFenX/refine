@@ -1,6 +1,6 @@
 //! Validation-related exports
 pub use crate::{
-    misc::ItemKind as ValItemKind,
+    misc::DetectedItemKind,
     svc::vast::{
         ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
         ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,

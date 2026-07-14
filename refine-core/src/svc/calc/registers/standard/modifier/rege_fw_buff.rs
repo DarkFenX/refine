@@ -38,7 +38,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(Location::ItemList(item_list_rid)) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
+                    && let Ok(loc_kind) = ship.get_ship_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
                     let key = (fit_uid, loc_kind);
@@ -50,7 +50,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(Location::ItemList(item_list_rid), item_grp_id) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
+                    && let Ok(loc_kind) = ship.get_ship_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
                     let key = (fit_uid, loc_kind, item_grp_id);
@@ -62,7 +62,7 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
+                    && let Ok(loc_kind) = ship.get_ship_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
                     let key = (fit_uid, loc_kind, srq_type_aid);
@@ -101,7 +101,7 @@ impl StandardRegister {
             AffecteeFilter::Loc(Location::ItemList(item_list_rid)) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
+                    && let Ok(loc_kind) = ship.get_ship_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
                     let key = (fit_uid, loc_kind);
@@ -112,7 +112,7 @@ impl StandardRegister {
             AffecteeFilter::LocGrp(Location::ItemList(item_list_rid), item_grp_id) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
+                    && let Ok(loc_kind) = ship.get_ship_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
                     let key = (fit_uid, loc_kind, item_grp_id);
@@ -123,7 +123,7 @@ impl StandardRegister {
             AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid) => {
                 let fit_uid = fw_effect.get_fit_uid();
                 if let Some((ship_uid, ship)) = is_fit_ship_on_proj_item_list(ctx.u_data, fit_uid, &item_list_rid)
-                    && let Ok(loc_kind) = ship.get_kind().try_into()
+                    && let Ok(loc_kind) = ship.get_ship_kind().try_into()
                 {
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
                     let key = (fit_uid, loc_kind, srq_type_aid);
@@ -157,7 +157,7 @@ impl StandardRegister {
         let Some(ship) = ship else {
             return;
         };
-        let Ok(loc_kind) = ship.get_kind().try_into() else {
+        let Ok(loc_kind) = ship.get_ship_kind().try_into() else {
             return;
         };
         for rmod in self.rmods_fw_buff.get(&fit_uid) {
@@ -207,7 +207,7 @@ impl StandardRegister {
         let Some(ship) = ship else {
             return;
         };
-        let Ok(loc_kind) = ship.get_kind().try_into() else {
+        let Ok(loc_kind) = ship.get_ship_kind().try_into() else {
             return;
         };
         for rmod in self.rmods_fw_buff.get(&fit_uid) {

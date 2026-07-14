@@ -29,7 +29,7 @@ pub(super) fn check_ship(u_data: &UData, item_uid: UItemId) -> Result<&UShip, St
 pub(super) fn check_ship_no_struct(u_data: &UData, item_uid: UItemId) -> Result<&UShip, StatItemCheckError> {
     let item = u_data.items.get(item_uid);
     let ship = match item {
-        UItem::Ship(ship) => match ship.get_kind() {
+        UItem::Ship(ship) => match ship.get_ship_kind() {
             UShipKind::Ship | UShipKind::Unknown => ship,
             UShipKind::Structure => return Err(UItemKindVsStatError { item_uid }.into()),
         },
@@ -58,7 +58,7 @@ pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_uid: UItemId) ->
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Fighter(fighter) => fighter.is_loaded(),
-        UItem::Ship(ship) => match ship.get_kind() {
+        UItem::Ship(ship) => match ship.get_ship_kind() {
             UShipKind::Ship | UShipKind::Unknown => ship.is_loaded(),
             UShipKind::Structure => return Err(UItemKindVsStatError { item_uid }.into()),
         },
@@ -89,7 +89,7 @@ pub(super) fn check_drone_fighter_ship_no_struct(u_data: &UData, item_uid: UItem
     let is_loaded = match item {
         UItem::Drone(drone) => drone.is_loaded(),
         UItem::Fighter(fighter) => fighter.is_loaded(),
-        UItem::Ship(ship) => match ship.get_kind() {
+        UItem::Ship(ship) => match ship.get_ship_kind() {
             UShipKind::Ship | UShipKind::Unknown => ship.is_loaded(),
             UShipKind::Structure => return Err(UItemKindVsStatError { item_uid }.into()),
         },

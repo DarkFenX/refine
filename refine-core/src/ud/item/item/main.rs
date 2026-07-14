@@ -2,7 +2,7 @@ use either::Either;
 
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, NpcProp, OptionalReload, RearmMinion, Spool},
+    misc::{EffectMode, ItemKind, NpcProp, OptionalReload, RearmMinion, Spool},
     num::{PValue, SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState},
     ud::{
@@ -34,6 +34,27 @@ pub(crate) enum UItem {
     SwEffect(USwEffect),
 }
 impl UItem {
+    pub(crate) fn get_item_kind(&self) -> ItemKind {
+        match self {
+            Self::Autocharge(_) => UAutocharge::get_item_kind(),
+            Self::Booster(_) => UBooster::get_item_kind(),
+            Self::Character(_) => UCharacter::get_item_kind(),
+            Self::Charge(_) => UCharge::get_item_kind(),
+            Self::Drone(_) => UDrone::get_item_kind(),
+            Self::Fighter(_) => UFighter::get_item_kind(),
+            Self::FwEffect(_) => UFwEffect::get_item_kind(),
+            Self::Implant(_) => UImplant::get_item_kind(),
+            Self::Module(_) => UModule::get_item_kind(),
+            Self::ProjEffect(_) => UProjEffect::get_item_kind(),
+            Self::Rig(_) => URig::get_item_kind(),
+            Self::Service(_) => UService::get_item_kind(),
+            Self::Ship(_) => UShip::get_item_kind(),
+            Self::Skill(_) => USkill::get_item_kind(),
+            Self::Stance(_) => UStance::get_item_kind(),
+            Self::Subsystem(_) => USubsystem::get_item_kind(),
+            Self::SwEffect(_) => USwEffect::get_item_kind(),
+        }
+    }
     pub(crate) fn lib_get_name(&self) -> &'static str {
         match self {
             Self::Autocharge(_) => UAutocharge::lib_get_name(),
@@ -55,9 +76,22 @@ impl UItem {
             Self::SwEffect(_) => USwEffect::lib_get_name(),
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Access to base item methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+}
+impl LibNamed for UItem {
+    fn lib_get_name() -> &'static str {
+        "UItem"
+    }
+}
+impl LibGetId<ItemId> for UItem {
+    fn lib_get_id(&self) -> ItemId {
+        self.get_item_id()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Access to base item methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItem {
     pub(crate) fn get_item_id(&self) -> ItemId {
         match self {
             Self::Autocharge(autocharge) => autocharge.get_item_id(),
@@ -461,9 +495,12 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.is_loaded(),
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Access to item-specific methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Access to item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItem {
     pub(crate) fn get_fit_uid(&self) -> Option<UFitId> {
         match self {
             Self::Autocharge(autocharge) => Some(autocharge.get_fit_uid()),
@@ -689,15 +726,5 @@ impl UItem {
             None => Either::Right(charge_uid.into_iter()),
         }
         .into_iter()
-    }
-}
-impl LibNamed for UItem {
-    fn lib_get_name() -> &'static str {
-        "UItem"
-    }
-}
-impl LibGetId<ItemId> for UItem {
-    fn lib_get_id(&self) -> ItemId {
-        self.get_item_id()
     }
 }

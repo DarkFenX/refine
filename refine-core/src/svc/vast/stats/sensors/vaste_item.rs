@@ -25,7 +25,7 @@ impl Vast {
         // structures, drones and fighter are not limited by it
         let u_item = ctx.u_data.items.get(item_uid);
         if let UItem::Ship(u_ship) = u_item
-            && let UShipKind::Ship = u_ship.get_kind()
+            && let UShipKind::Ship = u_ship.get_ship_kind()
         {
             let u_fit = ctx.u_data.fits.get(u_ship.get_fit_uid());
             // No limit when no character or it is not loaded

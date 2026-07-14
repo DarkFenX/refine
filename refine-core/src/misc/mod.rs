@@ -5,7 +5,7 @@ pub use effect_mode::EffectMode;
 pub(crate) use effect_spec::EffectSpec;
 pub use fighter_count::FighterCountInfo;
 pub(crate) use inf_count::InfCount;
-pub use item_kind::ItemKind;
+pub use item_kind::{DetectedItemKind, ItemKind};
 pub use mod_rack::ModRack;
 pub use npc_behavior::{ItemNpcPropInfo, NpcProp};
 pub use optional_reload::{ItemOptionalReloadInfo, OptionalReload};

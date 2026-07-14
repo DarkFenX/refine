@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{PValue, SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState},
     ud::{
@@ -35,7 +35,31 @@ impl UShip {
         ship.update_ship_kind();
         ship
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Ship
+    }
+}
+impl LibNamed for UShip {
+    fn lib_get_name() -> &'static str {
+        "UShip"
+    }
+}
+impl std::fmt::Display for UShip {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UShip {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -113,7 +137,12 @@ impl UShip {
         self.base.r_data_changed(r_data);
         self.update_ship_kind();
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UShip {
     pub(crate) fn get_ship_state(&self) -> bool {
         state_to_bool(self.base.get_state())
     }
@@ -123,7 +152,7 @@ impl UShip {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_kind(&self) -> UShipKind {
+    pub(crate) fn get_ship_kind(&self) -> UShipKind {
         self.kind
     }
     pub(crate) fn get_physics(&self) -> &UPhysics {
@@ -150,21 +179,5 @@ impl UShip {
             Some(AItemCatId::STRUCTURE) => UShipKind::Structure,
             _ => UShipKind::Unknown,
         };
-    }
-}
-impl LibNamed for UShip {
-    fn lib_get_name() -> &'static str {
-        "UShip"
-    }
-}
-impl std::fmt::Display for UShip {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

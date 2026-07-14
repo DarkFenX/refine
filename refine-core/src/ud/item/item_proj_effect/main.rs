@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
@@ -22,7 +22,31 @@ impl UProjEffect {
             projs: UProjs::new(),
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::ProjEffect
+    }
+}
+impl LibNamed for UProjEffect {
+    fn lib_get_name() -> &'static str {
+        "UProjEffect"
+    }
+}
+impl std::fmt::Display for UProjEffect {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UProjEffect {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -92,7 +116,12 @@ impl UProjEffect {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UProjEffect {
     pub(crate) fn get_proj_effect_state(&self) -> bool {
         state_to_bool(self.base.get_state())
     }
@@ -104,21 +133,5 @@ impl UProjEffect {
     }
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
-    }
-}
-impl LibNamed for UProjEffect {
-    fn lib_get_name() -> &'static str {
-        "UProjEffect"
-    }
-}
-impl std::fmt::Display for UProjEffect {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

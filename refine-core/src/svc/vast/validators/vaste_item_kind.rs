@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    misc::ItemKind,
+    misc::DetectedItemKind,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UItemId},
     util::RSet,
@@ -15,9 +15,9 @@ pub struct ValItemKindFail {
 #[derive(Copy, Clone)]
 pub struct ValItemKindItemInfo {
     /// Detected item kind.
-    pub kind: Option<ItemKind>,
+    pub kind: Option<DetectedItemKind>,
     /// Expected item kind for position it was put in.
-    pub expected_kind: ItemKind,
+    pub expected_kind: DetectedItemKind,
 }
 
 impl VastFitData {

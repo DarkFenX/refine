@@ -1,19 +1,19 @@
 use crate::{
     ad::{AItemCatId, AItemGrpId},
-    misc::ItemKind,
+    misc::DetectedItemKind,
     num::Value,
     rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemEffectData},
     util::RMap,
 };
 
-pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
+pub(in crate::rd::data::item::attr_extras) fn detect_item_kind(
     item_grp_id: AItemGrpId,
     item_cat_id: AItemCatId,
     item_attrs: &RMap<RAttrId, Value>,
     item_effects: &RMap<REffectId, RItemEffectData>,
     attr_consts: &RAttrConsts,
     effect_consts: &REffectConsts,
-) -> Option<ItemKind> {
+) -> Option<DetectedItemKind> {
     let mut store = ItemKindStore::new();
     match item_cat_id {
         // Ship & structure modules
@@ -21,68 +21,68 @@ pub(in crate::rd::data::item::attr_extras) fn get_item_kind(
             if let Some(effect_rid) = effect_consts.hi_power
                 && item_effects.contains_key(&effect_rid)
             {
-                store.push(ItemKind::ModuleHigh)?;
+                store.push(DetectedItemKind::ModuleHigh)?;
             }
             if let Some(effect_rid) = effect_consts.med_power
                 && item_effects.contains_key(&effect_rid)
             {
-                store.push(ItemKind::ModuleMid)?;
+                store.push(DetectedItemKind::ModuleMid)?;
             }
             if let Some(effect_rid) = effect_consts.lo_power
                 && item_effects.contains_key(&effect_rid)
             {
-                store.push(ItemKind::ModuleLow)?;
+                store.push(DetectedItemKind::ModuleLow)?;
             }
             if let Some(effect_rid) = effect_consts.rig_slot
                 && item_effects.contains_key(&effect_rid)
             {
-                store.push(ItemKind::Rig)?;
+                store.push(DetectedItemKind::Rig)?;
             }
             if let Some(effect_rid) = effect_consts.service_slot
                 && item_effects.contains_key(&effect_rid)
             {
-                store.push(ItemKind::Service)?;
+                store.push(DetectedItemKind::Service)?;
             }
         }
         // Ships and structures
-        AItemCatId::SHIP | AItemCatId::STRUCTURE => store.push(ItemKind::Ship)?,
+        AItemCatId::SHIP | AItemCatId::STRUCTURE => store.push(DetectedItemKind::Ship)?,
         // Implants and boosters
         AItemCatId::IMPLANT => {
             if let Some(attr_rid) = attr_consts.boosterness
                 && item_attrs.contains_key(&attr_rid)
             {
-                store.push(ItemKind::Booster)?;
+                store.push(DetectedItemKind::Booster)?;
             }
             if let Some(attr_rid) = attr_consts.implantness
                 && item_attrs.contains_key(&attr_rid)
             {
-                store.push(ItemKind::Implant)?;
+                store.push(DetectedItemKind::Implant)?;
             }
         }
         // Other items
-        AItemCatId::CHARGE => store.push(ItemKind::Charge)?,
-        AItemCatId::DRONE => store.push(ItemKind::Drone)?,
-        AItemCatId::FIGHTER => store.push(ItemKind::Fighter)?,
-        AItemCatId::SKILL => store.push(ItemKind::Skill)?,
-        AItemCatId::SUBSYSTEM => store.push(ItemKind::Subsystem)?,
+        AItemCatId::CHARGE => store.push(DetectedItemKind::Charge)?,
+        AItemCatId::DRONE => store.push(DetectedItemKind::Drone)?,
+        AItemCatId::FIGHTER => store.push(DetectedItemKind::Fighter)?,
+        AItemCatId::SKILL => store.push(DetectedItemKind::Skill)?,
+        AItemCatId::SUBSYSTEM => store.push(DetectedItemKind::Subsystem)?,
         _ => (),
     }
     match item_grp_id {
-        AItemGrpId::CHARACTER => store.push(ItemKind::Character)?,
-        AItemGrpId::SHIP_MODIFIER => store.push(ItemKind::Stance)?,
+        AItemGrpId::CHARACTER => store.push(DetectedItemKind::Character)?,
+        AItemGrpId::SHIP_MODIFIER => store.push(DetectedItemKind::Stance)?,
         _ => (),
     }
     store.extract()
 }
 
 struct ItemKindStore {
-    data: Option<ItemKind>,
+    data: Option<DetectedItemKind>,
 }
 impl ItemKindStore {
     fn new() -> Self {
         Self { data: None }
     }
-    fn push(&mut self, item_kind: ItemKind) -> Option<()> {
+    fn push(&mut self, item_kind: DetectedItemKind) -> Option<()> {
         match self.data {
             Some(_) => None,
             None => {
@@ -91,7 +91,7 @@ impl ItemKindStore {
             }
         }
     }
-    fn extract(self) -> Option<ItemKind> {
+    fn extract(self) -> Option<DetectedItemKind> {
         self.data
     }
 }

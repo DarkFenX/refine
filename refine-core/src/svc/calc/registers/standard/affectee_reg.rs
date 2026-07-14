@@ -52,7 +52,7 @@ impl StandardRegister {
                 self.affectee_buffable.add_entry((fit_uid, item_list_rid), item_uid);
             }
             let ship = match item {
-                UItem::Ship(ship) if let Ok(loc_kind) = ship.get_kind().try_into() => {
+                UItem::Ship(ship) if let Ok(loc_kind) = ship.get_ship_kind().try_into() => {
                     for &item_list_rid in item_list_rids {
                         self.affectee_buffable_ships
                             .add_entry(item_list_rid, (ship.get_fit_uid(), item_uid, loc_kind));
@@ -121,7 +121,7 @@ impl StandardRegister {
                 self.affectee_buffable.remove_entry((fit_uid, item_list_rid), &item_uid);
             }
             let ship = match item {
-                UItem::Ship(ship) if let Ok(loc_kind) = ship.get_kind().try_into() => {
+                UItem::Ship(ship) if let Ok(loc_kind) = ship.get_ship_kind().try_into() => {
                     for &item_list_rid in item_list_rids {
                         self.affectee_buffable_ships
                             .remove_entry(item_list_rid, &(ship.get_fit_uid(), item_uid, loc_kind));

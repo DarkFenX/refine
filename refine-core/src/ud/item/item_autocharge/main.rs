@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
@@ -41,7 +41,31 @@ impl UAutocharge {
             force_disabled,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Autocharge
+    }
+}
+impl LibNamed for UAutocharge {
+    fn lib_get_name() -> &'static str {
+        "UAutocharge"
+    }
+}
+impl std::fmt::Display for UAutocharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UAutocharge {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -110,7 +134,12 @@ impl UAutocharge {
         // Instead, they are removed and re-added when parent item changes.
         unreachable!("autocharges should be removed/added outside of autocharge item handler");
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UAutocharge {
     pub(crate) fn set_activated(&mut self, activated: bool) {
         // No changes to state - nothing to do
         if self.activated == activated {
@@ -144,22 +173,6 @@ impl UAutocharge {
     }
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
-    }
-}
-impl LibNamed for UAutocharge {
-    fn lib_get_name() -> &'static str {
-        "UAutocharge"
-    }
-}
-impl std::fmt::Display for UAutocharge {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

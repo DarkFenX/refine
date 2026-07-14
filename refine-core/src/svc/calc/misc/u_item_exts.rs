@@ -15,7 +15,7 @@ impl UItem {
     pub(in crate::svc::calc) fn get_root_loc_kind(&self) -> Option<LocationKind> {
         match self {
             Self::Character(_) => Some(LocationKind::Character),
-            Self::Ship(ship) => match ship.get_kind() {
+            Self::Ship(ship) => match ship.get_ship_kind() {
                 UShipKind::Ship => Some(LocationKind::Ship),
                 UShipKind::Structure => Some(LocationKind::Structure),
                 _ => None,
@@ -25,7 +25,7 @@ impl UItem {
     }
     pub(in crate::svc::calc) fn get_ship_loc_kind(&self) -> Option<LocationKind> {
         match self {
-            Self::Ship(ship) => match ship.get_kind() {
+            Self::Ship(ship) => match ship.get_ship_kind() {
                 UShipKind::Ship => Some(LocationKind::Ship),
                 UShipKind::Structure => Some(LocationKind::Structure),
                 _ => None,

@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::MinionState,
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, NpcProp},
+    misc::{EffectMode, ItemKind, NpcProp},
     num::{PValue, SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RItemListId, RState},
     ud::{
@@ -39,7 +39,31 @@ impl UDrone {
             projs: UProjs::new(),
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Drone
+    }
+}
+impl LibNamed for UDrone {
+    fn lib_get_name() -> &'static str {
+        "UDrone"
+    }
+}
+impl std::fmt::Display for UDrone {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UDrone {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -112,7 +136,12 @@ impl UDrone {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Mutation-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mutation-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UDrone {
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
@@ -136,7 +165,12 @@ impl UDrone {
     pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<(), ItemMutatedError> {
         self.base.unmutate(r_data)
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UDrone {
     pub(crate) fn get_drone_state(&self) -> MinionState {
         MinionState::from_r_state(self.base.get_state())
     }
@@ -169,21 +203,5 @@ impl UDrone {
     }
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
-    }
-}
-impl LibNamed for UDrone {
-    fn lib_get_name() -> &'static str {
-        "UDrone"
-    }
-}
-impl std::fmt::Display for UDrone {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

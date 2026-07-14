@@ -41,7 +41,7 @@ pub use api::{
 pub use def::VERSION;
 pub use lender::Lender;
 pub use misc::{
-    BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemNpcPropInfo, ItemOptionalReloadInfo,
+    BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo,
     ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionalReload, RearmMinion, SecZone, SecZoneCorruption,
     Spool,
 };

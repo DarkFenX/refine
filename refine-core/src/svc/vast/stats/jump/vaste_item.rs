@@ -66,7 +66,7 @@ impl Vast {
         };
         // Make self-jump stat for all ships with jump drive, except of structure kind, not to
         // expose self-jump stats for ansiblexes
-        if !matches!(ship.get_kind(), UShipKind::Structure) {
+        if !matches!(ship.get_ship_kind(), UShipKind::Structure) {
             stat.jump_self = Some(get_stat_jump_self(ctx, calc, ship_uid, range));
         }
         let fit_data = self.get_fit_data(ship.get_fit_uid());

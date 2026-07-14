@@ -2,7 +2,7 @@ use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::ModuleState,
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, ModRack, OptionalReload, Spool},
+    misc::{EffectMode, ItemKind, ModRack, OptionalReload, Spool},
     num::{Count, Index, PValue, SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState},
     ud::{
@@ -48,7 +48,31 @@ impl UModule {
             optional_reload: None,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Module
+    }
+}
+impl LibNamed for UModule {
+    fn lib_get_name() -> &'static str {
+        "UModule"
+    }
+}
+impl std::fmt::Display for UModule {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UModule {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -142,7 +166,12 @@ impl UModule {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Mutation-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mutation-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UModule {
     pub(crate) fn get_mutation_data(&self) -> Option<&ItemMutationData> {
         self.base.get_mutation_data()
     }
@@ -166,7 +195,12 @@ impl UModule {
     pub(crate) fn unmutate(&mut self, r_data: &RData) -> Result<(), ItemMutatedError> {
         self.base.unmutate(r_data)
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UModule {
     pub(crate) fn get_module_state(&self) -> ModuleState {
         ModuleState::from_r_state(self.base.get_state())
     }
@@ -229,21 +263,5 @@ impl UModule {
     }
     pub(crate) fn set_optional_reload(&mut self, optional_reload: Option<OptionalReload>) {
         self.optional_reload = optional_reload
-    }
-}
-impl LibNamed for UModule {
-    fn lib_get_name() -> &'static str {
-        "UModule"
-    }
-}
-impl std::fmt::Display for UModule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

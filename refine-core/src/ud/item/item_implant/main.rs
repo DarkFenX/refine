@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{SkillLevel, SlotIndex, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
@@ -28,7 +28,31 @@ impl UImplant {
             fit_uid,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Implant
+    }
+}
+impl LibNamed for UImplant {
+    fn lib_get_name() -> &'static str {
+        "UImplant"
+    }
+}
+impl std::fmt::Display for UImplant {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UImplant {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -98,7 +122,12 @@ impl UImplant {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UImplant {
     pub(crate) fn get_implant_state(&self) -> bool {
         state_to_bool(self.base.get_state())
     }
@@ -113,21 +142,5 @@ impl UImplant {
             Some(axt) => axt.implant_slot,
             None => None,
         }
-    }
-}
-impl LibNamed for UImplant {
-    fn lib_get_name() -> &'static str {
-        "UImplant"
-    }
-}
-impl std::fmt::Display for UImplant {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

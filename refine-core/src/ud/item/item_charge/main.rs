@@ -1,6 +1,6 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
@@ -38,7 +38,31 @@ impl UCharge {
             force_disabled,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Charge
+    }
+}
+impl LibNamed for UCharge {
+    fn lib_get_name() -> &'static str {
+        "UCharge"
+    }
+}
+impl std::fmt::Display for UCharge {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UCharge {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -108,7 +132,12 @@ impl UCharge {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UCharge {
     pub(crate) fn get_activated(&self) -> bool {
         self.activated
     }
@@ -142,22 +171,6 @@ impl UCharge {
     }
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
-    }
-}
-impl LibNamed for UCharge {
-    fn lib_get_name() -> &'static str {
-        "UCharge"
-    }
-}
-impl std::fmt::Display for UCharge {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

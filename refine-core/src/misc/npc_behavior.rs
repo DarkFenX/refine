@@ -1,4 +1,4 @@
-#[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq)]
 pub enum NpcProp {
     Cruise,
     Chase,

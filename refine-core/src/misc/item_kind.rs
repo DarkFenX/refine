@@ -1,5 +1,28 @@
-#[derive(Copy, Clone, PartialEq, Eq)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
+#[display(rename_all = "snake_case")]
 pub enum ItemKind {
+    Autocharge,
+    Booster,
+    Character,
+    Charge,
+    Drone,
+    Fighter,
+    FwEffect,
+    Implant,
+    Module,
+    ProjEffect,
+    Rig,
+    Service,
+    Ship,
+    Skill,
+    Stance,
+    Subsystem,
+    SwEffect,
+}
+
+#[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
+#[display(rename_all = "snake_case")]
+pub enum DetectedItemKind {
     Booster,
     Character,
     Charge,

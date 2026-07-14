@@ -1,7 +1,7 @@
 use crate::{
     ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::ServiceState,
-    misc::EffectMode,
+    misc::{EffectMode, ItemKind},
     num::{SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
     ud::{
@@ -29,7 +29,31 @@ impl UService {
             fit_uid,
         }
     }
-    // Item base methods
+    pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
+        ItemKind::Service
+    }
+}
+impl LibNamed for UService {
+    fn lib_get_name() -> &'static str {
+        "UService"
+    }
+}
+impl std::fmt::Display for UService {
+    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
+        write!(
+            f,
+            "{}(item_id={}, type_id={})",
+            Self::lib_get_name(),
+            self.get_item_id(),
+            self.get_type_aid(),
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item base methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UService {
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -105,7 +129,12 @@ impl UService {
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
         self.base.r_data_changed(r_data);
     }
-    // Item-specific methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UService {
     pub(crate) fn get_service_state(&self) -> ServiceState {
         ServiceState::from_r_state(self.base.get_state())
     }
@@ -117,21 +146,5 @@ impl UService {
     }
     pub(crate) fn enables_portal(&self) -> bool {
         self.base.enables_portal()
-    }
-}
-impl LibNamed for UService {
-    fn lib_get_name() -> &'static str {
-        "UService"
-    }
-}
-impl std::fmt::Display for UService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }

@@ -23,7 +23,7 @@ pub(super) fn proj_target_mod(
             Some(cmod)
         }
         AffecteeFilter::Loc(Location::Target) if let UItem::Ship(projectee_ship) = projectee_item => {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -39,7 +39,7 @@ pub(super) fn proj_target_mod(
             }
         }
         AffecteeFilter::LocGrp(Location::Target, item_grp_id) if let UItem::Ship(projectee_ship) = projectee_item => {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -55,7 +55,7 @@ pub(super) fn proj_target_mod(
             }
         }
         AffecteeFilter::LocSrq(Location::Target, srq_type_aid) if let UItem::Ship(projectee_ship) = projectee_item => {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -94,7 +94,7 @@ pub(super) fn unproj_target_mod(
             Some(cmod)
         }
         AffecteeFilter::Loc(Location::Target) if let UItem::Ship(projectee_ship) = projectee_item => {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -110,7 +110,7 @@ pub(super) fn unproj_target_mod(
             }
         }
         AffecteeFilter::LocGrp(Location::Target, item_grp_id) if let UItem::Ship(projectee_ship) = projectee_item => {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -126,7 +126,7 @@ pub(super) fn unproj_target_mod(
             }
         }
         AffecteeFilter::LocSrq(Location::Target, srq_type_aid) if let UItem::Ship(projectee_ship) = projectee_item => {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -168,7 +168,7 @@ pub(super) fn query_target_mod(
             | AffecteeFilter::LocSrq(Location::Target, _)
                 if let UItem::Ship(projectee_ship) = projectee_item =>
             {
-                match projectee_ship.get_kind() {
+                match projectee_ship.get_ship_kind() {
                     UShipKind::Ship | UShipKind::Structure => {
                         let fit_uid = projectee_ship.get_fit_uid();
                         let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
@@ -202,7 +202,7 @@ pub(super) fn load_affectee_for_proj_target(
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
         {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
@@ -217,7 +217,7 @@ pub(super) fn load_affectee_for_proj_target(
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
         {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
@@ -232,7 +232,7 @@ pub(super) fn load_affectee_for_proj_target(
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
         {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
@@ -257,7 +257,7 @@ pub(super) fn unload_affectee_for_proj_target(
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
         {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
@@ -272,7 +272,7 @@ pub(super) fn unload_affectee_for_proj_target(
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
         {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
@@ -287,7 +287,7 @@ pub(super) fn unload_affectee_for_proj_target(
             if let Location::Target = loc
                 && let UItem::Ship(projectee_ship) = projectee_item =>
         {
-            match projectee_ship.get_kind().try_into() {
+            match projectee_ship.get_ship_kind().try_into() {
                 Ok(loc_kind) => {
                     let fit_uid = projectee_ship.get_fit_uid();
                     let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
