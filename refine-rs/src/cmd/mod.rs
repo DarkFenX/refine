@@ -4,10 +4,11 @@ pub use fit::{
 };
 pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
-    AddFitError, AddFleetError, ChangeAutochargeError, ChangeBoosterError, ChangeFleetError, FitChangeFitError,
-    GetFitAddBoosterError, GetFitAddRigError, GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError,
-    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemRemoveItemError,
-    RemoveItemError,
+    AddFitError, AddFleetError, ChangeAutochargeError, ChangeBoosterError, ChangeFleetError, FitChangeCharacterError,
+    FitChangeFitError, GetFitAddBoosterError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError,
+    GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError,
+    GetItemRemoveItemError, ItemChangeCharacterError, RemoveItemError,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddRigCmd,

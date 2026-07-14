@@ -19,6 +19,10 @@ pub(in crate::cmd) use item_booster::{
     ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
     ICmdBoosterChangeFCtxRIds, ICmdBoosterChangeICtx,
 };
+pub use item_character::{
+    FitChangeCharacterError, GetFitChangeCharacterError, GetFitSetCharacterError, GetFitUnsetCharacterError,
+    GetItemChangeCharacterError, ItemChangeCharacterError,
+};
 pub use item_rig::GetFitAddRigError;
 pub(in crate::cmd) use item_rig::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
