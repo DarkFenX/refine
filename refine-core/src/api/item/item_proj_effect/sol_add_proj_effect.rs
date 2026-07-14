@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn create_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffectMut<'_> {
+    pub fn add_proj_effect(&mut self, type_id: ItemTypeId) -> ProjEffectMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let proj_effect_uid = self.internal_create_proj_effect(type_id.into_aid(), &mut reuse_eupdates);
+        let proj_effect_uid = self.internal_add_proj_effect(type_id.into_aid(), &mut reuse_eupdates);
         ProjEffectMut::new(self, proj_effect_uid)
     }
-    pub(in crate::api) fn internal_create_proj_effect(
+    pub(in crate::api) fn internal_add_proj_effect(
         &mut self,
         type_aid: AItemId,
         reuse_eupdates: &mut UEffectUpdates,

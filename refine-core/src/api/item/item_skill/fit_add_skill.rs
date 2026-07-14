@@ -10,7 +10,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_skill(
+    pub(in crate::api) fn internal_add_skill(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -38,11 +38,11 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, CreateSkillError> {
+    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, CreateSkillError> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let skill_uid = self
             .sol
-            .internal_create_skill(self.uid, type_id.into_aid(), level, &mut reuse_eupdates)?;
+            .internal_add_skill(self.uid, type_id.into_aid(), level, &mut reuse_eupdates)?;
         Ok(SkillMut::new(self.sol, skill_uid))
     }
 }

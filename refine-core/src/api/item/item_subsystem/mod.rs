@@ -1,7 +1,7 @@
 pub use sol_get_subsystem::GetSubsystemError;
 pub use subsystem::{Subsystem, SubsystemMut};
 
-mod fit_create_subsystem;
+mod fit_add_subsystem;
 mod fit_iter_subsystems;
 mod sol_get_subsystem;
 mod subsystem;

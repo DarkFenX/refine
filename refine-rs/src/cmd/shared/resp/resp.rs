@@ -1,9 +1,9 @@
 use rc::ItemCommon;
 
 pub enum CmdResp {
-    CreatedFleetId(CreatedFleetIdResp),
-    CreatedFitId(CreatedFitIdResp),
-    CreatedItemIds(CreatedItemIdsResp),
+    AddedFleetId(AddedFleetIdResp),
+    AddedFitId(AddedFitIdResp),
+    AddedItemIds(AddedItemIdsResp),
     ChangedItemIds(ChangedItemIdsResp),
     // TODO: this variant serializes into null in JSON, but NoData {} is ugly, write custom ser impl
     NoData,
@@ -11,40 +11,40 @@ pub enum CmdResp {
 impl CmdResp {
     pub fn get_fleet_id(&self) -> Option<rc::FleetId> {
         match self {
-            Self::CreatedFleetId(resp) => Some(resp.fleet_id),
+            Self::AddedFleetId(resp) => Some(resp.fleet_id),
             _ => None,
         }
     }
     pub fn get_fit_id(&self) -> Option<rc::FitId> {
         match self {
-            Self::CreatedFitId(resp) => Some(resp.fit_id),
+            Self::AddedFitId(resp) => Some(resp.fit_id),
             _ => None,
         }
     }
     pub fn get_item_id(&self) -> Option<rc::ItemId> {
         match self {
-            Self::CreatedItemIds(resp) => Some(resp.item_id),
+            Self::AddedItemIds(resp) => Some(resp.item_id),
             _ => None,
         }
     }
     pub fn get_charge_item_id(&self) -> Option<rc::ItemId> {
         match self {
-            Self::CreatedItemIds(resp) => resp.charge_item_id,
+            Self::AddedItemIds(resp) => resp.charge_item_id,
             Self::ChangedItemIds(resp) => resp.charge_item_id,
             _ => None,
         }
     }
 }
 
-pub struct CreatedFleetIdResp {
+pub struct AddedFleetIdResp {
     pub fleet_id: rc::FleetId,
 }
 
-pub struct CreatedFitIdResp {
+pub struct AddedFitIdResp {
     pub fit_id: rc::FitId,
 }
 
-pub struct CreatedItemIdsResp {
+pub struct AddedItemIdsResp {
     pub item_id: rc::ItemId,
     pub charge_item_id: Option<rc::ItemId>,
 }
@@ -62,19 +62,19 @@ impl From<()> for CmdResp {
         CmdResp::NoData
     }
 }
-impl From<CreatedFitIdResp> for CmdResp {
-    fn from(resp: CreatedFitIdResp) -> Self {
-        CmdResp::CreatedFitId(resp)
+impl From<AddedFitIdResp> for CmdResp {
+    fn from(resp: AddedFitIdResp) -> Self {
+        CmdResp::AddedFitId(resp)
     }
 }
-impl From<CreatedFleetIdResp> for CmdResp {
-    fn from(resp: CreatedFleetIdResp) -> Self {
-        CmdResp::CreatedFleetId(resp)
+impl From<AddedFleetIdResp> for CmdResp {
+    fn from(resp: AddedFleetIdResp) -> Self {
+        CmdResp::AddedFleetId(resp)
     }
 }
-impl From<CreatedItemIdsResp> for CmdResp {
-    fn from(resp: CreatedItemIdsResp) -> Self {
-        CmdResp::CreatedItemIds(resp)
+impl From<AddedItemIdsResp> for CmdResp {
+    fn from(resp: AddedItemIdsResp) -> Self {
+        CmdResp::AddedItemIds(resp)
     }
 }
 impl From<ChangedItemIdsResp> for CmdResp {
@@ -83,7 +83,7 @@ impl From<ChangedItemIdsResp> for CmdResp {
     }
 }
 
-impl CreatedFleetIdResp {
+impl AddedFleetIdResp {
     pub(in crate::cmd) fn from_core_fleet(core_fleet: rc::FleetMut) -> Self {
         Self {
             fleet_id: core_fleet.get_fleet_id(),
@@ -91,7 +91,7 @@ impl CreatedFleetIdResp {
     }
 }
 
-impl CreatedFitIdResp {
+impl AddedFitIdResp {
     pub(in crate::cmd) fn from_core_fit(core_fit: rc::FitMut) -> Self {
         Self {
             fit_id: core_fit.get_fit_id(),
@@ -99,7 +99,7 @@ impl CreatedFitIdResp {
     }
 }
 
-impl CreatedItemIdsResp {
+impl AddedItemIdsResp {
     pub(in crate::cmd) fn from_core_booster(core_booster: rc::BoosterMut) -> Self {
         Self {
             item_id: core_booster.get_item_id(),

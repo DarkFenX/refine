@@ -1,14 +1,14 @@
 use crate::cmd::{
     inner::{
-        CreateFitError, CreateFleetError, GetFitChangeFitError, GetFitCreateBoosterError, GetFitCreateRigError,
+        AddFitError, AddFleetError, GetFitAddBoosterError, GetFitAddRigError, GetFitChangeFitError,
         GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
         GetItemChangeBoosterError, GetItemRemoveItemError, ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds,
-        ICmdBoosterChangeFCtxBIds, ICmdBoosterChangeFCtxRIds, ICmdBoosterCreateFCtxBIds, ICmdBoosterCreateFCtxRIds,
-        ICmdBoosterCreateICtx, ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitCreateFCtxBIds,
-        ICmdFitCreateFCtxRIds, ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFleetChangeFCtxBIds,
-        ICmdFleetChangeFCtxRIds, ICmdFleetCreateFCtxBIds, ICmdFleetCreateFCtxRIds, ICmdFleetRemoveFCtxBIds,
-        ICmdFleetRemoveFCtxRIds, ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdRigCreateFCtxBIds,
-        ICmdRigCreateFCtxRIds, ICmdRigCreateICtx, ICmdSolChangeFCtx,
+        ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
+        ICmdBoosterChangeFCtxRIds, ICmdFitAddFCtxBIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxBIds,
+        ICmdFitChangeFCtxRIds, ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFleetAddFCtxBIds,
+        ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxBIds,
+        ICmdFleetRemoveFCtxRIds, ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdRigAddFCtxBIds,
+        ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref},
 };
@@ -17,11 +17,11 @@ pub enum ChangeSolEnumCmd {
     // Solar system
     ChangeSol(SolChangeSolCmd),
     // Fleet
-    CreateFleet(SolCreateFleetCmd),
+    AddFleet(SolAddFleetCmd),
     ChangeFleet(SolChangeFleetCmd),
     RemoveFleet(SolRemoveFleetCmd),
     // Fit
-    CreateFit(SolCreateFitCmd),
+    AddFit(SolAddFitCmd),
     ChangeFit(SolChangeFitCmd),
     RemoveFit(SolRemoveFitCmd),
     // Item
@@ -29,21 +29,21 @@ pub enum ChangeSolEnumCmd {
     // Item - autocharge
     ChangeAutocharge(SolChangeAutochargeCmd),
     // Item - booster
-    CreateBooster(SolCreateBoosterCmd),
+    AddBooster(SolAddBoosterCmd),
     ChangeBooster(SolChangeBoosterCmd),
     // Item - rig
-    CreateRig(SolCreateRigCmd),
+    AddRig(SolAddRigCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
     // Solar system
     ChangeSol(ICmdSolChangeFCtx),
     // Fleet
-    CreateFleet(ICmdFleetCreateFCtxRIds),
+    AddFleet(ICmdFleetAddFCtxRIds),
     ChangeFleet(ICmdFleetChangeFCtxRIds),
     RemoveFleet(ICmdFleetRemoveFCtxRIds),
     // Fit
-    CreateFit(ICmdFitCreateFCtxRIds),
+    AddFit(ICmdFitAddFCtxRIds),
     ChangeFit(ICmdFitChangeFCtxRIds),
     RemoveFit(ICmdFitRemoveFCtxRIds),
     // Item
@@ -51,10 +51,10 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     // Item - autocharge
     ChangeAutocharge(ICmdAutochargeChangeFCtxRIds),
     // Item - booster
-    CreateBooster(ICmdBoosterCreateFCtxRIds),
+    AddBooster(ICmdBoosterAddFCtxRIds),
     ChangeBooster(ICmdBoosterChangeFCtxRIds),
     // Item - rig
-    CreateRig(ICmdRigCreateFCtxRIds),
+    AddRig(ICmdRigAddFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,11 +66,11 @@ impl ChangeSolEnumCmd {
             // Solar system
             Self::ChangeSol(cmd) => ChangeSolEnumCmdRIds::ChangeSol(cmd.inner),
             // Fleet
-            Self::CreateFleet(cmd) => ChangeSolEnumCmdRIds::CreateFleet(cmd.inner.render(resps)?),
+            Self::AddFleet(cmd) => ChangeSolEnumCmdRIds::AddFleet(cmd.inner.render(resps)?),
             Self::ChangeFleet(cmd) => ChangeSolEnumCmdRIds::ChangeFleet(cmd.inner.render(resps)?),
             Self::RemoveFleet(cmd) => ChangeSolEnumCmdRIds::RemoveFleet(cmd.inner.render(resps)?),
             // Fit
-            Self::CreateFit(cmd) => ChangeSolEnumCmdRIds::CreateFit(cmd.inner.render(resps)?),
+            Self::AddFit(cmd) => ChangeSolEnumCmdRIds::AddFit(cmd.inner.render(resps)?),
             Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),
             Self::RemoveFit(cmd) => ChangeSolEnumCmdRIds::RemoveFit(cmd.inner.render(resps)?),
             // Item
@@ -78,10 +78,10 @@ impl ChangeSolEnumCmd {
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => ChangeSolEnumCmdRIds::ChangeAutocharge(cmd.inner.render(resps)?),
             // Item - booster
-            Self::CreateBooster(cmd) => ChangeSolEnumCmdRIds::CreateBooster(cmd.inner.render(resps)?),
+            Self::AddBooster(cmd) => ChangeSolEnumCmdRIds::AddBooster(cmd.inner.render(resps)?),
             Self::ChangeBooster(cmd) => ChangeSolEnumCmdRIds::ChangeBooster(cmd.inner.render(resps)?),
             // Item - rig
-            Self::CreateRig(cmd) => ChangeSolEnumCmdRIds::CreateRig(cmd.inner.render(resps)?),
+            Self::AddRig(cmd) => ChangeSolEnumCmdRIds::AddRig(cmd.inner.render(resps)?),
         })
     }
 }
@@ -95,11 +95,11 @@ impl ChangeSolEnumCmdRIds {
             // Solar system
             Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
             // Fleet
-            Self::CreateFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::RemoveFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Fit
-            Self::CreateFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::RemoveFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item
@@ -107,10 +107,10 @@ impl ChangeSolEnumCmdRIds {
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - booster
-            Self::CreateBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
-            Self::CreateRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -118,15 +118,15 @@ impl ChangeSolEnumCmdRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeSolEnumError {
     // Fleet
-    #[error("failed to create fleet: {0}")]
-    FleetCreateFailed(#[from] CreateFleetError),
+    #[error("failed to add fleet: {0}")]
+    FleetAddFailed(#[from] AddFleetError),
     #[error("failed to change fleet: {0}")]
     FleetChangeFailed(#[from] GetFleetChangeFleetError),
     #[error("failed to remove fleet: {0}")]
     FleetRemoveFailed(#[from] GetFleetRemoveFleetError),
     // Fit
-    #[error("failed to create fit: {0}")]
-    FitCreateFailed(#[from] CreateFitError),
+    #[error("failed to add fit: {0}")]
+    FitAddFailed(#[from] AddFitError),
     #[error("failed to change fit: {0}")]
     FitChangeFailed(#[from] GetFitChangeFitError),
     #[error("failed to remove fit: {0}")]
@@ -138,13 +138,13 @@ pub enum ChangeSolEnumError {
     #[error("failed to change autocharge: {0}")]
     AutochargeChangeFailed(#[from] GetItemChangeAutochargeError),
     // Item - booster
-    #[error("failed to create booster: {0}")]
-    BoosterCreateFailed(#[from] GetFitCreateBoosterError),
+    #[error("failed to add booster: {0}")]
+    BoosterAddFailed(#[from] GetFitAddBoosterError),
     #[error("failed to change booster: {0}")]
     BoosterChangeFailed(#[from] GetItemChangeBoosterError),
     // Item - rig
-    #[error("failed to create rig: {0}")]
-    RigCreateFailed(#[from] GetFitCreateRigError),
+    #[error("failed to add rig: {0}")]
+    RigAddFailed(#[from] GetFitAddRigError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -193,10 +193,10 @@ impl From<SolChangeSolCmd> for ChangeSolEnumCmd {
 // Sub-commands - fleet
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
-pub struct SolCreateFleetCmd {
-    inner: ICmdFleetCreateFCtxBIds = ICmdFleetCreateFCtxBIds { .. },
+pub struct SolAddFleetCmd {
+    inner: ICmdFleetAddFCtxBIds = ICmdFleetAddFCtxBIds { .. },
 }
-impl SolCreateFleetCmd {
+impl SolAddFleetCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -206,9 +206,9 @@ impl SolCreateFleetCmd {
         self
     }
 }
-impl From<SolCreateFleetCmd> for ChangeSolEnumCmd {
-    fn from(sub_cmd: SolCreateFleetCmd) -> Self {
-        Self::CreateFleet(sub_cmd)
+impl From<SolAddFleetCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolAddFleetCmd) -> Self {
+        Self::AddFleet(sub_cmd)
     }
 }
 
@@ -258,10 +258,10 @@ impl From<SolRemoveFleetCmd> for ChangeSolEnumCmd {
 // Sub-commands - fit
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
-pub struct SolCreateFitCmd {
-    inner: ICmdFitCreateFCtxBIds = ICmdFitCreateFCtxBIds { .. },
+pub struct SolAddFitCmd {
+    inner: ICmdFitAddFCtxBIds = ICmdFitAddFCtxBIds { .. },
 }
-impl SolCreateFitCmd {
+impl SolAddFitCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -278,9 +278,9 @@ impl SolCreateFitCmd {
         self
     }
 }
-impl From<SolCreateFitCmd> for ChangeSolEnumCmd {
-    fn from(sub_cmd: SolCreateFitCmd) -> Self {
-        Self::CreateFit(sub_cmd)
+impl From<SolAddFitCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolAddFitCmd) -> Self {
+        Self::AddFit(sub_cmd)
     }
 }
 
@@ -382,15 +382,15 @@ impl From<SolChangeAutochargeCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sub-commands - item - booster
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct SolCreateBoosterCmd {
-    inner: ICmdBoosterCreateFCtxBIds,
+pub struct SolAddBoosterCmd {
+    inner: ICmdBoosterAddFCtxBIds,
 }
-impl SolCreateBoosterCmd {
+impl SolAddBoosterCmd {
     pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
         Self {
-            inner: ICmdBoosterCreateFCtxBIds {
+            inner: ICmdBoosterAddFCtxBIds {
                 fit_id,
-                ictx_cmd: ICmdBoosterCreateICtx { type_id, .. },
+                ictx_cmd: ICmdBoosterAddICtx { type_id, .. },
             },
         }
     }
@@ -409,9 +409,9 @@ impl SolCreateBoosterCmd {
         self
     }
 }
-impl From<SolCreateBoosterCmd> for ChangeSolEnumCmd {
-    fn from(sub_cmd: SolCreateBoosterCmd) -> Self {
-        Self::CreateBooster(sub_cmd)
+impl From<SolAddBoosterCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolAddBoosterCmd) -> Self {
+        Self::AddBooster(sub_cmd)
     }
 }
 
@@ -452,15 +452,15 @@ impl From<SolChangeBoosterCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sub-commands - item - rig
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct SolCreateRigCmd {
-    inner: ICmdRigCreateFCtxBIds,
+pub struct SolAddRigCmd {
+    inner: ICmdRigAddFCtxBIds,
 }
-impl SolCreateRigCmd {
+impl SolAddRigCmd {
     pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
         Self {
-            inner: ICmdRigCreateFCtxBIds {
+            inner: ICmdRigAddFCtxBIds {
                 fit_id,
-                ictx_cmd: ICmdRigCreateICtx { type_id, .. },
+                ictx_cmd: ICmdRigAddICtx { type_id, .. },
             },
         }
     }
@@ -474,8 +474,8 @@ impl SolCreateRigCmd {
         self
     }
 }
-impl From<SolCreateRigCmd> for ChangeSolEnumCmd {
-    fn from(sub_cmd: SolCreateRigCmd) -> Self {
-        Self::CreateRig(sub_cmd)
+impl From<SolAddRigCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolAddRigCmd) -> Self {
+        Self::AddRig(sub_cmd)
     }
 }

@@ -1,13 +1,13 @@
 #![feature(default_field_values)]
 
 pub use cmd::{
-    ChangeFitEnumCmd, ChangeItemEnumCmd, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp, CmdResps, CreateFitCmd,
-    CreateFleetCmd, CreateItemEnumCmd, CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp,
-    FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeFitCmd, FitCreateBoosterCmd, FitIdBackref, FitRemoveItemCmd,
-    FleetIdBackref, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemCreateBoosterCmd, ItemCreateRigCmd,
-    ItemIdBackref, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
-    SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolCreateBoosterCmd, SolCreateFitCmd, SolCreateFleetCmd,
-    SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
+    ChangeFitEnumCmd, ChangeItemEnumCmd, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp, CmdResps, FitAddBoosterCmd,
+    FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeFitCmd, FitIdBackref, FitRemoveItemCmd,
+    FleetIdBackref, ItemAddBoosterCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemIdBackref,
+    RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd,
+    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd,
+    SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;

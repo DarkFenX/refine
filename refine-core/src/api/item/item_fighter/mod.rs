@@ -12,7 +12,7 @@ mod fighter_set_movement;
 mod fighter_set_rearm_minion;
 mod fighter_set_state;
 mod fighter_set_type_id;
-mod fit_create_fighter;
+mod fit_add_fighter;
 mod fit_iter_fighters;
 mod ranged_proj;
 mod sol_get_fighter;

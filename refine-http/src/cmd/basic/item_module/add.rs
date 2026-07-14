@@ -93,7 +93,7 @@ impl HModuleAddCmdICtxRIds {
         fit_id: &rc::FitId,
     ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_module = core_fit.create_module(
+        let mut core_module = core_fit.add_module(
             self.shared.rack.into_core(),
             self.shared.add_mode.into_core(),
             rc::ItemTypeId::from_i32(self.shared.type_id),

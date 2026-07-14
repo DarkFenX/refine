@@ -1,9 +1,9 @@
+pub use add::AddSolCmd;
 pub use change::{
-    ChangeSolEnumCmd, ChangeSolEnumError, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeFitCmd,
-    SolChangeFleetCmd, SolChangeSolCmd, SolCreateBoosterCmd, SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd,
+    ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd,
+    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd,
     SolRemoveFleetCmd, SolRemoveItemCmd,
 };
-pub use create::CreateSolCmd;
 
+mod add;
 mod change;
-mod create;

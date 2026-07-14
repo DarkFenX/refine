@@ -16,7 +16,7 @@ pub(crate) struct HSwEffectAddCmdFCtx {
 impl HSwEffectAddCmdFCtx {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> HCreatedItemIdsResp {
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
-        let mut core_sw_effect = core_sol.create_sw_effect(core_type_id);
+        let mut core_sw_effect = core_sol.add_sw_effect(core_type_id);
         if let Some(state) = self.state {
             core_sw_effect.set_state(state);
         }

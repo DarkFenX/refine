@@ -20,7 +20,7 @@ pub(crate) enum HBrError {
     BatchExecFailed(usize, #[source] HExecError),
     // Functionality moved to rust interface
     #[error("{0}")]
-    SrcCreateFailed(#[from] rs::err::CreateSrcError),
+    SrcCreateFailed(#[from] rs::err::AddSrcError),
     #[error("{0}")]
     SrcGetFailed(#[from] rs::err::GetSrcError),
     #[error("{0}")]
@@ -43,8 +43,8 @@ impl HBrError {
             Self::FitIdCastFailed(_) => "FIT-001".to_string(),
             Self::FleetIdCastFailed(_) => "FLT-001".to_string(),
             Self::ItemIdCastFailed(_) => "ITM-001".to_string(),
-            Self::SrcCreateFailed(rs::err::CreateSrcError::EdhInitFailed(_)) => "EDH-001".to_string(),
-            Self::SrcCreateFailed(rs::err::CreateSrcError::SrcInitFailed(_)) => "SIN-001".to_string(),
+            Self::SrcCreateFailed(rs::err::AddSrcError::EdhInitFailed(_)) => "EDH-001".to_string(),
+            Self::SrcCreateFailed(rs::err::AddSrcError::SrcInitFailed(_)) => "SIN-001".to_string(),
             Self::ExecFailed(e) => e.get_api_code(),
             Self::BatchParseFailed(_, _) => "JSN-002".to_string(),
             Self::BatchExecFailed(_, e) => e.get_api_code(),

@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_fw_effect(
+    pub(in crate::api) fn internal_add_fw_effect(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -24,11 +24,11 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffectMut<'_> {
+    pub fn add_fw_effect(&mut self, type_id: ItemTypeId) -> FwEffectMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let fw_effect_uid = self
             .sol
-            .internal_create_fw_effect(self.uid, type_id.into_aid(), &mut reuse_eupdates);
+            .internal_add_fw_effect(self.uid, type_id.into_aid(), &mut reuse_eupdates);
         FwEffectMut::new(self.sol, fw_effect_uid)
     }
 }

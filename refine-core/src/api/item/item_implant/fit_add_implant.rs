@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_implant(
+    pub(in crate::api) fn internal_add_implant(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -24,11 +24,11 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_implant(&mut self, type_id: ItemTypeId) -> ImplantMut<'_> {
+    pub fn add_implant(&mut self, type_id: ItemTypeId) -> ImplantMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let implant_uid = self
             .sol
-            .internal_create_implant(self.uid, type_id.into_aid(), &mut reuse_eupdates);
+            .internal_add_implant(self.uid, type_id.into_aid(), &mut reuse_eupdates);
         ImplantMut::new(self.sol, implant_uid)
     }
 }

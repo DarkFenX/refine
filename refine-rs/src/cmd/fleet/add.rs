@@ -1,17 +1,17 @@
 use crate::cmd::{
-    inner::{CreateFleetError, ICmdFleetCreateFCtxRIds},
-    shared::CreatedFleetIdResp,
+    inner::{AddFleetError, ICmdFleetAddFCtxRIds},
+    shared::AddedFleetIdResp,
 };
 
 #[derive(Default)]
-pub struct CreateFleetCmd {
-    inner: ICmdFleetCreateFCtxRIds = ICmdFleetCreateFCtxRIds { .. },
+pub struct AddFleetCmd {
+    inner: ICmdFleetAddFCtxRIds = ICmdFleetAddFCtxRIds { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateFleetCmd {
+impl AddFleetCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -25,8 +25,8 @@ impl CreateFleetCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateFleetCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFleetIdResp, CreateFleetError> {
+impl AddFleetCmd {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedFleetIdResp, AddFleetError> {
         self.inner.execute(core_sol)
     }
 }

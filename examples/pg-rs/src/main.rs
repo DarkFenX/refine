@@ -33,16 +33,16 @@ async fn main() {
     let mut refine = Refine::new(Some(String::from("./cache/")), 2, 4);
     let edh: Box<dyn rs::EveDataHandler + Send> =
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    refine.create_src("tq", edh, true).await.unwrap();
+    refine.add_src("tq", edh, true).await.unwrap();
     // Main part
     let mut sol = refine
-        .create_sol(None, rs::CreateSolCmd::new().with_sec_zone(rs::SecZone::WSpace))
+        .add_sol(None, rs::AddSolCmd::new().with_sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
     let resps = sol
         .change(vec![
-            rs::SolCreateFleetCmd::new().into(),
-            rs::SolCreateFitCmd::new()
+            rs::SolAddFleetCmd::new().into(),
+            rs::SolAddFitCmd::new()
                 .with_fleet_id(rs::FleetIdBackref::Backref(0))
                 .into(),
         ])

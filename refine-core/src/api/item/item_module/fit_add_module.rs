@@ -9,7 +9,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_module(
+    pub(in crate::api) fn internal_add_module(
         &mut self,
         fit_uid: UFitId,
         rack: ModRack,
@@ -105,7 +105,7 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_module(
+    pub fn add_module(
         &mut self,
         rack: ModRack,
         pos_mode: AddMode,
@@ -113,7 +113,7 @@ impl<'s> FitMut<'s> {
         state: ModuleState,
     ) -> ModuleMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let module_uid = self.sol.internal_create_module(
+        let module_uid = self.sol.internal_add_module(
             self.uid,
             rack,
             pos_mode,

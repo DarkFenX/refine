@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_rig(
+    pub(in crate::api) fn internal_add_rig(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -24,11 +24,11 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_rig(&mut self, type_id: ItemTypeId) -> RigMut<'_> {
+    pub fn add_rig(&mut self, type_id: ItemTypeId) -> RigMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let rig_uid = self
             .sol
-            .internal_create_rig(self.uid, type_id.into_aid(), &mut reuse_eupdates);
+            .internal_add_rig(self.uid, type_id.into_aid(), &mut reuse_eupdates);
         RigMut::new(self.sol, rig_uid)
     }
 }

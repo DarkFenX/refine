@@ -1,17 +1,17 @@
 use crate::cmd::{
-    inner::{CreateFitError, ICmdFitCreateFCtxRIds},
-    shared::CreatedFitIdResp,
+    inner::{AddFitError, ICmdFitAddFCtxRIds},
+    shared::AddedFitIdResp,
 };
 
 #[derive(Default)]
-pub struct CreateFitCmd {
-    inner: ICmdFitCreateFCtxRIds = ICmdFitCreateFCtxRIds { .. },
+pub struct AddFitCmd {
+    inner: ICmdFitAddFCtxRIds = ICmdFitAddFCtxRIds { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateFitCmd {
+impl AddFitCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -32,8 +32,8 @@ impl CreateFitCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateFitCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedFitIdResp, CreateFitError> {
+impl AddFitCmd {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, AddFitError> {
         self.inner.execute(core_sol)
     }
 }

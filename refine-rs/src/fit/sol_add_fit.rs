@@ -1,12 +1,12 @@
 use crate::{
-    cmd::{CreateFitCmd, CreateFitError},
+    cmd::{AddFitCmd, AddFitError},
     fit::Fit,
     sol::SolarSystem,
 };
 
 impl<'r, 's> SolarSystem<'r> {
-    #[tracing::instrument(name = "fit-crt", level = "trace", skip_all)]
-    pub async fn create_fit(&'s mut self, cmd: CreateFitCmd) -> Result<Fit<'r, 's>, CreateFitError> {
+    #[tracing::instrument(name = "fit-add", level = "trace", skip_all)]
+    pub async fn add_fit(&'s mut self, cmd: AddFitCmd) -> Result<Fit<'r, 's>, AddFitError> {
         let cmd_resp = self
             .exec_standard_fallible(move |core_sol| cmd.execute(core_sol))
             .await?;

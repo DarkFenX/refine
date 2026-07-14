@@ -61,7 +61,7 @@ impl HServiceAddCmdICtx {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
         let core_type_id = rc::ItemTypeId::from_i32(self.type_id);
         let core_state = self.state.into_core();
-        let mut core_service = core_fit.create_service(core_type_id, core_state);
+        let mut core_service = core_fit.add_service(core_type_id, core_state);
         if let Some(h_effect_modes) = self.effect_modes.as_ref() {
             h_effect_modes.apply(&mut core_service);
         }

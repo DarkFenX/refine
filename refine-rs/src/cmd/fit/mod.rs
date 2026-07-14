@@ -1,10 +1,10 @@
+pub use add::AddFitCmd;
 pub use change::{
-    ChangeFitEnumCmd, ChangeFitEnumError, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeFitCmd,
-    FitCreateBoosterCmd, FitRemoveItemCmd,
+    ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
+    FitChangeFitCmd, FitRemoveItemCmd,
 };
-pub use create::CreateFitCmd;
 pub use remove::RemoveFitCmd;
 
+mod add;
 mod change;
-mod create;
 mod remove;

@@ -1,4 +1,4 @@
-pub use create::GetFitCreateRigError;
-pub(in crate::cmd) use create::{ICmdRigCreateFCtxBIds, ICmdRigCreateFCtxRIds, ICmdRigCreateICtx};
+pub use add::GetFitAddRigError;
+pub(in crate::cmd) use add::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
 
-mod create;
+mod add;

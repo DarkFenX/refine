@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_subsystem(
+    pub(in crate::api) fn internal_add_subsystem(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -24,11 +24,11 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_subsystem(&mut self, type_id: ItemTypeId) -> SubsystemMut<'_> {
+    pub fn add_subsystem(&mut self, type_id: ItemTypeId) -> SubsystemMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let subsystem_uid = self
             .sol
-            .internal_create_subsystem(self.uid, type_id.into_aid(), &mut reuse_eupdates);
+            .internal_add_subsystem(self.uid, type_id.into_aid(), &mut reuse_eupdates);
         SubsystemMut::new(self.sol, subsystem_uid)
     }
 }

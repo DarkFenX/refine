@@ -1,7 +1,7 @@
+pub use add::AddFleetCmd;
 pub use change::ChangeFleetCmd;
-pub use create::CreateFleetCmd;
 pub use remove::RemoveFleetCmd;
 
+mod add;
 mod change;
-mod create;
 mod remove;

@@ -25,7 +25,7 @@ impl SolarSystem {
         // Process fighter itself
         SolarSystem::util_add_fighter(u_data, svc, fighter_uid, reuse_eupdates);
         // Process autocharges
-        SolarSystem::create_item_autocharges(u_data, svc, rev_projs, fighter_uid, reuse_eupdates);
+        SolarSystem::add_item_autocharges(u_data, svc, rev_projs, fighter_uid, reuse_eupdates);
     }
     pub(in crate::api) fn util_remove_fighter(
         u_data: &mut UData,

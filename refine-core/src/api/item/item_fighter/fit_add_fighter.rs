@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_fighter(
+    pub(in crate::api) fn internal_add_fighter(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -33,7 +33,7 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_fighter(
+    pub fn add_fighter(
         &mut self,
         type_id: ItemTypeId,
         state: MinionState,
@@ -51,7 +51,7 @@ impl<'s> FitMut<'s> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let fighter_uid =
             self.sol
-                .internal_create_fighter(self.uid, type_id.into_aid(), state, u_physics, &mut reuse_eupdates);
+                .internal_add_fighter(self.uid, type_id.into_aid(), state, u_physics, &mut reuse_eupdates);
         FighterMut::new(self.sol, fighter_uid)
     }
 }

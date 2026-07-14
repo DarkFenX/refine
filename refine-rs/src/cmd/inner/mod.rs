@@ -1,12 +1,12 @@
-pub use fit::{CreateFitError, FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError};
+pub use fit::{AddFitError, FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError};
 pub(in crate::cmd) use fit::{
-    ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds, ICmdFitCreateFCtxBIds,
-    ICmdFitCreateFCtxRIds, ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFitRemoveICtx,
+    ICmdFitAddFCtxBIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds,
+    ICmdFitChangeICtxRIds, ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFitRemoveICtx,
 };
-pub use fleet::{ChangeFleetError, CreateFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
+pub use fleet::{AddFleetError, ChangeFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
 pub(in crate::cmd) use fleet::{
-    ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxRIds, ICmdFleetCreateFCtxBIds,
-    ICmdFleetCreateFCtxRIds, ICmdFleetRemoveFCtxBIds, ICmdFleetRemoveFCtxRIds, ICmdFleetRemoveICtx,
+    ICmdFleetAddFCtxBIds, ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds,
+    ICmdFleetChangeICtxRIds, ICmdFleetRemoveFCtxBIds, ICmdFleetRemoveFCtxRIds, ICmdFleetRemoveICtx,
 };
 pub use item::{GetItemRemoveItemError, RemoveItemError};
 pub(in crate::cmd) use item::{ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdItemRemoveICtx};
@@ -14,19 +14,20 @@ pub use item_autocharge::{ChangeAutochargeError, GetItemChangeAutochargeError};
 pub(in crate::cmd) use item_autocharge::{
     ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds, ICmdAutochargeChangeICtx,
 };
-pub use item_booster::{ChangeBoosterError, GetFitCreateBoosterError, GetItemChangeBoosterError};
+pub use item_booster::{ChangeBoosterError, GetFitAddBoosterError, GetItemChangeBoosterError};
 pub(in crate::cmd) use item_booster::{
-    ICmdBoosterChangeFCtxBIds, ICmdBoosterChangeFCtxRIds, ICmdBoosterChangeICtx, ICmdBoosterCreateFCtxBIds,
-    ICmdBoosterCreateFCtxRIds, ICmdBoosterCreateICtx,
+    ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
+    ICmdBoosterChangeFCtxRIds, ICmdBoosterChangeICtx,
 };
-pub use item_rig::GetFitCreateRigError;
-pub(in crate::cmd) use item_rig::{ICmdRigCreateFCtxBIds, ICmdRigCreateFCtxRIds, ICmdRigCreateICtx};
-pub(in crate::cmd) use sol::{ICmdSolChangeFCtx, ICmdSolCreateFCtx};
+pub use item_rig::GetFitAddRigError;
+pub(in crate::cmd) use item_rig::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
+pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;
 mod fleet;
 mod item;
 mod item_autocharge;
 mod item_booster;
+mod item_character;
 mod item_rig;
 mod sol;

@@ -4,5 +4,5 @@ pub use sol_get_item::GetItemError;
 mod item;
 mod item_change;
 mod item_remove;
-mod sol_create_item;
+mod sol_add_item;
 mod sol_get_item;

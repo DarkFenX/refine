@@ -1,4 +1,4 @@
-pub(in crate::cmd) struct ICmdSolCreateFCtx {
+pub(in crate::cmd) struct ICmdSolAddFCtx {
     pub(in crate::cmd) sec_zone: Option<rc::SecZone> = None,
     pub(in crate::cmd) default_incoming_dps: Option<rc::DpsProfile> = None,
     pub(in crate::cmd) default_spool: Option<rc::Spool> = None,
@@ -10,7 +10,7 @@ pub(in crate::cmd) struct ICmdSolCreateFCtx {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSolCreateFCtx {
+impl ICmdSolAddFCtx {
     pub(in crate::cmd) fn execute(&self, core_src: &rc::Src) -> rc::SolarSystem {
         let mut core_sol = rc::SolarSystem::new(core_src);
         if let Some(sec_zone) = self.sec_zone {

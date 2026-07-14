@@ -64,28 +64,28 @@ impl CmdResps {
     fn get_fleet_id(&self, index: usize) -> Result<rc::FleetId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::CreatedFleetId(resp) => Ok(resp.fleet_id),
+            CmdResp::AddedFleetId(resp) => Ok(resp.fleet_id),
             _ => Err(BackrefRenderError::NoFleetId(index)),
         }
     }
     fn get_fit_id(&self, index: usize) -> Result<rc::FitId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::CreatedFitId(resp) => Ok(resp.fit_id),
+            CmdResp::AddedFitId(resp) => Ok(resp.fit_id),
             _ => Err(BackrefRenderError::NoFitId(index)),
         }
     }
     fn get_item_id(&self, index: usize) -> Result<rc::ItemId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::CreatedItemIds(resp) => Ok(resp.item_id),
+            CmdResp::AddedItemIds(resp) => Ok(resp.item_id),
             _ => Err(BackrefRenderError::NoItemId(index)),
         }
     }
     fn get_charge_item_id(&self, index: usize) -> Result<rc::ItemId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::CreatedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
+            CmdResp::AddedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
             CmdResp::ChangedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
             _ => Err(BackrefRenderError::NoChargeItemId(index)),
         }

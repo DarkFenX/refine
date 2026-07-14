@@ -1,25 +1,25 @@
 pub use fit::{
-    ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeFitCmd,
-    FitCreateBoosterCmd, FitRemoveItemCmd, RemoveFitCmd,
+    AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddRigCmd, FitChangeAutochargeCmd,
+    FitChangeBoosterCmd, FitChangeFitCmd, FitRemoveItemCmd, RemoveFitCmd,
 };
-pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
+pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
-    ChangeAutochargeError, ChangeBoosterError, ChangeFleetError, CreateFitError, CreateFleetError, FitChangeFitError,
-    GetFitChangeFitError, GetFitCreateBoosterError, GetFitCreateRigError, GetFitRemoveFitError,
-    GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemRemoveItemError, RemoveItemError,
+    AddFitError, AddFleetError, ChangeAutochargeError, ChangeBoosterError, ChangeFleetError, FitChangeFitError,
+    GetFitAddBoosterError, GetFitAddRigError, GetFitChangeFitError, GetFitRemoveFitError, GetFleetChangeFleetError,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemRemoveItemError,
+    RemoveItemError,
 };
 pub use item::{
-    ChangeItemEnumCmd, ChangeItemEnumError, CreateItemEnumCmd, CreateItemEnumError, ItemChangeAutochargeCmd,
-    ItemChangeBoosterCmd, ItemCreateBoosterCmd, ItemCreateRigCmd, RemoveItemCmd,
+    AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddRigCmd,
+    ItemChangeAutochargeCmd, ItemChangeBoosterCmd, RemoveItemCmd,
 };
 pub use shared::{
-    BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
-    CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,
+    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps,
+    FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
-    ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeFitCmd,
-    SolChangeFleetCmd, SolChangeSolCmd, SolCreateBoosterCmd, SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd,
+    AddSolCmd, ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd,
+    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd,
     SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 

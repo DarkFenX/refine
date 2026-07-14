@@ -1,21 +1,21 @@
 use crate::cmd::{
     inner::{
-        GetFitCreateBoosterError, GetFitCreateRigError, ICmdBoosterCreateFCtxRIds, ICmdBoosterCreateICtx,
-        ICmdRigCreateFCtxRIds, ICmdRigCreateICtx,
+        GetFitAddBoosterError, GetFitAddRigError, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdRigAddFCtxRIds,
+        ICmdRigAddICtx,
     },
-    shared::CreatedItemIdsResp,
+    shared::AddedItemIdsResp,
 };
 
-pub enum CreateItemEnumCmd {
-    Booster(ItemCreateBoosterCmd),
-    Rig(ItemCreateRigCmd),
+pub enum AddItemEnumCmd {
+    Booster(ItemAddBoosterCmd),
+    Rig(ItemAddRigCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateItemEnumCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CreatedItemIdsResp, CreateItemEnumError> {
+impl AddItemEnumCmd {
+    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, AddItemEnumError> {
         match self {
             // Item - booster
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
@@ -26,25 +26,25 @@ impl CreateItemEnumCmd {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum CreateItemEnumError {
-    #[error("failed to create booster: {0}")]
-    BoosterFailed(#[from] GetFitCreateBoosterError),
-    #[error("failed to create rig: {0}")]
-    RigFailed(#[from] GetFitCreateRigError),
+pub enum AddItemEnumError {
+    #[error("failed to add booster: {0}")]
+    BoosterFailed(#[from] GetFitAddBoosterError),
+    #[error("failed to add rig: {0}")]
+    RigFailed(#[from] GetFitAddRigError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sub-commands - item - booster
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct ItemCreateBoosterCmd {
-    inner: ICmdBoosterCreateFCtxRIds,
+pub struct ItemAddBoosterCmd {
+    inner: ICmdBoosterAddFCtxRIds,
 }
-impl ItemCreateBoosterCmd {
+impl ItemAddBoosterCmd {
     pub fn new(fit_id: rc::FitId, type_id: rc::ItemTypeId) -> Self {
         Self {
-            inner: ICmdBoosterCreateFCtxRIds {
+            inner: ICmdBoosterAddFCtxRIds {
                 fit_id,
-                ictx_cmd: ICmdBoosterCreateICtx { type_id, .. },
+                ictx_cmd: ICmdBoosterAddICtx { type_id, .. },
             },
         }
     }
@@ -63,8 +63,8 @@ impl ItemCreateBoosterCmd {
         self
     }
 }
-impl From<ItemCreateBoosterCmd> for CreateItemEnumCmd {
-    fn from(sub_cmd: ItemCreateBoosterCmd) -> Self {
+impl From<ItemAddBoosterCmd> for AddItemEnumCmd {
+    fn from(sub_cmd: ItemAddBoosterCmd) -> Self {
         Self::Booster(sub_cmd)
     }
 }
@@ -72,15 +72,15 @@ impl From<ItemCreateBoosterCmd> for CreateItemEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Sub-commands - item - rig
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub struct ItemCreateRigCmd {
-    inner: ICmdRigCreateFCtxRIds,
+pub struct ItemAddRigCmd {
+    inner: ICmdRigAddFCtxRIds,
 }
-impl ItemCreateRigCmd {
+impl ItemAddRigCmd {
     pub fn new(fit_id: rc::FitId, type_id: rc::ItemTypeId) -> Self {
         Self {
-            inner: ICmdRigCreateFCtxRIds {
+            inner: ICmdRigAddFCtxRIds {
                 fit_id,
-                ictx_cmd: ICmdRigCreateICtx { type_id, .. },
+                ictx_cmd: ICmdRigAddICtx { type_id, .. },
             },
         }
     }
@@ -94,8 +94,8 @@ impl ItemCreateRigCmd {
         self
     }
 }
-impl From<ItemCreateRigCmd> for CreateItemEnumCmd {
-    fn from(sub_cmd: ItemCreateRigCmd) -> Self {
+impl From<ItemAddRigCmd> for AddItemEnumCmd {
+    fn from(sub_cmd: ItemAddRigCmd) -> Self {
         Self::Rig(sub_cmd)
     }
 }

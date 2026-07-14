@@ -31,14 +31,14 @@ impl SolarSystem {
             };
             match item_kind {
                 DetectedItemKind::Booster => {
-                    let booster_uid = self.internal_create_booster(fit_uid, *type_aid, reuse_eupdates);
+                    let booster_uid = self.internal_add_booster(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_booster(booster_uid, reuse_eupdates);
                 }
                 DetectedItemKind::Drone => {
-                    let drone_uid = self.internal_create_drone(
+                    let drone_uid = self.internal_add_drone(
                         fit_uid,
                         *type_aid,
                         MinionState::InBay,
@@ -53,21 +53,21 @@ impl SolarSystem {
                 }
                 DetectedItemKind::Fighter => {
                     let fighter_uid =
-                        self.internal_create_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics, reuse_eupdates);
+                        self.internal_add_fighter(fit_uid, *type_aid, MinionState::InBay, u_physics, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_fighter(fighter_uid, reuse_eupdates);
                 }
                 DetectedItemKind::Implant => {
-                    let implant_uid = self.internal_create_implant(fit_uid, *type_aid, reuse_eupdates);
+                    let implant_uid = self.internal_add_implant(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_implant(implant_uid, reuse_eupdates);
                 }
                 DetectedItemKind::ModuleHigh => {
-                    let module_uid = self.internal_create_module(
+                    let module_uid = self.internal_add_module(
                         fit_uid,
                         ModRack::High,
                         AddMode::Equip,
@@ -83,7 +83,7 @@ impl SolarSystem {
                     self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
                 }
                 DetectedItemKind::ModuleMid => {
-                    let module_uid = self.internal_create_module(
+                    let module_uid = self.internal_add_module(
                         fit_uid,
                         ModRack::Mid,
                         AddMode::Equip,
@@ -99,7 +99,7 @@ impl SolarSystem {
                     self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
                 }
                 DetectedItemKind::ModuleLow => {
-                    let module_uid = self.internal_create_module(
+                    let module_uid = self.internal_add_module(
                         fit_uid,
                         ModRack::Low,
                         AddMode::Equip,
@@ -129,7 +129,7 @@ impl SolarSystem {
                     }
                 }
                 DetectedItemKind::Rig => {
-                    let rig_uid = self.internal_create_rig(fit_uid, *type_aid, reuse_eupdates);
+                    let rig_uid = self.internal_add_rig(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
@@ -137,14 +137,14 @@ impl SolarSystem {
                 }
                 DetectedItemKind::Service => {
                     let service_uid =
-                        self.internal_create_service(fit_uid, *type_aid, ServiceState::Online, reuse_eupdates);
+                        self.internal_add_service(fit_uid, *type_aid, ServiceState::Online, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_service(service_uid, reuse_eupdates);
                 }
                 DetectedItemKind::Subsystem => {
-                    let subsystem_uid = self.internal_create_subsystem(fit_uid, *type_aid, reuse_eupdates);
+                    let subsystem_uid = self.internal_add_subsystem(fit_uid, *type_aid, reuse_eupdates);
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }

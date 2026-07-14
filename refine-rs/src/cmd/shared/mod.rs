@@ -1,7 +1,7 @@
 pub use backrefs::{FitIdBackref, FleetIdBackref, ItemIdBackref};
 pub(in crate::cmd) use effect_modes::EffectModes;
 pub use resp::{
-    BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp,
+    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps,
 };
 pub(in crate::cmd) use side_effects::SideEffects;
 

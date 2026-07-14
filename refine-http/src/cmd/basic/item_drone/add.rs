@@ -90,7 +90,7 @@ impl HDroneAddCmdICtxRIds {
         fit_id: &rc::FitId,
     ) -> Result<HCreatedItemIdsResp, HExecError> {
         let mut core_fit = get_primary_fit(core_sol, fit_id)?;
-        let mut core_drone = core_fit.create_drone(
+        let mut core_drone = core_fit.add_drone(
             rc::ItemTypeId::from_i32(self.shared.type_id),
             self.shared.state.into_core(),
             self.shared.coordinates.map(|v| v.into_core()),

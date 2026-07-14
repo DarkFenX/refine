@@ -36,7 +36,7 @@ impl HFleetCreateCmdFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl HFleetCreateCmdFCtxRIds {
     pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<HCreatedFleetIdResp, HExecError> {
-        let mut core_fleet = core_sol.create_fleet();
+        let mut core_fleet = core_sol.add_fleet();
         for fit_id in &self.fit_ids {
             core_fleet.add_fit(fit_id).map_err(|error| match error {
                 rc::err::FleetAddFitError::FitNotFound(e) => HExecError::FitNotFoundSecondary(e),

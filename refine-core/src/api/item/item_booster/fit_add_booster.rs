@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_booster(
+    pub(in crate::api) fn internal_add_booster(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -24,11 +24,11 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
+    pub fn add_booster(&mut self, type_id: ItemTypeId) -> BoosterMut<'_> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let booster_uid = self
             .sol
-            .internal_create_booster(self.uid, type_id.into_aid(), &mut reuse_eupdates);
+            .internal_add_booster(self.uid, type_id.into_aid(), &mut reuse_eupdates);
         BoosterMut::new(self.sol, booster_uid)
     }
 }

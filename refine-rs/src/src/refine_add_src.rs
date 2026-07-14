@@ -6,13 +6,13 @@ use crate::{
 };
 
 impl Refine {
-    #[tracing::instrument(name = "src-crt", level = "trace", skip_all)]
-    pub async fn create_src<A>(
+    #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
+    pub async fn add_src<A>(
         &self,
         alias: A,
         ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
         make_default: bool,
-    ) -> Result<Src<'_>, CreateSrcError>
+    ) -> Result<Src<'_>, AddSrcError>
     where
         A: Into<SrcAlias>,
     {
@@ -20,7 +20,7 @@ impl Refine {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Disallow creating of sources with the same name until this one is created/fails
         if !self.check_alias_availability(&alias).await {
-            return Err(CreateSrcError::SrcAliasNotAvailable(alias));
+            return Err(AddSrcError::SrcAliasNotAvailable(alias));
         }
         self.lock_alias(alias.clone()).await;
         // Create source in a heavy threadpool
@@ -67,7 +67,7 @@ impl Refine {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum CreateSrcError {
+pub enum AddSrcError {
     #[error("alias \"{0}\" already exists")]
     SrcAliasNotAvailable(SrcAlias),
     #[error("EVE data handler initialization failed: {0}")]
@@ -83,7 +83,7 @@ fn create_core_src(
     alias: &SrcAlias,
     ed_handler: Box<dyn rc::ed::EveDataHandler>,
     cache_folder: Option<String>,
-) -> Result<rc::Src, CreateSrcError> {
+) -> Result<rc::Src, AddSrcError> {
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
         Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias.into()))),
         None => None,
@@ -97,7 +97,7 @@ fn create_core_src(
         }
     );
     let core_src =
-        rc::Src::new(ed_handler.as_ref(), adc.as_mut()).map_err(|e| CreateSrcError::SrcInitFailed(e.to_string()))?;
+        rc::Src::new(ed_handler.as_ref(), adc.as_mut()).map_err(|e| AddSrcError::SrcInitFailed(e.to_string()))?;
 
     log_reason(&core_src);
     log_warnings(&core_src);

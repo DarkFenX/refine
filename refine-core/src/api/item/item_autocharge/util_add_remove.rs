@@ -13,7 +13,7 @@ struct AutochargeData {
 }
 
 impl SolarSystem {
-    pub(in crate::api) fn create_item_autocharges(
+    pub(in crate::api) fn add_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,

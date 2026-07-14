@@ -1,14 +1,14 @@
-use crate::cmd::inner::ICmdSolCreateFCtx;
+use crate::cmd::inner::ICmdSolAddFCtx;
 
 #[derive(Default)]
-pub struct CreateSolCmd {
-    inner: ICmdSolCreateFCtx = ICmdSolCreateFCtx { .. },
+pub struct AddSolCmd {
+    inner: ICmdSolAddFCtx = ICmdSolAddFCtx { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateSolCmd {
+impl AddSolCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -41,7 +41,7 @@ impl CreateSolCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CreateSolCmd {
+impl AddSolCmd {
     pub(crate) fn execute(&self, core_src: &rc::Src) -> rc::SolarSystem {
         self.inner.execute(core_src)
     }

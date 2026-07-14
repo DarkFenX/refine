@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_create_drone(
+    pub(in crate::api) fn internal_add_drone(
         &mut self,
         fit_uid: UFitId,
         type_aid: AItemId,
@@ -35,7 +35,7 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn create_drone(
+    pub fn add_drone(
         &mut self,
         type_id: ItemTypeId,
         state: MinionState,
@@ -51,7 +51,7 @@ impl<'s> FitMut<'s> {
             u_physics.speed = movement.speed;
         }
         let mut reuse_eupdates = UEffectUpdates::new();
-        let drone_uid = self.sol.internal_create_drone(
+        let drone_uid = self.sol.internal_add_drone(
             self.uid,
             type_id.into_aid(),
             state,
