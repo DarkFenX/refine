@@ -2,8 +2,8 @@ use crate::cmd::shared::{BackrefRenderError, ChangedItemIdsResp, CmdResps, Effec
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdBoosterChangeFCtxBIds {
-    item_id: ItemIdBackref,
-    ictx_cmd: ICmdBoosterChangeICtx,
+    pub(in crate::cmd) item_id: ItemIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdBoosterChangeICtx = ICmdBoosterChangeICtx { .. },
 }
 pub(in crate::cmd) struct ICmdBoosterChangeFCtxRIds {
     item_id: rc::ItemId,
@@ -12,10 +12,10 @@ pub(in crate::cmd) struct ICmdBoosterChangeFCtxRIds {
 
 // Commands with incomplete context
 pub(in crate::cmd) struct ICmdBoosterChangeICtx {
-    type_id: Option<rc::ItemTypeId>,
-    state: Option<bool>,
-    side_effects: SideEffects,
-    effect_modes: EffectModes,
+    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) state: Option<bool> = None,
+    pub(in crate::cmd) side_effects: SideEffects = SideEffects::new(),
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ impl ICmdBoosterChangeICtx {
         &self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ChangeBoosterError> {
-        let mut core_booster = core_item.dc_booster()?;
+        let core_booster = core_item.dc_booster()?;
         if let Some(type_id) = self.type_id {
             core_booster.set_type_id(type_id);
         }

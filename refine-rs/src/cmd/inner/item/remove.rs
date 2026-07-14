@@ -3,7 +3,7 @@ use crate::cmd::{BackrefRenderError, CmdResps, ItemIdBackref};
 // Commands with full context
 pub(in crate::cmd) struct ICmdItemRemoveFCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
-    pub(in crate::cmd) ictx_cmd: ICmdItemRemoveICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
 }
 pub(crate) struct ICmdItemRemoveFCtxRIds {
     item_id: rc::ItemId,
@@ -11,9 +11,8 @@ pub(crate) struct ICmdItemRemoveFCtxRIds {
 }
 
 // Commands with incomplete context
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdItemRemoveICtx {
-    pub(in crate::cmd) rm_mode: Option<rc::RmMode>,
+    pub(in crate::cmd) rm_mode: Option<rc::RmMode> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

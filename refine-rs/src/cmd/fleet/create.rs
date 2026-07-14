@@ -5,7 +5,7 @@ use crate::cmd::{
 
 #[derive(Default)]
 pub struct CreateFleetCmd {
-    inner: ICmdFleetCreateFCtxRIds,
+    inner: ICmdFleetCreateFCtxRIds = ICmdFleetCreateFCtxRIds { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

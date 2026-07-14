@@ -2,7 +2,7 @@ use crate::cmd::inner::{ICmdItemRemoveICtx, RemoveItemError};
 
 #[derive(Default)]
 pub struct RemoveItemCmd {
-    inner: ICmdItemRemoveICtx,
+    inner: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

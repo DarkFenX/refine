@@ -30,7 +30,7 @@ pub enum ChangeItemEnumError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct ItemChangeAutochargeCmd {
-    inner: ICmdAutochargeChangeICtx,
+    inner: ICmdAutochargeChangeICtx = ICmdAutochargeChangeICtx { .. },
 }
 impl ItemChangeAutochargeCmd {
     pub fn new() -> Self {

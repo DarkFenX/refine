@@ -1,20 +1,17 @@
 use crate::cmd::{BackrefRenderError, CmdResps, CreatedFitIdResp, FleetIdBackref};
 
 // Commands with full context
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdFitCreateFCtxBIds {
-    pub(in crate::cmd) shared: ICmdFitCreateShared,
-    pub(in crate::cmd) fleet_id: Option<FleetIdBackref>,
+    pub(in crate::cmd) shared: ICmdFitCreateShared = ICmdFitCreateShared { .. },
+    pub(in crate::cmd) fleet_id: Option<FleetIdBackref> = None,
 }
-#[derive(Default)]
 pub(crate) struct ICmdFitCreateFCtxRIds {
-    pub(in crate::cmd) shared: ICmdFitCreateShared,
-    pub(in crate::cmd) fleet_id: Option<rc::FleetId>,
+    pub(in crate::cmd) shared: ICmdFitCreateShared = ICmdFitCreateShared { .. },
+    pub(in crate::cmd) fleet_id: Option<rc::FleetId> = None,
 }
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdFitCreateShared {
-    pub(in crate::cmd) sec_status: Option<rc::FitSecStatus>,
-    pub(in crate::cmd) rah_incoming_dps: Option<rc::DpsProfile>,
+    pub(in crate::cmd) sec_status: Option<rc::FitSecStatus> = None,
+    pub(in crate::cmd) rah_incoming_dps: Option<rc::DpsProfile> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

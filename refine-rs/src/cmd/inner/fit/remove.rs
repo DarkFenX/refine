@@ -3,7 +3,7 @@ use crate::cmd::{BackrefRenderError, CmdResps, FitIdBackref};
 // Commands with full context
 pub(in crate::cmd) struct ICmdFitRemoveFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
-    pub(in crate::cmd) ictx_cmd: ICmdFitRemoveICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdFitRemoveICtx = ICmdFitRemoveICtx,
 }
 pub(crate) struct ICmdFitRemoveFCtxRIds {
     fit_id: rc::FitId,
@@ -11,7 +11,6 @@ pub(crate) struct ICmdFitRemoveFCtxRIds {
 }
 
 // Commands with incomplete context
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdFitRemoveICtx;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

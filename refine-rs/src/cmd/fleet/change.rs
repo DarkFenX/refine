@@ -2,7 +2,7 @@ use crate::cmd::inner::{ChangeFleetError, ICmdFleetChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ChangeFleetCmd {
-    inner: ICmdFleetChangeICtxRIds,
+    inner: ICmdFleetChangeICtxRIds = ICmdFleetChangeICtxRIds { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,8 +1,8 @@
 use crate::cmd::{
     inner::{
         FitChangeFitError, GetItemChangeAutochargeError, GetItemRemoveItemError, ICmdAutochargeChangeFCtxBIds,
-        ICmdAutochargeChangeFCtxRIds, ICmdAutochargeChangeICtx, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds,
-        ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdItemRemoveICtx, ICmdRigCreateICtx,
+        ICmdAutochargeChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxBIds,
+        ICmdItemRemoveFCtxRIds, ICmdRigCreateICtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref, ItemIdBackref},
 };
@@ -83,7 +83,7 @@ pub enum ChangeFitEnumError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct FitChangeFitCmd {
-    inner: ICmdFitChangeICtxBIds,
+    inner: ICmdFitChangeICtxBIds = ICmdFitChangeICtxBIds { .. },
 }
 impl FitChangeFitCmd {
     pub fn new() -> Self {
@@ -117,10 +117,7 @@ pub struct FitRemoveItemCmd {
 impl FitRemoveItemCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
-            inner: ICmdItemRemoveFCtxBIds {
-                item_id,
-                ictx_cmd: ICmdItemRemoveICtx::default(),
-            },
+            inner: ICmdItemRemoveFCtxBIds { item_id, .. },
         }
     }
     pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
@@ -143,10 +140,7 @@ pub struct FitChangeAutochargeCmd {
 impl FitChangeAutochargeCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
-            inner: ICmdAutochargeChangeFCtxBIds {
-                item_id,
-                ictx_cmd: ICmdAutochargeChangeICtx::default(),
-            },
+            inner: ICmdAutochargeChangeFCtxBIds { item_id, .. },
         }
     }
     pub fn with_state(mut self, state: bool) -> Self {

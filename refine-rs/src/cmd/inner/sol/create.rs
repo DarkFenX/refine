@@ -1,11 +1,10 @@
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdSolCreateFCtx {
-    pub(in crate::cmd) sec_zone: Option<rc::SecZone>,
-    pub(in crate::cmd) default_incoming_dps: Option<rc::DpsProfile>,
-    pub(in crate::cmd) default_spool: Option<rc::Spool>,
-    pub(in crate::cmd) default_npc_prop: Option<rc::NpcProp>,
-    pub(in crate::cmd) default_optional_reloads: Option<rc::OptionalReload>,
-    pub(in crate::cmd) default_rearm_minions: Option<rc::RearmMinion>,
+    pub(in crate::cmd) sec_zone: Option<rc::SecZone> = None,
+    pub(in crate::cmd) default_incoming_dps: Option<rc::DpsProfile> = None,
+    pub(in crate::cmd) default_spool: Option<rc::Spool> = None,
+    pub(in crate::cmd) default_npc_prop: Option<rc::NpcProp> = None,
+    pub(in crate::cmd) default_optional_reloads: Option<rc::OptionalReload> = None,
+    pub(in crate::cmd) default_rearm_minions: Option<rc::RearmMinion> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

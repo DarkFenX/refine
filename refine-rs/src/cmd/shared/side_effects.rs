@@ -1,3 +1,4 @@
+#[derive(Default)]
 pub(in crate::cmd) struct SideEffects {
     data: Vec<(rc::EffectId, bool)>,
 }

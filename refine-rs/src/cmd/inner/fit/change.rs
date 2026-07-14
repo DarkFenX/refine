@@ -6,7 +6,7 @@ use crate::{
 // Commands with full context
 pub(in crate::cmd) struct ICmdFitChangeFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
-    pub(in crate::cmd) ictx_cmd: ICmdFitChangeICtxBIds,
+    pub(in crate::cmd) ictx_cmd: ICmdFitChangeICtxBIds = ICmdFitChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdFitChangeFCtxRIds {
     fit_id: rc::FitId,
@@ -14,19 +14,17 @@ pub(crate) struct ICmdFitChangeFCtxRIds {
 }
 
 // Commands with incomplete context
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdFitChangeICtxBIds {
-    pub(in crate::cmd) shared: CmdFitChangeShared,
-    pub(in crate::cmd) fleet_id: TriStateField<FleetIdBackref>,
+    pub(in crate::cmd) shared: CmdFitChangeShared = CmdFitChangeShared { .. },
+    pub(in crate::cmd) fleet_id: TriStateField<FleetIdBackref> = TriStateField::Absent,
 }
 pub(crate) struct ICmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<rc::FleetId>,
 }
-#[derive(Default)]
 pub(in crate::cmd) struct CmdFitChangeShared {
-    pub(in crate::cmd) sec_status: Option<rc::FitSecStatus>,
-    pub(in crate::cmd) rah_incoming_dps: TriStateField<rc::DpsProfile>,
+    pub(in crate::cmd) sec_status: Option<rc::FitSecStatus> = None,
+    pub(in crate::cmd) rah_incoming_dps: TriStateField<rc::DpsProfile> = TriStateField::Absent,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

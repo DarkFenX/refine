@@ -2,8 +2,8 @@ use crate::cmd::shared::{BackrefRenderError, CmdResps, CreatedItemIdsResp, Effec
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdBoosterCreateFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: ICmdBoosterCreateICtx,
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdBoosterCreateICtx,
 }
 pub(in crate::cmd) struct ICmdBoosterCreateFCtxRIds {
     fit_id: rc::FitId,
@@ -12,10 +12,10 @@ pub(in crate::cmd) struct ICmdBoosterCreateFCtxRIds {
 
 // Commands with incomplete context
 pub(in crate::cmd) struct ICmdBoosterCreateICtx {
-    type_id: rc::ItemTypeId,
-    state: Option<bool>,
-    side_effects: SideEffects,
-    effect_modes: EffectModes,
+    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) state: Option<bool> = None,
+    pub(in crate::cmd) side_effects: SideEffects = SideEffects::new(),
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

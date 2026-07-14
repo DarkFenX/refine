@@ -3,7 +3,7 @@ use crate::cmd::shared::{BackrefRenderError, ChangedItemIdsResp, CmdResps, Effec
 // Commands with full context
 pub(in crate::cmd) struct ICmdAutochargeChangeFCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
-    pub(in crate::cmd) ictx_cmd: ICmdAutochargeChangeICtx,
+    pub(in crate::cmd) ictx_cmd: ICmdAutochargeChangeICtx = ICmdAutochargeChangeICtx { .. },
 }
 pub(crate) struct ICmdAutochargeChangeFCtxRIds {
     item_id: rc::ItemId,
@@ -11,10 +11,9 @@ pub(crate) struct ICmdAutochargeChangeFCtxRIds {
 }
 
 // Commands with incomplete context
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdAutochargeChangeICtx {
-    pub(in crate::cmd) state: Option<bool>,
-    pub(in crate::cmd) effect_modes: EffectModes,
+    pub(in crate::cmd) state: Option<bool> = None,
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

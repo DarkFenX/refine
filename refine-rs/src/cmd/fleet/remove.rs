@@ -2,7 +2,7 @@ use crate::cmd::inner::ICmdFleetRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFleetCmd {
-    inner: ICmdFleetRemoveICtx,
+    inner: ICmdFleetRemoveICtx = ICmdFleetRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

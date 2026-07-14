@@ -3,7 +3,7 @@ use crate::cmd::{BackrefRenderError, CmdResps, FitIdBackref, FleetIdBackref};
 // Commands with full context
 pub(in crate::cmd) struct ICmdFleetChangeFCtxBIds {
     pub(in crate::cmd) fleet_id: FleetIdBackref,
-    pub(in crate::cmd) ictx_cmd: ICmdFleetChangeICtxBIds,
+    pub(in crate::cmd) ictx_cmd: ICmdFleetChangeICtxBIds = ICmdFleetChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdFleetChangeFCtxRIds {
     fleet_id: rc::FleetId,
@@ -11,15 +11,13 @@ pub(crate) struct ICmdFleetChangeFCtxRIds {
 }
 
 // Commands with incomplete context
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdFleetChangeICtxBIds {
-    pub(in crate::cmd) add_fit_ids: Vec<FitIdBackref>,
-    pub(in crate::cmd) rm_fit_ids: Vec<FitIdBackref>,
+    pub(in crate::cmd) add_fit_ids: Vec<FitIdBackref> = Vec::new(),
+    pub(in crate::cmd) rm_fit_ids: Vec<FitIdBackref> = Vec::new(),
 }
-#[derive(Default)]
 pub(in crate::cmd) struct ICmdFleetChangeICtxRIds {
-    pub(in crate::cmd) add_fit_ids: Vec<rc::FitId>,
-    pub(in crate::cmd) rm_fit_ids: Vec<rc::FitId>,
+    pub(in crate::cmd) add_fit_ids: Vec<rc::FitId> = Vec::new(),
+    pub(in crate::cmd) rm_fit_ids: Vec<rc::FitId> = Vec::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -2,7 +2,7 @@ use crate::cmd::inner::ICmdSolCreateFCtx;
 
 #[derive(Default)]
 pub struct CreateSolCmd {
-    inner: ICmdSolCreateFCtx,
+    inner: ICmdSolCreateFCtx = ICmdSolCreateFCtx { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

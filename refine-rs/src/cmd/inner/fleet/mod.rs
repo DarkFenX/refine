@@ -1,7 +1,5 @@
 pub use change::{ChangeFleetError, GetFleetChangeFleetError};
-pub(in crate::cmd) use change::{
-    ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxBIds, ICmdFleetChangeICtxRIds,
-};
+pub(in crate::cmd) use change::{ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxRIds};
 pub use create::CreateFleetError;
 pub(in crate::cmd) use create::{ICmdFleetCreateFCtxBIds, ICmdFleetCreateFCtxRIds};
 pub use remove::GetFleetRemoveFleetError;

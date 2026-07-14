@@ -5,7 +5,7 @@ use crate::cmd::{
 
 #[derive(Default)]
 pub struct CreateFitCmd {
-    inner: ICmdFitCreateFCtxRIds,
+    inner: ICmdFitCreateFCtxRIds = ICmdFitCreateFCtxRIds { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

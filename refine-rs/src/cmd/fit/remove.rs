@@ -2,7 +2,7 @@ use crate::cmd::inner::ICmdFitRemoveICtx;
 
 #[derive(Default)]
 pub struct RemoveFitCmd {
-    inner: ICmdFitRemoveICtx,
+    inner: ICmdFitRemoveICtx = ICmdFitRemoveICtx,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
