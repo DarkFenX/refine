@@ -1,5 +1,5 @@
-pub use change::{ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd};
-pub use create::{CreateItemEnumCmd, CreateItemEnumError, ItemCreateRigCmd};
+pub use change::{ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd, ItemChangeBoosterCmd};
+pub use create::{CreateItemEnumCmd, CreateItemEnumError, ItemCreateBoosterCmd, ItemCreateRigCmd};
 pub use remove::RemoveItemCmd;
 
 mod change;

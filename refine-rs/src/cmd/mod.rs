@@ -1,6 +1,6 @@
 pub use fit::{
-    ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeAutochargeCmd, FitChangeFitCmd, FitRemoveItemCmd,
-    RemoveFitCmd,
+    ChangeFitEnumCmd, ChangeFitEnumError, CreateFitCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeFitCmd,
+    FitCreateBoosterCmd, FitRemoveItemCmd, RemoveFitCmd,
 };
 pub use fleet::{ChangeFleetCmd, CreateFleetCmd, RemoveFleetCmd};
 pub use inner::{
@@ -11,15 +11,16 @@ pub use inner::{
 };
 pub use item::{
     ChangeItemEnumCmd, ChangeItemEnumError, CreateItemEnumCmd, CreateItemEnumError, ItemChangeAutochargeCmd,
-    ItemCreateRigCmd, RemoveItemCmd,
+    ItemChangeBoosterCmd, ItemCreateBoosterCmd, ItemCreateRigCmd, RemoveItemCmd,
 };
 pub use shared::{
     BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps, CreatedFitIdResp, CreatedFleetIdResp,
     CreatedItemIdsResp, FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
-    ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeAutochargeCmd, SolChangeFitCmd, SolChangeFleetCmd,
-    SolChangeSolCmd, SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    ChangeSolEnumCmd, ChangeSolEnumError, CreateSolCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeFitCmd,
+    SolChangeFleetCmd, SolChangeSolCmd, SolCreateBoosterCmd, SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd,
+    SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 
 mod fit;

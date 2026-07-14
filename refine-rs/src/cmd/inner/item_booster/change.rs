@@ -5,7 +5,7 @@ pub(in crate::cmd) struct ICmdBoosterChangeFCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
     pub(in crate::cmd) ictx_cmd: ICmdBoosterChangeICtx = ICmdBoosterChangeICtx { .. },
 }
-pub(in crate::cmd) struct ICmdBoosterChangeFCtxRIds {
+pub(crate) struct ICmdBoosterChangeFCtxRIds {
     item_id: rc::ItemId,
     ictx_cmd: ICmdBoosterChangeICtx,
 }

@@ -5,13 +5,13 @@ pub(in crate::cmd) struct ICmdBoosterCreateFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
     pub(in crate::cmd) ictx_cmd: ICmdBoosterCreateICtx,
 }
-pub(in crate::cmd) struct ICmdBoosterCreateFCtxRIds {
-    fit_id: rc::FitId,
-    ictx_cmd: ICmdBoosterCreateICtx,
+pub(crate) struct ICmdBoosterCreateFCtxRIds {
+    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) ictx_cmd: ICmdBoosterCreateICtx,
 }
 
 // Commands with incomplete context
-pub(in crate::cmd) struct ICmdBoosterCreateICtx {
+pub(crate) struct ICmdBoosterCreateICtx {
     pub(in crate::cmd) type_id: rc::ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) side_effects: SideEffects = SideEffects::new(),

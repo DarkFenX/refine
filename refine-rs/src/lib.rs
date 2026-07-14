@@ -3,10 +3,11 @@
 pub use cmd::{
     ChangeFitEnumCmd, ChangeItemEnumCmd, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp, CmdResps, CreateFitCmd,
     CreateFleetCmd, CreateItemEnumCmd, CreateSolCmd, CreatedFitIdResp, CreatedFleetIdResp, CreatedItemIdsResp,
-    FitChangeAutochargeCmd, FitChangeFitCmd, FitIdBackref, FitRemoveItemCmd, FleetIdBackref, ItemChangeAutochargeCmd,
-    ItemCreateRigCmd, ItemIdBackref, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolChangeAutochargeCmd,
-    SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolCreateFitCmd, SolCreateFleetCmd, SolRemoveFitCmd,
-    SolRemoveFleetCmd, SolRemoveItemCmd,
+    FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeFitCmd, FitCreateBoosterCmd, FitIdBackref, FitRemoveItemCmd,
+    FleetIdBackref, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemCreateBoosterCmd, ItemCreateRigCmd,
+    ItemIdBackref, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
+    SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolCreateBoosterCmd, SolCreateFitCmd, SolCreateFleetCmd,
+    SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;

@@ -16,8 +16,8 @@ pub(in crate::cmd) use item_autocharge::{
 };
 pub use item_booster::{ChangeBoosterError, GetFitCreateBoosterError, GetItemChangeBoosterError};
 pub(in crate::cmd) use item_booster::{
-    ICmdBoosterChangeFCtxBIds, ICmdBoosterChangeFCtxRIds, ICmdBoosterCreateFCtxBIds, ICmdBoosterCreateFCtxRIds,
-    ICmdBoosterCreateICtx,
+    ICmdBoosterChangeFCtxBIds, ICmdBoosterChangeFCtxRIds, ICmdBoosterChangeICtx, ICmdBoosterCreateFCtxBIds,
+    ICmdBoosterCreateFCtxRIds, ICmdBoosterCreateICtx,
 };
 pub use item_rig::GetFitCreateRigError;
 pub(in crate::cmd) use item_rig::{ICmdRigCreateFCtxBIds, ICmdRigCreateFCtxRIds, ICmdRigCreateICtx};
