@@ -1,7 +1,6 @@
 use crate::cmd::{
-    ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
-    inner::{ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError},
-    shared::ChangedItemIdsResp,
+    ItemChangeAutochargeCmd, ItemChangeAutochargeError, ItemChangeBoosterCmd, ItemChangeBoosterError,
+    ItemChangeCharacterCmd, ItemChangeCharacterError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {

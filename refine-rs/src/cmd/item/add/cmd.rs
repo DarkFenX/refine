@@ -1,7 +1,6 @@
 use crate::cmd::{
-    ItemAddBoosterCmd, ItemAddRigCmd, ItemSetCharacterCmd,
-    inner::{GetFitAddBoosterError, GetFitAddRigError, GetFitSetCharacterError, ICmdRigAddFCtxRIds, ICmdRigAddICtx},
-    shared::AddedItemIdsResp,
+    GetFitAddBoosterError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd, ItemAddRigCmd,
+    ItemSetCharacterCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
