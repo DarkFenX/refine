@@ -53,9 +53,10 @@ impl ICmdCharacterChangeFItemCtxBIds {
 impl ICmdCharacterChangeFFitCtxRIds {
     fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, GetFitChangeCharacterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        let mut core_character = core_fit
-            .get_character_mut()
-            .ok_or_else(|| GetFitChangeCharacterError::FitCharacterNotFound(core_fit.get_fit_id()))?;
+        let mut core_character = match core_fit.get_character_mut() {
+            Some(core_character) => core_character,
+            None => return Err(GetFitChangeCharacterError::FitCharacterNotFound(core_fit.get_fit_id())),
+        };
         Ok(self.ictx_cmd.execute(&mut core_character))
     }
 }
@@ -83,9 +84,10 @@ pub enum GetItemChangeCharacterError {
 
 impl ICmdCharacterChangeICtx {
     fn execute_via_fit(&self, core_fit: &mut rc::FitMut) -> Result<ChangedItemIdsResp, FitChangeCharacterError> {
-        let mut core_character = core_fit
-            .get_character_mut()
-            .ok_or_else(|| FitChangeCharacterError::FitCharacterNotFound(core_fit.get_fit_id()))?;
+        let mut core_character = match core_fit.get_character_mut() {
+            Some(core_character) => core_character,
+            None => return Err(FitChangeCharacterError::FitCharacterNotFound(core_fit.get_fit_id())),
+        };
         Ok(self.execute(&mut core_character))
     }
     fn execute_via_item(&self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeCharacterError> {
