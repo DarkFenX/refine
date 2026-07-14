@@ -1,0 +1,103 @@
+use crate::cmd::shared::{
+    AddMutation, AddedItemIdsResp, BackrefRenderError, CmdResps, EffectModes, FitIdBackref, ItemIdBackref,
+};
+
+// Commands with full context
+struct ICmdDroneAddFCtxBIds {
+    fit_id: FitIdBackref,
+    ictx_cmd: ICmdDroneAddICtxBIds,
+}
+struct ICmdDroneAddFCtxRIds {
+    fit_id: rc::FitId,
+    ictx_cmd: ICmdDroneAddICtxRIds,
+}
+
+// Commands with incomplete context
+struct ICmdDroneAddICtxBIds {
+    shared: ICmdDroneAddShared,
+    proj_item_ids: Vec<ItemIdBackref>,
+}
+struct ICmdDroneAddICtxRIds {
+    shared: ICmdDroneAddShared,
+    proj_item_ids: Vec<rc::ItemId>,
+}
+struct ICmdDroneAddShared {
+    type_id: rc::ItemTypeId,
+    state: rc::MinionState,
+    mutation: Option<AddMutation>,
+    npc_prop: Option<rc::NpcProp>,
+    coordinates: Option<rc::Coordinates>,
+    movement: Option<rc::Movement>,
+    effect_modes: EffectModes,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdDroneAddFCtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdDroneAddFCtxRIds, BackrefRenderError> {
+        Ok(ICmdDroneAddFCtxRIds {
+            fit_id: resps.render_fit_id(self.fit_id)?,
+            ictx_cmd: self.ictx_cmd.render(resps)?,
+        })
+    }
+}
+
+impl ICmdDroneAddICtxBIds {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdDroneAddICtxRIds, BackrefRenderError> {
+        Ok(ICmdDroneAddICtxRIds {
+            shared: self.shared,
+            proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdDroneAddFCtxRIds {
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, GetFitAddDroneError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.ictx_cmd.execute(&mut core_fit)?)
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum GetFitAddDroneError {
+    #[error("{0}")]
+    GetFailed(#[from] rc::err::GetFitError),
+    #[error("{0}")]
+    AddFailed(#[from] FitAddDroneError),
+}
+
+impl ICmdDroneAddICtxRIds {
+    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddDroneError> {
+        let mut core_drone = core_fit.add_drone(
+            self.shared.type_id,
+            self.shared.state,
+            self.shared.coordinates,
+            self.shared.movement,
+        );
+        if let Some(mutation) = self.shared.mutation.as_ref() {
+            let mut core_mutation = core_drone.mutate(mutation.mutator_id).unwrap();
+            mutation.apply_attrs(&mut core_mutation);
+        }
+        if let Some(npc_prop) = self.shared.npc_prop {
+            core_drone.set_npc_prop(Some(npc_prop))
+        }
+        for projectee_item_id in self.proj_item_ids.iter() {
+            core_drone.add_proj(projectee_item_id)?;
+        }
+        self.shared.effect_modes.apply(&mut core_drone);
+        Ok(AddedItemIdsResp::from_core_drone(core_drone))
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum FitAddDroneError {
+    #[error("failed to add projection: {0}")]
+    ProjAddFailed(#[from] rc::err::AddProjError),
+}

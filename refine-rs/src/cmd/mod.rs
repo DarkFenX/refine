@@ -5,12 +5,12 @@ pub use fit::{
 };
 pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
-    AddFitError, AddFleetError, FitChangeCharacterError, FitChangeFitError, FleetChangeFleetError,
-    GetFitAddBoosterError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError, GetFitRemoveFitError,
-    GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
-    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError, GetItemChangeChargeError,
-    GetItemRemoveItemError, ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError,
-    ItemChangeChargeError, ItemRemoveItemError,
+    AddFitError, AddFleetError, FitAddDroneError, FitChangeCharacterError, FitChangeFitError, FleetChangeFleetError,
+    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError,
+    GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemRemoveItemError, ItemChangeAutochargeError,
+    ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError, ItemChangeDroneError, ItemRemoveItemError,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddRigCmd,
@@ -18,8 +18,8 @@ pub use item::{
     RemoveItemCmd,
 };
 pub use shared::{
-    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps,
-    FitIdBackref, FleetIdBackref, ItemIdBackref,
+    AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
+    ChangedItemIdsResp, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
     AddSolCmd, ChangeCharacterError, ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddFitCmd,
