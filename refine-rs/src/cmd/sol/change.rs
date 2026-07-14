@@ -1,10 +1,14 @@
 use crate::cmd::{
     inner::{
-        AddFitError, AddFleetError, GetFitAddBoosterError, GetFitAddRigError, GetFitChangeFitError,
-        GetFitRemoveFitError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
-        GetItemChangeBoosterError, GetItemRemoveItemError, ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds,
-        ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
-        ICmdBoosterChangeFCtxRIds, ICmdFitAddFCtxBIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxBIds,
+        AddFitError, AddFleetError, GetFitAddBoosterError, GetFitAddRigError, GetFitChangeCharacterError,
+        GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError,
+        GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+        GetItemChangeCharacterError, GetItemRemoveItemError, ICmdAutochargeChangeFCtxBIds,
+        ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx,
+        ICmdBoosterChangeFCtxBIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeFFitCtxBIds,
+        ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds, ICmdCharacterChangeFItemCtxRIds,
+        ICmdCharacterSetFCtxBIds, ICmdCharacterSetFCtxRIds, ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds,
+        ICmdCharacterUnsetFCtxRIds, ICmdFitAddFCtxBIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxBIds,
         ICmdFitChangeFCtxRIds, ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFleetAddFCtxBIds,
         ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxBIds,
         ICmdFleetRemoveFCtxRIds, ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdRigAddFCtxBIds,
@@ -31,6 +35,10 @@ pub enum ChangeSolEnumCmd {
     // Item - booster
     AddBooster(SolAddBoosterCmd),
     ChangeBooster(SolChangeBoosterCmd),
+    // Item - character
+    SetCharacter(SolSetCharacterCmd),
+    ChangeCharacter(SolChangeCharacterCmd),
+    UnsetCharacter(SolUnsetCharacterCmd),
     // Item - rig
     AddRig(SolAddRigCmd),
 }
@@ -53,6 +61,10 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     // Item - booster
     AddBooster(ICmdBoosterAddFCtxRIds),
     ChangeBooster(ICmdBoosterChangeFCtxRIds),
+    // Item - character
+    SetCharacter(ICmdCharacterSetFCtxRIds),
+    ChangeCharacter(SolChangeCharacterCmdRIds),
+    UnsetCharacter(ICmdCharacterUnsetFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddFCtxRIds),
 }
@@ -80,6 +92,17 @@ impl ChangeSolEnumCmd {
             // Item - booster
             Self::AddBooster(cmd) => ChangeSolEnumCmdRIds::AddBooster(cmd.inner.render(resps)?),
             Self::ChangeBooster(cmd) => ChangeSolEnumCmdRIds::ChangeBooster(cmd.inner.render(resps)?),
+            // Item - character
+            Self::SetCharacter(cmd) => ChangeSolEnumCmdRIds::SetCharacter(cmd.inner.render(resps)?),
+            Self::ChangeCharacter(cmd) => match cmd {
+                SolChangeCharacterCmd::ViaFitId(cmd) => {
+                    ChangeSolEnumCmdRIds::ChangeCharacter(SolChangeCharacterCmdRIds::ViaFitId(cmd.inner.render(resps)?))
+                }
+                SolChangeCharacterCmd::ViaItemId(cmd) => ChangeSolEnumCmdRIds::ChangeCharacter(
+                    SolChangeCharacterCmdRIds::ViaItemId(cmd.inner.render(resps)?),
+                ),
+            },
+            Self::UnsetCharacter(cmd) => ChangeSolEnumCmdRIds::UnsetCharacter(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeSolEnumCmdRIds::AddRig(cmd.inner.render(resps)?),
         })
@@ -109,6 +132,11 @@ impl ChangeSolEnumCmdRIds {
             // Item - booster
             Self::AddBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - character
+            Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeCharacter(SolChangeCharacterCmdRIds::ViaFitId(cmd)) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeCharacter(SolChangeCharacterCmdRIds::ViaItemId(cmd)) => Ok(cmd.execute(core_sol)?.into()),
+            Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
@@ -142,6 +170,15 @@ pub enum ChangeSolEnumError {
     BoosterAddFailed(#[from] GetFitAddBoosterError),
     #[error("failed to change booster: {0}")]
     BoosterChangeFailed(#[from] GetItemChangeBoosterError),
+    // Item - character
+    #[error("failed to set character: {0}")]
+    CharacterSetFailed(#[from] GetFitSetCharacterError),
+    #[error("failed to change character: {0}")]
+    CharacterChangeViaFitFailed(#[from] GetFitChangeCharacterError),
+    #[error("failed to change character: {0}")]
+    CharacterChangeViaItemFailed(#[from] GetItemChangeCharacterError),
+    #[error("failed to unset character: {0}")]
+    CharacterUnsetFailed(#[from] GetFitUnsetCharacterError),
     // Item - rig
     #[error("failed to add rig: {0}")]
     RigAddFailed(#[from] GetFitAddRigError),
@@ -446,6 +483,124 @@ impl SolChangeBoosterCmd {
 impl From<SolChangeBoosterCmd> for ChangeSolEnumCmd {
     fn from(sub_cmd: SolChangeBoosterCmd) -> Self {
         Self::ChangeBooster(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item - character  - set/unset
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct SolSetCharacterCmd {
+    inner: ICmdCharacterSetFCtxBIds,
+}
+impl SolSetCharacterCmd {
+    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
+        Self {
+            inner: ICmdCharacterSetFCtxBIds {
+                fit_id,
+                ictx_cmd: ICmdCharacterSetICtx { type_id, .. },
+            },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolSetCharacterCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolSetCharacterCmd) -> Self {
+        Self::SetCharacter(sub_cmd)
+    }
+}
+
+pub struct SolUnsetCharacterCmd {
+    inner: ICmdCharacterUnsetFCtxBIds,
+}
+impl SolUnsetCharacterCmd {
+    pub fn new(fit_id: FitIdBackref) -> Self {
+        Self {
+            inner: ICmdCharacterUnsetFCtxBIds { fit_id, .. },
+        }
+    }
+}
+impl From<SolUnsetCharacterCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolUnsetCharacterCmd) -> Self {
+        Self::UnsetCharacter(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item - character  - change
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub enum SolChangeCharacterCmd {
+    ViaFitId(SolChangeCharacterViaFitCmd),
+    ViaItemId(SolChangeCharacterViaItemCmd),
+}
+
+pub(crate) enum SolChangeCharacterCmdRIds {
+    ViaFitId(ICmdCharacterChangeFFitCtxRIds),
+    ViaItemId(ICmdCharacterChangeFItemCtxRIds),
+}
+
+pub struct SolChangeCharacterViaFitCmd {
+    inner: ICmdCharacterChangeFFitCtxBIds,
+}
+impl SolChangeCharacterViaFitCmd {
+    pub fn new(fit_id: FitIdBackref) -> Self {
+        Self {
+            inner: ICmdCharacterChangeFFitCtxBIds { fit_id, .. },
+        }
+    }
+    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+        self.inner.ictx_cmd.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolChangeCharacterViaFitCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolChangeCharacterViaFitCmd) -> Self {
+        Self::ChangeCharacter(SolChangeCharacterCmd::ViaFitId(sub_cmd))
+    }
+}
+
+pub struct SolChangeCharacterViaItemCmd {
+    inner: ICmdCharacterChangeFItemCtxBIds,
+}
+impl SolChangeCharacterViaItemCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            inner: ICmdCharacterChangeFItemCtxBIds { item_id, .. },
+        }
+    }
+    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+        self.inner.ictx_cmd.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolChangeCharacterViaItemCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolChangeCharacterViaItemCmd) -> Self {
+        Self::ChangeCharacter(SolChangeCharacterCmd::ViaItemId(sub_cmd))
     }
 }
 

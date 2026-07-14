@@ -1,20 +1,20 @@
 use crate::cmd::shared::{AddedItemIdsResp, BackrefRenderError, CmdResps, EffectModes, FitIdBackref};
 
 // Commands with full context
-struct ICmdCharacterSetFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: ICmdCharacterSetICtx,
+pub(in crate::cmd) struct ICmdCharacterSetFCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdCharacterSetICtx,
 }
-struct ICmdCharacterSetFCtxRIds {
-    fit_id: rc::FitId,
-    ictx_cmd: ICmdCharacterSetICtx,
+pub(crate) struct ICmdCharacterSetFCtxRIds {
+    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) ictx_cmd: ICmdCharacterSetICtx,
 }
 
 // Commands with incomplete context
-struct ICmdCharacterSetICtx {
-    type_id: rc::ItemTypeId,
-    state: Option<bool>,
-    effect_modes: EffectModes,
+pub(crate) struct ICmdCharacterSetICtx {
+    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) state: Option<bool> = None,
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

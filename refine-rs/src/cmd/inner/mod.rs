@@ -23,6 +23,11 @@ pub use item_character::{
     FitChangeCharacterError, GetFitChangeCharacterError, GetFitSetCharacterError, GetFitUnsetCharacterError,
     GetItemChangeCharacterError, ItemChangeCharacterError,
 };
+pub(in crate::cmd) use item_character::{
+    ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
+    ICmdCharacterChangeFItemCtxRIds, ICmdCharacterChangeICtx, ICmdCharacterSetFCtxBIds, ICmdCharacterSetFCtxRIds,
+    ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds, ICmdCharacterUnsetFCtxRIds, ICmdCharacterUnsetICtx,
+};
 pub use item_rig::GetFitAddRigError;
 pub(in crate::cmd) use item_rig::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};

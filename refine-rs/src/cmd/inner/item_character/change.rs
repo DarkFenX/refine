@@ -1,37 +1,37 @@
 use crate::cmd::shared::{BackrefRenderError, ChangedItemIdsResp, CmdResps, EffectModes, FitIdBackref, ItemIdBackref};
 
 // Commands with full context via fit ID
-struct ICmdCharacterChangeFFitCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: ICmdCharacterChangeICtx,
+pub(in crate::cmd) struct ICmdCharacterChangeFFitCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }
-struct ICmdCharacterChangeFFitCtxRIds {
+pub(crate) struct ICmdCharacterChangeFFitCtxRIds {
     fit_id: rc::FitId,
     ictx_cmd: ICmdCharacterChangeICtx,
 }
 
 // Commands with full context via item ID
-struct ICmdCharacterChangeFItemCtxBIds {
-    item_id: ItemIdBackref,
-    ictx_cmd: ICmdCharacterChangeICtx,
+pub(in crate::cmd) struct ICmdCharacterChangeFItemCtxBIds {
+    pub(in crate::cmd) item_id: ItemIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }
-struct ICmdCharacterChangeFItemCtxRIds {
+pub(crate) struct ICmdCharacterChangeFItemCtxRIds {
     item_id: rc::ItemId,
     ictx_cmd: ICmdCharacterChangeICtx,
 }
 
 // Commands with incomplete context
-struct ICmdCharacterChangeICtx {
-    type_id: Option<rc::ItemTypeId>,
-    state: Option<bool>,
-    effect_modes: EffectModes,
+pub(crate) struct ICmdCharacterChangeICtx {
+    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) state: Option<bool> = None,
+    pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdCharacterChangeFFitCtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<ICmdCharacterChangeFFitCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdCharacterChangeFFitCtxRIds, BackrefRenderError> {
         Ok(ICmdCharacterChangeFFitCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,
@@ -39,7 +39,10 @@ impl ICmdCharacterChangeFFitCtxBIds {
     }
 }
 impl ICmdCharacterChangeFItemCtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<ICmdCharacterChangeFItemCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(
+        self,
+        resps: &CmdResps,
+    ) -> Result<ICmdCharacterChangeFItemCtxRIds, BackrefRenderError> {
         Ok(ICmdCharacterChangeFItemCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd,
@@ -51,7 +54,10 @@ impl ICmdCharacterChangeFItemCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdCharacterChangeFFitCtxRIds {
-    fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, GetFitChangeCharacterError> {
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, GetFitChangeCharacterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         let mut core_character = match core_fit.get_character_mut() {
             Some(core_character) => core_character,
@@ -70,7 +76,10 @@ pub enum GetFitChangeCharacterError {
 }
 
 impl ICmdCharacterChangeFItemCtxRIds {
-    fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, GetItemChangeCharacterError> {
+    pub(in crate::cmd) fn execute(
+        &self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, GetItemChangeCharacterError> {
         let mut core_character = core_sol.get_character_mut(&self.item_id)?;
         Ok(self.ictx_cmd.execute(&mut core_character))
     }
@@ -83,14 +92,20 @@ pub enum GetItemChangeCharacterError {
 }
 
 impl ICmdCharacterChangeICtx {
-    fn execute_via_fit(&self, core_fit: &mut rc::FitMut) -> Result<ChangedItemIdsResp, FitChangeCharacterError> {
+    pub(in crate::cmd) fn execute_via_fit(
+        &self,
+        core_fit: &mut rc::FitMut,
+    ) -> Result<ChangedItemIdsResp, FitChangeCharacterError> {
         let mut core_character = match core_fit.get_character_mut() {
             Some(core_character) => core_character,
             None => return Err(FitChangeCharacterError::NoCharacter(core_fit.get_fit_id())),
         };
         Ok(self.execute(&mut core_character))
     }
-    fn execute_via_item(&self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeCharacterError> {
+    pub(in crate::cmd) fn execute_via_item(
+        &self,
+        core_item: &mut rc::ItemMut,
+    ) -> Result<ChangedItemIdsResp, ItemChangeCharacterError> {
         let core_character = core_item.dc_character()?;
         Ok(self.execute(core_character))
     }

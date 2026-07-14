@@ -1,8 +1,9 @@
 use crate::cmd::{
     inner::{
-        FitChangeFitError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemRemoveItemError,
-        ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
-        ICmdBoosterChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxBIds,
+        FitChangeCharacterError, FitChangeFitError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+        GetItemRemoveItemError, ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx,
+        ICmdBoosterChangeFCtxBIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx, ICmdCharacterSetICtx,
+        ICmdCharacterUnsetICtx, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxBIds,
         ICmdItemRemoveFCtxRIds, ICmdRigAddICtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps, FleetIdBackref, ItemIdBackref},
@@ -18,6 +19,10 @@ pub enum ChangeFitEnumCmd {
     // Item - booster
     AddBooster(FitAddBoosterCmd),
     ChangeBooster(FitChangeBoosterCmd),
+    // Item - character
+    SetCharacter(FitSetCharacterCmd),
+    ChangeCharacter(FitChangeCharacterCmd),
+    UnsetCharacter(FitUnsetCharacterCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
 }
@@ -32,6 +37,10 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - booster
     AddBooster(ICmdBoosterAddICtx),
     ChangeBooster(ICmdBoosterChangeFCtxRIds),
+    // Item - character
+    SetCharacter(ICmdCharacterSetICtx),
+    ChangeCharacter(ICmdCharacterChangeICtx),
+    UnsetCharacter(ICmdCharacterUnsetICtx),
     // Item - rig
     AddRig(ICmdRigAddICtx),
 }
@@ -51,6 +60,10 @@ impl ChangeFitEnumCmd {
             // Item - booster
             Self::AddBooster(cmd) => ChangeFitEnumCmdRIds::AddBooster(cmd.inner),
             Self::ChangeBooster(cmd) => ChangeFitEnumCmdRIds::ChangeBooster(cmd.inner.render(resps)?),
+            // Item - character
+            Self::SetCharacter(cmd) => ChangeFitEnumCmdRIds::SetCharacter(cmd.inner),
+            Self::ChangeCharacter(cmd) => ChangeFitEnumCmdRIds::ChangeCharacter(cmd.inner),
+            Self::UnsetCharacter(cmd) => ChangeFitEnumCmdRIds::UnsetCharacter(cmd.inner),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
         })
@@ -72,6 +85,10 @@ impl ChangeFitEnumCmdRIds {
             // Item - booster
             Self::AddBooster(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeBooster(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - character
+            Self::SetCharacter(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeCharacter(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
+            Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_fit).into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
         }
@@ -92,6 +109,9 @@ pub enum ChangeFitEnumError {
     // Item - booster
     #[error("failed to change booster: {0}")]
     BoosterChangeFailed(#[from] GetItemChangeBoosterError),
+    // Item - character
+    #[error("failed to change character: {0}")]
+    CharacterChangeFailed(#[from] FitChangeCharacterError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -239,6 +259,77 @@ impl FitChangeBoosterCmd {
 impl From<FitChangeBoosterCmd> for ChangeFitEnumCmd {
     fn from(sub_cmd: FitChangeBoosterCmd) -> Self {
         Self::ChangeBooster(sub_cmd)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sub-commands - item - character
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub struct FitSetCharacterCmd {
+    inner: ICmdCharacterSetICtx,
+}
+impl FitSetCharacterCmd {
+    pub fn new(type_id: rc::ItemTypeId) -> Self {
+        Self {
+            inner: ICmdCharacterSetICtx { type_id, .. },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.effect_modes.clear();
+        self.inner.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<FitSetCharacterCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitSetCharacterCmd) -> Self {
+        Self::SetCharacter(sub_cmd)
+    }
+}
+
+#[derive(Default)]
+pub struct FitChangeCharacterCmd {
+    inner: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
+}
+impl FitChangeCharacterCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+        self.inner.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.effect_modes.clear();
+        self.inner.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<FitChangeCharacterCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitChangeCharacterCmd) -> Self {
+        Self::ChangeCharacter(sub_cmd)
+    }
+}
+
+#[derive(Default)]
+pub struct FitUnsetCharacterCmd {
+    inner: ICmdCharacterUnsetICtx = ICmdCharacterUnsetICtx,
+}
+impl FitUnsetCharacterCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+impl From<FitUnsetCharacterCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitUnsetCharacterCmd) -> Self {
+        Self::UnsetCharacter(sub_cmd)
     }
 }
 

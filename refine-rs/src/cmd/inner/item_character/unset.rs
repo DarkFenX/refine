@@ -1,17 +1,17 @@
 use crate::cmd::shared::{BackrefRenderError, CmdResps, FitIdBackref};
 
 // Commands with full context
-struct ICmdCharacterUnsetFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: ICmdCharacterUnsetICtx,
+pub(in crate::cmd) struct ICmdCharacterUnsetFCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdCharacterUnsetICtx = ICmdCharacterUnsetICtx,
 }
-struct ICmdCharacterUnsetFCtxRIds {
+pub(crate) struct ICmdCharacterUnsetFCtxRIds {
     fit_id: rc::FitId,
     ictx_cmd: ICmdCharacterUnsetICtx,
 }
 
 // Commands with incomplete context
-struct ICmdCharacterUnsetICtx;
+pub(crate) struct ICmdCharacterUnsetICtx;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
