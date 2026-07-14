@@ -46,14 +46,14 @@ pub enum GetItemChangeAutochargeError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ChangeAutochargeError),
+    ChangeFailed(#[from] ItemChangeAutochargeError),
 }
 
 impl ICmdAutochargeChangeICtx {
     pub(in crate::cmd) fn execute(
         &self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ChangeAutochargeError> {
+    ) -> Result<ChangedItemIdsResp, ItemChangeAutochargeError> {
         let core_autocharge = core_item.dc_autocharge()?;
         if let Some(state) = self.state {
             core_autocharge.set_state(state);
@@ -64,7 +64,7 @@ impl ICmdAutochargeChangeICtx {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeAutochargeError {
+pub enum ItemChangeAutochargeError {
     #[error("{0}")]
     ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
 }

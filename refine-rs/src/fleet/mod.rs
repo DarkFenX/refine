@@ -1,4 +1,5 @@
 pub use fleet::Fleet;
+pub use fleet_change::ChangeFleetError;
 pub use sol_get_fleet::GetFleetError;
 
 mod fleet;

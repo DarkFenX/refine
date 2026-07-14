@@ -3,18 +3,18 @@ pub(in crate::cmd) use fit::{
     ICmdFitAddFCtxBIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds,
     ICmdFitChangeICtxRIds, ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFitRemoveICtx,
 };
-pub use fleet::{AddFleetError, ChangeFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
+pub use fleet::{AddFleetError, FleetChangeFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
 pub(in crate::cmd) use fleet::{
     ICmdFleetAddFCtxBIds, ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds,
     ICmdFleetChangeICtxRIds, ICmdFleetRemoveFCtxBIds, ICmdFleetRemoveFCtxRIds, ICmdFleetRemoveICtx,
 };
-pub use item::{GetItemRemoveItemError, RemoveItemError};
+pub use item::{GetItemRemoveItemError, ItemRemoveItemError};
 pub(in crate::cmd) use item::{ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdItemRemoveICtx};
-pub use item_autocharge::{ChangeAutochargeError, GetItemChangeAutochargeError};
+pub use item_autocharge::{GetItemChangeAutochargeError, ItemChangeAutochargeError};
 pub(in crate::cmd) use item_autocharge::{
     ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds, ICmdAutochargeChangeICtx,
 };
-pub use item_booster::{ChangeBoosterError, GetFitAddBoosterError, GetItemChangeBoosterError};
+pub use item_booster::{GetFitAddBoosterError, GetItemChangeBoosterError, ItemChangeBoosterError};
 pub(in crate::cmd) use item_booster::{
     ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
     ICmdBoosterChangeFCtxRIds, ICmdBoosterChangeICtx,

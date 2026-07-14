@@ -46,7 +46,7 @@ impl ICmdBoosterAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddBoosterError {
     #[error("{0}")]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    GetFailed(#[from] rc::err::GetFitError),
 }
 
 impl ICmdBoosterAddICtx {

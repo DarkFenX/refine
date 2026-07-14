@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{ChangeFleetCmd, ChangeFleetError},
+    cmd::{ChangeFleetCmd, FleetChangeFleetError},
     fleet::Fleet,
 };
 
@@ -18,3 +18,7 @@ impl Fleet<'_, '_> {
         Ok(())
     }
 }
+
+#[derive(Debug, thiserror::Error)]
+#[error("{0}")]
+pub struct ChangeFleetError(#[from] pub FleetChangeFleetError);

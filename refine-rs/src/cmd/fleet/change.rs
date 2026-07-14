@@ -1,4 +1,4 @@
-use crate::cmd::inner::{ChangeFleetError, ICmdFleetChangeICtxRIds};
+use crate::cmd::inner::{FleetChangeFleetError, ICmdFleetChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ChangeFleetCmd {
@@ -28,7 +28,7 @@ impl ChangeFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFleetCmd {
-    pub(crate) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), ChangeFleetError> {
+    pub(crate) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
         self.inner.execute(core_fleet)
     }
 }

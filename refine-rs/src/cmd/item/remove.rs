@@ -1,4 +1,4 @@
-use crate::cmd::inner::{ICmdItemRemoveICtx, RemoveItemError};
+use crate::cmd::inner::{ICmdItemRemoveICtx, ItemRemoveItemError};
 
 #[derive(Default)]
 pub struct RemoveItemCmd {
@@ -22,7 +22,7 @@ impl RemoveItemCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveItemCmd {
-    pub(crate) fn execute(&self, core_item: rc::ItemMut) -> Result<(), RemoveItemError> {
+    pub(crate) fn execute(&self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
         self.inner.execute(core_item)
     }
 }

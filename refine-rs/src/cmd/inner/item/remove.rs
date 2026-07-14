@@ -42,18 +42,18 @@ pub enum GetItemRemoveItemError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    RemoveFailed(#[from] RemoveItemError),
+    RemoveFailed(#[from] ItemRemoveItemError),
 }
 
 impl ICmdItemRemoveICtx {
-    pub(in crate::cmd) fn execute(&self, core_item: rc::ItemMut) -> Result<(), RemoveItemError> {
+    pub(in crate::cmd) fn execute(&self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
         core_item.remove(self.rm_mode.unwrap_or(rc::RmMode::Free))?;
         Ok(())
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum RemoveItemError {
+pub enum ItemRemoveItemError {
     #[error("{0}")]
     RemoveFailed(#[from] rc::err::RemoveItemError),
 }

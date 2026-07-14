@@ -1,5 +1,5 @@
 use crate::{
-    cmd::{RemoveItemCmd, RemoveItemError},
+    cmd::{ItemRemoveItemError, RemoveItemCmd},
     item::Item,
 };
 
@@ -18,3 +18,7 @@ impl Item<'_, '_> {
         Ok(())
     }
 }
+
+#[derive(Debug, thiserror::Error)]
+#[error("{0}")]
+pub struct RemoveItemError(#[from] pub ItemRemoveItemError);

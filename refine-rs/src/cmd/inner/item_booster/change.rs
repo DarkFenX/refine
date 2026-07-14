@@ -48,14 +48,14 @@ pub enum GetItemChangeBoosterError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ChangeBoosterError),
+    ChangeFailed(#[from] ItemChangeBoosterError),
 }
 
 impl ICmdBoosterChangeICtx {
     pub(in crate::cmd) fn execute(
         &self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ChangeBoosterError> {
+    ) -> Result<ChangedItemIdsResp, ItemChangeBoosterError> {
         let core_booster = core_item.dc_booster()?;
         if let Some(type_id) = self.type_id {
             core_booster.set_type_id(type_id);
@@ -70,7 +70,7 @@ impl ICmdBoosterChangeICtx {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeBoosterError {
+pub enum ItemChangeBoosterError {
     #[error("{0}")]
     ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
 }

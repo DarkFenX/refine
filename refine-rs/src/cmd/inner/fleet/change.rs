@@ -56,11 +56,11 @@ pub enum GetFleetChangeFleetError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFleetError),
     #[error("{0}")]
-    ChangeFailed(#[from] ChangeFleetError),
+    ChangeFailed(#[from] FleetChangeFleetError),
 }
 
 impl ICmdFleetChangeICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), ChangeFleetError> {
+    pub(in crate::cmd) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
         for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id)?;
         }
@@ -72,7 +72,7 @@ impl ICmdFleetChangeICtxRIds {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeFleetError {
+pub enum FleetChangeFleetError {
     #[error("failed to add fit: {0}")]
     FitAddFailed(#[from] rc::err::FleetAddFitError),
     #[error("failed to remove fit: {0}")]

@@ -1,5 +1,5 @@
 use crate::cmd::{
-    inner::{ChangeAutochargeError, ChangeBoosterError, ICmdAutochargeChangeICtx, ICmdBoosterChangeICtx},
+    inner::{ICmdAutochargeChangeICtx, ICmdBoosterChangeICtx, ItemChangeAutochargeError, ItemChangeBoosterError},
     shared::ChangedItemIdsResp,
 };
 
@@ -25,9 +25,9 @@ impl ChangeItemEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeItemEnumError {
     #[error("failed to change autocharge: {0}")]
-    AutochargeFailed(#[from] ChangeAutochargeError),
+    AutochargeFailed(#[from] ItemChangeAutochargeError),
     #[error("failed to change booster: {0}")]
-    BoosterFailed(#[from] ChangeBoosterError),
+    BoosterFailed(#[from] ItemChangeBoosterError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

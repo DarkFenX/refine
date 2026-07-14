@@ -4,11 +4,11 @@ pub use fit::{
 };
 pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
-    AddFitError, AddFleetError, ChangeAutochargeError, ChangeBoosterError, ChangeFleetError, FitChangeCharacterError,
-    FitChangeFitError, GetFitAddBoosterError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError,
-    GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError,
-    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError,
-    GetItemRemoveItemError, ItemChangeCharacterError, RemoveItemError,
+    AddFitError, AddFleetError, FitChangeCharacterError, FitChangeFitError, FleetChangeFleetError,
+    GetFitAddBoosterError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError, GetFitRemoveFitError,
+    GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
+    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError, GetItemRemoveItemError,
+    ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemRemoveItemError,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddRigCmd,
