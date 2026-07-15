@@ -2,15 +2,16 @@ use super::sub_item_character::SolChangeCharacterCmdRIds;
 use crate::cmd::{
     AddFitError, AddFleetError, AddProjEffectError, ChangeCharacterError, GetFitAddBoosterError, GetFitAddDroneError,
     GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError,
-    GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError,
-    GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
-    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeProjEffectError, GetItemChangeRigError,
-    GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
-    SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolChangeAutochargeCmd,
-    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd,
-    SolChangeFitCmd, SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd,
-    SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    GetFitAddServiceError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
+    GetFitUnsetCharacterError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
+    GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
+    GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeProjEffectError,
+    GetItemChangeRigError, GetItemChangeServiceError, GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd,
+    SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd,
+    SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
+    SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd,
+    SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd,
+    SolChangeRigCmd, SolChangeServiceCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
     SolSetCharacterCmd, SolUnsetCharacterCmd,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
@@ -19,7 +20,8 @@ use crate::cmd::{
         ICmdFitRemoveFCtxRIds, ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds,
         ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds,
-        ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdSolChangeFCtx,
+        ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds,
+        ICmdServiceChangeFCtxRIds, ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -69,6 +71,9 @@ pub enum ChangeSolEnumCmd {
     // Item - rig
     AddRig(SolAddRigCmd),
     ChangeRig(SolChangeRigCmd),
+    // Item - service
+    AddService(SolAddServiceCmd),
+    ChangeService(SolChangeServiceCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -116,6 +121,9 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     // Item - rig
     AddRig(ICmdRigAddFCtxRIds),
     ChangeRig(ICmdRigChangeFCtxRIds),
+    // Item - service
+    AddService(ICmdServiceAddFCtxRIds),
+    ChangeService(ICmdServiceChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -168,6 +176,9 @@ impl ChangeSolEnumCmd {
             // Item - rig
             Self::AddRig(cmd) => ChangeSolEnumCmdRIds::AddRig(cmd.inner.render(resps)?),
             Self::ChangeRig(cmd) => ChangeSolEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
+            // Item - service
+            Self::AddService(cmd) => ChangeSolEnumCmdRIds::AddService(cmd.inner.render(resps)?),
+            Self::ChangeService(cmd) => ChangeSolEnumCmdRIds::ChangeService(cmd.inner.render(resps)?),
         })
     }
 }
@@ -222,6 +233,9 @@ impl ChangeSolEnumCmdRIds {
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - service
+            Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -298,4 +312,9 @@ pub enum ChangeSolEnumError {
     RigAddFailed(#[from] GetFitAddRigError),
     #[error("failed to change rig: {0}")]
     RigChangeFailed(#[from] GetItemChangeRigError),
+    // Item - service
+    #[error("failed to add service: {0}")]
+    ServiceAddFailed(#[from] GetFitAddServiceError),
+    #[error("failed to change service: {0}")]
+    ServiceChangeFailed(#[from] GetItemChangeServiceError),
 }

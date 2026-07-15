@@ -1,8 +1,8 @@
 use crate::cmd::{
     AddProjEffectError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
-    GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd,
-    ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd,
-    ItemAddRigCmd, ItemSetCharacterCmd, shared::AddedItemIdsResp,
+    GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitSetCharacterError,
+    ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd,
+    ItemAddProjEffectCmd, ItemAddRigCmd, ItemAddServiceCmd, ItemSetCharacterCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
@@ -15,6 +15,7 @@ pub enum AddItemEnumCmd {
     Module(ItemAddModuleCmd),
     ProjEffect(ItemAddProjEffectCmd),
     Rig(ItemAddRigCmd),
+    Service(ItemAddServiceCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +33,7 @@ impl AddItemEnumCmd {
             Self::Module(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::Service(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
 }
@@ -56,4 +58,6 @@ pub enum AddItemEnumError {
     ProjEffect(#[from] AddProjEffectError),
     #[error("failed to add rig: {0}")]
     RigFailed(#[from] GetFitAddRigError),
+    #[error("failed to add service: {0}")]
+    ServiceFailed(#[from] GetFitAddServiceError),
 }

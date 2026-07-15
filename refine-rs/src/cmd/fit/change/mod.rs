@@ -11,6 +11,7 @@ pub use sub_item_fw_effect::{FitAddFwEffectCmd, FitChangeFwEffectCmd};
 pub use sub_item_implant::{FitAddImplantCmd, FitChangeImplantCmd};
 pub use sub_item_module::{FitAddModuleCmd, FitChangeModuleCmd};
 pub use sub_item_rig::{FitAddRigCmd, FitChangeRigCmd};
+pub use sub_item_service::{FitAddServiceCmd, FitChangeServiceCmd};
 
 mod cmd;
 mod sub_fit;
@@ -25,3 +26,4 @@ mod sub_item_fw_effect;
 mod sub_item_implant;
 mod sub_item_module;
 mod sub_item_rig;
+mod sub_item_service;

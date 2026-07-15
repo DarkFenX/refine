@@ -8,6 +8,7 @@ pub use sub_implant::ItemAddImplantCmd;
 pub use sub_module::ItemAddModuleCmd;
 pub use sub_proj_effect::ItemAddProjEffectCmd;
 pub use sub_rig::ItemAddRigCmd;
+pub use sub_service::ItemAddServiceCmd;
 
 mod cmd;
 mod sub_booster;
@@ -19,3 +20,4 @@ mod sub_implant;
 mod sub_module;
 mod sub_proj_effect;
 mod sub_rig;
+mod sub_service;

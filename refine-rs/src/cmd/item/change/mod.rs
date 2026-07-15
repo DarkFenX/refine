@@ -10,6 +10,7 @@ pub use sub_implant::ItemChangeImplantCmd;
 pub use sub_module::ItemChangeModuleCmd;
 pub use sub_proj_effect::ItemChangeProjEffectCmd;
 pub use sub_rig::ItemChangeRigCmd;
+pub use sub_service::ItemChangeServiceCmd;
 
 mod cmd;
 mod sub_autocharge;
@@ -23,3 +24,4 @@ mod sub_implant;
 mod sub_module;
 mod sub_proj_effect;
 mod sub_rig;
+mod sub_service;

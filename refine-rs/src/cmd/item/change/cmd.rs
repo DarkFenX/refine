@@ -3,7 +3,8 @@ use crate::cmd::{
     ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError, ItemChangeDroneCmd,
     ItemChangeDroneError, ItemChangeFighterCmd, ItemChangeFighterError, ItemChangeFwEffectCmd, ItemChangeFwEffectError,
     ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeModuleCmd, ItemChangeModuleError, ItemChangeProjEffectCmd,
-    ItemChangeProjEffectError, ItemChangeRigCmd, ItemChangeRigError, shared::ChangedItemIdsResp,
+    ItemChangeProjEffectError, ItemChangeRigCmd, ItemChangeRigError, ItemChangeServiceCmd, ItemChangeServiceError,
+    shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -18,6 +19,7 @@ pub enum ChangeItemEnumCmd {
     Module(ItemChangeModuleCmd),
     ProjEffect(ItemChangeProjEffectCmd),
     Rig(ItemChangeRigCmd),
+    Service(ItemChangeServiceCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,6 +39,7 @@ impl ChangeItemEnumCmd {
             Self::Module(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
+            Self::Service(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
 }
@@ -65,4 +68,6 @@ pub enum ChangeItemEnumError {
     ProjEffectFailed(#[from] ItemChangeProjEffectError),
     #[error("failed to change rig: {0}")]
     RigFailed(#[from] ItemChangeRigError),
+    #[error("failed to change service: {0}")]
+    ServiceFailed(#[from] ItemChangeServiceError),
 }
