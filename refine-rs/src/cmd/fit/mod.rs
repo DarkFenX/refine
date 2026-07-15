@@ -4,8 +4,8 @@ pub use change::{
     FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitChangeAutochargeCmd,
     FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
     FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
-    FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd,
+    FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitRemoveItemCmd, FitSetCharacterCmd,
+    FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
 };
 pub use remove::RemoveFitCmd;
 

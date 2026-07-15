@@ -4,11 +4,12 @@ use crate::cmd::{
     FitAddSkillError, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError,
     FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError,
     FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd,
-    FitChangeShipCmd, FitChangeShipError, FitChangeSkillCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
-    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError,
-    GetItemChangeSkillError, GetItemRemoveItemError,
+    FitChangeShipCmd, FitChangeShipError, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeStanceError,
+    FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
+    FitUnsetStanceCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
+    GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
+    GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError,
+    GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
@@ -16,7 +17,7 @@ use crate::cmd::{
         ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
         ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
-        ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds,
+        ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -65,6 +66,10 @@ pub enum ChangeFitEnumCmd {
     // Item - skill
     AddSkill(FitAddSkillCmd),
     ChangeSkill(FitChangeSkillCmd),
+    // Item - stance
+    SetStance(FitSetStanceCmd),
+    ChangeStance(FitChangeStanceCmd),
+    UnsetStance(FitUnsetStanceCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -111,6 +116,10 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - skill
     AddSkill(ICmdSkillAddICtx),
     ChangeSkill(ICmdSkillChangeFCtxRIds),
+    // Item - stance
+    SetStance(ICmdStanceSetICtx),
+    ChangeStance(ICmdStanceChangeICtx),
+    UnsetStance(ICmdStanceUnsetICtx),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -162,6 +171,10 @@ impl ChangeFitEnumCmd {
             // Item - skill
             Self::AddSkill(cmd) => ChangeFitEnumCmdRIds::AddSkill(cmd.inner),
             Self::ChangeSkill(cmd) => ChangeFitEnumCmdRIds::ChangeSkill(cmd.inner.render(resps)?),
+            // Item - stance
+            Self::SetStance(cmd) => ChangeFitEnumCmdRIds::SetStance(cmd.inner),
+            Self::ChangeStance(cmd) => ChangeFitEnumCmdRIds::ChangeStance(cmd.inner),
+            Self::UnsetStance(cmd) => ChangeFitEnumCmdRIds::UnsetStance(cmd.inner),
         })
     }
 }
@@ -215,6 +228,10 @@ impl ChangeFitEnumCmdRIds {
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_fit)?.into()),
             Self::ChangeSkill(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - stance
+            Self::SetStance(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeStance(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
+            Self::UnsetStance(cmd) => Ok(cmd.execute(core_fit).into()),
         }
     }
 }
@@ -274,4 +291,7 @@ pub enum ChangeFitEnumError {
     SkillAddFailed(#[from] FitAddSkillError),
     #[error("failed to change skill: {0}")]
     SkillChangeFailed(#[from] GetItemChangeSkillError),
+    // Item - stance
+    #[error("failed to change stance: {0}")]
+    StanceChangeFailed(#[from] FitChangeStanceError),
 }

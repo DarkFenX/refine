@@ -1,9 +1,10 @@
 use crate::cmd::{
     AddProjEffectError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
     GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
-    GetFitSetCharacterError, GetFitSetShipError, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd,
-    ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd, ItemAddServiceCmd,
-    ItemAddSkillCmd, ItemSetCharacterCmd, ItemSetShipCmd, shared::AddedItemIdsResp,
+    GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ItemAddBoosterCmd, ItemAddDroneCmd,
+    ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd,
+    ItemAddServiceCmd, ItemAddSkillCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
+    shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
@@ -19,6 +20,7 @@ pub enum AddItemEnumCmd {
     Service(ItemAddServiceCmd),
     Ship(ItemSetShipCmd),
     Skill(ItemAddSkillCmd),
+    Stance(ItemSetStanceCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -39,6 +41,7 @@ impl AddItemEnumCmd {
             Self::Service(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
 }
@@ -69,4 +72,6 @@ pub enum AddItemEnumError {
     ShipFailed(#[from] GetFitSetShipError),
     #[error("failed to add skill: {0}")]
     SkillFailed(#[from] GetFitAddSkillError),
+    #[error("failed to set stance: {0}")]
+    StanceFailed(#[from] GetFitSetStanceError),
 }

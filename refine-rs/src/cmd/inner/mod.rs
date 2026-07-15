@@ -84,6 +84,15 @@ pub(in crate::cmd) use item_skill::{
     ICmdSkillAddFCtxBIds, ICmdSkillAddFCtxRIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds, ICmdSkillChangeFCtxRIds,
     ICmdSkillChangeICtx,
 };
+pub use item_stance::{
+    FitChangeStanceError, GetFitChangeStanceError, GetFitSetStanceError, GetFitUnsetStanceError,
+    GetItemChangeStanceError, ItemChangeStanceError,
+};
+pub(in crate::cmd) use item_stance::{
+    ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
+    ICmdStanceChangeFItemCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetFCtxBIds, ICmdStanceSetFCtxRIds,
+    ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds, ICmdStanceUnsetFCtxRIds, ICmdStanceUnsetICtx,
+};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;
@@ -103,4 +112,5 @@ mod item_rig;
 mod item_service;
 mod item_ship;
 mod item_skill;
+mod item_stance;
 mod sol;
