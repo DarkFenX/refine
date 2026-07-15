@@ -1,13 +1,15 @@
 use crate::cmd::{
-    FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
-    FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFitCmd,
-    FitChangeFitError, FitChangeRigCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
-    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
-    GetItemChangeRigError, GetItemRemoveItemError,
+    FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddRigCmd,
+    FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd,
+    FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError, FitChangeRigCmd, FitRemoveItemCmd,
+    FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeRigError,
+    GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
-        ICmdDroneChangeFCtxRIds, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
+        ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
+        ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -31,6 +33,9 @@ pub enum ChangeFitEnumCmd {
     // Item - drone
     AddDrone(FitAddDroneCmd),
     ChangeDrone(FitChangeDroneCmd),
+    // Item - fighter
+    AddFighter(FitAddFighterCmd),
+    ChangeFighter(FitChangeFighterCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
     ChangeRig(FitChangeRigCmd),
@@ -55,6 +60,9 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - drone
     AddDrone(ICmdDroneAddICtxRIds),
     ChangeDrone(ICmdDroneChangeFCtxRIds),
+    // Item - fighter
+    AddFighter(ICmdFighterAddICtxRIds),
+    ChangeFighter(ICmdFighterChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddICtx),
     ChangeRig(ICmdRigChangeFCtxRIds),
@@ -84,6 +92,9 @@ impl ChangeFitEnumCmd {
             // Item - drone
             Self::AddDrone(cmd) => ChangeFitEnumCmdRIds::AddDrone(cmd.inner.render(resps)?),
             Self::ChangeDrone(cmd) => ChangeFitEnumCmdRIds::ChangeDrone(cmd.inner.render(resps)?),
+            // Item - fighter
+            Self::AddFighter(cmd) => ChangeFitEnumCmdRIds::AddFighter(cmd.inner.render(resps)?),
+            Self::ChangeFighter(cmd) => ChangeFitEnumCmdRIds::ChangeFighter(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
             Self::ChangeRig(cmd) => ChangeFitEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
@@ -115,6 +126,9 @@ impl ChangeFitEnumCmdRIds {
             // Item - drone
             Self::AddDrone(cmd) => Ok(cmd.execute(core_fit)?.into()),
             Self::ChangeDrone(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - fighter
+            Self::AddFighter(cmd) => Ok(cmd.execute(core_fit)?.into()),
+            Self::ChangeFighter(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
@@ -147,6 +161,11 @@ pub enum ChangeFitEnumError {
     DroneAddFailed(#[from] FitAddDroneError),
     #[error("failed to change drone: {0}")]
     DroneChangeFailed(#[from] GetItemChangeDroneError),
+    // Item - fighter
+    #[error("failed to add fighter: {0}")]
+    FighterAddFailed(#[from] FitAddFighterError),
+    #[error("failed to change fighter: {0}")]
+    FighterChangeFailed(#[from] GetItemChangeFighterError),
     // Item - rig
     #[error("failed to change rig: {0}")]
     RigChangeFailed(#[from] GetItemChangeRigError),

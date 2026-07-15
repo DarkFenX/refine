@@ -1,12 +1,14 @@
 use crate::cmd::{
-    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd,
-    ItemAddDroneCmd, ItemAddRigCmd, ItemSetCharacterCmd, shared::AddedItemIdsResp,
+    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddRigError, GetFitSetCharacterError,
+    ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddRigCmd, ItemSetCharacterCmd,
+    shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
     Booster(ItemAddBoosterCmd),
     Character(ItemSetCharacterCmd),
     Drone(ItemAddDroneCmd),
+    Fighter(ItemAddFighterCmd),
     Rig(ItemAddRigCmd),
 }
 
@@ -19,6 +21,7 @@ impl AddItemEnumCmd {
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
@@ -32,6 +35,8 @@ pub enum AddItemEnumError {
     CharacterFailed(#[from] GetFitSetCharacterError),
     #[error("failed to add drone: {0}")]
     DroneFailed(#[from] GetFitAddDroneError),
+    #[error("failed to add fighter: {0}")]
+    FighterFailed(#[from] GetFitAddFighterError),
     #[error("failed to add rig: {0}")]
     RigFailed(#[from] GetFitAddRigError),
 }

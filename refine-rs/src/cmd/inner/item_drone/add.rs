@@ -7,7 +7,7 @@ pub(in crate::cmd) struct ICmdDroneAddFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
     pub(in crate::cmd) ictx_cmd: ICmdDroneAddICtxBIds,
 }
-pub(in crate::cmd) struct ICmdDroneAddFCtxRIds {
+pub(crate) struct ICmdDroneAddFCtxRIds {
     pub(in crate::cmd) fit_id: rc::FitId,
     pub(in crate::cmd) ictx_cmd: ICmdDroneAddICtxRIds,
 }

@@ -1,7 +1,8 @@
 use crate::cmd::{
     ItemChangeAutochargeCmd, ItemChangeAutochargeError, ItemChangeBoosterCmd, ItemChangeBoosterError,
     ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError, ItemChangeDroneCmd,
-    ItemChangeDroneError, ItemChangeRigCmd, ItemChangeRigError, shared::ChangedItemIdsResp,
+    ItemChangeDroneError, ItemChangeFighterCmd, ItemChangeFighterError, ItemChangeRigCmd, ItemChangeRigError,
+    shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -10,6 +11,7 @@ pub enum ChangeItemEnumCmd {
     Character(ItemChangeCharacterCmd),
     Charge(ItemChangeChargeCmd),
     Drone(ItemChangeDroneCmd),
+    Fighter(ItemChangeFighterCmd),
     Rig(ItemChangeRigCmd),
 }
 
@@ -24,6 +26,7 @@ impl ChangeItemEnumCmd {
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
             Self::Charge(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
+            Self::Fighter(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
@@ -41,6 +44,8 @@ pub enum ChangeItemEnumError {
     ChargeFailed(#[from] ItemChangeChargeError),
     #[error("failed to change drone: {0}")]
     DroneFailed(#[from] ItemChangeDroneError),
+    #[error("failed to change fighter: {0}")]
+    FighterFailed(#[from] ItemChangeFighterError),
     #[error("failed to change rig: {0}")]
     RigFailed(#[from] ItemChangeRigError),
 }
