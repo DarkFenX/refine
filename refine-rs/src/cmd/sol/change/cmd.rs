@@ -1,18 +1,19 @@
-use super::sub_item_character::SolChangeCharacterCmdRIds;
+use super::{sub_item_character::SolChangeCharacterCmdRIds, sub_item_ship::SolChangeShipCmdRIds};
 use crate::cmd::{
-    AddFitError, AddFleetError, AddProjEffectError, ChangeCharacterError, GetFitAddBoosterError, GetFitAddDroneError,
-    GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError,
-    GetFitAddServiceError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
-    GetFitUnsetCharacterError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
-    GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
-    GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeProjEffectError,
-    GetItemChangeRigError, GetItemChangeServiceError, GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd,
-    SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd,
-    SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
-    SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd,
-    SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd,
-    SolChangeRigCmd, SolChangeServiceCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
-    SolSetCharacterCmd, SolUnsetCharacterCmd,
+    AddFitError, AddFleetError, AddProjEffectError, ChangeCharacterError, ChangeShipError, GetFitAddBoosterError,
+    GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError,
+    GetFitAddRigError, GetFitAddServiceError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
+    GetFitSetShipError, GetFitUnsetCharacterError, GetFitUnsetShipError, GetFleetChangeFleetError,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
+    GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
+    GetItemChangeModuleError, GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError,
+    GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
+    SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
+    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd,
+    SolChangeFighterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd,
+    SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd,
+    SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd,
+    SolUnsetCharacterCmd, SolUnsetShipCmd,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
         ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
@@ -21,7 +22,7 @@ use crate::cmd::{
         ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds,
         ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds,
-        ICmdServiceChangeFCtxRIds, ICmdSolChangeFCtx,
+        ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -74,6 +75,10 @@ pub enum ChangeSolEnumCmd {
     // Item - service
     AddService(SolAddServiceCmd),
     ChangeService(SolChangeServiceCmd),
+    // Item - ship
+    SetShip(SolSetShipCmd),
+    ChangeShip(SolChangeShipCmd),
+    UnsetShip(SolUnsetShipCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -124,6 +129,10 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     // Item - service
     AddService(ICmdServiceAddFCtxRIds),
     ChangeService(ICmdServiceChangeFCtxRIds),
+    // Item - ship
+    SetShip(ICmdShipSetFCtxRIds),
+    ChangeShip(SolChangeShipCmdRIds),
+    UnsetShip(ICmdShipUnsetFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -179,6 +188,10 @@ impl ChangeSolEnumCmd {
             // Item - service
             Self::AddService(cmd) => ChangeSolEnumCmdRIds::AddService(cmd.inner.render(resps)?),
             Self::ChangeService(cmd) => ChangeSolEnumCmdRIds::ChangeService(cmd.inner.render(resps)?),
+            // Item - ship
+            Self::SetShip(cmd) => ChangeSolEnumCmdRIds::SetShip(cmd.inner.render(resps)?),
+            Self::ChangeShip(cmd) => ChangeSolEnumCmdRIds::ChangeShip(cmd.render(resps)?),
+            Self::UnsetShip(cmd) => ChangeSolEnumCmdRIds::UnsetShip(cmd.inner.render(resps)?),
         })
     }
 }
@@ -236,6 +249,10 @@ impl ChangeSolEnumCmdRIds {
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - ship
+            Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -317,4 +334,11 @@ pub enum ChangeSolEnumError {
     ServiceAddFailed(#[from] GetFitAddServiceError),
     #[error("failed to change service: {0}")]
     ServiceChangeFailed(#[from] GetItemChangeServiceError),
+    // Item - ship
+    #[error("failed to set ship: {0}")]
+    ShipSetFailed(#[from] GetFitSetShipError),
+    #[error("failed to change ship: {0}")]
+    ShipChangeFailed(#[from] ChangeShipError),
+    #[error("failed to unset ship: {0}")]
+    ShipUnsetFailed(#[from] GetFitUnsetShipError),
 }

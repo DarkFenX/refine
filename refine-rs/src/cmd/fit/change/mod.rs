@@ -12,6 +12,7 @@ pub use sub_item_implant::{FitAddImplantCmd, FitChangeImplantCmd};
 pub use sub_item_module::{FitAddModuleCmd, FitChangeModuleCmd};
 pub use sub_item_rig::{FitAddRigCmd, FitChangeRigCmd};
 pub use sub_item_service::{FitAddServiceCmd, FitChangeServiceCmd};
+pub use sub_item_ship::{FitChangeShipCmd, FitSetShipCmd, FitUnsetShipCmd};
 
 mod cmd;
 mod sub_fit;
@@ -27,3 +28,4 @@ mod sub_item_implant;
 mod sub_item_module;
 mod sub_item_rig;
 mod sub_item_service;
+mod sub_item_ship;

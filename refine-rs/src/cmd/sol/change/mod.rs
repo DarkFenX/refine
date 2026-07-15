@@ -17,6 +17,9 @@ pub use sub_item_module::{SolAddModuleCmd, SolChangeModuleCmd};
 pub use sub_item_proj_effect::{SolAddProjEffectCmd, SolChangeProjEffectCmd};
 pub use sub_item_rig::{SolAddRigCmd, SolChangeRigCmd};
 pub use sub_item_service::{SolAddServiceCmd, SolChangeServiceCmd};
+pub use sub_item_ship::{
+    ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,
+};
 pub use sub_sol::SolChangeSolCmd;
 
 mod cmd;
@@ -35,4 +38,5 @@ mod sub_item_module;
 mod sub_item_proj_effect;
 mod sub_item_rig;
 mod sub_item_service;
+mod sub_item_ship;
 mod sub_sol;

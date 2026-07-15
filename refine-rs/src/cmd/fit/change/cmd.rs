@@ -3,17 +3,18 @@ use crate::cmd::{
     FitAddImplantCmd, FitAddModuleCmd, FitAddModuleError, FitAddRigCmd, FitAddServiceCmd, FitChangeAutochargeCmd,
     FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd,
     FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd,
-    FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd, FitRemoveItemCmd, FitSetCharacterCmd,
-    FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
-    GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
-    GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError, GetItemRemoveItemError,
+    FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd, FitChangeShipCmd, FitChangeShipError, FitRemoveItemCmd,
+    FitSetCharacterCmd, FitSetShipCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, GetItemChangeAutochargeError,
+    GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
+    GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError,
+    GetItemChangeServiceError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
         ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
         ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
-        ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds,
+        ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -55,6 +56,10 @@ pub enum ChangeFitEnumCmd {
     // Item - service
     AddService(FitAddServiceCmd),
     ChangeService(FitChangeServiceCmd),
+    // Item - ship
+    SetShip(FitSetShipCmd),
+    ChangeShip(FitChangeShipCmd),
+    UnsetShip(FitUnsetShipCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -94,6 +99,10 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - service
     AddService(ICmdServiceAddICtx),
     ChangeService(ICmdServiceChangeFCtxRIds),
+    // Item - ship
+    SetShip(ICmdShipSetICtx),
+    ChangeShip(ICmdShipChangeICtx),
+    UnsetShip(ICmdShipUnsetICtx),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -138,6 +147,10 @@ impl ChangeFitEnumCmd {
             // Item - service
             Self::AddService(cmd) => ChangeFitEnumCmdRIds::AddService(cmd.inner),
             Self::ChangeService(cmd) => ChangeFitEnumCmdRIds::ChangeService(cmd.inner.render(resps)?),
+            // Item - ship
+            Self::SetShip(cmd) => ChangeFitEnumCmdRIds::SetShip(cmd.inner),
+            Self::ChangeShip(cmd) => ChangeFitEnumCmdRIds::ChangeShip(cmd.inner),
+            Self::UnsetShip(cmd) => ChangeFitEnumCmdRIds::UnsetShip(cmd.inner),
         })
     }
 }
@@ -184,6 +197,10 @@ impl ChangeFitEnumCmdRIds {
             // Item - service
             Self::AddService(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeService(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - ship
+            Self::SetShip(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeShip(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
+            Self::UnsetShip(cmd) => Ok(cmd.execute(core_fit).into()),
         }
     }
 }
@@ -235,4 +252,7 @@ pub enum ChangeFitEnumError {
     // Item - service
     #[error("failed to change service: {0}")]
     ServiceChangeFailed(#[from] GetItemChangeServiceError),
+    // Item - ship
+    #[error("failed to change ship: {0}")]
+    ShipChangeFailed(#[from] FitChangeShipError),
 }

@@ -70,6 +70,15 @@ pub(in crate::cmd) use item_service::{
     ICmdServiceAddFCtxBIds, ICmdServiceAddFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds,
     ICmdServiceChangeFCtxRIds, ICmdServiceChangeICtx,
 };
+pub use item_ship::{
+    FitChangeShipError, GetFitChangeShipError, GetFitSetShipError, GetFitUnsetShipError, GetItemChangeShipError,
+    ItemChangeShipError,
+};
+pub(in crate::cmd) use item_ship::{
+    ICmdShipChangeFFitCtxBIds, ICmdShipChangeFFitCtxRIds, ICmdShipChangeFItemCtxBIds, ICmdShipChangeFItemCtxRIds,
+    ICmdShipChangeICtx, ICmdShipSetFCtxBIds, ICmdShipSetFCtxRIds, ICmdShipSetICtx, ICmdShipUnsetFCtxBIds,
+    ICmdShipUnsetFCtxRIds, ICmdShipUnsetICtx,
+};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;
@@ -87,4 +96,5 @@ mod item_module;
 mod item_proj_effect;
 mod item_rig;
 mod item_service;
+mod item_ship;
 mod sol;
