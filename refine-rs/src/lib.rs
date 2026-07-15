@@ -47,6 +47,7 @@ pub use rc::{
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
 pub use src::{Src, SrcAlias};
+pub use util::TriStateField;
 
 mod cmd;
 pub mod err;
