@@ -1,5 +1,5 @@
 use crate::{
-    api::{FitMut, RmMode},
+    api::{FitMut, RemoveMode},
     sol::SolarSystem,
     ud::{UEffectUpdates, UFitId},
 };
@@ -8,7 +8,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_remove_fit(&mut self, fit_uid: UFitId, reuse_eupdates: &mut UEffectUpdates) {
         let u_fit = self.u_data.fits.get(fit_uid);
         for item_uid in u_fit.all_direct_items().into_iter() {
-            self.internal_remove_item(item_uid, RmMode::Free, reuse_eupdates)
+            self.internal_remove_item(item_uid, RemoveMode::Free, reuse_eupdates)
                 .unwrap();
         }
         self.svc.notify_fit_removed(fit_uid);

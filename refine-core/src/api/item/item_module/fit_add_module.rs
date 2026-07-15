@@ -1,7 +1,7 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
     ad::AItemId,
-    api::{AddMode, FitMut, ItemTypeId, ModuleMut, ModuleState, RmMode},
+    api::{AddMode, FitMut, ItemTypeId, ModuleMut, ModuleState, RemoveMode},
     misc::ModRack,
     num::Index,
     sol::SolarSystem,
@@ -57,7 +57,7 @@ impl SolarSystem {
             AddMode::Replace(pos) => {
                 match u_fit_rack.get(pos) {
                     Some(old_module_uid) => {
-                        self.internal_remove_module(old_module_uid, RmMode::Free, reuse_eupdates);
+                        self.internal_remove_module(old_module_uid, RemoveMode::Free, reuse_eupdates);
                         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
                         u_fit_rack.place(pos, module_uid);
                     }

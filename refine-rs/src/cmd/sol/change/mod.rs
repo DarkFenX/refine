@@ -13,6 +13,7 @@ pub use sub_item_drone::{SolAddDroneCmd, SolChangeDroneCmd};
 pub use sub_item_fighter::{SolAddFighterCmd, SolChangeFighterCmd};
 pub use sub_item_fw_effect::{SolAddFwEffectCmd, SolChangeFwEffectCmd};
 pub use sub_item_implant::{SolAddImplantCmd, SolChangeImplantCmd};
+pub use sub_item_module::{SolAddModuleCmd, SolChangeModuleCmd};
 pub use sub_item_rig::{SolAddRigCmd, SolChangeRigCmd};
 pub use sub_sol::SolChangeSolCmd;
 
@@ -28,5 +29,6 @@ mod sub_item_drone;
 mod sub_item_fighter;
 mod sub_item_fw_effect;
 mod sub_item_implant;
+mod sub_item_module;
 mod sub_item_rig;
 mod sub_sol;

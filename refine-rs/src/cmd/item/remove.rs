@@ -12,7 +12,7 @@ impl RemoveItemCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
+    pub fn with_rm_mode(mut self, rm_mode: rc::RemoveMode) -> Self {
         self.inner.rm_mode = Some(rm_mode);
         self
     }

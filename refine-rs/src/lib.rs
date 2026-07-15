@@ -3,28 +3,29 @@
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp,
-    CmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd, FitAddRigCmd,
-    FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
-    FitChangeFighterCmd, FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeRigCmd, FitIdBackref,
-    FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd, FleetIdBackref, ItemAddBoosterCmd, ItemAddDroneCmd,
-    ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddRigCmd, ItemChangeAutochargeCmd,
-    ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd,
-    ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeRigCmd, ItemIdBackref, ItemSetCharacterCmd, RemoveFitCmd,
-    RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
-    SolAddFwEffectCmd, SolAddImplantCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
+    CmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd,
+    FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd,
+    FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd,
+    FitChangeModuleCmd, FitChangeRigCmd, FitIdBackref, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
+    FleetIdBackref, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd,
+    ItemAddModuleCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
+    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd,
+    ItemChangeModuleCmd, ItemChangeRigCmd, ItemIdBackref, ItemSetCharacterCmd, RemoveFitCmd, RemoveFleetCmd,
+    RemoveItemCmd, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddFwEffectCmd,
+    SolAddImplantCmd, SolAddModuleCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
     SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeChargeCmd,
     SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeFwEffectCmd,
-    SolChangeImplantCmd, SolChangeRigCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
-    SolSetCharacterCmd, SolUnsetCharacterCmd,
+    SolChangeImplantCmd, SolChangeModuleCmd, SolChangeRigCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
+    SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;
 pub use info::{SrcInfo, SrcInfoMode};
 pub use item::Item;
 pub use rc::{
-    BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectMode, FitId, FleetId, ItemId,
-    MinionState, ModuleState, Movement, NpcProp, OptionalReload, PValue, RearmMinion, RmMode, SecZone,
-    SecZoneCorruption, ServiceState, Spool, UnitInterval, Value, ed::EveDataHandler,
+    AddMode, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectMode, FitId, FleetId, ItemId,
+    MinionState, ModRack, ModuleState, MoveMode, Movement, NpcProp, OptionalReload, PValue, RearmMinion, RemoveMode,
+    SecZone, SecZoneCorruption, ServiceState, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};

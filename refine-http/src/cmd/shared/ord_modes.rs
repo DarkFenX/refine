@@ -38,19 +38,19 @@ impl HAddMode {
 }
 
 impl HMvMode {
-    pub(in crate::cmd) fn into_core(self) -> rc::MvMode {
+    pub(in crate::cmd) fn into_core(self) -> rc::MoveMode {
         match self {
-            Self::Shift(i) => rc::MvMode::Shift(rc::Index::from_usize(i)),
-            Self::Swap(i) => rc::MvMode::Swap(rc::Index::from_usize(i)),
+            Self::Shift(i) => rc::MoveMode::Shift(rc::Index::from_usize(i)),
+            Self::Swap(i) => rc::MoveMode::Swap(rc::Index::from_usize(i)),
         }
     }
 }
 
 impl HRmMode {
-    pub(in crate::cmd) fn into_core(self) -> rc::RmMode {
+    pub(in crate::cmd) fn into_core(self) -> rc::RemoveMode {
         match self {
-            Self::Remove => rc::RmMode::Remove,
-            Self::Free => rc::RmMode::Free,
+            Self::Remove => rc::RemoveMode::Remove,
+            Self::Free => rc::RemoveMode::Free,
         }
     }
 }

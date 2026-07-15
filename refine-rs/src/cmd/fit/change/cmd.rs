@@ -1,17 +1,18 @@
 use crate::cmd::{
     FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddFwEffectCmd,
-    FitAddImplantCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
-    FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd,
-    FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeRigCmd, FitRemoveItemCmd,
-    FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
-    GetItemChangeImplantError, GetItemChangeRigError, GetItemRemoveItemError,
+    FitAddImplantCmd, FitAddModuleCmd, FitAddModuleError, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
+    FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
+    FitChangeFitCmd, FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
+    FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError,
+    GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
+    GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError,
+    GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
         ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
         ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
-        ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
+        ICmdItemRemoveFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -44,6 +45,9 @@ pub enum ChangeFitEnumCmd {
     // Item - implant
     AddImplant(FitAddImplantCmd),
     ChangeImplant(FitChangeImplantCmd),
+    // Item - module
+    AddModule(FitAddModuleCmd),
+    ChangeModule(FitChangeModuleCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
     ChangeRig(FitChangeRigCmd),
@@ -77,6 +81,9 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - implant
     AddImplant(ICmdImplantAddICtx),
     ChangeImplant(ICmdImplantChangeFCtxRIds),
+    // Item - module
+    AddModule(ICmdModuleAddICtxRIds),
+    ChangeModule(ICmdModuleChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddICtx),
     ChangeRig(ICmdRigChangeFCtxRIds),
@@ -115,6 +122,9 @@ impl ChangeFitEnumCmd {
             // Item - implant
             Self::AddImplant(cmd) => ChangeFitEnumCmdRIds::AddImplant(cmd.inner),
             Self::ChangeImplant(cmd) => ChangeFitEnumCmdRIds::ChangeImplant(cmd.inner.render(resps)?),
+            // Item - drone
+            Self::AddModule(cmd) => ChangeFitEnumCmdRIds::AddModule(cmd.inner.render(resps)?),
+            Self::ChangeModule(cmd) => ChangeFitEnumCmdRIds::ChangeModule(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
             Self::ChangeRig(cmd) => ChangeFitEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
@@ -155,6 +165,9 @@ impl ChangeFitEnumCmdRIds {
             // Item - implant
             Self::AddImplant(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeImplant(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - module
+            Self::AddModule(cmd) => Ok(cmd.execute(core_fit)?.into()),
+            Self::ChangeModule(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
@@ -198,6 +211,11 @@ pub enum ChangeFitEnumError {
     // Item - implant
     #[error("failed to change implant: {0}")]
     ImplantChangeFailed(#[from] GetItemChangeImplantError),
+    // Item - module
+    #[error("failed to add module: {0}")]
+    ModuleAddFailed(#[from] FitAddModuleError),
+    #[error("failed to change module: {0}")]
+    ModuleChangeFailed(#[from] GetItemChangeModuleError),
     // Item - rig
     #[error("failed to change rig: {0}")]
     RigChangeFailed(#[from] GetItemChangeRigError),

@@ -15,7 +15,7 @@ pub enum AddMode {
 
 /// Defines how module is moved within its rack.
 #[derive(Copy, Clone)]
-pub enum MvMode {
+pub enum MoveMode {
     /// Takes a module and moves it to new position, shifting modules between original and target
     /// positions.
     Shift(Index),
@@ -26,7 +26,7 @@ pub enum MvMode {
 
 /// Defines how module is removed from a rack.
 #[derive(Copy, Clone)]
-pub enum RmMode {
+pub enum RemoveMode {
     /// Shift all items after the item being removed to the left.
     Remove,
     /// Just free up item's place without shifting anything.

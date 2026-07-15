@@ -1,6 +1,6 @@
 use super::shared::get_fit_rack_mut;
 use crate::{
-    api::{ModuleMut, RmMode},
+    api::{ModuleMut, RemoveMode},
     num::Index,
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
@@ -10,7 +10,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_remove_module(
         &mut self,
         module_uid: UItemId,
-        pos_mode: RmMode,
+        pos_mode: RemoveMode,
         reuse_eupdates: &mut UEffectUpdates,
     ) {
         let u_module = self.u_data.items.get(module_uid).dc_module().unwrap();
@@ -54,8 +54,8 @@ impl SolarSystem {
         }
         let u_fit_rack = get_fit_rack_mut(&mut self.u_data.fits, fit_uid, rack);
         match pos_mode {
-            RmMode::Free => u_fit_rack.free(pos),
-            RmMode::Remove => {
+            RemoveMode::Free => u_fit_rack.free(pos),
+            RemoveMode::Remove => {
                 for shift_module_uid in u_fit_rack.remove(pos) {
                     let shift_u_module = self.u_data.items.get_mut(shift_module_uid).dc_module_mut().unwrap();
                     shift_u_module.set_pos(shift_u_module.get_pos() - Index::ONE)
@@ -67,7 +67,7 @@ impl SolarSystem {
 }
 
 impl<'s> ModuleMut<'s> {
-    pub fn remove(self, pos_mode: RmMode) {
+    pub fn remove(self, pos_mode: RemoveMode) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol.internal_remove_module(self.uid, pos_mode, &mut reuse_eupdates)
     }

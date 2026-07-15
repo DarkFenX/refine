@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use crate::{
     ad::AItemId,
-    api::{AddMode, FitMut, ItemTypeId, MinionState, ModuleState, RmMode, ServiceState},
+    api::{AddMode, FitMut, ItemTypeId, MinionState, ModuleState, RemoveMode, ServiceState},
     misc::{DetectedItemKind, ModRack},
     num::PValue,
     rd::RState,
@@ -80,7 +80,7 @@ impl SolarSystem {
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
+                    self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
                 }
                 DetectedItemKind::ModuleMid => {
                     let module_uid = self.internal_add_module(
@@ -96,7 +96,7 @@ impl SolarSystem {
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
+                    self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
                 }
                 DetectedItemKind::ModuleLow => {
                     let module_uid = self.internal_add_module(
@@ -112,7 +112,7 @@ impl SolarSystem {
                     if self.internal_validate_fit_fast(fit_uid, val_options) {
                         valid.push(*type_aid)
                     }
-                    self.internal_remove_module(module_uid, RmMode::Free, reuse_eupdates);
+                    self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
                 }
                 // TODO: setting charge is a destructive action (since it removes old charge with
                 // TODO: all its settings), rework it to be non-destructive, unless it is too

@@ -22,7 +22,7 @@ use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_uids, iter_ra
 pub use misc::{
     AbilityId, AddMode, Affector, AttrId, AttrIdParseError, AttrVals, Coordinates, CustomEffectId, Direction,
     DogmaEffectId, EffectId, EffectIdParseError, EffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification,
-    ModuleState, Movement, MvMode, Op, ProjRange, RmMode, ServiceState,
+    ModuleState, MoveMode, Movement, Op, ProjRange, RemoveMode, ServiceState,
 };
 use sol_ctl_affectors::AffectionDir;
 pub use sol_ctl_affectors::CtlAffectors;

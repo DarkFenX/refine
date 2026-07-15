@@ -1,5 +1,5 @@
 use crate::{
-    api::{ItemMut, RmMode},
+    api::{ItemMut, RemoveMode},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItem, UItemId},
 };
@@ -8,7 +8,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_remove_item(
         &mut self,
         item_uid: UItemId,
-        pos_mode: RmMode,
+        pos_mode: RemoveMode,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), RemoveItemError> {
         let u_item = self.u_data.items.get(item_uid);
@@ -38,7 +38,7 @@ impl SolarSystem {
 }
 
 impl<'s> ItemMut<'s> {
-    pub fn remove(self, pos_mode: RmMode) -> Result<(), RemoveItemError> {
+    pub fn remove(self, pos_mode: RemoveMode) -> Result<(), RemoveItemError> {
         match self {
             // Autocharge can not be removed no matter what
             ItemMut::Autocharge(_) => {

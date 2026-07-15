@@ -88,10 +88,10 @@ impl ICmdDroneAddICtxRIds {
         if let Some(npc_prop) = self.shared.npc_prop {
             core_drone.set_npc_prop(Some(npc_prop))
         }
+        self.shared.effect_modes.apply(&mut core_drone);
         for projectee_item_id in self.proj_item_ids.iter() {
             core_drone.add_proj(projectee_item_id)?;
         }
-        self.shared.effect_modes.apply(&mut core_drone);
         Ok(AddedItemIdsResp::from_core_drone(core_drone))
     }
 }

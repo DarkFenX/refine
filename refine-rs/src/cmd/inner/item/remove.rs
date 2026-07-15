@@ -12,7 +12,7 @@ pub(crate) struct ICmdItemRemoveFCtxRIds {
 
 // Commands with incomplete context
 pub(in crate::cmd) struct ICmdItemRemoveICtx {
-    pub(in crate::cmd) rm_mode: Option<rc::RmMode> = None,
+    pub(in crate::cmd) rm_mode: Option<rc::RemoveMode> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ pub enum GetItemRemoveItemError {
 
 impl ICmdItemRemoveICtx {
     pub(in crate::cmd) fn execute(&self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
-        core_item.remove(self.rm_mode.unwrap_or(rc::RmMode::Free))?;
+        core_item.remove(self.rm_mode.unwrap_or(rc::RemoveMode::Free))?;
         Ok(())
     }
 }

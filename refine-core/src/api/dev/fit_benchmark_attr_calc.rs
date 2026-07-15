@@ -1,5 +1,5 @@
 use crate::{
-    api::{AddMode, FitMut, ItemTypeId, ModuleState, RmMode},
+    api::{AddMode, FitMut, ItemTypeId, ModuleState, RemoveMode},
     misc::ModRack,
     ud::UEffectUpdates,
 };
@@ -40,7 +40,7 @@ impl<'s> FitMut<'s> {
                     .get_item_attr_val_full(&self.sol.u_data, ship_uid, attr_rid);
             }
             self.sol
-                .internal_remove_module(item_uid, RmMode::Free, &mut reuse_eupdates);
+                .internal_remove_module(item_uid, RemoveMode::Free, &mut reuse_eupdates);
             for attr_rid in attr_rids.iter().copied() {
                 let _ = self
                     .sol

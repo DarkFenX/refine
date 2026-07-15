@@ -9,7 +9,7 @@ impl FitRemoveItemCmd {
             inner: ICmdItemRemoveFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_rm_mode(mut self, rm_mode: rc::RmMode) -> Self {
+    pub fn with_rm_mode(mut self, rm_mode: rc::RemoveMode) -> Self {
         self.inner.ictx_cmd.rm_mode = Some(rm_mode);
         self
     }

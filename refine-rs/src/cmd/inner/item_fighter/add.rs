@@ -89,10 +89,10 @@ impl ICmdFighterAddICtxRIds {
         if let Some(rearm_minion) = self.shared.rearm_minion {
             core_fighter.set_rearm_minion(Some(rearm_minion));
         }
+        self.shared.effect_modes.apply(&mut core_fighter);
         for projectee_item_id in self.proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id)?;
         }
-        self.shared.effect_modes.apply(&mut core_fighter);
         Ok(AddedItemIdsResp::from_core_fighter(core_fighter))
     }
 }

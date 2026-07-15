@@ -7,6 +7,7 @@ pub use sub_drone::ItemChangeDroneCmd;
 pub use sub_fighter::ItemChangeFighterCmd;
 pub use sub_fw_effect::ItemChangeFwEffectCmd;
 pub use sub_implant::ItemChangeImplantCmd;
+pub use sub_module::ItemChangeModuleCmd;
 pub use sub_rig::ItemChangeRigCmd;
 
 mod cmd;
@@ -18,4 +19,5 @@ mod sub_drone;
 mod sub_fighter;
 mod sub_fw_effect;
 mod sub_implant;
+mod sub_module;
 mod sub_rig;

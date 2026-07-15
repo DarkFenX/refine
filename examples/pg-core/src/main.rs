@@ -117,7 +117,7 @@ fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCac
                 .unwrap()
                 .for_each(drop),
         );
-        sol_sys.get_item_mut(&anp_id).unwrap().remove(rc::RmMode::Free);
+        sol_sys.get_item_mut(&anp_id).unwrap().remove(rc::RemoveMode::Free);
         black_box(
             sol_sys
                 .get_item_mut(&ship_id)
