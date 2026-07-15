@@ -6,3 +6,11 @@ pub enum SrcInfoMode {
     #[default]
     Full,
 }
+
+#[derive(Copy, Clone, Default)]
+pub enum ItemInfoMode {
+    Id,
+    Partial,
+    #[default]
+    Full,
+}

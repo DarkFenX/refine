@@ -28,12 +28,13 @@ pub use cmd::{
 };
 pub use fit::Fit;
 pub use fleet::Fleet;
-pub use info::{SrcInfo, SrcInfoMode};
+pub use info::{ItemInfoMode, RigInfo, RigInfoExt, SrcInfo, SrcInfoMode};
 pub use item::Item;
 pub use rc::{
-    AddMode, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectMode, FitId, FleetId, ItemId,
-    MinionState, ModRack, ModuleState, MoveMode, Movement, NpcProp, OptionalReload, PValue, RearmMinion, RemoveMode,
-    SecZone, SecZoneCorruption, ServiceState, SkillLevel, Spool, UnitInterval, Value, ed::EveDataHandler,
+    AddMode, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectInfo, EffectMode,
+    FitId, FleetId, ItemId, ItemKind, ItemTypeId, MinionState, ModRack, Modification, ModuleState, MoveMode, Movement,
+    NpcProp, OptionalReload, PValue, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
+    Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
