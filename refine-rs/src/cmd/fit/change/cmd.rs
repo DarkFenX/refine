@@ -1,15 +1,17 @@
 use crate::cmd::{
     FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddFwEffectCmd,
-    FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError,
-    FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError,
-    FitChangeFwEffectCmd, FitChangeRigCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
-    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
-    GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeRigError, GetItemRemoveItemError,
+    FitAddImplantCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
+    FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd,
+    FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeRigCmd, FitRemoveItemCmd,
+    FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
+    GetItemChangeImplantError, GetItemChangeRigError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
         ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
-        ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
+        ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
+        ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -39,6 +41,9 @@ pub enum ChangeFitEnumCmd {
     // Item - fit-wide effect
     AddFwEffect(FitAddFwEffectCmd),
     ChangeFwEffect(FitChangeFwEffectCmd),
+    // Item - implant
+    AddImplant(FitAddImplantCmd),
+    ChangeImplant(FitChangeImplantCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
     ChangeRig(FitChangeRigCmd),
@@ -69,6 +74,9 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - fit-wide effect
     AddFwEffect(ICmdFwEffectAddICtx),
     ChangeFwEffect(ICmdFwEffectChangeFCtxRIds),
+    // Item - implant
+    AddImplant(ICmdImplantAddICtx),
+    ChangeImplant(ICmdImplantChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddICtx),
     ChangeRig(ICmdRigChangeFCtxRIds),
@@ -104,6 +112,9 @@ impl ChangeFitEnumCmd {
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => ChangeFitEnumCmdRIds::AddFwEffect(cmd.inner),
             Self::ChangeFwEffect(cmd) => ChangeFitEnumCmdRIds::ChangeFwEffect(cmd.inner.render(resps)?),
+            // Item - implant
+            Self::AddImplant(cmd) => ChangeFitEnumCmdRIds::AddImplant(cmd.inner),
+            Self::ChangeImplant(cmd) => ChangeFitEnumCmdRIds::ChangeImplant(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
             Self::ChangeRig(cmd) => ChangeFitEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
@@ -141,6 +152,9 @@ impl ChangeFitEnumCmdRIds {
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - implant
+            Self::AddImplant(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeImplant(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
@@ -181,6 +195,9 @@ pub enum ChangeFitEnumError {
     // Item - fit-wide effect
     #[error("failed to change fit-wide effect: {0}")]
     FwEffectChangeFailed(#[from] GetItemChangeFwEffectError),
+    // Item - implant
+    #[error("failed to change implant: {0}")]
+    ImplantChangeFailed(#[from] GetItemChangeImplantError),
     // Item - rig
     #[error("failed to change rig: {0}")]
     RigChangeFailed(#[from] GetItemChangeRigError),

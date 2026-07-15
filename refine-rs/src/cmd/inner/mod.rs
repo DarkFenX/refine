@@ -45,6 +45,11 @@ pub(in crate::cmd) use item_fw_effect::{
     ICmdFwEffectAddFCtxBIds, ICmdFwEffectAddFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds,
     ICmdFwEffectChangeFCtxRIds, ICmdFwEffectChangeICtx,
 };
+pub use item_implant::{GetFitAddImplantError, GetItemChangeImplantError, ItemChangeImplantError};
+pub(in crate::cmd) use item_implant::{
+    ICmdImplantAddFCtxBIds, ICmdImplantAddFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxBIds,
+    ICmdImplantChangeFCtxRIds, ICmdImplantChangeICtx,
+};
 pub use item_rig::{GetFitAddRigError, GetItemChangeRigError, ItemChangeRigError};
 pub(in crate::cmd) use item_rig::{
     ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds,
@@ -62,5 +67,6 @@ mod item_charge;
 mod item_drone;
 mod item_fighter;
 mod item_fw_effect;
+mod item_implant;
 mod item_rig;
 mod sol;

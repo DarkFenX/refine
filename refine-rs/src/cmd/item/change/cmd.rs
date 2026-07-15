@@ -2,7 +2,7 @@ use crate::cmd::{
     ItemChangeAutochargeCmd, ItemChangeAutochargeError, ItemChangeBoosterCmd, ItemChangeBoosterError,
     ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError, ItemChangeDroneCmd,
     ItemChangeDroneError, ItemChangeFighterCmd, ItemChangeFighterError, ItemChangeFwEffectCmd, ItemChangeFwEffectError,
-    ItemChangeRigCmd, ItemChangeRigError, shared::ChangedItemIdsResp,
+    ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeRigCmd, ItemChangeRigError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -13,6 +13,7 @@ pub enum ChangeItemEnumCmd {
     Drone(ItemChangeDroneCmd),
     Fighter(ItemChangeFighterCmd),
     FwEffect(ItemChangeFwEffectCmd),
+    Implant(ItemChangeImplantCmd),
     Rig(ItemChangeRigCmd),
 }
 
@@ -29,6 +30,7 @@ impl ChangeItemEnumCmd {
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
+            Self::Implant(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
@@ -50,6 +52,8 @@ pub enum ChangeItemEnumError {
     FighterFailed(#[from] ItemChangeFighterError),
     #[error("failed to change fit-wide effect: {0}")]
     FwEffectFailed(#[from] ItemChangeFwEffectError),
+    #[error("failed to change implant: {0}")]
+    ImplantFailed(#[from] ItemChangeImplantError),
     #[error("failed to change rig: {0}")]
     RigFailed(#[from] ItemChangeRigError),
 }
