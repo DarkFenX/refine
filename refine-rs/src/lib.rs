@@ -29,16 +29,16 @@ pub use cmd::{
 pub use fit::Fit;
 pub use fleet::Fleet;
 pub use info::{
-    AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo, CharacterInfoExt, ChargeInfo,
-    ChargeInfoExt, ItemInfo, ItemInfoMode, RigInfo, RigInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SrcInfo,
-    SrcInfoMode,
+    AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo, CharacterInfoExt,
+    ChargeInfo, ChargeInfoExt, ItemInfo, ItemInfoMode, ItemMutationInfo, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt,
+    SideEffectInfo, SideEffectMod, SideEffectOp, SrcInfo, SrcInfoMode,
 };
 pub use item::Item;
 pub use rc::{
     AddMode, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectInfo, EffectMode,
-    FitId, FleetId, ItemId, ItemKind, ItemTypeId, MinionState, ModRack, Modification, ModuleState, MoveMode, Movement,
-    NpcProp, OptionalReload, PValue, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
-    SlotIndex, Spool, UnitInterval, Value, ed::EveDataHandler,
+    FitId, FleetId, ItemId, ItemKind, ItemNpcPropInfo, ItemTypeId, MinionState, ModRack, Modification, ModuleState,
+    MoveMode, Movement, NpcProp, OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone,
+    SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
