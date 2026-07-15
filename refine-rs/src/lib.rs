@@ -29,16 +29,18 @@ pub use cmd::{
 pub use fit::Fit;
 pub use fleet::Fleet;
 pub use info::{
-    AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo, CharacterInfoExt,
-    ChargeInfo, ChargeInfoExt, ItemInfo, ItemInfoMode, ItemMutationInfo, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt,
-    SideEffectInfo, SideEffectMod, SideEffectOp, SrcInfo, SrcInfoMode,
+    AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
+    CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, ItemInfo,
+    ItemInfoMode, ItemMutationInfo, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, SideEffectInfo, SideEffectMod,
+    SideEffectOp, SrcInfo, SrcInfoMode,
 };
 pub use item::Item;
 pub use rc::{
     AddMode, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectInfo, EffectMode,
-    FitId, FleetId, ItemId, ItemKind, ItemNpcPropInfo, ItemTypeId, MinionState, ModRack, Modification, ModuleState,
-    MoveMode, Movement, NpcProp, OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone,
-    SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval, Value, ed::EveDataHandler,
+    FighterCountInfo, FitId, FleetId, ItemId, ItemKind, ItemNpcPropInfo, ItemRearmMinionInfo, ItemTypeId, MinionState,
+    ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, OptionalReload, PValue, ProjRange, RearmMinion,
+    RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval, Value,
+    ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
