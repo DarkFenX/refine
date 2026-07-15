@@ -10,6 +10,7 @@ pub use sub_proj_effect::ItemAddProjEffectCmd;
 pub use sub_rig::ItemAddRigCmd;
 pub use sub_service::ItemAddServiceCmd;
 pub use sub_ship::ItemSetShipCmd;
+pub use sub_skill::ItemAddSkillCmd;
 
 mod cmd;
 mod sub_booster;
@@ -23,3 +24,4 @@ mod sub_proj_effect;
 mod sub_rig;
 mod sub_service;
 mod sub_ship;
+mod sub_skill;

@@ -79,6 +79,11 @@ pub(in crate::cmd) use item_ship::{
     ICmdShipChangeICtx, ICmdShipSetFCtxBIds, ICmdShipSetFCtxRIds, ICmdShipSetICtx, ICmdShipUnsetFCtxBIds,
     ICmdShipUnsetFCtxRIds, ICmdShipUnsetICtx,
 };
+pub use item_skill::{FitAddSkillError, GetFitAddSkillError, GetItemChangeSkillError, ItemChangeSkillError};
+pub(in crate::cmd) use item_skill::{
+    ICmdSkillAddFCtxBIds, ICmdSkillAddFCtxRIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds, ICmdSkillChangeFCtxRIds,
+    ICmdSkillChangeICtx,
+};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;
@@ -97,4 +102,5 @@ mod item_proj_effect;
 mod item_rig;
 mod item_service;
 mod item_ship;
+mod item_skill;
 mod sol;

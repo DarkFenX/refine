@@ -2,18 +2,18 @@ use super::{sub_item_character::SolChangeCharacterCmdRIds, sub_item_ship::SolCha
 use crate::cmd::{
     AddFitError, AddFleetError, AddProjEffectError, ChangeCharacterError, ChangeShipError, GetFitAddBoosterError,
     GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError,
-    GetFitAddRigError, GetFitAddServiceError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
-    GetFitSetShipError, GetFitUnsetCharacterError, GetFitUnsetShipError, GetFleetChangeFleetError,
-    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
-    GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
-    GetItemChangeModuleError, GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError,
-    GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
-    SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
-    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd,
-    SolChangeFighterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd,
-    SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd,
-    SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd,
-    SolUnsetCharacterCmd, SolUnsetShipCmd,
+    GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError, GetFitChangeFitError, GetFitRemoveFitError,
+    GetFitSetCharacterError, GetFitSetShipError, GetFitUnsetCharacterError, GetFitUnsetShipError,
+    GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
+    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeProjEffectError, GetItemChangeRigError,
+    GetItemChangeServiceError, GetItemChangeSkillError, GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd,
+    SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd,
+    SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
+    SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd,
+    SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd,
+    SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd, SolChangeSkillCmd, SolChangeSolCmd, SolRemoveFitCmd,
+    SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolUnsetCharacterCmd, SolUnsetShipCmd,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
         ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
@@ -22,7 +22,8 @@ use crate::cmd::{
         ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds,
         ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds,
-        ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSolChangeFCtx,
+        ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSkillAddFCtxRIds,
+        ICmdSkillChangeFCtxRIds, ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -79,6 +80,9 @@ pub enum ChangeSolEnumCmd {
     SetShip(SolSetShipCmd),
     ChangeShip(SolChangeShipCmd),
     UnsetShip(SolUnsetShipCmd),
+    // Item - skill
+    AddSkill(SolAddSkillCmd),
+    ChangeSkill(SolChangeSkillCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -133,6 +137,9 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     SetShip(ICmdShipSetFCtxRIds),
     ChangeShip(SolChangeShipCmdRIds),
     UnsetShip(ICmdShipUnsetFCtxRIds),
+    // Item - skill
+    AddSkill(ICmdSkillAddFCtxRIds),
+    ChangeSkill(ICmdSkillChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -192,6 +199,9 @@ impl ChangeSolEnumCmd {
             Self::SetShip(cmd) => ChangeSolEnumCmdRIds::SetShip(cmd.inner.render(resps)?),
             Self::ChangeShip(cmd) => ChangeSolEnumCmdRIds::ChangeShip(cmd.render(resps)?),
             Self::UnsetShip(cmd) => ChangeSolEnumCmdRIds::UnsetShip(cmd.inner.render(resps)?),
+            // Item - skill
+            Self::AddSkill(cmd) => ChangeSolEnumCmdRIds::AddSkill(cmd.inner.render(resps)?),
+            Self::ChangeSkill(cmd) => ChangeSolEnumCmdRIds::ChangeSkill(cmd.inner.render(resps)?),
         })
     }
 }
@@ -253,6 +263,9 @@ impl ChangeSolEnumCmdRIds {
             Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - skill
+            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -341,4 +354,9 @@ pub enum ChangeSolEnumError {
     ShipChangeFailed(#[from] ChangeShipError),
     #[error("failed to unset ship: {0}")]
     ShipUnsetFailed(#[from] GetFitUnsetShipError),
+    // Item - skill
+    #[error("failed to add skill: {0}")]
+    SkillAddFailed(#[from] GetFitAddSkillError),
+    #[error("failed to change skill: {0}")]
+    SkillChangeFailed(#[from] GetItemChangeSkillError),
 }

@@ -115,6 +115,12 @@ impl ICmdShipChangeICtx {
         if let Some(state) = self.state {
             core_ship.set_state(state);
         }
+        if let Some(coordinates) = self.coordinates {
+            core_ship.set_coordinates(coordinates);
+        }
+        if let Some(movement) = self.movement {
+            core_ship.set_movement(movement);
+        }
         self.effect_modes.apply(core_ship);
         ChangedItemIdsResp::default()
     }

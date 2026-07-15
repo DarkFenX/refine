@@ -20,6 +20,7 @@ pub use sub_item_service::{SolAddServiceCmd, SolChangeServiceCmd};
 pub use sub_item_ship::{
     ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,
 };
+pub use sub_item_skill::{SolAddSkillCmd, SolChangeSkillCmd};
 pub use sub_sol::SolChangeSolCmd;
 
 mod cmd;
@@ -39,4 +40,5 @@ mod sub_item_proj_effect;
 mod sub_item_rig;
 mod sub_item_service;
 mod sub_item_ship;
+mod sub_item_skill;
 mod sub_sol;

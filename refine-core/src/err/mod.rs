@@ -2,7 +2,7 @@ pub use basic::ItemKindMatchError;
 
 pub use crate::{
     api::{
-        AddMutationError, AddProjError, AttrIdParseError, AttrMutateRawError, CreateSkillError, EffectIdParseError,
+        AddMutationError, AddProjError, AddSkillError, AttrIdParseError, AttrMutateRawError, EffectIdParseError,
         FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError, FleetAddFitError,
         FleetRemoveFitError, FleetStatAppliedError, GetAbilityError, GetAutochargeError, GetBoosterError,
         GetCharacterError, GetChargeError, GetDroneError, GetFighterError, GetFitError, GetFleetError,

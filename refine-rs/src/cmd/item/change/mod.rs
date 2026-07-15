@@ -12,6 +12,7 @@ pub use sub_proj_effect::ItemChangeProjEffectCmd;
 pub use sub_rig::ItemChangeRigCmd;
 pub use sub_service::ItemChangeServiceCmd;
 pub use sub_ship::ItemChangeShipCmd;
+pub use sub_skill::ItemChangeSkillCmd;
 
 mod cmd;
 mod sub_autocharge;
@@ -27,3 +28,4 @@ mod sub_proj_effect;
 mod sub_rig;
 mod sub_service;
 mod sub_ship;
+mod sub_skill;

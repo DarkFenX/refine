@@ -1,0 +1,66 @@
+use crate::cmd::{
+    ChangeSolEnumCmd,
+    inner::{ICmdSkillAddFCtxBIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
+    shared::{FitIdBackref, ItemIdBackref},
+};
+
+pub struct SolAddSkillCmd {
+    pub(super) inner: ICmdSkillAddFCtxBIds,
+}
+impl SolAddSkillCmd {
+    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId, level: rc::SkillLevel) -> Self {
+        Self {
+            inner: ICmdSkillAddFCtxBIds {
+                fit_id,
+                ictx_cmd: ICmdSkillAddICtx { type_id, level, .. },
+            },
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolAddSkillCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolAddSkillCmd) -> Self {
+        Self::AddSkill(sub_cmd)
+    }
+}
+
+pub struct SolChangeSkillCmd {
+    pub(super) inner: ICmdSkillChangeFCtxBIds,
+}
+impl SolChangeSkillCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            inner: ICmdSkillChangeFCtxBIds { item_id, .. },
+        }
+    }
+    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+        self.inner.ictx_cmd.type_id = Some(type_id);
+        self
+    }
+    pub fn with_level(mut self, level: rc::SkillLevel) -> Self {
+        self.inner.ictx_cmd.level = Some(level);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.inner.ictx_cmd.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.effect_modes.clear();
+        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<SolChangeSkillCmd> for ChangeSolEnumCmd {
+    fn from(sub_cmd: SolChangeSkillCmd) -> Self {
+        Self::ChangeSkill(sub_cmd)
+    }
+}

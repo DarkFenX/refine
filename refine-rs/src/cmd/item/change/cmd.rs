@@ -4,7 +4,7 @@ use crate::cmd::{
     ItemChangeDroneError, ItemChangeFighterCmd, ItemChangeFighterError, ItemChangeFwEffectCmd, ItemChangeFwEffectError,
     ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeModuleCmd, ItemChangeModuleError, ItemChangeProjEffectCmd,
     ItemChangeProjEffectError, ItemChangeRigCmd, ItemChangeRigError, ItemChangeServiceCmd, ItemChangeServiceError,
-    ItemChangeShipCmd, ItemChangeShipError, shared::ChangedItemIdsResp,
+    ItemChangeShipCmd, ItemChangeShipError, ItemChangeSkillCmd, ItemChangeSkillError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -21,6 +21,7 @@ pub enum ChangeItemEnumCmd {
     Rig(ItemChangeRigCmd),
     Service(ItemChangeServiceCmd),
     Ship(ItemChangeShipCmd),
+    Skill(ItemChangeSkillCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +43,7 @@ impl ChangeItemEnumCmd {
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Service(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
+            Self::Skill(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
 }
@@ -74,4 +76,6 @@ pub enum ChangeItemEnumError {
     ServiceFailed(#[from] ItemChangeServiceError),
     #[error("failed to change ship: {0}")]
     ShipFailed(#[from] ItemChangeShipError),
+    #[error("failed to change skill: {0}")]
+    SkillFailed(#[from] ItemChangeSkillError),
 }

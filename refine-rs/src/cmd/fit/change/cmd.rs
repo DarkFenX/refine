@@ -1,13 +1,14 @@
 use crate::cmd::{
     FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddFwEffectCmd,
-    FitAddImplantCmd, FitAddModuleCmd, FitAddModuleError, FitAddRigCmd, FitAddServiceCmd, FitChangeAutochargeCmd,
-    FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd,
-    FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd,
-    FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd, FitChangeShipCmd, FitChangeShipError, FitRemoveItemCmd,
-    FitSetCharacterCmd, FitSetShipCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, GetItemChangeAutochargeError,
-    GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
-    GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError,
-    GetItemChangeServiceError, GetItemRemoveItemError,
+    FitAddImplantCmd, FitAddModuleCmd, FitAddModuleError, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
+    FitAddSkillError, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError,
+    FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError,
+    FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd,
+    FitChangeShipCmd, FitChangeShipError, FitChangeSkillCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd,
+    FitUnsetCharacterCmd, FitUnsetShipCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
+    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError,
+    GetItemChangeSkillError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
@@ -15,6 +16,7 @@ use crate::cmd::{
         ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
         ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
+        ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -60,6 +62,9 @@ pub enum ChangeFitEnumCmd {
     SetShip(FitSetShipCmd),
     ChangeShip(FitChangeShipCmd),
     UnsetShip(FitUnsetShipCmd),
+    // Item - skill
+    AddSkill(FitAddSkillCmd),
+    ChangeSkill(FitChangeSkillCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -103,6 +108,9 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     SetShip(ICmdShipSetICtx),
     ChangeShip(ICmdShipChangeICtx),
     UnsetShip(ICmdShipUnsetICtx),
+    // Item - skill
+    AddSkill(ICmdSkillAddICtx),
+    ChangeSkill(ICmdSkillChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -151,6 +159,9 @@ impl ChangeFitEnumCmd {
             Self::SetShip(cmd) => ChangeFitEnumCmdRIds::SetShip(cmd.inner),
             Self::ChangeShip(cmd) => ChangeFitEnumCmdRIds::ChangeShip(cmd.inner),
             Self::UnsetShip(cmd) => ChangeFitEnumCmdRIds::UnsetShip(cmd.inner),
+            // Item - skill
+            Self::AddSkill(cmd) => ChangeFitEnumCmdRIds::AddSkill(cmd.inner),
+            Self::ChangeSkill(cmd) => ChangeFitEnumCmdRIds::ChangeSkill(cmd.inner.render(resps)?),
         })
     }
 }
@@ -201,6 +212,9 @@ impl ChangeFitEnumCmdRIds {
             Self::SetShip(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
             Self::UnsetShip(cmd) => Ok(cmd.execute(core_fit).into()),
+            // Item - skill
+            Self::AddSkill(cmd) => Ok(cmd.execute(core_fit)?.into()),
+            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
         }
     }
 }
@@ -255,4 +269,9 @@ pub enum ChangeFitEnumError {
     // Item - ship
     #[error("failed to change ship: {0}")]
     ShipChangeFailed(#[from] FitChangeShipError),
+    // Item - skill
+    #[error("failed to add skill: {0}")]
+    SkillAddFailed(#[from] FitAddSkillError),
+    #[error("failed to change skill: {0}")]
+    SkillChangeFailed(#[from] GetItemChangeSkillError),
 }
