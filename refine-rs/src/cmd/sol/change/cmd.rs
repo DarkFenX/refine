@@ -3,16 +3,16 @@ use crate::cmd::{
     AddFitError, AddFleetError, ChangeCharacterError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddRigError,
     GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError,
     GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd,
-    SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd,
-    SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd,
-    SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeRigError, GetItemRemoveItemError, SolAddBoosterCmd,
+    SolAddDroneCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
+    SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeRigCmd,
+    SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
         ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
         ICmdFitAddFCtxRIds, ICmdFitChangeFCtxRIds, ICmdFitRemoveFCtxRIds, ICmdFleetAddFCtxRIds,
         ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddFCtxRIds,
-        ICmdSolChangeFCtx,
+        ICmdRigChangeFCtxRIds, ICmdSolChangeFCtx,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -46,6 +46,7 @@ pub enum ChangeSolEnumCmd {
     ChangeDrone(SolChangeDroneCmd),
     // Item - rig
     AddRig(SolAddRigCmd),
+    ChangeRig(SolChangeRigCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -77,6 +78,7 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     ChangeDrone(ICmdDroneChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddFCtxRIds),
+    ChangeRig(ICmdRigChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -113,6 +115,7 @@ impl ChangeSolEnumCmd {
             Self::ChangeDrone(cmd) => ChangeSolEnumCmdRIds::ChangeDrone(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeSolEnumCmdRIds::AddRig(cmd.inner.render(resps)?),
+            Self::ChangeRig(cmd) => ChangeSolEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
         })
     }
 }
@@ -151,6 +154,7 @@ impl ChangeSolEnumCmdRIds {
             Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -200,4 +204,6 @@ pub enum ChangeSolEnumError {
     // Item - rig
     #[error("failed to add rig: {0}")]
     RigAddFailed(#[from] GetFitAddRigError),
+    #[error("failed to change rig: {0}")]
+    RigChangeFailed(#[from] GetItemChangeRigError),
 }

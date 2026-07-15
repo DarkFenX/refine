@@ -1,12 +1,13 @@
 use crate::cmd::{
     FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
     FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFitCmd,
-    FitChangeFitError, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError,
-    GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemRemoveItemError,
+    FitChangeFitError, FitChangeRigCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
+    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
+    GetItemChangeRigError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
-        ICmdDroneChangeFCtxRIds, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddICtx,
+        ICmdDroneChangeFCtxRIds, ICmdFitChangeICtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -32,6 +33,7 @@ pub enum ChangeFitEnumCmd {
     ChangeDrone(FitChangeDroneCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
+    ChangeRig(FitChangeRigCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -55,6 +57,7 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     ChangeDrone(ICmdDroneChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddICtx),
+    ChangeRig(ICmdRigChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -83,6 +86,7 @@ impl ChangeFitEnumCmd {
             Self::ChangeDrone(cmd) => ChangeFitEnumCmdRIds::ChangeDrone(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
+            Self::ChangeRig(cmd) => ChangeFitEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
         })
     }
 }
@@ -113,6 +117,7 @@ impl ChangeFitEnumCmdRIds {
             Self::ChangeDrone(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeRig(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
         }
     }
 }
@@ -142,4 +147,7 @@ pub enum ChangeFitEnumError {
     DroneAddFailed(#[from] FitAddDroneError),
     #[error("failed to change drone: {0}")]
     DroneChangeFailed(#[from] GetItemChangeDroneError),
+    // Item - rig
+    #[error("failed to change rig: {0}")]
+    RigChangeFailed(#[from] GetItemChangeRigError),
 }

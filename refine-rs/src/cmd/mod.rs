@@ -1,7 +1,7 @@
 pub use fit::{
     AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddRigCmd,
     FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
-    FitChangeFitCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd, RemoveFitCmd,
+    FitChangeFitCmd, FitChangeRigCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd, RemoveFitCmd,
 };
 pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
@@ -9,13 +9,14 @@ pub use inner::{
     GetFitAddBoosterError, GetFitAddDroneError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError,
     GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError,
     GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemRemoveItemError, ItemChangeAutochargeError,
-    ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError, ItemChangeDroneError, ItemRemoveItemError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeRigError, GetItemRemoveItemError,
+    ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
+    ItemChangeDroneError, ItemChangeRigError, ItemRemoveItemError,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd,
     ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd,
-    ItemChangeDroneCmd, ItemSetCharacterCmd, RemoveItemCmd,
+    ItemChangeDroneCmd, ItemChangeRigCmd, ItemSetCharacterCmd, RemoveItemCmd,
 };
 pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
@@ -25,8 +26,8 @@ pub use sol::{
     AddSolCmd, ChangeCharacterError, ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddDroneCmd,
     SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd,
     SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFitCmd,
-    SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd,
-    SolUnsetCharacterCmd,
+    SolChangeFleetCmd, SolChangeRigCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
 
 mod fit;

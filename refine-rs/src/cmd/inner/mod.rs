@@ -35,8 +35,11 @@ pub(in crate::cmd) use item_drone::{
     ICmdDroneAddFCtxBIds, ICmdDroneAddFCtxRIds, ICmdDroneAddICtxBIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared,
     ICmdDroneChangeFCtxBIds, ICmdDroneChangeFCtxRIds, ICmdDroneChangeICtxRIds,
 };
-pub use item_rig::GetFitAddRigError;
-pub(in crate::cmd) use item_rig::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
+pub use item_rig::{GetFitAddRigError, GetItemChangeRigError, ItemChangeRigError};
+pub(in crate::cmd) use item_rig::{
+    ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds,
+    ICmdRigChangeICtx,
+};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;

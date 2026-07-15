@@ -32,14 +32,14 @@ impl ItemChangeDroneCmd {
         self.inner.shared.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, effect_modes: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
         self.inner.add_proj_item_ids.clear();
-        self.inner.add_proj_item_ids.extend(effect_modes);
+        self.inner.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, effect_modes: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
         self.inner.rm_proj_item_ids.clear();
-        self.inner.rm_proj_item_ids.extend(effect_modes);
+        self.inner.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {

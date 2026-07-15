@@ -32,9 +32,9 @@ impl FitAddDroneCmd {
         self.inner.shared.movement = Some(movement);
         self
     }
-    pub fn with_proj_item_ids(mut self, effect_modes: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
         self.inner.proj_item_ids.clear();
-        self.inner.proj_item_ids.extend(effect_modes);
+        self.inner.proj_item_ids.extend(proj_item_ids);
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
@@ -82,14 +82,14 @@ impl FitChangeDroneCmd {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, effect_modes: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
         self.inner.ictx_cmd.add_proj_item_ids.clear();
-        self.inner.ictx_cmd.add_proj_item_ids.extend(effect_modes);
+        self.inner.ictx_cmd.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, effect_modes: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
         self.inner.ictx_cmd.rm_proj_item_ids.clear();
-        self.inner.ictx_cmd.rm_proj_item_ids.extend(effect_modes);
+        self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {

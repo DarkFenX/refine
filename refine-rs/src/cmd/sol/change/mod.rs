@@ -10,7 +10,7 @@ pub use sub_item_character::{
 };
 pub use sub_item_charge::SolChangeChargeCmd;
 pub use sub_item_drone::{SolAddDroneCmd, SolChangeDroneCmd};
-pub use sub_item_rig::SolAddRigCmd;
+pub use sub_item_rig::{SolAddRigCmd, SolChangeRigCmd};
 pub use sub_sol::SolChangeSolCmd;
 
 mod cmd;

@@ -35,9 +35,9 @@ impl ItemAddDroneCmd {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
-    pub fn with_proj_item_ids(mut self, effect_modes: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
         self.inner.ictx_cmd.proj_item_ids.clear();
-        self.inner.ictx_cmd.proj_item_ids.extend(effect_modes);
+        self.inner.ictx_cmd.proj_item_ids.extend(proj_item_ids);
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {

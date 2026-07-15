@@ -3,7 +3,7 @@ pub use add::{
 };
 pub use change::{
     ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
-    ItemChangeChargeCmd, ItemChangeDroneCmd,
+    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeRigCmd,
 };
 pub use remove::RemoveItemCmd;
 

@@ -20,9 +20,9 @@ impl SolAddBoosterCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_side_effects(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
+    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
         self.inner.ictx_cmd.side_effects.clear();
-        self.inner.ictx_cmd.side_effects.extend(effect_modes);
+        self.inner.ictx_cmd.side_effects.extend(side_effects);
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
@@ -54,9 +54,9 @@ impl SolChangeBoosterCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_side_effects(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
+    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
         self.inner.ictx_cmd.side_effects.clear();
-        self.inner.ictx_cmd.side_effects.extend(effect_modes);
+        self.inner.ictx_cmd.side_effects.extend(side_effects);
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
