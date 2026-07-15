@@ -37,10 +37,10 @@ pub use info::{
 pub use item::Item;
 pub use rc::{
     AddMode, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectInfo, EffectMode,
-    FighterCountInfo, FitId, FleetId, ItemId, ItemKind, ItemNpcPropInfo, ItemRearmMinionInfo, ItemTypeId, MinionState,
-    ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, OptionalReload, PValue, ProjRange, RearmMinion,
-    RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval, Value,
-    ed::EveDataHandler,
+    FighterCountInfo, FitId, FleetId, ItemId, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo, ItemRearmMinionInfo,
+    ItemSpoolInfo, ItemTypeId, MinionState, ModRack, Modification, ModuleInfo, ModuleInfoExt, ModuleState, MoveMode,
+    Movement, NpcProp, OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption,
+    ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};
