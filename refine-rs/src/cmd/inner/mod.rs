@@ -93,6 +93,11 @@ pub(in crate::cmd) use item_stance::{
     ICmdStanceChangeFItemCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetFCtxBIds, ICmdStanceSetFCtxRIds,
     ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds, ICmdStanceUnsetFCtxRIds, ICmdStanceUnsetICtx,
 };
+pub use item_subsystem::{GetFitAddSubsystemError, GetItemChangeSubsystemError, ItemChangeSubsystemError};
+pub(in crate::cmd) use item_subsystem::{
+    ICmdSubsystemAddFCtxBIds, ICmdSubsystemAddFCtxRIds, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxBIds,
+    ICmdSubsystemChangeFCtxRIds, ICmdSubsystemChangeICtx,
+};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;
@@ -113,4 +118,5 @@ mod item_service;
 mod item_ship;
 mod item_skill;
 mod item_stance;
+mod item_subsystem;
 mod sol;

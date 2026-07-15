@@ -5,7 +5,7 @@ use crate::cmd::{
     ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeModuleCmd, ItemChangeModuleError, ItemChangeProjEffectCmd,
     ItemChangeProjEffectError, ItemChangeRigCmd, ItemChangeRigError, ItemChangeServiceCmd, ItemChangeServiceError,
     ItemChangeShipCmd, ItemChangeShipError, ItemChangeSkillCmd, ItemChangeSkillError, ItemChangeStanceCmd,
-    ItemChangeStanceError, shared::ChangedItemIdsResp,
+    ItemChangeStanceError, ItemChangeSubsystemCmd, ItemChangeSubsystemError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -24,6 +24,7 @@ pub enum ChangeItemEnumCmd {
     Ship(ItemChangeShipCmd),
     Skill(ItemChangeSkillCmd),
     Stance(ItemChangeStanceCmd),
+    Subsystem(ItemChangeSubsystemCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,6 +48,7 @@ impl ChangeItemEnumCmd {
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
+            Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
 }
@@ -83,4 +85,6 @@ pub enum ChangeItemEnumError {
     SkillFailed(#[from] ItemChangeSkillError),
     #[error("failed to change stance: {0}")]
     StanceFailed(#[from] ItemChangeStanceError),
+    #[error("failed to change subsystem: {0}")]
+    SubsystemFailed(#[from] ItemChangeSubsystemError),
 }

@@ -14,6 +14,7 @@ pub use sub_service::ItemChangeServiceCmd;
 pub use sub_ship::ItemChangeShipCmd;
 pub use sub_skill::ItemChangeSkillCmd;
 pub use sub_stance::ItemChangeStanceCmd;
+pub use sub_subsystem::ItemChangeSubsystemCmd;
 
 mod cmd;
 mod sub_autocharge;
@@ -31,3 +32,4 @@ mod sub_service;
 mod sub_ship;
 mod sub_skill;
 mod sub_stance;
+mod sub_subsystem;

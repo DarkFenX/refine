@@ -5,20 +5,20 @@ use super::{
 use crate::cmd::{
     AddFitError, AddFleetError, AddProjEffectError, ChangeCharacterError, ChangeShipError, ChangeStanceError,
     GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError,
-    GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError, GetFitChangeFitError,
-    GetFitRemoveFitError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, GetFitUnsetCharacterError,
-    GetFitUnsetShipError, GetFitUnsetStanceError, GetFleetChangeFleetError, GetFleetRemoveFleetError,
-    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
-    GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
-    GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError,
-    GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
-    SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
-    SolAddSkillCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd,
-    SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeFwEffectCmd,
-    SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
-    SolChangeShipCmd, SolChangeSkillCmd, SolChangeSolCmd, SolChangeStanceCmd, SolRemoveFitCmd, SolRemoveFleetCmd,
-    SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd,
-    SolUnsetStanceCmd,
+    GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError, GetFitAddSubsystemError,
+    GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
+    GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError, GetFleetChangeFleetError,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
+    GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
+    GetItemChangeModuleError, GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError,
+    GetItemChangeSkillError, GetItemChangeSubsystemError, GetItemRemoveItemError, SolAddBoosterCmd, SolAddDroneCmd,
+    SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd,
+    SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolChangeAutochargeCmd,
+    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd,
+    SolChangeFitCmd, SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd,
+    SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd, SolChangeSkillCmd, SolChangeSolCmd,
+    SolChangeStanceCmd, SolChangeSubsystemCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
         ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
@@ -29,6 +29,7 @@ use crate::cmd::{
         ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds,
         ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSkillAddFCtxRIds,
         ICmdSkillChangeFCtxRIds, ICmdSolChangeFCtx, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds,
+        ICmdSubsystemAddFCtxRIds, ICmdSubsystemChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -92,6 +93,9 @@ pub enum ChangeSolEnumCmd {
     SetStance(SolSetStanceCmd),
     ChangeStance(SolChangeStanceCmd),
     UnsetStance(SolUnsetStanceCmd),
+    // Item - subsystem
+    AddSubsystem(SolAddSubsystemCmd),
+    ChangeSubsystem(SolChangeSubsystemCmd),
 }
 
 pub(crate) enum ChangeSolEnumCmdRIds {
@@ -153,6 +157,9 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     SetStance(ICmdStanceSetFCtxRIds),
     ChangeStance(SolChangeStanceCmdRIds),
     UnsetStance(ICmdStanceUnsetFCtxRIds),
+    // Item - subsystem
+    AddSubsystem(ICmdSubsystemAddFCtxRIds),
+    ChangeSubsystem(ICmdSubsystemChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +226,9 @@ impl ChangeSolEnumCmd {
             Self::SetStance(cmd) => ChangeSolEnumCmdRIds::SetStance(cmd.inner.render(resps)?),
             Self::ChangeStance(cmd) => ChangeSolEnumCmdRIds::ChangeStance(cmd.render(resps)?),
             Self::UnsetStance(cmd) => ChangeSolEnumCmdRIds::UnsetStance(cmd.inner.render(resps)?),
+            // Item - subsystem
+            Self::AddSubsystem(cmd) => ChangeSolEnumCmdRIds::AddSubsystem(cmd.inner.render(resps)?),
+            Self::ChangeSubsystem(cmd) => ChangeSolEnumCmdRIds::ChangeSubsystem(cmd.inner.render(resps)?),
         })
     }
 }
@@ -287,6 +297,9 @@ impl ChangeSolEnumCmdRIds {
             Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
             Self::UnsetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            // Item - subsystem
+            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }
@@ -387,4 +400,9 @@ pub enum ChangeSolEnumError {
     StanceChangeFailed(#[from] ChangeStanceError),
     #[error("failed to unset stance: {0}")]
     StanceUnsetFailed(#[from] GetFitUnsetStanceError),
+    // Item - subsystem
+    #[error("failed to add subsystem: {0}")]
+    SubsystemAddFailed(#[from] GetFitAddSubsystemError),
+    #[error("failed to change subsystem: {0}")]
+    SubsystemChangeFailed(#[from] GetItemChangeSubsystemError),
 }

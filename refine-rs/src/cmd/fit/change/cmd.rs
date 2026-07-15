@@ -1,15 +1,15 @@
 use crate::cmd::{
     FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddFwEffectCmd,
     FitAddImplantCmd, FitAddModuleCmd, FitAddModuleError, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
-    FitAddSkillError, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError,
-    FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError,
-    FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd,
-    FitChangeShipCmd, FitChangeShipError, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeStanceError,
-    FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
-    FitUnsetStanceCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError,
-    GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
-    GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError,
-    GetItemRemoveItemError,
+    FitAddSkillError, FitAddSubsystemCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
+    FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd,
+    FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
+    FitChangeServiceCmd, FitChangeShipCmd, FitChangeShipError, FitChangeSkillCmd, FitChangeStanceCmd,
+    FitChangeStanceError, FitChangeSubsystemCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd,
+    FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
+    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError,
+    GetItemChangeSkillError, GetItemChangeSubsystemError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
@@ -18,6 +18,7 @@ use crate::cmd::{
         ICmdItemRemoveFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
         ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
         ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx,
+        ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -70,6 +71,9 @@ pub enum ChangeFitEnumCmd {
     SetStance(FitSetStanceCmd),
     ChangeStance(FitChangeStanceCmd),
     UnsetStance(FitUnsetStanceCmd),
+    // Item - subsystem
+    AddSubsystem(FitAddSubsystemCmd),
+    ChangeSubsystem(FitChangeSubsystemCmd),
 }
 
 pub(crate) enum ChangeFitEnumCmdRIds {
@@ -120,6 +124,9 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     SetStance(ICmdStanceSetICtx),
     ChangeStance(ICmdStanceChangeICtx),
     UnsetStance(ICmdStanceUnsetICtx),
+    // Item - subsystem
+    AddSubsystem(ICmdSubsystemAddICtx),
+    ChangeSubsystem(ICmdSubsystemChangeFCtxRIds),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,6 +182,9 @@ impl ChangeFitEnumCmd {
             Self::SetStance(cmd) => ChangeFitEnumCmdRIds::SetStance(cmd.inner),
             Self::ChangeStance(cmd) => ChangeFitEnumCmdRIds::ChangeStance(cmd.inner),
             Self::UnsetStance(cmd) => ChangeFitEnumCmdRIds::UnsetStance(cmd.inner),
+            // Item - subsystem
+            Self::AddSubsystem(cmd) => ChangeFitEnumCmdRIds::AddSubsystem(cmd.inner),
+            Self::ChangeSubsystem(cmd) => ChangeFitEnumCmdRIds::ChangeSubsystem(cmd.inner.render(resps)?),
         })
     }
 }
@@ -232,6 +242,9 @@ impl ChangeFitEnumCmdRIds {
             Self::SetStance(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
             Self::UnsetStance(cmd) => Ok(cmd.execute(core_fit).into()),
+            // Item - subsystem
+            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
         }
     }
 }
@@ -294,4 +307,7 @@ pub enum ChangeFitEnumError {
     // Item - stance
     #[error("failed to change stance: {0}")]
     StanceChangeFailed(#[from] FitChangeStanceError),
+    // Item - subsystem
+    #[error("failed to change subsystem: {0}")]
+    SubsystemChangeFailed(#[from] GetItemChangeSubsystemError),
 }

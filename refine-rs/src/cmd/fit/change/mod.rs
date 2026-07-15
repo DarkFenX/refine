@@ -15,6 +15,7 @@ pub use sub_item_service::{FitAddServiceCmd, FitChangeServiceCmd};
 pub use sub_item_ship::{FitChangeShipCmd, FitSetShipCmd, FitUnsetShipCmd};
 pub use sub_item_skill::{FitAddSkillCmd, FitChangeSkillCmd};
 pub use sub_item_stance::{FitChangeStanceCmd, FitSetStanceCmd, FitUnsetStanceCmd};
+pub use sub_item_subsystem::{FitAddSubsystemCmd, FitChangeSubsystemCmd};
 
 mod cmd;
 mod sub_fit;
@@ -33,3 +34,4 @@ mod sub_item_service;
 mod sub_item_ship;
 mod sub_item_skill;
 mod sub_item_stance;
+mod sub_item_subsystem;

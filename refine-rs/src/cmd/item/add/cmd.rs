@@ -1,10 +1,10 @@
 use crate::cmd::{
     AddProjEffectError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
     GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
-    GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ItemAddBoosterCmd, ItemAddDroneCmd,
-    ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd,
-    ItemAddServiceCmd, ItemAddSkillCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
-    shared::AddedItemIdsResp,
+    GetFitAddSubsystemError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ItemAddBoosterCmd,
+    ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd,
+    ItemAddRigCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd, ItemSetCharacterCmd, ItemSetShipCmd,
+    ItemSetStanceCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
@@ -21,6 +21,7 @@ pub enum AddItemEnumCmd {
     Ship(ItemSetShipCmd),
     Skill(ItemAddSkillCmd),
     Stance(ItemSetStanceCmd),
+    Subsystem(ItemAddSubsystemCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -42,6 +43,7 @@ impl AddItemEnumCmd {
             Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
 }
@@ -74,4 +76,6 @@ pub enum AddItemEnumError {
     SkillFailed(#[from] GetFitAddSkillError),
     #[error("failed to set stance: {0}")]
     StanceFailed(#[from] GetFitSetStanceError),
+    #[error("failed to add subsystem: {0}")]
+    SubsystemFailed(#[from] GetFitAddSubsystemError),
 }
