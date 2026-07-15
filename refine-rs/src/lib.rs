@@ -29,8 +29,9 @@ pub use cmd::{
 pub use fit::Fit;
 pub use fleet::Fleet;
 pub use info::{
-    AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, ItemInfo, ItemInfoMode, RigInfo, RigInfoExt,
-    SideEffectInfo, SideEffectMod, SideEffectOp, SrcInfo, SrcInfoMode,
+    AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo, CharacterInfoExt, ChargeInfo,
+    ChargeInfoExt, ItemInfo, ItemInfoMode, RigInfo, RigInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SrcInfo,
+    SrcInfoMode,
 };
 pub use item::Item;
 pub use rc::{
