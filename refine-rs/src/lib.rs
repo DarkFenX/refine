@@ -30,9 +30,9 @@ pub use fit::Fit;
 pub use fleet::Fleet;
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
-    CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, ItemInfo,
-    ItemInfoMode, ItemMutationInfo, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, SideEffectInfo, SideEffectMod,
-    SideEffectOp, SrcInfo, SrcInfoMode,
+    CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FwEffectInfo,
+    FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoMode, ItemMutationInfo, ProjInfo, RangedProjInfo,
+    RigInfo, RigInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SrcInfo, SrcInfoMode,
 };
 pub use item::Item;
 pub use rc::{

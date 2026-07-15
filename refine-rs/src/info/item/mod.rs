@@ -5,6 +5,8 @@ pub use item_character::{CharacterInfo, CharacterInfoExt};
 pub use item_charge::{ChargeInfo, ChargeInfoExt};
 pub use item_drone::{DroneInfo, DroneInfoExt};
 pub use item_fighter::{FighterInfo, FighterInfoExt};
+pub use item_fw_effect::{FwEffectInfo, FwEffectInfoExt};
+pub use item_implant::{ImplantInfo, ImplantInfoExt};
 pub use item_rig::{RigInfo, RigInfoExt};
 pub use shared::{
     AbilityInfo, AttrMutationInfo, ItemMutationInfo, ProjInfo, RangedProjInfo, SideEffectInfo, SideEffectMod,
@@ -18,5 +20,7 @@ mod item_character;
 mod item_charge;
 mod item_drone;
 mod item_fighter;
+mod item_fw_effect;
+mod item_implant;
 mod item_rig;
 mod shared;
