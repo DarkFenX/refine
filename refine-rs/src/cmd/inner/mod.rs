@@ -98,6 +98,10 @@ pub(in crate::cmd) use item_subsystem::{
     ICmdSubsystemAddFCtxBIds, ICmdSubsystemAddFCtxRIds, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxBIds,
     ICmdSubsystemChangeFCtxRIds, ICmdSubsystemChangeICtx,
 };
+pub use item_sw_effect::{GetItemChangeSwEffectError, ItemChangeSwEffectError};
+pub(in crate::cmd) use item_sw_effect::{
+    ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxBIds, ICmdSwEffectChangeFCtxRIds, ICmdSwEffectChangeICtx,
+};
 pub(in crate::cmd) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
 
 mod fit;
@@ -119,4 +123,5 @@ mod item_ship;
 mod item_skill;
 mod item_stance;
 mod item_subsystem;
+mod item_sw_effect;
 mod sol;

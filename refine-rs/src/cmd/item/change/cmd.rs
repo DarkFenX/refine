@@ -5,7 +5,8 @@ use crate::cmd::{
     ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeModuleCmd, ItemChangeModuleError, ItemChangeProjEffectCmd,
     ItemChangeProjEffectError, ItemChangeRigCmd, ItemChangeRigError, ItemChangeServiceCmd, ItemChangeServiceError,
     ItemChangeShipCmd, ItemChangeShipError, ItemChangeSkillCmd, ItemChangeSkillError, ItemChangeStanceCmd,
-    ItemChangeStanceError, ItemChangeSubsystemCmd, ItemChangeSubsystemError, shared::ChangedItemIdsResp,
+    ItemChangeStanceError, ItemChangeSubsystemCmd, ItemChangeSubsystemError, ItemChangeSwEffectCmd,
+    ItemChangeSwEffectError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -25,6 +26,7 @@ pub enum ChangeItemEnumCmd {
     Skill(ItemChangeSkillCmd),
     Stance(ItemChangeStanceCmd),
     Subsystem(ItemChangeSubsystemCmd),
+    SwEffect(ItemChangeSwEffectCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -49,6 +51,7 @@ impl ChangeItemEnumCmd {
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?.into()),
             Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
+            Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
 }
@@ -87,4 +90,6 @@ pub enum ChangeItemEnumError {
     StanceFailed(#[from] ItemChangeStanceError),
     #[error("failed to change subsystem: {0}")]
     SubsystemFailed(#[from] ItemChangeSubsystemError),
+    #[error("failed to change system-wide effect: {0}")]
+    SwEffectFailed(#[from] ItemChangeSwEffectError),
 }

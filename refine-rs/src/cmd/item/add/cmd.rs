@@ -3,8 +3,8 @@ use crate::cmd::{
     GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
     GetFitAddSubsystemError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ItemAddBoosterCmd,
     ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd,
-    ItemAddRigCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd, ItemSetCharacterCmd, ItemSetShipCmd,
-    ItemSetStanceCmd, shared::AddedItemIdsResp,
+    ItemAddRigCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd, ItemAddSwEffectCmd, ItemSetCharacterCmd,
+    ItemSetShipCmd, ItemSetStanceCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
@@ -22,6 +22,7 @@ pub enum AddItemEnumCmd {
     Skill(ItemAddSkillCmd),
     Stance(ItemSetStanceCmd),
     Subsystem(ItemAddSubsystemCmd),
+    SwEffect(ItemAddSwEffectCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,6 +45,7 @@ impl AddItemEnumCmd {
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_sol).into()),
         }
     }
 }

@@ -26,6 +26,7 @@ pub use sub_item_stance::{
     SolUnsetStanceCmd,
 };
 pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
+pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 pub use sub_sol::SolChangeSolCmd;
 
 mod cmd;
@@ -48,4 +49,5 @@ mod sub_item_ship;
 mod sub_item_skill;
 mod sub_item_stance;
 mod sub_item_subsystem;
+mod sub_item_sw_effect;
 mod sub_sol;
