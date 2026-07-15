@@ -55,6 +55,11 @@ pub(in crate::cmd) use item_module::{
     ICmdModuleAddFCtxBIds, ICmdModuleAddFCtxRIds, ICmdModuleAddICtxBIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared,
     ICmdModuleChangeFCtxBIds, ICmdModuleChangeFCtxRIds, ICmdModuleChangeICtxRIds,
 };
+pub use item_proj_effect::{AddProjEffectError, GetItemChangeProjEffectError, ItemChangeProjEffectError};
+pub(in crate::cmd) use item_proj_effect::{
+    ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddFCtxRIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds,
+    ICmdProjEffectChangeFCtxRIds, ICmdProjEffectChangeICtxRIds,
+};
 pub use item_rig::{GetFitAddRigError, GetItemChangeRigError, ItemChangeRigError};
 pub(in crate::cmd) use item_rig::{
     ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds,
@@ -74,5 +79,6 @@ mod item_fighter;
 mod item_fw_effect;
 mod item_implant;
 mod item_module;
+mod item_proj_effect;
 mod item_rig;
 mod sol;

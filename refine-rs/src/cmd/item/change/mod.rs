@@ -8,6 +8,7 @@ pub use sub_fighter::ItemChangeFighterCmd;
 pub use sub_fw_effect::ItemChangeFwEffectCmd;
 pub use sub_implant::ItemChangeImplantCmd;
 pub use sub_module::ItemChangeModuleCmd;
+pub use sub_proj_effect::ItemChangeProjEffectCmd;
 pub use sub_rig::ItemChangeRigCmd;
 
 mod cmd;
@@ -20,4 +21,5 @@ mod sub_fighter;
 mod sub_fw_effect;
 mod sub_implant;
 mod sub_module;
+mod sub_proj_effect;
 mod sub_rig;

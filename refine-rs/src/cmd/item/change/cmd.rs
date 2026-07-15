@@ -2,8 +2,8 @@ use crate::cmd::{
     ItemChangeAutochargeCmd, ItemChangeAutochargeError, ItemChangeBoosterCmd, ItemChangeBoosterError,
     ItemChangeCharacterCmd, ItemChangeCharacterError, ItemChangeChargeCmd, ItemChangeChargeError, ItemChangeDroneCmd,
     ItemChangeDroneError, ItemChangeFighterCmd, ItemChangeFighterError, ItemChangeFwEffectCmd, ItemChangeFwEffectError,
-    ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeModuleCmd, ItemChangeModuleError, ItemChangeRigCmd,
-    ItemChangeRigError, shared::ChangedItemIdsResp,
+    ItemChangeImplantCmd, ItemChangeImplantError, ItemChangeModuleCmd, ItemChangeModuleError, ItemChangeProjEffectCmd,
+    ItemChangeProjEffectError, ItemChangeRigCmd, ItemChangeRigError, shared::ChangedItemIdsResp,
 };
 
 pub enum ChangeItemEnumCmd {
@@ -16,6 +16,7 @@ pub enum ChangeItemEnumCmd {
     FwEffect(ItemChangeFwEffectCmd),
     Implant(ItemChangeImplantCmd),
     Module(ItemChangeModuleCmd),
+    ProjEffect(ItemChangeProjEffectCmd),
     Rig(ItemChangeRigCmd),
 }
 
@@ -34,6 +35,7 @@ impl ChangeItemEnumCmd {
             Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Implant(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Module(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
+            Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
         }
     }
@@ -59,6 +61,8 @@ pub enum ChangeItemEnumError {
     ImplantFailed(#[from] ItemChangeImplantError),
     #[error("failed to change module: {0}")]
     ModuleFailed(#[from] ItemChangeModuleError),
+    #[error("failed to change projected effect: {0}")]
+    ProjEffectFailed(#[from] ItemChangeProjEffectError),
     #[error("failed to change rig: {0}")]
     RigFailed(#[from] ItemChangeRigError),
 }

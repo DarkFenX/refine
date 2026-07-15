@@ -1,8 +1,8 @@
 use crate::cmd::{
-    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError,
-    GetFitAddModuleError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd, ItemAddDroneCmd,
-    ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddRigCmd, ItemSetCharacterCmd,
-    shared::AddedItemIdsResp,
+    AddProjEffectError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
+    GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitSetCharacterError, ItemAddBoosterCmd,
+    ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd,
+    ItemAddRigCmd, ItemSetCharacterCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
@@ -13,6 +13,7 @@ pub enum AddItemEnumCmd {
     FwEffect(ItemAddFwEffectCmd),
     Implant(ItemAddImplantCmd),
     Module(ItemAddModuleCmd),
+    ProjEffect(ItemAddProjEffectCmd),
     Rig(ItemAddRigCmd),
 }
 
@@ -29,6 +30,7 @@ impl AddItemEnumCmd {
             Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Implant(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Module(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
@@ -50,6 +52,8 @@ pub enum AddItemEnumError {
     ImplantFailed(#[from] GetFitAddImplantError),
     #[error("failed to add module: {0}")]
     ModuleFailed(#[from] GetFitAddModuleError),
+    #[error("failed to add projected effect: {0}")]
+    ProjEffect(#[from] AddProjEffectError),
     #[error("failed to add rig: {0}")]
     RigFailed(#[from] GetFitAddRigError),
 }
