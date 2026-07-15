@@ -1,8 +1,8 @@
 pub use add::AddFitCmd;
 pub use change::{
-    ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
-    FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeFitCmd, FitRemoveItemCmd, FitSetCharacterCmd,
-    FitUnsetCharacterCmd,
+    ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddRigCmd, FitChangeAutochargeCmd,
+    FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFitCmd,
+    FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
 };
 pub use remove::RemoveFitCmd;
 

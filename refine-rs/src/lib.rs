@@ -3,14 +3,15 @@
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd, ChangedItemIdsResp, CmdResp,
-    CmdResps, FitAddBoosterCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
-    FitChangeChargeCmd, FitChangeFitCmd, FitIdBackref, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
-    FleetIdBackref, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd,
-    ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd, ItemIdBackref, ItemSetCharacterCmd, RemoveFitCmd,
-    RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd,
-    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd,
-    SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeSolCmd,
-    SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
+    CmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
+    FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFitCmd, FitIdBackref, FitRemoveItemCmd,
+    FitSetCharacterCmd, FitUnsetCharacterCmd, FleetIdBackref, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddRigCmd,
+    ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd,
+    ItemIdBackref, ItemSetCharacterCmd, RemoveFitCmd, RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddDroneCmd,
+    SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd,
+    SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFitCmd,
+    SolChangeFleetCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd,
+    SolUnsetCharacterCmd,
 };
 pub use fit::Fit;
 pub use fleet::Fleet;

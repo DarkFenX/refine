@@ -1,0 +1,105 @@
+use crate::cmd::{
+    ChangeFitEnumCmd,
+    inner::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
+    shared::{AddMutation, ChangeMutation, ItemIdBackref},
+};
+
+pub struct FitAddDroneCmd {
+    pub(super) inner: ICmdDroneAddICtxBIds,
+}
+impl FitAddDroneCmd {
+    pub fn new(type_id: rc::ItemTypeId, state: rc::MinionState) -> Self {
+        Self {
+            inner: ICmdDroneAddICtxBIds {
+                shared: ICmdDroneAddShared { type_id, state, .. },
+                ..
+            },
+        }
+    }
+    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+        self.inner.shared.mutation = Some(mutation);
+        self
+    }
+    pub fn with_npc_prop(mut self, npc_prop: rc::NpcProp) -> Self {
+        self.inner.shared.npc_prop = Some(npc_prop);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+        self.inner.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+        self.inner.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, effect_modes: impl Iterator<Item = ItemIdBackref>) -> Self {
+        self.inner.proj_item_ids.clear();
+        self.inner.proj_item_ids.extend(effect_modes);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.shared.effect_modes.clear();
+        self.inner.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<FitAddDroneCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitAddDroneCmd) -> Self {
+        Self::AddDrone(sub_cmd)
+    }
+}
+
+pub struct FitChangeDroneCmd {
+    pub(super) inner: ICmdDroneChangeFCtxBIds,
+}
+impl FitChangeDroneCmd {
+    pub fn new(item_id: ItemIdBackref) -> Self {
+        Self {
+            inner: ICmdDroneChangeFCtxBIds { item_id, .. },
+        }
+    }
+    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+        self.inner.ictx_cmd.shared.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: rc::MinionState) -> Self {
+        self.inner.ictx_cmd.shared.state = Some(state);
+        self
+    }
+    pub fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
+        self.inner.ictx_cmd.shared.mutation = mutation.into();
+        self
+    }
+    pub fn with_npc_prop(mut self, npc_prop: Option<rc::NpcProp>) -> Self {
+        self.inner.ictx_cmd.shared.npc_prop = npc_prop.into();
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+        self.inner.ictx_cmd.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+        self.inner.ictx_cmd.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_add_proj_item_ids(mut self, effect_modes: impl Iterator<Item = ItemIdBackref>) -> Self {
+        self.inner.ictx_cmd.add_proj_item_ids.clear();
+        self.inner.ictx_cmd.add_proj_item_ids.extend(effect_modes);
+        self
+    }
+    pub fn with_rm_proj_item_ids(mut self, effect_modes: impl Iterator<Item = ItemIdBackref>) -> Self {
+        self.inner.ictx_cmd.rm_proj_item_ids.clear();
+        self.inner.ictx_cmd.rm_proj_item_ids.extend(effect_modes);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+        self.inner.ictx_cmd.shared.effect_modes.clear();
+        self.inner.ictx_cmd.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+impl From<FitChangeDroneCmd> for ChangeFitEnumCmd {
+    fn from(sub_cmd: FitChangeDroneCmd) -> Self {
+        Self::ChangeDrone(sub_cmd)
+    }
+}

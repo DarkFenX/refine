@@ -6,20 +6,20 @@ use crate::{
 };
 
 // Commands with full context
-struct ICmdDroneChangeFCtxBIds {
-    item_id: ItemIdBackref,
-    ictx_cmd: ICmdDroneChangeICtxBIds,
+pub(in crate::cmd) struct ICmdDroneChangeFCtxBIds {
+    pub(in crate::cmd) item_id: ItemIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdDroneChangeICtxBIds = ICmdDroneChangeICtxBIds { .. },
 }
-struct ICmdDroneChangeFCtxRIds {
+pub(crate) struct ICmdDroneChangeFCtxRIds {
     item_id: rc::ItemId,
     ictx_cmd: ICmdDroneChangeICtxRIds,
 }
 
 // Commands with incomplete context
-struct ICmdDroneChangeICtxBIds {
-    shared: ICmdDroneChangeShared,
-    add_proj_item_ids: Vec<ItemIdBackref>,
-    rm_proj_item_ids: Vec<ItemIdBackref>,
+pub(in crate::cmd) struct ICmdDroneChangeICtxBIds {
+    pub(in crate::cmd) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
+    pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdDroneChangeICtxRIds {
     pub(in crate::cmd) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },

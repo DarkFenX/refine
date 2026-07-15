@@ -5,6 +5,7 @@ pub use sub_item_autocharge::FitChangeAutochargeCmd;
 pub use sub_item_booster::{FitAddBoosterCmd, FitChangeBoosterCmd};
 pub use sub_item_character::{FitChangeCharacterCmd, FitSetCharacterCmd, FitUnsetCharacterCmd};
 pub use sub_item_charge::FitChangeChargeCmd;
+pub use sub_item_drone::{FitAddDroneCmd, FitChangeDroneCmd};
 pub use sub_item_rig::FitAddRigCmd;
 
 mod cmd;
@@ -14,4 +15,5 @@ mod sub_item_autocharge;
 mod sub_item_booster;
 mod sub_item_character;
 mod sub_item_charge;
+mod sub_item_drone;
 mod sub_item_rig;

@@ -3,9 +3,9 @@ use crate::cmd::shared::{
 };
 
 // Commands with full context
-struct ICmdDroneAddFCtxBIds {
-    fit_id: FitIdBackref,
-    ictx_cmd: ICmdDroneAddICtxBIds,
+pub(in crate::cmd) struct ICmdDroneAddFCtxBIds {
+    pub(in crate::cmd) fit_id: FitIdBackref,
+    pub(in crate::cmd) ictx_cmd: ICmdDroneAddICtxBIds,
 }
 pub(in crate::cmd) struct ICmdDroneAddFCtxRIds {
     pub(in crate::cmd) fit_id: rc::FitId,
@@ -13,11 +13,11 @@ pub(in crate::cmd) struct ICmdDroneAddFCtxRIds {
 }
 
 // Commands with incomplete context
-struct ICmdDroneAddICtxBIds {
-    shared: ICmdDroneAddShared,
-    proj_item_ids: Vec<ItemIdBackref>,
+pub(in crate::cmd) struct ICmdDroneAddICtxBIds {
+    pub(in crate::cmd) shared: ICmdDroneAddShared,
+    pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
-pub(in crate::cmd) struct ICmdDroneAddICtxRIds {
+pub(crate) struct ICmdDroneAddICtxRIds {
     pub(in crate::cmd) shared: ICmdDroneAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<rc::ItemId> = Vec::new(),
 }

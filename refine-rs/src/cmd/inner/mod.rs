@@ -32,7 +32,8 @@ pub use item_charge::{GetItemChangeChargeError, ItemChangeChargeError};
 pub(in crate::cmd) use item_charge::{ICmdChargeChangeFCtxBIds, ICmdChargeChangeFCtxRIds, ICmdChargeChangeICtx};
 pub use item_drone::{FitAddDroneError, GetFitAddDroneError, GetItemChangeDroneError, ItemChangeDroneError};
 pub(in crate::cmd) use item_drone::{
-    ICmdDroneAddFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared, ICmdDroneChangeICtxRIds,
+    ICmdDroneAddFCtxBIds, ICmdDroneAddFCtxRIds, ICmdDroneAddICtxBIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared,
+    ICmdDroneChangeFCtxBIds, ICmdDroneChangeFCtxRIds, ICmdDroneChangeICtxRIds,
 };
 pub use item_rig::GetFitAddRigError;
 pub(in crate::cmd) use item_rig::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
