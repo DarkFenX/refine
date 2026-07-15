@@ -98,7 +98,7 @@ impl HFighterAddCmdICtxRIds {
             self.shared.movement.map(|v| v.into_core()),
         );
         if let Some(count) = self.shared.count {
-            let fighter_count_override = rc::FighterCount::from_u32_checked(count)?;
+            let fighter_count_override = rc::CountNz::from_u32_checked(count)?;
             core_fighter.set_count_override(Some(fighter_count_override));
         }
         if let Some(h_abilities) = self.shared.abilities.as_ref() {

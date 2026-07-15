@@ -19,9 +19,9 @@ pub use fleet::Fleet;
 pub use info::{SrcInfo, SrcInfoMode};
 pub use item::Item;
 pub use rc::{
-    BreacherProfile, Coordinates, Count, DpsProfile, EffectId, EffectMode, FitId, FleetId, ItemId, MinionState,
-    ModuleState, Movement, NpcProp, OptionalReload, PValue, RearmMinion, RmMode, SecZone, SecZoneCorruption,
-    ServiceState, Spool, UnitInterval, Value, ed::EveDataHandler,
+    BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectMode, FitId, FleetId, ItemId,
+    MinionState, ModuleState, Movement, NpcProp, OptionalReload, PValue, RearmMinion, RmMode, SecZone,
+    SecZoneCorruption, ServiceState, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
 pub use refine::Refine;
 pub use sol::{SolarSystem, SolarSystemId};

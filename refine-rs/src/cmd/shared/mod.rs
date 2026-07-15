@@ -1,3 +1,4 @@
+pub(in crate::cmd) use abilities::Abilities;
 pub use backrefs::{FitIdBackref, FleetIdBackref, ItemIdBackref};
 pub(in crate::cmd) use effect_modes::EffectModes;
 pub use mutation::{AddMutation, AttrMutation, ChangeMutation};
@@ -6,6 +7,7 @@ pub use resp::{
 };
 pub(in crate::cmd) use side_effects::SideEffects;
 
+mod abilities;
 mod backrefs;
 mod effect_modes;
 mod mutation;

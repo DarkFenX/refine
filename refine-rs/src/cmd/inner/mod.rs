@@ -35,6 +35,11 @@ pub(in crate::cmd) use item_drone::{
     ICmdDroneAddFCtxBIds, ICmdDroneAddFCtxRIds, ICmdDroneAddICtxBIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared,
     ICmdDroneChangeFCtxBIds, ICmdDroneChangeFCtxRIds, ICmdDroneChangeICtxRIds,
 };
+pub use item_fighter::{FitAddFighterError, GetFitAddFighterError, GetItemChangeFighterError, ItemChangeFighterError};
+pub(in crate::cmd) use item_fighter::{
+    ICmdFighterAddFCtxBIds, ICmdFighterAddFCtxRIds, ICmdFighterAddICtxBIds, ICmdFighterAddICtxRIds,
+    ICmdFighterAddShared, ICmdFighterChangeFCtxBIds, ICmdFighterChangeFCtxRIds, ICmdFighterChangeICtxRIds,
+};
 pub use item_rig::{GetFitAddRigError, GetItemChangeRigError, ItemChangeRigError};
 pub(in crate::cmd) use item_rig::{
     ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds,
@@ -50,5 +55,6 @@ mod item_booster;
 mod item_character;
 mod item_charge;
 mod item_drone;
+mod item_fighter;
 mod item_rig;
 mod sol;

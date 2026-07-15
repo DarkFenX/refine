@@ -5,13 +5,14 @@ pub use fit::{
 };
 pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
-    AddFitError, AddFleetError, FitAddDroneError, FitChangeCharacterError, FitChangeFitError, FleetChangeFleetError,
-    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError,
-    GetFitRemoveFitError, GetFitSetCharacterError, GetFitUnsetCharacterError, GetFleetChangeFleetError,
-    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeRigError, GetItemRemoveItemError,
-    ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
-    ItemChangeDroneError, ItemChangeRigError, ItemRemoveItemError,
+    AddFitError, AddFleetError, FitAddDroneError, FitAddFighterError, FitChangeCharacterError, FitChangeFitError,
+    FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddRigError,
+    GetFitChangeCharacterError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
+    GetFitUnsetCharacterError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
+    GetItemChangeBoosterError, GetItemChangeCharacterError, GetItemChangeChargeError, GetItemChangeDroneError,
+    GetItemChangeFighterError, GetItemChangeRigError, GetItemRemoveItemError, ItemChangeAutochargeError,
+    ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError, ItemChangeDroneError,
+    ItemChangeFighterError, ItemChangeRigError, ItemRemoveItemError,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd,

@@ -85,6 +85,9 @@ impl ICmdDroneChangeICtxRIds {
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeDroneError> {
         let core_drone = core_item.dc_drone()?;
+        for projectee_item_id in self.rm_proj_item_ids.iter() {
+            core_drone.get_proj_mut(projectee_item_id)?.remove();
+        }
         if let Some(type_id) = self.shared.type_id {
             core_drone.set_type_id(type_id);
         }
@@ -120,19 +123,16 @@ impl ICmdDroneChangeICtxRIds {
             TriStateField::None => core_drone.set_npc_prop(None),
             TriStateField::Absent => (),
         }
-        for projectee_item_id in self.rm_proj_item_ids.iter() {
-            core_drone.get_proj_mut(projectee_item_id)?.remove();
-        }
         if let Some(coordinates) = self.shared.coordinates {
             core_drone.set_coordinates(coordinates);
         }
         if let Some(movement) = self.shared.movement {
             core_drone.set_movement(movement);
         }
+        self.shared.effect_modes.apply(core_drone);
         for projectee_item_id in self.add_proj_item_ids.iter() {
             core_drone.add_proj(projectee_item_id)?;
         }
-        self.shared.effect_modes.apply(core_drone);
         Ok(ChangedItemIdsResp::default())
     }
 }

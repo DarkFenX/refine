@@ -1,4 +1,4 @@
-use crate::{ad::AAbilId, api::AbilId, num::Count, sol::SolarSystem, ud::UItemId};
+use crate::{ad::AAbilId, api::AbilityId, num::Count, sol::SolarSystem, ud::UItemId};
 
 /// Fighter ability.
 pub struct Ability<'s> {
@@ -14,8 +14,8 @@ impl<'s> Ability<'s> {
             abil_aid,
         }
     }
-    pub fn get_id(&self) -> AbilId {
-        AbilId::from_aid(self.abil_aid)
+    pub fn get_id(&self) -> AbilityId {
+        AbilityId::from_aid(self.abil_aid)
     }
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.fighter_uid, &self.abil_aid)
@@ -36,8 +36,8 @@ impl<'s> AbilityMut<'s> {
             abil_aid,
         }
     }
-    pub fn get_id(&self) -> AbilId {
-        AbilId::from_aid(self.abil_aid)
+    pub fn get_id(&self) -> AbilityId {
+        AbilityId::from_aid(self.abil_aid)
     }
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.fighter_uid, &self.abil_aid)

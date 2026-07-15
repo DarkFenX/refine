@@ -2,7 +2,7 @@ use crate::{
     ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
     api::MinionState,
     misc::{EffectMode, FighterCountInfo, ItemKind, RearmMinion},
-    num::{FighterCount, PValue, SkillLevel, Value},
+    num::{CountNz, PValue, SkillLevel, Value},
     rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RItemListId, RState},
     ud::{
         ItemId, UEffectUpdates, UFitId, UPhysics, UProjs,
@@ -15,7 +15,7 @@ use crate::{
 pub(crate) struct UFighter {
     pub(super) base: UItemBase,
     fit_uid: UFitId,
-    count_override: Option<FighterCount>,
+    count_override: Option<CountNz>,
     autocharges: UAutocharges,
     physics: UPhysics,
     projs: UProjs,
@@ -157,7 +157,7 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_count(&self) -> Option<FighterCount> {
+    pub(crate) fn get_count(&self) -> Option<CountNz> {
         match self.get_axt() {
             Some(axt) => match self.count_override {
                 Some(count_override) => Some(count_override),
@@ -183,7 +183,7 @@ impl UFighter {
             None => None,
         }
     }
-    pub(crate) fn set_count_override(&mut self, count_override: Option<FighterCount>) {
+    pub(crate) fn set_count_override(&mut self, count_override: Option<CountNz>) {
         self.count_override = count_override
     }
     pub(crate) fn get_autocharges(&self) -> &UAutocharges {

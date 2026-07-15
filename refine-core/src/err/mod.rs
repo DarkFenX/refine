@@ -13,7 +13,7 @@ pub use crate::{
         RemoveItemError, SetFitFleetError, SetSkillTypeIdError, UnsetFitFleetError,
     },
     misc::{BreacherProfileError, DpsProfileError},
-    num::{FighterCountError, FitSecStatusError, SkillLevelError, UnitIntervalError},
+    num::{CountNzError, FitSecStatusError, SkillLevelError, UnitIntervalError},
 };
 
 pub mod basic;

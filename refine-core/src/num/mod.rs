@@ -1,5 +1,5 @@
 pub use count::Count;
-pub use fighter_count::{FighterCount, FighterCountError};
+pub use count_nz::{CountNz, CountNzError};
 pub use fit_sec_status::{FitSecStatus, FitSecStatusError};
 pub use index::Index;
 pub use pvalue::PValue;
@@ -9,7 +9,7 @@ pub use unit_interval::{UnitInterval, UnitIntervalError};
 pub use value::Value;
 
 mod count;
-mod fighter_count;
+mod count_nz;
 mod fit_sec_status;
 mod index;
 mod pvalue;

@@ -1,8 +1,8 @@
-use crate::num::FighterCount;
+use crate::num::CountNz;
 
 #[derive(Copy, Clone)]
 pub struct FighterCountInfo {
-    pub current: FighterCount,
-    pub max: FighterCount,
+    pub current: CountNz,
+    pub max: CountNz,
     pub overridden: bool,
 }

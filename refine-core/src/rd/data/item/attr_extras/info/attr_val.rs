@@ -1,6 +1,6 @@
 use crate::{
     ad::AAttrId,
-    num::{Count, FighterCount, PValue, SkillLevel, Value},
+    num::{Count, CountNz, PValue, SkillLevel, Value},
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -114,11 +114,11 @@ pub(in crate::rd::data::item::attr_extras) fn get_charge_rate(
 pub(in crate::rd::data::item::attr_extras) fn get_max_fighter_count(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
-) -> FighterCount {
+) -> CountNz {
     match attr_consts.ftr_sq_max_size.and_then(|v| item_attrs.get(&v)) {
         // Ensure there can be at least 1 fighter in a squad
-        Some(&value) => FighterCount::from_f64_rounded(value.into_f64()),
-        None => FighterCount::ONE,
+        Some(&value) => CountNz::from_f64_rounded(value.into_f64()),
+        None => CountNz::ONE,
     }
 }
 

@@ -1,7 +1,7 @@
 use std::collections::HashMap;
 
 use crate::{
-    num::FighterCount,
+    num::CountNz,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UItemId},
     util::RSet,
@@ -15,9 +15,9 @@ pub struct ValFighterSquadSizeFail {
 #[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
     /// Current squad size.
-    pub size: FighterCount,
+    pub size: CountNz,
     /// Max allowed squad size.
-    pub max_size: FighterCount,
+    pub max_size: CountNz,
 }
 
 impl VastFitData {

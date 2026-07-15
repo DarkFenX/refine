@@ -20,7 +20,7 @@ pub use item::{
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_uids, iter_ranged_projs};
 pub use misc::{
-    AbilId, AddMode, Affector, AttrId, AttrIdParseError, AttrVals, Coordinates, CustomEffectId, Direction,
+    AbilityId, AddMode, Affector, AttrId, AttrIdParseError, AttrVals, Coordinates, CustomEffectId, Direction,
     DogmaEffectId, EffectId, EffectIdParseError, EffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification,
     ModuleState, Movement, MvMode, Op, ProjRange, RmMode, ServiceState,
 };

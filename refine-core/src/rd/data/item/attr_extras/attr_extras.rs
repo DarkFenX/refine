@@ -25,7 +25,7 @@ use crate::{
     ad::{AAttrId, AItemCatId, AItemGrpId, AItemId},
     dbg::DebugResult,
     misc::DetectedItemKind,
-    num::{Count, FighterCount, PValue, SkillLevel, SlotIndex, Value},
+    num::{Count, CountNz, PValue, SkillLevel, SlotIndex, Value},
     rd::{
         RAttrConsts, RAttrId, REffectConsts, REffectId, RItemChargeLimit, RItemContLimit, RItemEffectData,
         RItemShipLimit, RShipDroneLimit, RShipKind,
@@ -48,7 +48,7 @@ pub(crate) struct RItemAXt {
     pub(crate) rig_size: Option<Value>,    // On-rig and on-ship attribute
     pub(crate) charge_size: Option<Value>, // On-module and on-charge attribute
     pub(crate) charge_rate: Count,
-    pub(crate) max_fighter_count: FighterCount,
+    pub(crate) max_fighter_count: CountNz,
     pub(crate) fighter_refuel_duration: PValue,
     pub(crate) remote_resist_attr_rid: Option<RAttrId>,
     // Mobility

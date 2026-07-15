@@ -2,8 +2,8 @@ use crate::ad::AAbilId;
 
 /// Fighter ability ID.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
-pub struct AbilId(i32);
-impl AbilId {
+pub struct AbilityId(i32);
+impl AbilityId {
     pub const fn from_i32(id: i32) -> Self {
         Self(id)
     }
@@ -15,7 +15,7 @@ impl AbilId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl AbilId {
+impl AbilityId {
     pub(in crate::api) fn from_aid(abil_aid: AAbilId) -> Self {
         Self(abil_aid.into_i32())
     }

@@ -5,12 +5,12 @@ use crate::num::{PValue, Value};
 const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
-pub struct FighterCount(NonZeroU32);
-impl FighterCount {
-    pub fn from_u32_checked(count: u32) -> Result<Self, FighterCountError> {
+pub struct CountNz(NonZeroU32);
+impl CountNz {
+    pub fn from_u32_checked(count: u32) -> Result<Self, CountNzError> {
         match NonZeroU32::try_from(count) {
             Ok(count) => Ok(Self(count)),
-            Err(_) => Err(FighterCountError { count }),
+            Err(_) => Err(CountNzError { count }),
         }
     }
     pub const fn from_u32_clamped(count: u32) -> Self {
@@ -21,22 +21,22 @@ impl FighterCount {
     }
 }
 #[derive(thiserror::Error, Debug)]
-#[error("fighter count should be 1+, received {count}")]
-pub struct FighterCountError {
+#[error("non-zero count should be 1+, received {count}")]
+pub struct CountNzError {
     pub count: u32,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterCount {
+impl CountNz {
     pub(crate) const ONE: Self = Self(NonZeroU32::MIN);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterCount {
+impl CountNz {
     pub(crate) fn from_f64_rounded(count: f64) -> Self {
         Self(
             NonZeroU32::try_from(
@@ -54,8 +54,8 @@ impl FighterCount {
         PValue::from_f64_unchecked(self.0.get() as f64)
     }
 }
-impl From<FighterCount> for u32 {
-    fn from(v: FighterCount) -> Self {
+impl From<CountNz> for u32 {
+    fn from(v: CountNz) -> Self {
         v.0.get()
     }
 }
@@ -63,7 +63,7 @@ impl From<FighterCount> for u32 {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl Default for FighterCount {
+impl Default for CountNz {
     fn default() -> Self {
         Self(DEFAULT)
     }

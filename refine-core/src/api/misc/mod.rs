@@ -1,4 +1,4 @@
-pub use abil_id::AbilId;
+pub use abil_id::AbilityId;
 pub use attr_id::{AttrId, AttrIdParseError};
 pub use attr_vals::AttrVals;
 pub use effect_id::{CustomEffectId, DogmaEffectId, EffectId, EffectIdParseError};
