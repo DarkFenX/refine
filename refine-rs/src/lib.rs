@@ -28,7 +28,7 @@ pub use cmd::{
 };
 pub use fit::Fit;
 pub use fleet::Fleet;
-pub use info::{ItemInfoMode, RigInfo, RigInfoExt, SrcInfo, SrcInfoMode};
+pub use info::{ItemInfo, ItemInfoMode, RigInfo, RigInfoExt, SrcInfo, SrcInfoMode};
 pub use item::Item;
 pub use rc::{
     AddMode, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectInfo, EffectMode,

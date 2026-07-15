@@ -1,4 +1,6 @@
-pub use rig::{RigInfo, RigInfoExt};
+pub use item::ItemInfo;
+pub use item_rig::{RigInfo, RigInfoExt};
 
-mod rig;
+mod item;
+mod item_rig;
 mod shared;
