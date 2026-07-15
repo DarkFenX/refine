@@ -1,10 +1,10 @@
 pub use add::{
-    AddItemEnumCmd, AddItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddRigCmd,
-    ItemSetCharacterCmd,
+    AddItemEnumCmd, AddItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd,
+    ItemAddRigCmd, ItemSetCharacterCmd,
 };
 pub use change::{
     ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
-    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeRigCmd,
+    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeRigCmd,
 };
 pub use remove::RemoveItemCmd;
 

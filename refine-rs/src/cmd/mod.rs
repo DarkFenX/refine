@@ -1,25 +1,25 @@
 pub use fit::{
-    AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddRigCmd,
-    FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
-    FitChangeFighterCmd, FitChangeFitCmd, FitChangeRigCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
-    RemoveFitCmd,
+    AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
+    FitAddFwEffectCmd, FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
+    FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeRigCmd,
+    FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd, RemoveFitCmd,
 };
 pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
 pub use inner::{
     AddFitError, AddFleetError, FitAddDroneError, FitAddFighterError, FitChangeCharacterError, FitChangeFitError,
-    FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddRigError,
-    GetFitChangeCharacterError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
+    FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
+    GetFitAddRigError, GetFitChangeCharacterError, GetFitChangeFitError, GetFitRemoveFitError, GetFitSetCharacterError,
     GetFitUnsetCharacterError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
     GetItemChangeBoosterError, GetItemChangeCharacterError, GetItemChangeChargeError, GetItemChangeDroneError,
-    GetItemChangeFighterError, GetItemChangeRigError, GetItemRemoveItemError, ItemChangeAutochargeError,
-    ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError, ItemChangeDroneError,
-    ItemChangeFighterError, ItemChangeRigError, ItemRemoveItemError,
+    GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeRigError, GetItemRemoveItemError,
+    ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
+    ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeRigError, ItemRemoveItemError,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd,
-    ItemAddFighterCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
-    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeRigCmd, ItemSetCharacterCmd,
-    RemoveItemCmd,
+    ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddRigCmd, ItemChangeAutochargeCmd, ItemChangeBoosterCmd,
+    ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd,
+    ItemChangeRigCmd, ItemSetCharacterCmd, RemoveItemCmd,
 };
 pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
@@ -27,10 +27,11 @@ pub use shared::{
 };
 pub use sol::{
     AddSolCmd, ChangeCharacterError, ChangeSolEnumCmd, ChangeSolEnumError, SolAddBoosterCmd, SolAddDroneCmd,
-    SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddRigCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
-    SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeChargeCmd,
-    SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd, SolChangeFleetCmd, SolChangeRigCmd, SolChangeSolCmd,
-    SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolUnsetCharacterCmd,
+    SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddRigCmd, SolChangeAutochargeCmd,
+    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
+    SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd, SolChangeFleetCmd,
+    SolChangeFwEffectCmd, SolChangeRigCmd, SolChangeSolCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
 
 mod fit;

@@ -7,6 +7,7 @@ pub use sub_item_character::{FitChangeCharacterCmd, FitSetCharacterCmd, FitUnset
 pub use sub_item_charge::FitChangeChargeCmd;
 pub use sub_item_drone::{FitAddDroneCmd, FitChangeDroneCmd};
 pub use sub_item_fighter::{FitAddFighterCmd, FitChangeFighterCmd};
+pub use sub_item_fw_effect::{FitAddFwEffectCmd, FitChangeFwEffectCmd};
 pub use sub_item_rig::{FitAddRigCmd, FitChangeRigCmd};
 
 mod cmd;
@@ -18,4 +19,5 @@ mod sub_item_character;
 mod sub_item_charge;
 mod sub_item_drone;
 mod sub_item_fighter;
+mod sub_item_fw_effect;
 mod sub_item_rig;

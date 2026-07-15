@@ -40,6 +40,11 @@ pub(in crate::cmd) use item_fighter::{
     ICmdFighterAddFCtxBIds, ICmdFighterAddFCtxRIds, ICmdFighterAddICtxBIds, ICmdFighterAddICtxRIds,
     ICmdFighterAddShared, ICmdFighterChangeFCtxBIds, ICmdFighterChangeFCtxRIds, ICmdFighterChangeICtxRIds,
 };
+pub use item_fw_effect::{GetFitAddFwEffectError, GetItemChangeFwEffectError, ItemChangeFwEffectError};
+pub(in crate::cmd) use item_fw_effect::{
+    ICmdFwEffectAddFCtxBIds, ICmdFwEffectAddFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds,
+    ICmdFwEffectChangeFCtxRIds, ICmdFwEffectChangeICtx,
+};
 pub use item_rig::{GetFitAddRigError, GetItemChangeRigError, ItemChangeRigError};
 pub(in crate::cmd) use item_rig::{
     ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds,
@@ -56,5 +61,6 @@ mod item_character;
 mod item_charge;
 mod item_drone;
 mod item_fighter;
+mod item_fw_effect;
 mod item_rig;
 mod sol;

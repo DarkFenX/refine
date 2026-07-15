@@ -1,7 +1,7 @@
 use crate::cmd::{
-    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddRigError, GetFitSetCharacterError,
-    ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddRigCmd, ItemSetCharacterCmd,
-    shared::AddedItemIdsResp,
+    GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddRigError,
+    GetFitSetCharacterError, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddRigCmd,
+    ItemSetCharacterCmd, shared::AddedItemIdsResp,
 };
 
 pub enum AddItemEnumCmd {
@@ -9,6 +9,7 @@ pub enum AddItemEnumCmd {
     Character(ItemSetCharacterCmd),
     Drone(ItemAddDroneCmd),
     Fighter(ItemAddFighterCmd),
+    FwEffect(ItemAddFwEffectCmd),
     Rig(ItemAddRigCmd),
 }
 
@@ -22,6 +23,7 @@ impl AddItemEnumCmd {
             Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
+            Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
         }
     }
@@ -37,6 +39,8 @@ pub enum AddItemEnumError {
     DroneFailed(#[from] GetFitAddDroneError),
     #[error("failed to add fighter: {0}")]
     FighterFailed(#[from] GetFitAddFighterError),
+    #[error("failed to add fit-wide effect: {0}")]
+    FwEffectFailed(#[from] GetFitAddFwEffectError),
     #[error("failed to add rig: {0}")]
     RigFailed(#[from] GetFitAddRigError),
 }

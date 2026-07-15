@@ -1,15 +1,15 @@
 use crate::cmd::{
-    FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddRigCmd,
-    FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError, FitChangeChargeCmd,
-    FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError, FitChangeRigCmd, FitRemoveItemCmd,
-    FitSetCharacterCmd, FitUnsetCharacterCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeRigError,
-    GetItemRemoveItemError,
+    FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddFwEffectCmd,
+    FitAddRigCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeCharacterError,
+    FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd, FitChangeFitError,
+    FitChangeFwEffectCmd, FitChangeRigCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitUnsetCharacterCmd,
+    GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
+    GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeRigError, GetItemRemoveItemError,
     inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
         ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
-        ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
+        ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdItemRemoveFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
     },
     shared::{BackrefRenderError, CmdResp, CmdResps},
 };
@@ -36,6 +36,9 @@ pub enum ChangeFitEnumCmd {
     // Item - fighter
     AddFighter(FitAddFighterCmd),
     ChangeFighter(FitChangeFighterCmd),
+    // Item - fit-wide effect
+    AddFwEffect(FitAddFwEffectCmd),
+    ChangeFwEffect(FitChangeFwEffectCmd),
     // Item - rig
     AddRig(FitAddRigCmd),
     ChangeRig(FitChangeRigCmd),
@@ -63,6 +66,9 @@ pub(crate) enum ChangeFitEnumCmdRIds {
     // Item - fighter
     AddFighter(ICmdFighterAddICtxRIds),
     ChangeFighter(ICmdFighterChangeFCtxRIds),
+    // Item - fit-wide effect
+    AddFwEffect(ICmdFwEffectAddICtx),
+    ChangeFwEffect(ICmdFwEffectChangeFCtxRIds),
     // Item - rig
     AddRig(ICmdRigAddICtx),
     ChangeRig(ICmdRigChangeFCtxRIds),
@@ -95,6 +101,9 @@ impl ChangeFitEnumCmd {
             // Item - fighter
             Self::AddFighter(cmd) => ChangeFitEnumCmdRIds::AddFighter(cmd.inner.render(resps)?),
             Self::ChangeFighter(cmd) => ChangeFitEnumCmdRIds::ChangeFighter(cmd.inner.render(resps)?),
+            // Item - fit-wide effect
+            Self::AddFwEffect(cmd) => ChangeFitEnumCmdRIds::AddFwEffect(cmd.inner),
+            Self::ChangeFwEffect(cmd) => ChangeFitEnumCmdRIds::ChangeFwEffect(cmd.inner.render(resps)?),
             // Item - rig
             Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
             Self::ChangeRig(cmd) => ChangeFitEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
@@ -129,6 +138,9 @@ impl ChangeFitEnumCmdRIds {
             // Item - fighter
             Self::AddFighter(cmd) => Ok(cmd.execute(core_fit)?.into()),
             Self::ChangeFighter(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            // Item - fit-wide effect
+            Self::AddFwEffect(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
             // Item - rig
             Self::AddRig(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeRig(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
@@ -166,6 +178,9 @@ pub enum ChangeFitEnumError {
     FighterAddFailed(#[from] FitAddFighterError),
     #[error("failed to change fighter: {0}")]
     FighterChangeFailed(#[from] GetItemChangeFighterError),
+    // Item - fit-wide effect
+    #[error("failed to change fit-wide effect: {0}")]
+    FwEffectChangeFailed(#[from] GetItemChangeFwEffectError),
     // Item - rig
     #[error("failed to change rig: {0}")]
     RigChangeFailed(#[from] GetItemChangeRigError),
