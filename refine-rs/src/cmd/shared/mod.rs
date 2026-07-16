@@ -6,6 +6,7 @@ pub use resp::{
     AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps,
 };
 pub(in crate::cmd) use side_effects::SideEffects;
+pub(in crate::cmd) use sol_cloner::SolCloner;
 
 mod abilities;
 mod backrefs;
@@ -13,3 +14,4 @@ mod effect_modes;
 mod mutation;
 mod resp;
 mod side_effects;
+mod sol_cloner;

@@ -1,4 +1,6 @@
-pub use dev::{BenchmarkAttrCalcCmd, DecCheckCmd, DevBenchmarkCmd};
+pub use dev::{
+    DecCheckCmd, DevBenchmarkAttrCalcCmd, DevBenchmarkCmd, DevBenchmarkStatsCmd, DevBenchmarkTryFitItemsCmd,
+};
 pub use fit::{
     AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
     FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,

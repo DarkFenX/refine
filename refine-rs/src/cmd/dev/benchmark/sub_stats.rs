@@ -1,35 +1,35 @@
-use crate::{FitId, ItemTypeId, dev::DevBenchmarkCmd};
+use crate::{FitId, ItemId, dev::DevBenchmarkCmd};
 
-pub struct DevBenchmarkAttrCalcCmd {
+pub struct DevBenchmarkStatsCmd {
     fit_id: FitId,
-    type_id: ItemTypeId,
+    projectee_item_id: ItemId,
     iterations: usize,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DevBenchmarkAttrCalcCmd {
-    pub fn new(fit_id: FitId, type_id: ItemTypeId, iterations: usize) -> Self {
+impl DevBenchmarkStatsCmd {
+    pub fn new(fit_id: FitId, projectee_item_id: ItemId, iterations: usize) -> Self {
         Self {
             fit_id,
-            type_id,
+            projectee_item_id,
             iterations,
         }
     }
 }
-impl From<DevBenchmarkAttrCalcCmd> for DevBenchmarkCmd {
-    fn from(sub_cmd: DevBenchmarkAttrCalcCmd) -> Self {
-        DevBenchmarkCmd::AttrCalc(sub_cmd)
+impl From<DevBenchmarkStatsCmd> for DevBenchmarkCmd {
+    fn from(sub_cmd: DevBenchmarkStatsCmd) -> Self {
+        DevBenchmarkCmd::Stats(sub_cmd)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DevBenchmarkAttrCalcCmd {
+impl DevBenchmarkStatsCmd {
     pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id).unwrap();
-        core_fit.benchmark_attr_calc(self.type_id, self.iterations);
+        core_fit.benchmark_stats(self.projectee_item_id, self.iterations);
     }
 }
