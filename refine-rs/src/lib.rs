@@ -28,6 +28,7 @@ pub use cmd::{
 };
 pub use fit::Fit;
 pub use fleet::Fleet;
+// TODO: consider moving src-related exports to its own module (check core lib for consistency)
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
@@ -35,8 +36,8 @@ pub use info::{
     ImplantInfoExt, ItemInfo, ItemInfoMode, ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo,
     ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo,
     ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, SolInfo, SolInfoExt,
-    SolInfoMode, SrcInfo, SrcInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo,
-    SwEffectInfoExt,
+    SolInfoMode, SrcInfo, SrcInfoExt, SrcInfoMode, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings, StanceInfo,
+    StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use item::Item;
 pub use rc::{
