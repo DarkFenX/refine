@@ -11,6 +11,7 @@ pub use item::{
 pub use modes::{FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfoMode, SrcInfoMode, ValInfoMode};
 pub use sol::{SolInfo, SolInfoExt};
 pub use src::{SrcInfo, SrcInfoExt, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
+pub use stats::{FitStats, FleetStats, ItemStats};
 pub use val::{FitValInfo, SolValInfo};
 
 mod fit;
@@ -19,4 +20,5 @@ mod item;
 mod modes;
 mod sol;
 mod src;
+mod stats;
 mod val;
