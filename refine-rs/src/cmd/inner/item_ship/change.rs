@@ -56,7 +56,7 @@ impl ICmdShipChangeFItemCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdShipChangeFFitCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetFitChangeShipError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -78,7 +78,7 @@ pub enum GetFitChangeShipError {
 
 impl ICmdShipChangeFItemCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeShipError> {
         let mut core_ship = core_sol.get_ship_mut(&self.item_id)?;
@@ -94,7 +94,7 @@ pub enum GetItemChangeShipError {
 
 impl ICmdShipChangeICtx {
     pub(in crate::cmd) fn execute_via_fit(
-        &self,
+        self,
         core_fit: &mut rc::FitMut,
     ) -> Result<ChangedItemIdsResp, FitChangeShipError> {
         let mut core_ship = match core_fit.get_ship_mut() {
@@ -104,13 +104,13 @@ impl ICmdShipChangeICtx {
         Ok(self.execute(&mut core_ship))
     }
     pub(in crate::cmd) fn execute_via_item(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeShipError> {
         let core_ship = core_item.dc_ship()?;
         Ok(self.execute(core_ship))
     }
-    fn execute(&self, core_ship: &mut rc::ShipMut) -> ChangedItemIdsResp {
+    fn execute(self, core_ship: &mut rc::ShipMut) -> ChangedItemIdsResp {
         if let Some(type_id) = self.type_id {
             core_ship.set_type_id(type_id);
         }

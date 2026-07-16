@@ -60,7 +60,7 @@ impl ICmdModuleAddICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdModuleAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddModuleError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -77,7 +77,7 @@ pub enum GetFitAddModuleError {
 }
 
 impl ICmdModuleAddICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddModuleError> {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddModuleError> {
         let mut core_module = core_fit.add_module(
             self.shared.rack,
             self.shared.add_mode,

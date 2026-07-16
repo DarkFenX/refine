@@ -31,7 +31,7 @@ impl ICmdItemRemoveFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdItemRemoveFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetItemRemoveItemError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetItemRemoveItemError> {
         let core_item = core_sol.get_item_mut(&self.item_id)?;
         Ok(self.ictx_cmd.execute(core_item)?)
     }
@@ -46,7 +46,7 @@ pub enum GetItemRemoveItemError {
 }
 
 impl ICmdItemRemoveICtx {
-    pub(in crate::cmd) fn execute(&self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
+    pub(in crate::cmd) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
         core_item.remove(self.rm_mode.unwrap_or(rc::RemoveMode::Free))?;
         Ok(())
     }

@@ -11,7 +11,7 @@ pub(crate) struct ICmdSwEffectAddFCtx {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSwEffectAddFCtx {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
         let mut core_sw_effect = core_sol.add_sw_effect(self.type_id);
         if let Some(state) = self.state {
             core_sw_effect.set_state(state);

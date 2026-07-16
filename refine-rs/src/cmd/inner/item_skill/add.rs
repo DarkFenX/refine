@@ -35,7 +35,7 @@ impl ICmdSkillAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSkillAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddSkillError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -52,7 +52,7 @@ pub enum GetFitAddSkillError {
 }
 
 impl ICmdSkillAddICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddSkillError> {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddSkillError> {
         let mut core_skill = core_fit.add_skill(self.type_id, self.level)?;
         if let Some(state) = self.state {
             core_skill.set_state(state);

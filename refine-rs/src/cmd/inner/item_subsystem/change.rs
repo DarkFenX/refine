@@ -34,7 +34,7 @@ impl ICmdSubsystemChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSubsystemChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeSubsystemError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -52,7 +52,7 @@ pub enum GetItemChangeSubsystemError {
 
 impl ICmdSubsystemChangeICtx {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeSubsystemError> {
         let core_subsystem = core_item.dc_subsystem()?;

@@ -39,7 +39,7 @@ impl ICmdBoosterAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdBoosterAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddBoosterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -54,7 +54,7 @@ pub enum GetFitAddBoosterError {
 }
 
 impl ICmdBoosterAddICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_booster = core_fit.add_booster(self.type_id);
         if let Some(state) = self.state {
             core_booster.set_state(state);

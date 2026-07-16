@@ -196,7 +196,7 @@ impl ChangeFitEnumCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFitEnumCmdRIds {
-    pub(crate) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<CmdResp, ChangeFitEnumError> {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, ChangeFitEnumError> {
         match self {
             // Fit
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_fit)?.into()),

@@ -34,7 +34,7 @@ impl ICmdSwEffectChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSwEffectChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeSwEffectError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -52,7 +52,7 @@ pub enum GetItemChangeSwEffectError {
 
 impl ICmdSwEffectChangeICtx {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeSwEffectError> {
         let core_sw_effect = core_item.dc_sw_effect()?;

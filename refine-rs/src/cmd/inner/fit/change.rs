@@ -53,7 +53,7 @@ impl ICmdFitChangeICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFitChangeFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitChangeFitError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitChangeFitError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit)?)
     }
@@ -68,7 +68,7 @@ pub enum GetFitChangeFitError {
 }
 
 impl ICmdFitChangeICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeFitError> {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeFitError> {
         match self.fleet_id {
             TriStateField::Value(fleet_id) => core_fit.set_fleet(&fleet_id)?,
             TriStateField::None => match core_fit.unset_fleet() {

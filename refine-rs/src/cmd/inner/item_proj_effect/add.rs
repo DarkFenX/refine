@@ -32,7 +32,7 @@ impl ICmdProjEffectAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdProjEffectAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, AddProjEffectError> {
         let mut core_proj_effect = core_sol.add_proj_effect(self.shared.type_id);

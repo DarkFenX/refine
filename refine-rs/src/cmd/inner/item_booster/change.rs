@@ -39,7 +39,7 @@ impl ICmdBoosterChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdBoosterChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeBoosterError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -57,7 +57,7 @@ pub enum GetItemChangeBoosterError {
 
 impl ICmdBoosterChangeICtx {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeBoosterError> {
         let core_booster = core_item.dc_booster()?;

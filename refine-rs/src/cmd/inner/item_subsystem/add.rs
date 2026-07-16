@@ -34,7 +34,7 @@ impl ICmdSubsystemAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSubsystemAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddSubsystemError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -49,7 +49,7 @@ pub enum GetFitAddSubsystemError {
 }
 
 impl ICmdSubsystemAddICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_subsystem = core_fit.add_subsystem(self.type_id);
         if let Some(state) = self.state {
             core_subsystem.set_state(state);

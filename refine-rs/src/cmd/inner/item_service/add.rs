@@ -34,7 +34,7 @@ impl ICmdServiceAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdServiceAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddServiceError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -49,7 +49,7 @@ pub enum GetFitAddServiceError {
 }
 
 impl ICmdServiceAddICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_service = core_fit.add_service(self.type_id, self.state);
         self.effect_modes.apply(&mut core_service);
         AddedItemIdsResp::from_core_service(core_service)

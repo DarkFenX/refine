@@ -54,7 +54,7 @@ impl ICmdProjEffectChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdProjEffectChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeProjEffectError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -72,7 +72,7 @@ pub enum GetItemChangeProjEffectError {
 
 impl ICmdProjEffectChangeICtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeProjEffectError> {
         let core_proj_effect = core_item.dc_proj_effect()?;

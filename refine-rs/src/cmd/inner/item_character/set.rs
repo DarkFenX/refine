@@ -34,7 +34,7 @@ impl ICmdCharacterSetFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdCharacterSetFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitSetCharacterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -49,7 +49,7 @@ pub enum GetFitSetCharacterError {
 }
 
 impl ICmdCharacterSetICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_character = core_fit.set_character(self.type_id);
         if let Some(state) = self.state {
             core_character.set_state(state);

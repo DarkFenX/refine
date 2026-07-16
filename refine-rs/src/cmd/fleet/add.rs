@@ -26,7 +26,7 @@ impl AddFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddFleetCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedFleetIdResp, AddFleetError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFleetIdResp, AddFleetError> {
         self.inner.execute(core_sol)
     }
 }

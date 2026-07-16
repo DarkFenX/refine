@@ -34,7 +34,7 @@ impl ICmdChargeChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdChargeChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeChargeError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -52,7 +52,7 @@ pub enum GetItemChangeChargeError {
 
 impl ICmdChargeChangeICtx {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeChargeError> {
         let core_charge = core_item.dc_charge()?;

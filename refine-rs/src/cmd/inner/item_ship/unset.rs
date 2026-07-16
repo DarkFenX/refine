@@ -29,7 +29,7 @@ impl ICmdShipUnsetFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdShipUnsetFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitUnsetShipError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitUnsetShipError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit))
     }
@@ -42,7 +42,7 @@ pub enum GetFitUnsetShipError {
 }
 
 impl ICmdShipUnsetICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) {
         if let Some(core_ship) = core_fit.get_ship_mut() {
             core_ship.remove();
         }

@@ -34,7 +34,7 @@ impl ICmdFwEffectAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFwEffectAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddFwEffectError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -49,7 +49,7 @@ pub enum GetFitAddFwEffectError {
 }
 
 impl ICmdFwEffectAddICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_fw_effect = core_fit.add_fw_effect(self.type_id);
         if let Some(state) = self.state {
             core_fw_effect.set_state(state);

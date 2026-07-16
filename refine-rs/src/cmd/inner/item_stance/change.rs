@@ -54,7 +54,7 @@ impl ICmdStanceChangeFItemCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdStanceChangeFFitCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetFitChangeStanceError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -76,7 +76,7 @@ pub enum GetFitChangeStanceError {
 
 impl ICmdStanceChangeFItemCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeStanceError> {
         let mut core_stance = core_sol.get_stance_mut(&self.item_id)?;
@@ -92,7 +92,7 @@ pub enum GetItemChangeStanceError {
 
 impl ICmdStanceChangeICtx {
     pub(in crate::cmd) fn execute_via_fit(
-        &self,
+        self,
         core_fit: &mut rc::FitMut,
     ) -> Result<ChangedItemIdsResp, FitChangeStanceError> {
         let mut core_stance = match core_fit.get_stance_mut() {
@@ -102,13 +102,13 @@ impl ICmdStanceChangeICtx {
         Ok(self.execute(&mut core_stance))
     }
     pub(in crate::cmd) fn execute_via_item(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeStanceError> {
         let core_stance = core_item.dc_stance()?;
         Ok(self.execute(core_stance))
     }
-    fn execute(&self, core_stance: &mut rc::StanceMut) -> ChangedItemIdsResp {
+    fn execute(self, core_stance: &mut rc::StanceMut) -> ChangedItemIdsResp {
         if let Some(type_id) = self.type_id {
             core_stance.set_type_id(type_id);
         }

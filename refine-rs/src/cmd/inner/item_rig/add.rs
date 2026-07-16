@@ -33,10 +33,7 @@ impl ICmdRigAddFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdRigAddFCtxRIds {
-    pub(in crate::cmd) fn execute(
-        &self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitAddRigError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, GetFitAddRigError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit))
     }
@@ -49,7 +46,7 @@ pub enum GetFitAddRigError {
 }
 
 impl ICmdRigAddICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_rig = core_fit.add_rig(self.type_id);
         if let Some(state) = self.state {
             core_rig.set_state(state);

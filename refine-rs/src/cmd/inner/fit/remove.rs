@@ -29,7 +29,7 @@ impl ICmdFitRemoveFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFitRemoveFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitRemoveFitError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitRemoveFitError> {
         let core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(core_fit))
     }
@@ -42,7 +42,7 @@ pub enum GetFitRemoveFitError {
 }
 
 impl ICmdFitRemoveICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: rc::FitMut) {
+    pub(in crate::cmd) fn execute(self, core_fit: rc::FitMut) {
         core_fit.remove()
     }
 }

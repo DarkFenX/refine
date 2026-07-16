@@ -145,7 +145,7 @@ pub(crate) enum SolChangeShipCmdRIds {
     ViaItemId(ICmdShipChangeFItemCtxRIds),
 }
 impl SolChangeShipCmdRIds {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ChangeShipError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ChangeShipError> {
         match self {
             SolChangeShipCmdRIds::ViaFitId(cmd) => Ok(cmd.execute(core_sol)?.into()),
             SolChangeShipCmdRIds::ViaItemId(cmd) => Ok(cmd.execute(core_sol)?.into()),

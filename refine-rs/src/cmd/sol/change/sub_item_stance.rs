@@ -121,7 +121,7 @@ pub(crate) enum SolChangeStanceCmdRIds {
     ViaItemId(ICmdStanceChangeFItemCtxRIds),
 }
 impl SolChangeStanceCmdRIds {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ChangeStanceError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ChangeStanceError> {
         match self {
             SolChangeStanceCmdRIds::ViaFitId(cmd) => Ok(cmd.execute(core_sol)?.into()),
             SolChangeStanceCmdRIds::ViaItemId(cmd) => Ok(cmd.execute(core_sol)?.into()),

@@ -29,7 +29,7 @@ impl ICmdCharacterUnsetFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdCharacterUnsetFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitUnsetCharacterError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitUnsetCharacterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fit))
     }
@@ -42,7 +42,7 @@ pub enum GetFitUnsetCharacterError {
 }
 
 impl ICmdCharacterUnsetICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) {
         if let Some(core_character) = core_fit.get_character_mut() {
             core_character.remove();
         }

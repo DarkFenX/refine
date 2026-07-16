@@ -33,7 +33,7 @@ impl AddFitCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddFitCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, AddFitError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, AddFitError> {
         self.inner.execute(core_sol)
     }
 }

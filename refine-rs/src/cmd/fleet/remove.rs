@@ -18,7 +18,7 @@ impl RemoveFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveFleetCmd {
-    pub(crate) fn execute(&self, core_fleet: rc::FleetMut) {
+    pub(crate) fn execute(self, core_fleet: rc::FleetMut) {
         self.inner.execute(core_fleet)
     }
 }

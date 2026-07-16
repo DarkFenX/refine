@@ -18,7 +18,7 @@ impl RemoveFitCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveFitCmd {
-    pub(crate) fn execute(&self, core_fit: rc::FitMut) {
+    pub(crate) fn execute(self, core_fit: rc::FitMut) {
         self.inner.execute(core_fit)
     }
 }

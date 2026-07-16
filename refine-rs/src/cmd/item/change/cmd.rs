@@ -36,7 +36,7 @@ pub enum ChangeItemEnumCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeItemEnumCmd {
-    pub(crate) fn execute(&self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
+    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
         match self {
             Self::Autocharge(cmd) => Ok(cmd.inner.execute(core_item)?.into()),
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_item)?.into()),

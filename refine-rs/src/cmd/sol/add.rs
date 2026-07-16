@@ -42,7 +42,7 @@ impl AddSolCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddSolCmd {
-    pub(crate) fn execute(&self, core_src: &rc::Src) -> rc::SolarSystem {
+    pub(crate) fn execute(self, core_src: &rc::Src) -> rc::SolarSystem {
         self.inner.execute(core_src)
     }
 }

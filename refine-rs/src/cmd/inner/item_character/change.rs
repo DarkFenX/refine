@@ -57,7 +57,7 @@ impl ICmdCharacterChangeFItemCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdCharacterChangeFFitCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetFitChangeCharacterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -79,7 +79,7 @@ pub enum GetFitChangeCharacterError {
 
 impl ICmdCharacterChangeFItemCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeCharacterError> {
         let mut core_character = core_sol.get_character_mut(&self.item_id)?;
@@ -95,7 +95,7 @@ pub enum GetItemChangeCharacterError {
 
 impl ICmdCharacterChangeICtx {
     pub(in crate::cmd) fn execute_via_fit(
-        &self,
+        self,
         core_fit: &mut rc::FitMut,
     ) -> Result<ChangedItemIdsResp, FitChangeCharacterError> {
         let mut core_character = match core_fit.get_character_mut() {
@@ -105,13 +105,13 @@ impl ICmdCharacterChangeICtx {
         Ok(self.execute(&mut core_character))
     }
     pub(in crate::cmd) fn execute_via_item(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeCharacterError> {
         let core_character = core_item.dc_character()?;
         Ok(self.execute(core_character))
     }
-    fn execute(&self, core_character: &mut rc::CharacterMut) -> ChangedItemIdsResp {
+    fn execute(self, core_character: &mut rc::CharacterMut) -> ChangedItemIdsResp {
         if let Some(type_id) = self.type_id {
             core_character.set_type_id(type_id);
         }

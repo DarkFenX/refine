@@ -121,7 +121,7 @@ pub(crate) enum SolChangeCharacterCmdRIds {
     ViaItemId(ICmdCharacterChangeFItemCtxRIds),
 }
 impl SolChangeCharacterCmdRIds {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ChangeCharacterError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ChangeCharacterError> {
         match self {
             SolChangeCharacterCmdRIds::ViaFitId(cmd) => Ok(cmd.execute(core_sol)?.into()),
             SolChangeCharacterCmdRIds::ViaItemId(cmd) => Ok(cmd.execute(core_sol)?.into()),

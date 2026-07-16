@@ -33,7 +33,7 @@ impl ICmdFitAddFCtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFitAddFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, AddFitError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, AddFitError> {
         let mut core_fit = core_sol.add_fit();
         if let Some(fleet_id) = self.fleet_id {
             core_fit.set_fleet(&fleet_id)?;

@@ -64,7 +64,7 @@ impl ICmdModuleChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdModuleChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeModuleError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -82,7 +82,7 @@ pub enum GetItemChangeModuleError {
 
 impl ICmdModuleChangeICtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeModuleError> {
         let mut resp = ChangedItemIdsResp::default();

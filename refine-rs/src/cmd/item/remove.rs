@@ -22,7 +22,7 @@ impl RemoveItemCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RemoveItemCmd {
-    pub(crate) fn execute(&self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
+    pub(crate) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
         self.inner.execute(core_item)
     }
 }

@@ -58,7 +58,7 @@ impl ICmdDroneAddICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdDroneAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddDroneError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -75,7 +75,7 @@ pub enum GetFitAddDroneError {
 }
 
 impl ICmdDroneAddICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddDroneError> {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddDroneError> {
         let mut core_drone = core_fit.add_drone(
             self.shared.type_id,
             self.shared.state,

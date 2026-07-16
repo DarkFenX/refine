@@ -63,7 +63,7 @@ impl ICmdDroneChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdDroneChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeDroneError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -81,7 +81,7 @@ pub enum GetItemChangeDroneError {
 
 impl ICmdDroneChangeICtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeDroneError> {
         let core_drone = core_item.dc_drone()?;

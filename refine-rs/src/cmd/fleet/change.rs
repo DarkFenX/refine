@@ -28,7 +28,7 @@ impl ChangeFleetCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFleetCmd {
-    pub(crate) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
+    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
         self.inner.execute(core_fleet)
     }
 }

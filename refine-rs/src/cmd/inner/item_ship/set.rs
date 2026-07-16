@@ -36,7 +36,7 @@ impl ICmdShipSetFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdShipSetFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitSetShipError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -51,7 +51,7 @@ pub enum GetFitSetShipError {
 }
 
 impl ICmdShipSetICtx {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_ship = core_fit.set_ship(self.type_id, self.coordinates, self.movement);
         if let Some(state) = self.state {
             core_ship.set_state(state);

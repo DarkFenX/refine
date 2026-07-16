@@ -60,7 +60,7 @@ impl ICmdFighterAddICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFighterAddFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<AddedItemIdsResp, GetFitAddFighterError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
@@ -77,7 +77,7 @@ pub enum GetFitAddFighterError {
 }
 
 impl ICmdFighterAddICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddFighterError> {
+    pub(in crate::cmd) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddFighterError> {
         let mut core_fighter = core_fit.add_fighter(
             self.shared.type_id,
             self.shared.state,

@@ -249,7 +249,7 @@ impl ChangeSolEnumCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeSolEnumCmdRIds {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, ChangeSolEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, ChangeSolEnumError> {
         match self {
             // Solar system
             Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),

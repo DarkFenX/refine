@@ -45,7 +45,7 @@ impl ICmdFleetChangeICtxBIds {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFleetChangeFCtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetChangeFleetError> {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetChangeFleetError> {
         let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
         Ok(self.ictx_cmd.execute(&mut core_fleet)?)
     }
@@ -60,7 +60,7 @@ pub enum GetFleetChangeFleetError {
 }
 
 impl ICmdFleetChangeICtxRIds {
-    pub(in crate::cmd) fn execute(&self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
+    pub(in crate::cmd) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
         for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id)?;
         }

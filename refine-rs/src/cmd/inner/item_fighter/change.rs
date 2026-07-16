@@ -63,7 +63,7 @@ impl ICmdFighterChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFighterChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeFighterError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -81,7 +81,7 @@ pub enum GetItemChangeFighterError {
 
 impl ICmdFighterChangeICtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeFighterError> {
         let core_fighter = core_item.dc_fighter()?;

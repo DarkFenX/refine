@@ -31,7 +31,7 @@ pub enum AddItemEnumCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddItemEnumCmd {
-    pub(crate) fn execute(&self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, AddItemEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, AddItemEnumError> {
         match self {
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
             Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),

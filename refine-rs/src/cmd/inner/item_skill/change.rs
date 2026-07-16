@@ -35,7 +35,7 @@ impl ICmdSkillChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSkillChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeSkillError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -53,7 +53,7 @@ pub enum GetItemChangeSkillError {
 
 impl ICmdSkillChangeICtx {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_item: &mut rc::ItemMut,
     ) -> Result<ChangedItemIdsResp, ItemChangeSkillError> {
         let core_skill = core_item.dc_skill()?;

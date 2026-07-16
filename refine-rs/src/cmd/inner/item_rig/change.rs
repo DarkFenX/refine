@@ -34,7 +34,7 @@ impl ICmdRigChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdRigChangeFCtxRIds {
     pub(in crate::cmd) fn execute(
-        &self,
+        self,
         core_sol: &mut rc::SolarSystem,
     ) -> Result<ChangedItemIdsResp, GetItemChangeRigError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
@@ -51,10 +51,7 @@ pub enum GetItemChangeRigError {
 }
 
 impl ICmdRigChangeICtx {
-    pub(in crate::cmd) fn execute(
-        &self,
-        core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeRigError> {
+    pub(in crate::cmd) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeRigError> {
         let core_rig = core_item.dc_rig()?;
         if let Some(type_id) = self.type_id {
             core_rig.set_type_id(type_id);

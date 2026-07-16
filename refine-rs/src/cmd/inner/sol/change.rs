@@ -11,7 +11,7 @@ pub(crate) struct ICmdSolChangeFCtx {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdSolChangeFCtx {
-    pub(in crate::cmd) fn execute(&self, core_sol: &mut rc::SolarSystem) {
+    pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) {
         if let Some(sec_zone) = self.sec_zone {
             core_sol.set_sec_zone(sec_zone);
         }
