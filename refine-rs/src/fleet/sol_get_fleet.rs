@@ -8,7 +8,8 @@ impl<'r, 's> SolarSystem<'r> {
                 .get_fleet(&fleet_id)
                 .map(|core_fleet| core_fleet.get_fleet_id())
         })?;
-        Ok(Fleet::new(self, fleet_id))
+        let fleet = Fleet::new(self, fleet_id);
+        Ok(fleet)
     }
 }
 

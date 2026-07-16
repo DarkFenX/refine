@@ -7,7 +7,8 @@ impl<'r, 's> SolarSystem<'r> {
     pub async fn get_item(&'s mut self, item_id: rc::ItemId) -> Result<Item<'r, 's>, GetItemError> {
         let item_id =
             self.exec_inplace(move |core_sol| core_sol.get_item(&item_id).map(|core_item| core_item.get_item_id()))?;
-        Ok(Item::new(self, item_id))
+        let item = Item::new(self, item_id);
+        Ok(item)
     }
 }
 

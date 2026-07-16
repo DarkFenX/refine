@@ -1,4 +1,5 @@
 pub use fit::{FitInfo, FitInfoExt};
+pub use fleet::{FleetInfo, FleetInfoExt};
 pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FwEffectInfo,
@@ -7,10 +8,11 @@ pub use item::{
     ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo,
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
-pub use modes::{FitInfoMode, ItemInfoMode, SrcInfoMode};
+pub use modes::{FitInfoMode, FleetInfoMode, ItemInfoMode, SrcInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 
 mod fit;
+mod fleet;
 mod item;
 mod modes;
 mod src;
