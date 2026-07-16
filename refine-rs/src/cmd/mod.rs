@@ -1,3 +1,4 @@
+pub use dev::DecCheckCmd;
 pub use fit::{
     AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
     FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
@@ -55,6 +56,7 @@ pub use sol::{
 pub use try_fit_items::TryFitItemsCmd;
 pub use validate::{ValidateFitCmd, ValidateSolCmd};
 
+mod dev;
 mod fit;
 mod fleet;
 mod inner;

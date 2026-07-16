@@ -50,6 +50,7 @@ pub use util::TriStateField;
 
 mod api;
 mod cmd;
+pub mod dev;
 pub mod err;
 mod info;
 mod svc;
