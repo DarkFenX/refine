@@ -4,14 +4,23 @@ Rust Eve FIttiNg Engine
 The engine's purpose is validation of fits and calculation of item/fit/fleet stats. It does not do much else - i.e. there is no fit persistence, or anything related to UI (for instance, it is not aware of item/fit names). 
 
 # Crate layout
+
 ### refine-core
 Core calculation library with Rust interface.
+
+Has synchronous interface, which allows to manipulate just what you want, and get just info you need.
+
 ### refine-edh
 Data handlers for core library, which provide access to EVE data.
+
 ### refine-adc
-Data cachers for core library, which allow it to store adapted data. Adapted data is EVE data which was processed for needs of the library.
+Data cachers for core library, which allow it to store adapted data. Adapted data is EVE data which was processed for needs of the core library.
+
 ### refine-rs
-High-level async Rust interface. Manages thread pools and multi-threading, allows to unify multiple elementary requests into command batches, to mitigate overhead which comes with abstractions and thread management.
+High-level async Rust interface.
+
+Interface is built to unify multiple smaller changes into commands and command batches, and return info objects filled with data. Main goal of that is to reduce overhead: under the hood, the library manages thread pools and multi-threading; workers receive commands, and return command responses and infos.
+
 ### refine-http
 High-level HTTP interface built on top of `refine-rs`.
 
