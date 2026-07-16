@@ -24,7 +24,7 @@ pub struct ProjEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectInfo {
-    pub(super) fn from_core(core_proj_effect: &mut rc::ProjEffectMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_proj_effect: &mut rc::ProjEffectMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_proj_effect.get_item_id(),
             extended: match item_mode {

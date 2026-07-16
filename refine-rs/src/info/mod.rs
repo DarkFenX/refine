@@ -8,11 +8,13 @@ pub use item::{
     ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo,
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
-pub use modes::{FitInfoMode, FleetInfoMode, ItemInfoMode, SrcInfoMode};
+pub use modes::{FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfoMode, SrcInfoMode};
+pub use sol::{SolInfo, SolInfoExt};
 pub use src::{SrcInfo, SrcInfoExt, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 
 mod fit;
 mod fleet;
 mod item;
 mod modes;
+mod sol;
 mod src;

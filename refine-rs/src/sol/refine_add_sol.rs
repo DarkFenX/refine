@@ -16,15 +16,18 @@ impl Refine {
                 SolarSystemInnerGuarded::new(core_sol)
             })
             .await;
-        let mut id = SolarSystemId::new();
-        let mut map_lock = self.id_sol_map.write().await;
-        while map_lock.contains_key(&id) {
-            id = SolarSystemId::new();
-        }
-        map_lock.insert(id, inner_sol.clone());
-        drop(map_lock);
+        let id = self.store_inner_sol(inner_sol.clone()).await;
         let sol = SolarSystem::new(self, id, inner_sol).await;
         Ok(sol)
+    }
+    async fn store_inner_sol(&self, inner_sol: SolarSystemInnerGuarded) -> SolarSystemId {
+        let mut id = SolarSystemId::new();
+        let mut id_sol_map = self.id_sol_map.write().await;
+        while id_sol_map.contains_key(&id) {
+            id = SolarSystemId::new();
+        }
+        id_sol_map.insert(id, inner_sol);
+        id
     }
 }
 

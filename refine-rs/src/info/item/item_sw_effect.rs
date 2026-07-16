@@ -22,7 +22,7 @@ pub struct SwEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectInfo {
-    pub(super) fn from_core(core_sw_effect: &mut rc::SwEffectMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_sw_effect: &mut rc::SwEffectMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_sw_effect.get_item_id(),
             extended: match item_mode {

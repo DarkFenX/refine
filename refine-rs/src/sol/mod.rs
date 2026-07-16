@@ -15,4 +15,5 @@ mod refine_get_sol;
 mod sol;
 mod sol_change;
 mod sol_exec;
+mod sol_get_info;
 mod sol_remove;
