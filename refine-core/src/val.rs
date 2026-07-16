@@ -8,7 +8,7 @@ pub use crate::{
         ValEffectSecZoneFail, ValEffectStopperFail, ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo,
         ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail, ValItemVsShipKindFail, ValMaxGroupFail,
         ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo,
-        ValNotLoadedItemFail, ValOption, ValOptionEnabledOptions, ValOptions, ValOptionsSol, ValOverloadSkillFail,
+        ValNotLoadedItemFail, ValOption, ValOptionEnabled, ValOptions, ValOptionsSol, ValOverloadSkillFail,
         ValProjFilterFail, ValProjImmunityFail, ValResourceFail, ValResultFit, ValResultSol, ValRigSizeFail,
         ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail,
         ValSrqFail, ValSrqSkillInfo, ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,

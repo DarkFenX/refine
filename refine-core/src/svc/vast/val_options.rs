@@ -14,430 +14,232 @@ pub struct ValOptionsSol {
     /// Validation options.
     pub options: ValOptions,
 }
-impl ValOptionsSol {
-    /// Initialize with all validations enabled.
-    pub fn all_enabled() -> Self {
-        Self {
-            fit_ids: Vec::new(),
-            options: ValOptions::all_enabled(),
-        }
-    }
-    /// Initialize with all validations disabled.
-    pub fn all_disabled() -> Self {
-        Self {
-            fit_ids: Vec::new(),
-            options: ValOptions::all_disabled(),
-        }
-    }
-}
 
 /// Validation options.
 #[derive(Clone)]
 pub struct ValOptions {
+    pub default: bool,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails for any items which are not loaded. Items can become not loaded when they were added
     /// to a fit, but current data source does not have an EVE item with corresponding type ID.
-    pub not_loaded_item: ValOption,
+    pub not_loaded_item: ValOption = ValOption::Default,
     /// Any EVE item usually can be represented by a single item kind in the lib. For example, an
     /// item from Implant category with "boosterness" attribute is a booster. This validation checks
     /// relations between user-defined item kind and item kind detected for a backing EVE item.
-    pub item_kind: ValOption,
+    pub item_kind: ValOption = ValOption::Default,
     /// Fails when a direct skill requirement is not satisfied for an item.
-    pub skill_reqs: ValOption,
+    pub skill_reqs: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Implants/boosters
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when multiple implants attempt to take the same slot.
-    pub implant_slot_index: ValOption,
+    pub implant_slot_index: ValOption = ValOption::Default,
     /// Fails when multiple boosters attempt to take the same slot.
-    pub booster_slot_index: ValOption,
+    pub booster_slot_index: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Shared between mod-alike items
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when items take more CPU than ship can produce.
-    pub cpu: ValOption,
+    pub cpu: ValOption = ValOption::Default,
     /// Fails when items take more PG than ship can produce.
-    pub powergrid: ValOption,
+    pub powergrid: ValOption = ValOption::Default,
     /// When a fit has any items which can be fit to specific set of ships (identified by ship list
     /// and ship group list), and ship does not fall into it, this validation is failed for those
     /// items.
-    pub ship_limit: ValOption,
+    pub ship_limit: ValOption = ValOption::Default,
     /// When an item has limit on how many items from its group can be fitted, and count of fitted
     /// items exceeds that, this validation fails.
-    pub max_group_fitted: ValOption,
+    pub max_group_fitted: ValOption = ValOption::Default,
     /// When an item has limit on how many items from its group can be online, and count of online
     /// items exceeds that, this validation fails.
-    pub max_group_online: ValOption,
+    pub max_group_online: ValOption = ValOption::Default,
     /// When an item has limit on how many items from its group can be active, and count of active
     /// items exceeds that, this validation fails.
-    pub max_group_active: ValOption,
+    pub max_group_active: ValOption = ValOption::Default,
     /// When an item has limit on how many items with the same type ID can be fitted, and count of
     /// fitted items exceeds that, this validation fails.
-    pub max_type_fitted: ValOption,
+    pub max_type_fitted: ValOption = ValOption::Default,
     /// Checks that structure items are not fit to a ship fit, and ship items are not fit to a
     /// structure fit. Type of fit is defined by its ship kind.
-    pub item_vs_ship_kind: ValOption,
+    pub item_vs_ship_kind: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Modules
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// If any of high slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
-    pub high_slot_count: ValOption,
+    pub high_slot_count: ValOption = ValOption::Default,
     /// If any of medium slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
-    pub mid_slot_count: ValOption,
+    pub mid_slot_count: ValOption = ValOption::Default,
     /// If any of low slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
-    pub low_slot_count: ValOption,
+    pub low_slot_count: ValOption = ValOption::Default,
     /// If count of taken turret slots is higher than ship provides, this validation fails for all
     /// modules which need a turret slot.
-    pub turret_slot_count: ValOption,
+    pub turret_slot_count: ValOption = ValOption::Default,
     /// If count of taken launcher slots is higher than ship provides, this validation fails for all
     /// modules which need a launcher slot.
-    pub launcher_slot_count: ValOption,
+    pub launcher_slot_count: ValOption = ValOption::Default,
     /// If any module has state higher than it supports (e.g. active bulkhead), this validation
     /// fails.
-    pub module_state: ValOption,
+    pub module_state: ValOption = ValOption::Default,
     /// Fails when any capital modules (large-volume modules) are fit to subcapital ships.
-    pub capital_module: ValOption,
+    pub capital_module: ValOption = ValOption::Default,
     /// Fails when fit has any items overloaded, and overload skill requirement is not satisfied.
-    pub overload_skill: ValOption,
+    pub overload_skill: ValOption = ValOption::Default,
     /// Fails when any item consumes more cap than ship has. Only on-fit items which consume cap are
     /// considered for this, anything else (e.g. incoming neutralizers) are ignored.
-    pub unusable_cap: ValOption,
+    pub unusable_cap: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Charges
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Some modules restrict charges which can be loaded into them by group; if charge from
     /// disallowed group is loaded, validation fails for charge.
-    pub charge_group: ValOption,
+    pub charge_group: ValOption = ValOption::Default,
     /// Some charges restrict into which modules they can be loaded by module group; if charge from
     /// disallowed group is loaded, validation fails for charge.
-    pub charge_parent_group: ValOption,
+    pub charge_parent_group: ValOption = ValOption::Default,
     /// Some charges and modules have charge size set. When a module specifies it, and has a charge
     /// without size or with mismatching size loaded, this validation fails for the charge.
-    pub charge_size: ValOption,
+    pub charge_size: ValOption = ValOption::Default,
     /// Fails when volume of a single charge is larger than capacity of a module it's loaded into.
-    pub charge_volume: ValOption,
+    pub charge_volume: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Rigs
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more rigs than ship has rig slots.
-    pub rig_slot_count: ValOption,
+    pub rig_slot_count: ValOption = ValOption::Default,
     /// Fails when rigs take more calibration than ship can produce.
-    pub calibration: ValOption,
+    pub calibration: ValOption = ValOption::Default,
     /// Ships and rigs specify rig size; when those mismatch, this validation fails for rigs.
-    pub rig_size: ValOption,
+    pub rig_size: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Services
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more services than ship/structure has service slots.
-    pub service_slot_count: ValOption,
+    pub service_slot_count: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // T3 subsystems/stances
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more subsystems than ship has subsystem slots.
-    pub subsystem_slot_count: ValOption,
+    pub subsystem_slot_count: ValOption = ValOption::Default,
     /// Fails when multiple subsystems attempt to take the same slot.
-    pub subsystem_slot_index: ValOption,
+    pub subsystem_slot_index: ValOption = ValOption::Default,
     /// Fails when a ship which can't have a stance but has one.
-    pub ship_stance: ValOption,
+    pub ship_stance: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Drones
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when drones take more volume than ship's drone bay has.
-    pub drone_bay_volume: ValOption,
+    pub drone_bay_volume: ValOption = ValOption::Default,
     /// Fails when fit has more in-space drones than ship supports.
-    pub launched_drone_count: ValOption,
+    pub launched_drone_count: ValOption = ValOption::Default,
     /// Fails when in-space drones take more bandwidth than ship provides.
-    pub drone_bandwidth: ValOption,
+    pub drone_bandwidth: ValOption = ValOption::Default,
     /// Fails when fit has any drones when ship supports none.
-    pub unlaunchable_drone_slot: ValOption,
+    pub unlaunchable_drone_slot: ValOption = ValOption::Default,
     /// Fails when fit has any drones which take more bandwidth than ship provides.
-    pub unlaunchable_drone_bandwidth: ValOption,
+    pub unlaunchable_drone_bandwidth: ValOption = ValOption::Default,
     /// Ship can limit which drone groups can be put into its drone bay. If it does, and drones from
     /// mismatching groups are fit, this validation fails for those drones.
-    pub drone_group: ValOption,
+    pub drone_group: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Fighters
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fighters take more volume than ship's fighter bay has.
-    pub fighter_bay_volume: ValOption,
+    pub fighter_bay_volume: ValOption = ValOption::Default,
     /// Fails when fit has more in-space fighters than ship supports.
-    pub launched_fighter_count: ValOption,
+    pub launched_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has more in-space light fighters than ship supports.
-    pub launched_light_fighter_count: ValOption,
+    pub launched_light_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has more in-space heavy fighters than ship supports.
-    pub launched_heavy_fighter_count: ValOption,
+    pub launched_heavy_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has more in-space support fighters than ship supports.
-    pub launched_support_fighter_count: ValOption,
+    pub launched_support_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has more in-space standup light fighters than ship supports.
-    pub launched_st_light_fighter_count: ValOption,
+    pub launched_st_light_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has more in-space standup heavy fighters than ship supports.
-    pub launched_st_heavy_fighter_count: ValOption,
+    pub launched_st_heavy_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has more in-space standup support fighters than ship supports.
-    pub launched_st_support_fighter_count: ValOption,
+    pub launched_st_support_fighter_count: ValOption = ValOption::Default,
     /// Fails when fit has any fighters when ship supports none.
-    pub unlaunchable_fighter: ValOption,
+    pub unlaunchable_fighter: ValOption = ValOption::Default,
     /// Fails when fit has any light fighters when ship supports none.
-    pub unlaunchable_light_fighter: ValOption,
+    pub unlaunchable_light_fighter: ValOption = ValOption::Default,
     /// Fails when fit has any heavy fighters when ship supports none.
-    pub unlaunchable_heavy_fighter: ValOption,
+    pub unlaunchable_heavy_fighter: ValOption = ValOption::Default,
     /// Fails when fit has any support fighters when ship supports none.
-    pub unlaunchable_support_fighter: ValOption,
+    pub unlaunchable_support_fighter: ValOption = ValOption::Default,
     /// Fails when fit has any standup light fighters when ship supports none.
-    pub unlaunchable_st_light_fighter: ValOption,
+    pub unlaunchable_st_light_fighter: ValOption = ValOption::Default,
     /// Fails when fit has any standup heavy fighters when ship supports none.
-    pub unlaunchable_st_heavy_fighter: ValOption,
+    pub unlaunchable_st_heavy_fighter: ValOption = ValOption::Default,
     /// Fails when fit has any standup support fighters when ship supports none.
-    pub unlaunchable_st_support_fighter: ValOption,
+    pub unlaunchable_st_support_fighter: ValOption = ValOption::Default,
     /// Fails for fighter squads which have more fighters than squad supports.
-    pub fighter_squad_size: ValOption,
+    pub fighter_squad_size: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, destination side
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when any modules are active but their activation is blocked (e.g. scrambled MWDs).
-    pub activation_blocked: ValOption,
+    pub activation_blocked: ValOption = ValOption::Default,
     /// Fails when any items have running effects which are stopped by external factors (e.g.
     /// scrambled fighter MWD).
-    pub effect_stopper: ValOption,
+    pub effect_stopper: ValOption = ValOption::Default,
     /// When a cloak is active and something blocks it (weather, modules incompatible with cloaking
     /// like sieges, multiple cloaks fit to ship), this validation fails.
-    pub cloaking_blocked: ValOption,
+    pub cloaking_blocked: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, source side
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when item defines which targets it can be applied to, but some of its targets do not
     /// belong to it.
-    pub projectee_filter: ValOption,
+    pub projectee_filter: ValOption = ValOption::Default,
     /// Fails when item is marked as assistive, and is applied to a target which is immune to
     /// assistance.
-    pub assist_immunity: ValOption,
+    pub assist_immunity: ValOption = ValOption::Default,
     /// Fails when item is marked as offensive, and is applied to a target which is immune to
     /// offense.
-    pub offense_immunity: ValOption,
+    pub offense_immunity: ValOption = ValOption::Default,
     /// Fails when item's effect can be resisted, and is applied to a target which completely
     /// resists its effect.
-    pub resist_immunity: ValOption,
+    pub resist_immunity: ValOption = ValOption::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Sec zone
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when some items are not allowed to be fitted in current sol security zone.
-    pub sec_zone_fitted: ValOption,
+    pub sec_zone_fitted: ValOption = ValOption::Default,
     /// Fails when some items are not allowed to be online in current sol security zone.
-    pub sec_zone_online: ValOption,
+    pub sec_zone_online: ValOption = ValOption::Default,
     /// Fails when some items are not allowed to be active in current sol security zone.
-    pub sec_zone_active: ValOption,
+    pub sec_zone_active: ValOption = ValOption::Default,
     /// Fails when fit has items which cannot be onlined in current sol security zone.
-    pub sec_zone_unonlineable: ValOption,
+    pub sec_zone_unonlineable: ValOption = ValOption::Default,
     /// Fails when fit has items which cannot be activated in current sol security zone.
-    pub sec_zone_unactivable: ValOption,
+    pub sec_zone_unactivable: ValOption = ValOption::Default,
     /// Fails when some effects are not allowed to run in current sol security zone.
-    pub sec_zone_effect: ValOption,
-}
-impl ValOptions {
-    /// Initialize with all validations enabled.
-    pub fn all_enabled() -> Self {
-        Self {
-            // Generic
-            not_loaded_item: ValOption::new_enabled(),
-            item_kind: ValOption::new_enabled(),
-            skill_reqs: ValOption::new_enabled(),
-            // Implants/boosters
-            implant_slot_index: ValOption::new_enabled(),
-            booster_slot_index: ValOption::new_enabled(),
-            // Shared between mod-alike items
-            cpu: ValOption::new_enabled(),
-            powergrid: ValOption::new_enabled(),
-            ship_limit: ValOption::new_enabled(),
-            max_group_fitted: ValOption::new_enabled(),
-            max_group_online: ValOption::new_enabled(),
-            max_group_active: ValOption::new_enabled(),
-            max_type_fitted: ValOption::new_enabled(),
-            item_vs_ship_kind: ValOption::new_enabled(),
-            // Modules
-            high_slot_count: ValOption::new_enabled(),
-            mid_slot_count: ValOption::new_enabled(),
-            low_slot_count: ValOption::new_enabled(),
-            turret_slot_count: ValOption::new_enabled(),
-            launcher_slot_count: ValOption::new_enabled(),
-            module_state: ValOption::new_enabled(),
-            capital_module: ValOption::new_enabled(),
-            overload_skill: ValOption::new_enabled(),
-            unusable_cap: ValOption::new_enabled(),
-            // Charges
-            charge_group: ValOption::new_enabled(),
-            charge_parent_group: ValOption::new_enabled(),
-            charge_size: ValOption::new_enabled(),
-            charge_volume: ValOption::new_enabled(),
-            // Rigs
-            rig_slot_count: ValOption::new_enabled(),
-            calibration: ValOption::new_enabled(),
-            rig_size: ValOption::new_enabled(),
-            // Services
-            service_slot_count: ValOption::new_enabled(),
-            // T3 subsystems/stances
-            subsystem_slot_count: ValOption::new_enabled(),
-            subsystem_slot_index: ValOption::new_enabled(),
-            ship_stance: ValOption::new_enabled(),
-            // Drones
-            drone_bay_volume: ValOption::new_enabled(),
-            launched_drone_count: ValOption::new_enabled(),
-            drone_bandwidth: ValOption::new_enabled(),
-            unlaunchable_drone_slot: ValOption::new_enabled(),
-            unlaunchable_drone_bandwidth: ValOption::new_enabled(),
-            drone_group: ValOption::new_enabled(),
-            // Fighters
-            fighter_bay_volume: ValOption::new_enabled(),
-            launched_fighter_count: ValOption::new_enabled(),
-            launched_light_fighter_count: ValOption::new_enabled(),
-            launched_heavy_fighter_count: ValOption::new_enabled(),
-            launched_support_fighter_count: ValOption::new_enabled(),
-            launched_st_light_fighter_count: ValOption::new_enabled(),
-            launched_st_heavy_fighter_count: ValOption::new_enabled(),
-            launched_st_support_fighter_count: ValOption::new_enabled(),
-            unlaunchable_fighter: ValOption::new_enabled(),
-            unlaunchable_light_fighter: ValOption::new_enabled(),
-            unlaunchable_heavy_fighter: ValOption::new_enabled(),
-            unlaunchable_support_fighter: ValOption::new_enabled(),
-            unlaunchable_st_light_fighter: ValOption::new_enabled(),
-            unlaunchable_st_heavy_fighter: ValOption::new_enabled(),
-            unlaunchable_st_support_fighter: ValOption::new_enabled(),
-            fighter_squad_size: ValOption::new_enabled(),
-            // Projection, destination side
-            activation_blocked: ValOption::new_enabled(),
-            effect_stopper: ValOption::new_enabled(),
-            cloaking_blocked: ValOption::new_enabled(),
-            // Projection, source side
-            projectee_filter: ValOption::new_enabled(),
-            assist_immunity: ValOption::new_enabled(),
-            offense_immunity: ValOption::new_enabled(),
-            resist_immunity: ValOption::new_enabled(),
-            // Sec zone
-            sec_zone_fitted: ValOption::new_enabled(),
-            sec_zone_online: ValOption::new_enabled(),
-            sec_zone_active: ValOption::new_enabled(),
-            sec_zone_unonlineable: ValOption::new_enabled(),
-            sec_zone_unactivable: ValOption::new_enabled(),
-            sec_zone_effect: ValOption::new_enabled(),
-        }
-    }
-    /// Initialize with all validations disabled.
-    pub fn all_disabled() -> Self {
-        Self {
-            // Generic
-            not_loaded_item: ValOption::new_disabled(),
-            item_kind: ValOption::new_disabled(),
-            skill_reqs: ValOption::new_disabled(),
-            // Implants/boosters
-            implant_slot_index: ValOption::new_disabled(),
-            booster_slot_index: ValOption::new_disabled(),
-            // Shared between mod-alike items
-            cpu: ValOption::new_disabled(),
-            powergrid: ValOption::new_disabled(),
-            ship_limit: ValOption::new_disabled(),
-            max_group_fitted: ValOption::new_disabled(),
-            max_group_online: ValOption::new_disabled(),
-            max_group_active: ValOption::new_disabled(),
-            max_type_fitted: ValOption::new_disabled(),
-            item_vs_ship_kind: ValOption::new_disabled(),
-            // Modules
-            high_slot_count: ValOption::new_disabled(),
-            mid_slot_count: ValOption::new_disabled(),
-            low_slot_count: ValOption::new_disabled(),
-            turret_slot_count: ValOption::new_disabled(),
-            launcher_slot_count: ValOption::new_disabled(),
-            module_state: ValOption::new_disabled(),
-            capital_module: ValOption::new_disabled(),
-            overload_skill: ValOption::new_disabled(),
-            unusable_cap: ValOption::new_disabled(),
-            // Charges
-            charge_group: ValOption::new_disabled(),
-            charge_parent_group: ValOption::new_disabled(),
-            charge_size: ValOption::new_disabled(),
-            charge_volume: ValOption::new_disabled(),
-            // Rigs
-            rig_slot_count: ValOption::new_disabled(),
-            calibration: ValOption::new_disabled(),
-            rig_size: ValOption::new_disabled(),
-            // Services
-            service_slot_count: ValOption::new_disabled(),
-            // T3 subsystems/stances
-            subsystem_slot_count: ValOption::new_disabled(),
-            subsystem_slot_index: ValOption::new_disabled(),
-            ship_stance: ValOption::new_disabled(),
-            // Drones
-            drone_bay_volume: ValOption::new_disabled(),
-            launched_drone_count: ValOption::new_disabled(),
-            drone_bandwidth: ValOption::new_disabled(),
-            unlaunchable_drone_slot: ValOption::new_disabled(),
-            unlaunchable_drone_bandwidth: ValOption::new_disabled(),
-            drone_group: ValOption::new_disabled(),
-            // Fighters
-            fighter_bay_volume: ValOption::new_disabled(),
-            launched_fighter_count: ValOption::new_disabled(),
-            launched_light_fighter_count: ValOption::new_disabled(),
-            launched_heavy_fighter_count: ValOption::new_disabled(),
-            launched_support_fighter_count: ValOption::new_disabled(),
-            launched_st_light_fighter_count: ValOption::new_disabled(),
-            launched_st_heavy_fighter_count: ValOption::new_disabled(),
-            launched_st_support_fighter_count: ValOption::new_disabled(),
-            unlaunchable_fighter: ValOption::new_disabled(),
-            unlaunchable_light_fighter: ValOption::new_disabled(),
-            unlaunchable_heavy_fighter: ValOption::new_disabled(),
-            unlaunchable_support_fighter: ValOption::new_disabled(),
-            unlaunchable_st_light_fighter: ValOption::new_disabled(),
-            unlaunchable_st_heavy_fighter: ValOption::new_disabled(),
-            unlaunchable_st_support_fighter: ValOption::new_disabled(),
-            fighter_squad_size: ValOption::new_disabled(),
-            // Projection, destination side
-            activation_blocked: ValOption::new_disabled(),
-            effect_stopper: ValOption::new_disabled(),
-            cloaking_blocked: ValOption::new_disabled(),
-            // Projection, source side
-            projectee_filter: ValOption::new_disabled(),
-            assist_immunity: ValOption::new_disabled(),
-            offense_immunity: ValOption::new_disabled(),
-            resist_immunity: ValOption::new_disabled(),
-            // Sec zone
-            sec_zone_fitted: ValOption::new_disabled(),
-            sec_zone_online: ValOption::new_disabled(),
-            sec_zone_active: ValOption::new_disabled(),
-            sec_zone_unonlineable: ValOption::new_disabled(),
-            sec_zone_unactivable: ValOption::new_disabled(),
-            sec_zone_effect: ValOption::new_disabled(),
-        }
-    }
+    pub sec_zone_effect: ValOption = ValOption::Default,
 }
 
 /// Controls if validation will be run or not.
 #[derive(Clone)]
 pub enum ValOption {
-    Enabled(ValOptionEnabledOptions),
+    Default,
+    Enabled(ValOptionEnabled),
     Disabled,
-}
-impl ValOption {
-    /// Initialize options with enabled flag on.
-    pub fn new_enabled() -> Self {
-        Self::Enabled(Default::default())
-    }
-    /// Initialize options with enabled flag off.
-    pub fn new_disabled() -> Self {
-        Self::Disabled
-    }
 }
 
 #[derive(Clone, Default)]
-pub struct ValOptionEnabledOptions {
+pub struct ValOptionEnabled {
     /// Known failures of a validation.
     ///
     /// Every validation failure is attached to an item. Items listed here will not be returned as
     /// validation failures. If all validation's failures are known, it is passed.
     pub kfs: Vec<ItemId>,
 }
-impl ValOptionEnabledOptions {
+impl ValOptionEnabled {
     pub fn new() -> Self {
         Self { kfs: Vec::default() }
     }
@@ -551,98 +353,154 @@ impl ValOptionsInt {
     pub(crate) fn from_pub(pub_opts: &ValOptions, sol: &SolarSystem) -> Self {
         Self {
             // Generic
-            not_loaded_item: ValOptionInt::from_pub(&pub_opts.not_loaded_item, sol),
-            item_kind: ValOptionInt::from_pub(&pub_opts.item_kind, sol),
-            skill_reqs: ValOptionInt::from_pub(&pub_opts.skill_reqs, sol),
+            not_loaded_item: ValOptionInt::from_pub(&pub_opts.not_loaded_item, pub_opts.default, sol),
+            item_kind: ValOptionInt::from_pub(&pub_opts.item_kind, pub_opts.default, sol),
+            skill_reqs: ValOptionInt::from_pub(&pub_opts.skill_reqs, pub_opts.default, sol),
             // Implants/boosters
-            implant_slot_index: ValOptionInt::from_pub(&pub_opts.implant_slot_index, sol),
-            booster_slot_index: ValOptionInt::from_pub(&pub_opts.booster_slot_index, sol),
+            implant_slot_index: ValOptionInt::from_pub(&pub_opts.implant_slot_index, pub_opts.default, sol),
+            booster_slot_index: ValOptionInt::from_pub(&pub_opts.booster_slot_index, pub_opts.default, sol),
             // Shared between mod-alike items
-            cpu: ValOptionInt::from_pub(&pub_opts.cpu, sol),
-            powergrid: ValOptionInt::from_pub(&pub_opts.powergrid, sol),
-            ship_limit: ValOptionInt::from_pub(&pub_opts.ship_limit, sol),
-            max_group_fitted: ValOptionInt::from_pub(&pub_opts.max_group_fitted, sol),
-            max_group_online: ValOptionInt::from_pub(&pub_opts.max_group_online, sol),
-            max_group_active: ValOptionInt::from_pub(&pub_opts.max_group_active, sol),
-            max_type_fitted: ValOptionInt::from_pub(&pub_opts.max_type_fitted, sol),
-            item_vs_ship_kind: ValOptionInt::from_pub(&pub_opts.item_vs_ship_kind, sol),
+            cpu: ValOptionInt::from_pub(&pub_opts.cpu, pub_opts.default, sol),
+            powergrid: ValOptionInt::from_pub(&pub_opts.powergrid, pub_opts.default, sol),
+            ship_limit: ValOptionInt::from_pub(&pub_opts.ship_limit, pub_opts.default, sol),
+            max_group_fitted: ValOptionInt::from_pub(&pub_opts.max_group_fitted, pub_opts.default, sol),
+            max_group_online: ValOptionInt::from_pub(&pub_opts.max_group_online, pub_opts.default, sol),
+            max_group_active: ValOptionInt::from_pub(&pub_opts.max_group_active, pub_opts.default, sol),
+            max_type_fitted: ValOptionInt::from_pub(&pub_opts.max_type_fitted, pub_opts.default, sol),
+            item_vs_ship_kind: ValOptionInt::from_pub(&pub_opts.item_vs_ship_kind, pub_opts.default, sol),
             // Modules
-            high_slot_count: ValOptionInt::from_pub(&pub_opts.high_slot_count, sol),
-            mid_slot_count: ValOptionInt::from_pub(&pub_opts.mid_slot_count, sol),
-            low_slot_count: ValOptionInt::from_pub(&pub_opts.low_slot_count, sol),
-            turret_slot_count: ValOptionInt::from_pub(&pub_opts.turret_slot_count, sol),
-            launcher_slot_count: ValOptionInt::from_pub(&pub_opts.launcher_slot_count, sol),
-            module_state: ValOptionInt::from_pub(&pub_opts.module_state, sol),
-            capital_module: ValOptionInt::from_pub(&pub_opts.capital_module, sol),
-            overload_skill: ValOptionInt::from_pub(&pub_opts.overload_skill, sol),
-            unusable_cap: ValOptionInt::from_pub(&pub_opts.unusable_cap, sol),
+            high_slot_count: ValOptionInt::from_pub(&pub_opts.high_slot_count, pub_opts.default, sol),
+            mid_slot_count: ValOptionInt::from_pub(&pub_opts.mid_slot_count, pub_opts.default, sol),
+            low_slot_count: ValOptionInt::from_pub(&pub_opts.low_slot_count, pub_opts.default, sol),
+            turret_slot_count: ValOptionInt::from_pub(&pub_opts.turret_slot_count, pub_opts.default, sol),
+            launcher_slot_count: ValOptionInt::from_pub(&pub_opts.launcher_slot_count, pub_opts.default, sol),
+            module_state: ValOptionInt::from_pub(&pub_opts.module_state, pub_opts.default, sol),
+            capital_module: ValOptionInt::from_pub(&pub_opts.capital_module, pub_opts.default, sol),
+            overload_skill: ValOptionInt::from_pub(&pub_opts.overload_skill, pub_opts.default, sol),
+            unusable_cap: ValOptionInt::from_pub(&pub_opts.unusable_cap, pub_opts.default, sol),
             // Charges
-            charge_group: ValOptionInt::from_pub(&pub_opts.charge_group, sol),
-            charge_parent_group: ValOptionInt::from_pub(&pub_opts.charge_parent_group, sol),
-            charge_size: ValOptionInt::from_pub(&pub_opts.charge_size, sol),
-            charge_volume: ValOptionInt::from_pub(&pub_opts.charge_volume, sol),
+            charge_group: ValOptionInt::from_pub(&pub_opts.charge_group, pub_opts.default, sol),
+            charge_parent_group: ValOptionInt::from_pub(&pub_opts.charge_parent_group, pub_opts.default, sol),
+            charge_size: ValOptionInt::from_pub(&pub_opts.charge_size, pub_opts.default, sol),
+            charge_volume: ValOptionInt::from_pub(&pub_opts.charge_volume, pub_opts.default, sol),
             // Rigs
-            rig_slot_count: ValOptionInt::from_pub(&pub_opts.rig_slot_count, sol),
-            calibration: ValOptionInt::from_pub(&pub_opts.calibration, sol),
-            rig_size: ValOptionInt::from_pub(&pub_opts.rig_size, sol),
+            rig_slot_count: ValOptionInt::from_pub(&pub_opts.rig_slot_count, pub_opts.default, sol),
+            calibration: ValOptionInt::from_pub(&pub_opts.calibration, pub_opts.default, sol),
+            rig_size: ValOptionInt::from_pub(&pub_opts.rig_size, pub_opts.default, sol),
             // Services
-            service_slot_count: ValOptionInt::from_pub(&pub_opts.service_slot_count, sol),
+            service_slot_count: ValOptionInt::from_pub(&pub_opts.service_slot_count, pub_opts.default, sol),
             // T3 subsystems/stances
-            subsystem_slot_count: ValOptionInt::from_pub(&pub_opts.subsystem_slot_count, sol),
-            subsystem_slot_index: ValOptionInt::from_pub(&pub_opts.subsystem_slot_index, sol),
-            ship_stance: ValOptionInt::from_pub(&pub_opts.ship_stance, sol),
+            subsystem_slot_count: ValOptionInt::from_pub(&pub_opts.subsystem_slot_count, pub_opts.default, sol),
+            subsystem_slot_index: ValOptionInt::from_pub(&pub_opts.subsystem_slot_index, pub_opts.default, sol),
+            ship_stance: ValOptionInt::from_pub(&pub_opts.ship_stance, pub_opts.default, sol),
             // Drones
-            drone_bay_volume: ValOptionInt::from_pub(&pub_opts.drone_bay_volume, sol),
-            launched_drone_count: ValOptionInt::from_pub(&pub_opts.launched_drone_count, sol),
-            drone_bandwidth: ValOptionInt::from_pub(&pub_opts.drone_bandwidth, sol),
-            unlaunchable_drone_slot: ValOptionInt::from_pub(&pub_opts.unlaunchable_drone_slot, sol),
-            unlaunchable_drone_bandwidth: ValOptionInt::from_pub(&pub_opts.unlaunchable_drone_bandwidth, sol),
-            drone_group: ValOptionInt::from_pub(&pub_opts.drone_group, sol),
+            drone_bay_volume: ValOptionInt::from_pub(&pub_opts.drone_bay_volume, pub_opts.default, sol),
+            launched_drone_count: ValOptionInt::from_pub(&pub_opts.launched_drone_count, pub_opts.default, sol),
+            drone_bandwidth: ValOptionInt::from_pub(&pub_opts.drone_bandwidth, pub_opts.default, sol),
+            unlaunchable_drone_slot: ValOptionInt::from_pub(&pub_opts.unlaunchable_drone_slot, pub_opts.default, sol),
+            unlaunchable_drone_bandwidth: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_drone_bandwidth,
+                pub_opts.default,
+                sol,
+            ),
+            drone_group: ValOptionInt::from_pub(&pub_opts.drone_group, pub_opts.default, sol),
             // Fighters
-            fighter_bay_volume: ValOptionInt::from_pub(&pub_opts.fighter_bay_volume, sol),
-            launched_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_fighter_count, sol),
-            launched_light_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_light_fighter_count, sol),
-            launched_heavy_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_heavy_fighter_count, sol),
-            launched_support_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_support_fighter_count, sol),
-            launched_st_light_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_st_light_fighter_count, sol),
-            launched_st_heavy_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_st_heavy_fighter_count, sol),
-            launched_st_support_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_st_support_fighter_count, sol),
-            unlaunchable_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_fighter, sol),
-            unlaunchable_light_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_light_fighter, sol),
-            unlaunchable_heavy_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_heavy_fighter, sol),
-            unlaunchable_support_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_support_fighter, sol),
-            unlaunchable_st_light_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_st_light_fighter, sol),
-            unlaunchable_st_heavy_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_st_heavy_fighter, sol),
-            unlaunchable_st_support_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_st_support_fighter, sol),
-            fighter_squad_size: ValOptionInt::from_pub(&pub_opts.fighter_squad_size, sol),
+            fighter_bay_volume: ValOptionInt::from_pub(&pub_opts.fighter_bay_volume, pub_opts.default, sol),
+            launched_fighter_count: ValOptionInt::from_pub(&pub_opts.launched_fighter_count, pub_opts.default, sol),
+            launched_light_fighter_count: ValOptionInt::from_pub(
+                &pub_opts.launched_light_fighter_count,
+                pub_opts.default,
+                sol,
+            ),
+            launched_heavy_fighter_count: ValOptionInt::from_pub(
+                &pub_opts.launched_heavy_fighter_count,
+                pub_opts.default,
+                sol,
+            ),
+            launched_support_fighter_count: ValOptionInt::from_pub(
+                &pub_opts.launched_support_fighter_count,
+                pub_opts.default,
+                sol,
+            ),
+            launched_st_light_fighter_count: ValOptionInt::from_pub(
+                &pub_opts.launched_st_light_fighter_count,
+                pub_opts.default,
+                sol,
+            ),
+            launched_st_heavy_fighter_count: ValOptionInt::from_pub(
+                &pub_opts.launched_st_heavy_fighter_count,
+                pub_opts.default,
+                sol,
+            ),
+            launched_st_support_fighter_count: ValOptionInt::from_pub(
+                &pub_opts.launched_st_support_fighter_count,
+                pub_opts.default,
+                sol,
+            ),
+            unlaunchable_fighter: ValOptionInt::from_pub(&pub_opts.unlaunchable_fighter, pub_opts.default, sol),
+            unlaunchable_light_fighter: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_light_fighter,
+                pub_opts.default,
+                sol,
+            ),
+            unlaunchable_heavy_fighter: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_heavy_fighter,
+                pub_opts.default,
+                sol,
+            ),
+            unlaunchable_support_fighter: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_support_fighter,
+                pub_opts.default,
+                sol,
+            ),
+            unlaunchable_st_light_fighter: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_st_light_fighter,
+                pub_opts.default,
+                sol,
+            ),
+            unlaunchable_st_heavy_fighter: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_st_heavy_fighter,
+                pub_opts.default,
+                sol,
+            ),
+            unlaunchable_st_support_fighter: ValOptionInt::from_pub(
+                &pub_opts.unlaunchable_st_support_fighter,
+                pub_opts.default,
+                sol,
+            ),
+            fighter_squad_size: ValOptionInt::from_pub(&pub_opts.fighter_squad_size, pub_opts.default, sol),
             // Projection, destination side
-            activation_blocked: ValOptionInt::from_pub(&pub_opts.activation_blocked, sol),
-            effect_stopper: ValOptionInt::from_pub(&pub_opts.effect_stopper, sol),
-            cloaking_blocked: ValOptionInt::from_pub(&pub_opts.cloaking_blocked, sol),
+            activation_blocked: ValOptionInt::from_pub(&pub_opts.activation_blocked, pub_opts.default, sol),
+            effect_stopper: ValOptionInt::from_pub(&pub_opts.effect_stopper, pub_opts.default, sol),
+            cloaking_blocked: ValOptionInt::from_pub(&pub_opts.cloaking_blocked, pub_opts.default, sol),
             // Projection, source side
-            projectee_filter: ValOptionInt::from_pub(&pub_opts.projectee_filter, sol),
-            assist_immunity: ValOptionInt::from_pub(&pub_opts.assist_immunity, sol),
-            offense_immunity: ValOptionInt::from_pub(&pub_opts.offense_immunity, sol),
-            resist_immunity: ValOptionInt::from_pub(&pub_opts.resist_immunity, sol),
+            projectee_filter: ValOptionInt::from_pub(&pub_opts.projectee_filter, pub_opts.default, sol),
+            assist_immunity: ValOptionInt::from_pub(&pub_opts.assist_immunity, pub_opts.default, sol),
+            offense_immunity: ValOptionInt::from_pub(&pub_opts.offense_immunity, pub_opts.default, sol),
+            resist_immunity: ValOptionInt::from_pub(&pub_opts.resist_immunity, pub_opts.default, sol),
             // Sec zone
-            sec_zone_fitted: ValOptionInt::from_pub(&pub_opts.sec_zone_fitted, sol),
-            sec_zone_online: ValOptionInt::from_pub(&pub_opts.sec_zone_online, sol),
-            sec_zone_active: ValOptionInt::from_pub(&pub_opts.sec_zone_active, sol),
-            sec_zone_unonlineable: ValOptionInt::from_pub(&pub_opts.sec_zone_unonlineable, sol),
-            sec_zone_unactivable: ValOptionInt::from_pub(&pub_opts.sec_zone_unactivable, sol),
-            sec_zone_effect: ValOptionInt::from_pub(&pub_opts.sec_zone_effect, sol),
+            sec_zone_fitted: ValOptionInt::from_pub(&pub_opts.sec_zone_fitted, pub_opts.default, sol),
+            sec_zone_online: ValOptionInt::from_pub(&pub_opts.sec_zone_online, pub_opts.default, sol),
+            sec_zone_active: ValOptionInt::from_pub(&pub_opts.sec_zone_active, pub_opts.default, sol),
+            sec_zone_unonlineable: ValOptionInt::from_pub(&pub_opts.sec_zone_unonlineable, pub_opts.default, sol),
+            sec_zone_unactivable: ValOptionInt::from_pub(&pub_opts.sec_zone_unactivable, pub_opts.default, sol),
+            sec_zone_effect: ValOptionInt::from_pub(&pub_opts.sec_zone_effect, pub_opts.default, sol),
         }
     }
 }
 
 pub(in crate::svc::vast) enum ValOptionInt {
-    Enabled(ValOptionEnabledOptionsInt),
+    Enabled(ValOptionEnabledInt),
     Disabled,
 }
 impl ValOptionInt {
-    fn from_pub(pub_opt: &ValOption, sol: &SolarSystem) -> Self {
+    fn from_pub(pub_opt: &ValOption, default: bool, sol: &SolarSystem) -> Self {
         match pub_opt {
-            ValOption::Enabled(pub_opt) => Self::Enabled(ValOptionEnabledOptionsInt {
+            ValOption::Default => match default {
+                true => Self::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),
+                false => Self::Disabled,
+            },
+            ValOption::Enabled(pub_opt) => Self::Enabled(ValOptionEnabledInt {
                 kfs: pub_opt
                     .kfs
                     .iter()
@@ -655,6 +513,6 @@ impl ValOptionInt {
     }
 }
 
-pub(in crate::svc::vast) struct ValOptionEnabledOptionsInt {
+pub(in crate::svc::vast) struct ValOptionEnabledInt {
     pub(in crate::svc::vast) kfs: RSet<UItemId>,
 }

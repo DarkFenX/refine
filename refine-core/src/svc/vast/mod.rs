@@ -9,7 +9,7 @@ pub use stats::{
 };
 pub(crate) use stats::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 use val_options::ValOptionInt;
-pub use val_options::{ValOption, ValOptionEnabledOptions, ValOptions, ValOptionsSol};
+pub use val_options::{ValOption, ValOptionEnabled, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
 pub use validators::{
