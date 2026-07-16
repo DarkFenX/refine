@@ -23,7 +23,7 @@ pub struct SkillInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillInfo {
-    pub(super) fn from_core(core_skill: &mut rc::SkillMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_skill: &mut rc::SkillMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_skill.get_item_id(),
             extended: match item_mode {

@@ -24,7 +24,7 @@ pub struct ShipInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipInfo {
-    pub(super) fn from_core(core_ship: &mut rc::ShipMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_ship: &mut rc::ShipMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_ship.get_item_id(),
             extended: match item_mode {

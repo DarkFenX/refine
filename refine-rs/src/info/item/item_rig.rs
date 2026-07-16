@@ -22,7 +22,7 @@ pub struct RigInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigInfo {
-    pub(super) fn from_core(core_rig: &mut rc::RigMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_rig: &mut rc::RigMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_rig.get_item_id(),
             extended: match item_mode {

@@ -23,7 +23,7 @@ pub struct SubsystemInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemInfo {
-    pub(super) fn from_core(core_subsystem: &mut rc::SubsystemMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_subsystem: &mut rc::SubsystemMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_subsystem.get_item_id(),
             extended: match item_mode {

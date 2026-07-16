@@ -24,7 +24,7 @@ pub struct BoosterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterInfo {
-    pub(super) fn from_core(core_booster: &mut rc::BoosterMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_booster: &mut rc::BoosterMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_booster.get_item_id(),
             extended: match item_mode {

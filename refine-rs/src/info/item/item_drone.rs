@@ -27,7 +27,7 @@ pub struct DroneInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneInfo {
-    pub(super) fn from_core(core_drone: &mut rc::DroneMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_drone: &mut rc::DroneMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_drone.get_item_id(),
             extended: match item_mode {

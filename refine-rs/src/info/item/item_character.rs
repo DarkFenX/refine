@@ -22,7 +22,7 @@ pub struct CharacterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterInfo {
-    pub(super) fn from_core(core_character: &mut rc::CharacterMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_character: &mut rc::CharacterMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_character.get_item_id(),
             extended: match item_mode {

@@ -29,7 +29,7 @@ pub struct FighterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterInfo {
-    pub(super) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_fighter.get_item_id(),
             extended: match item_mode {

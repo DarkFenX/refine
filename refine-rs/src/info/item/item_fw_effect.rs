@@ -22,7 +22,7 @@ pub struct FwEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FwEffectInfo {
-    pub(super) fn from_core(core_fw_effect: &mut rc::FwEffectMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_fw_effect: &mut rc::FwEffectMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_fw_effect.get_item_id(),
             extended: match item_mode {

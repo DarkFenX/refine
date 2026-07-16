@@ -8,6 +8,13 @@ pub enum SrcInfoMode {
 }
 
 #[derive(Copy, Clone, Default)]
+pub enum FitInfoMode {
+    Id,
+    #[default]
+    Full,
+}
+
+#[derive(Copy, Clone, Default)]
 pub enum ItemInfoMode {
     Id,
     Partial,

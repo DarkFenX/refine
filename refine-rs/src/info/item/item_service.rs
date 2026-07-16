@@ -22,7 +22,7 @@ pub struct ServiceInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceInfo {
-    pub(super) fn from_core(core_service: &mut rc::ServiceMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_service: &mut rc::ServiceMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_service.get_item_id(),
             extended: match item_mode {

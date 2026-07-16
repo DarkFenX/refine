@@ -23,7 +23,7 @@ pub struct ImplantInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantInfo {
-    pub(super) fn from_core(core_implant: &mut rc::ImplantMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_implant: &mut rc::ImplantMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_implant.get_item_id(),
             extended: match item_mode {

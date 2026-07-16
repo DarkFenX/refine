@@ -22,7 +22,7 @@ pub struct StanceInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceInfo {
-    pub(super) fn from_core(core_stance: &mut rc::StanceMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_stance: &mut rc::StanceMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_stance.get_item_id(),
             extended: match item_mode {

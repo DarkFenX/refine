@@ -34,7 +34,7 @@ pub struct ModuleInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleInfo {
-    pub(super) fn from_core(core_module: &mut rc::ModuleMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_module: &mut rc::ModuleMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_module.get_item_id(),
             extended: match item_mode {

@@ -4,6 +4,7 @@ pub use sol_get_fit::GetFitError;
 
 mod fit;
 mod fit_change;
+mod fit_get_info;
 mod fit_remove;
 mod sol_add_fit;
 mod sol_get_fit;
