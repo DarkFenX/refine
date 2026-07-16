@@ -1,1 +1,1 @@
-pub use crate::cmd::DecCheckCmd;
+pub use crate::cmd::{BenchmarkAttrCalcCmd, DecCheckCmd, DevBenchmarkCmd};
