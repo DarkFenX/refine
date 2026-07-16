@@ -9,7 +9,7 @@ pub struct FwEffectInfo {
 }
 
 pub struct FwEffectInfoExt {
-    pub kind: rc::ItemKind,
+    kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
     pub state: bool,

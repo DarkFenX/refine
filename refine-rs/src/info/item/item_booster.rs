@@ -9,7 +9,7 @@ pub struct BoosterInfo {
 }
 
 pub struct BoosterInfoExt {
-    pub kind: rc::ItemKind,
+    kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
     pub slot: Option<rc::SlotIndex>,

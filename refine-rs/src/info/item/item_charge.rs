@@ -9,7 +9,7 @@ pub struct ChargeInfo {
 }
 
 pub struct ChargeInfoExt {
-    pub kind: rc::ItemKind,
+    kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
     pub cont_item_id: rc::ItemId,

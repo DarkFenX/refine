@@ -9,7 +9,7 @@ pub struct ProjEffectInfo {
 }
 
 pub struct ProjEffectInfoExt {
-    pub kind: rc::ItemKind,
+    kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub state: bool,
     // TODO: in serialization, rename to proj_item_ids

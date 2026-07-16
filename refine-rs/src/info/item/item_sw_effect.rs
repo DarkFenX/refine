@@ -9,7 +9,7 @@ pub struct SwEffectInfo {
 }
 
 pub struct SwEffectInfoExt {
-    pub kind: rc::ItemKind,
+    kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub state: bool,
     pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
