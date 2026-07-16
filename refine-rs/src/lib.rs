@@ -53,6 +53,7 @@ mod cmd;
 pub mod dev;
 pub mod err;
 mod info;
+mod stat;
 mod svc;
 mod util;
 pub mod val;
