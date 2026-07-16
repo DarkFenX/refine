@@ -6,5 +6,6 @@ mod fit;
 mod fit_change;
 mod fit_get_info;
 mod fit_remove;
+mod fit_validate;
 mod sol_add_fit;
 mod sol_get_fit;

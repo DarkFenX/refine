@@ -35,3 +35,10 @@ pub enum ItemInfoMode {
     #[default]
     Full,
 }
+
+#[derive(Copy, Clone, Default)]
+pub enum ValInfoMode {
+    Simple,
+    #[default]
+    Detailed,
+}
