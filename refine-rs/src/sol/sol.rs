@@ -37,15 +37,10 @@ impl SolarSystemInnerGuarded {
     pub(super) fn new(core_sol: rc::SolarSystem) -> Self {
         Self(Arc::new(Mutex::new(SolarSystemInner::new(core_sol))))
     }
-    fn try_lock(&self) -> Result<MutexGuard<'_, SolarSystemInner>, TryLockError> {
+    pub(super) fn try_lock(&self) -> Result<MutexGuard<'_, SolarSystemInner>, TryLockError> {
         self.0.try_lock()
     }
     // Like regular lock, but updates timestamp on inner sol during drop
-    pub(super) async fn lock_touch_owned(&self) -> SolOwnedMutexGuard {
-        SolOwnedMutexGuard {
-            guard: self.0.clone().lock_owned().await,
-        }
-    }
     pub(super) async fn into_lock_touch_owned(self) -> SolOwnedMutexGuard {
         SolOwnedMutexGuard {
             guard: self.0.lock_owned().await,
@@ -77,17 +72,20 @@ impl<'m> std::ops::DerefMut for SolOwnedMutexGuard {
 // Inner unguarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(super) struct SolarSystemInner {
-    accessed: chrono::DateTime<chrono::Utc>,
+    last_accessed: chrono::DateTime<chrono::Utc>,
     pub(super) core_sol: Option<Box<rc::SolarSystem>>,
 }
 impl SolarSystemInner {
     fn new(core_sol: rc::SolarSystem) -> Self {
         Self {
-            accessed: chrono::Utc::now(),
+            last_accessed: chrono::Utc::now(),
             core_sol: Some(Box::new(core_sol)),
         }
     }
+    pub(super) fn get_last_accessed(&self) -> chrono::DateTime<chrono::Utc> {
+        self.last_accessed
+    }
     fn touch(&mut self) {
-        self.accessed = chrono::Utc::now();
+        self.last_accessed = chrono::Utc::now();
     }
 }

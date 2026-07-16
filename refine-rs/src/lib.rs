@@ -46,7 +46,7 @@ pub use rc::{
     OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
     SlotIndex, Spool, UnitInterval, Value, ed::EveDataHandler,
 };
-pub use refine::Refine;
+pub use refine::{CleanupSetupError, Refine};
 pub use sol::{SolarSystem, SolarSystemId};
 pub use src::{Src, SrcAlias};
 pub use util::TriStateField;

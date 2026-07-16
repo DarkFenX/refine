@@ -11,6 +11,7 @@ pub use sol_remove::RemoveSolError;
 mod containers;
 mod id;
 mod refine_add_sol;
+mod refine_cleanup_sol;
 mod refine_get_sol;
 mod sol;
 mod sol_change;
