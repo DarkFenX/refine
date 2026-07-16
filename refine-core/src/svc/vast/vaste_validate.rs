@@ -474,7 +474,7 @@ impl Vast {
         let fit = ctx.u_data.fits.get(fit_uid);
         let fit_data = self.get_fit_data_mut(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
-        let mut result = ValResultFit::new();
+        let mut result = ValResultFit { .. };
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Generic
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

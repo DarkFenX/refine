@@ -18,6 +18,7 @@ pub struct ValOptionsSol {
 /// Validation options.
 #[derive(Clone)]
 pub struct ValOptions {
+    /// True to have all validations enabled by default, false to have them disabled.
     pub default: bool,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
