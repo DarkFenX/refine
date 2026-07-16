@@ -9,6 +9,7 @@ pub struct StanceInfo {
 }
 
 pub struct StanceInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -28,6 +29,7 @@ impl StanceInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(StanceInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Stance,
                     type_id: core_stance.get_type_id(),
                     fit_id: core_stance.get_fit().get_fit_id(),

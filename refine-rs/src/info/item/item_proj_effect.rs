@@ -9,6 +9,7 @@ pub struct ProjEffectInfo {
 }
 
 pub struct ProjEffectInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub state: bool,
@@ -29,6 +30,7 @@ impl ProjEffectInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ProjEffectInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::ProjEffect,
                     type_id: core_proj_effect.get_type_id(),
                     state: core_proj_effect.get_state(),

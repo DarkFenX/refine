@@ -9,6 +9,7 @@ pub struct AutochargeInfo {
 }
 
 pub struct AutochargeInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -30,6 +31,7 @@ impl AutochargeInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(AutochargeInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Autocharge,
                     type_id: core_autocharge.get_type_id(),
                     fit_id: core_autocharge.get_fit().get_fit_id(),

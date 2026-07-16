@@ -9,6 +9,7 @@ pub struct ImplantInfo {
 }
 
 pub struct ImplantInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -29,6 +30,7 @@ impl ImplantInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ImplantInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Implant,
                     type_id: core_implant.get_type_id(),
                     fit_id: core_implant.get_fit().get_fit_id(),

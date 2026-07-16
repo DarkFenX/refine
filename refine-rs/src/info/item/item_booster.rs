@@ -9,6 +9,7 @@ pub struct BoosterInfo {
 }
 
 pub struct BoosterInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -30,6 +31,7 @@ impl BoosterInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(BoosterInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Booster,
                     type_id: core_booster.get_type_id(),
                     fit_id: core_booster.get_fit().get_fit_id(),

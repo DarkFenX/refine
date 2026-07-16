@@ -9,6 +9,7 @@ pub struct SwEffectInfo {
 }
 
 pub struct SwEffectInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub state: bool,
@@ -27,6 +28,7 @@ impl SwEffectInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SwEffectInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::SwEffect,
                     type_id: core_sw_effect.get_type_id(),
                     state: core_sw_effect.get_state(),

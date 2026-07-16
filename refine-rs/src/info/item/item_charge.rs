@@ -9,6 +9,7 @@ pub struct ChargeInfo {
 }
 
 pub struct ChargeInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -29,6 +30,7 @@ impl ChargeInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ChargeInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Charge,
                     type_id: core_charge.get_type_id(),
                     fit_id: core_charge.get_fit().get_fit_id(),

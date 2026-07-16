@@ -12,6 +12,7 @@ pub struct ModuleInfo {
 }
 
 pub struct ModuleInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -58,6 +59,7 @@ impl ModuleInfo {
                         false => TriStateField::Absent,
                     };
                     Some(ModuleInfoExt {
+                        #[cfg(feature = "serde")]
                         kind: rc::ItemKind::Module,
                         type_id: core_module.get_type_id(),
                         fit_id: core_module.get_fit().get_fit_id(),

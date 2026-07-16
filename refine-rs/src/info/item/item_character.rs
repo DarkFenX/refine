@@ -9,6 +9,7 @@ pub struct CharacterInfo {
 }
 
 pub struct CharacterInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -28,6 +29,7 @@ impl CharacterInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(CharacterInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Character,
                     type_id: core_character.get_type_id(),
                     fit_id: core_character.get_fit().get_fit_id(),

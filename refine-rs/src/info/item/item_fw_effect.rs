@@ -9,6 +9,7 @@ pub struct FwEffectInfo {
 }
 
 pub struct FwEffectInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -28,6 +29,7 @@ impl FwEffectInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FwEffectInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::FwEffect,
                     type_id: core_fw_effect.get_type_id(),
                     fit_id: core_fw_effect.get_fit().get_fit_id(),

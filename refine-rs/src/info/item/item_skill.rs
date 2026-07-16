@@ -9,6 +9,7 @@ pub struct SkillInfo {
 }
 
 pub struct SkillInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -29,6 +30,7 @@ impl SkillInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SkillInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Skill,
                     type_id: core_skill.get_type_id(),
                     fit_id: core_skill.get_fit().get_fit_id(),

@@ -9,6 +9,7 @@ pub struct RigInfo {
 }
 
 pub struct RigInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -28,6 +29,7 @@ impl RigInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(RigInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Rig,
                     type_id: core_rig.get_type_id(),
                     fit_id: core_rig.get_fit().get_fit_id(),

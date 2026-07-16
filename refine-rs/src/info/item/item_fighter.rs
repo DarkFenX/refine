@@ -9,6 +9,7 @@ pub struct FighterInfo {
 }
 
 pub struct FighterInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -35,6 +36,7 @@ impl FighterInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FighterInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Fighter,
                     type_id: core_fighter.get_type_id(),
                     fit_id: core_fighter.get_fit().get_fit_id(),

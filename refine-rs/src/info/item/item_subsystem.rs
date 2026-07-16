@@ -9,6 +9,7 @@ pub struct SubsystemInfo {
 }
 
 pub struct SubsystemInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -29,6 +30,7 @@ impl SubsystemInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SubsystemInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Subsystem,
                     type_id: core_subsystem.get_type_id(),
                     fit_id: core_subsystem.get_fit().get_fit_id(),

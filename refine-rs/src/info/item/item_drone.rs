@@ -9,6 +9,7 @@ pub struct DroneInfo {
 }
 
 pub struct DroneInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -33,6 +34,7 @@ impl DroneInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(DroneInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Drone,
                     type_id: core_drone.get_type_id(),
                     fit_id: core_drone.get_fit().get_fit_id(),

@@ -9,6 +9,7 @@ pub struct ServiceInfo {
 }
 
 pub struct ServiceInfoExt {
+    #[cfg(feature = "serde")]
     kind: rc::ItemKind,
     pub type_id: rc::ItemTypeId,
     pub fit_id: rc::FitId,
@@ -28,6 +29,7 @@ impl ServiceInfo {
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ServiceInfoExt {
+                    #[cfg(feature = "serde")]
                     kind: rc::ItemKind::Service,
                     type_id: core_service.get_type_id(),
                     fit_id: core_service.get_fit().get_fit_id(),
