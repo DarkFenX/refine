@@ -1,4 +1,7 @@
-use crate::{AddedItemIdsResp, CmdResps, FitIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    AddedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemTypeId, SkillLevel, cmd::shared::EffectModes,
+    err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdSkillAddFCtxBIds {
@@ -6,14 +9,14 @@ pub(in crate::cmd) struct ICmdSkillAddFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdSkillAddICtx,
 }
 pub(crate) struct ICmdSkillAddFCtxRIds {
-    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) fit_id: FitId,
     pub(in crate::cmd) ictx_cmd: ICmdSkillAddICtx,
 }
 
 // Commands with incomplete context
 pub(crate) struct ICmdSkillAddICtx {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
-    pub(in crate::cmd) level: rc::SkillLevel,
+    pub(in crate::cmd) type_id: ItemTypeId,
+    pub(in crate::cmd) level: SkillLevel,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }

@@ -1,4 +1,4 @@
-use crate::{CmdResps, ItemIdBackref, err::BackrefRenderError};
+use crate::{CmdResps, ItemId, ItemIdBackref, RemoveMode, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdItemRemoveFCtxBIds {
@@ -6,13 +6,13 @@ pub(in crate::cmd) struct ICmdItemRemoveFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
 }
 pub(crate) struct ICmdItemRemoveFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdItemRemoveICtx,
 }
 
 // Commands with incomplete context
 pub(in crate::cmd) struct ICmdItemRemoveICtx {
-    pub(in crate::cmd) rm_mode: Option<rc::RemoveMode> = None,
+    pub(in crate::cmd) rm_mode: Option<RemoveMode> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -47,7 +47,7 @@ pub enum GetItemRemoveItemError {
 
 impl ICmdItemRemoveICtx {
     pub(in crate::cmd) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
-        core_item.remove(self.rm_mode.unwrap_or(rc::RemoveMode::Free))?;
+        core_item.remove(self.rm_mode.unwrap_or(RemoveMode::Free))?;
         Ok(())
     }
 }

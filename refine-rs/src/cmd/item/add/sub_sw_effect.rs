@@ -1,10 +1,10 @@
-use crate::{AddItemEnumCmd, cmd::inner::ICmdSwEffectAddFCtx};
+use crate::{AddItemEnumCmd, EffectId, EffectMode, ItemTypeId, cmd::inner::ICmdSwEffectAddFCtx};
 
 pub struct ItemAddSwEffectCmd {
     pub(super) inner: ICmdSwEffectAddFCtx,
 }
 impl ItemAddSwEffectCmd {
-    pub fn new(type_id: rc::ItemTypeId) -> Self {
+    pub fn new(type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdSwEffectAddFCtx { type_id, .. },
         }
@@ -13,7 +13,7 @@ impl ItemAddSwEffectCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self

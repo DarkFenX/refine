@@ -1,5 +1,7 @@
 use rc::ItemCommon;
 
+use crate::{FitId, FleetId, ItemId};
+
 pub enum CmdResp {
     AddedFleetId(AddedFleetIdResp),
     AddedFitId(AddedFitIdResp),
@@ -9,25 +11,25 @@ pub enum CmdResp {
     NoData,
 }
 impl CmdResp {
-    pub fn get_fleet_id(&self) -> Option<rc::FleetId> {
+    pub fn get_fleet_id(&self) -> Option<FleetId> {
         match self {
             Self::AddedFleetId(resp) => Some(resp.fleet_id),
             _ => None,
         }
     }
-    pub fn get_fit_id(&self) -> Option<rc::FitId> {
+    pub fn get_fit_id(&self) -> Option<FitId> {
         match self {
             Self::AddedFitId(resp) => Some(resp.fit_id),
             _ => None,
         }
     }
-    pub fn get_item_id(&self) -> Option<rc::ItemId> {
+    pub fn get_item_id(&self) -> Option<ItemId> {
         match self {
             Self::AddedItemIds(resp) => Some(resp.item_id),
             _ => None,
         }
     }
-    pub fn get_charge_item_id(&self) -> Option<rc::ItemId> {
+    pub fn get_charge_item_id(&self) -> Option<ItemId> {
         match self {
             Self::AddedItemIds(resp) => resp.charge_item_id,
             Self::ChangedItemIds(resp) => resp.charge_item_id,
@@ -37,21 +39,21 @@ impl CmdResp {
 }
 
 pub struct AddedFleetIdResp {
-    pub fleet_id: rc::FleetId,
+    pub fleet_id: FleetId,
 }
 
 pub struct AddedFitIdResp {
-    pub fit_id: rc::FitId,
+    pub fit_id: FitId,
 }
 
 pub struct AddedItemIdsResp {
-    pub item_id: rc::ItemId,
-    pub charge_item_id: Option<rc::ItemId>,
+    pub item_id: ItemId,
+    pub charge_item_id: Option<ItemId>,
 }
 
 #[derive(Default)]
 pub struct ChangedItemIdsResp {
-    pub charge_item_id: Option<rc::ItemId>,
+    pub charge_item_id: Option<ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,6 @@
-use crate::{ChangedItemIdsResp, CmdResps, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdFwEffectChangeFCtxBIds {
@@ -6,13 +8,13 @@ pub(in crate::cmd) struct ICmdFwEffectChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdFwEffectChangeICtx = ICmdFwEffectChangeICtx { .. },
 }
 pub(crate) struct ICmdFwEffectChangeFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdFwEffectChangeICtx,
 }
 
 // Commands with incomplete context
 pub(in crate::cmd) struct ICmdFwEffectChangeICtx {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }

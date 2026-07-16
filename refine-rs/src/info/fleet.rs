@@ -1,14 +1,14 @@
 use rc::Lender;
 
-use crate::FleetInfoMode;
+use crate::{FitId, FleetId, FleetInfoMode};
 
 pub struct FleetInfo {
-    pub id: rc::FleetId,
+    pub id: FleetId,
     pub extended: Option<FleetInfoExt>,
 }
 
 pub struct FleetInfoExt {
-    pub fit_ids: Vec<rc::FitId>,
+    pub fit_ids: Vec<FitId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

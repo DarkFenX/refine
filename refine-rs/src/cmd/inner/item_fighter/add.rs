@@ -1,5 +1,6 @@
 use crate::{
-    AddedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref,
+    AddedItemIdsResp, CmdResps, Coordinates, CountNz, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
+    MinionState, Movement, RearmMinion,
     cmd::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
 };
@@ -10,7 +11,7 @@ pub(in crate::cmd) struct ICmdFighterAddFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdFighterAddICtxBIds,
 }
 pub(crate) struct ICmdFighterAddFCtxRIds {
-    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) fit_id: FitId,
     pub(in crate::cmd) ictx_cmd: ICmdFighterAddICtxRIds,
 }
 
@@ -21,16 +22,16 @@ pub(in crate::cmd) struct ICmdFighterAddICtxBIds {
 }
 pub(crate) struct ICmdFighterAddICtxRIds {
     pub(in crate::cmd) shared: ICmdFighterAddShared,
-    pub(in crate::cmd) proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdFighterAddShared {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
-    pub(in crate::cmd) state: rc::MinionState,
-    pub(in crate::cmd) count: Option<rc::CountNz> = None,
+    pub(in crate::cmd) type_id: ItemTypeId,
+    pub(in crate::cmd) state: MinionState,
+    pub(in crate::cmd) count: Option<CountNz> = None,
     pub(in crate::cmd) abilities: Abilities = Abilities::new(),
-    pub(in crate::cmd) rearm_minion: Option<rc::RearmMinion> = None,
-    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
-    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) rearm_minion: Option<RearmMinion> = None,
+    pub(in crate::cmd) coordinates: Option<Coordinates> = None,
+    pub(in crate::cmd) movement: Option<Movement> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

@@ -1,12 +1,14 @@
+use crate::{AttrId, ItemTypeId, UnitInterval, Value};
+
 pub struct ItemMutationInfo {
-    pub base_type_id: rc::ItemTypeId,
-    pub mutator_id: rc::ItemTypeId,
-    pub attrs: Vec<(rc::AttrId, AttrMutationInfo)>,
+    pub base_type_id: ItemTypeId,
+    pub mutator_id: ItemTypeId,
+    pub attrs: Vec<(AttrId, AttrMutationInfo)>,
 }
 
 pub struct AttrMutationInfo {
-    pub roll: Option<rc::UnitInterval>,
-    pub value: rc::Value,
+    pub roll: Option<UnitInterval>,
+    pub value: Value,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

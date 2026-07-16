@@ -1,4 +1,6 @@
-use crate::{AddedItemIdsResp, CmdResps, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    AddedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdProjEffectAddFCtxBIds {
@@ -7,10 +9,10 @@ pub(in crate::cmd) struct ICmdProjEffectAddFCtxBIds {
 }
 pub(crate) struct ICmdProjEffectAddFCtxRIds {
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
-    pub(in crate::cmd) proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdProjEffectAddShared {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }

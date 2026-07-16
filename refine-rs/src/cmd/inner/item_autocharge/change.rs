@@ -1,4 +1,4 @@
-use crate::{ChangedItemIdsResp, CmdResps, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdAutochargeChangeFCtxBIds {
@@ -6,7 +6,7 @@ pub(in crate::cmd) struct ICmdAutochargeChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdAutochargeChangeICtx = ICmdAutochargeChangeICtx { .. },
 }
 pub(crate) struct ICmdAutochargeChangeFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdAutochargeChangeICtx,
 }
 

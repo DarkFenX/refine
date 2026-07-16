@@ -1,5 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CmdResps, Coordinates, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, Movement,
+    cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context via fit ID
@@ -8,7 +9,7 @@ pub(in crate::cmd) struct ICmdShipChangeFFitCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdShipChangeICtx = ICmdShipChangeICtx { .. },
 }
 pub(crate) struct ICmdShipChangeFFitCtxRIds {
-    fit_id: rc::FitId,
+    fit_id: FitId,
     ictx_cmd: ICmdShipChangeICtx,
 }
 
@@ -18,16 +19,16 @@ pub(in crate::cmd) struct ICmdShipChangeFItemCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdShipChangeICtx = ICmdShipChangeICtx { .. },
 }
 pub(crate) struct ICmdShipChangeFItemCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdShipChangeICtx,
 }
 
 // Commands with incomplete context
 pub(crate) struct ICmdShipChangeICtx {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,
-    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
-    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) coordinates: Option<Coordinates> = None,
+    pub(in crate::cmd) movement: Option<Movement> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
@@ -73,7 +74,7 @@ pub enum GetFitChangeShipError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no ship set")]
-    NoShip(rc::FitId),
+    NoShip(FitId),
 }
 
 impl ICmdShipChangeFItemCtxRIds {
@@ -131,7 +132,7 @@ impl ICmdShipChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeShipError {
     #[error("fit {0} has no ship set")]
-    NoShip(rc::FitId),
+    NoShip(FitId),
 }
 
 #[derive(thiserror::Error, Debug)]

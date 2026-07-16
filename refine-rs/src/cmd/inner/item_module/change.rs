@@ -1,8 +1,8 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, CmdResps, ItemIdBackref, TriStateField, cmd::shared::EffectModes,
-    err::BackrefRenderError,
+    ChangeMutation, ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, ModuleState, MoveMode,
+    OptionalReload, Spool, TriStateField, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -11,7 +11,7 @@ pub(in crate::cmd) struct ICmdModuleChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdModuleChangeICtxBIds = ICmdModuleChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdModuleChangeFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdModuleChangeICtxRIds,
 }
 
@@ -23,17 +23,17 @@ pub(in crate::cmd) struct ICmdModuleChangeICtxBIds {
 }
 pub(in crate::cmd) struct ICmdModuleChangeICtxRIds {
     pub(in crate::cmd) shared: ICmdModuleChangeShared = ICmdModuleChangeShared { .. },
-    pub(in crate::cmd) add_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
-    pub(in crate::cmd) rm_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdModuleChangeShared {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
-    pub(in crate::cmd) move_: Option<rc::MoveMode> = None,
-    pub(in crate::cmd) state: Option<rc::ModuleState> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
+    pub(in crate::cmd) move_: Option<MoveMode> = None,
+    pub(in crate::cmd) state: Option<ModuleState> = None,
     pub(in crate::cmd) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
-    pub(in crate::cmd) charge_type_id: TriStateField<rc::ItemTypeId> = TriStateField::Absent,
-    pub(in crate::cmd) spool: TriStateField<rc::Spool> = TriStateField::Absent,
-    pub(in crate::cmd) optional_reload: TriStateField<rc::OptionalReload> = TriStateField::Absent,
+    pub(in crate::cmd) charge_type_id: TriStateField<ItemTypeId> = TriStateField::Absent,
+    pub(in crate::cmd) spool: TriStateField<Spool> = TriStateField::Absent,
+    pub(in crate::cmd) optional_reload: TriStateField<OptionalReload> = TriStateField::Absent,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
@@ -160,7 +160,7 @@ pub enum ItemChangeModuleError {
     #[error("{0}")]
     ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
-    NotMutated(rc::ItemId),
+    NotMutated(ItemId),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]

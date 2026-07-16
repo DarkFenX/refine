@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, ItemIdBackref,
+    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, SkillLevel,
     cmd::inner::{ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
@@ -7,7 +7,7 @@ pub struct FitAddSkillCmd {
     pub(super) inner: ICmdSkillAddICtx,
 }
 impl FitAddSkillCmd {
-    pub fn new(type_id: rc::ItemTypeId, level: rc::SkillLevel) -> Self {
+    pub fn new(type_id: ItemTypeId, level: SkillLevel) -> Self {
         Self {
             inner: ICmdSkillAddICtx { type_id, level, .. },
         }
@@ -16,7 +16,7 @@ impl FitAddSkillCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self
@@ -37,11 +37,11 @@ impl FitChangeSkillCmd {
             inner: ICmdSkillChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
-    pub fn with_level(mut self, level: rc::SkillLevel) -> Self {
+    pub fn with_level(mut self, level: SkillLevel) -> Self {
         self.inner.ictx_cmd.level = Some(level);
         self
     }
@@ -49,7 +49,7 @@ impl FitChangeSkillCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

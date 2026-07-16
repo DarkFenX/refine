@@ -1,4 +1,4 @@
-use crate::{ChangeFitEnumCmd, ItemIdBackref, cmd::inner::ICmdChargeChangeFCtxBIds};
+use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, cmd::inner::ICmdChargeChangeFCtxBIds};
 
 pub struct FitChangeChargeCmd {
     pub(super) inner: ICmdChargeChangeFCtxBIds,
@@ -9,7 +9,7 @@ impl FitChangeChargeCmd {
             inner: ICmdChargeChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
@@ -17,7 +17,7 @@ impl FitChangeChargeCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

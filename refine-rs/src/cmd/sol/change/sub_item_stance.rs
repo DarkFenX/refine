@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref,
+    ChangeSolEnumCmd, ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
     cmd::inner::{
         ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
         ICmdStanceChangeFItemCtxRIds, ICmdStanceSetFCtxBIds, ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds,
@@ -14,7 +14,7 @@ pub struct SolSetStanceCmd {
     pub(super) inner: ICmdStanceSetFCtxBIds,
 }
 impl SolSetStanceCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdStanceSetFCtxBIds {
                 fit_id,
@@ -26,7 +26,7 @@ impl SolSetStanceCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self
@@ -55,7 +55,7 @@ impl SolChangeStanceViaFitCmd {
             inner: ICmdStanceChangeFFitCtxBIds { fit_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
@@ -63,7 +63,7 @@ impl SolChangeStanceViaFitCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self
@@ -84,7 +84,7 @@ impl SolChangeStanceViaItemCmd {
             inner: ICmdStanceChangeFItemCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
@@ -92,7 +92,7 @@ impl SolChangeStanceViaItemCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

@@ -1,5 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
 // Commands with full context via fit ID
@@ -8,7 +9,7 @@ pub(in crate::cmd) struct ICmdStanceChangeFFitCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdStanceChangeICtx = ICmdStanceChangeICtx { .. },
 }
 pub(crate) struct ICmdStanceChangeFFitCtxRIds {
-    fit_id: rc::FitId,
+    fit_id: FitId,
     ictx_cmd: ICmdStanceChangeICtx,
 }
 
@@ -18,13 +19,13 @@ pub(in crate::cmd) struct ICmdStanceChangeFItemCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdStanceChangeICtx = ICmdStanceChangeICtx { .. },
 }
 pub(crate) struct ICmdStanceChangeFItemCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdStanceChangeICtx,
 }
 
 // Commands with incomplete context
 pub(crate) struct ICmdStanceChangeICtx {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
@@ -71,7 +72,7 @@ pub enum GetFitChangeStanceError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no stance set")]
-    NoStance(rc::FitId),
+    NoStance(FitId),
 }
 
 impl ICmdStanceChangeFItemCtxRIds {
@@ -123,7 +124,7 @@ impl ICmdStanceChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeStanceError {
     #[error("fit {0} has no stance set")]
-    NoStance(rc::FitId),
+    NoStance(FitId),
 }
 
 #[derive(thiserror::Error, Debug)]

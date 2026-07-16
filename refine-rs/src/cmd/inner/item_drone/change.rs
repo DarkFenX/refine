@@ -1,8 +1,8 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, CmdResps, ItemIdBackref, TriStateField, cmd::shared::EffectModes,
-    err::BackrefRenderError,
+    ChangeMutation, ChangedItemIdsResp, CmdResps, Coordinates, ItemId, ItemIdBackref, ItemTypeId, MinionState,
+    Movement, NpcProp, TriStateField, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -11,7 +11,7 @@ pub(in crate::cmd) struct ICmdDroneChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdDroneChangeICtxBIds = ICmdDroneChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdDroneChangeFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdDroneChangeICtxRIds,
 }
 
@@ -23,16 +23,16 @@ pub(in crate::cmd) struct ICmdDroneChangeICtxBIds {
 }
 pub(in crate::cmd) struct ICmdDroneChangeICtxRIds {
     pub(in crate::cmd) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
-    pub(in crate::cmd) add_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
-    pub(in crate::cmd) rm_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdDroneChangeShared {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
-    pub(in crate::cmd) state: Option<rc::MinionState> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
+    pub(in crate::cmd) state: Option<MinionState> = None,
     pub(in crate::cmd) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
-    pub(in crate::cmd) npc_prop: TriStateField<rc::NpcProp> = TriStateField::Absent,
-    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
-    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) npc_prop: TriStateField<NpcProp> = TriStateField::Absent,
+    pub(in crate::cmd) coordinates: Option<Coordinates> = None,
+    pub(in crate::cmd) movement: Option<Movement> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
@@ -142,7 +142,7 @@ pub enum ItemChangeDroneError {
     #[error("{0}")]
     ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
-    NotMutated(rc::ItemId),
+    NotMutated(ItemId),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]

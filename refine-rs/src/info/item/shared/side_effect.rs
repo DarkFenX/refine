@@ -1,12 +1,14 @@
+use crate::{UnitInterval, Value};
+
 pub struct SideEffectInfo {
-    pub chance: rc::UnitInterval,
+    pub chance: UnitInterval,
     pub state: bool,
     pub modification: Option<SideEffectMod>,
 }
 
 pub struct SideEffectMod {
     pub op: SideEffectOp,
-    pub str: rc::Value,
+    pub str: Value,
 }
 
 pub enum SideEffectOp {
@@ -37,17 +39,17 @@ impl SideEffectMod {
             }),
             rc::Op::Sub => Some(Self {
                 op: SideEffectOp::Add,
-                str: rc::Value::from_f64(-raw_strength.into_f64()),
+                str: Value::from_f64(-raw_strength.into_f64()),
             }),
             rc::Op::PreMul | rc::Op::PostMul | rc::Op::ExtraMul => Some(Self {
                 op: SideEffectOp::Perc,
-                str: rc::Value::from_f64(raw_strength.into_f64().mul_add(100.0, -100.0)),
+                str: Value::from_f64(raw_strength.into_f64().mul_add(100.0, -100.0)),
             }),
             rc::Op::PreDiv | rc::Op::PostDiv => match raw_strength.into_f64() {
                 0.0 => None,
                 v => Some(Self {
                     op: SideEffectOp::Perc,
-                    str: rc::Value::from_f64(100.0 / v - 100.0),
+                    str: Value::from_f64(100.0 / v - 100.0),
                 }),
             },
             rc::Op::PostPerc => Some(Self {

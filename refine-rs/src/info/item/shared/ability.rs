@@ -1,6 +1,8 @@
+use crate::Count;
+
 pub struct AbilityInfo {
     pub state: bool,
-    pub charge_count: Option<rc::Count>,
+    pub charge_count: Option<Count>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

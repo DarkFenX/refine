@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, ItemIdBackref,
+    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
     cmd::inner::{ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxBIds},
 };
 
@@ -7,7 +7,7 @@ pub struct FitAddSubsystemCmd {
     pub(super) inner: ICmdSubsystemAddICtx,
 }
 impl FitAddSubsystemCmd {
-    pub fn new(type_id: rc::ItemTypeId) -> Self {
+    pub fn new(type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdSubsystemAddICtx { type_id, .. },
         }
@@ -16,7 +16,7 @@ impl FitAddSubsystemCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self
@@ -37,7 +37,7 @@ impl FitChangeSubsystemCmd {
             inner: ICmdSubsystemChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
@@ -45,7 +45,7 @@ impl FitChangeSubsystemCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

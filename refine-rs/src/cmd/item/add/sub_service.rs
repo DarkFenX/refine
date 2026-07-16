@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd,
+    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId, ServiceState,
     cmd::inner::{ICmdServiceAddFCtxRIds, ICmdServiceAddICtx},
 };
 
@@ -7,7 +7,7 @@ pub struct ItemAddServiceCmd {
     pub(super) inner: ICmdServiceAddFCtxRIds,
 }
 impl ItemAddServiceCmd {
-    pub fn new(fit_id: rc::FitId, type_id: rc::ItemTypeId, state: rc::ServiceState) -> Self {
+    pub fn new(fit_id: FitId, type_id: ItemTypeId, state: ServiceState) -> Self {
         Self {
             inner: ICmdServiceAddFCtxRIds {
                 fit_id,
@@ -15,7 +15,7 @@ impl ItemAddServiceCmd {
             },
         }
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

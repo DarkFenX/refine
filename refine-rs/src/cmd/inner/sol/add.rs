@@ -1,10 +1,12 @@
+use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool};
+
 pub(in crate::cmd) struct ICmdSolAddFCtx {
-    pub(in crate::cmd) sec_zone: Option<rc::SecZone> = None,
-    pub(in crate::cmd) default_incoming_dps: Option<rc::DpsProfile> = None,
-    pub(in crate::cmd) default_spool: Option<rc::Spool> = None,
-    pub(in crate::cmd) default_npc_prop: Option<rc::NpcProp> = None,
-    pub(in crate::cmd) default_optional_reloads: Option<rc::OptionalReload> = None,
-    pub(in crate::cmd) default_rearm_minions: Option<rc::RearmMinion> = None,
+    pub(in crate::cmd) sec_zone: Option<SecZone> = None,
+    pub(in crate::cmd) default_incoming_dps: Option<DpsProfile> = None,
+    pub(in crate::cmd) default_spool: Option<Spool> = None,
+    pub(in crate::cmd) default_npc_prop: Option<NpcProp> = None,
+    pub(in crate::cmd) default_optional_reloads: Option<OptionalReload> = None,
+    pub(in crate::cmd) default_rearm_minions: Option<RearmMinion> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

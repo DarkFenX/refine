@@ -1,4 +1,7 @@
-use crate::{CmdResps, FitIdBackref, FleetIdBackref, TriStateField, err::BackrefRenderError};
+use crate::{
+    CmdResps, DpsProfile, FitId, FitIdBackref, FitSecStatus, FleetId, FleetIdBackref, TriStateField,
+    err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdFitChangeFCtxBIds {
@@ -6,7 +9,7 @@ pub(in crate::cmd) struct ICmdFitChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdFitChangeICtxBIds = ICmdFitChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdFitChangeFCtxRIds {
-    fit_id: rc::FitId,
+    fit_id: FitId,
     ictx_cmd: ICmdFitChangeICtxRIds,
 }
 
@@ -17,11 +20,11 @@ pub(in crate::cmd) struct ICmdFitChangeICtxBIds {
 }
 pub(crate) struct ICmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
-    fleet_id: TriStateField<rc::FleetId>,
+    fleet_id: TriStateField<FleetId>,
 }
 pub(in crate::cmd) struct CmdFitChangeShared {
-    pub(in crate::cmd) sec_status: Option<rc::FitSecStatus> = None,
-    pub(in crate::cmd) rah_incoming_dps: TriStateField<rc::DpsProfile> = TriStateField::Absent,
+    pub(in crate::cmd) sec_status: Option<FitSecStatus> = None,
+    pub(in crate::cmd) rah_incoming_dps: TriStateField<DpsProfile> = TriStateField::Absent,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

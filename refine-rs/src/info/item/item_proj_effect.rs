@@ -1,23 +1,25 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::info::{ItemInfoMode, ProjInfo};
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{AttrId, AttrVals, EffectId, EffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo};
 
 pub struct ProjEffectInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<ProjEffectInfoExt>,
 }
 
 pub struct ProjEffectInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
     pub state: bool,
     // TODO: in serialization, rename to proj_item_ids
     pub projs: Vec<ProjInfo>,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -31,7 +33,7 @@ impl ProjEffectInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ProjEffectInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::ProjEffect,
+                    kind: ItemKind::ProjEffect,
                     type_id: core_proj_effect.get_type_id(),
                     state: core_proj_effect.get_state(),
                     projs: core_proj_effect.iter_projs().map(ProjInfo::from_core).collect(),

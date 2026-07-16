@@ -1,24 +1,29 @@
 use rc::{ItemCommon, Lender};
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::{ItemInfoMode, SideEffectInfo};
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{
+    AttrId, AttrVals, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification, SideEffectInfo,
+    SlotIndex,
+};
 
 pub struct BoosterInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<BoosterInfoExt>,
 }
 
 pub struct BoosterInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
-    pub slot: Option<rc::SlotIndex>,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub slot: Option<SlotIndex>,
     pub state: bool,
-    pub side_effects: Vec<(rc::EffectId, SideEffectInfo)>,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub side_effects: Vec<(EffectId, SideEffectInfo)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +37,7 @@ impl BoosterInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(BoosterInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Booster,
+                    kind: ItemKind::Booster,
                     type_id: core_booster.get_type_id(),
                     fit_id: core_booster.get_fit().get_fit_id(),
                     slot: core_booster.get_slot(),

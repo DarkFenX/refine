@@ -1,4 +1,6 @@
-use crate::{ChangedItemIdsResp, CmdResps, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdProjEffectChangeFCtxBIds {
@@ -6,7 +8,7 @@ pub(in crate::cmd) struct ICmdProjEffectChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdProjEffectChangeICtxBIds = ICmdProjEffectChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdProjEffectChangeFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdProjEffectChangeICtxRIds,
 }
 
@@ -18,11 +20,11 @@ pub(in crate::cmd) struct ICmdProjEffectChangeICtxBIds {
 }
 pub(in crate::cmd) struct ICmdProjEffectChangeICtxRIds {
     pub(in crate::cmd) shared: ICmdProjEffectChangeShared = ICmdProjEffectChangeShared { .. },
-    pub(in crate::cmd) add_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
-    pub(in crate::cmd) rm_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdProjEffectChangeShared {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }

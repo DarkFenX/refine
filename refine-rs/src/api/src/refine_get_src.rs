@@ -1,4 +1,8 @@
-use crate::{Refine, Src, SrcAlias, svc::SrcInnerGuarded};
+use crate::{
+    Refine,
+    src::{Src, SrcAlias},
+    svc::SrcInnerGuarded,
+};
 
 impl Refine {
     // TODO: consider splitting into 2 methods, and making alias parameter generic for convenience

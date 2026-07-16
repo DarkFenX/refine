@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, ItemIdBackref,
+    ChangeSolEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
     cmd::inner::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
 };
 
@@ -7,7 +7,7 @@ pub struct SolAddProjEffectCmd {
     pub(super) inner: ICmdProjEffectAddFCtxBIds,
 }
 impl SolAddProjEffectCmd {
-    pub fn new(type_id: rc::ItemTypeId) -> Self {
+    pub fn new(type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdProjEffectAddFCtxBIds {
                 shared: ICmdProjEffectAddShared { type_id, .. },
@@ -24,7 +24,7 @@ impl SolAddProjEffectCmd {
         self.inner.proj_item_ids.extend(proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.shared.effect_modes.clear();
         self.inner.shared.effect_modes.extend(effect_modes);
         self
@@ -45,7 +45,7 @@ impl SolChangeProjEffectCmd {
             inner: ICmdProjEffectChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.shared.type_id = Some(type_id);
         self
     }
@@ -63,7 +63,7 @@ impl SolChangeProjEffectCmd {
         self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.shared.effect_modes.clear();
         self.inner.ictx_cmd.shared.effect_modes.extend(effect_modes);
         self

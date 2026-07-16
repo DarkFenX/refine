@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, cmd::inner::ICmdImplantChangeICtx};
+use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, cmd::inner::ICmdImplantChangeICtx};
 
 #[derive(Default)]
 pub struct ItemChangeImplantCmd {
@@ -8,7 +8,7 @@ impl ItemChangeImplantCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.type_id = Some(type_id);
         self
     }
@@ -16,7 +16,7 @@ impl ItemChangeImplantCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self

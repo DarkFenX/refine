@@ -1,6 +1,8 @@
+use crate::EffectId;
+
 #[derive(Default)]
 pub(in crate::cmd) struct SideEffects {
-    data: Vec<(rc::EffectId, bool)>,
+    data: Vec<(EffectId, bool)>,
 }
 impl SideEffects {
     pub(in crate::cmd) const fn new() -> Self {
@@ -9,7 +11,7 @@ impl SideEffects {
     pub(in crate::cmd) fn clear(&mut self) {
         self.data.clear();
     }
-    pub(in crate::cmd) fn extend(&mut self, effect_modes: impl Iterator<Item = (rc::EffectId, bool)>) {
+    pub(in crate::cmd) fn extend(&mut self, effect_modes: impl Iterator<Item = (EffectId, bool)>) {
         self.data.extend(effect_modes);
     }
     pub(in crate::cmd) fn apply(&self, core_booster: &mut rc::BoosterMut) {

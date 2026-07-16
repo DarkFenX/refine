@@ -1,5 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    AbilityId, ChangeSolEnumCmd, Coordinates, CountNz, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
+    MinionState, Movement, RearmMinion,
     cmd::inner::{ICmdFighterAddFCtxBIds, ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
@@ -7,7 +8,7 @@ pub struct SolAddFighterCmd {
     pub(super) inner: ICmdFighterAddFCtxBIds,
 }
 impl SolAddFighterCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId, state: rc::MinionState) -> Self {
+    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId, state: MinionState) -> Self {
         Self {
             inner: ICmdFighterAddFCtxBIds {
                 fit_id,
@@ -18,24 +19,24 @@ impl SolAddFighterCmd {
             },
         }
     }
-    pub fn with_count(mut self, count: rc::CountNz) -> Self {
+    pub fn with_count(mut self, count: CountNz) -> Self {
         self.inner.ictx_cmd.shared.count = Some(count);
         self
     }
-    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (rc::AbilityId, bool)>) -> Self {
+    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
         self.inner.ictx_cmd.shared.abilities.clear();
         self.inner.ictx_cmd.shared.abilities.extend(abilities);
         self
     }
-    pub fn with_rearm_minion(mut self, rearm_minion: rc::RearmMinion) -> Self {
+    pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
         self.inner.ictx_cmd.shared.rearm_minion = Some(rearm_minion);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.inner.ictx_cmd.shared.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+    pub fn with_movement(mut self, movement: Movement) -> Self {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
@@ -44,7 +45,7 @@ impl SolAddFighterCmd {
         self.inner.ictx_cmd.proj_item_ids.extend(proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.shared.effect_modes.clear();
         self.inner.ictx_cmd.shared.effect_modes.extend(effect_modes);
         self
@@ -65,32 +66,32 @@ impl SolChangeFighterCmd {
             inner: ICmdFighterChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.shared.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: rc::MinionState) -> Self {
+    pub fn with_state(mut self, state: MinionState) -> Self {
         self.inner.ictx_cmd.shared.state = Some(state);
         self
     }
-    pub fn with_count(mut self, count: Option<rc::CountNz>) -> Self {
+    pub fn with_count(mut self, count: Option<CountNz>) -> Self {
         self.inner.ictx_cmd.shared.count = count.into();
         self
     }
-    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (rc::AbilityId, bool)>) -> Self {
+    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
         self.inner.ictx_cmd.shared.abilities.clear();
         self.inner.ictx_cmd.shared.abilities.extend(abilities);
         self
     }
-    pub fn with_rearm_minion(mut self, rearm_minion: Option<rc::RearmMinion>) -> Self {
+    pub fn with_rearm_minion(mut self, rearm_minion: Option<RearmMinion>) -> Self {
         self.inner.ictx_cmd.shared.rearm_minion = rearm_minion.into();
         self
     }
-    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.inner.ictx_cmd.shared.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+    pub fn with_movement(mut self, movement: Movement) -> Self {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
@@ -104,7 +105,7 @@ impl SolChangeFighterCmd {
         self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.shared.effect_modes.clear();
         self.inner.ictx_cmd.shared.effect_modes.extend(effect_modes);
         self

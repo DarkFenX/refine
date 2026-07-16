@@ -1,22 +1,26 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::ItemInfoMode;
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{
+    AttrId, AttrVals, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification, ServiceState,
+};
 
 pub struct ServiceInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<ServiceInfoExt>,
 }
 
 pub struct ServiceInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
-    pub state: rc::ServiceState,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub state: ServiceState,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +34,7 @@ impl ServiceInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ServiceInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Service,
+                    kind: ItemKind::Service,
                     type_id: core_service.get_type_id(),
                     fit_id: core_service.get_fit().get_fit_id(),
                     state: core_service.get_state(),

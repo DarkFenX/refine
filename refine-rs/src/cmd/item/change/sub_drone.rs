@@ -1,4 +1,7 @@
-use crate::{ChangeItemEnumCmd, ChangeMutation, cmd::inner::ICmdDroneChangeICtxRIds};
+use crate::{
+    ChangeItemEnumCmd, ChangeMutation, Coordinates, EffectId, EffectMode, ItemId, ItemTypeId, MinionState, Movement,
+    NpcProp, cmd::inner::ICmdDroneChangeICtxRIds,
+};
 
 #[derive(Default)]
 pub struct ItemChangeDroneCmd {
@@ -8,11 +11,11 @@ impl ItemChangeDroneCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.shared.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: rc::MinionState) -> Self {
+    pub fn with_state(mut self, state: MinionState) -> Self {
         self.inner.shared.state = Some(state);
         self
     }
@@ -20,29 +23,29 @@ impl ItemChangeDroneCmd {
         self.inner.shared.mutation = mutation.into();
         self
     }
-    pub fn with_npc_prop(mut self, npc_prop: Option<rc::NpcProp>) -> Self {
+    pub fn with_npc_prop(mut self, npc_prop: Option<NpcProp>) -> Self {
         self.inner.shared.npc_prop = npc_prop.into();
         self
     }
-    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.inner.shared.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+    pub fn with_movement(mut self, movement: Movement) -> Self {
         self.inner.shared.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
         self.inner.add_proj_item_ids.clear();
         self.inner.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
         self.inner.rm_proj_item_ids.clear();
         self.inner.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.shared.effect_modes.clear();
         self.inner.shared.effect_modes.extend(effect_modes);
         self

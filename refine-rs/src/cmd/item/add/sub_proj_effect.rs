@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd,
+    AddItemEnumCmd, EffectId, EffectMode, ItemId, ItemTypeId,
     cmd::inner::{ICmdProjEffectAddFCtxRIds, ICmdProjEffectAddShared},
 };
 
@@ -7,7 +7,7 @@ pub struct ItemAddProjEffectCmd {
     pub(super) inner: ICmdProjEffectAddFCtxRIds,
 }
 impl ItemAddProjEffectCmd {
-    pub fn new(type_id: rc::ItemTypeId) -> Self {
+    pub fn new(type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdProjEffectAddFCtxRIds {
                 shared: ICmdProjEffectAddShared { type_id, .. },
@@ -19,12 +19,12 @@ impl ItemAddProjEffectCmd {
         self.inner.shared.state = Some(state);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
         self.inner.proj_item_ids.clear();
         self.inner.proj_item_ids.extend(proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.shared.effect_modes.clear();
         self.inner.shared.effect_modes.extend(effect_modes);
         self

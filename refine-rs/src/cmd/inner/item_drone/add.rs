@@ -1,6 +1,6 @@
 use crate::{
-    AddMutation, AddedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref, cmd::shared::EffectModes,
-    err::BackrefRenderError,
+    AddMutation, AddedItemIdsResp, CmdResps, Coordinates, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
+    MinionState, Movement, NpcProp, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -9,7 +9,7 @@ pub(in crate::cmd) struct ICmdDroneAddFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdDroneAddICtxBIds,
 }
 pub(crate) struct ICmdDroneAddFCtxRIds {
-    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) fit_id: FitId,
     pub(in crate::cmd) ictx_cmd: ICmdDroneAddICtxRIds,
 }
 
@@ -20,15 +20,15 @@ pub(in crate::cmd) struct ICmdDroneAddICtxBIds {
 }
 pub(crate) struct ICmdDroneAddICtxRIds {
     pub(in crate::cmd) shared: ICmdDroneAddShared,
-    pub(in crate::cmd) proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdDroneAddShared {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
-    pub(in crate::cmd) state: rc::MinionState,
+    pub(in crate::cmd) type_id: ItemTypeId,
+    pub(in crate::cmd) state: MinionState,
     pub(in crate::cmd) mutation: Option<AddMutation> = None,
-    pub(in crate::cmd) npc_prop: Option<rc::NpcProp> = None,
-    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
-    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) npc_prop: Option<NpcProp> = None,
+    pub(in crate::cmd) coordinates: Option<Coordinates> = None,
+    pub(in crate::cmd) movement: Option<Movement> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

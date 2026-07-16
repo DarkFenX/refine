@@ -1,4 +1,4 @@
-use crate::{AddedFleetIdResp, CmdResps, FitIdBackref, err::BackrefRenderError};
+use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBackref, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdFleetAddFCtxBIds {
@@ -6,7 +6,7 @@ pub(in crate::cmd) struct ICmdFleetAddFCtxBIds {
 }
 
 pub(crate) struct ICmdFleetAddFCtxRIds {
-    pub(in crate::cmd) fit_ids: Vec<rc::FitId> = Vec::new(),
+    pub(in crate::cmd) fit_ids: Vec<FitId> = Vec::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,18 +1,20 @@
+use crate::{AttrId, ItemTypeId, UnitInterval, Value};
+
 #[derive(Copy, Clone)]
 pub enum AttrMutation {
-    Roll(rc::UnitInterval),
-    Absolute(rc::Value),
+    Roll(UnitInterval),
+    Absolute(Value),
 }
 
 pub struct AddMutation {
-    pub mutator_id: rc::ItemTypeId,
-    pub attrs: Vec<(rc::AttrId, AttrMutation)> = Vec::new(),
+    pub mutator_id: ItemTypeId,
+    pub attrs: Vec<(AttrId, AttrMutation)> = Vec::new(),
 }
 impl AddMutation {
-    pub fn new(mutator_id: rc::ItemTypeId) -> Self {
+    pub fn new(mutator_id: ItemTypeId) -> Self {
         Self { mutator_id, .. }
     }
-    pub fn with_attrs(mut self, attrs: impl Iterator<Item = (rc::AttrId, AttrMutation)>) -> Self {
+    pub fn with_attrs(mut self, attrs: impl Iterator<Item = (AttrId, AttrMutation)>) -> Self {
         self.attrs.clear();
         self.attrs.extend(attrs);
         self
@@ -21,18 +23,18 @@ impl AddMutation {
 
 #[derive(Default)]
 pub struct ChangeMutation {
-    pub mutator_id: Option<rc::ItemTypeId> = None,
-    pub attrs: Vec<(rc::AttrId, Option<AttrMutation>)> = Vec::new(),
+    pub mutator_id: Option<ItemTypeId> = None,
+    pub attrs: Vec<(AttrId, Option<AttrMutation>)> = Vec::new(),
 }
 impl ChangeMutation {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_mutator_id(mut self, mutator_id: rc::ItemTypeId) -> Self {
+    pub fn with_mutator_id(mut self, mutator_id: ItemTypeId) -> Self {
         self.mutator_id = Some(mutator_id);
         self
     }
-    pub fn with_attrs(mut self, attrs: impl Iterator<Item = (rc::AttrId, Option<AttrMutation>)>) -> Self {
+    pub fn with_attrs(mut self, attrs: impl Iterator<Item = (AttrId, Option<AttrMutation>)>) -> Self {
         self.attrs.clear();
         self.attrs.extend(attrs);
         self
@@ -69,7 +71,7 @@ impl ChangeMutation {
     }
 }
 
-fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, value: rc::Value) {
+fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: AttrId, value: Value) {
     // Absolute values can be applied only to effective mutations, via full mutated attributes
     if let rc::MutationMut::Effective(core_effective_mutation) = core_mutation
         && let Ok(mut core_full_mattr) = core_effective_mutation.get_full_mattr_mut(attr_id)
@@ -78,7 +80,7 @@ fn apply_absolute(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, valu
     }
 }
 
-fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: rc::AttrId, roll: rc::UnitInterval) {
+fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: AttrId, roll: UnitInterval) {
     // Try to get raw attr, if it's not available - add it
     match core_mutation.get_raw_mattr_mut(attr_id) {
         Ok(mut core_raw_mattr) => {

@@ -1,6 +1,6 @@
 #![feature(default_field_values)]
 
-pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId, Src, SrcAlias};
+pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
@@ -36,15 +36,15 @@ pub use info::{
     ImplantInfoExt, ItemInfo, ItemInfoMode, ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo,
     ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo,
     ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, SolInfo, SolInfoExt,
-    SolInfoMode, SrcInfo, SrcInfoExt, SrcInfoMode, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings, StanceInfo,
-    StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{
-    AddMode, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DpsProfile, EffectId, EffectInfo, EffectMode,
-    FighterCountInfo, FitId, FleetId, ItemId, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo, ItemRearmMinionInfo,
-    ItemSpoolInfo, ItemTypeId, MinionState, ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp,
-    OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
-    SlotIndex, Spool, UnitInterval, Value, ed::EveDataHandler,
+    AbilityId, AddMode, Affector, AttrId, AttrVals, BreacherProfile, Coordinates, Count, CountNz, Direction,
+    DpsProfile, EffectId, EffectInfo, EffectMode, FighterCountInfo, FitId, FitSecStatus, FleetId, Index, ItemId,
+    ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ItemTypeId, MinionState,
+    ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionalReload, PValue, ProjRange,
+    RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval,
+    Value, ed::EveDataHandler,
 };
 pub use util::TriStateField;
 
@@ -53,6 +53,7 @@ mod cmd;
 pub mod dev;
 pub mod err;
 mod info;
+pub mod src;
 mod stat;
 mod svc;
 mod util;

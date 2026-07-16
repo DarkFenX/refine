@@ -1,13 +1,17 @@
 use std::sync::Arc;
 
-use crate::{Refine, Src, SrcAlias, svc::SrcInnerGuarded};
+use crate::{
+    EveDataHandler, Refine,
+    src::{Src, SrcAlias},
+    svc::SrcInnerGuarded,
+};
 
 impl Refine {
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
     pub async fn add_src<A>(
         &self,
         alias: A,
-        ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
+        ed_handler: Box<dyn EveDataHandler + Send>,
         make_default: bool,
     ) -> Result<Src<'_>, AddSrcError>
     where
@@ -78,7 +82,7 @@ pub enum AddSrcError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
     alias: &SrcAlias,
-    ed_handler: Box<dyn rc::ed::EveDataHandler>,
+    ed_handler: Box<dyn EveDataHandler>,
     cache_folder: Option<String>,
 ) -> Result<rc::Src, AddSrcError> {
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {

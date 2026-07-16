@@ -1,29 +1,34 @@
 use rc::{ItemCommon, Lender};
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::{AbilityInfo, AutochargeInfo, ItemInfoMode, RangedProjInfo};
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{
+    AbilityId, AbilityInfo, AttrId, AttrVals, AutochargeInfo, Coordinates, EffectId, EffectInfo, FighterCountInfo,
+    FitId, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
+};
 
 pub struct FighterInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<FighterInfoExt>,
 }
 
 pub struct FighterInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
-    pub state: rc::MinionState,
-    pub count: Option<rc::FighterCountInfo>,
-    pub abilities: Vec<(rc::AbilityId, AbilityInfo)>,
-    pub rearm_minion: rc::ItemRearmMinionInfo,
-    pub autocharges: Vec<(rc::EffectId, AutochargeInfo)>,
-    pub coordinates: rc::Coordinates,
-    pub movement: rc::Movement,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub state: MinionState,
+    pub count: Option<FighterCountInfo>,
+    pub abilities: Vec<(AbilityId, AbilityInfo)>,
+    pub rearm_minion: ItemRearmMinionInfo,
+    pub autocharges: Vec<(EffectId, AutochargeInfo)>,
+    pub coordinates: Coordinates,
+    pub movement: Movement,
     pub projs: Vec<RangedProjInfo>,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -37,7 +42,7 @@ impl FighterInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FighterInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Fighter,
+                    kind: ItemKind::Fighter,
                     type_id: core_fighter.get_type_id(),
                     fit_id: core_fighter.get_fit().get_fit_id(),
                     state: core_fighter.get_state(),

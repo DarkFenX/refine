@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitIdBackref, err::BackrefRenderError};
+use crate::{CmdResps, FitId, FitIdBackref, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdShipUnsetFCtxBIds {
@@ -6,7 +6,7 @@ pub(in crate::cmd) struct ICmdShipUnsetFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdShipUnsetICtx = ICmdShipUnsetICtx,
 }
 pub(crate) struct ICmdShipUnsetFCtxRIds {
-    fit_id: rc::FitId,
+    fit_id: FitId,
     ictx_cmd: ICmdShipUnsetICtx,
 }
 

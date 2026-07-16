@@ -1,24 +1,29 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::ItemInfoMode;
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{
+    AttrId, AttrVals, Coordinates, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification,
+    Movement,
+};
 
 pub struct ShipInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<ShipInfoExt>,
 }
 
 pub struct ShipInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub state: bool,
-    pub coordinates: rc::Coordinates,
-    pub movement: rc::Movement,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub coordinates: Coordinates,
+    pub movement: Movement,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +37,7 @@ impl ShipInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ShipInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Ship,
+                    kind: ItemKind::Ship,
                     type_id: core_ship.get_type_id(),
                     fit_id: core_ship.get_fit().get_fit_id(),
                     state: core_ship.get_state(),

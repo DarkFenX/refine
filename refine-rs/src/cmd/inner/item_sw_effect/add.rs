@@ -1,8 +1,8 @@
-use crate::{AddedItemIdsResp, cmd::shared::EffectModes};
+use crate::{AddedItemIdsResp, ItemTypeId, cmd::shared::EffectModes};
 
 // Commands with full context
 pub(crate) struct ICmdSwEffectAddFCtx {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }

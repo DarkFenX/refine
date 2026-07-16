@@ -1,27 +1,32 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::{ItemInfoMode, ItemMutationInfo, RangedProjInfo};
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{
+    AttrId, AttrVals, Coordinates, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemMutationInfo,
+    ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
+};
 
 pub struct DroneInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<DroneInfoExt>,
 }
 
 pub struct DroneInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
-    pub state: rc::MinionState,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub state: MinionState,
     pub mutation: Option<ItemMutationInfo>,
-    pub npc_prop: rc::ItemNpcPropInfo,
-    pub coordinates: rc::Coordinates,
-    pub movement: rc::Movement,
+    pub npc_prop: ItemNpcPropInfo,
+    pub coordinates: Coordinates,
+    pub movement: Movement,
     pub projs: Vec<RangedProjInfo>,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +40,7 @@ impl DroneInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(DroneInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Drone,
+                    kind: ItemKind::Drone,
                     type_id: core_drone.get_type_id(),
                     fit_id: core_drone.get_fit().get_fit_id(),
                     state: core_drone.get_state(),

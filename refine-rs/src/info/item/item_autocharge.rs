@@ -1,24 +1,26 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::ItemInfoMode;
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{AttrId, AttrVals, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification};
 
 pub struct AutochargeInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<AutochargeInfoExt>,
 }
 
 pub struct AutochargeInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
-    pub cont_item_id: rc::ItemId,
-    pub cont_effect_id: rc::EffectId,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub cont_item_id: ItemId,
+    pub cont_effect_id: EffectId,
     pub state: bool,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,7 +34,7 @@ impl AutochargeInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(AutochargeInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Autocharge,
+                    kind: ItemKind::Autocharge,
                     type_id: core_autocharge.get_type_id(),
                     fit_id: core_autocharge.get_fit().get_fit_id(),
                     cont_item_id: core_autocharge.get_cont_item().get_item_id(),

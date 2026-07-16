@@ -1,8 +1,8 @@
 use rc::ItemMutCommon;
 
-use crate::ItemInfoMode;
+use crate::{AttrId, AttrVals, ItemInfoMode};
 
-pub(in crate::info::item) fn get_attrs<T>(core_item: &mut T, item_mode: ItemInfoMode) -> Vec<(rc::AttrId, rc::AttrVals)>
+pub(in crate::info::item) fn get_attrs<T>(core_item: &mut T, item_mode: ItemInfoMode) -> Vec<(AttrId, AttrVals)>
 where
     T: ItemMutCommon,
 {

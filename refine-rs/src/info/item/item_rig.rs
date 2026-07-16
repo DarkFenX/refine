@@ -1,22 +1,24 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::ItemInfoMode;
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{AttrId, AttrVals, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification};
 
 pub struct RigInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<RigInfoExt>,
 }
 
 pub struct RigInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
     pub state: bool,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +32,7 @@ impl RigInfo {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(RigInfoExt {
                     #[cfg(feature = "serde")]
-                    kind: rc::ItemKind::Rig,
+                    kind: ItemKind::Rig,
                     type_id: core_rig.get_type_id(),
                     fit_id: core_rig.get_fit().get_fit_id(),
                     state: core_rig.get_state(),

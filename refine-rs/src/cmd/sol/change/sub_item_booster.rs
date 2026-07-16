@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
     cmd::inner::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds},
 };
 
@@ -7,7 +7,7 @@ pub struct SolAddBoosterCmd {
     pub(super) inner: ICmdBoosterAddFCtxBIds,
 }
 impl SolAddBoosterCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdBoosterAddFCtxBIds {
                 fit_id,
@@ -19,12 +19,12 @@ impl SolAddBoosterCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
+    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (EffectId, bool)>) -> Self {
         self.inner.ictx_cmd.side_effects.clear();
         self.inner.ictx_cmd.side_effects.extend(side_effects);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self
@@ -45,7 +45,7 @@ impl SolChangeBoosterCmd {
             inner: ICmdBoosterChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
@@ -53,12 +53,12 @@ impl SolChangeBoosterCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (rc::EffectId, bool)>) -> Self {
+    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (EffectId, bool)>) -> Self {
         self.inner.ictx_cmd.side_effects.clear();
         self.inner.ictx_cmd.side_effects.extend(side_effects);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

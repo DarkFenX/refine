@@ -1,11 +1,8 @@
 use rc::ItemMutCommon;
 
-use crate::ItemInfoMode;
+use crate::{AttrId, ItemInfoMode, Modification};
 
-pub(in crate::info::item) fn get_mods<T>(
-    core_item: &mut T,
-    item_mode: ItemInfoMode,
-) -> Vec<(rc::AttrId, Vec<rc::Modification>)>
+pub(in crate::info::item) fn get_mods<T>(core_item: &mut T, item_mode: ItemInfoMode) -> Vec<(AttrId, Vec<Modification>)>
 where
     T: ItemMutCommon,
 {

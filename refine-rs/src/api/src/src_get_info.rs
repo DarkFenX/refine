@@ -1,4 +1,4 @@
-use crate::{Src, SrcInfo, SrcInfoMode};
+use crate::src::{Src, SrcInfo, SrcInfoMode};
 
 impl Src<'_> {
     pub async fn get_info(&self, src_mode: SrcInfoMode) -> SrcInfo {

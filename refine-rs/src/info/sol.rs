@@ -1,8 +1,8 @@
 use rc::Lender;
 
 use crate::{
-    FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SolInfoMode, SolarSystemId,
-    SwEffectInfo,
+    DpsProfile, FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SecZone, SolInfoMode,
+    SolarSystemId, Spool, SwEffectInfo,
 };
 
 pub struct SolInfo {
@@ -15,9 +15,9 @@ pub struct SolInfoExt {
     pub fits: Vec<FitInfo>,
     pub sw_effects: Vec<SwEffectInfo>,
     pub proj_effects: Vec<ProjEffectInfo>,
-    pub sec_zone: rc::SecZone,
-    pub default_spool: rc::Spool,
-    pub default_incoming_dps: rc::DpsProfile,
+    pub sec_zone: SecZone,
+    pub default_spool: Spool,
+    pub default_incoming_dps: DpsProfile,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd,
+    ChangeFitEnumCmd, Coordinates, EffectId, EffectMode, ItemTypeId, Movement,
     cmd::inner::{ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx},
 };
 
@@ -7,7 +7,7 @@ pub struct FitSetShipCmd {
     pub(super) inner: ICmdShipSetICtx,
 }
 impl FitSetShipCmd {
-    pub fn new(type_id: rc::ItemTypeId) -> Self {
+    pub fn new(type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdShipSetICtx { type_id, .. },
         }
@@ -16,15 +16,15 @@ impl FitSetShipCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.inner.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+    pub fn with_movement(mut self, movement: Movement) -> Self {
         self.inner.movement = Some(movement);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self
@@ -44,7 +44,7 @@ impl FitChangeShipCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.type_id = Some(type_id);
         self
     }
@@ -52,15 +52,15 @@ impl FitChangeShipCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_coordinates(mut self, coordinates: rc::Coordinates) -> Self {
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
         self.inner.coordinates = Some(coordinates);
         self
     }
-    pub fn with_movement(mut self, movement: rc::Movement) -> Self {
+    pub fn with_movement(mut self, movement: Movement) -> Self {
         self.inner.movement = Some(movement);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self

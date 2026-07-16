@@ -1,5 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, ItemIdBackref, TriStateField,
+    ChangedItemIdsResp, CmdResps, Coordinates, CountNz, ItemId, ItemIdBackref, ItemTypeId, MinionState, Movement,
+    RearmMinion, TriStateField,
     cmd::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
 };
@@ -10,7 +11,7 @@ pub(in crate::cmd) struct ICmdFighterChangeFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdFighterChangeICtxBIds = ICmdFighterChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdFighterChangeFCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdFighterChangeICtxRIds,
 }
 
@@ -22,17 +23,17 @@ pub(in crate::cmd) struct ICmdFighterChangeICtxBIds {
 }
 pub(in crate::cmd) struct ICmdFighterChangeICtxRIds {
     pub(in crate::cmd) shared: ICmdFighterChangeShared = ICmdFighterChangeShared { .. },
-    pub(in crate::cmd) add_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
-    pub(in crate::cmd) rm_proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdFighterChangeShared {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
-    pub(in crate::cmd) state: Option<rc::MinionState> = None,
-    pub(in crate::cmd) count: TriStateField<rc::CountNz> = TriStateField::Absent,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
+    pub(in crate::cmd) state: Option<MinionState> = None,
+    pub(in crate::cmd) count: TriStateField<CountNz> = TriStateField::Absent,
     pub(in crate::cmd) abilities: Abilities = Abilities::new(),
-    pub(in crate::cmd) rearm_minion: TriStateField<rc::RearmMinion> = TriStateField::Absent,
-    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
-    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) rearm_minion: TriStateField<RearmMinion> = TriStateField::Absent,
+    pub(in crate::cmd) coordinates: Option<Coordinates> = None,
+    pub(in crate::cmd) movement: Option<Movement> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

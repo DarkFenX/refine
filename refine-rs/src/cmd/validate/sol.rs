@@ -1,8 +1,11 @@
-use crate::val::{SolValInfo, ValInfoMode, ValOptions};
+use crate::{
+    FitId,
+    val::{SolValInfo, ValInfoMode, ValOptions},
+};
 
 pub struct ValidateSolCmd {
     options: ValOptions,
-    fit_ids: Vec<rc::FitId>,
+    fit_ids: Vec<FitId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,7 +18,7 @@ impl ValidateSolCmd {
             fit_ids: Vec::new(),
         }
     }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = rc::FitId>) -> Self {
+    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitId>) -> Self {
         self.fit_ids.clear();
         self.fit_ids.extend(fit_ids);
         self

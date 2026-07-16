@@ -1,5 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
 // Commands with full context via fit ID
@@ -8,7 +9,7 @@ pub(in crate::cmd) struct ICmdCharacterChangeFFitCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }
 pub(crate) struct ICmdCharacterChangeFFitCtxRIds {
-    fit_id: rc::FitId,
+    fit_id: FitId,
     ictx_cmd: ICmdCharacterChangeICtx,
 }
 
@@ -18,13 +19,13 @@ pub(in crate::cmd) struct ICmdCharacterChangeFItemCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }
 pub(crate) struct ICmdCharacterChangeFItemCtxRIds {
-    item_id: rc::ItemId,
+    item_id: ItemId,
     ictx_cmd: ICmdCharacterChangeICtx,
 }
 
 // Commands with incomplete context
 pub(crate) struct ICmdCharacterChangeICtx {
-    pub(in crate::cmd) type_id: Option<rc::ItemTypeId> = None,
+    pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
@@ -74,7 +75,7 @@ pub enum GetFitChangeCharacterError {
     #[error("{0}")]
     GetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no character set")]
-    NoCharacter(rc::FitId),
+    NoCharacter(FitId),
 }
 
 impl ICmdCharacterChangeFItemCtxRIds {
@@ -126,7 +127,7 @@ impl ICmdCharacterChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeCharacterError {
     #[error("fit {0} has no character set")]
-    NoCharacter(rc::FitId),
+    NoCharacter(FitId),
 }
 
 #[derive(thiserror::Error, Debug)]

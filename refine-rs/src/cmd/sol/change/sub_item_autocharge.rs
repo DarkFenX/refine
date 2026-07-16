@@ -1,4 +1,4 @@
-use crate::{ChangeSolEnumCmd, ItemIdBackref, cmd::inner::ICmdAutochargeChangeFCtxBIds};
+use crate::{ChangeSolEnumCmd, EffectId, EffectMode, ItemIdBackref, cmd::inner::ICmdAutochargeChangeFCtxBIds};
 
 pub struct SolChangeAutochargeCmd {
     pub(super) inner: ICmdAutochargeChangeFCtxBIds,
@@ -13,7 +13,7 @@ impl SolChangeAutochargeCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

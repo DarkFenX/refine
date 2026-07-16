@@ -1,31 +1,37 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::{ChargeInfo, ItemInfoMode, ItemMutationInfo, RangedProjInfo, TriStateField};
+#[cfg(feature = "serde")]
+use crate::ItemKind;
+use crate::{
+    AttrId, AttrVals, ChargeInfo, Count, EffectId, EffectInfo, FitId, Index, ItemId, ItemInfoMode, ItemMutationInfo,
+    ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState, RangedProjInfo,
+    TriStateField,
+};
 
 pub struct ModuleInfo {
-    pub id: rc::ItemId,
+    pub id: ItemId,
     pub extended: Option<ModuleInfoExt>,
 }
 
 pub struct ModuleInfoExt {
     #[cfg(feature = "serde")]
-    kind: rc::ItemKind,
-    pub type_id: rc::ItemTypeId,
-    pub fit_id: rc::FitId,
-    pub state: rc::ModuleState,
-    pub rack: rc::ModRack,
-    pub pos: rc::Index,
+    kind: ItemKind,
+    pub type_id: ItemTypeId,
+    pub fit_id: FitId,
+    pub state: ModuleState,
+    pub rack: ModRack,
+    pub pos: Index,
     pub mutation: Option<ItemMutationInfo>,
     pub charge: Option<ChargeInfo>,
-    pub charge_count: TriStateField<rc::Count>,
-    pub charged_cycles: TriStateField<rc::Count>,
-    pub spool_cycles: Option<rc::ItemSpoolInfo>,
-    pub optional_reload: rc::ItemOptionalReloadInfo,
+    pub charge_count: TriStateField<Count>,
+    pub charged_cycles: TriStateField<Count>,
+    pub spool_cycles: Option<ItemSpoolInfo>,
+    pub optional_reload: ItemOptionalReloadInfo,
     pub projs: Vec<RangedProjInfo>,
-    pub attrs: Vec<(rc::AttrId, rc::AttrVals)>,
-    pub effects: Vec<(rc::EffectId, rc::EffectInfo)>,
-    pub mods: Vec<(rc::AttrId, Vec<rc::Modification>)>,
+    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +63,7 @@ impl ModuleInfo {
                     };
                     Some(ModuleInfoExt {
                         #[cfg(feature = "serde")]
-                        kind: rc::ItemKind::Module,
+                        kind: ItemKind::Module,
                         type_id: core_module.get_type_id(),
                         fit_id: core_module.get_fit().get_fit_id(),
                         state: core_module.get_state(),

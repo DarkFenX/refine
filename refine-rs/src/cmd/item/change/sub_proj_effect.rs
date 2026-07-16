@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, cmd::inner::ICmdProjEffectChangeICtxRIds};
+use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemId, ItemTypeId, cmd::inner::ICmdProjEffectChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ItemChangeProjEffectCmd {
@@ -8,7 +8,7 @@ impl ItemChangeProjEffectCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.shared.type_id = Some(type_id);
         self
     }
@@ -16,17 +16,17 @@ impl ItemChangeProjEffectCmd {
         self.inner.shared.state = Some(state);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
         self.inner.add_proj_item_ids.clear();
         self.inner.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = rc::ItemId>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
         self.inner.rm_proj_item_ids.clear();
         self.inner.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.shared.effect_modes.clear();
         self.inner.shared.effect_modes.extend(effect_modes);
         self

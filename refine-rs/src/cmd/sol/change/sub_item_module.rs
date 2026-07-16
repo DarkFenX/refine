@@ -1,5 +1,6 @@
 use crate::{
-    AddMutation, ChangeMutation, ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    AddMode, AddMutation, ChangeMutation, ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref,
+    ItemTypeId, ModRack, ModuleState, MoveMode, OptionalReload, Spool,
     cmd::inner::{ICmdModuleAddFCtxBIds, ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
 };
 
@@ -9,10 +10,10 @@ pub struct SolAddModuleCmd {
 impl SolAddModuleCmd {
     pub fn new(
         fit_id: FitIdBackref,
-        rack: rc::ModRack,
-        add_mode: rc::AddMode,
-        type_id: rc::ItemTypeId,
-        state: rc::ModuleState,
+        rack: ModRack,
+        add_mode: AddMode,
+        type_id: ItemTypeId,
+        state: ModuleState,
     ) -> Self {
         Self {
             inner: ICmdModuleAddFCtxBIds {
@@ -34,15 +35,15 @@ impl SolAddModuleCmd {
         self.inner.ictx_cmd.shared.mutation = Some(mutation);
         self
     }
-    pub fn with_charge_type_id(mut self, charge_type_id: rc::ItemTypeId) -> Self {
+    pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.shared.charge_type_id = Some(charge_type_id);
         self
     }
-    pub fn with_spool(mut self, spool: rc::Spool) -> Self {
+    pub fn with_spool(mut self, spool: Spool) -> Self {
         self.inner.ictx_cmd.shared.spool = Some(spool);
         self
     }
-    pub fn with_optional_reload(mut self, optional_reload: rc::OptionalReload) -> Self {
+    pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
         self.inner.ictx_cmd.shared.optional_reload = Some(optional_reload);
         self
     }
@@ -51,7 +52,7 @@ impl SolAddModuleCmd {
         self.inner.ictx_cmd.proj_item_ids.extend(proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.shared.effect_modes.clear();
         self.inner.ictx_cmd.shared.effect_modes.extend(effect_modes);
         self
@@ -72,15 +73,15 @@ impl SolChangeModuleCmd {
             inner: ICmdModuleChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.shared.type_id = Some(type_id);
         self
     }
-    pub fn with_move(mut self, move_: rc::MoveMode) -> Self {
+    pub fn with_move(mut self, move_: MoveMode) -> Self {
         self.inner.ictx_cmd.shared.move_ = Some(move_);
         self
     }
-    pub fn with_state(mut self, state: rc::ModuleState) -> Self {
+    pub fn with_state(mut self, state: ModuleState) -> Self {
         self.inner.ictx_cmd.shared.state = Some(state);
         self
     }
@@ -88,15 +89,15 @@ impl SolChangeModuleCmd {
         self.inner.ictx_cmd.shared.mutation = mutation.into();
         self
     }
-    pub fn with_charge_type_id(mut self, charge_type_id: Option<rc::ItemTypeId>) -> Self {
+    pub fn with_charge_type_id(mut self, charge_type_id: Option<ItemTypeId>) -> Self {
         self.inner.ictx_cmd.shared.charge_type_id = charge_type_id.into();
         self
     }
-    pub fn with_spool(mut self, spool: Option<rc::Spool>) -> Self {
+    pub fn with_spool(mut self, spool: Option<Spool>) -> Self {
         self.inner.ictx_cmd.shared.spool = spool.into();
         self
     }
-    pub fn with_optional_reload(mut self, optional_reload: Option<rc::OptionalReload>) -> Self {
+    pub fn with_optional_reload(mut self, optional_reload: Option<OptionalReload>) -> Self {
         self.inner.ictx_cmd.shared.optional_reload = optional_reload.into();
         self
     }
@@ -110,7 +111,7 @@ impl SolChangeModuleCmd {
         self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.shared.effect_modes.clear();
         self.inner.ictx_cmd.shared.effect_modes.extend(effect_modes);
         self

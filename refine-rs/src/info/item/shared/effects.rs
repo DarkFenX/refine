@@ -1,11 +1,8 @@
 use rc::ItemMutCommon;
 
-use crate::ItemInfoMode;
+use crate::{EffectId, EffectInfo, ItemInfoMode};
 
-pub(in crate::info::item) fn get_effects<T>(
-    core_item: &mut T,
-    item_mode: ItemInfoMode,
-) -> Vec<(rc::EffectId, rc::EffectInfo)>
+pub(in crate::info::item) fn get_effects<T>(core_item: &mut T, item_mode: ItemInfoMode) -> Vec<(EffectId, EffectInfo)>
 where
     T: ItemMutCommon,
 {

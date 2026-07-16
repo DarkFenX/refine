@@ -1,11 +1,11 @@
-use crate::SolarSystem;
+use crate::{FitId, SolarSystem};
 
 pub struct Fit<'r, 's> {
     pub(super) sol: &'s mut SolarSystem<'r>,
-    pub(super) id: rc::FitId,
+    pub(super) id: FitId,
 }
 impl<'r, 's> Fit<'r, 's> {
-    pub fn get_fit_id(&self) -> rc::FitId {
+    pub fn get_fit_id(&self) -> FitId {
         self.id
     }
 }
@@ -14,7 +14,7 @@ impl<'r, 's> Fit<'r, 's> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'r, 's> Fit<'r, 's> {
-    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: rc::FitId) -> Self {
+    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: FitId) -> Self {
         Self { sol, id }
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    AddedFitIdResp,
+    AddedFitIdResp, DpsProfile, FitSecStatus, FleetId,
     cmd::inner::{AddFitError, ICmdFitAddFCtxRIds},
 };
 
@@ -15,15 +15,15 @@ impl AddFitCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: rc::FleetId) -> Self {
+    pub fn with_fleet_id(mut self, fleet_id: FleetId) -> Self {
         self.inner.fleet_id = Some(fleet_id);
         self
     }
-    pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
+    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
         self.inner.shared.sec_status = Some(sec_status);
         self
     }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: rc::DpsProfile) -> Self {
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
         self.inner.shared.rah_incoming_dps = Some(rah_incoming_dps);
         self
     }

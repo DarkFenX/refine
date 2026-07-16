@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, FitIdBackref, FleetIdBackref,
+    ChangeSolEnumCmd, DpsProfile, FitIdBackref, FitSecStatus, FleetIdBackref,
     cmd::inner::{ICmdFitAddFCtxBIds, ICmdFitChangeFCtxBIds, ICmdFitRemoveFCtxBIds},
 };
 
@@ -15,11 +15,11 @@ impl SolAddFitCmd {
         self.inner.fleet_id = Some(fleet_id);
         self
     }
-    pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
+    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
         self.inner.shared.sec_status = Some(sec_status);
         self
     }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: rc::DpsProfile) -> Self {
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
         self.inner.shared.rah_incoming_dps = Some(rah_incoming_dps);
         self
     }
@@ -43,11 +43,11 @@ impl SolChangeFitCmd {
         self.inner.ictx_cmd.fleet_id = fleet_id.into();
         self
     }
-    pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
+    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
         self.inner.ictx_cmd.shared.sec_status = Some(sec_status);
         self
     }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<rc::DpsProfile>) -> Self {
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
         self.inner.ictx_cmd.shared.rah_incoming_dps = rah_incoming_dps.into();
         self
     }

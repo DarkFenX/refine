@@ -1,4 +1,7 @@
-use crate::{AddedItemIdsResp, CmdResps, FitIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    AddedItemIdsResp, CmdResps, Coordinates, FitId, FitIdBackref, ItemTypeId, Movement, cmd::shared::EffectModes,
+    err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdShipSetFCtxBIds {
@@ -6,16 +9,16 @@ pub(in crate::cmd) struct ICmdShipSetFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdShipSetICtx,
 }
 pub(crate) struct ICmdShipSetFCtxRIds {
-    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) fit_id: FitId,
     pub(in crate::cmd) ictx_cmd: ICmdShipSetICtx,
 }
 
 // Commands with incomplete context
 pub(crate) struct ICmdShipSetICtx {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
-    pub(in crate::cmd) coordinates: Option<rc::Coordinates> = None,
-    pub(in crate::cmd) movement: Option<rc::Movement> = None,
+    pub(in crate::cmd) coordinates: Option<Coordinates> = None,
+    pub(in crate::cmd) movement: Option<Movement> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

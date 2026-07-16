@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, ServiceState,
     cmd::inner::{ICmdServiceAddFCtxBIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
@@ -7,7 +7,7 @@ pub struct SolAddServiceCmd {
     pub(super) inner: ICmdServiceAddFCtxBIds,
 }
 impl SolAddServiceCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId, state: rc::ServiceState) -> Self {
+    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId, state: ServiceState) -> Self {
         Self {
             inner: ICmdServiceAddFCtxBIds {
                 fit_id,
@@ -15,7 +15,7 @@ impl SolAddServiceCmd {
             },
         }
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self
@@ -36,15 +36,15 @@ impl SolChangeServiceCmd {
             inner: ICmdServiceChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
-    pub fn with_state(mut self, state: rc::ServiceState) -> Self {
+    pub fn with_state(mut self, state: ServiceState) -> Self {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

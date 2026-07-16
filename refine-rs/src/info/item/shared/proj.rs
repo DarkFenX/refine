@@ -1,10 +1,12 @@
+use crate::{ItemId, ProjRange};
+
 pub struct ProjInfo {
-    pub projectee_item_id: rc::ItemId,
+    pub projectee_item_id: ItemId,
 }
 
 pub struct RangedProjInfo {
-    pub projectee_item_id: rc::ItemId,
-    pub range: Option<rc::ProjRange>,
+    pub projectee_item_id: ItemId,
+    pub range: Option<ProjRange>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

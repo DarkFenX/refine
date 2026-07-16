@@ -1,6 +1,6 @@
 use crate::{
-    AddMutation, AddedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref, cmd::shared::EffectModes,
-    err::BackrefRenderError,
+    AddMode, AddMutation, AddedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, ModRack,
+    ModuleState, OptionalReload, Spool, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -9,7 +9,7 @@ pub(in crate::cmd) struct ICmdModuleAddFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdModuleAddICtxBIds,
 }
 pub(crate) struct ICmdModuleAddFCtxRIds {
-    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) fit_id: FitId,
     pub(in crate::cmd) ictx_cmd: ICmdModuleAddICtxRIds,
 }
 
@@ -20,17 +20,17 @@ pub(in crate::cmd) struct ICmdModuleAddICtxBIds {
 }
 pub(crate) struct ICmdModuleAddICtxRIds {
     pub(in crate::cmd) shared: ICmdModuleAddShared,
-    pub(in crate::cmd) proj_item_ids: Vec<rc::ItemId> = Vec::new(),
+    pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 pub(in crate::cmd) struct ICmdModuleAddShared {
-    pub(in crate::cmd) rack: rc::ModRack,
-    pub(in crate::cmd) add_mode: rc::AddMode,
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
-    pub(in crate::cmd) state: rc::ModuleState,
+    pub(in crate::cmd) rack: ModRack,
+    pub(in crate::cmd) add_mode: AddMode,
+    pub(in crate::cmd) type_id: ItemTypeId,
+    pub(in crate::cmd) state: ModuleState,
     pub(in crate::cmd) mutation: Option<AddMutation> = None,
-    pub(in crate::cmd) charge_type_id: Option<rc::ItemTypeId> = None,
-    pub(in crate::cmd) spool: Option<rc::Spool> = None,
-    pub(in crate::cmd) optional_reload: Option<rc::OptionalReload> = None,
+    pub(in crate::cmd) charge_type_id: Option<ItemTypeId> = None,
+    pub(in crate::cmd) spool: Option<Spool> = None,
+    pub(in crate::cmd) optional_reload: Option<OptionalReload> = None,
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

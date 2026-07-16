@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, cmd::inner::ICmdAutochargeChangeICtx};
+use crate::{ChangeItemEnumCmd, EffectId, EffectMode, cmd::inner::ICmdAutochargeChangeICtx};
 
 #[derive(Default)]
 pub struct ItemChangeAutochargeCmd {
@@ -12,7 +12,7 @@ impl ItemChangeAutochargeCmd {
         self.inner.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.effect_modes.clear();
         self.inner.effect_modes.extend(effect_modes);
         self

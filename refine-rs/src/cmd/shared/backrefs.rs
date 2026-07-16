@@ -1,18 +1,20 @@
+use crate::{FitId, FleetId, ItemId};
+
 #[derive(Copy, Clone)]
 pub enum FleetIdBackref {
-    Id(rc::FleetId),
+    Id(FleetId),
     Backref(usize),
 }
 
 #[derive(Copy, Clone)]
 pub enum FitIdBackref {
-    Id(rc::FitId),
+    Id(FitId),
     Backref(usize),
 }
 
 #[derive(Copy, Clone)]
 pub enum ItemIdBackref {
-    Id(rc::ItemId),
+    Id(ItemId),
     BackrefMain(usize),
     BackrefCharge(usize),
 }

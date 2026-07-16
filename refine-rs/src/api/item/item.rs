@@ -1,11 +1,11 @@
-use crate::SolarSystem;
+use crate::{ItemId, SolarSystem};
 
 pub struct Item<'r, 's> {
     pub(super) sol: &'s mut SolarSystem<'r>,
-    pub(super) id: rc::ItemId,
+    pub(super) id: ItemId,
 }
 impl<'r, 's> Item<'r, 's> {
-    pub fn get_item_id(&self) -> rc::ItemId {
+    pub fn get_item_id(&self) -> ItemId {
         self.id
     }
 }
@@ -14,7 +14,7 @@ impl<'r, 's> Item<'r, 's> {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'r, 's> Item<'r, 's> {
-    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: rc::ItemId) -> Self {
+    pub(super) fn new(sol: &'s mut SolarSystem<'r>, id: ItemId) -> Self {
         Self { sol, id }
     }
 }

@@ -1,5 +1,5 @@
 use crate::{
-    AddedItemIdsResp, CmdResps, FitIdBackref,
+    AddedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemTypeId,
     cmd::shared::{EffectModes, SideEffects},
     err::BackrefRenderError,
 };
@@ -10,13 +10,13 @@ pub(in crate::cmd) struct ICmdBoosterAddFCtxBIds {
     pub(in crate::cmd) ictx_cmd: ICmdBoosterAddICtx,
 }
 pub(crate) struct ICmdBoosterAddFCtxRIds {
-    pub(in crate::cmd) fit_id: rc::FitId,
+    pub(in crate::cmd) fit_id: FitId,
     pub(in crate::cmd) ictx_cmd: ICmdBoosterAddICtx,
 }
 
 // Commands with incomplete context
 pub(crate) struct ICmdBoosterAddICtx {
-    pub(in crate::cmd) type_id: rc::ItemTypeId,
+    pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) side_effects: SideEffects = SideEffects::new(),
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),

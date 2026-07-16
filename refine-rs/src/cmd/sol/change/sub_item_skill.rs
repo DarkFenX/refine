@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SkillLevel,
     cmd::inner::{ICmdSkillAddFCtxBIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
@@ -7,7 +7,7 @@ pub struct SolAddSkillCmd {
     pub(super) inner: ICmdSkillAddFCtxBIds,
 }
 impl SolAddSkillCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: rc::ItemTypeId, level: rc::SkillLevel) -> Self {
+    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId, level: SkillLevel) -> Self {
         Self {
             inner: ICmdSkillAddFCtxBIds {
                 fit_id,
@@ -19,7 +19,7 @@ impl SolAddSkillCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self
@@ -40,11 +40,11 @@ impl SolChangeSkillCmd {
             inner: ICmdSkillChangeFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_type_id(mut self, type_id: rc::ItemTypeId) -> Self {
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
         self.inner.ictx_cmd.type_id = Some(type_id);
         self
     }
-    pub fn with_level(mut self, level: rc::SkillLevel) -> Self {
+    pub fn with_level(mut self, level: SkillLevel) -> Self {
         self.inner.ictx_cmd.level = Some(level);
         self
     }
@@ -52,7 +52,7 @@ impl SolChangeSkillCmd {
         self.inner.ictx_cmd.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (rc::EffectId, rc::EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
         self.inner.ictx_cmd.effect_modes.clear();
         self.inner.ictx_cmd.effect_modes.extend(effect_modes);
         self

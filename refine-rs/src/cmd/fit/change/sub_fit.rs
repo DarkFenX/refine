@@ -1,4 +1,4 @@
-use crate::{ChangeFitEnumCmd, FleetIdBackref, cmd::inner::ICmdFitChangeICtxBIds};
+use crate::{ChangeFitEnumCmd, DpsProfile, FitSecStatus, FleetIdBackref, cmd::inner::ICmdFitChangeICtxBIds};
 
 #[derive(Default)]
 pub struct FitChangeFitCmd {
@@ -12,11 +12,11 @@ impl FitChangeFitCmd {
         self.inner.fleet_id = fleet_id.into();
         self
     }
-    pub fn with_sec_status(mut self, sec_status: rc::FitSecStatus) -> Self {
+    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
         self.inner.shared.sec_status = Some(sec_status);
         self
     }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<rc::DpsProfile>) -> Self {
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
         self.inner.shared.rah_incoming_dps = rah_incoming_dps.into();
         self
     }

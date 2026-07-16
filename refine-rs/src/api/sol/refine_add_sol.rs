@@ -1,6 +1,8 @@
 use crate::{
     AddSolCmd, FitInfoMode, FleetInfoMode, ItemInfoMode, Refine, SolInfo, SolInfoExt, SolInfoMode, SolarSystem,
-    SolarSystemId, SrcAlias, err::GetSrcError, svc::SolarSystemInnerGuarded,
+    SolarSystemId,
+    src::{SrcAlias, err::GetSrcError},
+    svc::SolarSystemInnerGuarded,
 };
 
 impl Refine {

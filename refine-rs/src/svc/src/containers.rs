@@ -3,7 +3,7 @@ use std::collections::{HashMap, HashSet};
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use super::inner::SrcInnerGuarded;
-use crate::SrcAlias;
+use crate::src::SrcAlias;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alias data

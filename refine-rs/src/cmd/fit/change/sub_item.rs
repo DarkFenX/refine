@@ -1,4 +1,4 @@
-use crate::{ChangeFitEnumCmd, ItemIdBackref, cmd::inner::ICmdItemRemoveFCtxBIds};
+use crate::{ChangeFitEnumCmd, ItemIdBackref, RemoveMode, cmd::inner::ICmdItemRemoveFCtxBIds};
 
 pub struct FitRemoveItemCmd {
     pub(super) inner: ICmdItemRemoveFCtxBIds,
@@ -9,7 +9,7 @@ impl FitRemoveItemCmd {
             inner: ICmdItemRemoveFCtxBIds { item_id, .. },
         }
     }
-    pub fn with_rm_mode(mut self, rm_mode: rc::RemoveMode) -> Self {
+    pub fn with_rm_mode(mut self, rm_mode: RemoveMode) -> Self {
         self.inner.ictx_cmd.rm_mode = Some(rm_mode);
         self
     }

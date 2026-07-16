@@ -1,17 +1,18 @@
 use rc::Lender;
 
 use crate::{
-    BoosterInfo, CharacterInfo, DroneInfo, FighterInfo, FitInfoMode, FwEffectInfo, ImplantInfo, ItemInfoMode,
-    ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
+    BoosterInfo, CharacterInfo, DpsProfile, DroneInfo, FighterInfo, FitId, FitInfoMode, FitSecStatus, FleetId,
+    FwEffectInfo, ImplantInfo, ItemInfoMode, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo,
+    SubsystemInfo,
 };
 
 pub struct FitInfo {
-    pub id: rc::FitId,
+    pub id: FitId,
     pub extended: Option<FitInfoExt>,
 }
 
 pub struct FitInfoExt {
-    pub fleet_id: Option<rc::FleetId>,
+    pub fleet_id: Option<FleetId>,
     pub character: Option<CharacterInfo>,
     pub skills: Vec<SkillInfo>,
     pub implants: Vec<ImplantInfo>,
@@ -25,8 +26,8 @@ pub struct FitInfoExt {
     pub drones: Vec<DroneInfo>,
     pub fighters: Vec<FighterInfo>,
     pub fw_effects: Vec<FwEffectInfo>,
-    pub sec_status: rc::FitSecStatus,
-    pub rah_incoming_dps: Option<rc::DpsProfile>,
+    pub sec_status: FitSecStatus,
+    pub rah_incoming_dps: Option<DpsProfile>,
 }
 
 pub struct ModuleRacks {
