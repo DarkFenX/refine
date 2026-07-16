@@ -64,6 +64,23 @@ impl<'r> SolarSystem<'r> {
             }
         }
     }
+    pub(crate) async fn exec_heavy_safe<F, R>(&mut self, func: F) -> R
+    where
+        F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
+        R: Send + 'static,
+    {
+        let mut core_sol = self.take_core().unwrap();
+        let (core_sol, result) = self
+            .refine
+            .tpool
+            .exec_heavy(move || {
+                let result = func(&mut core_sol);
+                (core_sol, result)
+            })
+            .await;
+        self.put_core_back(core_sol);
+        result
+    }
     pub(crate) fn exec_inplace<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R,
