@@ -1,7 +1,7 @@
 pub use crate::{
     api::{
-        AddSolError, AddSrcError, ChangeFitError, ChangeFleetError, ChangeSolError, CleanupSetupError, GetFitError,
-        GetFleetError, GetItemError, GetSolError, GetSrcError, RemoveItemError, RemoveSolError, RemoveSrcError,
+        AddSolError, AddSrcError, ChangeFitError, ChangeFleetError, ChangeSolError, GetFitError, GetFleetError,
+        GetItemError, GetSolError, GetSrcError, RemoveItemError, RemoveSolError, RemoveSrcError,
     },
     cmd::{
         AddFitError, AddFleetError, AddItemEnumError, AddProjEffectError, BackrefRenderError, ChangeCharacterError,

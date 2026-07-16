@@ -1746,7 +1746,6 @@ dependencies = [
 name = "refine-rs"
 version = "0.1.0"
 dependencies = [
- "chrono",
  "derive_more",
  "parking_lot",
  "refine-adc",

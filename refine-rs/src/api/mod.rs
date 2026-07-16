@@ -1,7 +1,7 @@
 pub use fit::{ChangeFitError, Fit, GetFitError};
 pub use fleet::{ChangeFleetError, Fleet, GetFleetError};
 pub use item::{GetItemError, Item, RemoveItemError};
-pub use refine::{CleanupSetupError, Refine};
+pub use refine::Refine;
 pub use sol::{AddSolError, ChangeSolError, GetSolError, RemoveSolError, SolarSystem, SolarSystemId};
 pub use src::{AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias};
 

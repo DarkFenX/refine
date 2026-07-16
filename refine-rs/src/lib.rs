@@ -1,6 +1,6 @@
 #![feature(default_field_values)]
 
-pub use api::{CleanupSetupError, Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId, Src, SrcAlias};
+pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId, Src, SrcAlias};
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,

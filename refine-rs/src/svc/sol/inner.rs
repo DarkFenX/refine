@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{sync::Arc, time::Instant};
 
 use tokio::sync::{Mutex, MutexGuard, OwnedMutexGuard, TryLockError};
 
@@ -46,20 +46,20 @@ impl<'m> std::ops::DerefMut for SolOwnedMutexGuard {
 // Unguarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SolarSystemInner {
-    last_accessed: chrono::DateTime<chrono::Utc>,
+    last_accessed: Instant,
     pub(super) core_sol: Option<Box<rc::SolarSystem>>,
 }
 impl SolarSystemInner {
     fn new(core_sol: rc::SolarSystem) -> Self {
         Self {
-            last_accessed: chrono::Utc::now(),
+            last_accessed: Instant::now(),
             core_sol: Some(Box::new(core_sol)),
         }
     }
-    pub(in crate::svc) fn get_last_accessed(&self) -> chrono::DateTime<chrono::Utc> {
+    pub(in crate::svc) fn get_last_accessed(&self) -> Instant {
         self.last_accessed
     }
     fn touch(&mut self) {
-        self.last_accessed = chrono::Utc::now();
+        self.last_accessed = Instant::now();
     }
 }

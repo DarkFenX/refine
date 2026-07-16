@@ -1,10 +1,12 @@
+use std::time::{Duration, Instant};
+
 use crate::Refine;
 
 impl Refine {
     #[tracing::instrument(name = "sol-cln", level = "trace", skip_all)]
-    pub(crate) async fn cleanup_sols(&self, sol_inact_limit: chrono::TimeDelta) {
+    pub(crate) async fn cleanup_sols(&self, sol_inact_limit: Duration) {
         tracing::debug!("starting cleanup");
-        let now = chrono::Utc::now();
+        let now = Instant::now();
         let to_clean: Vec<_> = self
             .id_sol_map
             .read()
