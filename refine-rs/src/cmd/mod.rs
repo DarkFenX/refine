@@ -52,6 +52,7 @@ pub use sol::{
     SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd,
     SolUnsetShipCmd, SolUnsetStanceCmd,
 };
+pub use validate::{ValidateFitCmd, ValidateSolCmd};
 
 mod fit;
 mod fleet;
@@ -59,3 +60,4 @@ mod inner;
 mod item;
 mod shared;
 mod sol;
+mod validate;

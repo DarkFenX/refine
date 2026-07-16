@@ -1,3 +1,6 @@
-pub use rc::val::{ValOptions, ValResultFit as FitValInfoDetails};
+pub use rc::val::{ValOptions, ValResultFit as FitValInfoDetails, ValResultSol as SolValInfoDetails};
 
-pub use crate::info::{FitValInfo, ValInfoMode};
+pub use crate::{
+    cmd::{ValidateFitCmd, ValidateSolCmd},
+    info::{FitValInfo, SolValInfo, ValInfoMode},
+};
