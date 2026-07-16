@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdModuleChangeICtxRIds, shared::ChangeMutation};
+use crate::{ChangeItemEnumCmd, ChangeMutation, cmd::inner::ICmdModuleChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ItemChangeModuleCmd {

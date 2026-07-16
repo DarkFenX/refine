@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdProjEffectChangeICtxRIds};
+use crate::{ChangeItemEnumCmd, cmd::inner::ICmdProjEffectChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ItemChangeProjEffectCmd {

@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeSolEnumCmd, inner::ICmdSolChangeFCtx};
+use crate::{ChangeSolEnumCmd, cmd::inner::ICmdSolChangeFCtx};
 
 #[derive(Default)]
 pub struct SolChangeSolCmd {

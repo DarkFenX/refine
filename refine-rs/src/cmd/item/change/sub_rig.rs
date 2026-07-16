@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdRigChangeICtx};
+use crate::{ChangeItemEnumCmd, cmd::inner::ICmdRigChangeICtx};
 
 #[derive(Default)]
 pub struct ItemChangeRigCmd {

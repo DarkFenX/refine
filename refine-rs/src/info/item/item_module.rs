@@ -1,10 +1,7 @@
 use rc::ItemCommon;
 
-use super::shared::{ItemMutationInfo, RangedProjInfo, get_attrs, get_effects, get_mods};
-use crate::{
-    info::{ChargeInfo, ItemInfoMode},
-    util::TriStateField,
-};
+use super::shared::{get_attrs, get_effects, get_mods};
+use crate::{ChargeInfo, ItemInfoMode, ItemMutationInfo, RangedProjInfo, TriStateField};
 
 pub struct ModuleInfo {
     pub id: rc::ItemId,

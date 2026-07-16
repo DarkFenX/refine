@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeSolEnumCmd,
-    inner::{ICmdDroneAddFCtxBIds, ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
-    shared::{AddMutation, ChangeMutation, FitIdBackref, ItemIdBackref},
+use crate::{
+    AddMutation, ChangeMutation, ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    cmd::inner::{ICmdDroneAddFCtxBIds, ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
 pub struct SolAddDroneCmd {

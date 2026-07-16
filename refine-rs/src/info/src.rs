@@ -1,4 +1,4 @@
-use crate::info::SrcInfoMode;
+use crate::SrcInfoMode;
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SrcInfo {

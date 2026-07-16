@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
-use super::shared::{ItemMutationInfo, RangedProjInfo, get_attrs, get_effects, get_mods};
-use crate::info::ItemInfoMode;
+use super::shared::{get_attrs, get_effects, get_mods};
+use crate::{ItemInfoMode, ItemMutationInfo, RangedProjInfo};
 
 pub struct DroneInfo {
     pub id: rc::ItemId,

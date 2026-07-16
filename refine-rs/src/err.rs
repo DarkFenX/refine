@@ -1,4 +1,8 @@
 pub use crate::{
+    api::{
+        AddSolError, AddSrcError, ChangeFitError, ChangeFleetError, ChangeSolError, CleanupSetupError, GetFitError,
+        GetFleetError, GetItemError, GetSolError, GetSrcError, RemoveItemError, RemoveSolError, RemoveSrcError,
+    },
     cmd::{
         AddFitError, AddFleetError, AddItemEnumError, AddProjEffectError, BackrefRenderError, ChangeCharacterError,
         ChangeFitEnumError, ChangeItemEnumError, ChangeShipError, ChangeSolEnumError, ChangeStanceError,
@@ -20,11 +24,6 @@ pub use crate::{
         ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError,
         ItemRemoveItemError,
     },
-    fit::{ChangeFitError, GetFitError},
-    fleet::{ChangeFleetError, GetFleetError},
-    item::{GetItemError, RemoveItemError},
-    sol::{AddSolError, ChangeSolError, GetSolError, RemoveSolError},
-    src::{AddSrcError, GetSrcError, RemoveSrcError},
 };
 
 pub mod core {

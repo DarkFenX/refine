@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdAutochargeChangeICtx};
+use crate::{ChangeItemEnumCmd, cmd::inner::ICmdAutochargeChangeICtx};
 
 #[derive(Default)]
 pub struct ItemChangeAutochargeCmd {

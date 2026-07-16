@@ -1,6 +1,6 @@
-use crate::cmd::{
+use crate::{
     ChangeFitEnumCmd,
-    inner::{ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx},
+    cmd::inner::{ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx},
 };
 
 pub struct FitSetShipCmd {

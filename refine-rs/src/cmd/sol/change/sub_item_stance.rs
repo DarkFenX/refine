@@ -1,10 +1,10 @@
-use crate::cmd::{
-    ChangeSolEnumCmd, GetFitChangeStanceError, GetItemChangeStanceError,
-    inner::{
+use crate::{
+    ChangeSolEnumCmd, ChangedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref,
+    cmd::inner::{
         ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
         ICmdStanceChangeFItemCtxRIds, ICmdStanceSetFCtxBIds, ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds,
     },
-    shared::{BackrefRenderError, ChangedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref},
+    err::{BackrefRenderError, GetFitChangeStanceError, GetItemChangeStanceError},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

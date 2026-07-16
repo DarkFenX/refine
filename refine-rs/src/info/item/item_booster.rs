@@ -1,7 +1,7 @@
 use rc::{ItemCommon, Lender};
 
-use super::shared::{SideEffectInfo, get_attrs, get_effects, get_mods};
-use crate::info::ItemInfoMode;
+use super::shared::{get_attrs, get_effects, get_mods};
+use crate::{ItemInfoMode, SideEffectInfo};
 
 pub struct BoosterInfo {
     pub id: rc::ItemId,

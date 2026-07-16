@@ -1,4 +1,4 @@
-use crate::cmd::{BackrefRenderError, CmdResps, FleetIdBackref};
+use crate::{CmdResps, FleetIdBackref, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdFleetRemoveFCtxBIds {

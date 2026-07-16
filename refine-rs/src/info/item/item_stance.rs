@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
 use super::shared::{get_attrs, get_effects, get_mods};
-use crate::info::ItemInfoMode;
+use crate::ItemInfoMode;
 
 pub struct StanceInfo {
     pub id: rc::ItemId,

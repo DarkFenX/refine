@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdFighterChangeICtxRIds};
+use crate::{ChangeItemEnumCmd, cmd::inner::ICmdFighterChangeICtxRIds};
 
 #[derive(Default)]
 pub struct ItemChangeFighterCmd {

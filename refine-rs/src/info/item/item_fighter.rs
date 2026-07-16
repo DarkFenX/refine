@@ -1,7 +1,7 @@
 use rc::{ItemCommon, Lender};
 
-use super::shared::{AbilityInfo, RangedProjInfo, get_attrs, get_effects, get_mods};
-use crate::info::{AutochargeInfo, ItemInfoMode};
+use super::shared::{get_attrs, get_effects, get_mods};
+use crate::{AbilityInfo, AutochargeInfo, ItemInfoMode, RangedProjInfo};
 
 pub struct FighterInfo {
     pub id: rc::ItemId,

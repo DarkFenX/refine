@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeFitEnumCmd,
-    inner::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
-    shared::ItemIdBackref,
+use crate::{
+    ChangeFitEnumCmd, ItemIdBackref,
+    cmd::inner::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
 pub struct FitAddFighterCmd {

@@ -1,4 +1,8 @@
-use crate::cmd::shared::{AddedItemIdsResp, BackrefRenderError, CmdResps, EffectModes, FitIdBackref, SideEffects};
+use crate::{
+    AddedItemIdsResp, CmdResps, FitIdBackref,
+    cmd::shared::{EffectModes, SideEffects},
+    err::BackrefRenderError,
+};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdBoosterAddFCtxBIds {

@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
-use super::shared::{ProjInfo, get_attrs, get_effects, get_mods};
-use crate::info::ItemInfoMode;
+use super::shared::{get_attrs, get_effects, get_mods};
+use crate::info::{ItemInfoMode, ProjInfo};
 
 pub struct ProjEffectInfo {
     pub id: rc::ItemId,

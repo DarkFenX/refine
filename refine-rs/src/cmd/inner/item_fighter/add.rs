@@ -1,5 +1,7 @@
-use crate::cmd::shared::{
-    Abilities, AddedItemIdsResp, BackrefRenderError, CmdResps, EffectModes, FitIdBackref, ItemIdBackref,
+use crate::{
+    AddedItemIdsResp, CmdResps, FitIdBackref, ItemIdBackref,
+    cmd::shared::{Abilities, EffectModes},
+    err::BackrefRenderError,
 };
 
 // Commands with full context

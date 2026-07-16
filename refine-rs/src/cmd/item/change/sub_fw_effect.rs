@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdFwEffectChangeICtx};
+use crate::{ChangeItemEnumCmd, cmd::inner::ICmdFwEffectChangeICtx};
 
 #[derive(Default)]
 pub struct ItemChangeFwEffectCmd {

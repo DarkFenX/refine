@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeFitEnumCmd, inner::ICmdFitChangeICtxBIds, shared::FleetIdBackref};
+use crate::{ChangeFitEnumCmd, FleetIdBackref, cmd::inner::ICmdFitChangeICtxBIds};
 
 #[derive(Default)]
 pub struct FitChangeFitCmd {

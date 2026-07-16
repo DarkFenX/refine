@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeFitEnumCmd,
-    inner::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
-    shared::{AddMutation, ChangeMutation, ItemIdBackref},
+use crate::{
+    AddMutation, ChangeFitEnumCmd, ChangeMutation, ItemIdBackref,
+    cmd::inner::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
 pub struct FitAddDroneCmd {

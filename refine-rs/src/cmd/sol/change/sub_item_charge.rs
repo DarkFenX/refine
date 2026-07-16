@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeSolEnumCmd, inner::ICmdChargeChangeFCtxBIds, shared::ItemIdBackref};
+use crate::{ChangeSolEnumCmd, ItemIdBackref, cmd::inner::ICmdChargeChangeFCtxBIds};
 
 pub struct SolChangeChargeCmd {
     pub(super) inner: ICmdChargeChangeFCtxBIds,

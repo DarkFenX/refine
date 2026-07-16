@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeSolEnumCmd,
-    inner::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
-    shared::ItemIdBackref,
+use crate::{
+    ChangeSolEnumCmd, ItemIdBackref,
+    cmd::inner::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
 };
 
 pub struct SolAddProjEffectCmd {

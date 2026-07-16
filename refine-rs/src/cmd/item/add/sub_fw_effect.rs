@@ -1,6 +1,6 @@
-use crate::cmd::{
+use crate::{
     AddItemEnumCmd,
-    inner::{ICmdFwEffectAddFCtxRIds, ICmdFwEffectAddICtx},
+    cmd::inner::{ICmdFwEffectAddFCtxRIds, ICmdFwEffectAddICtx},
 };
 
 pub struct ItemAddFwEffectCmd {

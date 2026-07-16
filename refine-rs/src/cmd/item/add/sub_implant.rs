@@ -1,6 +1,6 @@
-use crate::cmd::{
+use crate::{
     AddItemEnumCmd,
-    inner::{ICmdImplantAddFCtxRIds, ICmdImplantAddICtx},
+    cmd::inner::{ICmdImplantAddFCtxRIds, ICmdImplantAddICtx},
 };
 
 pub struct ItemAddImplantCmd {

@@ -1,6 +1,6 @@
 use rc::ItemMutCommon;
 
-use crate::info::ItemInfoMode;
+use crate::ItemInfoMode;
 
 pub(in crate::info::item) fn get_mods<T>(
     core_item: &mut T,

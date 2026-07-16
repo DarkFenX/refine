@@ -1,9 +1,7 @@
-use crate::info::{
-    ItemInfoMode,
-    item::{
-        AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo, ImplantInfo,
-        ModuleInfo, ProjEffectInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo, SwEffectInfo,
-    },
+use crate::{
+    AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo, ImplantInfo,
+    ItemInfoMode, ModuleInfo, ProjEffectInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
+    SwEffectInfo,
 };
 
 pub enum ItemInfo {

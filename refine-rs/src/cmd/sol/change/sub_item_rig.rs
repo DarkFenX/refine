@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeSolEnumCmd,
-    inner::{ICmdRigAddFCtxBIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds},
-    shared::{FitIdBackref, ItemIdBackref},
+use crate::{
+    ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    cmd::inner::{ICmdRigAddFCtxBIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds},
 };
 
 pub struct SolAddRigCmd {

@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeSolEnumCmd,
-    inner::{ICmdImplantAddFCtxBIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxBIds},
-    shared::{FitIdBackref, ItemIdBackref},
+use crate::{
+    ChangeSolEnumCmd, FitIdBackref, ItemIdBackref,
+    cmd::inner::{ICmdImplantAddFCtxBIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxBIds},
 };
 
 pub struct SolAddImplantCmd {

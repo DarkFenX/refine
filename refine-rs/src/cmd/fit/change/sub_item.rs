@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeFitEnumCmd, inner::ICmdItemRemoveFCtxBIds, shared::ItemIdBackref};
+use crate::{ChangeFitEnumCmd, ItemIdBackref, cmd::inner::ICmdItemRemoveFCtxBIds};
 
 pub struct FitRemoveItemCmd {
     pub(super) inner: ICmdItemRemoveFCtxBIds,

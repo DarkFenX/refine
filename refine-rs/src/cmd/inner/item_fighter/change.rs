@@ -1,6 +1,7 @@
 use crate::{
-    cmd::shared::{Abilities, BackrefRenderError, ChangedItemIdsResp, CmdResps, EffectModes, ItemIdBackref},
-    util::TriStateField,
+    ChangedItemIdsResp, CmdResps, ItemIdBackref, TriStateField,
+    cmd::shared::{Abilities, EffectModes},
+    err::BackrefRenderError,
 };
 
 // Commands with full context

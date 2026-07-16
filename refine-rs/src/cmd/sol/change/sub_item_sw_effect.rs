@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeSolEnumCmd,
-    inner::{ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxBIds},
-    shared::ItemIdBackref,
+use crate::{
+    ChangeSolEnumCmd, ItemIdBackref,
+    cmd::inner::{ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxBIds},
 };
 
 pub struct SolAddSwEffectCmd {

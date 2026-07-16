@@ -1,6 +1,6 @@
-use crate::cmd::{
+use crate::{
     AddItemEnumCmd,
-    inner::{ICmdShipSetFCtxRIds, ICmdShipSetICtx},
+    cmd::inner::{ICmdShipSetFCtxRIds, ICmdShipSetICtx},
 };
 
 pub struct ItemSetShipCmd {

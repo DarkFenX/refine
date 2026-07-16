@@ -1,7 +1,4 @@
-use crate::{
-    cmd::{BackrefRenderError, CmdResps, FitIdBackref, FleetIdBackref},
-    util::TriStateField,
-};
+use crate::{CmdResps, FitIdBackref, FleetIdBackref, TriStateField, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdFitChangeFCtxBIds {

@@ -1,7 +1,6 @@
-use crate::cmd::{
-    AddItemEnumCmd,
-    inner::{ICmdDroneAddFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared},
-    shared::AddMutation,
+use crate::{
+    AddItemEnumCmd, AddMutation,
+    cmd::inner::{ICmdDroneAddFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared},
 };
 
 pub struct ItemAddDroneCmd {

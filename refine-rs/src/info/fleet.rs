@@ -1,6 +1,6 @@
 use rc::Lender;
 
-use crate::info::FleetInfoMode;
+use crate::FleetInfoMode;
 
 pub struct FleetInfo {
     pub id: rc::FleetId,

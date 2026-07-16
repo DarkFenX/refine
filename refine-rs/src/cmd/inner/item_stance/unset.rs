@@ -1,4 +1,4 @@
-use crate::cmd::shared::{BackrefRenderError, CmdResps, FitIdBackref};
+use crate::{CmdResps, FitIdBackref, err::BackrefRenderError};
 
 // Commands with full context
 pub(in crate::cmd) struct ICmdStanceUnsetFCtxBIds {

@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeFitEnumCmd,
-    inner::{ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
-    shared::ItemIdBackref,
+use crate::{
+    ChangeFitEnumCmd, ItemIdBackref,
+    cmd::inner::{ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
 pub struct FitAddServiceCmd {

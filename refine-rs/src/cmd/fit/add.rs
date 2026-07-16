@@ -1,6 +1,6 @@
-use crate::cmd::{
-    inner::{AddFitError, ICmdFitAddFCtxRIds},
-    shared::AddedFitIdResp,
+use crate::{
+    AddedFitIdResp,
+    cmd::inner::{AddFitError, ICmdFitAddFCtxRIds},
 };
 
 #[derive(Default)]

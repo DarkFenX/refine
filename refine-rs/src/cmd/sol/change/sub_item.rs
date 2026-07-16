@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeSolEnumCmd, inner::ICmdItemRemoveFCtxBIds, shared::ItemIdBackref};
+use crate::{ChangeSolEnumCmd, ItemIdBackref, cmd::inner::ICmdItemRemoveFCtxBIds};
 
 pub struct SolRemoveItemCmd {
     pub(super) inner: ICmdItemRemoveFCtxBIds,

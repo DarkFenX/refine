@@ -1,6 +1,6 @@
 use rc::Lender;
 
-use crate::info::{
+use crate::{
     BoosterInfo, CharacterInfo, DroneInfo, FighterInfo, FitInfoMode, FwEffectInfo, ImplantInfo, ItemInfoMode,
     ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
 };

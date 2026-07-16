@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeFitEnumCmd,
-    inner::{ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
-    shared::ItemIdBackref,
+use crate::{
+    ChangeFitEnumCmd, ItemIdBackref,
+    cmd::inner::{ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
 };
 
 pub struct FitAddFwEffectCmd {

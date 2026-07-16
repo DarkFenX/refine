@@ -1,6 +1,6 @@
-use crate::cmd::{
+use crate::{
     AddItemEnumCmd,
-    inner::{ICmdProjEffectAddFCtxRIds, ICmdProjEffectAddShared},
+    cmd::inner::{ICmdProjEffectAddFCtxRIds, ICmdProjEffectAddShared},
 };
 
 pub struct ItemAddProjEffectCmd {

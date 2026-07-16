@@ -1,6 +1,6 @@
 use rc::ItemMutCommon;
 
-use crate::info::ItemInfoMode;
+use crate::ItemInfoMode;
 
 pub(in crate::info::item) fn get_effects<T>(
     core_item: &mut T,

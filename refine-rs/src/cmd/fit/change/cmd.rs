@@ -1,16 +1,12 @@
-use crate::cmd::{
-    FitAddBoosterCmd, FitAddDroneCmd, FitAddDroneError, FitAddFighterCmd, FitAddFighterError, FitAddFwEffectCmd,
-    FitAddImplantCmd, FitAddModuleCmd, FitAddModuleError, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
-    FitAddSkillError, FitAddSubsystemCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd,
-    FitChangeCharacterError, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFitCmd,
-    FitChangeFitError, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
-    FitChangeServiceCmd, FitChangeShipCmd, FitChangeShipError, FitChangeSkillCmd, FitChangeStanceCmd,
-    FitChangeStanceError, FitChangeSubsystemCmd, FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, GetItemChangeAutochargeError, GetItemChangeBoosterError,
-    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
-    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError,
-    GetItemChangeSkillError, GetItemChangeSubsystemError, GetItemRemoveItemError,
-    inner::{
+use crate::{
+    CmdResp, CmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd,
+    FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeAutochargeCmd,
+    FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
+    FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
+    FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd,
+    FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
+    FitUnsetStanceCmd,
+    cmd::inner::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
         ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
@@ -20,7 +16,14 @@ use crate::cmd::{
         ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx,
         ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds,
     },
-    shared::{BackrefRenderError, CmdResp, CmdResps},
+    err::{
+        BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
+        FitChangeCharacterError, FitChangeFitError, FitChangeShipError, FitChangeStanceError,
+        GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
+        GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
+        GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError, GetItemChangeSubsystemError,
+        GetItemRemoveItemError,
+    },
 };
 
 pub enum ChangeFitEnumCmd {

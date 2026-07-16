@@ -1,8 +1,8 @@
 use rc::Lender;
 
 use crate::{
-    info::{FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SolInfoMode, SwEffectInfo},
-    sol::SolarSystemId,
+    FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SolInfoMode, SolarSystemId,
+    SwEffectInfo,
 };
 
 pub struct SolInfo {

@@ -1,7 +1,6 @@
-use crate::cmd::{
-    ChangeSolEnumCmd,
-    inner::{ICmdFleetAddFCtxBIds, ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
-    shared::{FitIdBackref, FleetIdBackref},
+use crate::{
+    ChangeSolEnumCmd, FitIdBackref, FleetIdBackref,
+    cmd::inner::{ICmdFleetAddFCtxBIds, ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
 };
 
 #[derive(Default)]

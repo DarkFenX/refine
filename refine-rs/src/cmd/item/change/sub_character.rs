@@ -1,4 +1,4 @@
-use crate::cmd::{ChangeItemEnumCmd, inner::ICmdCharacterChangeICtx};
+use crate::{ChangeItemEnumCmd, cmd::inner::ICmdCharacterChangeICtx};
 
 #[derive(Default)]
 pub struct ItemChangeCharacterCmd {

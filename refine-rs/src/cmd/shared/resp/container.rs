@@ -1,4 +1,4 @@
-use crate::cmd::{BackrefRenderError, CmdResp, FitIdBackref, FleetIdBackref, ItemIdBackref};
+use crate::{CmdResp, FitIdBackref, FleetIdBackref, ItemIdBackref, err::BackrefRenderError};
 
 pub struct CmdResps {
     data: Vec<CmdResp>,

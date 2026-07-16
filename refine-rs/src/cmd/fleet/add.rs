@@ -1,6 +1,6 @@
-use crate::cmd::{
-    inner::{AddFleetError, ICmdFleetAddFCtxRIds},
-    shared::AddedFleetIdResp,
+use crate::{
+    AddedFleetIdResp,
+    cmd::inner::{AddFleetError, ICmdFleetAddFCtxRIds},
 };
 
 #[derive(Default)]
