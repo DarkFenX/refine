@@ -5,6 +5,7 @@ pub use sol_get_fit::GetFitError;
 mod fit;
 mod fit_change;
 mod fit_get_info;
+mod fit_get_stats;
 mod fit_remove;
 mod fit_try_fit_items;
 mod fit_validate;

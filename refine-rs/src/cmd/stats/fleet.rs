@@ -1,4 +1,4 @@
-use crate::stat::StatOption;
+use crate::stat::{FleetStats, StatOption};
 
 pub struct GetFleetStatsCmd {
     pub default: bool = true,
@@ -8,4 +8,13 @@ pub struct GetFleetStatsCmd {
     pub outgoing_rps: StatOption<bool> = StatOption::Default,
     pub outgoing_cps: StatOption<bool> = StatOption::Default,
     pub mass: StatOption<bool> = StatOption::Default,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl GetFleetStatsCmd {
+    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
+        FleetStats {}
+    }
 }
