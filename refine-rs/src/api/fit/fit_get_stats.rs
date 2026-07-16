@@ -1,6 +1,6 @@
 use crate::{
     Fit,
-    stat::{FitStats, GetFitStatsCmd},
+    stats::{FitStats, GetFitStatsCmd},
 };
 
 impl Fit<'_, '_> {

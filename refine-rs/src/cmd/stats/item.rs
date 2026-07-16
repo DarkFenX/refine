@@ -1,5 +1,6 @@
-use crate::stat::ItemStats;
+use crate::stats::ItemStats;
 
+#[derive(Default)]
 pub struct GetItemStatsCmd {
     pub default: bool = true,
 }

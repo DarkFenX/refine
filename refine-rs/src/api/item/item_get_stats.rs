@@ -1,6 +1,6 @@
 use crate::{
     Item,
-    stat::{GetItemStatsCmd, ItemStats},
+    stats::{GetItemStatsCmd, ItemStats},
 };
 
 impl Item<'_, '_> {

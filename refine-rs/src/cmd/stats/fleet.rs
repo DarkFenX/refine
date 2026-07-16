@@ -1,13 +1,14 @@
-use crate::stat::{FleetStats, StatOption};
+use crate::stats::{FleetStats, StatOptionExt};
 
+#[derive(Default)]
 pub struct GetFleetStatsCmd {
     pub default: bool = true,
-    pub dmg: StatOption<bool> = StatOption::Default,
-    pub mps: StatOption<bool> = StatOption::Default,
-    pub outgoing_nps: StatOption<bool> = StatOption::Default,
-    pub outgoing_rps: StatOption<bool> = StatOption::Default,
-    pub outgoing_cps: StatOption<bool> = StatOption::Default,
-    pub mass: StatOption<bool> = StatOption::Default,
+    pub dmg: StatOptionExt<bool> = StatOptionExt::Default,
+    pub mps: StatOptionExt<bool> = StatOptionExt::Default,
+    pub outgoing_nps: StatOptionExt<bool> = StatOptionExt::Default,
+    pub outgoing_rps: StatOptionExt<bool> = StatOptionExt::Default,
+    pub outgoing_cps: StatOptionExt<bool> = StatOptionExt::Default,
+    pub mass: StatOptionExt<bool> = StatOptionExt::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

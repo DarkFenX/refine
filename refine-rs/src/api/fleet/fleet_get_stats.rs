@@ -1,6 +1,6 @@
 use crate::{
     Fleet,
-    stat::{FleetStats, GetFleetStatsCmd},
+    stats::{FleetStats, GetFleetStatsCmd},
 };
 
 impl Fleet<'_, '_> {
