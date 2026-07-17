@@ -33,7 +33,7 @@ impl<'s> FitMut<'s> {
         let dmg_pattern_uniform = DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ONE, PValue::ONE, None);
         let dmg_pattern_laser = DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ZERO, PValue::ZERO, None);
         let shield_perc_peak = UnitInterval::from_f64_clamped(0.25);
-        let dmg_item_kinds = StatDmgItemKinds::all_enabled();
+        let dmg_item_kinds = StatDmgItemKinds { default: true, .. };
         let mining_item_kinds = StatMiningItemKinds { default: true, .. };
         let neut_item_kinds = StatNeutItemKinds { default: true, .. };
         let rr_item_kinds = StatOutRepItemKinds { default: true, .. };

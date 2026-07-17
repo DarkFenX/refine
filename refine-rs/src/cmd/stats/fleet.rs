@@ -1,15 +1,15 @@
 use crate::{
     PValue,
     stats::{
-        FleetStats, StatMining, StatOptionExt, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-        StatOptionFitOutRps, StatOptionMass, StatOutReps,
+        FleetStats, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
+        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps,
     },
 };
 
 #[derive(Default)]
 pub struct GetFleetStatsCmd {
     pub default: bool = true,
-    pub dmg: StatOptionExt<bool> = StatOptionExt::Default,
+    pub dmg: StatOptionExt<StatOptionFitDmg> = StatOptionExt::Default,
     pub mps: StatOptionExt<StatOptionFitMining> = StatOptionExt::Default,
     pub outgoing_nps: StatOptionExt<StatOptionFitOutNps> = StatOptionExt::Default,
     pub outgoing_rps: StatOptionExt<StatOptionFitOutRps> = StatOptionExt::Default,
