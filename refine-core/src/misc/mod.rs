@@ -1,4 +1,5 @@
 pub(crate) use attr_spec::AttrSpec;
+pub use def_option::DefOption;
 pub(crate) use dmg_kinds::DmgKinds;
 pub use dps_profile::{BreacherProfile, BreacherProfileError, DpsProfile, DpsProfileError};
 pub use effect_mode::EffectMode;
@@ -15,6 +16,7 @@ pub use spool::{ItemSpoolInfo, Spool};
 pub(crate) use xyz::Xyz;
 
 mod attr_spec;
+mod def_option;
 mod dmg_kinds;
 mod dps_profile;
 mod effect_mode;

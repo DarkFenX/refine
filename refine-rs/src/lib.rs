@@ -41,7 +41,7 @@ pub use info::{
     SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{
-    AbilityId, AddMode, Affector, AttrId, AttrVals, BreacherProfile, Coordinates, Count, CountNz, Direction,
+    AbilityId, AddMode, Affector, AttrId, AttrVals, BreacherProfile, Coordinates, Count, CountNz, DefOption, Direction,
     DpsProfile, EffectId, EffectInfo, EffectMode, FighterCountInfo, FitId, FitSecStatus, FleetId, Index, ItemId,
     ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ItemTypeId, MinionState,
     ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionalReload, PValue, ProjRange,

@@ -36,7 +36,7 @@ impl<'s> FitMut<'s> {
         let dmg_item_kinds = StatDmgItemKinds::all_enabled();
         let mining_item_kinds = StatMiningItemKinds::all_enabled();
         let neut_item_kinds = StatNeutItemKinds::all_enabled();
-        let rr_item_kinds = StatOutRepItemKinds::all_enabled();
+        let rr_item_kinds = StatOutRepItemKinds { default: true, .. };
         let cap_src_kinds_all = StatCapBlcSrcKindsInt {
             regen: StatCapBlcRegen::Enabled(StatCapBlcRegenOptions { .. }),
             cap_injectors: true,

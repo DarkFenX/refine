@@ -42,9 +42,9 @@ pub use api::{
 pub use def::VERSION;
 pub use lender::Lender;
 pub use misc::{
-    BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo,
-    ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionalReload, RearmMinion, SecZone, SecZoneCorruption,
-    Spool,
+    BreacherProfile, DefOption, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemNpcPropInfo,
+    ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionalReload, RearmMinion, SecZone,
+    SecZoneCorruption, Spool,
 };
 pub use num::{Count, CountNz, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::SolarSystem;

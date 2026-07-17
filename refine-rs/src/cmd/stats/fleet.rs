@@ -1,6 +1,6 @@
 use crate::{
     PValue,
-    stats::{FleetStats, StatOptionExt, StatOptionFitOutCps, StatOptionMass},
+    stats::{FleetStats, StatOptionExt, StatOptionFitOutCps, StatOptionFitOutRps, StatOptionMass, StatOutReps},
 };
 
 #[derive(Default)]
@@ -9,7 +9,7 @@ pub struct GetFleetStatsCmd {
     pub dmg: StatOptionExt<bool> = StatOptionExt::Default,
     pub mps: StatOptionExt<bool> = StatOptionExt::Default,
     pub outgoing_nps: StatOptionExt<bool> = StatOptionExt::Default,
-    pub outgoing_rps: StatOptionExt<bool> = StatOptionExt::Default,
+    pub outgoing_rps: StatOptionExt<StatOptionFitOutRps> = StatOptionExt::Default,
     pub outgoing_cps: StatOptionExt<StatOptionFitOutCps> = StatOptionExt::Default,
     pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
 }
@@ -23,6 +23,9 @@ impl GetFleetStatsCmd {
         if let Some(options) = self.outgoing_cps.into_enabled(self.default) {
             stats.outgoing_cps = Some(get_outgoing_cps_stats(core_fleet, options));
         }
+        if let Some(options) = self.outgoing_rps.into_enabled(self.default) {
+            stats.outgoing_rps = Some(get_outgoing_rps_stats(core_fleet, options));
+        }
         if let Some(options) = self.mass.into_enabled(self.default) {
             stats.mass = Some(get_mass_stats(core_fleet, options));
         }
@@ -30,6 +33,31 @@ impl GetFleetStatsCmd {
     }
 }
 
+fn get_outgoing_rps_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<StatOptionFitOutRps>,
+) -> Vec<Option<StatOutReps>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options {
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fleet.get_stat_outgoing_rps_applied(
+                    option.item_kinds,
+                    option.time_options,
+                    projectee_item_id,
+                ) {
+                    Ok(stat) => stats.push(Some(stat)),
+                    Err(_) => stats.push(None),
+                }
+            }
+            None => {
+                let stat = core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time_options);
+                stats.push(Some(stat));
+            }
+        }
+    }
+    stats
+}
 fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitOutCps>) -> Vec<Option<PValue>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {

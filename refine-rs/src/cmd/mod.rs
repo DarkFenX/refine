@@ -57,7 +57,7 @@ pub use sol::{
 };
 pub use stats::{
     GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionExt, StatOptionFitOutCps,
-    StatOptionItemOutCps, StatOptionMass,
+    StatOptionFitOutRps, StatOptionItemOutCps, StatOptionItemOutRps, StatOptionMass,
 };
 pub use try_fit_items::TryFitItemsCmd;
 pub use validate::{ValidateFitCmd, ValidateSolCmd};

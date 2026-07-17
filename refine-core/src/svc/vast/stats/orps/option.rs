@@ -1,32 +1,19 @@
-use crate::ud::UItem;
+use crate::{misc::DefOption, ud::UItem};
 
 /// Items which will be included in outgoing rep stats.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct StatOutRepItemKinds {
-    pub module: bool,
-    pub minion: bool,
+    pub default: bool = true,
+    pub module: DefOption = DefOption::Default,
+    pub minion: DefOption = DefOption::Default,
 }
 impl StatOutRepItemKinds {
-    /// Include all item types in outgoing rep stats.
-    pub fn all_enabled() -> Self {
-        Self {
-            module: true,
-            minion: true,
-        }
-    }
-    /// Exclude all item types from outgoing rep stats.
-    pub fn all_disabled() -> Self {
-        Self {
-            module: false,
-            minion: false,
-        }
-    }
     pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem) -> bool {
         match u_item {
-            UItem::Drone(_) => self.minion,
-            UItem::Fighter(_) => self.minion,
+            UItem::Drone(_) => self.minion.is_enabled(self.default),
+            UItem::Fighter(_) => self.minion.is_enabled(self.default),
             // Just consider everything else as modules
-            _ => self.module,
+            _ => self.module.is_enabled(self.default),
         }
     }
 }
