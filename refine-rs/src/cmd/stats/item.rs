@@ -1,8 +1,22 @@
-use crate::stats::ItemStats;
+use rc::ItemMutCommon;
+
+use crate::{
+    PValue,
+    stats::{
+        ItemStats, StatDmg, StatMining, StatOptionExt, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps,
+        StatOptionItemOutNps, StatOptionItemOutRps, StatOutReps,
+    },
+};
 
 #[derive(Default)]
 pub struct GetItemStatsCmd {
     pub default: bool = true,
+    // Output
+    pub dmg: StatOptionExt<StatOptionItemDmg> = StatOptionExt::Default,
+    pub mps: StatOptionExt<StatOptionItemMining> = StatOptionExt::Default,
+    pub outgoing_nps: StatOptionExt<StatOptionItemOutNps> = StatOptionExt::Default,
+    pub outgoing_rps: StatOptionExt<StatOptionItemOutRps> = StatOptionExt::Default,
+    pub outgoing_cps: StatOptionExt<StatOptionItemOutCps> = StatOptionExt::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -10,6 +24,178 @@ pub struct GetItemStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl GetItemStatsCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStats {
-        ItemStats {}
+        let mut stats = ItemStats { .. };
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Output
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if let Some(options) = self.dmg.into_enabled(self.default) {
+            stats.dmg = get_dmg_stats(core_item, options).into();
+        }
+        if let Some(options) = self.mps.into_enabled(self.default) {
+            stats.mps = get_mps_stats(core_item, options).into();
+        }
+        if let Some(options) = self.outgoing_nps.into_enabled(self.default) {
+            stats.outgoing_nps = get_outgoing_nps_stats(core_item, options).into();
+        }
+        if let Some(options) = self.outgoing_cps.into_enabled(self.default) {
+            stats.outgoing_cps = get_outgoing_cps_stats(core_item, options).into();
+        }
+        if let Some(options) = self.outgoing_rps.into_enabled(self.default) {
+            stats.outgoing_rps = get_outgoing_rps_stats(core_item, options).into();
+        }
+        stats
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Output
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_dmg_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionItemDmg>) -> Option<Vec<Option<StatDmg>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_dmg_applied(
+                    option.time_options,
+                    option.include_charges,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
+                    Ok(core_stat) => stats.push(Some(StatDmg::from_core_applied(core_stat))),
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => stats.push(None),
+                    },
+                };
+            }
+            None => {
+                match core_item.get_stat_dmg(option.time_options, option.include_charges, option.ignore_state) {
+                    Ok(core_stat) => stats.push(Some(StatDmg::from_core(core_stat))),
+                    Err(core_err) => match is_fatal(core_err) {
+                        true => return None,
+                        false => stats.push(None),
+                    },
+                };
+            }
+        }
+    }
+    Some(stats)
+}
+fn get_mps_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionItemMining>) -> Option<Vec<StatMining>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_item.get_stat_mps(option.time_options, option.mission, option.ignore_state) {
+            Ok(stat) => stats.push(stat),
+            Err(_) => return None,
+        }
+    }
+    Some(stats)
+}
+fn get_outgoing_rps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<StatOptionItemOutRps>,
+) -> Option<Vec<Option<StatOutReps>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_outgoing_rps_applied(
+                    option.time_options,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
+                    Ok(stat) => stats.push(Some(stat)),
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => stats.push(None),
+                    },
+                }
+            }
+            None => match core_item.get_stat_outgoing_rps(option.time_options, option.ignore_state) {
+                Ok(stat) => stats.push(Some(stat)),
+                Err(core_err) => match is_fatal(core_err) {
+                    true => return None,
+                    false => stats.push(None),
+                },
+            },
+        }
+    }
+    Some(stats)
+}
+fn get_outgoing_nps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<StatOptionItemOutNps>,
+) -> Option<Vec<Option<PValue>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options {
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_outgoing_nps_applied(
+                    option.time_options,
+                    option.include_charges,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
+                    Ok(stat) => stats.push(Some(stat)),
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => stats.push(None),
+                    },
+                }
+            }
+            None => {
+                match core_item.get_stat_outgoing_nps(option.time_options, option.include_charges, option.ignore_state)
+                {
+                    Ok(stat) => stats.push(Some(stat)),
+                    Err(_) => return None,
+                }
+            }
+        }
+    }
+    Some(stats)
+}
+fn get_outgoing_cps_stats(
+    core_item: &mut rc::ItemMut,
+    options: Vec<StatOptionItemOutCps>,
+) -> Option<Vec<Option<PValue>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_item.get_stat_outgoing_cps_applied(
+                    option.time_options,
+                    option.ignore_state,
+                    &projectee_item_id,
+                ) {
+                    Ok(stat) => stats.push(Some(stat)),
+                    Err(core_err) => match is_fatal_app(core_err) {
+                        true => return None,
+                        false => stats.push(None),
+                    },
+                }
+            }
+            None => match core_item.get_stat_outgoing_cps(option.time_options, option.ignore_state) {
+                Ok(stat) => stats.push(Some(stat)),
+                Err(_) => return None,
+            },
+        }
+    }
+    Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn is_fatal(core_err: rc::err::ItemStatError) -> bool {
+    match core_err {
+        rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => true,
+    }
+}
+
+fn is_fatal_app(core_err: rc::err::ItemAppliedStatError) -> bool {
+    match core_err {
+        rc::err::ItemAppliedStatError::ItemNotLoaded(_) | rc::err::ItemAppliedStatError::UnsupportedStat(_) => true,
+        rc::err::ItemAppliedStatError::ProjecteeNotFound(_)
+        | rc::err::ItemAppliedStatError::ProjecteeCantTakeProjs(_) => false,
     }
 }
