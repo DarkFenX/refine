@@ -28,7 +28,7 @@ fn setup_logger() -> () {
         .init();
 }
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     setup_logger();
     // Initial setup
