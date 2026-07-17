@@ -1,6 +1,9 @@
-pub use rc::stats::StatResource;
+pub use rc::{
+    CtlAffectors as StatAffectors,
+    stats::{StatMining, StatMiningEntry, StatOutReps, StatResource},
+};
 
 pub use crate::{
-    cmd::{GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionExt},
+    cmd::{GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionExt, StatOptionMass},
     info::{FitStats, FleetStats, ItemStats},
 };

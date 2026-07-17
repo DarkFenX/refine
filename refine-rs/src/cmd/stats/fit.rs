@@ -18,22 +18,22 @@ pub struct GetFitStatsCmd {
 impl GetFitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
-        if self.cpu.is_enabled(self.default) {
+        if self.cpu.into_enabled(self.default) {
             stats.cpu = Some(vec![core_fit.get_stat_cpu()])
         }
-        if self.powergrid.is_enabled(self.default) {
+        if self.powergrid.into_enabled(self.default) {
             stats.powergrid = Some(vec![core_fit.get_stat_powergrid()])
         }
-        if self.calibration.is_enabled(self.default) {
+        if self.calibration.into_enabled(self.default) {
             stats.calibration = Some(vec![core_fit.get_stat_calibration()])
         }
-        if self.drone_bay_volume.is_enabled(self.default) {
+        if self.drone_bay_volume.into_enabled(self.default) {
             stats.drone_bay_volume = Some(vec![core_fit.get_stat_drone_bay_volume()])
         }
-        if self.drone_bandwidth.is_enabled(self.default) {
+        if self.drone_bandwidth.into_enabled(self.default) {
             stats.drone_bandwidth = Some(vec![core_fit.get_stat_drone_bandwidth()])
         }
-        if self.fighter_bay_volume.is_enabled(self.default) {
+        if self.fighter_bay_volume.into_enabled(self.default) {
             stats.fighter_bay_volume = Some(vec![core_fit.get_stat_fighter_bay_volume()])
         }
         stats

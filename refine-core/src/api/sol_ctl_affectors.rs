@@ -15,8 +15,9 @@ use crate::{
 ///
 /// Good examples would be a ship mass stat: propulsion modules increase mass while active, and
 /// armor plates increase mass while online.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub enum CtlAffectors {
+    #[default]
     Unmodified,
     Deactivate,
     Offline,
