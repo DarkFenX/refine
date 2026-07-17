@@ -56,7 +56,7 @@ pub mod dev;
 pub mod err;
 mod info;
 pub mod src;
-mod stats;
+pub mod stats;
 mod svc;
 mod util;
 pub mod val;

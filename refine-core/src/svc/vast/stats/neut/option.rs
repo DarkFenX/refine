@@ -1,42 +1,25 @@
-use crate::{nd::NEffectNeutKind, rd::REffect};
+use crate::{misc::DefOption, nd::NEffectNeutKind, rd::REffect};
 
 /// Items which will be included in neut stats.
 #[derive(Copy, Clone)]
 pub struct StatNeutItemKinds {
-    pub module: bool,
-    pub minion: bool,
-    pub bomb: bool,
-    pub side_effect: bool,
+    pub default: bool = true,
+    pub module: DefOption = DefOption::Default,
+    pub minion: DefOption = DefOption::Default,
+    pub bomb: DefOption = DefOption::Default,
+    pub side_effect: DefOption = DefOption::Default,
 }
 impl StatNeutItemKinds {
-    /// Include all item types in neut stats.
-    pub fn all_enabled() -> Self {
-        Self {
-            module: true,
-            minion: true,
-            bomb: true,
-            side_effect: true,
-        }
-    }
-    /// Exclude all item types from neut stats.
-    pub fn all_disabled() -> Self {
-        Self {
-            module: false,
-            minion: false,
-            bomb: false,
-            side_effect: false,
-        }
-    }
     pub(in crate::svc::vast) fn resolve(&self, r_effect: &REffect) -> bool {
         let neut_kind = match &r_effect.neut {
             Some(neut) => neut.kind,
             None => return false,
         };
         match neut_kind {
-            NEffectNeutKind::Module => self.module,
-            NEffectNeutKind::Minion => self.minion,
-            NEffectNeutKind::Bomb => self.bomb,
-            NEffectNeutKind::SideEffect => self.side_effect,
+            NEffectNeutKind::Module => self.module.is_enabled(self.default),
+            NEffectNeutKind::Minion => self.minion.is_enabled(self.default),
+            NEffectNeutKind::Bomb => self.bomb.is_enabled(self.default),
+            NEffectNeutKind::SideEffect => self.side_effect.is_enabled(self.default),
         }
     }
 }

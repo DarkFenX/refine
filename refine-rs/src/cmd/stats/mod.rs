@@ -2,8 +2,8 @@ pub use fit::GetFitStatsCmd;
 pub use fleet::GetFleetStatsCmd;
 pub use item::GetItemStatsCmd;
 pub use options::{
-    StatOption, StatOptionExt, StatOptionFitOutCps, StatOptionFitOutRps, StatOptionItemOutCps, StatOptionItemOutRps,
-    StatOptionMass,
+    StatOption, StatOptionExt, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionItemOutCps,
+    StatOptionItemOutNps, StatOptionItemOutRps, StatOptionMass,
 };
 
 mod fit;
