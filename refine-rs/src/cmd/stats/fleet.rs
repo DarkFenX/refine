@@ -48,9 +48,9 @@ impl GetFleetStatsCmd {
 fn get_dmg_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitDmg>) -> Vec<Option<StatDmg>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match &option.projectee_item_id {
+        match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_dmg_applied(option.item_kinds, option.time_options, projectee_item_id) {
+                match core_fleet.get_stat_dmg_applied(option.item_kinds, option.time_options, &projectee_item_id) {
                     Ok(core_stat) => stats.push(Some(StatDmg::from_core_applied(core_stat))),
                     Err(_) => stats.push(None),
                 };
@@ -74,12 +74,12 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining
 fn get_outgoing_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitOutNps>) -> Vec<Option<PValue>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match &option.projectee_item_id {
+        match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_nps_applied(
                     option.item_kinds,
                     option.time_options,
-                    projectee_item_id,
+                    &projectee_item_id,
                 ) {
                     Ok(stat) => stats.push(Some(stat)),
                     Err(_) => stats.push(None),
@@ -99,12 +99,12 @@ fn get_outgoing_rps_stats(
 ) -> Vec<Option<StatOutReps>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match &option.projectee_item_id {
+        match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fleet.get_stat_outgoing_rps_applied(
                     option.item_kinds,
                     option.time_options,
-                    projectee_item_id,
+                    &projectee_item_id,
                 ) {
                     Ok(stat) => stats.push(Some(stat)),
                     Err(_) => stats.push(None),
@@ -121,9 +121,9 @@ fn get_outgoing_rps_stats(
 fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitOutCps>) -> Vec<Option<PValue>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match &option.projectee_item_id {
+        match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_outgoing_cps_applied(option.time_options, projectee_item_id) {
+                match core_fleet.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id) {
                     Ok(stat) => stats.push(Some(stat)),
                     Err(_) => stats.push(None),
                 }
