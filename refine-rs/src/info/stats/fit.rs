@@ -1,8 +1,8 @@
 use crate::{
-    PValue, TriStateField, UnitInterval, Value,
+    Count, PValue, TriStateField, UnitInterval, Value,
     stats::{
-        StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatJump, StatMining, StatOutReps, StatResists, StatResource,
-        StatRps, StatSlot,
+        StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
+        StatResource, StatRps, StatSensors, StatSlot,
     },
 };
 
@@ -50,6 +50,14 @@ pub struct FitStats {
     pub cap_balance: TriStateField<Vec<Option<Value>>> = TriStateField::Absent,
     pub cap_sim: TriStateField<Vec<Option<StatCapSim>>> = TriStateField::Absent,
     pub neut_resist: TriStateField<Vec<UnitInterval>> = TriStateField::Absent,
+    // Ship sensors
+    pub locks: TriStateField<Vec<Count>> = TriStateField::Absent,
+    pub lock_range: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub scan_res: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub sensors: TriStateField<Vec<StatSensors>> = TriStateField::Absent,
+    pub dscan_range: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub probing_size: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub incoming_jam: TriStateField<Vec<StatInJam>> = TriStateField::Absent,
     // Ship mobility
     pub speed: TriStateField<Vec<PValue>> = TriStateField::Absent,
     pub agility: TriStateField<Vec<PValue>> = TriStateField::Absent,

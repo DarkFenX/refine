@@ -3,9 +3,9 @@ pub use fleet::GetFleetStatsCmd;
 pub use item::GetItemStatsCmd;
 pub use options::{
     StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionItemDmg,
-    StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
-    StatOptionMass, StatOptionRps,
+    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+    StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
+    StatOptionJump, StatOptionMass, StatOptionRps,
 };
 
 mod fit;

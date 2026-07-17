@@ -58,8 +58,8 @@ pub use sol::{
 pub use stats::{
     GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp,
     StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-    StatOptionFitOutRps, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
-    StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
+    StatOptionFitOutRps, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps,
+    StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
 };
 pub use try_fit_items::TryFitItemsCmd;
 pub use validate::{ValidateFitCmd, ValidateSolCmd};

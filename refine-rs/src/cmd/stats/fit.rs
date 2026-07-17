@@ -1,10 +1,10 @@
 use crate::{
     PValue, Value,
     stats::{
-        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatJump, StatMining, StatOption, StatOptionCapBlc,
-        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining,
-        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
-        StatOutReps, StatRps,
+        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+        StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps,
     },
 };
 
@@ -54,6 +54,14 @@ pub struct GetFitStatsCmd {
     pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
     pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
     pub neut_resist: StatOption = StatOption::Default,
+    // Ship sensors
+    pub locks: StatOption = StatOption::Default,
+    pub lock_range: StatOption = StatOption::Default,
+    pub scan_res: StatOption = StatOption::Default,
+    pub sensors: StatOption = StatOption::Default,
+    pub dscan_range: StatOption = StatOption::Default,
+    pub probing_size: StatOption = StatOption::Default,
+    pub incoming_jam: StatOptionExt<StatOptionIncomingJam> = StatOptionExt::Default,
     // Ship mobility
     pub speed: StatOption = StatOption::Default,
     pub agility: StatOption = StatOption::Default,
@@ -201,6 +209,30 @@ impl GetFitStatsCmd {
             stats.neut_resist = core_fit.get_stat_neut_resist().into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
+        // Ship sensors
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.locks.into_enabled(self.default) {
+            stats.locks = core_fit.get_stat_locks().into();
+        }
+        if self.lock_range.into_enabled(self.default) {
+            stats.lock_range = core_fit.get_stat_lock_range().into();
+        }
+        if self.scan_res.into_enabled(self.default) {
+            stats.scan_res = core_fit.get_stat_scan_res().into();
+        }
+        if self.sensors.into_enabled(self.default) {
+            stats.sensors = core_fit.get_stat_sensors().into();
+        }
+        if self.dscan_range.into_enabled(self.default) {
+            stats.dscan_range = core_fit.get_stat_dscan_range().into();
+        }
+        if self.probing_size.into_enabled(self.default) {
+            stats.probing_size = core_fit.get_stat_probing_size().unwrap_or_default().into();
+        }
+        if let Some(options) = self.incoming_jam.into_enabled(self.default) {
+            stats.incoming_jam = get_incoming_jam_stats(core_fit, options).into();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
@@ -300,7 +332,7 @@ fn get_outgoing_rps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitO
 }
 fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitOutCps>) -> Vec<Option<PValue>> {
     let mut stats = Vec::with_capacity(options.len());
-    for option in options {
+    for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_fit.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id) {
@@ -387,7 +419,21 @@ fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapSim>) 
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Mobility
+// Ship sensors
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_incoming_jam_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionIncomingJam>) -> Option<Vec<StatInJam>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_fit.get_stat_incoming_jam(option.time_options) {
+            Ok(stat) => stats.push(stat),
+            Err(_) => return None,
+        }
+    }
+    Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ship mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_mass_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionMass>) -> Option<Vec<PValue>> {
     let mut stats = Vec::with_capacity(options.len());

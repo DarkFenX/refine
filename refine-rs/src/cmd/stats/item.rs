@@ -3,10 +3,10 @@ use rc::ItemMutCommon;
 use crate::{
     PValue, Value,
     stats::{
-        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatJump, StatMining, StatOption, StatOptionCapBlc,
-        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionItemDmg, StatOptionItemMining,
-        StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass,
-        StatOptionRps, StatOutReps, StatRps,
+        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
+        StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps,
     },
 };
 
@@ -32,6 +32,14 @@ pub struct GetItemStatsCmd {
     pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
     pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
     pub neut_resist: StatOption = StatOption::Default,
+    // Sensors
+    pub locks: StatOption = StatOption::Default,
+    pub lock_range: StatOption = StatOption::Default,
+    pub scan_res: StatOption = StatOption::Default,
+    pub sensors: StatOption = StatOption::Default,
+    pub dscan_range: StatOption = StatOption::Default,
+    pub probing_size: StatOption = StatOption::Default,
+    pub incoming_jam: StatOptionExt<StatOptionIncomingJam> = StatOptionExt::Default,
     // Mobility
     pub speed: StatOption = StatOption::Default,
     pub agility: StatOption = StatOption::Default,
@@ -105,6 +113,30 @@ impl GetItemStatsCmd {
         }
         if self.neut_resist.into_enabled(self.default) {
             stats.neut_resist = core_item.get_stat_neut_resist().into();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Sensors
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.locks.into_enabled(self.default) {
+            stats.locks = core_item.get_stat_locks().into();
+        }
+        if self.lock_range.into_enabled(self.default) {
+            stats.lock_range = core_item.get_stat_lock_range().into();
+        }
+        if self.scan_res.into_enabled(self.default) {
+            stats.scan_res = core_item.get_stat_scan_res().into();
+        }
+        if self.sensors.into_enabled(self.default) {
+            stats.sensors = core_item.get_stat_sensors().into();
+        }
+        if self.dscan_range.into_enabled(self.default) {
+            stats.dscan_range = core_item.get_stat_dscan_range().into();
+        }
+        if self.probing_size.into_enabled(self.default) {
+            stats.probing_size = core_item.get_stat_probing_size().unwrap_or_default().into();
+        }
+        if let Some(options) = self.incoming_jam.into_enabled(self.default) {
+            stats.incoming_jam = get_incoming_jam_stats(core_item, options).into();
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Mobility
@@ -217,7 +249,7 @@ fn get_outgoing_nps_stats(
     options: Vec<StatOptionItemOutNps>,
 ) -> Option<Vec<Option<PValue>>> {
     let mut stats = Vec::with_capacity(options.len());
-    for option in options {
+    for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 match core_item.get_stat_outgoing_nps_applied(
@@ -337,6 +369,20 @@ fn get_cap_sim_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionCapSim>
                 true => return None,
                 false => stats.push(None),
             },
+        }
+    }
+    Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Sensors
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_incoming_jam_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionIncomingJam>) -> Option<Vec<StatInJam>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_item.get_stat_incoming_jam(option.time_options) {
+            Ok(stat) => stats.push(stat),
+            Err(_) => return None,
         }
     }
     Some(stats)
