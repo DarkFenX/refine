@@ -4,8 +4,8 @@ pub use item::GetItemStatsCmd;
 pub use options::{
     StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
     StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionItemDmg,
-    StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionMass,
-    StatOptionRps,
+    StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
+    StatOptionMass, StatOptionRps,
 };
 
 mod fit;

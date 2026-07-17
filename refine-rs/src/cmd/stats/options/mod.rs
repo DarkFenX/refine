@@ -1,6 +1,7 @@
 pub use opt_cap_blc::StatOptionCapBlc;
 pub use opt_cap_sim::StatOptionCapSim;
 pub use opt_dmg::{StatOptionFitDmg, StatOptionItemDmg};
+pub use opt_jump::StatOptionJump;
 pub use opt_mass::StatOptionMass;
 pub use opt_mining::{StatOptionFitMining, StatOptionItemMining};
 pub use opt_out_cps::{StatOptionFitOutCps, StatOptionItemOutCps};
@@ -14,6 +15,7 @@ pub use option::{StatOption, StatOptionExt};
 mod opt_cap_blc;
 mod opt_cap_sim;
 mod opt_dmg;
+mod opt_jump;
 mod opt_mass;
 mod opt_mining;
 mod opt_out_cps;

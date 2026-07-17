@@ -1,8 +1,8 @@
 use crate::{
     PValue, TriStateField, UnitInterval, Value,
     stats::{
-        StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatMining, StatOutReps, StatResists, StatResource, StatRps,
-        StatSlot,
+        StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatJump, StatMining, StatOutReps, StatResists, StatResource,
+        StatRps, StatSlot,
     },
 };
 
@@ -50,4 +50,13 @@ pub struct FitStats {
     pub cap_balance: TriStateField<Vec<Option<Value>>> = TriStateField::Absent,
     pub cap_sim: TriStateField<Vec<Option<StatCapSim>>> = TriStateField::Absent,
     pub neut_resist: TriStateField<Vec<UnitInterval>> = TriStateField::Absent,
+    // Ship mobility
+    pub speed: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub agility: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub align_time: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub sig_radius: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub mass: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub warp_speed: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub max_warp_range: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub jump: TriStateField<Vec<StatJump>> = TriStateField::Absent,
 }

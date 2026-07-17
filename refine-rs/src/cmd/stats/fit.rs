@@ -1,9 +1,10 @@
 use crate::{
     PValue, Value,
     stats::{
-        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatMining, StatOption, StatOptionCapBlc, StatOptionCapSim,
-        StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionRps, StatOutReps, StatRps,
+        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatJump, StatMining, StatOption, StatOptionCapBlc,
+        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining,
+        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
+        StatOutReps, StatRps,
     },
 };
 
@@ -53,6 +54,15 @@ pub struct GetFitStatsCmd {
     pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
     pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
     pub neut_resist: StatOption = StatOption::Default,
+    // Ship mobility
+    pub speed: StatOption = StatOption::Default,
+    pub agility: StatOption = StatOption::Default,
+    pub align_time: StatOption = StatOption::Default,
+    pub sig_radius: StatOption = StatOption::Default,
+    pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
+    pub warp_speed: StatOption = StatOption::Default,
+    pub max_warp_range: StatOption = StatOption::Default,
+    pub jump: StatOptionExt<StatOptionJump> = StatOptionExt::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -189,6 +199,33 @@ impl GetFitStatsCmd {
         }
         if self.neut_resist.into_enabled(self.default) {
             stats.neut_resist = core_fit.get_stat_neut_resist().into();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Ship mobility
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.speed.into_enabled(self.default) {
+            stats.speed = core_fit.get_stat_speed().into();
+        }
+        if self.agility.into_enabled(self.default) {
+            stats.agility = core_fit.get_stat_agility().unwrap_or_default().into();
+        }
+        if self.align_time.into_enabled(self.default) {
+            stats.align_time = core_fit.get_stat_align_time().unwrap_or_default().into();
+        }
+        if self.sig_radius.into_enabled(self.default) {
+            stats.sig_radius = core_fit.get_stat_sig_radius().into();
+        }
+        if let Some(options) = self.mass.into_enabled(self.default) {
+            stats.mass = get_mass_stats(core_fit, options).into();
+        }
+        if self.warp_speed.into_enabled(self.default) {
+            stats.warp_speed = core_fit.get_stat_warp_speed().unwrap_or_default().into();
+        }
+        if self.max_warp_range.into_enabled(self.default) {
+            stats.max_warp_range = core_fit.get_stat_max_warp_range().unwrap_or_default().into();
+        }
+        if let Some(options) = self.jump.into_enabled(self.default) {
+            stats.jump = get_jump_stats(core_fit, options).into();
         }
         stats
     }
@@ -344,6 +381,30 @@ fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapSim>) 
                 true => return None,
                 false => stats.push(None),
             },
+        }
+    }
+    Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Mobility
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_mass_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionMass>) -> Option<Vec<PValue>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_fit.get_stat_mass(option.affectors) {
+            Ok(stat) => stats.push(stat),
+            _ => return None,
+        }
+    }
+    Some(stats)
+}
+fn get_jump_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionJump>) -> Option<Vec<StatJump>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_fit.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors) {
+            Ok(Some(stat)) => stats.push(stat),
+            _ => return None,
         }
     }
     Some(stats)
