@@ -1,5 +1,7 @@
 [package]
 name = "refine-rs"
+description = "Higher-level Rust interface built on top of refine-core"
+license = "AGPL-3.0-or-later"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"

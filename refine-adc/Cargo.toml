@@ -1,10 +1,10 @@
 [package]
 name = "refine-adc"
+description = "Adapted data cachers for refine-core crate"
+license = "AGPL-3.0-or-later"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
-description = "Adapted data cachers for refine-core crate"
-license = "LGPL-3.0-or-later"
 
 [dependencies]
 rc = { package = "refine-core", path = "../refine-core" }

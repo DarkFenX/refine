@@ -1,10 +1,10 @@
 [package]
 name = "refine-edh"
+description = "EVE data handlers for refine-core crate"
+license = "AGPL-3.0-or-later"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
-description = "EVE data handlers for refine-core crate, which use Phobos dump as data source"
-license = "LGPL-3.0-or-later"
 
 [dependencies]
 rc = { package = "refine-core", path = "../refine-core" }
