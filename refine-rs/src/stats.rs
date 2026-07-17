@@ -2,7 +2,7 @@ pub use rc::{
     CtlAffectors as StatAffectors,
     stats::{
         StatDmgItemKinds, StatMining, StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds,
-        StatOutReps, StatResource, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatOutReps, StatResource, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
 };
 

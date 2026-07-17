@@ -22,6 +22,23 @@ pub struct GetFitStatsCmd {
     pub drone_bay_volume: StatOption = StatOption::Default,
     pub drone_bandwidth: StatOption = StatOption::Default,
     pub fighter_bay_volume: StatOption = StatOption::Default,
+    // Fit slots
+    high_slots: StatOption = StatOption::Default,
+    mid_slots: StatOption = StatOption::Default,
+    low_slots: StatOption = StatOption::Default,
+    turret_slots: StatOption = StatOption::Default,
+    launcher_slots: StatOption = StatOption::Default,
+    rig_slots: StatOption = StatOption::Default,
+    service_slots: StatOption = StatOption::Default,
+    subsystem_slots: StatOption = StatOption::Default,
+    launched_drones: StatOption = StatOption::Default,
+    launched_fighters: StatOption = StatOption::Default,
+    launched_light_fighters: StatOption = StatOption::Default,
+    launched_heavy_fighters: StatOption = StatOption::Default,
+    launched_support_fighters: StatOption = StatOption::Default,
+    launched_st_light_fighters: StatOption = StatOption::Default,
+    launched_st_heavy_fighters: StatOption = StatOption::Default,
+    launched_st_support_fighters: StatOption = StatOption::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +85,57 @@ impl GetFitStatsCmd {
         }
         if self.fighter_bay_volume.into_enabled(self.default) {
             stats.fighter_bay_volume = Some(vec![core_fit.get_stat_fighter_bay_volume()])
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Fit slots
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.high_slots.into_enabled(self.default) {
+            stats.high_slots = Some(vec![core_fit.get_stat_high_slots()]);
+        }
+        if self.mid_slots.into_enabled(self.default) {
+            stats.mid_slots = Some(vec![core_fit.get_stat_mid_slots()]);
+        }
+        if self.low_slots.into_enabled(self.default) {
+            stats.low_slots = Some(vec![core_fit.get_stat_low_slots()]);
+        }
+        if self.turret_slots.into_enabled(self.default) {
+            stats.turret_slots = Some(vec![core_fit.get_stat_turret_slots()]);
+        }
+        if self.launcher_slots.into_enabled(self.default) {
+            stats.launcher_slots = Some(vec![core_fit.get_stat_launcher_slots()]);
+        }
+        if self.rig_slots.into_enabled(self.default) {
+            stats.rig_slots = Some(vec![core_fit.get_stat_rig_slots()]);
+        }
+        if self.service_slots.into_enabled(self.default) {
+            stats.service_slots = Some(vec![core_fit.get_stat_service_slots()]);
+        }
+        if self.subsystem_slots.into_enabled(self.default) {
+            stats.subsystem_slots = Some(vec![core_fit.get_stat_subsystem_slots()]);
+        }
+        if self.launched_drones.into_enabled(self.default) {
+            stats.launched_drones = Some(vec![core_fit.get_stat_launched_drones()]);
+        }
+        if self.launched_fighters.into_enabled(self.default) {
+            stats.launched_fighters = Some(vec![core_fit.get_stat_launched_fighters()]);
+        }
+        if self.launched_light_fighters.into_enabled(self.default) {
+            stats.launched_light_fighters = Some(vec![core_fit.get_stat_launched_light_fighters()]);
+        }
+        if self.launched_heavy_fighters.into_enabled(self.default) {
+            stats.launched_heavy_fighters = Some(vec![core_fit.get_stat_launched_heavy_fighters()]);
+        }
+        if self.launched_support_fighters.into_enabled(self.default) {
+            stats.launched_support_fighters = Some(vec![core_fit.get_stat_launched_support_fighters()]);
+        }
+        if self.launched_st_light_fighters.into_enabled(self.default) {
+            stats.launched_st_light_fighters = Some(vec![core_fit.get_stat_launched_st_light_fighters()]);
+        }
+        if self.launched_st_heavy_fighters.into_enabled(self.default) {
+            stats.launched_st_heavy_fighters = Some(vec![core_fit.get_stat_launched_st_heavy_fighters()]);
+        }
+        if self.launched_st_support_fighters.into_enabled(self.default) {
+            stats.launched_st_support_fighters = Some(vec![core_fit.get_stat_launched_st_support_fighters()]);
         }
         stats
     }
