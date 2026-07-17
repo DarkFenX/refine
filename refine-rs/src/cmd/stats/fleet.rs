@@ -1,7 +1,7 @@
 use crate::{
     PValue,
     stats::{
-        FleetStats, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
+        FleetStats, StatDmg, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps,
     },
 };
@@ -23,6 +23,9 @@ pub struct GetFleetStatsCmd {
 impl GetFleetStatsCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         let mut stats = FleetStats { .. };
+        if let Some(options) = self.dmg.into_enabled(self.default) {
+            stats.dmg = Some(get_dmg_stats(core_fleet, options));
+        }
         if let Some(options) = self.mps.into_enabled(self.default) {
             stats.mps = Some(get_mps_stats(core_fleet, options));
         }
@@ -42,6 +45,24 @@ impl GetFleetStatsCmd {
     }
 }
 
+fn get_dmg_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitDmg>) -> Vec<Option<StatDmg>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fleet.get_stat_dmg_applied(option.item_kinds, option.time_options, projectee_item_id) {
+                    Ok(core_stat) => stats.push(Some(StatDmg::from_core_applied(core_stat))),
+                    Err(_) => stats.push(None),
+                };
+            }
+            None => {
+                let core_stat = core_fleet.get_stat_dmg(option.item_kinds, option.time_options);
+                stats.push(Some(StatDmg::from_core(core_stat)));
+            }
+        }
+    }
+    stats
+}
 fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining>) -> Vec<StatMining> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options {

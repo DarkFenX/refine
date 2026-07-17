@@ -12,5 +12,5 @@ pub use crate::{
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionItemDmg,
         StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionMass,
     },
-    info::{FitStats, FleetStats, ItemStats},
+    info::{FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw},
 };
