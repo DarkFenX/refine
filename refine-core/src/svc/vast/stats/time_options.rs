@@ -11,15 +11,20 @@ pub enum StatTimeOptions {
     /// duration, depending on context.
     Sim(StatTimeOptionsSim),
 }
+const impl Default for StatTimeOptions {
+    fn default() -> Self {
+        Self::Burst(StatTimeOptionsBurst { .. })
+    }
+}
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct StatTimeOptionsBurst {
     /// Set spool parameters override in the stats request. If not set, uses on-item value or
     /// default value set on solar system.
     pub spool: Option<Spool> = None,
 }
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub struct StatTimeOptionsSim {
     /// Time over which period stats will be considered. If not set or invalid, fetches stats over
     /// infinite period of time.

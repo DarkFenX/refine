@@ -1,6 +1,6 @@
 use crate::{
     PValue,
-    stats::{FleetStats, StatOptionExt, StatOptionMass},
+    stats::{FleetStats, StatOptionExt, StatOptionFitOutCps, StatOptionMass},
 };
 
 #[derive(Default)]
@@ -10,7 +10,7 @@ pub struct GetFleetStatsCmd {
     pub mps: StatOptionExt<bool> = StatOptionExt::Default,
     pub outgoing_nps: StatOptionExt<bool> = StatOptionExt::Default,
     pub outgoing_rps: StatOptionExt<bool> = StatOptionExt::Default,
-    pub outgoing_cps: StatOptionExt<bool> = StatOptionExt::Default,
+    pub outgoing_cps: StatOptionExt<StatOptionFitOutCps> = StatOptionExt::Default,
     pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
 }
 
@@ -20,6 +20,9 @@ pub struct GetFleetStatsCmd {
 impl GetFleetStatsCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         let mut stats = FleetStats { .. };
+        if let Some(options) = self.outgoing_cps.into_enabled(self.default) {
+            stats.outgoing_cps = Some(get_outgoing_cps_stats(core_fleet, options));
+        }
         if let Some(options) = self.mass.into_enabled(self.default) {
             stats.mass = Some(get_mass_stats(core_fleet, options));
         }
@@ -27,11 +30,29 @@ impl GetFleetStatsCmd {
     }
 }
 
+fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitOutCps>) -> Vec<Option<PValue>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match &option.projectee_item_id {
+            Some(projectee_item_id) => {
+                match core_fleet.get_stat_outgoing_cps_applied(option.time_options, projectee_item_id) {
+                    Ok(stat) => stats.push(Some(stat)),
+                    Err(_) => stats.push(None),
+                }
+            }
+            None => {
+                let stat = core_fleet.get_stat_outgoing_cps(option.time_options);
+                stats.push(Some(stat));
+            }
+        }
+    }
+    stats
+}
 fn get_mass_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionMass>) -> Vec<PValue> {
-    let mut results = Vec::with_capacity(options.len());
+    let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         let stat = core_fleet.get_stat_mass(option.affectors);
-        results.push(stat);
+        stats.push(stat);
     }
-    results
+    stats
 }

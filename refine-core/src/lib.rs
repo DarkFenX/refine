@@ -6,6 +6,7 @@
 #![feature(const_cmp)]
 #![feature(const_ops)]
 #![feature(const_convert)]
+#![feature(const_default)]
 #![feature(const_result_trait_fn)]
 
 //! # refine

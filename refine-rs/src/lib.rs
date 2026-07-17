@@ -1,4 +1,6 @@
 #![feature(default_field_values)]
+#![feature(const_trait_impl)]
+#![feature(const_default)]
 
 pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use cmd::{
