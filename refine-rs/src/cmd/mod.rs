@@ -56,9 +56,10 @@ pub use sol::{
     SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 pub use stats::{
-    GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionExt, StatOptionFitDmg,
-    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionItemDmg,
-    StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionMass,
+    GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionEhp, StatOptionErps, StatOptionExt,
+    StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
+    StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
+    StatOptionMass, StatOptionRps,
 };
 pub use try_fit_items::TryFitItemsCmd;
 pub use validate::{ValidateFitCmd, ValidateSolCmd};

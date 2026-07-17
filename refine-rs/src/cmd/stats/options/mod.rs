@@ -4,6 +4,9 @@ pub use opt_mining::{StatOptionFitMining, StatOptionItemMining};
 pub use opt_out_cps::{StatOptionFitOutCps, StatOptionItemOutCps};
 pub use opt_out_nps::{StatOptionFitOutNps, StatOptionItemOutNps};
 pub use opt_out_rps::{StatOptionFitOutRps, StatOptionItemOutRps};
+pub use opt_tank_ehp::StatOptionEhp;
+pub use opt_tank_erps::StatOptionErps;
+pub use opt_tank_rps::StatOptionRps;
 pub use option::{StatOption, StatOptionExt};
 
 mod dmg;
@@ -12,4 +15,7 @@ mod opt_mining;
 mod opt_out_cps;
 mod opt_out_nps;
 mod opt_out_rps;
+mod opt_tank_ehp;
+mod opt_tank_erps;
+mod opt_tank_rps;
 mod option;

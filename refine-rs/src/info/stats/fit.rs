@@ -1,6 +1,10 @@
+use rc::UnitInterval;
+
 use crate::{
-    PValue,
-    stats::{StatDmg, StatMining, StatOutReps, StatResource, StatSlot},
+    PValue, TriStateField,
+    stats::{
+        StatDmg, StatEhp, StatErps, StatHp, StatMining, StatOutReps, StatResists, StatResource, StatRps, StatSlot,
+    },
 };
 
 pub struct FitStats {
@@ -18,20 +22,28 @@ pub struct FitStats {
     pub drone_bandwidth: Option<Vec<StatResource>> = None,
     pub fighter_bay_volume: Option<Vec<StatResource>> = None,
     // Fit slots
-    pub(crate) high_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) mid_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) low_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) turret_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) launcher_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) rig_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) service_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) subsystem_slots: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_drones: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_fighters: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_light_fighters: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_heavy_fighters: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_support_fighters: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_st_light_fighters: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_st_heavy_fighters: Option<Vec<StatSlot>> = None,
-    pub(crate) launched_st_support_fighters: Option<Vec<StatSlot>> = None,
+    pub high_slots: Option<Vec<StatSlot>> = None,
+    pub mid_slots: Option<Vec<StatSlot>> = None,
+    pub low_slots: Option<Vec<StatSlot>> = None,
+    pub turret_slots: Option<Vec<StatSlot>> = None,
+    pub launcher_slots: Option<Vec<StatSlot>> = None,
+    pub rig_slots: Option<Vec<StatSlot>> = None,
+    pub service_slots: Option<Vec<StatSlot>> = None,
+    pub subsystem_slots: Option<Vec<StatSlot>> = None,
+    pub launched_drones: Option<Vec<StatSlot>> = None,
+    pub launched_fighters: Option<Vec<StatSlot>> = None,
+    pub launched_light_fighters: Option<Vec<StatSlot>> = None,
+    pub launched_heavy_fighters: Option<Vec<StatSlot>> = None,
+    pub launched_support_fighters: Option<Vec<StatSlot>> = None,
+    pub launched_st_light_fighters: Option<Vec<StatSlot>> = None,
+    pub launched_st_heavy_fighters: Option<Vec<StatSlot>> = None,
+    pub launched_st_support_fighters: Option<Vec<StatSlot>> = None,
+    // Ship tank
+    pub resists: TriStateField<Vec<StatResists>> = TriStateField::Absent,
+    pub hp: TriStateField<Vec<StatHp>> = TriStateField::Absent,
+    pub ehp: TriStateField<Vec<StatEhp>> = TriStateField::Absent,
+    pub wc_ehp: TriStateField<Vec<StatEhp>> = TriStateField::Absent,
+    pub rps: TriStateField<Vec<StatRps>> = TriStateField::Absent,
+    pub erps: TriStateField<Vec<StatErps>> = TriStateField::Absent,
+    pub breach_resist: TriStateField<Vec<UnitInterval>> = TriStateField::Absent,
 }
