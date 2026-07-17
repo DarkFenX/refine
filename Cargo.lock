@@ -1704,7 +1704,6 @@ name = "refine-example-playground-rs"
 version = "0.1.0"
 dependencies = [
  "chrono",
- "refine-edh",
  "refine-rs",
  "time",
  "tokio",

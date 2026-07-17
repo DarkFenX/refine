@@ -49,6 +49,17 @@ impl PhbHttpEdh {
             }),
         }
     }
+}
+impl fmt::Debug for PhbHttpEdh {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        write!(f, "PhbHttpEdh(\"{}\")", self.base_url)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cacher trait implementation
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl PhbHttpEdh {
     fn get_reader(&self, suffix: &str) -> Result<impl std::io::Read, PhbHttpEdhError> {
         let full_url = self
             .base_url
@@ -149,11 +160,6 @@ impl PhbHttpEdh {
             handle_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader)
                 .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
-    }
-}
-impl fmt::Debug for PhbHttpEdh {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(f, "PhbHttpEdh(\"{}\")", self.base_url)
     }
 }
 impl rc::ed::EveDataHandler for PhbHttpEdh {

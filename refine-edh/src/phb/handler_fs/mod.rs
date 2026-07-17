@@ -1,4 +1,4 @@
-pub use handler::PhbFileEdh;
+pub use handler::PhbFilesystemEdh;
 
 mod address;
 mod error;

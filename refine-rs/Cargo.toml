@@ -8,7 +8,7 @@ edition = "2024"
 
 [dependencies]
 rc = { package = "refine-core", path = "../refine-core" }
-redh = { package = "refine-edh", path = "../refine-edh", features = ["phb-http"] }
+redh = { package = "refine-edh", path = "../refine-edh", optional = true }
 radc = { package = "refine-adc", path = "../refine-adc", optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }
@@ -28,6 +28,14 @@ serde = [
     "dep:serde_json",
     "dep:serde_tuple",
     "dep:serde_with",
+]
+edh-phb-fs = [
+    "dep:redh",
+    "redh/phb-fs",
+]
+edh-phb-http = [
+    "dep:redh",
+    "redh/phb-http",
 ]
 adc-fs = [
     "dep:radc",

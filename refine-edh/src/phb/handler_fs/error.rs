@@ -1,22 +1,22 @@
 use crate::phb::parsing::ReadParseFailReason;
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum PhbFileEdhError {
-    /// File handler is unable to read data.
+pub(super) enum PhbFsEdhError {
+    /// Filesystem handler is unable to read data.
     ///
     /// Includes suffix and text description of failure.
     #[error("{0} reading failed: {1}")]
     ReadFailed(String, String),
-    /// File handler is unable to parse data.
+    /// Filesystem handler is unable to parse data.
     ///
     /// Includes suffix and text description of failure.
     #[error("{0} parsing failed: {1}")]
     ParseFailed(String, String),
-    /// File handler is unable to find client version in metadata.
+    /// Filesystem handler is unable to find client version in metadata.
     #[error("unable to find client build field")]
     NoClientBuild,
 }
-impl PhbFileEdhError {
+impl PhbFsEdhError {
     pub(super) fn from_io(error: std::io::Error, path: String) -> Self {
         Self::ReadFailed(path, error.to_string())
     }

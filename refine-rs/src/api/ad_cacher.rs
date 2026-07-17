@@ -7,7 +7,7 @@
 pub enum AdCaching {
     #[default]
     Disabled,
-    /// Store cache on filesystem, with path to directory
+    /// Store cache on filesystem, with path to directory to write cache to.
     #[cfg(feature = "adc-fs")]
-    Filesystem(std::path::PathBuf),
+    Filesystem { dir: std::path::PathBuf },
 }

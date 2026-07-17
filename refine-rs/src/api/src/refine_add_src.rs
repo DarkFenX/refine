@@ -1,19 +1,14 @@
 use std::sync::Arc;
 
 use crate::{
-    AdCaching, EveDataHandler, Refine,
-    src::{Src, SrcAlias},
+    AdCaching, Refine,
+    src::{EdSource, Src, SrcAlias},
     svc::SrcInnerGuarded,
 };
 
 impl Refine {
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src<A>(
-        &self,
-        alias: A,
-        ed_handler: Box<dyn EveDataHandler + Send>,
-        make_default: bool,
-    ) -> Result<Src<'_>, AddSrcError>
+    pub async fn add_src<A>(&self, alias: A, ed_handler: EdSource, make_default: bool) -> Result<Src<'_>, AddSrcError>
     where
         A: Into<SrcAlias>,
     {
@@ -77,9 +72,9 @@ pub enum AddSrcError {
     #[error("alias \"{0}\" already exists")]
     SrcAliasNotAvailable(SrcAlias),
     #[error("EVE data handler initialization failed: {0}")]
-    EdhInitFailed(String),
+    EdhInitFailed(#[source] Box<dyn std::error::Error + Send + Sync>),
     #[error("source initialization failed: {0}")]
-    SrcInitFailed(String),
+    SrcInitFailed(#[from] rc::src::err::SrcInitError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -87,13 +82,22 @@ pub enum AddSrcError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
     #[cfg(feature = "adc-fs")] alias: &SrcAlias,
-    ed_handler: Box<dyn EveDataHandler>,
+    ed_handler: EdSource,
     ad_caching: AdCaching,
 ) -> Result<rc::Src, AddSrcError> {
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match ad_caching {
         AdCaching::Disabled => None,
         #[cfg(feature = "adc-fs")]
-        AdCaching::Filesystem(path) => Some(Box::new(radc::JsonZfileAdc::new(path, alias.into()))),
+        AdCaching::Filesystem { dir } => Some(Box::new(radc::JsonZfileAdc::new(dir, alias.into()))),
+    };
+    let ed_handler: Box<dyn rc::ed::EveDataHandler> = match ed_handler {
+        #[cfg(feature = "edh-phb-fs")]
+        EdSource::PhobosFilesystem { dir } => Box::new(redh::PhbFilesystemEdh::new(dir)),
+        #[cfg(feature = "edh-phb-http")]
+        EdSource::PhobosHttp { data_version, base_url } => Box::new(
+            redh::PhbHttpEdh::try_new(data_version, base_url)
+                .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
+        ),
     };
     tracing::info!(
         "initializing new source with {:?} and {}",
@@ -103,8 +107,7 @@ fn create_core_src(
             None => "no caching".to_string(),
         }
     );
-    let core_src =
-        rc::Src::new(ed_handler.as_ref(), adc.as_mut()).map_err(|e| AddSrcError::SrcInitFailed(e.to_string()))?;
+    let core_src = rc::Src::new(ed_handler.as_ref(), adc.as_mut())?;
 
     log_reason(&core_src);
     log_warnings(&core_src);

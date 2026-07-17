@@ -11,12 +11,12 @@
 //!
 //! - `full`: Enables both handlers.
 //! - `phb-http`: Enables handler which fetches data over HTTP.
-//! - `phb-file`: Enables handler which reads data from local files.
+//! - `phb-fs`: Enables handler which reads data from filesystem.
 
-#[cfg(feature = "phb-file")]
-pub use phb::PhbFileEdh;
+#[cfg(feature = "phb-fs")]
+pub use phb::PhbFilesystemEdh;
 #[cfg(feature = "phb-http")]
 pub use phb::{PhbHttpEdh, PhbHttpEdhInitError};
 
-#[cfg(any(feature = "phb-http", feature = "phb-file"))]
+#[cfg(any(feature = "phb-http", feature = "phb-fs"))]
 mod phb;

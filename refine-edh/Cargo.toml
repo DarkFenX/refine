@@ -17,6 +17,6 @@ thiserror = ">=2.0.18"
 url = { version = ">=2.5.8", optional = true }
 
 [features]
-full = ["phb-http", "phb-file"]
+full = ["phb-http", "phb-fs"]
 phb-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:struson", "dep:reqwest", "dep:url"]
-phb-file = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:struson"]
+phb-fs = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:struson"]

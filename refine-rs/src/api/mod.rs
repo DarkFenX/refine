@@ -1,4 +1,5 @@
 pub use ad_cacher::AdCaching;
+pub use ed_handler::EdSource;
 pub use fit::{ChangeFitError, Fit, GetFitError};
 pub use fleet::{ChangeFleetError, Fleet, GetFleetError};
 pub use item::{GetItemError, Item, RemoveItemError};
@@ -8,6 +9,7 @@ pub use src::{AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias};
 
 mod ad_cacher;
 mod dev;
+mod ed_handler;
 mod fit;
 mod fleet;
 mod item;

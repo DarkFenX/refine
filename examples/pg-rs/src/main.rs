@@ -1,6 +1,9 @@
 #![allow(warnings, unused)]
 
-use rs::{AdCaching, Refine, src::SrcAlias};
+use rs::{
+    AdCaching, Refine,
+    src::{EdSource, SrcAlias},
+};
 use tracing_subscriber::prelude::*;
 
 fn setup_logger() -> () {
@@ -29,10 +32,12 @@ fn setup_logger() -> () {
 async fn main() {
     setup_logger();
     // Initial setup
-    let mut refine = Refine::new(AdCaching::Filesystem("./cache/".into()), 2, 4);
-    let edh: Box<dyn rs::EveDataHandler + Send> =
-        Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    refine.add_src("tq", edh, true).await.unwrap();
+    let ad_cacher = AdCaching::Filesystem { dir: "./cache/".into() };
+    let mut refine = Refine::new(ad_cacher, 2, 4);
+    let ed_src = EdSource::PhobosFilesystem {
+        dir: "/home/dfx/Desktop/phobos_tq_en-us".into(),
+    };
+    refine.add_src("tq", ed_src, true).await.unwrap();
     // Main part
     let mut sol = refine
         .add_sol(None, rs::AddSolCmd::new().with_sec_zone(rs::SecZone::WSpace))

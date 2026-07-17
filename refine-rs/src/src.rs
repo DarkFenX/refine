@@ -1,5 +1,5 @@
 pub use crate::{
-    api::{Src, SrcAlias},
+    api::{EdSource, Src, SrcAlias},
     info::{SrcInfo, SrcInfoExt, SrcInfoMode, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings},
 };
 

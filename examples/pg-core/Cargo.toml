@@ -6,7 +6,7 @@ edition = "2024"
 
 [dependencies]
 rc = { package = "refine-core", path = "../../refine-core" }
-redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-file"] }
+redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-fs"] }
 radc = { package = "refine-adc", path = "../../refine-adc", features = ["json-zfile"] }
 chrono = ">=0.4.45"
 itertools = ">=0.15.0"

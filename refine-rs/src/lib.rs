@@ -2,6 +2,9 @@
 #![feature(const_trait_impl)]
 #![feature(const_default)]
 
+#[cfg(not(any(feature = "edh-phb-fs", feature = "edh-phb-http")))]
+compile_error!("At least one EVE data handler must be enabled: edh-phb-fs, edh-phb-http");
+
 pub use api::{AdCaching, Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
@@ -46,7 +49,7 @@ pub use rc::{
     FleetId, Index, ItemId, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo,
     ItemTypeId, MinionState, ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op, OptionalReload,
     PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool,
-    UnitInterval, Value, ed::EveDataHandler,
+    UnitInterval, Value,
 };
 pub use util::TriStateField;
 
