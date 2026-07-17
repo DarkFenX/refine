@@ -4,18 +4,10 @@ version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
-[features]
-serde = [
-    "dep:serde",
-    "dep:serde_json",
-    "dep:serde_tuple",
-    "dep:serde_with",
-]
-
 [dependencies]
 rc = { package = "refine-core", path = "../refine-core" }
 redh = { package = "refine-edh", path = "../refine-edh", features = ["phb-http"] }
-radc = { package = "refine-adc", path = "../refine-adc", features = ["json-zfile"] }
+radc = { package = "refine-adc", path = "../refine-adc", optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }
 serde = { version = ">=1.0.228", features = ["derive"], optional = true }
@@ -27,3 +19,15 @@ tokio = { version = ">=1.52.3", features = ["full"] }
 tokio-rayon = ">=2.1.0"
 tracing = ">=0.1.44"
 uuid = { version = ">=1.23.4", features = ["v4", "fast-rng"] }
+
+[features]
+serde = [
+    "dep:serde",
+    "dep:serde_json",
+    "dep:serde_tuple",
+    "dep:serde_with",
+]
+adc-fs = [
+    "dep:radc",
+    "radc/json-zfile",
+]

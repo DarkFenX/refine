@@ -1,18 +1,18 @@
 use std::path::{Path, PathBuf};
 
 pub(super) struct Address {
-    folder: &'static str,
+    dir: &'static str,
     file: &'static str,
 }
 impl Address {
-    pub(super) fn new(folder: &'static str, file: &'static str) -> Self {
-        Self { folder, file }
+    pub(super) fn new(dir: &'static str, file: &'static str) -> Self {
+        Self { dir, file }
     }
     pub(super) fn get_full_path(&self, base: &Path) -> PathBuf {
         base.join(self.get_part_path())
     }
     pub(super) fn get_part_path(&self) -> PathBuf {
-        PathBuf::from(self.folder).join(format!("{}.json", self.file))
+        PathBuf::from(self.dir).join(format!("{}.json", self.file))
     }
     pub(super) fn get_part_str(&self) -> String {
         self.get_part_path()

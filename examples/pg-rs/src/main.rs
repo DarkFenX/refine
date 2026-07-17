@@ -1,7 +1,6 @@
 #![allow(warnings, unused)]
 
-use chrono::Utc;
-use rs::{Refine, SrcAlias};
+use rs::{AdCaching, Refine, src::SrcAlias};
 use tracing_subscriber::prelude::*;
 
 fn setup_logger() -> () {
@@ -30,7 +29,7 @@ fn setup_logger() -> () {
 async fn main() {
     setup_logger();
     // Initial setup
-    let mut refine = Refine::new(Some(String::from("./cache/")), 2, 4);
+    let mut refine = Refine::new(AdCaching::Filesystem("./cache/".into()), 2, 4);
     let edh: Box<dyn rs::EveDataHandler + Send> =
         Box::new(redh::PhbFileEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
     refine.add_src("tq", edh, true).await.unwrap();

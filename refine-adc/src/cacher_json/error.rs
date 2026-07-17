@@ -31,8 +31,8 @@ pub(super) enum JsonZfileAdcFpReadError {
 #[allow(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 pub(super) enum JsonZfileAdcWriteError {
-    #[error("unable to create folder: {0}")]
-    CreateFolderFailed(String),
+    #[error("unable to create directory: {0}")]
+    CreateDirFailed(String),
     #[error("unable to write data: {0}")]
     DataWriteFailed(String),
     #[error("unable to serialize data: {0}")]

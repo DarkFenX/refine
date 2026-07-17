@@ -15,28 +15,28 @@ use crate::VERSION;
 ///
 /// This cacher implements persistent cache store in the form of zstd-compressed JSON.
 pub struct JsonZfileAdc {
-    folder: PathBuf,
+    dir: PathBuf,
     name: String,
 }
 impl JsonZfileAdc {
-    /// Constructs new cacher using path to cache folder and cache file name (without extension).
-    pub fn new(folder: PathBuf, name: String) -> Self {
-        Self { folder, name }
+    /// Constructs new cacher using path to cache directory and cache file name (without extension).
+    pub fn new(dir: PathBuf, name: String) -> Self {
+        Self { dir, name }
     }
     fn get_cache_path(&self) -> PathBuf {
-        self.folder.join(format!("{}.json.zst", self.name))
+        self.dir.join(format!("{}.json.zst", self.name))
     }
     fn get_fingerprint_path(&self) -> PathBuf {
-        self.folder.join(format!("{}_fp.txt", self.name))
+        self.dir.join(format!("{}_fp.txt", self.name))
     }
-    fn create_cache_folder(&self) -> Result<(), JsonZfileAdcWriteError> {
-        match create_dir_all(&self.folder) {
+    fn create_cache_dir(&self) -> Result<(), JsonZfileAdcWriteError> {
+        match create_dir_all(&self.dir) {
             Ok(()) => Ok(()),
             Err(e) => {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
                     io::ErrorKind::AlreadyExists => Ok(()),
-                    _ => Err(JsonZfileAdcWriteError::CreateFolderFailed(e.to_string())),
+                    _ => Err(JsonZfileAdcWriteError::CreateDirFailed(e.to_string())),
                 }
             }
         }
@@ -95,7 +95,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         a_data: &rc::ad::AData,
         fingerprint: rc::ad::AFingerprint,
     ) -> Result<(), Box<dyn std::error::Error>> {
-        self.create_cache_folder()?;
+        self.create_cache_dir()?;
         self.write_data(CData::from_adapted(a_data))?;
         self.write_fingerprint(fingerprint)?;
         Ok(())

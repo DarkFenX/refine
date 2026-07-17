@@ -1,7 +1,7 @@
 use std::sync::Arc;
 
 use crate::{
-    EveDataHandler, Refine,
+    AdCaching, EveDataHandler, Refine,
     src::{Src, SrcAlias},
     svc::SrcInnerGuarded,
 };
@@ -26,12 +26,17 @@ impl Refine {
         self.lock_alias(alias.clone()).await;
         // Create source in a heavy threadpool
         let alias_cloned = alias.clone();
-        let cache_folder_cloned = self.cache_folder.clone();
+        let ad_caching = self.ad_caching.clone();
         let result = self
             .tpool
             .exec_heavy(move || {
-                create_core_src(&alias_cloned, ed_handler, cache_folder_cloned)
-                    .map(|core_src| SrcInnerGuarded::new(alias_cloned, Arc::new(core_src)))
+                create_core_src(
+                    #[cfg(feature = "adc-fs")]
+                    &alias_cloned,
+                    ed_handler,
+                    ad_caching,
+                )
+                .map(|core_src| SrcInnerGuarded::new(alias_cloned, Arc::new(core_src)))
             })
             .await;
         // Write results and unlock alias
@@ -81,13 +86,14 @@ pub enum AddSrcError {
 // Sync processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
-    alias: &SrcAlias,
+    #[cfg(feature = "adc-fs")] alias: &SrcAlias,
     ed_handler: Box<dyn EveDataHandler>,
-    cache_folder: Option<String>,
+    ad_caching: AdCaching,
 ) -> Result<rc::Src, AddSrcError> {
-    let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match cache_folder {
-        Some(cf) => Some(Box::new(radc::JsonZfileAdc::new(cf.into(), alias.into()))),
-        None => None,
+    let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match ad_caching {
+        AdCaching::Disabled => None,
+        #[cfg(feature = "adc-fs")]
+        AdCaching::Filesystem(path) => Some(Box::new(radc::JsonZfileAdc::new(path, alias.into()))),
     };
     tracing::info!(
         "initializing new source with {:?} and {}",

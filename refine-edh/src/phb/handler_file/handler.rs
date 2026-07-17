@@ -16,7 +16,7 @@ pub struct PhbFileEdh {
 impl PhbFileEdh {
     /// Constructs file EVE data handler using provided path.
     ///
-    /// Path should point to the top-level folder of a data dump, e.g. `/phobos_en-us` and not
+    /// Path should point to the top-level directory of a data dump, e.g. `/phobos_en-us` and not
     /// `/phobos_en-us/fsd_built`.
     pub fn new(path: PathBuf) -> Self {
         Self { base_path: path }

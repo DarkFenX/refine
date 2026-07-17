@@ -2,7 +2,7 @@
 #![feature(const_trait_impl)]
 #![feature(const_default)]
 
-pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
+pub use api::{AdCaching, Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
