@@ -10,6 +10,6 @@ redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-fs"
 radc = { package = "refine-adc", path = "../../refine-adc", features = ["json-zfile"] }
 chrono = ">=0.4.45"
 itertools = ">=0.15.0"
-time = { version = ">=0.3.49", features = ["macros"] }
+time = { version = ">=0.3.53", features = ["macros"] }
 tracing = ">=0.1.44"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
