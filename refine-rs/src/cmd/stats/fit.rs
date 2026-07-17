@@ -1,9 +1,9 @@
 use crate::{
-    PValue,
+    PValue, Value,
     stats::{
-        FitStats, StatDmg, StatEhp, StatErps, StatMining, StatOption, StatOptionEhp, StatOptionErps, StatOptionExt,
-        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
-        StatOptionRps, StatOutReps, StatRps,
+        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatMining, StatOption, StatOptionCapBlc, StatOptionCapSim,
+        StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
+        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionRps, StatOutReps, StatRps,
     },
 };
 
@@ -48,6 +48,11 @@ pub struct GetFitStatsCmd {
     pub rps: StatOptionExt<StatOptionRps> = StatOptionExt::Default,
     pub erps: StatOptionExt<StatOptionErps> = StatOptionExt::Default,
     pub breach_resist: StatOption = StatOption::Default,
+    // Ship cap
+    pub cap_amount: StatOption = StatOption::Default,
+    pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
+    pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
+    pub neut_resist: StatOption = StatOption::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -169,6 +174,21 @@ impl GetFitStatsCmd {
         }
         if self.breach_resist.into_enabled(self.default) {
             stats.breach_resist = core_fit.get_stat_breach_resist().into();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Ship cap
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.cap_amount.into_enabled(self.default) {
+            stats.cap_amount = core_fit.get_stat_cap_amount().into();
+        }
+        if let Some(options) = self.cap_balance.into_enabled(self.default) {
+            stats.cap_balance = get_cap_balance_stats(core_fit, options).into();
+        }
+        if let Some(options) = self.cap_sim.into_enabled(self.default) {
+            stats.cap_sim = get_cap_sim_stats(core_fit, options).into();
+        }
+        if self.neut_resist.into_enabled(self.default) {
+            stats.neut_resist = core_fit.get_stat_neut_resist().into();
         }
         stats
     }
@@ -292,4 +312,52 @@ fn get_erps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionErps>) -> Op
         }
     }
     Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Ship cap
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapBlc>) -> Option<Vec<Option<Value>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_fit.get_stat_cap_balance(&option.src_kinds, option.time_options) {
+            Ok(stat) => stats.push(Some(stat)),
+            Err(core_err) => match is_fatal_ship_app(core_err) {
+                true => return None,
+                false => stats.push(None),
+            },
+        }
+    }
+    Some(stats)
+}
+fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapSim>) -> Option<Vec<Option<StatCapSim>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_fit.get_stat_cap_sim(
+            option.cap_perc,
+            option.optional_reloads,
+            option.stagger,
+            option.nosf_projectee_item_id.as_ref(),
+        ) {
+            Ok(stat) => stats.push(Some(stat)),
+            Err(core_err) => match is_fatal_ship_app(core_err) {
+                true => return None,
+                false => stats.push(None),
+            },
+        }
+    }
+    Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn is_fatal_ship_app(core_err: rc::err::FitShipAppliedStatError) -> bool {
+    match core_err {
+        rc::err::FitShipAppliedStatError::NoShip(_)
+        | rc::err::FitShipAppliedStatError::ItemNotLoaded(_)
+        | rc::err::FitShipAppliedStatError::UnsupportedStat(_) => true,
+        rc::err::FitShipAppliedStatError::ProjecteeNotFound(_)
+        | rc::err::FitShipAppliedStatError::ProjecteeCantTakeProjs(_) => false,
+    }
 }

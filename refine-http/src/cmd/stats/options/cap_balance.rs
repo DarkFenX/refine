@@ -120,15 +120,15 @@ impl HStatCapBlcNosfs {
     fn into_core(self) -> rc::stats::StatCapBlcNosfs {
         match self {
             Self::Simple(enabled) => match enabled {
-                true => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions { .. }),
+                true => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfs { .. }),
                 false => rc::stats::StatCapBlcNosfs::Disabled,
             },
             Self::Extended(enabled, options) => match enabled {
                 true => match options.projectee_item_id {
-                    Some(projectee_item_id) => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions {
+                    Some(projectee_item_id) => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfs {
                         projectee_item_id: Some(projectee_item_id),
                     }),
-                    None => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfsOptions { .. }),
+                    None => rc::stats::StatCapBlcNosfs::Enabled(rc::stats::StatCapBlcNosfs { .. }),
                 },
                 false => rc::stats::StatCapBlcNosfs::Disabled,
             },

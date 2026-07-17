@@ -5,9 +5,9 @@ use crate::{
     svc::{
         cycle::CseqMap,
         vast::{
-            StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcRegen, StatCapBlcRegenOptions,
-            StatCapBlcSrcKindsInt, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatNeutItemKinds,
-            StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+            StatCapBlcNosfsOptionsInt, StatCapBlcRegen, StatCapBlcSrcKindsInt, StatDmgItemKinds, StatJumpRange,
+            StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst,
+            StatTimeOptionsSim,
         },
     },
     ud::ItemId,
@@ -38,25 +38,25 @@ impl<'s> FitMut<'s> {
         let neut_item_kinds = StatNeutItemKinds { default: true, .. };
         let rr_item_kinds = StatOutRepItemKinds { default: true, .. };
         let cap_src_kinds_all = StatCapBlcSrcKindsInt {
-            regen: StatCapBlcRegen::Enabled(StatCapBlcRegenOptions { .. }),
+            regen: Some(StatCapBlcRegen::default()),
             cap_injectors: true,
-            nosfs: StatCapBlcNosfsInt::Enabled(StatCapBlcNosfsOptionsInt { .. }),
+            nosfs: Some(StatCapBlcNosfsOptionsInt::default()),
             consumers: true,
             incoming_transfers: true,
             incoming_neuts: true,
         };
         let cap_src_kinds_positive = StatCapBlcSrcKindsInt {
-            regen: StatCapBlcRegen::Enabled(StatCapBlcRegenOptions { .. }),
+            regen: Some(StatCapBlcRegen::default()),
             cap_injectors: true,
-            nosfs: StatCapBlcNosfsInt::Enabled(StatCapBlcNosfsOptionsInt { .. }),
+            nosfs: Some(StatCapBlcNosfsOptionsInt::default()),
             consumers: false,
             incoming_transfers: true,
             incoming_neuts: false,
         };
         let cap_src_kinds_negative = StatCapBlcSrcKindsInt {
-            regen: StatCapBlcRegen::Disabled,
+            regen: None,
             cap_injectors: false,
-            nosfs: StatCapBlcNosfsInt::Disabled,
+            nosfs: None,
             consumers: true,
             incoming_transfers: false,
             incoming_neuts: true,

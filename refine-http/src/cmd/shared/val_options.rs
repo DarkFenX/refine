@@ -247,7 +247,7 @@ impl HValOption {
                 false => rc::val::ValOption::new_disabled(),
             },
             Self::Extended(enabled, known_failures) => match enabled {
-                true => rc::val::ValOption::Enabled(rc::val::ValOptionEnabled {
+                true => rc::val::ValOption::Enabled(rc::val::ValEnabled {
                     kfs: known_failures.clone(),
                 }),
                 false => rc::val::ValOption::new_disabled(),

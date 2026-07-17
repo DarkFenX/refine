@@ -1,15 +1,15 @@
 pub use stats::{
-    StatCapBlcNosfs, StatCapBlcNosfsOptions, StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds, StatCapSim,
-    StatCapSimStagger, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher,
-    StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer,
-    StatInJam, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining,
-    StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists,
-    StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot,
-    StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+    StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg, StatDmgApplied,
+    StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps,
+    StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatJump, StatJumpConduit, StatJumpPassenger,
+    StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds,
+    StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer,
+    StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst,
+    StatTimeOptionsSim,
 };
-pub(crate) use stats::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
+pub(crate) use stats::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 use val_options::ValOptionInt;
-pub use val_options::{ValOption, ValOptionEnabled, ValOptions, ValOptionsSol};
+pub use val_options::{ValEnabled, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
 pub use validators::{

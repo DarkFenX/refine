@@ -15,17 +15,14 @@ use crate::{
     util::RMapVec,
 };
 
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct StatCapSimStagger {
-    pub default: bool,
-    pub exception_item_ids: Vec<ItemId>,
+    pub default: bool = false,
+    pub exception_item_ids: Vec<ItemId> = Vec::new(),
 }
 impl StatCapSimStagger {
     pub fn new(default: bool) -> Self {
-        Self {
-            default,
-            exception_item_ids: Vec::new(),
-        }
+        Self { default, .. }
     }
 }
 

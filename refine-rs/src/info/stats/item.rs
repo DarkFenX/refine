@@ -1,6 +1,6 @@
 pub use crate::{
-    PValue, TriStateField, UnitInterval,
-    stats::{StatDmg, StatEhp, StatErps, StatHp, StatMining, StatOutReps, StatResists, StatRps},
+    PValue, TriStateField, UnitInterval, Value,
+    stats::{StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatMining, StatOutReps, StatResists, StatRps},
 };
 
 pub struct ItemStats {
@@ -18,4 +18,9 @@ pub struct ItemStats {
     pub rps: TriStateField<Vec<StatRps>> = TriStateField::Absent,
     pub erps: TriStateField<Vec<StatErps>> = TriStateField::Absent,
     pub breach_resist: TriStateField<Vec<UnitInterval>> = TriStateField::Absent,
+    // Cap
+    pub cap_amount: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub cap_balance: TriStateField<Vec<Option<Value>>> = TriStateField::Absent,
+    pub cap_sim: TriStateField<Vec<Option<StatCapSim>>> = TriStateField::Absent,
+    pub neut_resist: TriStateField<Vec<UnitInterval>> = TriStateField::Absent,
 }

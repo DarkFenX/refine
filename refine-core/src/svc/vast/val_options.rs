@@ -1,6 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
+    misc::DefOptionExt,
     sol::SolarSystem,
     ud::{FitId, ItemId, UFitId, UItemId},
     util::RSet,
@@ -25,222 +26,214 @@ pub struct ValOptions {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails for any items which are not loaded. Items can become not loaded when they were added
     /// to a fit, but current data source does not have an EVE item with corresponding type ID.
-    pub not_loaded_item: ValOption = ValOption::Default,
+    pub not_loaded_item: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Any EVE item usually can be represented by a single item kind in the lib. For example, an
     /// item from Implant category with "boosterness" attribute is a booster. This validation checks
     /// relations between user-defined item kind and item kind detected for a backing EVE item.
-    pub item_kind: ValOption = ValOption::Default,
+    pub item_kind: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when a direct skill requirement is not satisfied for an item.
-    pub skill_reqs: ValOption = ValOption::Default,
+    pub skill_reqs: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Implants/boosters
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when multiple implants attempt to take the same slot.
-    pub implant_slot_index: ValOption = ValOption::Default,
+    pub implant_slot_index: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when multiple boosters attempt to take the same slot.
-    pub booster_slot_index: ValOption = ValOption::Default,
+    pub booster_slot_index: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Shared between mod-alike items
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when items take more CPU than ship can produce.
-    pub cpu: ValOption = ValOption::Default,
+    pub cpu: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when items take more PG than ship can produce.
-    pub powergrid: ValOption = ValOption::Default,
+    pub powergrid: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// When a fit has any items which can be fit to specific set of ships (identified by ship list
     /// and ship group list), and ship does not fall into it, this validation is failed for those
     /// items.
-    pub ship_limit: ValOption = ValOption::Default,
+    pub ship_limit: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// When an item has limit on how many items from its group can be fitted, and count of fitted
     /// items exceeds that, this validation fails.
-    pub max_group_fitted: ValOption = ValOption::Default,
+    pub max_group_fitted: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// When an item has limit on how many items from its group can be online, and count of online
     /// items exceeds that, this validation fails.
-    pub max_group_online: ValOption = ValOption::Default,
+    pub max_group_online: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// When an item has limit on how many items from its group can be active, and count of active
     /// items exceeds that, this validation fails.
-    pub max_group_active: ValOption = ValOption::Default,
+    pub max_group_active: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// When an item has limit on how many items with the same type ID can be fitted, and count of
     /// fitted items exceeds that, this validation fails.
-    pub max_type_fitted: ValOption = ValOption::Default,
+    pub max_type_fitted: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Checks that structure items are not fit to a ship fit, and ship items are not fit to a
     /// structure fit. Type of fit is defined by its ship kind.
-    pub item_vs_ship_kind: ValOption = ValOption::Default,
+    pub item_vs_ship_kind: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Modules
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// If any of high slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
-    pub high_slot_count: ValOption = ValOption::Default,
+    pub high_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// If any of medium slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
-    pub mid_slot_count: ValOption = ValOption::Default,
+    pub mid_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// If any of low slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
-    pub low_slot_count: ValOption = ValOption::Default,
+    pub low_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// If count of taken turret slots is higher than ship provides, this validation fails for all
     /// modules which need a turret slot.
-    pub turret_slot_count: ValOption = ValOption::Default,
+    pub turret_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// If count of taken launcher slots is higher than ship provides, this validation fails for all
     /// modules which need a launcher slot.
-    pub launcher_slot_count: ValOption = ValOption::Default,
+    pub launcher_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// If any module has state higher than it supports (e.g. active bulkhead), this validation
     /// fails.
-    pub module_state: ValOption = ValOption::Default,
+    pub module_state: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when any capital modules (large-volume modules) are fit to subcapital ships.
-    pub capital_module: ValOption = ValOption::Default,
+    pub capital_module: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any items overloaded, and overload skill requirement is not satisfied.
-    pub overload_skill: ValOption = ValOption::Default,
+    pub overload_skill: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when any item consumes more cap than ship has. Only on-fit items which consume cap are
     /// considered for this, anything else (e.g. incoming neutralizers) are ignored.
-    pub unusable_cap: ValOption = ValOption::Default,
+    pub unusable_cap: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Charges
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Some modules restrict charges which can be loaded into them by group; if charge from
     /// disallowed group is loaded, validation fails for charge.
-    pub charge_group: ValOption = ValOption::Default,
+    pub charge_group: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Some charges restrict into which modules they can be loaded by module group; if charge from
     /// disallowed group is loaded, validation fails for charge.
-    pub charge_parent_group: ValOption = ValOption::Default,
+    pub charge_parent_group: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Some charges and modules have charge size set. When a module specifies it, and has a charge
     /// without size or with mismatching size loaded, this validation fails for the charge.
-    pub charge_size: ValOption = ValOption::Default,
+    pub charge_size: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when volume of a single charge is larger than capacity of a module it's loaded into.
-    pub charge_volume: ValOption = ValOption::Default,
+    pub charge_volume: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Rigs
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more rigs than ship has rig slots.
-    pub rig_slot_count: ValOption = ValOption::Default,
+    pub rig_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when rigs take more calibration than ship can produce.
-    pub calibration: ValOption = ValOption::Default,
+    pub calibration: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Ships and rigs specify rig size; when those mismatch, this validation fails for rigs.
-    pub rig_size: ValOption = ValOption::Default,
+    pub rig_size: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Services
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more services than ship/structure has service slots.
-    pub service_slot_count: ValOption = ValOption::Default,
+    pub service_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // T3 subsystems/stances
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more subsystems than ship has subsystem slots.
-    pub subsystem_slot_count: ValOption = ValOption::Default,
+    pub subsystem_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when multiple subsystems attempt to take the same slot.
-    pub subsystem_slot_index: ValOption = ValOption::Default,
+    pub subsystem_slot_index: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when a ship which can't have a stance but has one.
-    pub ship_stance: ValOption = ValOption::Default,
+    pub ship_stance: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Drones
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when drones take more volume than ship's drone bay has.
-    pub drone_bay_volume: ValOption = ValOption::Default,
+    pub drone_bay_volume: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space drones than ship supports.
-    pub launched_drone_count: ValOption = ValOption::Default,
+    pub launched_drone_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when in-space drones take more bandwidth than ship provides.
-    pub drone_bandwidth: ValOption = ValOption::Default,
+    pub drone_bandwidth: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any drones when ship supports none.
-    pub unlaunchable_drone_slot: ValOption = ValOption::Default,
+    pub unlaunchable_drone_slot: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any drones which take more bandwidth than ship provides.
-    pub unlaunchable_drone_bandwidth: ValOption = ValOption::Default,
+    pub unlaunchable_drone_bandwidth: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Ship can limit which drone groups can be put into its drone bay. If it does, and drones from
     /// mismatching groups are fit, this validation fails for those drones.
-    pub drone_group: ValOption = ValOption::Default,
+    pub drone_group: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Fighters
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fighters take more volume than ship's fighter bay has.
-    pub fighter_bay_volume: ValOption = ValOption::Default,
+    pub fighter_bay_volume: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space fighters than ship supports.
-    pub launched_fighter_count: ValOption = ValOption::Default,
+    pub launched_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space light fighters than ship supports.
-    pub launched_light_fighter_count: ValOption = ValOption::Default,
+    pub launched_light_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space heavy fighters than ship supports.
-    pub launched_heavy_fighter_count: ValOption = ValOption::Default,
+    pub launched_heavy_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space support fighters than ship supports.
-    pub launched_support_fighter_count: ValOption = ValOption::Default,
+    pub launched_support_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space standup light fighters than ship supports.
-    pub launched_st_light_fighter_count: ValOption = ValOption::Default,
+    pub launched_st_light_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space standup heavy fighters than ship supports.
-    pub launched_st_heavy_fighter_count: ValOption = ValOption::Default,
+    pub launched_st_heavy_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has more in-space standup support fighters than ship supports.
-    pub launched_st_support_fighter_count: ValOption = ValOption::Default,
+    pub launched_st_support_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any fighters when ship supports none.
-    pub unlaunchable_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any light fighters when ship supports none.
-    pub unlaunchable_light_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_light_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any heavy fighters when ship supports none.
-    pub unlaunchable_heavy_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_heavy_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any support fighters when ship supports none.
-    pub unlaunchable_support_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_support_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any standup light fighters when ship supports none.
-    pub unlaunchable_st_light_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_st_light_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any standup heavy fighters when ship supports none.
-    pub unlaunchable_st_heavy_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_st_heavy_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has any standup support fighters when ship supports none.
-    pub unlaunchable_st_support_fighter: ValOption = ValOption::Default,
+    pub unlaunchable_st_support_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails for fighter squads which have more fighters than squad supports.
-    pub fighter_squad_size: ValOption = ValOption::Default,
+    pub fighter_squad_size: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, destination side
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when any modules are active but their activation is blocked (e.g. scrambled MWDs).
-    pub activation_blocked: ValOption = ValOption::Default,
+    pub activation_blocked: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when any items have running effects which are stopped by external factors (e.g.
     /// scrambled fighter MWD).
-    pub effect_stopper: ValOption = ValOption::Default,
+    pub effect_stopper: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// When a cloak is active and something blocks it (weather, modules incompatible with cloaking
     /// like sieges, multiple cloaks fit to ship), this validation fails.
-    pub cloaking_blocked: ValOption = ValOption::Default,
+    pub cloaking_blocked: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, source side
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when item defines which targets it can be applied to, but some of its targets do not
     /// belong to it.
-    pub projectee_filter: ValOption = ValOption::Default,
+    pub projectee_filter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when item is marked as assistive, and is applied to a target which is immune to
     /// assistance.
-    pub assist_immunity: ValOption = ValOption::Default,
+    pub assist_immunity: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when item is marked as offensive, and is applied to a target which is immune to
     /// offense.
-    pub offense_immunity: ValOption = ValOption::Default,
+    pub offense_immunity: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when item's effect can be resisted, and is applied to a target which completely
     /// resists its effect.
-    pub resist_immunity: ValOption = ValOption::Default,
+    pub resist_immunity: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Sec zone
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when some items are not allowed to be fitted in current sol security zone.
-    pub sec_zone_fitted: ValOption = ValOption::Default,
+    pub sec_zone_fitted: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when some items are not allowed to be online in current sol security zone.
-    pub sec_zone_online: ValOption = ValOption::Default,
+    pub sec_zone_online: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when some items are not allowed to be active in current sol security zone.
-    pub sec_zone_active: ValOption = ValOption::Default,
+    pub sec_zone_active: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has items which cannot be onlined in current sol security zone.
-    pub sec_zone_unonlineable: ValOption = ValOption::Default,
+    pub sec_zone_unonlineable: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when fit has items which cannot be activated in current sol security zone.
-    pub sec_zone_unactivable: ValOption = ValOption::Default,
+    pub sec_zone_unactivable: DefOptionExt<ValEnabled> = DefOptionExt::Default,
     /// Fails when some effects are not allowed to run in current sol security zone.
-    pub sec_zone_effect: ValOption = ValOption::Default,
-}
-
-/// Controls if validation will be run or not.
-#[derive(Clone)]
-pub enum ValOption {
-    Default,
-    Enabled(ValOptionEnabled),
-    Disabled,
+    pub sec_zone_effect: DefOptionExt<ValEnabled> = DefOptionExt::Default,
 }
 
 #[derive(Clone, Default)]
-pub struct ValOptionEnabled {
+pub struct ValEnabled {
     /// Known failures of a validation.
     ///
     /// Every validation failure is attached to an item. Items listed here will not be returned as
     /// validation failures. If all validation's failures are known, it is passed.
     pub kfs: Vec<ItemId>,
 }
-impl ValOptionEnabled {
+impl ValEnabled {
     pub fn new() -> Self {
         Self { kfs: Vec::default() }
     }
@@ -495,13 +488,15 @@ pub(in crate::svc::vast) enum ValOptionInt {
     Disabled,
 }
 impl ValOptionInt {
-    fn from_pub(pub_opt: &ValOption, default: bool, sol: &SolarSystem) -> Self {
+    fn from_pub(pub_opt: &DefOptionExt<ValEnabled>, default: bool, sol: &SolarSystem) -> Self {
         match pub_opt {
-            ValOption::Default => match default {
+            DefOptionExt::Default => match default {
                 true => Self::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),
                 false => Self::Disabled,
             },
-            ValOption::Enabled(pub_opt) => Self::Enabled(ValOptionEnabledInt {
+            DefOptionExt::Disabled => Self::Disabled,
+            DefOptionExt::Enabled => Self::Enabled(ValOptionEnabledInt { kfs: RSet::new() }),
+            DefOptionExt::EnabledExtended(pub_opt) => Self::Enabled(ValOptionEnabledInt {
                 kfs: pub_opt
                     .kfs
                     .iter()
@@ -509,7 +504,6 @@ impl ValOptionInt {
                     .unique()
                     .collect(),
             }),
-            ValOption::Disabled => Self::Disabled,
         }
     }
 }

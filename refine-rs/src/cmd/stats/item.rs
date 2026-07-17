@@ -1,11 +1,11 @@
 use rc::ItemMutCommon;
 
 use crate::{
-    PValue,
+    PValue, Value,
     stats::{
-        ItemStats, StatDmg, StatEhp, StatErps, StatMining, StatOption, StatOptionEhp, StatOptionErps, StatOptionExt,
-        StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-        StatOptionRps, StatOutReps, StatRps,
+        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatMining, StatOption, StatOptionCapBlc, StatOptionCapSim,
+        StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps,
+        StatOptionItemOutNps, StatOptionItemOutRps, StatOptionRps, StatOutReps, StatRps,
     },
 };
 
@@ -26,6 +26,11 @@ pub struct GetItemStatsCmd {
     pub rps: StatOptionExt<StatOptionRps> = StatOptionExt::Default,
     pub erps: StatOptionExt<StatOptionErps> = StatOptionExt::Default,
     pub breach_resist: StatOption = StatOption::Default,
+    // Cap
+    pub cap_amount: StatOption = StatOption::Default,
+    pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
+    pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
+    pub neut_resist: StatOption = StatOption::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -75,6 +80,21 @@ impl GetItemStatsCmd {
         }
         if self.breach_resist.into_enabled(self.default) {
             stats.breach_resist = core_item.get_stat_breach_resist().into();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Cap
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.cap_amount.into_enabled(self.default) {
+            stats.cap_amount = core_item.get_stat_cap_amount().into();
+        }
+        if let Some(options) = self.cap_balance.into_enabled(self.default) {
+            stats.cap_balance = get_cap_balance_stats(core_item, options).into();
+        }
+        if let Some(options) = self.cap_sim.into_enabled(self.default) {
+            stats.cap_sim = get_cap_sim_stats(core_item, options).into();
+        }
+        if self.neut_resist.into_enabled(self.default) {
+            stats.neut_resist = core_item.get_stat_neut_resist().into();
         }
         stats
     }
@@ -245,6 +265,41 @@ fn get_erps_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionErps>) -> 
         match core_item.get_stat_erps(option.incoming_dps, option.time_options, option.shield_perc) {
             Ok(stat) => stats.push(stat),
             Err(_) => return None,
+        }
+    }
+    Some(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cap
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn get_cap_balance_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionCapBlc>) -> Option<Vec<Option<Value>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_item.get_stat_cap_balance(&option.src_kinds, option.time_options) {
+            Ok(stat) => stats.push(Some(stat)),
+            Err(core_err) => match is_fatal_app(core_err) {
+                true => return None,
+                false => stats.push(None),
+            },
+        }
+    }
+    Some(stats)
+}
+fn get_cap_sim_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionCapSim>) -> Option<Vec<Option<StatCapSim>>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.into_iter() {
+        match core_item.get_stat_cap_sim(
+            option.cap_perc,
+            option.optional_reloads,
+            option.stagger,
+            option.nosf_projectee_item_id.as_ref(),
+        ) {
+            Ok(stat) => stats.push(Some(stat)),
+            Err(core_err) => match is_fatal_app(core_err) {
+                true => return None,
+                false => stats.push(None),
+            },
         }
     }
     Some(stats)

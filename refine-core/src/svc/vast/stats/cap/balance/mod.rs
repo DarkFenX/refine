@@ -1,7 +1,5 @@
-pub use option::{
-    StatCapBlcNosfs, StatCapBlcNosfsOptions, StatCapBlcRegen, StatCapBlcRegenOptions, StatCapBlcSrcKinds,
-};
-pub(crate) use option::{StatCapBlcNosfsInt, StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt};
+pub use option::{StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds};
+pub(crate) use option::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt};
 
 mod option;
 mod vaste_item;
