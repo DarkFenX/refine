@@ -71,6 +71,15 @@ pub struct GetFitStatsCmd {
     pub warp_speed: StatOption = StatOption::Default,
     pub max_warp_range: StatOption = StatOption::Default,
     pub jump: StatOptionExt<StatOptionJump> = StatOptionExt::Default,
+    // Ship misc stats
+    pub drone_control_range: StatOption = StatOption::Default,
+    pub can_warp: StatOption = StatOption::Default,
+    pub can_jump_gate: StatOption = StatOption::Default,
+    pub can_jump_wormhole: StatOption = StatOption::Default,
+    pub can_jump_drive: StatOption = StatOption::Default,
+    pub can_dock_station: StatOption = StatOption::Default,
+    pub can_dock_citadel: StatOption = StatOption::Default,
+    pub can_tether: StatOption = StatOption::Default,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -258,6 +267,33 @@ impl GetFitStatsCmd {
         }
         if let Some(options) = self.jump.into_enabled(self.default) {
             stats.jump = get_jump_stats(core_fit, options).into();
+        }
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        // Ship misc stats
+        ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.drone_control_range.into_enabled(self.default) {
+            stats.drone_control_range = core_fit.get_stat_drone_control_range().into();
+        }
+        if self.can_warp.into_enabled(self.default) {
+            stats.can_warp = core_fit.get_stat_can_warp().into();
+        }
+        if self.can_jump_gate.into_enabled(self.default) {
+            stats.can_jump_gate = core_fit.get_stat_can_jump_gate().into();
+        }
+        if self.can_jump_wormhole.into_enabled(self.default) {
+            stats.can_jump_wormhole = core_fit.get_stat_can_jump_wormhole().into();
+        }
+        if self.can_jump_drive.into_enabled(self.default) {
+            stats.can_jump_drive = core_fit.get_stat_can_jump_drive().into();
+        }
+        if self.can_dock_station.into_enabled(self.default) {
+            stats.can_dock_station = core_fit.get_stat_can_dock_station().into();
+        }
+        if self.can_dock_citadel.into_enabled(self.default) {
+            stats.can_dock_citadel = core_fit.get_stat_can_dock_citadel().into();
+        }
+        if self.can_tether.into_enabled(self.default) {
+            stats.can_tether = core_fit.get_stat_can_tether().into();
         }
         stats
     }

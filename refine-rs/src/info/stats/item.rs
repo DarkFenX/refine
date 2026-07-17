@@ -43,4 +43,13 @@ pub struct ItemStats {
     pub warp_speed: TriStateField<Vec<PValue>> = TriStateField::Absent,
     pub max_warp_range: TriStateField<Vec<PValue>> = TriStateField::Absent,
     pub jump: TriStateField<Vec<StatJump>> = TriStateField::Absent,
+    // Misc
+    pub drone_control_range: TriStateField<Vec<PValue>> = TriStateField::Absent,
+    pub can_warp: TriStateField<Vec<bool>> = TriStateField::Absent,
+    pub can_jump_gate: TriStateField<Vec<bool>> = TriStateField::Absent,
+    pub can_jump_wormhole: TriStateField<Vec<bool>> = TriStateField::Absent,
+    pub can_jump_drive: TriStateField<Vec<bool>> = TriStateField::Absent,
+    pub can_dock_station: TriStateField<Vec<bool>> = TriStateField::Absent,
+    pub can_dock_citadel: TriStateField<Vec<bool>> = TriStateField::Absent,
+    pub can_tether: TriStateField<Vec<bool>> = TriStateField::Absent,
 }
