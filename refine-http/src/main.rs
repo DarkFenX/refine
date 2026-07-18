@@ -1,6 +1,4 @@
-#![feature(default_field_values)]
-
-use std::{env, sync::Arc, time::Duration};
+use std::{env, time::Duration};
 
 use axum::{
     Router, ServiceExt,
@@ -13,16 +11,16 @@ use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 use tower_request_id::{RequestId, RequestIdLayer};
 use tracing::Span;
 
-use crate::{settings::HSettings, state::HInnerAppState};
+use crate::{settings::HSettings, state::HAppState};
 
-mod bridge;
-mod cmd;
-mod err;
-mod handlers;
-mod info;
+// mod bridge;
+// mod cmd;
+// mod err;
+// mod handlers;
+// mod info;
 mod logging;
 mod settings;
-mod shared;
+// mod shared;
 mod state;
 mod util;
 
@@ -32,54 +30,54 @@ async fn main() {
     let config_path = env::args().nth(1);
     let settings = HSettings::new(config_path);
     // Logging
-    let _log_guard = logging::setup(settings.log.folder, &settings.log.level, settings.log.rotate);
+    let _log_guard = logging::setup(settings.log.dir, &settings.log.level, settings.log.rotate);
     // Shared state
-    let state = Arc::new(HInnerAppState::new(
-        settings.cache.folder,
+    let state = HAppState::new(
         settings.server.standard_threads,
         settings.server.heavy_threads,
-    ));
+        settings.cache.dir.into(),
+    );
 
     // Cleanup task
     let state_cleanup = state.clone();
     tokio::spawn(async move {
         state_cleanup
-            .sol_mgr
-            .periodic_cleanup(settings.server.solsys_cleanup_interval, settings.server.solsys_lifetime)
+            .get_refine()
+            .setup_periodic_cleanup(settings.server.solsys_cleanup_interval, settings.server.solsys_lifetime)
             .await
     });
 
     // HTTP routing
     let router = Router::new()
-        .route("/", get(handlers::root))
-        .route("/src/{alias}", post(handlers::create_source))
-        .route("/src/{alias}", delete(handlers::delete_source))
-        .route("/sol", post(handlers::create_sol))
-        .route("/sol/{sol_id}", get(handlers::get_sol))
-        .route("/sol/{sol_id}", patch(handlers::change_sol))
-        .route("/sol/{sol_id}", delete(handlers::delete_sol))
-        .route("/sol/{sol_id}/src", patch(handlers::change_sol_src))
-        .route("/sol/{sol_id}/fit", post(handlers::create_fit))
-        .route("/sol/{sol_id}/fit/{fit_id}", get(handlers::get_fit))
-        .route("/sol/{sol_id}/fit/{fit_id}", patch(handlers::change_fit))
-        .route("/sol/{sol_id}/fit/{fit_id}", delete(handlers::delete_fit))
-        .route("/sol/{sol_id}/fit/{fit_id}/stats", post(handlers::get_fit_stats))
-        .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
-        .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::try_fit_items))
-        .route("/sol/{sol_id}/item", post(handlers::create_item))
-        .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
-        .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))
-        .route("/sol/{sol_id}/item/{item_id}", delete(handlers::delete_item))
-        .route("/sol/{sol_id}/item/{item_id}/stats", post(handlers::get_item_stats))
-        .route("/sol/{sol_id}/fleet", post(handlers::create_fleet))
-        .route("/sol/{sol_id}/fleet/{fleet_id}", get(handlers::get_fleet))
-        .route("/sol/{sol_id}/fleet/{fleet_id}", patch(handlers::change_fleet))
-        .route("/sol/{sol_id}/fleet/{fleet_id}", delete(handlers::delete_fleet))
-        .route("/sol/{sol_id}/fleet/{fleet_id}/stats", post(handlers::get_fleet_stats))
-        .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
+        // .route("/", get(handlers::root))
+        // .route("/src/{alias}", post(handlers::create_source))
+        // .route("/src/{alias}", delete(handlers::delete_source))
+        // .route("/sol", post(handlers::create_sol))
+        // .route("/sol/{sol_id}", get(handlers::get_sol))
+        // .route("/sol/{sol_id}", patch(handlers::change_sol))
+        // .route("/sol/{sol_id}", delete(handlers::delete_sol))
+        // .route("/sol/{sol_id}/src", patch(handlers::change_sol_src))
+        // .route("/sol/{sol_id}/fit", post(handlers::create_fit))
+        // .route("/sol/{sol_id}/fit/{fit_id}", get(handlers::get_fit))
+        // .route("/sol/{sol_id}/fit/{fit_id}", patch(handlers::change_fit))
+        // .route("/sol/{sol_id}/fit/{fit_id}", delete(handlers::delete_fit))
+        // .route("/sol/{sol_id}/fit/{fit_id}/stats", post(handlers::get_fit_stats))
+        // .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
+        // .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::try_fit_items))
+        // .route("/sol/{sol_id}/item", post(handlers::create_item))
+        // .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
+        // .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))
+        // .route("/sol/{sol_id}/item/{item_id}", delete(handlers::delete_item))
+        // .route("/sol/{sol_id}/item/{item_id}/stats", post(handlers::get_item_stats))
+        // .route("/sol/{sol_id}/fleet", post(handlers::create_fleet))
+        // .route("/sol/{sol_id}/fleet/{fleet_id}", get(handlers::get_fleet))
+        // .route("/sol/{sol_id}/fleet/{fleet_id}", patch(handlers::change_fleet))
+        // .route("/sol/{sol_id}/fleet/{fleet_id}", delete(handlers::delete_fleet))
+        // .route("/sol/{sol_id}/fleet/{fleet_id}/stats", post(handlers::get_fleet_stats))
+        // .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
         // Development-related handlers
-        .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
-        .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
+        // .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
+        // .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
         .with_state(state);
     // Middleware
     let url_mid = NormalizePathLayer::trim_trailing_slash();

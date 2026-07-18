@@ -32,15 +32,15 @@ def pytest_addoption(parser: pytest.Parser) -> None:
 
 
 @pytest.fixture(scope='session')
-def run_tmp_folder(tmp_path_factory: pytest.TempPathFactory) -> Path:
+def run_tmp_dir(tmp_path_factory: pytest.TempPathFactory) -> Path:
     return tmp_path_factory.mktemp('refine_test')
 
 
 @pytest.fixture(scope='session')
-def run_config(run_tmp_folder: Path) -> ConfigInfo:
-    config_path = run_tmp_folder / 'config.toml'
+def run_config(run_tmp_dir: Path) -> ConfigInfo:
+    config_path = run_tmp_dir / 'config.toml'
     port = next_free_port(start_port=8000)
-    return build_config(config_path=config_path, port=port, log_folder=run_tmp_folder)
+    return build_config(config_path=config_path, port=port, log_dir=run_tmp_dir)
 
 
 @pytest.fixture(scope='session', autouse=True)
@@ -90,8 +90,8 @@ def consts():  # noqa: ANN201
 
 
 @pytest.fixture(scope='session')
-def log_reader(run_tmp_folder: Path) -> Generator[LogReader]:
-    log_path = run_tmp_folder / 'refine-http.log'
+def log_reader(run_tmp_dir: Path) -> Generator[LogReader]:
+    log_path = run_tmp_dir / 'refine-http.log'
     reader = LogReader(path=log_path)
     reader.run()
     yield reader

@@ -21,7 +21,7 @@ from fw.api import (
 if typing.TYPE_CHECKING:
     from fw.api.types.item import Item
 
-SCRIPT_FOLDER_PATH = Path(__file__).resolve().absolute().parent
+SCRIPT_DIR_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
 
 
@@ -468,12 +468,12 @@ def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
 
 
 def get_skill_type_ids() -> list[int]:
-    with (SCRIPT_FOLDER_PATH / 'skill_type_ids.txt').open() as f:
+    with (SCRIPT_DIR_PATH / 'skill_type_ids.txt').open() as f:
         return [int(line) for line in f.readlines() if line]
 
 
 def get_try_fit_type_ids() -> list[int]:
-    with (SCRIPT_FOLDER_PATH / 'try_fit_type_ids.txt').open() as f:
+    with (SCRIPT_DIR_PATH / 'try_fit_type_ids.txt').open() as f:
         return [int(line) for line in f.readlines() if line]
 
 

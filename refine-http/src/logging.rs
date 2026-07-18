@@ -9,7 +9,7 @@ use tracing_subscriber::{
     prelude::*,
 };
 
-pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option<WorkerGuard> {
+pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) -> Option<WorkerGuard> {
     let time_format_full = format_description!(
         version = 2,
         r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
@@ -23,8 +23,8 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
         .pretty();
     // We log into file only if we've been given path and appropriate log level
     let file_max_level_res = Level::from_str(level);
-    let (file_log, file_guard) = match (folder, file_max_level_res) {
-        (Some(folder_path), Ok(max_level)) => {
+    let (file_log, file_guard) = match (dir, file_max_level_res) {
+        (Some(dir), Ok(max_level)) => {
             let (rotation, time_format) = match rotate {
                 true => (
                     tracing_appender::rolling::Rotation::DAILY,
@@ -32,7 +32,7 @@ pub(crate) fn setup(folder: Option<String>, level: &str, rotate: bool) -> Option
                 ),
                 false => (tracing_appender::rolling::Rotation::NEVER, time_format_full),
             };
-            let appender = RollingFileAppender::new(rotation, folder_path, "refine-http.log");
+            let appender = RollingFileAppender::new(rotation, dir, "refine-http.log");
             let (file_writer, file_guard) = tracing_appender::non_blocking(appender);
             let file_log = layer()
                 .with_writer(file_writer.with_max_level(max_level))

@@ -3,20 +3,20 @@ use serde::Deserialize;
 #[derive(Debug, Deserialize)]
 pub(crate) struct HSetServer {
     pub(crate) port: u16,
-    pub(crate) solsys_lifetime: u64,
-    pub(crate) solsys_cleanup_interval: u64,
+    pub(crate) solsys_lifetime: std::time::Duration,
+    pub(crate) solsys_cleanup_interval: std::time::Duration,
     pub(crate) standard_threads: usize,
     pub(crate) heavy_threads: usize,
 }
 
 #[derive(Debug, Deserialize)]
 pub(crate) struct HSetCache {
-    pub(crate) folder: Option<String>,
+    pub(crate) dir: Option<std::path::PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]
 pub(crate) struct HSetLog {
-    pub(crate) folder: Option<String>,
+    pub(crate) dir: Option<std::path::PathBuf>,
     pub(crate) level: String,
     pub(crate) rotate: bool,
 }

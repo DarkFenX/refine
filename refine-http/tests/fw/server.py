@@ -30,7 +30,7 @@ def build_server(*, proj_root: Path, optimized: bool) -> None:
         check=True)
 
 
-def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInfo:
+def build_config(*, config_path: Path, port: int, log_dir: Path) -> ConfigInfo:
     contents = [
         '[server]',
         f'port = {port}',
@@ -39,7 +39,7 @@ def build_config(*, config_path: Path, port: int, log_folder: Path) -> ConfigInf
         'standard_threads = 2',
         'heavy_threads = 4',
         '[log]',
-        f'folder = "{log_folder}"',
+        f'dir = "{log_dir}"',
         'level = "debug"',
         'rotate = false']
     with config_path.open(mode='w', encoding='utf-8') as f:

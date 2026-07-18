@@ -2,19 +2,33 @@ use std::sync::Arc;
 
 use rs::Refine;
 
-use crate::bridge::HSolMgr;
-
-pub(crate) struct HInnerAppState {
-    pub(crate) refine: Refine,
-    pub(crate) sol_mgr: HSolMgr,
-}
-impl HInnerAppState {
-    pub(crate) fn new(cache_folder: Option<String>, standard_threads: usize, heavy_threads: usize) -> Self {
-        Self {
-            refine: Refine::new(cache_folder, standard_threads, heavy_threads),
-            sol_mgr: HSolMgr::new(),
-        }
+#[derive(Clone)]
+pub(crate) struct HAppState(Arc<HInnerAppState>);
+impl HAppState {
+    pub(crate) fn new(standard_threads: usize, heavy_threads: usize, cache_dir: Option<std::path::PathBuf>) -> Self {
+        Self(Arc::new(HInnerAppState::new(
+            standard_threads,
+            heavy_threads,
+            cache_dir,
+        )))
+    }
+    pub(crate) fn get_refine(&self) -> &Refine {
+        &self.0.refine
     }
 }
 
-pub(crate) type HAppState = Arc<HInnerAppState>;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Inner
+////////////////////////////////////////////////////////////////////////////////////////////////////
+struct HInnerAppState {
+    refine: Refine,
+}
+impl HInnerAppState {
+    fn new(standard_threads: usize, heavy_threads: usize, cache_dir: Option<std::path::PathBuf>) -> Self {
+        let refine = match cache_dir {
+            Some(cache_dir) => Refine::with_fs_adc(standard_threads, heavy_threads, cache_dir),
+            None => Refine::new(standard_threads, heavy_threads),
+        };
+        HInnerAppState { refine }
+    }
+}
