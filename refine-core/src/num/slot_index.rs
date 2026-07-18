@@ -1,5 +1,6 @@
 use crate::util::round_f64_to_i32;
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, derive_more::Display)]
 pub struct SlotIndex(i32);
 impl SlotIndex {

@@ -5,6 +5,7 @@ use crate::num::Value;
 const SS_MIN: f64 = -10.0;
 const SS_MAX: f64 = 5.0;
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct FitSecStatus(f64);
 impl FitSecStatus {

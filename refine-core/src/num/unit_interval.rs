@@ -2,6 +2,7 @@ use ordered_float::OrderedFloat;
 
 use crate::num::{PValue, Value};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct UnitInterval(f64);
 impl UnitInterval {

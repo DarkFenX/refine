@@ -9,6 +9,7 @@ use crate::{
 };
 
 /// Positive float value.
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct PValue(f64);
 impl PValue {

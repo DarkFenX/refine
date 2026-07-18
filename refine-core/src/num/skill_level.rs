@@ -1,5 +1,6 @@
 use crate::{ad::ASkillLevel, num::Value};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd, derive_more::Display)]
 pub struct SkillLevel(u8);
 impl SkillLevel {
