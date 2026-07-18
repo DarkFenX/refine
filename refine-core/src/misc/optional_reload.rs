@@ -1,5 +1,6 @@
 /// Controls what happens when modules with optional reloads (AAR, ASB) do when they run out of
 /// charges.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum OptionalReload {
     /// No reload - keep running after running out of charges.

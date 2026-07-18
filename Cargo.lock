@@ -1624,6 +1624,7 @@ dependencies = [
  "num-integer",
  "ordered-float",
  "rustc-hash",
+ "serde",
  "slab",
  "smallvec",
  "thiserror",
