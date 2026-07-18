@@ -58,12 +58,12 @@ impl UItemBaseMutable {
                 // If base item is available, return base item, but with ineffective
                 // user-defined mutations
                 Some(base_r_item) => Self {
-                    base: UItemBase::base_new_with_r_item(item_id, base_r_item.clone(), state),
+                    base: UItemBase::base_with_r_item(item_id, base_r_item.clone(), state),
                     mutation: Some(item_mutation_data),
                 },
                 // No base item - unloaded item with ineffective user-defined mutations
                 None => Self {
-                    base: UItemBase::base_new_with_type_aid_not_loaded(item_id, type_aid, state),
+                    base: UItemBase::base_with_type_aid_not_loaded(item_id, type_aid, state),
                     mutation: Some(item_mutation_data),
                 },
             };
@@ -73,7 +73,7 @@ impl UItemBaseMutable {
         let merged_effects = merge_effects(mutated_r_item, &merged_attrs, r_data);
         let item_axt = make_axt(mutated_r_item, &merged_attrs, merged_effects.as_ref(), r_data);
         apply_attr_mutations(&mut merged_attrs, mutator, &item_mutation_data.attr_rolls, r_data);
-        let regular_base = UItemBase::base_new_with_r_item(item_id, mutated_r_item.clone(), state);
+        let regular_base = UItemBase::base_with_r_item(item_id, mutated_r_item.clone(), state);
         item_mutation_data.cache = Some(ItemMutationDataCache {
             base_type_aid: type_aid,
             mutator: mutator.clone(),
@@ -503,7 +503,7 @@ pub(crate) struct ItemMutationData {
     cache: Option<ItemMutationDataCache>,
 }
 impl ItemMutationData {
-    fn new_with_attrs(mutator_type_aid: AItemId, attr_rolls: RMap<AAttrId, UnitInterval>) -> Self {
+    fn with_attrs(mutator_type_aid: AItemId, attr_rolls: RMap<AAttrId, UnitInterval>) -> Self {
         Self {
             mutator_type_aid,
             attr_rolls,
@@ -542,7 +542,7 @@ impl ItemMutationDataCache {
 }
 
 fn convert_request_to_data(mutation_request: UItemMutationRequest) -> ItemMutationData {
-    ItemMutationData::new_with_attrs(
+    ItemMutationData::with_attrs(
         mutation_request.mutator_type_aid,
         mutation_request
             .attrs

@@ -21,7 +21,7 @@ pub(super) fn proj_buff_mod(
         AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
             match is_item_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 true => {
-                    let cmod = CtxModifier::new_with_item(rmod, projectee_uid);
+                    let cmod = CtxModifier::with_item(rmod, projectee_uid);
                     add_cmod(&mut reg_cmods.direct, projectee_uid, cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.add_entry(projectee_uid, rmod);
                     Some(cmod)
@@ -36,7 +36,7 @@ pub(super) fn proj_buff_mod(
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() => {
                     let fit_uid = projectee_ship.get_fit_uid();
-                    let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+                    let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                     let key = (fit_uid, loc_kind);
                     add_cmod(&mut reg_cmods.loc, key, cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.add_entry(projectee_uid, rmod);
@@ -52,7 +52,7 @@ pub(super) fn proj_buff_mod(
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() => {
                     let fit_uid = projectee_ship.get_fit_uid();
-                    let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+                    let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                     let key = (fit_uid, loc_kind, item_grp_id);
                     add_cmod(&mut reg_cmods.loc_grp, key, cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.add_entry(projectee_uid, rmod);
@@ -68,7 +68,7 @@ pub(super) fn proj_buff_mod(
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() => {
                     let fit_uid = projectee_ship.get_fit_uid();
-                    let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+                    let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                     let key = (fit_uid, loc_kind, srq_type_aid);
                     add_cmod(&mut reg_cmods.loc_srq, key, cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.add_entry(projectee_uid, rmod);
@@ -96,7 +96,7 @@ pub(super) fn unproj_buff_mod(
         AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
             match is_item_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 true => {
-                    let cmod = CtxModifier::new_with_item(rmod, projectee_uid);
+                    let cmod = CtxModifier::with_item(rmod, projectee_uid);
                     remove_cmod(&mut reg_cmods.direct, projectee_uid, &cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.remove_entry(projectee_uid, &rmod);
                     Some(cmod)
@@ -111,7 +111,7 @@ pub(super) fn unproj_buff_mod(
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() => {
                     let fit_uid = projectee_ship.get_fit_uid();
-                    let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+                    let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                     let key = (fit_uid, loc_kind);
                     remove_cmod(&mut reg_cmods.loc, key, &cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.remove_entry(projectee_uid, &rmod);
@@ -127,7 +127,7 @@ pub(super) fn unproj_buff_mod(
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() => {
                     let fit_uid = projectee_ship.get_fit_uid();
-                    let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+                    let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                     let key = (fit_uid, loc_kind, item_grp_id);
                     remove_cmod(&mut reg_cmods.loc_grp, key, &cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.remove_entry(projectee_uid, &rmod);
@@ -143,7 +143,7 @@ pub(super) fn unproj_buff_mod(
             match is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) {
                 Some(projectee_ship) if let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() => {
                     let fit_uid = projectee_ship.get_fit_uid();
-                    let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+                    let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                     let key = (fit_uid, loc_kind, srq_type_aid);
                     remove_cmod(&mut reg_cmods.loc_srq, key, &cmod, &mut reg_cmods.by_aspec);
                     reg_proj_status.active.remove_entry(projectee_uid, &rmod);
@@ -164,7 +164,7 @@ pub(super) fn query_buff_mod(rmod: RawModifier, projectee_uid: UItemId, projecte
         AffecteeFilter::Direct(Location::ItemList(item_list_rid))
             if is_item_buffable_by_proj_item_list(projectee_item, &item_list_rid) =>
         {
-            let cmod = CtxModifier::new_with_item(rmod, projectee_uid);
+            let cmod = CtxModifier::with_item(rmod, projectee_uid);
             Some(cmod)
         }
         AffecteeFilter::Loc(Location::ItemList(item_list_rid))
@@ -173,7 +173,7 @@ pub(super) fn query_buff_mod(rmod: RawModifier, projectee_uid: UItemId, projecte
             if let Some(projectee_ship) = is_ship_buffable_by_proj_item_list(projectee_item, &item_list_rid) =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
             Some(cmod)
         }
         _ => None,
@@ -195,7 +195,7 @@ pub(super) fn load_affectee_for_proj_buff(
             if let Some(proj_buff_item_lists) = projectee_item.get_proj_buff_item_lists()
                 && proj_buff_item_lists.contains(&item_list_rid) =>
         {
-            let cmod = CtxModifier::new_with_item(*rmod, projectee_uid);
+            let cmod = CtxModifier::with_item(*rmod, projectee_uid);
             add_cmod(&mut reg_cmods.direct, projectee_uid, cmod, &mut reg_cmods.by_aspec);
             true
         }
@@ -206,7 +206,7 @@ pub(super) fn load_affectee_for_proj_buff(
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, projectee_uid);
             let key = (fit_uid, loc_kind);
             add_cmod(&mut reg_cmods.loc, key, cmod, &mut reg_cmods.by_aspec);
             true
@@ -218,7 +218,7 @@ pub(super) fn load_affectee_for_proj_buff(
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, projectee_uid);
             let key = (fit_uid, loc_kind, item_grp_id);
             add_cmod(&mut reg_cmods.loc_grp, key, cmod, &mut reg_cmods.by_aspec);
             true
@@ -230,7 +230,7 @@ pub(super) fn load_affectee_for_proj_buff(
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, projectee_uid);
             let key = (fit_uid, loc_kind, srq_type_aid);
             add_cmod(&mut reg_cmods.loc_srq, key, cmod, &mut reg_cmods.by_aspec);
             true
@@ -249,7 +249,7 @@ pub(super) fn unload_affectee_for_proj_buff(
             if let Some(proj_buff_item_lists) = projectee_item.get_proj_buff_item_lists()
                 && proj_buff_item_lists.contains(&item_list_rid) =>
         {
-            let cmod = CtxModifier::new_with_item(*rmod, projectee_uid);
+            let cmod = CtxModifier::with_item(*rmod, projectee_uid);
             remove_cmod(&mut reg_cmods.direct, projectee_uid, &cmod, &mut reg_cmods.by_aspec);
             true
         }
@@ -260,7 +260,7 @@ pub(super) fn unload_affectee_for_proj_buff(
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, projectee_uid);
             let key = (fit_uid, loc_kind);
             remove_cmod(&mut reg_cmods.loc, key, &cmod, &mut reg_cmods.by_aspec);
             true
@@ -272,7 +272,7 @@ pub(super) fn unload_affectee_for_proj_buff(
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, projectee_uid);
             let key = (fit_uid, loc_kind, item_grp_id);
             remove_cmod(&mut reg_cmods.loc_grp, key, &cmod, &mut reg_cmods.by_aspec);
             true
@@ -284,7 +284,7 @@ pub(super) fn unload_affectee_for_proj_buff(
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
-            let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, projectee_uid);
+            let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, projectee_uid);
             let key = (fit_uid, loc_kind, srq_type_aid);
             remove_cmod(&mut reg_cmods.loc_srq, key, &cmod, &mut reg_cmods.by_aspec);
             true

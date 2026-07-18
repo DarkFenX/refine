@@ -1,9 +1,9 @@
 use std::sync::Arc;
 
 use crate::{
-    AdCaching, Refine,
+    Refine,
     src::{EdSource, Src, SrcAlias},
-    svc::SrcInnerGuarded,
+    svc::{AdCaching, SrcInnerGuarded},
 };
 
 impl Refine {

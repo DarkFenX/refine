@@ -40,7 +40,7 @@ impl UItemBase {
             }),
         }
     }
-    pub(in crate::ud::item::base) fn base_new_with_type_aid_not_loaded(
+    pub(in crate::ud::item::base) fn base_with_type_aid_not_loaded(
         item_id: ItemId,
         type_aid: AItemId,
         state: RState,
@@ -53,7 +53,7 @@ impl UItemBase {
             cache: None,
         }
     }
-    pub(in crate::ud::item::base) fn base_new_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
+    pub(in crate::ud::item::base) fn base_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
         Self {
             item_id,
             type_aid: r_item.aid,

@@ -1,7 +1,7 @@
 #![allow(warnings, unused)]
 
 use rs::{
-    AdCaching, Refine,
+    Refine,
     src::{EdSource, SrcAlias},
 };
 use tracing_subscriber::prelude::*;
@@ -32,8 +32,7 @@ fn setup_logger() -> () {
 async fn main() {
     setup_logger();
     // Initial setup
-    let ad_cacher = AdCaching::Filesystem { dir: "./cache/".into() };
-    let mut refine = Refine::new(ad_cacher, 2, 4);
+    let mut refine = Refine::with_fs_adc(2, 4, "./cache/".into());
     let ed_src = EdSource::PhobosFilesystem {
         dir: "/home/dfx/Desktop/phobos_tq_en-us".into(),
     };

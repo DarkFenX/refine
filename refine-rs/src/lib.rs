@@ -2,10 +2,7 @@
 #![feature(const_trait_impl)]
 #![feature(const_default)]
 
-#[cfg(not(any(feature = "edh-phb-fs", feature = "edh-phb-http")))]
-compile_error!("At least one EVE data handler must be enabled: edh-phb-fs, edh-phb-http");
-
-pub use api::{AdCaching, Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
+pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,

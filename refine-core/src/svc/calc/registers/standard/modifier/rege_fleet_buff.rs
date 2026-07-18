@@ -202,7 +202,7 @@ fn apply_fleet_mod_with_fit_uid(
     match rmod.affectee_filter {
         AffecteeFilter::Direct(Location::ItemList(item_list_rid)) => {
             if let Some((ship_uid, _)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid) {
-                let cmod = CtxModifier::new_with_item(rmod, ship_uid);
+                let cmod = CtxModifier::with_item(rmod, ship_uid);
                 add_cmod(&mut reg_cmods.direct, ship_uid, cmod, &mut reg_cmods.by_aspec);
                 reuse_cmods.push(cmod);
             }
@@ -212,7 +212,7 @@ fn apply_fleet_mod_with_fit_uid(
             if let Some((ship_uid, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid)
                 && let Ok(loc_kind) = ship.get_ship_kind().try_into()
             {
-                let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind);
                 add_cmod(&mut reg_cmods.loc, key, cmod, &mut reg_cmods.by_aspec);
                 reuse_cmods.push(cmod);
@@ -223,7 +223,7 @@ fn apply_fleet_mod_with_fit_uid(
             if let Some((ship_uid, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid)
                 && let Ok(loc_kind) = ship.get_ship_kind().try_into()
             {
-                let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, item_grp_id);
                 add_cmod(&mut reg_cmods.loc_grp, key, cmod, &mut reg_cmods.by_aspec);
                 reuse_cmods.push(cmod);
@@ -234,7 +234,7 @@ fn apply_fleet_mod_with_fit_uid(
             if let Some((ship_uid, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid)
                 && let Ok(loc_kind) = ship.get_ship_kind().try_into()
             {
-                let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, srq_type_aid);
                 add_cmod(&mut reg_cmods.loc_srq, key, cmod, &mut reg_cmods.by_aspec);
                 reuse_cmods.push(cmod);
@@ -257,7 +257,7 @@ fn unapply_fleet_mod_with_fit_uid(
         AffecteeFilter::Direct(Location::ItemList(item_list_rid))
             if let Some((ship_uid, _)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid) =>
         {
-            let cmod = CtxModifier::new_with_item(rmod, ship_uid);
+            let cmod = CtxModifier::with_item(rmod, ship_uid);
             remove_cmod(&mut reg_cmods.direct, ship_uid, &cmod, &mut reg_cmods.by_aspec);
             reuse_cmods.push(cmod);
         }
@@ -265,7 +265,7 @@ fn unapply_fleet_mod_with_fit_uid(
             if let Some((ship_uid, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid)
                 && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
         {
-            let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
+            let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
             let key = (fit_uid, loc_kind);
             remove_cmod(&mut reg_cmods.loc, key, &cmod, &mut reg_cmods.by_aspec);
             reuse_cmods.push(cmod);
@@ -274,7 +274,7 @@ fn unapply_fleet_mod_with_fit_uid(
             if let Some((ship_uid, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid)
                 && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
         {
-            let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
+            let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
             let key = (fit_uid, loc_kind, item_grp_id);
             remove_cmod(&mut reg_cmods.loc_grp, key, &cmod, &mut reg_cmods.by_aspec);
             reuse_cmods.push(cmod);
@@ -283,7 +283,7 @@ fn unapply_fleet_mod_with_fit_uid(
             if let Some((ship_uid, ship)) = is_fit_ship_on_fleet_item_list(ctx, fit_uid, &item_list_rid)
                 && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
         {
-            let cmod = CtxModifier::new_with_fit_item(rmod, fit_uid, ship_uid);
+            let cmod = CtxModifier::with_fit_item(rmod, fit_uid, ship_uid);
             let key = (fit_uid, loc_kind, srq_type_aid);
             remove_cmod(&mut reg_cmods.loc_srq, key, &cmod, &mut reg_cmods.by_aspec);
             reuse_cmods.push(cmod);
@@ -307,14 +307,14 @@ fn apply_fleet_mods_to_ship_fit<'a>(
             AffecteeFilter::Direct(Location::ItemList(item_list_rid))
                 if is_ship_on_fleet_item_list(ship, &item_list_rid) =>
             {
-                let cmod = CtxModifier::new_with_item(*rmod, ship_uid);
+                let cmod = CtxModifier::with_item(*rmod, ship_uid);
                 add_cmod(&mut reg_cmods.direct, ship_uid, cmod, &mut reg_cmods.by_aspec);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_rid))
                 if is_ship_on_fleet_item_list(ship, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind);
                 add_cmod(&mut reg_cmods.loc, key, cmod, &mut reg_cmods.by_aspec);
             }
@@ -322,7 +322,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, item_grp_id);
                 add_cmod(&mut reg_cmods.loc_grp, key, cmod, &mut reg_cmods.by_aspec);
             }
@@ -330,7 +330,7 @@ fn apply_fleet_mods_to_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, srq_type_aid);
                 add_cmod(&mut reg_cmods.loc_srq, key, cmod, &mut reg_cmods.by_aspec);
             }
@@ -350,14 +350,14 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
             AffecteeFilter::Direct(Location::ItemList(item_list_rid))
                 if is_ship_on_fleet_item_list(ship, &item_list_rid) =>
             {
-                let cmod = CtxModifier::new_with_item(*rmod, ship_uid);
+                let cmod = CtxModifier::with_item(*rmod, ship_uid);
                 remove_cmod(&mut reg_cmods.direct, ship_uid, &cmod, &mut reg_cmods.by_aspec);
             }
             AffecteeFilter::Loc(Location::ItemList(item_list_rid))
                 if is_ship_on_fleet_item_list(ship, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind);
                 remove_cmod(&mut reg_cmods.loc, key, &cmod, &mut reg_cmods.by_aspec);
             }
@@ -365,7 +365,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, item_grp_id);
                 remove_cmod(&mut reg_cmods.loc_grp, key, &cmod, &mut reg_cmods.by_aspec);
             }
@@ -373,7 +373,7 @@ fn unapply_fleet_mods_from_ship_fit<'a>(
                 if is_ship_on_fleet_item_list(ship, &item_list_rid)
                     && let Ok(loc_kind) = ship.get_ship_kind().try_into() =>
             {
-                let cmod = CtxModifier::new_with_fit_item(*rmod, fit_uid, ship_uid);
+                let cmod = CtxModifier::with_fit_item(*rmod, fit_uid, ship_uid);
                 let key = (fit_uid, loc_kind, srq_type_aid);
                 remove_cmod(&mut reg_cmods.loc_srq, key, &cmod, &mut reg_cmods.by_aspec);
             }

@@ -26,7 +26,7 @@ mod shared;
 mod state;
 mod util;
 
-#[tokio::main(flavor = "current_thread")]
+#[tokio::main(flavor = "multi_thread", worker_threads = 2)]
 async fn main() {
     // Settings
     let config_path = env::args().nth(1);
