@@ -5,13 +5,12 @@ use crate::{
 };
 
 impl Refine {
-    // TODO: consider splitting into 2 methods, and making alias parameter generic for convenience
     #[tracing::instrument(name = "src-get", level = "trace", skip_all)]
-    pub async fn get_src(&self, alias: Option<&SrcAlias>) -> Result<Src<'_>, GetSrcError> {
+    pub async fn get_src(&self, alias: Option<SrcAlias>) -> Result<Src<'_>, GetSrcError> {
         let inner_src = self.internal_get_src(alias).await?;
         Ok(Src::new(self, inner_src))
     }
-    pub(crate) async fn internal_get_src(&self, alias: Option<&SrcAlias>) -> Result<SrcInnerGuarded, GetSrcError> {
+    pub(crate) async fn internal_get_src(&self, alias: Option<SrcAlias>) -> Result<SrcInnerGuarded, GetSrcError> {
         let alias_data = self.src_alias_data.read().await;
         let alias = match alias {
             Some(alias) => alias,
@@ -22,9 +21,9 @@ impl Refine {
                 };
             }
         };
-        match alias_data.map.get(alias) {
+        match alias_data.map.get(&alias) {
             Some(inner_src) => Ok(inner_src.clone()),
-            None => Err(GetSrcError::SrcNotFound(alias.clone())),
+            None => Err(GetSrcError::SrcNotFound(alias)),
         }
     }
 }

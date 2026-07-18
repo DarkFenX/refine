@@ -7,7 +7,7 @@ use crate::{
 
 impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
-    pub async fn add_sol(&self, src_alias: Option<&SrcAlias>, cmd: AddSolCmd) -> Result<SolarSystem<'_>, AddSolError> {
+    pub async fn add_sol(&self, src_alias: Option<SrcAlias>, cmd: AddSolCmd) -> Result<SolarSystem<'_>, AddSolError> {
         let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
         let inner_sol = self
             .tpool
@@ -23,7 +23,7 @@ impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
     pub async fn add_sol_and_get_info(
         &self,
-        src_alias: Option<&SrcAlias>,
+        src_alias: Option<SrcAlias>,
         cmd: AddSolCmd,
         sol_mode: SolInfoMode,
         fleet_mode: FleetInfoMode,
