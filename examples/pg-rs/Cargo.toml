@@ -7,6 +7,6 @@ edition = "2024"
 [dependencies]
 rs = { package = "refine-rs", path = "../../refine-rs", features = ["edh-phb-fs", "adc-fs"] }
 time = { version = ">=0.3.53", features = ["macros"] }
-tokio = { version = ">=1.53.0", features = ["macros", "rt"] }
+tokio = { version = ">=1.53.0", features = ["rt", "macros"] }
 tracing = ">=0.1.44"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }

@@ -13,11 +13,8 @@ use tracing::Span;
 
 use crate::{settings::HSettings, state::HAppState};
 
-// mod bridge;
-// mod cmd;
 // mod err;
-// mod handlers;
-// mod info;
+mod handlers;
 mod logging;
 mod settings;
 // mod shared;
@@ -49,7 +46,7 @@ async fn main() {
 
     // HTTP routing
     let router = Router::new()
-        // .route("/", get(handlers::root))
+        .route("/", get(handlers::root))
         // .route("/src/{alias}", post(handlers::create_source))
         // .route("/src/{alias}", delete(handlers::delete_source))
         // .route("/sol", post(handlers::create_sol))
