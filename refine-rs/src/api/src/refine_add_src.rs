@@ -38,7 +38,7 @@ impl Refine {
         A: Into<SrcAlias>,
     {
         let ed_handler = Box::new(
-            redh::PhbHttpEdh::try_new(ed_version, base_url)
+            redh::PhbHttpEdh::try_new(base_url, ed_version)
                 .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
         );
         self.add_src(alias.into(), make_default, ed_handler).await

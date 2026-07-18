@@ -40,7 +40,10 @@ async fn main() {
     tokio::spawn(async move {
         state_cleanup
             .get_refine()
-            .setup_periodic_cleanup(settings.server.solsys_cleanup_interval, settings.server.solsys_lifetime)
+            .setup_periodic_cleanup(
+                Duration::from_secs(settings.server.solsys_cleanup_interval),
+                Duration::from_secs(settings.server.solsys_lifetime),
+            )
             .await
     });
 

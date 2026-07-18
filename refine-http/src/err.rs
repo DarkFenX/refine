@@ -40,7 +40,7 @@ impl ApiError {
                 rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
                 rs::src::err::AddSrcError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
                 rs::src::err::AddSrcError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
-            }
+            },
             // The only way for remove to fail is when source gets removed mid-handling
             // (after get() but before remove()), so treat them equally
             Self::SrcRemoveFailed(_) => StatusCode::NOT_FOUND,
@@ -56,8 +56,7 @@ impl ApiError {
                 rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => "SRC-001",
                 rs::src::err::AddSrcError::EdhInitFailed(_) => "EDH-001",
                 rs::src::err::AddSrcError::SrcInitFailed(_) => "SIN-001",
-            }
-            ,
+            },
             Self::SrcRemoveFailed(_) => "SRC-003",
             Self::PathSrcNotFound(_) => "SRC-002",
         }

@@ -1,10 +1,22 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
+pub(crate) struct Settings {
+    pub(crate) server: SettingsServer,
+    pub(crate) cache: SettingsCache,
+    pub(crate) log: SettingsLog,
+}
+impl Settings {
+    pub(crate) fn new(conf_path: Option<String>) -> Self {
+        Self::new_internal(conf_path).unwrap()
+    }
+}
+
+#[derive(Debug, Deserialize)]
 pub(crate) struct SettingsServer {
     pub(crate) port: u16,
-    pub(crate) solsys_lifetime: std::time::Duration,
-    pub(crate) solsys_cleanup_interval: std::time::Duration,
+    pub(crate) solsys_lifetime: u64,
+    pub(crate) solsys_cleanup_interval: u64,
     pub(crate) standard_threads: usize,
     pub(crate) heavy_threads: usize,
 }
@@ -21,16 +33,10 @@ pub(crate) struct SettingsLog {
     pub(crate) rotate: bool,
 }
 
-#[derive(Debug, Deserialize)]
-pub(crate) struct Settings {
-    pub(crate) server: SettingsServer,
-    pub(crate) cache: SettingsCache,
-    pub(crate) log: SettingsLog,
-}
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Settings {
-    pub(crate) fn new(conf_path: Option<String>) -> Self {
-        Self::new_internal(conf_path).unwrap()
-    }
     fn new_internal(conf_path_opt: Option<String>) -> Result<Self, config::ConfigError> {
         // Set defaults - in quite a cumbersome way, mostly because config crate does not expose
         // a good way to set defaults for values residing on a level deeper first one
