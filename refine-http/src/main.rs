@@ -26,7 +26,7 @@ mod shared;
 mod state;
 mod util;
 
-#[tokio::main]
+#[tokio::main(flavor = "current_thread")]
 async fn main() {
     // Settings
     let config_path = env::args().nth(1);
