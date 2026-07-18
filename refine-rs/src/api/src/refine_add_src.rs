@@ -2,17 +2,53 @@ use std::sync::Arc;
 
 use crate::{
     Refine,
-    src::{EdSource, Src, SrcAlias},
+    src::{Src, SrcAlias},
     svc::{AdCaching, SrcInnerGuarded},
 };
 
 impl Refine {
+    /// Add a data source, using Phobos-generated EVE data export stored on filesystem.
+    #[cfg(feature = "edh-phb-fs")]
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src<A>(&self, alias: A, ed_handler: EdSource, make_default: bool) -> Result<Src<'_>, AddSrcError>
+    pub async fn add_src_with_phb_fs<A>(
+        &self,
+        alias: A,
+        make_default: bool,
+        ed_dir: std::path::PathBuf,
+    ) -> Result<Src<'_>, AddSrcError>
     where
         A: Into<SrcAlias>,
     {
-        let alias = alias.into();
+        let ed_handler = Box::new(redh::PhbFilesystemEdh::new(ed_dir));
+        self.add_src(alias.into(), make_default, ed_handler).await
+    }
+    /// Add a data source, using Phobos-generated EVE data export served via HTTP.
+    ///
+    /// You must have prior knowledge of EVE data version which is served to use this method.
+    #[cfg(feature = "edh-phb-http")]
+    #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
+    pub async fn add_src_with_phb_http<A>(
+        &self,
+        alias: A,
+        make_default: bool,
+        ed_version: String,
+        base_url: String,
+    ) -> Result<Src<'_>, AddSrcError>
+    where
+        A: Into<SrcAlias>,
+    {
+        let ed_handler = Box::new(
+            redh::PhbHttpEdh::try_new(ed_version, base_url)
+                .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
+        );
+        self.add_src(alias.into(), make_default, ed_handler).await
+    }
+    async fn add_src(
+        &self,
+        alias: SrcAlias,
+        make_default: bool,
+        ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
+    ) -> Result<Src<'_>, AddSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Disallow creating of sources with the same name until this one is created/fails
         if !self.check_alias_availability(&alias).await {
@@ -82,22 +118,13 @@ pub enum AddSrcError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
     #[cfg(feature = "adc-fs")] alias: &SrcAlias,
-    ed_handler: EdSource,
+    ed_handler: Box<dyn rc::ed::EveDataHandler>,
     ad_caching: AdCaching,
 ) -> Result<rc::Src, AddSrcError> {
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match ad_caching {
         AdCaching::Disabled => None,
         #[cfg(feature = "adc-fs")]
         AdCaching::Filesystem { dir } => Some(Box::new(radc::JsonZfileAdc::new(dir, alias.into()))),
-    };
-    let ed_handler: Box<dyn rc::ed::EveDataHandler> = match ed_handler {
-        #[cfg(feature = "edh-phb-fs")]
-        EdSource::PhobosFilesystem { dir } => Box::new(redh::PhbFilesystemEdh::new(dir)),
-        #[cfg(feature = "edh-phb-http")]
-        EdSource::PhobosHttp { data_version, base_url } => Box::new(
-            redh::PhbHttpEdh::try_new(data_version, base_url)
-                .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
-        ),
     };
     tracing::info!(
         "initializing new source with {:?} and {}",

@@ -1,9 +1,6 @@
 #![allow(warnings, unused)]
 
-use rs::{
-    Refine,
-    src::{EdSource, SrcAlias},
-};
+use rs::{Refine, src::SrcAlias};
 use tracing_subscriber::prelude::*;
 
 fn setup_logger() -> () {
@@ -33,10 +30,10 @@ async fn main() {
     setup_logger();
     // Initial setup
     let mut refine = Refine::with_fs_adc(2, 4, "./cache/".into());
-    let ed_src = EdSource::PhobosFilesystem {
-        dir: "/home/dfx/Desktop/phobos_tq_en-us".into(),
-    };
-    refine.add_src("tq", ed_src, true).await.unwrap();
+    refine
+        .add_src_with_phb_fs("tq", true, "/home/dfx/Desktop/phobos_tq_en-us".into())
+        .await
+        .unwrap();
     // Main part
     let mut sol = refine
         .add_sol(None, rs::AddSolCmd::new().with_sec_zone(rs::SecZone::WSpace))

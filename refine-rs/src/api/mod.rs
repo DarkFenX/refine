@@ -1,4 +1,3 @@
-pub use ed_handler::EdSource;
 pub use fit::{ChangeFitError, Fit, GetFitError};
 pub use fleet::{ChangeFleetError, Fleet, GetFleetError};
 pub use item::{GetItemError, Item, RemoveItemError};
@@ -7,7 +6,6 @@ pub use sol::{AddSolError, ChangeSolError, GetSolError, RemoveSolError, SolarSys
 pub use src::{AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias};
 
 mod dev;
-mod ed_handler;
 mod fit;
 mod fleet;
 mod item;
