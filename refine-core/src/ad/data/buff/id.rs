@@ -16,28 +16,8 @@ impl std::fmt::Display for ABuffId {
         }
     }
 }
-impl std::str::FromStr for ABuffId {
-    type Err = ABuffIdParseError;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
-            return Ok(Self::Eve(AEveBuffId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
-            return Ok(Self::Custom(ACustomBuffId::from_str(id_str)?));
-        }
-        Err(ABuffIdParseError::InvalidPrefix)
-    }
-}
-#[derive(thiserror::Error, Debug)]
-pub enum ABuffIdParseError {
-    #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
-    InvalidPrefix,
-    #[error("invalid int: {0}")]
-    InvalidInt(#[from] std::num::ParseIntError),
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEveBuffId(i32);
 impl AEveBuffId {
     pub const fn from_i32(id: i32) -> Self {
@@ -48,7 +28,7 @@ impl AEveBuffId {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomBuffId(i32);
 impl ACustomBuffId {
     pub const fn from_i32(id: i32) -> Self {

@@ -1,7 +1,7 @@
 use crate::ad::AItemId;
 
 /// Item type ID.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ItemTypeId(i32);
 impl ItemTypeId {
     pub const fn from_i32(id: i32) -> Self {

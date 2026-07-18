@@ -4,7 +4,7 @@ pub use cat_id::AEffectCatId;
 pub use container::AEffects;
 pub use duration::AEffectAggroDuration;
 pub use effect::AEffect;
-pub use id::{ACustomEffectId, ADogmaEffectId, AEffectId, AEffectIdParseError};
+pub use id::{ACustomEffectId, ADogmaEffectId, AEffectId};
 pub use location::AEffectLocation;
 pub use modifier::{AEffectModifier, AEffectModifiers};
 pub use stop_id::AEffectStopIds;

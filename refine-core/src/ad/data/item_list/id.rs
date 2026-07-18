@@ -16,28 +16,8 @@ impl std::fmt::Display for AItemListId {
         }
     }
 }
-impl std::str::FromStr for AItemListId {
-    type Err = AItemListIdParseError;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
-            return Ok(Self::Eve(AEveItemListId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
-            return Ok(Self::Custom(ACustomItemListId::from_str(id_str)?));
-        }
-        Err(AItemListIdParseError::InvalidPrefix)
-    }
-}
-#[derive(thiserror::Error, Debug)]
-pub enum AItemListIdParseError {
-    #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
-    InvalidPrefix,
-    #[error("invalid int: {0}")]
-    InvalidInt(#[from] std::num::ParseIntError),
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEveItemListId(i32);
 impl AEveItemListId {
     pub const fn from_i32(id: i32) -> Self {
@@ -48,7 +28,7 @@ impl AEveItemListId {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomItemListId(i32);
 impl ACustomItemListId {
     pub const fn from_i32(id: i32) -> Self {

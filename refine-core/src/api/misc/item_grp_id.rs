@@ -1,7 +1,7 @@
 use crate::ad::AItemGrpId;
 
 /// Fighter ability ID.
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ItemGrpId(i32);
 impl ItemGrpId {
     pub const fn from_i32(id: i32) -> Self {

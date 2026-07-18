@@ -2,7 +2,7 @@ use std::num::Wrapping;
 
 use crate::util::{LibDefault, LibIncrement};
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct FitId(u32);
 impl LibDefault for FitId {
     fn lib_default() -> Self {

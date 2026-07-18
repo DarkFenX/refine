@@ -1,6 +1,6 @@
 use crate::ed::EEffectCatId;
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEffectCatId(i32);
 impl AEffectCatId {
     pub const fn from_i32(id: i32) -> Self {

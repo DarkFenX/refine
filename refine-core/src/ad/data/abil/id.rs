@@ -1,6 +1,6 @@
 use crate::ed::EAbilId;
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AAbilId(i32);
 impl AAbilId {
     pub const fn from_i32(id: i32) -> Self {

@@ -42,53 +42,8 @@ impl std::fmt::Display for EffectId {
         }
     }
 }
-impl std::str::FromStr for EffectId {
-    type Err = EffectIdParseError;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        // Process longer prefixes first in case of conflicting starting letters
-        if let Some(id_str) = s.strip_prefix(SC_SYSWIDE_PREFIX) {
-            return Ok(Self::ScSystemWide(ItemTypeId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(SC_SYSEMIT_PREFIX) {
-            return Ok(Self::ScSystemEmitter(ItemTypeId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(SC_PROXYEFF_PREFIX) {
-            return Ok(Self::ScProxyEffect(ItemTypeId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(SC_PROXYTRAP_PREFIX) {
-            return Ok(Self::ScProxyTrap(ItemTypeId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(SC_SHIPLINK_PREFIX) {
-            return Ok(Self::ScShipLink(ItemTypeId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(DOGMA_PREFIX) {
-            return Ok(Self::Dogma(DogmaEffectId::from_str(id_str)?));
-        }
-        if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
-            return Ok(Self::Custom(CustomEffectId::from_str(id_str)?));
-        }
-        Err(EffectIdParseError::InvalidPrefix)
-    }
-}
-#[derive(thiserror::Error, Debug)]
-pub enum EffectIdParseError {
-    #[error(
-        "invalid prefix, expected \"{d}\", \"{scsw}\", \"{scse}\", \"{scpe}\", \"{scpt}\", \"{scsl}\", or \"{c}\" prefix",
-        d = DOGMA_PREFIX,
-        scsw = SC_SYSWIDE_PREFIX,
-        scse = SC_SYSEMIT_PREFIX,
-        scpe = SC_PROXYEFF_PREFIX,
-        scpt = SC_PROXYTRAP_PREFIX,
-        scsl = SC_SHIPLINK_PREFIX,
-        c = CUSTOM_PREFIX,
-    )]
-    InvalidPrefix,
-    #[error("invalid int: {0}")]
-    InvalidInt(#[from] std::num::ParseIntError),
-}
-
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct DogmaEffectId(i32);
 impl DogmaEffectId {
     pub const fn from_i32(id: i32) -> Self {
@@ -99,7 +54,7 @@ impl DogmaEffectId {
     }
 }
 
-#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display, derive_more::FromStr)]
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct CustomEffectId(i32);
 impl CustomEffectId {
     pub const fn from_i32(id: i32) -> Self {
