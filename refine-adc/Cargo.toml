@@ -28,4 +28,5 @@ json-zfile = [
     "dep:struson",
     "dep:thiserror",
     "dep:zstd",
+    "rc/serde-ad"
 ]

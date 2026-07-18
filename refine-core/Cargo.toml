@@ -25,4 +25,9 @@ thiserror = ">=2.0.18"
 [features]
 serde = [
     "dep:serde",
+    "derive_more/from_str",
+]
+serde-ad = [
+    "dep:serde",
+    "derive_more/from_str",
 ]
