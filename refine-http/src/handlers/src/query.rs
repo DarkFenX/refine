@@ -1,6 +1,6 @@
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-pub(crate) struct HSrcInfoParams {
-    pub(super) src: Option<rs::SrcInfoMode>,
+pub(crate) struct SrcInfoParams {
+    pub(super) src: Option<rs::src::SrcInfoMode>,
 }

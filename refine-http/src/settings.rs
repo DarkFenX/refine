@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct HSetServer {
+pub(crate) struct SettingsServer {
     pub(crate) port: u16,
     pub(crate) solsys_lifetime: std::time::Duration,
     pub(crate) solsys_cleanup_interval: std::time::Duration,
@@ -10,24 +10,24 @@ pub(crate) struct HSetServer {
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct HSetCache {
+pub(crate) struct SettingsCache {
     pub(crate) dir: Option<std::path::PathBuf>,
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct HSetLog {
+pub(crate) struct SettingsLog {
     pub(crate) dir: Option<std::path::PathBuf>,
     pub(crate) level: String,
     pub(crate) rotate: bool,
 }
 
 #[derive(Debug, Deserialize)]
-pub(crate) struct HSettings {
-    pub(crate) server: HSetServer,
-    pub(crate) cache: HSetCache,
-    pub(crate) log: HSetLog,
+pub(crate) struct Settings {
+    pub(crate) server: SettingsServer,
+    pub(crate) cache: SettingsCache,
+    pub(crate) log: SettingsLog,
 }
-impl HSettings {
+impl Settings {
     pub(crate) fn new(conf_path: Option<String>) -> Self {
         Self::new_internal(conf_path).unwrap()
     }

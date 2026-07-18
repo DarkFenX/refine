@@ -11,13 +11,13 @@ use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 use tower_request_id::{RequestId, RequestIdLayer};
 use tracing::Span;
 
-use crate::{settings::HSettings, state::HAppState};
+use crate::{settings::Settings, state::AppState};
 
-// mod err;
 mod handlers;
 mod logging;
 mod settings;
 // mod shared;
+mod err;
 mod state;
 mod util;
 
@@ -25,11 +25,11 @@ mod util;
 async fn main() {
     // Settings
     let config_path = env::args().nth(1);
-    let settings = HSettings::new(config_path);
+    let settings = Settings::new(config_path);
     // Logging
     let _log_guard = logging::setup(settings.log.dir, &settings.log.level, settings.log.rotate);
     // Shared state
-    let state = HAppState::new(
+    let state = AppState::new(
         settings.server.standard_threads,
         settings.server.heavy_threads,
         settings.cache.dir.into(),
@@ -47,8 +47,8 @@ async fn main() {
     // HTTP routing
     let router = Router::new()
         .route("/", get(handlers::root))
-        // .route("/src/{alias}", post(handlers::create_source))
-        // .route("/src/{alias}", delete(handlers::delete_source))
+        .route("/src/{alias}", post(handlers::create_source))
+        .route("/src/{alias}", delete(handlers::delete_source))
         // .route("/sol", post(handlers::create_sol))
         // .route("/sol/{sol_id}", get(handlers::get_sol))
         // .route("/sol/{sol_id}", patch(handlers::change_sol))
