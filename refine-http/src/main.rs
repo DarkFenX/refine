@@ -13,11 +13,10 @@ use tracing::Span;
 
 use crate::{settings::Settings, state::AppState};
 
+mod err;
 mod handlers;
 mod logging;
 mod settings;
-// mod shared;
-mod err;
 mod state;
 mod util;
 
@@ -50,9 +49,9 @@ async fn main() {
     // HTTP routing
     let router = Router::new()
         .route("/", get(handlers::root))
-        .route("/src/{alias}", post(handlers::create_source))
+        .route("/src/{alias}", post(handlers::add_source))
         .route("/src/{alias}", delete(handlers::delete_source))
-        // .route("/sol", post(handlers::create_sol))
+        .route("/sol", post(handlers::add_sol))
         // .route("/sol/{sol_id}", get(handlers::get_sol))
         // .route("/sol/{sol_id}", patch(handlers::change_sol))
         // .route("/sol/{sol_id}", delete(handlers::delete_sol))

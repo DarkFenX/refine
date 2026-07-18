@@ -17,7 +17,8 @@ async fn internal_delete_source(state: AppState, src_alias: String) -> Result<()
     state
         .get_refine()
         .get_src(Some(src_alias.into()))
-        .await?
+        .await
+        .map_err(|rs_err| ApiError::PathSrcNotFound(rs_err))?
         .remove()
         .await?;
     Ok(())

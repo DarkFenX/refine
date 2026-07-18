@@ -19,6 +19,9 @@ pub(crate) enum ApiError {
     SrcRemoveFailed(#[from] rs::src::err::RemoveSrcError),
     #[error("failed to get source: {0}")]
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
+    // Solar system-related
+    #[error("failed to add solar system: {0}")]
+    SolAddFailed(#[from] rs::err::AddSolError),
 }
 
 #[derive(Serialize)]
@@ -45,6 +48,8 @@ impl ApiError {
             // (after get() but before remove()), so treat them equally
             Self::SrcRemoveFailed(_) => StatusCode::NOT_FOUND,
             Self::PathSrcNotFound(_) => StatusCode::NOT_FOUND,
+            // Solar system-related
+            Self::SolAddFailed(_) => StatusCode::BAD_REQUEST,
         }
     }
     fn get_api_code(&self) -> &str {
@@ -57,8 +62,17 @@ impl ApiError {
                 rs::src::err::AddSrcError::EdhInitFailed(_) => "EDH-001",
                 rs::src::err::AddSrcError::SrcInitFailed(_) => "SIN-001",
             },
-            Self::SrcRemoveFailed(_) => "SRC-003",
-            Self::PathSrcNotFound(_) => "SRC-002",
+            Self::SrcRemoveFailed(rs_err) => match rs_err {
+                rs::src::err::RemoveSrcError::SrcNotFound(_) => "SRC-004",
+            },
+            Self::PathSrcNotFound(rs_err) => match rs_err {
+                rs::src::err::GetSrcError::SrcNotFound(_) => "SRC-002",
+                rs::src::err::GetSrcError::DefaultNotDefined => "SRC-003",
+            },
+            // Solar system-related
+            Self::SolAddFailed(rs_err) => match rs_err {
+                rs::err::AddSolError::GetSrcFailed(_) => "SOL-001",
+            },
         }
     }
 }

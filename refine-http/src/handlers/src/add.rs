@@ -5,35 +5,34 @@ use axum::{
     response::IntoResponse,
 };
 use axum_extra::extract::WithRejection;
-use serde::Deserialize;
 
 use super::query::SrcInfoParams;
 use crate::{err::ApiError, state::AppState};
 
-#[derive(Deserialize)]
-pub(crate) struct CreateSrcReq {
+#[derive(serde::Deserialize)]
+pub(crate) struct AddSrcReqBody {
     data_version: String,
     data_base_url: String,
     make_default: Option<bool>,
 }
 
-pub(crate) async fn create_source(
+pub(crate) async fn add_source(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<SrcInfoParams>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<CreateSrcReq>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<AddSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
-    match internal_create_source(state, src_alias, params, payload).await {
+    match internal_add_source(state, src_alias, params, payload).await {
         Ok(src_info) => (StatusCode::CREATED, Json(src_info)).into_response(),
         Err(err) => err.into_response(),
     }
 }
 
-async fn internal_create_source(
+async fn internal_add_source(
     state: AppState,
     src_alias: String,
     params: SrcInfoParams,
-    payload: CreateSrcReq,
+    payload: AddSrcReqBody,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;

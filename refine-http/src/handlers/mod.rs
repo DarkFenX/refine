@@ -1,5 +1,7 @@
 pub(crate) use root::root;
-pub(crate) use src::{create_source, delete_source};
+pub(crate) use sol::add_sol;
+pub(crate) use src::{add_source, delete_source};
 
 mod root;
+mod sol;
 mod src;
