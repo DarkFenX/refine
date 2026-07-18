@@ -2,8 +2,8 @@ use super::inner::SolarSystemInner;
 use crate::SolarSystem;
 
 impl<'r> SolarSystem<'r> {
-    /// Methods which execute solar system changes are split into two groups:
-    /// - infallible/safe methods guarantee that solar system will stay in consistent and expected
+    /// Methods which execute solar system changes in a threadpool are split into three groups:
+    /// - safe/infallible methods guarantee that solar system will stay in consistent and expected
     ///   state even if underlying operations can produce errors. For example:
     ///   - attempt to remove something that does not exist produces an error, but does not apply
     ///     any changes;
@@ -19,7 +19,7 @@ impl<'r> SolarSystem<'r> {
     ///   Commands executed by those methods could have rollback code in case of errors, but it is
     ///   too hard to write, and is likely to become a source of bugs. Cloning is easier, and is
     ///   fast enough.
-    // TODO: review all calls to safe and check that they are actually safe
+    /// - rollback methods always back system up and restore it, regardless of results.
     pub(crate) async fn exec_standard_safe<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
@@ -64,6 +64,16 @@ impl<'r> SolarSystem<'r> {
             }
         }
     }
+    pub(crate) async fn exec_standard_rollback<F, R>(&mut self, func: F) -> R
+    where
+        F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
+        R: Send + 'static,
+    {
+        // Not actually rolling back, just cloning sol and sending it in, which is effectively the
+        // same
+        let mut core_sol = self.inner.core_sol.as_ref().unwrap().as_ref().clone();
+        self.refine.tpool.exec_standard(move || func(&mut core_sol)).await
+    }
     pub(crate) async fn exec_heavy_safe<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
@@ -81,6 +91,7 @@ impl<'r> SolarSystem<'r> {
         self.put_core_back(core_sol);
         result
     }
+    /// Executes in current thread.
     pub(crate) fn exec_inplace<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R,
