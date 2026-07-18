@@ -1,6 +1,7 @@
 use crate::src::SrcInfoMode;
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct SrcInfo {
     pub origin: SrcOrigin,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
@@ -8,6 +9,7 @@ pub struct SrcInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct SrcInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "SrcWarnings::is_empty"))]
     pub warnings: SrcWarnings,
@@ -15,6 +17,7 @@ pub struct SrcInfoExt {
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(tag = "type", rename_all = "snake_case"))]
+#[derive(Clone)]
 pub enum SrcOrigin {
     Generated { reason: SrcOriginGeneratedReason },
     Cached { fingerprint: String },
@@ -22,6 +25,7 @@ pub enum SrcOrigin {
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[cfg_attr(feature = "serde", serde(tag = "type", rename_all = "snake_case"))]
+#[derive(Clone)]
 pub enum SrcOriginGeneratedReason {
     NoCacher,
     NoEveDataVersion { message: String },
@@ -31,6 +35,7 @@ pub enum SrcOriginGeneratedReason {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct SrcWarnings {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub eve_data_fetch: Vec<String>,

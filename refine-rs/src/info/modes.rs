@@ -1,12 +1,14 @@
-#[derive(Copy, Clone, Default)]
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
+#[derive(Copy, Clone, Default)]
 pub enum SrcInfoMode {
     Partial,
     #[default]
     Full,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
 pub enum SolInfoMode {
     Id,
@@ -14,6 +16,8 @@ pub enum SolInfoMode {
     Full,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
 pub enum FleetInfoMode {
     #[default]
@@ -21,6 +25,8 @@ pub enum FleetInfoMode {
     Full,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
 pub enum FitInfoMode {
     Id,
@@ -28,6 +34,8 @@ pub enum FitInfoMode {
     Full,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
 pub enum ItemInfoMode {
     Id,
@@ -36,6 +44,8 @@ pub enum ItemInfoMode {
     Full,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Default)]
 pub enum ValInfoMode {
     Simple,

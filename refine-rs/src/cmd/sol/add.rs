@@ -1,7 +1,9 @@
 use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool, cmd::inner::ICmdSolAddFCtx};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct AddSolCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdSolAddFCtx = ICmdSolAddFCtx { .. },
 }
 
