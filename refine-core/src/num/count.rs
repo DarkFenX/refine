@@ -4,7 +4,11 @@ use crate::{
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 
-#[cfg_attr(feature = "serde", derive(derive_more::FromStr, serde::Serialize, serde::Deserialize), serde(transparent))]
+#[cfg_attr(
+    feature = "serde",
+    derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Default, Debug, derive_more::Display)]
 pub struct Count(u32);
 impl Count {

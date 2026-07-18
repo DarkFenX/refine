@@ -1,22 +1,12 @@
 use crate::{ed::EAttrId, util::round_f64_to_i32};
 
-const EVE_PREFIX: &str = "e";
-const CUSTOM_PREFIX: &str = "c";
-
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AAttrId {
     Eve(AEveAttrId),
     Custom(ACustomAttrId),
 }
-impl std::fmt::Display for AAttrId {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Eve(id) => write!(f, "{EVE_PREFIX}{id}"),
-            Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
-        }
-    }
-}
 
+#[cfg_attr(feature = "serde-ad", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEveAttrId(i32);
 impl AEveAttrId {
@@ -28,6 +18,7 @@ impl AEveAttrId {
     }
 }
 
+#[cfg_attr(feature = "serde-ad", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomAttrId(i32);
 impl ACustomAttrId {
@@ -63,5 +54,47 @@ impl AEveAttrId {
             0 => None,
             id => Some(Self(id)),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const EVE_PREFIX: &str = "e";
+const CUSTOM_PREFIX: &str = "c";
+
+impl std::fmt::Display for AAttrId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Eve(id) => write!(f, "{EVE_PREFIX}{id}"),
+            Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
+        }
+    }
+}
+
+#[cfg(feature = "serde-ad")]
+mod serde_ad {
+    use super::*;
+
+    impl std::str::FromStr for AAttrId {
+        type Err = AAttrIdParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
+                return Ok(Self::Eve(AEveAttrId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
+                return Ok(Self::Custom(ACustomAttrId::from_str(id_str)?));
+            }
+            Err(AAttrIdParseError::InvalidPrefix)
+        }
+    }
+
+    #[derive(thiserror::Error, Debug)]
+    pub enum AAttrIdParseError {
+        #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
+        InvalidPrefix,
+        #[error("invalid int: {0}")]
+        InvalidInt(#[from] std::num::ParseIntError),
     }
 }
