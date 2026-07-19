@@ -35,3 +35,22 @@ pub struct ItemSpoolInfo {
     /// True if spool parameters are defined directly on item, false if inherited from sol.
     pub overridden: bool,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+const CYCLES_PREFIX: &str = "c";
+const TIME_PREFIX: &str = "t";
+const SPOOL_SCALE_PREFIX: &str = "ss";
+const CYCLE_SCALE_PREFIX: &str = "cs";
+
+impl std::fmt::Display for Spool {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Cycles(count) => write!(f, "{CYCLES_PREFIX}{count}"),
+            Self::Time(time) => write!(f, "{TIME_PREFIX}{time}"),
+            Self::SpoolScale(value) => write!(f, "{SPOOL_SCALE_PREFIX}{value}"),
+            Self::CycleScale(value) => write!(f, "{CYCLE_SCALE_PREFIX}{value}"),
+        }
+    }
+}
