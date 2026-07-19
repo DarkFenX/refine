@@ -1,3 +1,5 @@
+#[cfg(feature = "serde")]
+pub use id::ParseSolarSystemIdError;
 pub use id::SolarSystemId;
 pub use refine_add_sol::AddSolError;
 pub use refine_get_sol::GetSolError;

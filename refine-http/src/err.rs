@@ -22,6 +22,10 @@ pub(crate) enum ApiError {
     // Solar system-related
     #[error("failed to add solar system: {0}")]
     SolAddFailed(#[from] rs::err::AddSolError),
+    #[error("failed to get solar system: {0}")]
+    PathSolParseFailed(#[from] rs::err::ParseSolarSystemIdError),
+    #[error("failed to get solar system: {0}")]
+    PathSolNotFound(#[from] rs::err::GetSolError),
 }
 
 #[derive(Serialize)]
@@ -50,6 +54,8 @@ impl ApiError {
             Self::PathSrcNotFound(_) => StatusCode::NOT_FOUND,
             // Solar system-related
             Self::SolAddFailed(_) => StatusCode::BAD_REQUEST,
+            Self::PathSolParseFailed(_) => StatusCode::NOT_FOUND,
+            Self::PathSolNotFound(_) => StatusCode::NOT_FOUND,
         }
     }
     fn get_api_code(&self) -> &str {
@@ -72,6 +78,10 @@ impl ApiError {
             // Solar system-related
             Self::SolAddFailed(rs_err) => match rs_err {
                 rs::err::AddSolError::GetSrcFailed(_) => "SOL-001",
+            },
+            Self::PathSolParseFailed(_) => "SOL-002",
+            Self::PathSolNotFound(rs_err) => match rs_err {
+                rs::err::GetSolError::SolNotFound(_) => "SOL-003",
             },
         }
     }

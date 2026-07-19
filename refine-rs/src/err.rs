@@ -1,3 +1,5 @@
+#[cfg(feature = "serde")]
+pub use crate::api::ParseSolarSystemIdError;
 pub use crate::{
     api::{
         AddSolError, ChangeFitError, ChangeFleetError, ChangeSolError, GetFitError, GetFleetError, GetItemError,
