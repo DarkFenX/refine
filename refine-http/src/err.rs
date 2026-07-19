@@ -22,6 +22,8 @@ pub(crate) enum ApiError {
     // Solar system-related
     #[error("failed to add solar system: {0}")]
     SolAddFailed(#[from] rs::err::AddSolError),
+    #[error("failed to remove solar system: {0}")]
+    SolRemoveFailed(#[from] rs::err::RemoveSolError),
     #[error("failed to get solar system: {0}")]
     PathSolParseFailed(#[from] rs::err::ParseSolarSystemIdError),
     #[error("failed to get solar system: {0}")]
@@ -48,12 +50,17 @@ impl ApiError {
                 rs::src::err::AddSrcError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
                 rs::src::err::AddSrcError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
             },
-            // The only way for remove to fail is when source gets removed mid-handling
-            // (after get() but before remove()), so treat them equally
-            Self::SrcRemoveFailed(_) => StatusCode::NOT_FOUND,
+            Self::SrcRemoveFailed(rs_err) => match rs_err {
+                rs::src::err::RemoveSrcError::SrcNotFound(_) => StatusCode::NOT_FOUND,
+            },
             Self::PathSrcNotFound(_) => StatusCode::NOT_FOUND,
             // Solar system-related
-            Self::SolAddFailed(_) => StatusCode::BAD_REQUEST,
+            Self::SolAddFailed(rs_err) => match rs_err {
+                rs::err::AddSolError::GetSrcFailed(_) => StatusCode::BAD_REQUEST,
+            },
+            Self::SolRemoveFailed(rs_err) => match rs_err {
+                rs::err::RemoveSolError::SolNotFound(_) => StatusCode::NOT_FOUND,
+            },
             Self::PathSolParseFailed(_) => StatusCode::NOT_FOUND,
             Self::PathSolNotFound(_) => StatusCode::NOT_FOUND,
         }
@@ -78,6 +85,9 @@ impl ApiError {
             // Solar system-related
             Self::SolAddFailed(rs_err) => match rs_err {
                 rs::err::AddSolError::GetSrcFailed(_) => "SOL-001",
+            },
+            Self::SolRemoveFailed(rs_err) => match rs_err {
+                rs::err::RemoveSolError::SolNotFound(_) => "SOL-004",
             },
             Self::PathSolParseFailed(_) => "SOL-002",
             Self::PathSolNotFound(rs_err) => match rs_err {
