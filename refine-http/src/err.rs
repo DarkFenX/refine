@@ -41,6 +41,9 @@ pub(crate) enum ApiError {
     PathFitParseFailed(#[from] rs::err::ParseFitIdError),
     #[error("failed to get fit: {0}")]
     PathFitNotFound(#[from] rs::err::GetFitError),
+    // Item-related
+    #[error("failed to add item: {0}")]
+    ItemAddFailed(#[from] rs::err::AddItemEnumError),
 }
 
 #[derive(Serialize)]
@@ -93,6 +96,9 @@ impl ApiError {
             },
             Self::PathFitParseFailed(_) => StatusCode::NOT_FOUND,
             Self::PathFitNotFound(_) => StatusCode::NOT_FOUND,
+            // Item-related
+            // TODO: adjust error codes based on specific responses
+            Self::ItemAddFailed(_) => StatusCode::BAD_REQUEST,
         }
     }
     fn get_api_code(&self) -> &str {
@@ -140,6 +146,9 @@ impl ApiError {
             },
             Self::PathFitParseFailed(_) => "FIT-002",
             Self::PathFitNotFound(_) => "FIT-003",
+            // Item-related
+            // TODO: adjust error codes based on specific responses
+            Self::ItemAddFailed(_) => "ITM-001",
         }
     }
 }

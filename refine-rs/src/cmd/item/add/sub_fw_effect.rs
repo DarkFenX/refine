@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdFwEffectAddFCtxRIds, ICmdFwEffectAddICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddFwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFwEffectAddFCtxRIds,
 }
 impl ItemAddFwEffectCmd {

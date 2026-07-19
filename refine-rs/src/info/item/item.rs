@@ -4,6 +4,7 @@ use crate::{
     SwEffectInfo,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum ItemInfo {
     Autocharge(AutochargeInfo),
     Booster(BoosterInfo),

@@ -1,6 +1,8 @@
 use crate::{AddItemEnumCmd, EffectId, EffectMode, ItemTypeId, cmd::inner::ICmdSwEffectAddFCtx};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddSwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSwEffectAddFCtx,
 }
 impl ItemAddSwEffectCmd {

@@ -4,7 +4,9 @@ use crate::{
     cmd::inner::{ICmdFighterAddFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterAddShared},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddFighterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFighterAddFCtxRIds,
 }
 impl ItemAddFighterCmd {

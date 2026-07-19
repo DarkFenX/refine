@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdServiceAddFCtxRIds, ICmdServiceAddICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddServiceCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdServiceAddFCtxRIds,
 }
 impl ItemAddServiceCmd {

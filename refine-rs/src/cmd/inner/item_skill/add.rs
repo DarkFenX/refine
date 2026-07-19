@@ -10,8 +10,10 @@ pub(in crate::cmd) struct ICmdSkillAddFCtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdSkillAddICtx,
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdSkillAddFCtxRIds {
     pub(in crate::cmd) fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdSkillAddICtx,
 }
 

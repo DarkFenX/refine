@@ -4,7 +4,9 @@ use crate::{
     cmd::inner::{ICmdModuleAddFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddModuleCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdModuleAddFCtxRIds,
 }
 impl ItemAddModuleCmd {

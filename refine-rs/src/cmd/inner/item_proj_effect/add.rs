@@ -9,7 +9,9 @@ pub(in crate::cmd) struct ICmdProjEffectAddFCtxBIds {
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdProjEffectAddFCtxRIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }

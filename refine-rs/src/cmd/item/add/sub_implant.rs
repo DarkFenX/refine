@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdImplantAddFCtxRIds, ICmdImplantAddICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddImplantCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdImplantAddFCtxRIds,
 }
 impl ItemAddImplantCmd {

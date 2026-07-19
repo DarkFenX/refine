@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdCharacterSetFCtxRIds, ICmdCharacterSetICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemSetCharacterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdCharacterSetFCtxRIds,
 }
 impl ItemSetCharacterCmd {

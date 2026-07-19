@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdSkillAddFCtxRIds, ICmdSkillAddICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddSkillCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSkillAddFCtxRIds,
 }
 impl ItemAddSkillCmd {
