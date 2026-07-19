@@ -54,7 +54,9 @@ impl From<SolAddDroneCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeDroneCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdDroneChangeFCtxBIds,
 }
 impl SolChangeDroneCmd {

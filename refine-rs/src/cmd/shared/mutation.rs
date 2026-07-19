@@ -119,6 +119,8 @@ mod custom_serde {
                     formatter.write_str("number or string with number with optional type prefix")
                 }
 
+                // TODO: experiment with visit methods and decide if this many is necessary, or just
+                // TODO: f64 / f64+i32 is sufficient
                 fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
                 where
                     E: serde::de::Error,
@@ -207,6 +209,56 @@ mod custom_serde {
                     }
                     let abs_str = Value::from_str(v).map_err(|e| serde::de::Error::custom(e))?;
                     Ok(Self::Value::Absolute(abs_str))
+                }
+            }
+            deserializer.deserialize_any(Visitor)
+        }
+    }
+}
+
+// TODO: add full serialization support and merge with module above
+#[cfg(feature = "serde")]
+mod custom_serde_x1 {
+    use super::*;
+
+    impl<'de> serde::Deserialize<'de> for AddMutation {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            struct Visitor;
+
+            impl<'de> serde::de::Visitor<'de> for Visitor {
+                type Value = AddMutation;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("integer with mutator ID, or sequence with mutator ID and attribute map")
+                }
+            }
+            deserializer.deserialize_any(Visitor)
+        }
+    }
+}
+
+// TODO: add full serialization support and merge with module above
+#[cfg(feature = "serde")]
+mod custom_serde_x2 {
+    use super::*;
+
+    impl<'de> serde::Deserialize<'de> for ChangeMutation {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            struct Visitor;
+
+            impl<'de> serde::de::Visitor<'de> for Visitor {
+                type Value = ChangeMutation;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str(
+                        "integer with mutator ID, attribute map, or sequence with mutator ID and attribute map",
+                    )
                 }
             }
             deserializer.deserialize_any(Visitor)
