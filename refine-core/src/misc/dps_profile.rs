@@ -1,18 +1,19 @@
 use crate::num::{PValue, UnitInterval};
 
 // TODO: switch to serde_tuple once it supports default fields
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct DpsProfile {
     pub em: PValue = PValue::ZERO,
     pub thermal: PValue = PValue::ZERO,
     pub kinetic: PValue = PValue::ZERO,
     pub explosive: PValue = PValue::ZERO,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub breacher: Option<BreacherProfile> = None,
 }
 
 // TODO: switch to serde_tuple once it supports default fields
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct BreacherProfile {
     pub absolute_max: PValue = PValue::ZERO,

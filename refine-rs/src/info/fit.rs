@@ -6,33 +6,55 @@ use crate::{
     SubsystemInfo,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct FitInfo {
     pub id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<FitInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct FitInfoExt {
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub fleet_id: Option<FleetId>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub character: Option<CharacterInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub skills: Vec<SkillInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub implants: Vec<ImplantInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub boosters: Vec<BoosterInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub ship: Option<ShipInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub stance: Option<StanceInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub subsystems: Vec<SubsystemInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "ModuleRacks::is_empty"))]
     pub modules: ModuleRacks,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub rigs: Vec<RigInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub services: Vec<ServiceInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub drones: Vec<DroneInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fighters: Vec<FighterInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fw_effects: Vec<FwEffectInfo>,
     pub sec_status: FitSecStatus,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub rah_incoming_dps: Option<DpsProfile>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct ModuleRacks {
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub high: Vec<Option<ModuleInfo>>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub mid: Vec<Option<ModuleInfo>>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub low: Vec<Option<ModuleInfo>>,
 }
 impl ModuleRacks {
