@@ -4,8 +4,10 @@ use crate::{
 };
 
 // Commands with full context via fit ID
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdStanceChangeFFitCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdStanceChangeICtx = ICmdStanceChangeICtx { .. },
 }
 pub(crate) struct ICmdStanceChangeFFitCtxRIds {
@@ -14,8 +16,10 @@ pub(crate) struct ICmdStanceChangeFFitCtxRIds {
 }
 
 // Commands with full context via item ID
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdStanceChangeFItemCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdStanceChangeICtx = ICmdStanceChangeICtx { .. },
 }
 pub(crate) struct ICmdStanceChangeFItemCtxRIds {
@@ -24,6 +28,7 @@ pub(crate) struct ICmdStanceChangeFItemCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdStanceChangeICtx {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,

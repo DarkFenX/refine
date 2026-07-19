@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdImplantAddFCtxBIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolAddImplantCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdImplantAddFCtxBIds,
 }
 impl SolAddImplantCmd {
@@ -31,7 +33,9 @@ impl From<SolAddImplantCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeImplantCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdImplantChangeFCtxBIds,
 }
 impl SolChangeImplantCmd {

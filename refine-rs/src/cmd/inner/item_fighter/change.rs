@@ -6,8 +6,10 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterChangeFCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdFighterChangeICtxBIds = ICmdFighterChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdFighterChangeFCtxRIds {
@@ -16,7 +18,9 @@ pub(crate) struct ICmdFighterChangeFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterChangeICtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterChangeShared = ICmdFighterChangeShared { .. },
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
@@ -26,6 +30,7 @@ pub(in crate::cmd) struct ICmdFighterChangeICtxRIds {
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterChangeShared {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<MinionState> = None,

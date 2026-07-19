@@ -47,3 +47,41 @@ impl From<SkillLevel> for i32 {
         v.0 as i32
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use std::str::FromStr;
+
+    use super::*;
+
+    impl FromStr for SkillLevel {
+        type Err = SkillLevelParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let value = i32::from_str(s)?;
+            let value = Self::from_i32_checked(value)?;
+            Ok(value)
+        }
+    }
+
+    #[derive(thiserror::Error, Debug)]
+    pub enum SkillLevelParseError {
+        #[error("{0}")]
+        InvalidInt(#[from] std::num::ParseIntError),
+        #[error("{0}")]
+        InitCheckFailed(#[from] SkillLevelError),
+    }
+
+    impl<'de> serde::Deserialize<'de> for SkillLevel {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            i32::deserialize(deserializer)
+                .and_then(|value| SkillLevel::from_i32_checked(value).map_err(serde::de::Error::custom))
+        }
+    }
+}

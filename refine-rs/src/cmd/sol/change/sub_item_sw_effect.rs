@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolAddSwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSwEffectAddFCtx,
 }
 impl SolAddSwEffectCmd {
@@ -28,7 +30,9 @@ impl From<SolAddSwEffectCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeSwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSwEffectChangeFCtxBIds,
 }
 impl SolChangeSwEffectCmd {

@@ -1,6 +1,7 @@
 use crate::{AddedItemIdsResp, ItemTypeId, cmd::shared::EffectModes};
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdSwEffectAddFCtx {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,

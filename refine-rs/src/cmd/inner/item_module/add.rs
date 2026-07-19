@@ -4,8 +4,10 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdModuleAddFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdModuleAddICtxBIds,
 }
 pub(crate) struct ICmdModuleAddFCtxRIds {
@@ -14,7 +16,9 @@ pub(crate) struct ICmdModuleAddFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdModuleAddICtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdModuleAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
@@ -22,6 +26,7 @@ pub(crate) struct ICmdModuleAddICtxRIds {
     pub(in crate::cmd) shared: ICmdModuleAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdModuleAddShared {
     pub(in crate::cmd) rack: ModRack,
     pub(in crate::cmd) add_mode: AddMode,

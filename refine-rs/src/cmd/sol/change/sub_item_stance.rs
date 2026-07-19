@@ -10,7 +10,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Set
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolSetStanceCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdStanceSetFCtxBIds,
 }
 impl SolSetStanceCmd {
@@ -41,12 +43,15 @@ impl From<SolSetStanceCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change - public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 pub enum SolChangeStanceCmd {
     ViaFitId(SolChangeStanceViaFitCmd),
     ViaItemId(SolChangeStanceViaItemCmd),
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeStanceViaFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdStanceChangeFFitCtxBIds,
 }
 impl SolChangeStanceViaFitCmd {
@@ -75,7 +80,9 @@ impl From<SolChangeStanceViaFitCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeStanceViaItemCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdStanceChangeFItemCtxBIds,
 }
 impl SolChangeStanceViaItemCmd {
@@ -140,7 +147,9 @@ pub enum ChangeStanceError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Unset
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolUnsetStanceCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdStanceUnsetFCtxBIds,
 }
 impl SolUnsetStanceCmd {

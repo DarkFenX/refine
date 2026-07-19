@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolAddProjEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdProjEffectAddFCtxBIds,
 }
 impl SolAddProjEffectCmd {
@@ -36,7 +38,9 @@ impl From<SolAddProjEffectCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeProjEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdProjEffectChangeFCtxBIds,
 }
 impl SolChangeProjEffectCmd {

@@ -11,7 +11,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Set
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolSetShipCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdShipSetFCtxBIds,
 }
 impl SolSetShipCmd {
@@ -50,12 +52,15 @@ impl From<SolSetShipCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change - public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 pub enum SolChangeShipCmd {
     ViaFitId(SolChangeShipViaFitCmd),
     ViaItemId(SolChangeShipViaItemCmd),
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeShipViaFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdShipChangeFFitCtxBIds,
 }
 impl SolChangeShipViaFitCmd {
@@ -92,7 +97,9 @@ impl From<SolChangeShipViaFitCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeShipViaItemCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdShipChangeFItemCtxBIds,
 }
 impl SolChangeShipViaItemCmd {
@@ -165,7 +172,9 @@ pub enum ChangeShipError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Unset
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolUnsetShipCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdShipUnsetFCtxBIds,
 }
 impl SolUnsetShipCmd {

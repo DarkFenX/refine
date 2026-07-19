@@ -1,5 +1,12 @@
+#[cfg_attr(
+    feature = "serde",
+    serde_with::serde_as,
+    derive(serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub(in crate::cmd) struct Abilities {
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     data: Vec<(rc::AbilityId, bool)>,
 }
 impl Abilities {

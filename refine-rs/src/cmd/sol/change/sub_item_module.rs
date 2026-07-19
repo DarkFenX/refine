@@ -4,7 +4,9 @@ use crate::{
     cmd::inner::{ICmdModuleAddFCtxBIds, ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolAddModuleCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdModuleAddFCtxBIds,
 }
 impl SolAddModuleCmd {
@@ -64,7 +66,9 @@ impl From<SolAddModuleCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeModuleCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdModuleChangeFCtxBIds,
 }
 impl SolChangeModuleCmd {

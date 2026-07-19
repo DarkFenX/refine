@@ -3,7 +3,9 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdProjEffectAddFCtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
@@ -11,6 +13,7 @@ pub(crate) struct ICmdProjEffectAddFCtxRIds {
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdProjEffectAddShared {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,

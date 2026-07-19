@@ -3,8 +3,10 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdProjEffectChangeFCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdProjEffectChangeICtxBIds = ICmdProjEffectChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdProjEffectChangeFCtxRIds {
@@ -13,7 +15,9 @@ pub(crate) struct ICmdProjEffectChangeFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdProjEffectChangeICtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdProjEffectChangeShared = ICmdProjEffectChangeShared { .. },
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
@@ -23,6 +27,7 @@ pub(in crate::cmd) struct ICmdProjEffectChangeICtxRIds {
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdProjEffectChangeShared {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<bool> = None,

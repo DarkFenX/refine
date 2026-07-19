@@ -6,8 +6,10 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterAddFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdFighterAddICtxBIds,
 }
 pub(crate) struct ICmdFighterAddFCtxRIds {
@@ -16,7 +18,9 @@ pub(crate) struct ICmdFighterAddFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterAddICtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
@@ -24,6 +28,7 @@ pub(crate) struct ICmdFighterAddICtxRIds {
     pub(in crate::cmd) shared: ICmdFighterAddShared,
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterAddShared {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: MinionState,
