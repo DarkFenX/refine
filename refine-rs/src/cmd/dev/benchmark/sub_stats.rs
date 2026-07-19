@@ -1,5 +1,6 @@
 use crate::{FitId, ItemId, dev::DevBenchmarkCmd};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct DevBenchmarkStatsCmd {
     fit_id: FitId,
     projectee_item_id: ItemId,

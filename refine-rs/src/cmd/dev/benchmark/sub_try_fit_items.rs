@@ -22,11 +22,12 @@ impl DevBenchmarkTryFitItemsCmd {
         }
     }
 }
-impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
-    fn from(sub_cmd: DevBenchmarkTryFitItemsCmd) -> Self {
-        DevBenchmarkCmd::TryFitItems(sub_cmd)
-    }
-}
+// TODO: re-enable after validation options deserialization is implemented
+// impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
+//     fn from(sub_cmd: DevBenchmarkTryFitItemsCmd) -> Self {
+//         DevBenchmarkCmd::TryFitItems(sub_cmd)
+//     }
+// }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution

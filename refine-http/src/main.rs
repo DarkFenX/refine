@@ -76,7 +76,7 @@ async fn main() {
         // .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
         // Development-related handlers
         .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
-        // .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
+        .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
         .with_state(state);
     // Middleware
     let url_mid = NormalizePathLayer::trim_trailing_slash();
