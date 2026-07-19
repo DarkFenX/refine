@@ -5,10 +5,13 @@ pub(in crate::cmd) struct ICmdFitAddFCtxBIds {
     pub(in crate::cmd) shared: ICmdFitAddShared = ICmdFitAddShared { .. },
     pub(in crate::cmd) fleet_id: Option<FleetIdBackref> = None,
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdFitAddFCtxRIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFitAddShared = ICmdFitAddShared { .. },
     pub(in crate::cmd) fleet_id: Option<FleetId> = None,
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFitAddShared {
     pub(in crate::cmd) sec_status: Option<FitSecStatus> = None,
     pub(in crate::cmd) rah_incoming_dps: Option<DpsProfile> = None,

@@ -2,7 +2,7 @@ use std::num::Wrapping;
 
 use crate::util::{LibDefault, LibIncrement};
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct FleetId(u32);
 impl LibDefault for FleetId {

@@ -64,3 +64,21 @@ impl PartialOrd for FitSecStatus {
         Some(self.cmp(other))
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use super::*;
+
+    impl<'de> serde::Deserialize<'de> for FitSecStatus {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            f64::deserialize(deserializer)
+                .and_then(|value| FitSecStatus::from_f64_checked(value).map_err(serde::de::Error::custom))
+        }
+    }
+}

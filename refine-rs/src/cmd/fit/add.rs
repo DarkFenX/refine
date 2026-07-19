@@ -3,8 +3,10 @@ use crate::{
     cmd::inner::{AddFitError, ICmdFitAddFCtxRIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct AddFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdFitAddFCtxRIds = ICmdFitAddFCtxRIds { .. },
 }
 
