@@ -114,7 +114,7 @@ mod custom_serde {
                 type Value = AttrId;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("attribute type-prefixed integer")
+                    formatter.write_str("string with attribute type-prefixed integer")
                 }
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>

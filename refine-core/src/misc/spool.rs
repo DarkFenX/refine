@@ -77,7 +77,7 @@ mod custom_serde {
                 type Value = Spool;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("spool type-prefixed number")
+                    formatter.write_str("string with spool type-prefixed number")
                 }
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>

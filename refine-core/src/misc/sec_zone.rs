@@ -57,7 +57,7 @@ mod custom_serde {
                 type Value = SecZone;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("security zone as a string")
+                    formatter.write_str("string with security zone")
                 }
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
