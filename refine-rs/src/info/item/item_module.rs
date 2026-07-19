@@ -12,6 +12,8 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct ModuleInfo {
     pub id: ItemId,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub charge: Option<ChargeInfo>,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<ModuleInfoExt>,
 }
@@ -27,8 +29,6 @@ pub struct ModuleInfoExt {
     pub pos: Index,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub mutation: Option<ItemMutationInfo>,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub charge: Option<ChargeInfo>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "TriStateField::is_absent"))]
     pub charge_count: TriStateField<Count>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "TriStateField::is_absent"))]
@@ -63,22 +63,24 @@ pub struct ModuleInfoExt {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleInfo {
     pub(in crate::info) fn from_core(core_module: &mut rc::ModuleMut, item_mode: ItemInfoMode) -> Self {
+        let charge_info = core_module
+            .get_charge_mut()
+            .map(|mut core_charge| ChargeInfo::from_core(&mut core_charge, item_mode));
+        let has_charge = charge_info.is_some();
         Self {
             id: core_module.get_item_id(),
+            charge: charge_info,
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => {
-                    let charge_info = core_module
-                        .get_charge_mut()
-                        .map(|mut core_charge| ChargeInfo::from_core(&mut core_charge, item_mode));
-                    let charge_count = match charge_info.is_some() {
+                    let charge_count = match has_charge {
                         true => match core_module.get_charge_count() {
                             Some(charge_count) => TriStateField::Value(charge_count),
                             None => TriStateField::None,
                         },
                         false => TriStateField::Absent,
                     };
-                    let charged_cycle_count = match charge_info.is_some() {
+                    let charged_cycle_count = match has_charge {
                         true => match core_module.get_charged_cycle_count() {
                             Some(charged_cycle_count) => TriStateField::Value(charged_cycle_count),
                             None => TriStateField::None,
@@ -94,7 +96,6 @@ impl ModuleInfo {
                         rack: core_module.get_rack(),
                         pos: core_module.get_pos(),
                         mutation: core_module.get_mutation().and_then(ItemMutationInfo::try_from_core),
-                        charge: charge_info,
                         charge_count,
                         charged_cycles: charged_cycle_count,
                         spool_cycles: core_module.get_spool_cycle_count(),
