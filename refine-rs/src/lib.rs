@@ -1,7 +1,7 @@
 #![feature(default_field_values)]
-#![feature(cfg_eval)]
 #![feature(const_trait_impl)]
 #![feature(const_default)]
+#![cfg_attr(feature = "serde", feature(cfg_eval))]
 
 pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use cmd::{
