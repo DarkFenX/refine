@@ -42,13 +42,19 @@ async fn internal_change_sol(
     payload: SolChangeReqBody,
 ) -> Result<HSolChangeResp, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
-    //let cmds = payload.commands.into_iter().map(|raw_cmd| serde_json::from_value(raw_cmd))
+    let mut cmds = Vec::with_capacity(payload.commands.len());
+    for (index, raw_cmd) in payload.commands.into_iter().enumerate() {
+        match serde_json::from_value(raw_cmd) {
+            Ok(cmd) => cmds.push(cmd),
+            Err(de_err) => return Err(ApiError::BatchParseFailed(index, de_err.to_string())),
+        }
+    }
     let (cmd_resps, sol_info) = state
         .get_refine()
         .get_sol(sol_id)
         .await?
         .change_and_get_info(
-            Vec::new(),
+            cmds,
             params.sol.unwrap_or_default(),
             params.fleet.unwrap_or_default(),
             params.fit.unwrap_or_default(),

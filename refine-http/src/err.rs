@@ -12,6 +12,8 @@ pub(crate) enum ApiError {
     Query(QueryRejection),
     #[error("{}", .0.body_text())]
     Json(JsonRejection),
+    #[error("command #{0} failed: {1}")]
+    BatchParseFailed(usize, String),
     // Source-related
     #[error("failed to add source: {0}")]
     SrcAddFailed(#[from] rs::src::err::AddSrcError),
@@ -53,6 +55,7 @@ impl ApiError {
         match self {
             Self::Query(_) => StatusCode::BAD_REQUEST,
             Self::Json(_) => StatusCode::BAD_REQUEST,
+            Self::BatchParseFailed(_, _) => StatusCode::BAD_REQUEST,
             // Source-related
             Self::SrcAddFailed(rs_err) => match rs_err {
                 rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
@@ -89,6 +92,7 @@ impl ApiError {
         match self {
             Self::Query(_) => "PRM-001",
             Self::Json(_) => "JSN-001",
+            Self::BatchParseFailed(_, _) => "JSN-002",
             // Source-related
             Self::SrcAddFailed(rs_err) => match rs_err {
                 rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => "SRC-001",
