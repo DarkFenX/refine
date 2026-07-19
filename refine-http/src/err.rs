@@ -31,6 +31,10 @@ pub(crate) enum ApiError {
     // Fit-related
     #[error("failed to add fit: {0}")]
     FitAddFailed(#[from] rs::err::AddFitError),
+    #[error("failed to get fit: {0}")]
+    PathFitParseFailed(#[from] rs::err::ParseFitIdError),
+    #[error("failed to get fit: {0}")]
+    PathFitNotFound(#[from] rs::err::GetFitError),
 }
 
 #[derive(Serialize)]
@@ -70,6 +74,8 @@ impl ApiError {
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => StatusCode::BAD_REQUEST,
             },
+            Self::PathFitParseFailed(_) => StatusCode::NOT_FOUND,
+            Self::PathFitNotFound(_) => StatusCode::NOT_FOUND,
         }
     }
     fn get_api_code(&self) -> &str {
@@ -104,6 +110,8 @@ impl ApiError {
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => "FIT-001",
             },
+            Self::PathFitParseFailed(_) => "FIT-002",
+            Self::PathFitNotFound(_) => "FIT-003",
         }
     }
 }

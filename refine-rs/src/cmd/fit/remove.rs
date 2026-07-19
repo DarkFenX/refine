@@ -1,7 +1,9 @@
 use crate::cmd::inner::ICmdFitRemoveICtx;
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct RemoveFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdFitRemoveICtx = ICmdFitRemoveICtx,
 }
 

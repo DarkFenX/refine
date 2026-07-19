@@ -1,5 +1,7 @@
 pub(crate) use container::UFleets;
 pub(crate) use fleet::UFleet;
+#[cfg(feature = "serde")]
+pub use id::ParseFleetIdError;
 pub use id::{FleetFoundError, FleetId};
 pub(crate) use uid::UFleetId;
 

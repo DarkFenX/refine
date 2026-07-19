@@ -59,7 +59,7 @@ async fn main() {
         .route("/sol/{sol_id}/fit", post(handlers::add_fit))
         // .route("/sol/{sol_id}/fit/{fit_id}", get(handlers::get_fit))
         // .route("/sol/{sol_id}/fit/{fit_id}", patch(handlers::change_fit))
-        // .route("/sol/{sol_id}/fit/{fit_id}", delete(handlers::delete_fit))
+        .route("/sol/{sol_id}/fit/{fit_id}", delete(handlers::remove_fit))
         // .route("/sol/{sol_id}/fit/{fit_id}/stats", post(handlers::get_fit_stats))
         // .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
         // .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::try_fit_items))

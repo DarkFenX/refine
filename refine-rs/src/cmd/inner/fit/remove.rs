@@ -11,6 +11,7 @@ pub(crate) struct ICmdFitRemoveFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFitRemoveICtx;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

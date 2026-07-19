@@ -34,19 +34,26 @@ impl From<FleetId> for FleetFoundError {
 // Custom serialization/deserialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
+pub use custom_serde::ParseFleetIdError;
+
+#[cfg(feature = "serde")]
 mod custom_serde {
     use std::str::FromStr;
 
     use super::*;
 
     impl FromStr for FleetId {
-        type Err = std::num::ParseIntError;
+        type Err = ParseFleetIdError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let raw = u32::from_str(s)?;
             Ok(Self(raw))
         }
     }
+
+    #[derive(thiserror::Error, Debug)]
+    #[error("{0}")]
+    pub struct ParseFleetIdError(#[from] std::num::ParseIntError);
 
     impl serde::Serialize for FleetId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

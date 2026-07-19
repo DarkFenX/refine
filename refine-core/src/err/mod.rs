@@ -1,5 +1,7 @@
 pub use basic::ItemKindMatchError;
 
+#[cfg(feature = "serde")]
+pub use crate::ud::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
 pub use crate::{
     api::{
         AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, FitAppliedStatError, FitCharacterStatError,
