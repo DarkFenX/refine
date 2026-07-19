@@ -4,7 +4,9 @@ use crate::{
     cmd::inner::{ICmdDroneAddFCtxBIds, ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolAddDroneCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdDroneAddFCtxBIds,
 }
 impl SolAddDroneCmd {
