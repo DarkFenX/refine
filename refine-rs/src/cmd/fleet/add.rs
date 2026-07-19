@@ -3,8 +3,10 @@ use crate::{
     cmd::inner::{AddFleetError, ICmdFleetAddFCtxRIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct AddFleetCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdFleetAddFCtxRIds = ICmdFleetAddFCtxRIds { .. },
 }
 

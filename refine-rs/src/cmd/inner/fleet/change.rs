@@ -18,6 +18,7 @@ pub(in crate::cmd) struct ICmdFleetChangeICtxBIds {
     pub(in crate::cmd) add_fit_ids: Vec<FitIdBackref> = Vec::new(),
     pub(in crate::cmd) rm_fit_ids: Vec<FitIdBackref> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFleetChangeICtxRIds {
     pub(in crate::cmd) add_fit_ids: Vec<FitId> = Vec::new(),
     pub(in crate::cmd) rm_fit_ids: Vec<FitId> = Vec::new(),

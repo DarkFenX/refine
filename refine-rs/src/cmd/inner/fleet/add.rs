@@ -6,6 +6,7 @@ pub(in crate::cmd) struct ICmdFleetAddFCtxBIds {
     pub(in crate::cmd) fit_ids: Vec<FitIdBackref> = Vec::new(),
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdFleetAddFCtxRIds {
     pub(in crate::cmd) fit_ids: Vec<FitId> = Vec::new(),
 }

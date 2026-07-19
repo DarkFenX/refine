@@ -32,6 +32,15 @@ pub(crate) enum ApiError {
     PathSolParseFailed(#[from] rs::err::ParseSolarSystemIdError),
     #[error("failed to get solar system: {0}")]
     PathSolNotFound(#[from] rs::err::GetSolError),
+    // Fleet-related
+    #[error("failed to add fleet: {0}")]
+    FleetAddFailed(#[from] rs::err::AddFleetError),
+    #[error("failed to change fleet: {0}")]
+    FleetChangeFailed(#[from] rs::err::ChangeFleetError),
+    #[error("failed to get fleet: {0}")]
+    PathFleetParseFailed(#[from] rs::err::ParseFleetIdError),
+    #[error("failed to get fleet: {0}")]
+    PathFleetNotFound(#[from] rs::err::GetFleetError),
     // Fit-related
     #[error("failed to add fit: {0}")]
     FitAddFailed(#[from] rs::err::AddFitError),
@@ -93,6 +102,14 @@ impl ApiError {
             },
             Self::PathSolParseFailed(_) => StatusCode::NOT_FOUND,
             Self::PathSolNotFound(_) => StatusCode::NOT_FOUND,
+            // Fleet-related
+            Self::FleetAddFailed(rs_err) => match rs_err {
+                rs::err::AddFleetError::FitAddFailed(_) => StatusCode::BAD_REQUEST,
+            },
+            // TODO: adjust error codes based on specific responses
+            Self::FleetChangeFailed(_) => StatusCode::BAD_REQUEST,
+            Self::PathFleetParseFailed(_) => StatusCode::NOT_FOUND,
+            Self::PathFleetNotFound(_) => StatusCode::NOT_FOUND,
             // Fit-related
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => StatusCode::BAD_REQUEST,
@@ -149,6 +166,14 @@ impl ApiError {
             Self::PathSolNotFound(rs_err) => match rs_err {
                 rs::err::GetSolError::SolNotFound(_) => "SOL-003",
             },
+            // Fleet-related
+            Self::FleetAddFailed(rs_err) => match rs_err {
+                rs::err::AddFleetError::FitAddFailed(_) => "FLT-001",
+            },
+            // TODO: adjust error codes based on specific responses
+            Self::FleetChangeFailed(_) => "FLT-004",
+            Self::PathFleetParseFailed(_) => "FLT-002",
+            Self::PathFleetNotFound(_) => "FLT-003",
             // Fit-related
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => "FIT-001",

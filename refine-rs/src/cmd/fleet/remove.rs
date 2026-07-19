@@ -1,7 +1,9 @@
 use crate::cmd::inner::ICmdFleetRemoveICtx;
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct RemoveFleetCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdFleetRemoveICtx = ICmdFleetRemoveICtx,
 }
 

@@ -3,8 +3,10 @@ use crate::{
     cmd::inner::{FleetChangeFleetError, ICmdFleetChangeICtxRIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ChangeFleetCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdFleetChangeICtxRIds = ICmdFleetChangeICtxRIds { .. },
 }
 
