@@ -22,6 +22,8 @@ pub(crate) enum ApiError {
     // Solar system-related
     #[error("failed to add solar system: {0}")]
     SolAddFailed(#[from] rs::err::AddSolError),
+    #[error("failed to change solar system: {0}")]
+    SolChangeFailed(#[from] rs::err::ChangeSolError),
     #[error("failed to remove solar system: {0}")]
     SolRemoveFailed(#[from] rs::err::RemoveSolError),
     #[error("failed to get solar system: {0}")]
@@ -65,6 +67,11 @@ impl ApiError {
             Self::SolAddFailed(rs_err) => match rs_err {
                 rs::err::AddSolError::GetSrcFailed(_) => StatusCode::BAD_REQUEST,
             },
+            Self::SolChangeFailed(rs_err) => match rs_err {
+                rs::err::ChangeSolError::RenderFailed(_, _) => StatusCode::BAD_REQUEST,
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeSolError::ExecFailed(_, _) => StatusCode::BAD_REQUEST,
+            },
             Self::SolRemoveFailed(rs_err) => match rs_err {
                 rs::err::RemoveSolError::SolNotFound(_) => StatusCode::NOT_FOUND,
             },
@@ -99,8 +106,13 @@ impl ApiError {
             Self::SolAddFailed(rs_err) => match rs_err {
                 rs::err::AddSolError::GetSrcFailed(_) => "SOL-001",
             },
+            Self::SolChangeFailed(rs_err) => match rs_err {
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeSolError::RenderFailed(_, _) => "SOL-004",
+                rs::err::ChangeSolError::ExecFailed(_, _) => "SOL-004",
+            },
             Self::SolRemoveFailed(rs_err) => match rs_err {
-                rs::err::RemoveSolError::SolNotFound(_) => "SOL-004",
+                rs::err::RemoveSolError::SolNotFound(_) => "SOL-005",
             },
             Self::PathSolParseFailed(_) => "SOL-002",
             Self::PathSolNotFound(rs_err) => match rs_err {

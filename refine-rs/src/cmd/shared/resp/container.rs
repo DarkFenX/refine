@@ -1,5 +1,6 @@
 use crate::{CmdResp, FitId, FitIdBackref, FleetId, FleetIdBackref, ItemId, ItemIdBackref, err::BackrefRenderError};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct CmdResps {
     data: Vec<CmdResp>,
 }

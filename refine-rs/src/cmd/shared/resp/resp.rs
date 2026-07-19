@@ -2,6 +2,7 @@ use rc::ItemCommon;
 
 use crate::{FitId, FleetId, ItemId};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum CmdResp {
     AddedFleetId(AddedFleetIdResp),
     AddedFitId(AddedFitIdResp),
@@ -38,21 +39,27 @@ impl CmdResp {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct AddedFleetIdResp {
     pub fleet_id: FleetId,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct AddedFitIdResp {
     pub fit_id: FitId,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct AddedItemIdsResp {
     pub item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge_item_id: Option<ItemId>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Default)]
 pub struct ChangedItemIdsResp {
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge_item_id: Option<ItemId>,
 }
 
