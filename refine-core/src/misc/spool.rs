@@ -100,8 +100,7 @@ mod custom_serde {
                         return Ok(Self::Value::Time(time));
                     }
                     let msg = format!(
-                        "expected a number prefixed by \"{CYCLES_PREFIX}\", \"{TIME_PREFIX}\", \"{SPOOL_SCALE_PREFIX}\", \
-                    or \"{CYCLE_SCALE_PREFIX}\", got \"{v}\""
+                        "expected a number prefixed by \"{CYCLES_PREFIX}\", \"{TIME_PREFIX}\", \"{SPOOL_SCALE_PREFIX}\", or \"{CYCLE_SCALE_PREFIX}\", got \"{v}\""
                     );
                     Err(serde::de::Error::custom(msg))
                 }
