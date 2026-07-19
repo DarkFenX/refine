@@ -17,7 +17,7 @@ pub(crate) async fn get_fit(
     WithRejection(Query(params), _): WithRejection<Query<FitInfoParams>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_fit(state, sol_id, fit_id, params).await {
-        Ok(sol_info) => (StatusCode::CREATED, Json(sol_info)).into_response(),
+        Ok(fit_info) => (StatusCode::OK, Json(fit_info)).into_response(),
         Err(err) => err.into_response(),
     }
 }
