@@ -28,6 +28,9 @@ pub(crate) enum ApiError {
     PathSolParseFailed(#[from] rs::err::ParseSolarSystemIdError),
     #[error("failed to get solar system: {0}")]
     PathSolNotFound(#[from] rs::err::GetSolError),
+    // Fit-related
+    #[error("failed to add fit: {0}")]
+    FitAddFailed(#[from] rs::err::AddFitError),
 }
 
 #[derive(Serialize)]
@@ -63,6 +66,10 @@ impl ApiError {
             },
             Self::PathSolParseFailed(_) => StatusCode::NOT_FOUND,
             Self::PathSolNotFound(_) => StatusCode::NOT_FOUND,
+            // Fit-related
+            Self::FitAddFailed(rs_err) => match rs_err {
+                rs::err::AddFitError::FleetSetFailed(_) => StatusCode::BAD_REQUEST,
+            },
         }
     }
     fn get_api_code(&self) -> &str {
@@ -92,6 +99,10 @@ impl ApiError {
             Self::PathSolParseFailed(_) => "SOL-002",
             Self::PathSolNotFound(rs_err) => match rs_err {
                 rs::err::GetSolError::SolNotFound(_) => "SOL-003",
+            },
+            // Fit-related
+            Self::FitAddFailed(rs_err) => match rs_err {
+                rs::err::AddFitError::FleetSetFailed(_) => "FIT-001",
             },
         }
     }
