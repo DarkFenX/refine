@@ -1,7 +1,9 @@
 use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBackref, err::BackrefRenderError};
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFitAddFCtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFitAddShared = ICmdFitAddShared { .. },
     pub(in crate::cmd) fleet_id: Option<FleetIdBackref> = None,
 }

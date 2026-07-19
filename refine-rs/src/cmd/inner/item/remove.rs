@@ -1,8 +1,10 @@
 use crate::{CmdResps, ItemId, ItemIdBackref, RemoveMode, err::BackrefRenderError};
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdItemRemoveFCtxBIds {
     pub(in crate::cmd) item_id: ItemIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
 }
 pub(crate) struct ICmdItemRemoveFCtxRIds {
@@ -11,6 +13,7 @@ pub(crate) struct ICmdItemRemoveFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdItemRemoveICtx {
     pub(in crate::cmd) rm_mode: Option<RemoveMode> = None,
 }

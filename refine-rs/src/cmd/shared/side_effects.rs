@@ -1,7 +1,14 @@
 use crate::EffectId;
 
+#[cfg_attr(
+    feature = "serde",
+    serde_with::serde_as,
+    derive(serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub(in crate::cmd) struct SideEffects {
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     data: Vec<(EffectId, bool)>,
 }
 impl SideEffects {

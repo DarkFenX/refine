@@ -1,8 +1,10 @@
 use crate::{CmdResps, FitId, FitIdBackref, err::BackrefRenderError};
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFitRemoveFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdFitRemoveICtx = ICmdFitRemoveICtx,
 }
 pub(crate) struct ICmdFitRemoveFCtxRIds {

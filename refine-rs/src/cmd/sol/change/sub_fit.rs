@@ -3,8 +3,10 @@ use crate::{
     cmd::inner::{ICmdFitAddFCtxBIds, ICmdFitChangeFCtxBIds, ICmdFitRemoveFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct SolAddFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFitAddFCtxBIds = ICmdFitAddFCtxBIds { .. },
 }
 impl SolAddFitCmd {
@@ -30,7 +32,9 @@ impl From<SolAddFitCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFitChangeFCtxBIds,
 }
 impl SolChangeFitCmd {
@@ -58,7 +62,9 @@ impl From<SolChangeFitCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolRemoveFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFitRemoveFCtxBIds,
 }
 impl SolRemoveFitCmd {

@@ -3,7 +3,7 @@ use crate::ad::AItemId;
 /// Item type ID.
 #[cfg_attr(
     feature = "serde",
-    derive(derive_more::FromStr, serde::Serialize),
+    derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]

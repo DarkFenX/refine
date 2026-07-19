@@ -10,7 +10,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Set
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolSetCharacterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdCharacterSetFCtxBIds,
 }
 impl SolSetCharacterCmd {
@@ -41,12 +43,15 @@ impl From<SolSetCharacterCmd> for ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change - public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 pub enum SolChangeCharacterCmd {
     ViaFitId(SolChangeCharacterViaFitCmd),
     ViaItemId(SolChangeCharacterViaItemCmd),
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeCharacterViaFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdCharacterChangeFFitCtxBIds,
 }
 impl SolChangeCharacterViaFitCmd {
@@ -75,7 +80,9 @@ impl From<SolChangeCharacterViaFitCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeCharacterViaItemCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdCharacterChangeFItemCtxBIds,
 }
 impl SolChangeCharacterViaItemCmd {
@@ -140,7 +147,9 @@ pub enum ChangeCharacterError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Unset
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolUnsetCharacterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdCharacterUnsetFCtxBIds,
 }
 impl SolUnsetCharacterCmd {

@@ -1,5 +1,5 @@
 /// Item effect operation modes.
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Copy, Clone, PartialEq)]
 pub enum EffectMode {
     /// In this mode rules vary, depending on effect category:

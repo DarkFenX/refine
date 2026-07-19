@@ -1,6 +1,8 @@
 use crate::{ChangeSolEnumCmd, ItemIdBackref, RemoveMode, cmd::inner::ICmdItemRemoveFCtxBIds};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolRemoveItemCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdItemRemoveFCtxBIds,
 }
 impl SolRemoveItemCmd {

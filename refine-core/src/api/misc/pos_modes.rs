@@ -1,6 +1,7 @@
 use crate::num::Index;
 
 /// Defines how module is added.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum AddMode {
     /// Add to the end of a rack.
@@ -14,6 +15,7 @@ pub enum AddMode {
 }
 
 /// Defines how module is moved within its rack.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum MoveMode {
     /// Takes a module and moves it to new position, shifting modules between original and target
@@ -25,6 +27,7 @@ pub enum MoveMode {
 }
 
 /// Defines how module is removed from a rack.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum RemoveMode {
     /// Shift all items after the item being removed to the left.

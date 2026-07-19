@@ -25,7 +25,9 @@ impl From<SolAddFleetCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeFleetCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFleetChangeFCtxBIds,
 }
 impl SolChangeFleetCmd {
@@ -51,7 +53,9 @@ impl From<SolChangeFleetCmd> for ChangeSolEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolRemoveFleetCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFleetRemoveFCtxBIds,
 }
 impl SolRemoveFleetCmd {

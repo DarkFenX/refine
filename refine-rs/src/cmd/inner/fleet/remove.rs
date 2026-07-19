@@ -1,8 +1,10 @@
 use crate::{CmdResps, FleetId, FleetIdBackref, err::BackrefRenderError};
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFleetRemoveFCtxBIds {
     pub(in crate::cmd) fleet_id: FleetIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdFleetRemoveICtx = ICmdFleetRemoveICtx,
 }
 pub(crate) struct ICmdFleetRemoveFCtxRIds {
@@ -11,6 +13,7 @@ pub(crate) struct ICmdFleetRemoveFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFleetRemoveICtx;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

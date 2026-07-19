@@ -1,6 +1,8 @@
 use crate::{ChangeSolEnumCmd, EffectId, EffectMode, ItemIdBackref, cmd::inner::ICmdAutochargeChangeFCtxBIds};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeAutochargeCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdAutochargeChangeFCtxBIds,
 }
 impl SolChangeAutochargeCmd {

@@ -3,8 +3,10 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdCharacterSetFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdCharacterSetICtx,
 }
 pub(crate) struct ICmdCharacterSetFCtxRIds {
@@ -13,6 +15,7 @@ pub(crate) struct ICmdCharacterSetFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdCharacterSetICtx {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,

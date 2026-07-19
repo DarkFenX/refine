@@ -4,8 +4,10 @@ use crate::{
 };
 
 // Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFitChangeFCtxBIds {
     pub(in crate::cmd) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) ictx_cmd: ICmdFitChangeICtxBIds = ICmdFitChangeICtxBIds { .. },
 }
 pub(crate) struct ICmdFitChangeFCtxRIds {
@@ -14,7 +16,9 @@ pub(crate) struct ICmdFitChangeFCtxRIds {
 }
 
 // Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFitChangeICtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: CmdFitChangeShared = CmdFitChangeShared { .. },
     pub(in crate::cmd) fleet_id: TriStateField<FleetIdBackref> = TriStateField::Absent,
 }
@@ -22,6 +26,7 @@ pub(crate) struct ICmdFitChangeICtxRIds {
     shared: CmdFitChangeShared,
     fleet_id: TriStateField<FleetId>,
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct CmdFitChangeShared {
     pub(in crate::cmd) sec_status: Option<FitSecStatus> = None,
     pub(in crate::cmd) rah_incoming_dps: TriStateField<DpsProfile> = TriStateField::Absent,

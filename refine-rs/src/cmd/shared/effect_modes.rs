@@ -2,8 +2,15 @@ use rc::ItemMutCommon;
 
 use crate::{EffectId, EffectMode};
 
+#[cfg_attr(
+    feature = "serde",
+    serde_with::serde_as,
+    derive(serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub(in crate::cmd) struct EffectModes {
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     data: Vec<(EffectId, EffectMode)>,
 }
 impl EffectModes {
