@@ -1,7 +1,5 @@
 pub use abil_found::AbilityFoundError;
 pub use attr_found::AttrFoundError;
-pub use breacher_dmg::BreacherDmgError;
-pub use dmg::DmgError;
 pub use fit_dps_profile_found::FitDpsProfileFoundError;
 pub use fit_fleet_assigned::FitFleetAssignedError;
 pub use fit_has_character::FitHasCharacterError;
@@ -26,8 +24,6 @@ pub use crate::ud::err::{FitFoundError, FleetFoundError, ItemFoundError};
 
 mod abil_found;
 mod attr_found;
-mod breacher_dmg;
-mod dmg;
 mod fit_dps_profile_found;
 mod fit_fleet_assigned;
 mod fit_has_character;

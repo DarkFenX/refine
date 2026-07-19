@@ -35,7 +35,13 @@ impl UData {
             proj_effects: RSet::new(),
             items: UItems::new(10000),
             sec_zone: SecZone::NullSec,
-            default_incoming_dps: DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ONE, PValue::ONE, None),
+            default_incoming_dps: DpsProfile {
+                em: PValue::ONE,
+                thermal: PValue::ONE,
+                kinetic: PValue::ONE,
+                explosive: PValue::ONE,
+                ..
+            },
             default_spool: Spool::SpoolScale(UnitInterval::from_f64_clamped(1.0)),
             default_npc_prop: NpcProp::Chase,
             default_optional_reloads: OptionalReload::OnEmpty,

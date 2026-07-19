@@ -30,8 +30,18 @@ impl<'s> FitMut<'s> {
             optional_reloads: None,
             rearm_minions: None,
         });
-        let dmg_pattern_uniform = DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ONE, PValue::ONE, None);
-        let dmg_pattern_laser = DpsProfile::new(PValue::ONE, PValue::ONE, PValue::ZERO, PValue::ZERO, None);
+        let dmg_pattern_uniform = DpsProfile {
+            em: PValue::ONE,
+            thermal: PValue::ONE,
+            kinetic: PValue::ONE,
+            explosive: PValue::ONE,
+            ..
+        };
+        let dmg_pattern_laser = DpsProfile {
+            em: PValue::ONE,
+            thermal: PValue::ONE,
+            ..
+        };
         let shield_perc_peak = UnitInterval::from_f64_clamped(0.25);
         let dmg_item_kinds = StatDmgItemKinds { default: true, .. };
         let mining_item_kinds = StatMiningItemKinds { default: true, .. };

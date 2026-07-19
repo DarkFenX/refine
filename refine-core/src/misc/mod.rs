@@ -1,7 +1,7 @@
 pub(crate) use attr_spec::AttrSpec;
 pub use def_option::{DefOption, DefOptionExt};
 pub(crate) use dmg_kinds::DmgKinds;
-pub use dps_profile::{BreacherProfile, BreacherProfileError, DpsProfile, DpsProfileError};
+pub use dps_profile::{BreacherProfile, DpsProfile};
 pub use effect_mode::EffectMode;
 pub(crate) use effect_spec::EffectSpec;
 pub use fighter_count::FighterCountInfo;

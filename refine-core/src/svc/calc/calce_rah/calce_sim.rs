@@ -71,17 +71,15 @@ impl Calc {
                 return;
             };
             for item_data in item_datas.iter_mut() {
-                item_data.taken_dmg.em += dps_profile.get_em() * ship_stats.resos.em * tick_data.time_passed;
-                item_data.taken_dmg.thermal +=
-                    dps_profile.get_thermal() * ship_stats.resos.thermal * tick_data.time_passed;
-                item_data.taken_dmg.kinetic +=
-                    dps_profile.get_kinetic() * ship_stats.resos.kinetic * tick_data.time_passed;
+                item_data.taken_dmg.em += dps_profile.em * ship_stats.resos.em * tick_data.time_passed;
+                item_data.taken_dmg.thermal += dps_profile.thermal * ship_stats.resos.thermal * tick_data.time_passed;
+                item_data.taken_dmg.kinetic += dps_profile.kinetic * ship_stats.resos.kinetic * tick_data.time_passed;
                 item_data.taken_dmg.explosive +=
-                    dps_profile.get_explosive() * ship_stats.resos.explosive * tick_data.time_passed;
-                if let Some(breacher) = dps_profile.get_breacher() {
+                    dps_profile.explosive * ship_stats.resos.explosive * tick_data.time_passed;
+                if let Some(breacher) = dps_profile.breacher {
                     let breacher_dps = breacher
-                        .get_absolute_max()
-                        .min(breacher.get_relative_max().into_pvalue() * ship_stats.total_hp);
+                        .absolute_max
+                        .min(breacher.relative_max.into_pvalue() * ship_stats.total_hp);
                     // Breacher counts as EM damage for some reason
                     item_data.taken_dmg.em += breacher_dps * ship_stats.breacher_reso * tick_data.time_passed;
                 }
