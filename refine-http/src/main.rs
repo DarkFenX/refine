@@ -52,7 +52,7 @@ async fn main() {
         .route("/src/{alias}", post(handlers::add_source))
         .route("/src/{alias}", delete(handlers::remove_source))
         .route("/sol", post(handlers::add_sol))
-        // .route("/sol/{sol_id}", get(handlers::get_sol))
+        .route("/sol/{sol_id}", get(handlers::get_sol))
         // .route("/sol/{sol_id}", patch(handlers::change_sol))
         .route("/sol/{sol_id}", delete(handlers::remove_sol))
         // .route("/sol/{sol_id}/src", patch(handlers::change_sol_src))
