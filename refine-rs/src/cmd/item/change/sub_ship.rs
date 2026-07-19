@@ -2,8 +2,10 @@ use crate::{
     ChangeItemEnumCmd, Coordinates, EffectId, EffectMode, ItemTypeId, Movement, cmd::inner::ICmdShipChangeICtx,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemChangeShipCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdShipChangeICtx = ICmdShipChangeICtx { .. },
 }
 impl ItemChangeShipCmd {

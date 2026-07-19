@@ -1,7 +1,9 @@
 use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, cmd::inner::ICmdSwEffectChangeICtx};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemChangeSwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSwEffectChangeICtx = ICmdSwEffectChangeICtx { .. },
 }
 impl ItemChangeSwEffectCmd {

@@ -25,7 +25,9 @@ pub(in crate::cmd) struct ICmdFighterChangeICtxBIds {
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterChangeICtxRIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterChangeShared = ICmdFighterChangeShared { .. },
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),

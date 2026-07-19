@@ -1,7 +1,9 @@
 use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, cmd::inner::ICmdChargeChangeICtx};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemChangeChargeCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdChargeChangeICtx = ICmdChargeChangeICtx { .. },
 }
 impl ItemChangeChargeCmd {

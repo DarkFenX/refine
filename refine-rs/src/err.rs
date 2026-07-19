@@ -1,5 +1,5 @@
 #[cfg(feature = "serde")]
-pub use rc::err::ParseFitIdError;
+pub use rc::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
 
 #[cfg(feature = "serde")]
 pub use crate::api::ParseSolarSystemIdError;

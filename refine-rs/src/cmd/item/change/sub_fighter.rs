@@ -3,8 +3,10 @@ use crate::{
     Movement, RearmMinion, cmd::inner::ICmdFighterChangeICtxRIds,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemChangeFighterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFighterChangeICtxRIds = ICmdFighterChangeICtxRIds { .. },
 }
 impl ItemChangeFighterCmd {

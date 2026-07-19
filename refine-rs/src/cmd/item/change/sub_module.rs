@@ -3,8 +3,10 @@ use crate::{
     Spool, cmd::inner::ICmdModuleChangeICtxRIds,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemChangeModuleCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdModuleChangeICtxRIds = ICmdModuleChangeICtxRIds { .. },
 }
 impl ItemChangeModuleCmd {

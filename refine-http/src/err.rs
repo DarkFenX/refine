@@ -44,6 +44,12 @@ pub(crate) enum ApiError {
     // Item-related
     #[error("failed to add item: {0}")]
     ItemAddFailed(#[from] rs::err::AddItemEnumError),
+    #[error("failed to change item: {0}")]
+    ItemChangeFailed(#[from] rs::err::ChangeItemEnumError),
+    #[error("failed to get item: {0}")]
+    PathItemParseFailed(#[from] rs::err::ParseItemIdError),
+    #[error("failed to get item: {0}")]
+    PathItemNotFound(#[from] rs::err::GetItemError),
 }
 
 #[derive(Serialize)]
@@ -99,6 +105,10 @@ impl ApiError {
             // Item-related
             // TODO: adjust error codes based on specific responses
             Self::ItemAddFailed(_) => StatusCode::BAD_REQUEST,
+            // TODO: adjust error codes based on specific responses
+            Self::ItemChangeFailed(_) => StatusCode::BAD_REQUEST,
+            Self::PathItemParseFailed(_) => StatusCode::NOT_FOUND,
+            Self::PathItemNotFound(_) => StatusCode::NOT_FOUND,
         }
     }
     fn get_api_code(&self) -> &str {
@@ -149,6 +159,10 @@ impl ApiError {
             // Item-related
             // TODO: adjust error codes based on specific responses
             Self::ItemAddFailed(_) => "ITM-001",
+            // TODO: adjust error codes based on specific responses
+            Self::ItemChangeFailed(_) => "ITM-004",
+            Self::PathItemParseFailed(_) => "ITM-002",
+            Self::PathItemNotFound(_) => "ITM-003",
         }
     }
 }

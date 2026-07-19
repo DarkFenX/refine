@@ -3,8 +3,10 @@ use crate::{
     NpcProp, cmd::inner::ICmdDroneChangeICtxRIds,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemChangeDroneCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdDroneChangeICtxRIds = ICmdDroneChangeICtxRIds { .. },
 }
 impl ItemChangeDroneCmd {
