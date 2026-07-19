@@ -3,8 +3,10 @@ use crate::{
     cmd::inner::{ICmdFleetAddFCtxBIds, ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct SolAddFleetCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFleetAddFCtxBIds = ICmdFleetAddFCtxBIds { .. },
 }
 impl SolAddFleetCmd {

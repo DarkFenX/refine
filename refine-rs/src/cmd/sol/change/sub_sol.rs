@@ -2,8 +2,10 @@ use crate::{
     ChangeSolEnumCmd, DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool, cmd::inner::ICmdSolChangeFCtx,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct SolChangeSolCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSolChangeFCtx = ICmdSolChangeFCtx { .. },
 }
 impl SolChangeSolCmd {
