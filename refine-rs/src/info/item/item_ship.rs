@@ -8,11 +8,14 @@ use crate::{
     Movement,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct ShipInfo {
     pub id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<ShipInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
 pub struct ShipInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,
@@ -21,8 +24,23 @@ pub struct ShipInfoExt {
     pub state: bool,
     pub coordinates: Coordinates,
     pub movement: Movement,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub attrs: Vec<(AttrId, AttrVals)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub effects: Vec<(EffectId, EffectInfo)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 

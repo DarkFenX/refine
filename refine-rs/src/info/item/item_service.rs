@@ -7,19 +7,37 @@ use crate::{
     AttrId, AttrVals, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification, ServiceState,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct ServiceInfo {
     pub id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<ServiceInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
 pub struct ServiceInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
     pub fit_id: FitId,
     pub state: ServiceState,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub attrs: Vec<(AttrId, AttrVals)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub effects: Vec<(EffectId, EffectInfo)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 

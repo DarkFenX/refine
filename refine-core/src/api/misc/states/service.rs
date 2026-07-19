@@ -1,6 +1,11 @@
 use crate::rd::RState;
 
 /// Service states.
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(rename_all = "snake_case")
+)]
 #[derive(Copy, Clone)]
 pub enum ServiceState {
     Disabled,

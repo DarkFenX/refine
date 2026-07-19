@@ -1,5 +1,6 @@
 use crate::{misc::Xyz, num::Value};
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct Coordinates {
     pub x: Value,
