@@ -1,5 +1,6 @@
 use crate::{ItemId, ProjRange};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct ProjInfo {
     pub projectee_item_id: ItemId,
 }

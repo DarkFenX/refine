@@ -18,11 +18,23 @@ pub struct SwEffectInfoExt {
     kind: ItemKind,
     pub type_id: ItemTypeId,
     pub state: bool,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub attrs: Vec<(AttrId, AttrVals)>,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub effects: Vec<(EffectId, EffectInfo)>,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 

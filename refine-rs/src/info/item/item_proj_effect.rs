@@ -5,20 +5,41 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{AttrId, AttrVals, EffectId, EffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct ProjEffectInfo {
     pub id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<ProjEffectInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
 pub struct ProjEffectInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
     pub state: bool,
-    // TODO: in serialization, rename to proj_item_ids
+    #[cfg_attr(
+        feature = "serde",
+        serde(rename = "proj_item_ids", skip_serializing_if = "Vec::is_empty")
+    )]
     pub projs: Vec<ProjInfo>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub attrs: Vec<(AttrId, AttrVals)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub effects: Vec<(EffectId, EffectInfo)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 
