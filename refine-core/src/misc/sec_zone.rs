@@ -51,9 +51,9 @@ mod custom_serde {
         where
             D: serde::de::Deserializer<'de>,
         {
-            struct SecZoneVisitor;
+            struct Visitor;
 
-            impl<'de> serde::de::Visitor<'de> for SecZoneVisitor {
+            impl<'de> serde::de::Visitor<'de> for Visitor {
                 type Value = SecZone;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -91,7 +91,7 @@ mod custom_serde {
                     Err(serde::de::Error::custom(msg))
                 }
             }
-            deserializer.deserialize_str(SecZoneVisitor)
+            deserializer.deserialize_str(Visitor)
         }
     }
 }

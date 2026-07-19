@@ -43,6 +43,7 @@ impl std::fmt::Display for EffectId {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct DogmaEffectId(i32);
 impl DogmaEffectId {
@@ -54,6 +55,7 @@ impl DogmaEffectId {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct CustomEffectId(i32);
 impl CustomEffectId {
@@ -89,6 +91,98 @@ impl EffectId {
             EffectId::ScProxyTrap(id) => AEffectId::ScProxyTrap(id.into_aid()),
             EffectId::ScShipLink(id) => AEffectId::ScShipLink(id.into_aid()),
             EffectId::Custom(id) => AEffectId::Custom(ACustomEffectId::from_i32(id.0)),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use std::str::FromStr;
+
+    use super::*;
+
+    impl FromStr for EffectId {
+        type Err = EffectIdParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            // Process longer prefixes first in case of conflicting starting letters
+            if let Some(id_str) = s.strip_prefix(SC_SYSWIDE_PREFIX) {
+                return Ok(Self::ScSystemWide(ItemTypeId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(SC_SYSEMIT_PREFIX) {
+                return Ok(Self::ScSystemEmitter(ItemTypeId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(SC_PROXYEFF_PREFIX) {
+                return Ok(Self::ScProxyEffect(ItemTypeId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(SC_PROXYTRAP_PREFIX) {
+                return Ok(Self::ScProxyTrap(ItemTypeId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(SC_SHIPLINK_PREFIX) {
+                return Ok(Self::ScShipLink(ItemTypeId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(DOGMA_PREFIX) {
+                return Ok(Self::Dogma(DogmaEffectId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
+                return Ok(Self::Custom(CustomEffectId::from_str(id_str)?));
+            }
+            Err(EffectIdParseError::InvalidPrefix)
+        }
+    }
+
+    #[derive(thiserror::Error, Debug)]
+    pub enum EffectIdParseError {
+        #[error(
+            "invalid prefix, expected \"{d}\", \"{scsw}\", \"{scse}\", \"{scpe}\", \"{scpt}\", \"{scsl}\", or \"{c}\" prefix",
+            d = DOGMA_PREFIX,
+            scsw = SC_SYSWIDE_PREFIX,
+            scse = SC_SYSEMIT_PREFIX,
+            scpe = SC_PROXYEFF_PREFIX,
+            scpt = SC_PROXYTRAP_PREFIX,
+            scsl = SC_SHIPLINK_PREFIX,
+            c = CUSTOM_PREFIX,
+        )]
+        InvalidPrefix,
+        #[error("{0}")]
+        InvalidInt(#[from] std::num::ParseIntError),
+    }
+
+    impl serde::Serialize for EffectId {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::ser::Serializer,
+        {
+            let string = format!("{self}");
+            serializer.serialize_str(&string)
+        }
+    }
+
+    impl<'de> serde::Deserialize<'de> for EffectId {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            struct Visitor;
+
+            impl<'de> serde::de::Visitor<'de> for Visitor {
+                type Value = EffectId;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("effect type-prefixed integer")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                where
+                    E: serde::de::Error,
+                {
+                    Self::Value::from_str(v).map_err(serde::de::Error::custom)
+                }
+            }
+            deserializer.deserialize_str(Visitor)
         }
     }
 }

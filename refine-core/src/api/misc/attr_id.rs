@@ -20,6 +20,7 @@ impl std::fmt::Display for AttrId {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct EveAttrId(i32);
 impl EveAttrId {
@@ -31,6 +32,7 @@ impl EveAttrId {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct CustomAttrId(i32);
 impl CustomAttrId {
@@ -56,6 +58,73 @@ impl AttrId {
         match self {
             AttrId::Eve(id) => AAttrId::Eve(AEveAttrId::from_i32(id.0)),
             AttrId::Custom(id) => AAttrId::Custom(ACustomAttrId::from_i32(id.0)),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use std::str::FromStr;
+
+    use super::*;
+
+    impl FromStr for AttrId {
+        type Err = AttrIdParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
+                return Ok(Self::Eve(EveAttrId::from_str(id_str)?));
+            }
+            if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
+                return Ok(Self::Custom(CustomAttrId::from_str(id_str)?));
+            }
+            Err(AttrIdParseError::InvalidPrefix)
+        }
+    }
+
+    #[derive(thiserror::Error, Debug)]
+    pub enum AttrIdParseError {
+        #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
+        InvalidPrefix,
+        #[error("{0}")]
+        InvalidInt(#[from] std::num::ParseIntError),
+    }
+
+    impl serde::Serialize for AttrId {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: serde::ser::Serializer,
+        {
+            let string = format!("{self}");
+            serializer.serialize_str(&string)
+        }
+    }
+
+    impl<'de> serde::Deserialize<'de> for AttrId {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            struct Visitor;
+
+            impl<'de> serde::de::Visitor<'de> for Visitor {
+                type Value = AttrId;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("attribute type-prefixed integer")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                where
+                    E: serde::de::Error,
+                {
+                    Self::Value::from_str(v).map_err(serde::de::Error::custom)
+                }
+            }
+            deserializer.deserialize_str(Visitor)
         }
     }
 }

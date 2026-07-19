@@ -91,9 +91,11 @@ impl std::hash::Hash for UnitInterval {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde {
+    use std::str::FromStr;
+
     use super::*;
 
-    impl std::str::FromStr for UnitInterval {
+    impl FromStr for UnitInterval {
         type Err = UnitIntervalParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {

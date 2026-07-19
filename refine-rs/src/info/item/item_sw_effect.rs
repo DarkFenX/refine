@@ -5,11 +5,14 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{AttrId, AttrVals, EffectId, EffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SwEffectInfo {
     pub id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SwEffectInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SwEffectInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

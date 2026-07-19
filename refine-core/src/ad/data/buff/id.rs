@@ -74,9 +74,11 @@ impl std::fmt::Display for ABuffId {
 
 #[cfg(feature = "serde-ad")]
 mod custom_serde_ad {
+    use std::str::FromStr;
+
     use super::*;
 
-    impl std::str::FromStr for ABuffId {
+    impl FromStr for ABuffId {
         type Err = ABuffIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {

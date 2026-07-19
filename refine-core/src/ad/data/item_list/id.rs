@@ -74,9 +74,11 @@ impl std::fmt::Display for AItemListId {
 
 #[cfg(feature = "serde-ad")]
 mod custom_serde_ad {
+    use std::str::FromStr;
+
     use super::*;
 
-    impl std::str::FromStr for AItemListId {
+    impl FromStr for AItemListId {
         type Err = AItemListIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {

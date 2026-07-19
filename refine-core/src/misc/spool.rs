@@ -70,9 +70,9 @@ mod custom_serde {
         where
             D: serde::de::Deserializer<'de>,
         {
-            struct SpoolVisitor;
+            struct Visitor;
 
-            impl<'de> serde::de::Visitor<'de> for SpoolVisitor {
+            impl<'de> serde::de::Visitor<'de> for Visitor {
                 type Value = Spool;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -105,7 +105,7 @@ mod custom_serde {
                     Err(serde::de::Error::custom(msg))
                 }
             }
-            deserializer.deserialize_str(SpoolVisitor)
+            deserializer.deserialize_str(Visitor)
         }
     }
 }

@@ -102,9 +102,11 @@ impl std::fmt::Display for AEffectId {
 
 #[cfg(feature = "serde-ad")]
 mod custom_serde_ad {
+    use std::str::FromStr;
+
     use super::*;
 
-    impl std::str::FromStr for AEffectId {
+    impl FromStr for AEffectId {
         type Err = AEffectIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {

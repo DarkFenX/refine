@@ -228,9 +228,11 @@ impl std::iter::Sum<PValue> for PValue {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde {
+    use std::str::FromStr;
+
     use super::*;
 
-    impl std::str::FromStr for PValue {
+    impl FromStr for PValue {
         type Err = PValueParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
