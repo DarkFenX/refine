@@ -13,6 +13,13 @@ use crate::{
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct PValue(f64);
 impl PValue {
+    pub fn from_f64_checked(v: f64) -> Result<Self, PValueError> {
+        // -0.0 passes the check intentionally
+        match v >= 0.0 {
+            true => Ok(Self(v)),
+            false => Err(PValueError { value: v }),
+        }
+    }
     pub const fn from_f64_clamped(v: f64) -> Self {
         Self(v.max(0.0))
     }
@@ -22,6 +29,12 @@ impl PValue {
     pub fn into_f64(self) -> f64 {
         self.0
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+#[error("value {value} is not 0 or greater")]
+pub struct PValueError {
+    pub value: f64,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -207,6 +220,32 @@ impl std::ops::Rem<PValue> for PValue {
 impl std::iter::Sum<PValue> for PValue {
     fn sum<I: Iterator<Item = PValue>>(iter: I) -> Self {
         PValue(iter.map(|v| v.0).sum())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use super::*;
+
+    impl std::str::FromStr for PValue {
+        type Err = PValueParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let value = f64::from_str(s)?;
+            let value = Self::from_f64_checked(value)?;
+            Ok(value)
+        }
+    }
+
+    #[derive(thiserror::Error, Debug)]
+    pub enum PValueParseError {
+        #[error("{0}")]
+        InvalidFloat(#[from] std::num::ParseFloatError),
+        #[error("{0}")]
+        InitCheckFailed(#[from] PValueError),
     }
 }
 

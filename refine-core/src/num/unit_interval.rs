@@ -85,3 +85,29 @@ impl std::hash::Hash for UnitInterval {
         OrderedFloat(self.0).hash(state);
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use super::*;
+
+    impl std::str::FromStr for UnitInterval {
+        type Err = UnitIntervalParseError;
+
+        fn from_str(s: &str) -> Result<Self, Self::Err> {
+            let value = f64::from_str(s)?;
+            let value = Self::from_f64_checked(value)?;
+            Ok(value)
+        }
+    }
+
+    #[derive(thiserror::Error, Debug)]
+    pub enum UnitIntervalParseError {
+        #[error("{0}")]
+        InvalidFloat(#[from] std::num::ParseFloatError),
+        #[error("{0}")]
+        InitCheckFailed(#[from] UnitIntervalError),
+    }
+}

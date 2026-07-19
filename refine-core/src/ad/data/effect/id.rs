@@ -101,7 +101,7 @@ impl std::fmt::Display for AEffectId {
 }
 
 #[cfg(feature = "serde-ad")]
-mod serde_ad {
+mod custom_serde_ad {
     use super::*;
 
     impl std::str::FromStr for AEffectId {
@@ -147,7 +147,7 @@ mod serde_ad {
             c = CUSTOM_PREFIX,
         )]
         InvalidPrefix,
-        #[error("invalid int: {0}")]
+        #[error("{0}")]
         InvalidInt(#[from] std::num::ParseIntError),
     }
 }
