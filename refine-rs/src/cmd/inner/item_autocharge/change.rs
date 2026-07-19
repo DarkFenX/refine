@@ -16,6 +16,7 @@ pub(crate) struct ICmdAutochargeChangeFCtxRIds {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdAutochargeChangeICtx {
     pub(in crate::cmd) state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

@@ -24,6 +24,7 @@ pub(crate) struct ICmdShipSetICtx {
     pub(in crate::cmd) state: Option<bool> = None,
     pub(in crate::cmd) coordinates: Option<Coordinates> = None,
     pub(in crate::cmd) movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

@@ -22,14 +22,18 @@ pub(crate) struct ICmdModuleChangeFCtxRIds {
 pub(in crate::cmd) struct ICmdModuleChangeICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdModuleChangeShared = ICmdModuleChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdModuleChangeICtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdModuleChangeShared = ICmdModuleChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -37,10 +41,15 @@ pub(in crate::cmd) struct ICmdModuleChangeShared {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) move_: Option<MoveMode> = None,
     pub(in crate::cmd) state: Option<ModuleState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) charge_type_id: TriStateField<ItemTypeId> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) spool: TriStateField<Spool> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) optional_reload: TriStateField<OptionalReload> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

@@ -7,18 +7,21 @@ use crate::{
 pub(in crate::cmd) struct ICmdProjEffectAddFCtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdProjEffectAddFCtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdProjEffectAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdProjEffectAddShared {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

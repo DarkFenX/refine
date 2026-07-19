@@ -24,12 +24,14 @@ pub(crate) struct ICmdFighterAddFCtxRIds {
 pub(in crate::cmd) struct ICmdFighterAddICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdFighterAddICtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -37,10 +39,12 @@ pub(in crate::cmd) struct ICmdFighterAddShared {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: MinionState,
     pub(in crate::cmd) count: Option<CountNz> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) abilities: Abilities = Abilities::new(),
     pub(in crate::cmd) rearm_minion: Option<RearmMinion> = None,
     pub(in crate::cmd) coordinates: Option<Coordinates> = None,
     pub(in crate::cmd) movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

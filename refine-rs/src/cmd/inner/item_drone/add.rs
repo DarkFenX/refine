@@ -22,12 +22,14 @@ pub(crate) struct ICmdDroneAddFCtxRIds {
 pub(in crate::cmd) struct ICmdDroneAddICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdDroneAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdDroneAddICtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdDroneAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -38,6 +40,7 @@ pub(in crate::cmd) struct ICmdDroneAddShared {
     pub(in crate::cmd) npc_prop: Option<NpcProp> = None,
     pub(in crate::cmd) coordinates: Option<Coordinates> = None,
     pub(in crate::cmd) movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

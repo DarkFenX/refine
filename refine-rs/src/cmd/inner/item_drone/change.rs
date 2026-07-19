@@ -22,24 +22,31 @@ pub(crate) struct ICmdDroneChangeFCtxRIds {
 pub(in crate::cmd) struct ICmdDroneChangeICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdDroneChangeICtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdDroneChangeShared {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<MinionState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) npc_prop: TriStateField<NpcProp> = TriStateField::Absent,
     pub(in crate::cmd) coordinates: Option<Coordinates> = None,
     pub(in crate::cmd) movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

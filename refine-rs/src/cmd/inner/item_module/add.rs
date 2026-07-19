@@ -22,12 +22,14 @@ pub(crate) struct ICmdModuleAddFCtxRIds {
 pub(in crate::cmd) struct ICmdModuleAddICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdModuleAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdModuleAddICtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdModuleAddShared,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -40,6 +42,7 @@ pub(in crate::cmd) struct ICmdModuleAddShared {
     pub(in crate::cmd) charge_type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) spool: Option<Spool> = None,
     pub(in crate::cmd) optional_reload: Option<OptionalReload> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

@@ -21,6 +21,7 @@ pub(crate) struct ICmdStanceSetFCtxRIds {
 pub(crate) struct ICmdStanceSetICtx {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

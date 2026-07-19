@@ -22,25 +22,33 @@ pub(crate) struct ICmdFighterChangeFCtxRIds {
 pub(in crate::cmd) struct ICmdFighterChangeICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterChangeShared = ICmdFighterChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterChangeICtxRIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::cmd) shared: ICmdFighterChangeShared = ICmdFighterChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFighterChangeShared {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<MinionState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) count: TriStateField<CountNz> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) abilities: Abilities = Abilities::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rearm_minion: TriStateField<RearmMinion> = TriStateField::Absent,
     pub(in crate::cmd) coordinates: Option<Coordinates> = None,
     pub(in crate::cmd) movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

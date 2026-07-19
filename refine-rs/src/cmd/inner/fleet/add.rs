@@ -3,11 +3,13 @@ use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBackref, err::BackrefRenderE
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFleetAddFCtxBIds {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) fit_ids: Vec<FitIdBackref> = Vec::new(),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdFleetAddFCtxRIds {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) fit_ids: Vec<FitId> = Vec::new(),
 }
 

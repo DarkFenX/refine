@@ -23,7 +23,9 @@ pub(crate) struct ICmdBoosterAddFCtxRIds {
 pub(crate) struct ICmdBoosterAddICtx {
     pub(in crate::cmd) type_id: ItemTypeId,
     pub(in crate::cmd) state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) side_effects: SideEffects = SideEffects::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 

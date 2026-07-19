@@ -15,12 +15,16 @@ pub(crate) struct ICmdFleetChangeFCtxRIds {
 // Commands with incomplete context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFleetChangeICtxBIds {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_fit_ids: Vec<FitIdBackref> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_fit_ids: Vec<FitIdBackref> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdFleetChangeICtxRIds {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) add_fit_ids: Vec<FitId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) rm_fit_ids: Vec<FitId> = Vec::new(),
 }
 

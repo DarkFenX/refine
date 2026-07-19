@@ -20,6 +20,7 @@ pub(crate) struct ICmdServiceChangeFCtxRIds {
 pub(in crate::cmd) struct ICmdServiceChangeICtx {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
     pub(in crate::cmd) state: Option<ServiceState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::cmd) effect_modes: EffectModes = EffectModes::new(),
 }
 
