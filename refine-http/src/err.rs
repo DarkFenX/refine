@@ -35,6 +35,8 @@ pub(crate) enum ApiError {
     // Fit-related
     #[error("failed to add fit: {0}")]
     FitAddFailed(#[from] rs::err::AddFitError),
+    #[error("failed to change fit: {0}")]
+    FitChangeFailed(#[from] rs::err::ChangeFitError),
     #[error("failed to get fit: {0}")]
     PathFitParseFailed(#[from] rs::err::ParseFitIdError),
     #[error("failed to get fit: {0}")]
@@ -84,6 +86,11 @@ impl ApiError {
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => StatusCode::BAD_REQUEST,
             },
+            Self::FitChangeFailed(rs_err) => match rs_err {
+                rs::err::ChangeFitError::RenderFailed(_, _) => StatusCode::BAD_REQUEST,
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeFitError::ExecFailed(_, _) => StatusCode::BAD_REQUEST,
+            },
             Self::PathFitParseFailed(_) => StatusCode::NOT_FOUND,
             Self::PathFitNotFound(_) => StatusCode::NOT_FOUND,
         }
@@ -125,6 +132,11 @@ impl ApiError {
             // Fit-related
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => "FIT-001",
+            },
+            Self::FitChangeFailed(rs_err) => match rs_err {
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeFitError::RenderFailed(_, _) => "FIT-004",
+                rs::err::ChangeFitError::ExecFailed(_, _) => "FIT-004",
             },
             Self::PathFitParseFailed(_) => "FIT-002",
             Self::PathFitNotFound(_) => "FIT-003",
