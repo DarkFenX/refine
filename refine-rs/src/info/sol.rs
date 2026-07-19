@@ -5,15 +5,22 @@ use crate::{
     SolarSystemId, Spool, SwEffectInfo,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SolInfo {
     pub id: SolarSystemId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SolInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SolInfoExt {
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fleets: Vec<FleetInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fits: Vec<FitInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub sw_effects: Vec<SwEffectInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub proj_effects: Vec<ProjEffectInfo>,
     pub sec_zone: SecZone,
     pub default_spool: Spool,

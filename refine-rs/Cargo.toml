@@ -28,7 +28,8 @@ serde = [
     "dep:serde_json",
     "dep:serde_tuple",
     "dep:serde_with",
-    "rc/serde"
+    "rc/serde",
+    "uuid/serde",
 ]
 edh-phb-fs = [
     "dep:redh",
