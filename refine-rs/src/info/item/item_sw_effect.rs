@@ -12,14 +12,17 @@ pub struct SwEffectInfo {
     pub extended: Option<SwEffectInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
 pub struct SwEffectInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,
     pub type_id: ItemTypeId,
     pub state: bool,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     pub attrs: Vec<(AttrId, AttrVals)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     pub effects: Vec<(EffectId, EffectInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 

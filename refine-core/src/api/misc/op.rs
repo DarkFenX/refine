@@ -3,6 +3,7 @@ use crate::{ad::AOp, svc::calc::CalcOp};
 /// Defines what kind of operation will be applied to an attribute being modified.
 ///
 /// All the operations are applied in the order they are defined in this enum.
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub enum Op {
     /// Uses value of other attribute as a base value. Works same way as PreAssign, but is

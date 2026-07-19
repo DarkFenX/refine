@@ -1,5 +1,6 @@
 use crate::{num::Value, svc::calc::CalcAttrVals};
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct AttrVals {
     pub base: Value,
