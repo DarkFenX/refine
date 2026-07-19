@@ -4,7 +4,9 @@ use crate::{
     cmd::inner::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitAddFighterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFighterAddICtxBIds,
 }
 impl FitAddFighterCmd {
@@ -54,7 +56,9 @@ impl From<FitAddFighterCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeFighterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFighterChangeFCtxBIds,
 }
 impl FitChangeFighterCmd {

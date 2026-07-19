@@ -1,7 +1,9 @@
 use crate::{ChangeFitEnumCmd, DpsProfile, FitSecStatus, FleetIdBackref, cmd::inner::ICmdFitChangeICtxBIds};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeFitCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFitChangeICtxBIds = ICmdFitChangeICtxBIds { .. },
 }
 impl FitChangeFitCmd {

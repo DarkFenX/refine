@@ -1,6 +1,8 @@
 use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, cmd::inner::ICmdAutochargeChangeFCtxBIds};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeAutochargeCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdAutochargeChangeFCtxBIds,
 }
 impl FitChangeAutochargeCmd {

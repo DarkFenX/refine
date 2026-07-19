@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitSetCharacterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdCharacterSetICtx,
 }
 impl FitSetCharacterCmd {
@@ -28,8 +30,10 @@ impl From<FitSetCharacterCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeCharacterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }
 impl FitChangeCharacterCmd {
@@ -56,8 +60,10 @@ impl From<FitChangeCharacterCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitUnsetCharacterCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdCharacterUnsetICtx = ICmdCharacterUnsetICtx,
 }
 impl FitUnsetCharacterCmd {

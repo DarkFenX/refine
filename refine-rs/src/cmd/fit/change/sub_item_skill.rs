@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitAddSkillCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSkillAddICtx,
 }
 impl FitAddSkillCmd {
@@ -28,7 +30,9 @@ impl From<FitAddSkillCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeSkillCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdSkillChangeFCtxBIds,
 }
 impl FitChangeSkillCmd {

@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitAddServiceCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdServiceAddICtx,
 }
 impl FitAddServiceCmd {
@@ -24,7 +26,9 @@ impl From<FitAddServiceCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeServiceCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdServiceChangeFCtxBIds,
 }
 impl FitChangeServiceCmd {

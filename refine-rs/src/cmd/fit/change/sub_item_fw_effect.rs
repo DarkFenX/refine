@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitAddFwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFwEffectAddICtx,
 }
 impl FitAddFwEffectCmd {
@@ -28,7 +30,9 @@ impl From<FitAddFwEffectCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeFwEffectCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFwEffectChangeFCtxBIds,
 }
 impl FitChangeFwEffectCmd {

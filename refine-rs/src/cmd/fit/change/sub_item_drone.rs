@@ -4,7 +4,9 @@ use crate::{
     cmd::inner::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitAddDroneCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdDroneAddICtxBIds,
 }
 impl FitAddDroneCmd {
@@ -49,7 +51,9 @@ impl From<FitAddDroneCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeDroneCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdDroneChangeFCtxBIds,
 }
 impl FitChangeDroneCmd {

@@ -3,7 +3,9 @@ use crate::{
     cmd::inner::{ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitSetShipCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdShipSetICtx,
 }
 impl FitSetShipCmd {
@@ -36,8 +38,10 @@ impl From<FitSetShipCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeShipCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdShipChangeICtx = ICmdShipChangeICtx { .. },
 }
 impl FitChangeShipCmd {
@@ -72,8 +76,10 @@ impl From<FitChangeShipCmd> for ChangeFitEnumCmd {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitUnsetShipCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdShipUnsetICtx = ICmdShipUnsetICtx,
 }
 impl FitUnsetShipCmd {
