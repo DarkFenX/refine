@@ -8,9 +8,15 @@ use crate::{
     FitId, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct FighterInfo {
     pub id: ItemId,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub autocharges: Vec<(EffectId, AutochargeInfo)>,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<FighterInfoExt>,
 }
@@ -31,12 +37,6 @@ pub struct FighterInfoExt {
     )]
     pub abilities: Vec<(AbilityId, AbilityInfo)>,
     pub rearm_minion: ItemRearmMinionInfo,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub autocharges: Vec<(EffectId, AutochargeInfo)>,
     pub coordinates: Coordinates,
     pub movement: Movement,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
@@ -68,6 +68,15 @@ impl FighterInfo {
     pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, item_mode: ItemInfoMode) -> Self {
         Self {
             id: core_fighter.get_item_id(),
+            autocharges: core_fighter
+                .iter_autocharges_mut()
+                .map_into_iter(|mut autocharge| {
+                    (
+                        autocharge.get_cont_effect_id(),
+                        AutochargeInfo::from_core(&mut autocharge, item_mode),
+                    )
+                })
+                .collect(),
             extended: match item_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FighterInfoExt {
@@ -82,15 +91,6 @@ impl FighterInfo {
                         .map(|v| (v.get_id(), AbilityInfo::from_core(v)))
                         .collect(),
                     rearm_minion: core_fighter.get_rearm_minion(),
-                    autocharges: core_fighter
-                        .iter_autocharges_mut()
-                        .map_into_iter(|mut autocharge| {
-                            (
-                                autocharge.get_cont_effect_id(),
-                                AutochargeInfo::from_core(&mut autocharge, item_mode),
-                            )
-                        })
-                        .collect(),
                     coordinates: core_fighter.get_coordinates(),
                     movement: core_fighter.get_movement(),
                     projs: core_fighter.iter_projs().map(RangedProjInfo::from_core).collect(),
