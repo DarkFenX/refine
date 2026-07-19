@@ -43,8 +43,8 @@ mod custom_serde {
                 Self::HiSec(SecZoneCorruption::C5) => HISEC_CORRUPTED,
                 Self::LowSec(SecZoneCorruption::None) => LOWSEC,
                 Self::LowSec(SecZoneCorruption::C5) => LOWSEC_CORRUPTED,
-                Self::NullSec => WSPACE,
-                Self::WSpace => NULLSEC,
+                Self::NullSec => NULLSEC,
+                Self::WSpace => WSPACE,
                 Self::Hazard => HAZARD,
             };
             serializer.serialize_str(string)
@@ -69,31 +69,21 @@ mod custom_serde {
                 where
                     E: Error,
                 {
-                    if v == HISEC {
-                        return Ok(Self::Value::HiSec(SecZoneCorruption::None));
+                    match v {
+                        HISEC => Ok(Self::Value::HiSec(SecZoneCorruption::None)),
+                        HISEC_CORRUPTED => Ok(Self::Value::HiSec(SecZoneCorruption::C5)),
+                        LOWSEC => Ok(Self::Value::LowSec(SecZoneCorruption::None)),
+                        LOWSEC_CORRUPTED => Ok(Self::Value::LowSec(SecZoneCorruption::C5)),
+                        NULLSEC => Ok(Self::Value::NullSec),
+                        WSPACE => Ok(Self::Value::WSpace),
+                        HAZARD => Ok(Self::Value::Hazard),
+                        _ => {
+                            let msg = format!(
+                                "expected one of: \"{HISEC}\", \"{HISEC_CORRUPTED}\", \"{LOWSEC}\", \"{LOWSEC_CORRUPTED}\", \"{NULLSEC}\", \"{WSPACE}\", or \"{HAZARD}\", got \"{v}\""
+                            );
+                            Err(Error::custom(msg))
+                        }
                     }
-                    if v == HISEC_CORRUPTED {
-                        return Ok(Self::Value::HiSec(SecZoneCorruption::C5));
-                    }
-                    if v == LOWSEC {
-                        return Ok(Self::Value::LowSec(SecZoneCorruption::None));
-                    }
-                    if v == LOWSEC_CORRUPTED {
-                        return Ok(Self::Value::LowSec(SecZoneCorruption::C5));
-                    }
-                    if v == NULLSEC {
-                        return Ok(Self::Value::NullSec);
-                    }
-                    if v == WSPACE {
-                        return Ok(Self::Value::WSpace);
-                    }
-                    if v == HAZARD {
-                        return Ok(Self::Value::Hazard);
-                    }
-                    let msg = format!(
-                        "expected one of: \"{HISEC}\", \"{HISEC_CORRUPTED}\", \"{LOWSEC}\", \"{LOWSEC_CORRUPTED}\", \"{NULLSEC}\", \"{WSPACE}\", or \"{HAZARD}\", got \"{v}\""
-                    );
-                    Err(Error::custom(msg))
                 }
             }
 
