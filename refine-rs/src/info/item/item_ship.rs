@@ -15,7 +15,7 @@ pub struct ShipInfo {
     pub extended: Option<ShipInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct ShipInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

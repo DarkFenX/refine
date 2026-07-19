@@ -12,7 +12,7 @@ pub struct ChargeInfo {
     pub extended: Option<ChargeInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct ChargeInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

@@ -12,7 +12,7 @@ pub struct AutochargeInfo {
     pub extended: Option<AutochargeInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct AutochargeInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

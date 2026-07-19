@@ -1,4 +1,5 @@
 #![feature(default_field_values)]
+#![feature(cfg_eval)]
 #![feature(const_trait_impl)]
 #![feature(const_default)]
 

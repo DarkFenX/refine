@@ -16,7 +16,7 @@ pub struct ModuleInfo {
     pub extended: Option<ModuleInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct ModuleInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

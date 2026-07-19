@@ -12,7 +12,7 @@ pub struct CharacterInfo {
     pub extended: Option<CharacterInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct CharacterInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

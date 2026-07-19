@@ -12,7 +12,7 @@ pub struct RigInfo {
     pub extended: Option<RigInfoExt>,
 }
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 pub struct RigInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

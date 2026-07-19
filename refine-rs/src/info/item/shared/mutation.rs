@@ -1,10 +1,15 @@
 use crate::{AttrId, ItemTypeId, UnitInterval, Value};
 
-#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ItemMutationInfo {
     pub base_type_id: ItemTypeId,
     pub mutator_id: ItemTypeId,
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
     pub attrs: Vec<(AttrId, AttrMutationInfo)>,
 }
 
