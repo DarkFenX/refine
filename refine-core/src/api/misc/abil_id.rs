@@ -1,6 +1,7 @@
 use crate::ad::AAbilId;
 
 /// Fighter ability ID.
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AbilityId(i32);
 impl AbilityId {

@@ -4,6 +4,7 @@ use crate::num::{PValue, Value};
 
 const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct CountNz(NonZeroU32);
 impl CountNz {

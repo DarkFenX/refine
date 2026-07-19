@@ -6,7 +6,10 @@ use crate::{
     ud::UPhysics,
 };
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 #[derive(Copy, Clone)]
 pub struct Movement {
     /// Movement direction of an item.
@@ -15,7 +18,10 @@ pub struct Movement {
     pub speed: PValue,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 #[derive(Copy, Clone)]
 pub struct Direction {
     /// Degrees relatively X axis counter-clockwise.

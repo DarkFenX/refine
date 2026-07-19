@@ -1,5 +1,6 @@
 use crate::Count;
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct AbilityInfo {
     pub state: bool,
     pub charge_count: Option<Count>,

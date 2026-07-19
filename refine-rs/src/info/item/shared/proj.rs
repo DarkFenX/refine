@@ -5,6 +5,7 @@ pub struct ProjInfo {
     pub projectee_item_id: ItemId,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct RangedProjInfo {
     pub projectee_item_id: ItemId,
     pub range: Option<ProjRange>,
