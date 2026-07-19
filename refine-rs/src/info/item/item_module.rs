@@ -9,11 +9,14 @@ use crate::{
     TriStateField,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct ModuleInfo {
     pub id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<ModuleInfoExt>,
 }
 
+#[cfg_attr(feature = "serde", serde_with::serde_as, derive(serde::Serialize))]
 pub struct ModuleInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,
@@ -22,15 +25,36 @@ pub struct ModuleInfoExt {
     pub state: ModuleState,
     pub rack: ModRack,
     pub pos: Index,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub mutation: Option<ItemMutationInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub charge: Option<ChargeInfo>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "TriStateField::is_absent"))]
     pub charge_count: TriStateField<Count>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "TriStateField::is_absent"))]
     pub charged_cycles: TriStateField<Count>,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub spool_cycles: Option<ItemSpoolInfo>,
     pub optional_reload: ItemOptionalReloadInfo,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub projs: Vec<RangedProjInfo>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub attrs: Vec<(AttrId, AttrVals)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub effects: Vec<(EffectId, EffectInfo)>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub mods: Vec<(AttrId, Vec<Modification>)>,
 }
 

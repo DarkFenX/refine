@@ -1,6 +1,10 @@
 /// Controls what happens when modules with optional reloads (AAR, ASB) do when they run out of
 /// charges.
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(rename_all = "snake_case")
+)]
 #[derive(Copy, Clone)]
 pub enum OptionalReload {
     /// No reload - keep running after running out of charges.
@@ -9,6 +13,7 @@ pub enum OptionalReload {
     OnEmpty,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ItemOptionalReloadInfo {
     /// Effective value of item's "optional reload" setting.

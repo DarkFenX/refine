@@ -26,6 +26,7 @@ pub enum Spool {
     CycleScale(UnitInterval),
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ItemSpoolInfo {
     /// Count of cycles at which effect reaches current spool setting.
@@ -105,6 +106,7 @@ mod custom_serde {
                     Err(serde::de::Error::custom(msg))
                 }
             }
+
             deserializer.deserialize_str(Visitor)
         }
     }

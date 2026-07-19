@@ -1,3 +1,4 @@
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct Index(usize);
 impl Index {

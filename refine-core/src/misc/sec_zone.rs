@@ -91,6 +91,7 @@ mod custom_serde {
                     Err(serde::de::Error::custom(msg))
                 }
             }
+
             deserializer.deserialize_str(Visitor)
         }
     }
