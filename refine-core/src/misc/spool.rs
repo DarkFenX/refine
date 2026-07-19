@@ -44,6 +44,11 @@ pub struct ItemSpoolInfo {
 mod custom_serde {
     use std::str::FromStr;
 
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
+
     use super::*;
 
     const CYCLES_PREFIX: &str = "c";
@@ -51,10 +56,10 @@ mod custom_serde {
     const SPOOL_SCALE_PREFIX: &str = "ss";
     const CYCLE_SCALE_PREFIX: &str = "cs";
 
-    impl serde::Serialize for Spool {
+    impl Serialize for Spool {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
-            S: serde::ser::Serializer,
+            S: Serializer,
         {
             let string = match self {
                 Self::Cycles(count) => format!("{CYCLES_PREFIX}{count}"),
@@ -66,14 +71,14 @@ mod custom_serde {
         }
     }
 
-    impl<'de> serde::Deserialize<'de> for Spool {
+    impl<'de> Deserialize<'de> for Spool {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor;
+            struct VisitorState;
 
-            impl<'de> serde::de::Visitor<'de> for Visitor {
+            impl<'de> Visitor<'de> for VisitorState {
                 type Value = Spool;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -82,32 +87,32 @@ mod custom_serde {
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     if let Some(value_str) = v.strip_prefix(SPOOL_SCALE_PREFIX) {
-                        let value = UnitInterval::from_str(value_str).map_err(serde::de::Error::custom)?;
+                        let value = UnitInterval::from_str(value_str).map_err(Error::custom)?;
                         return Ok(Self::Value::SpoolScale(value));
                     }
                     if let Some(value_str) = v.strip_prefix(CYCLE_SCALE_PREFIX) {
-                        let value = UnitInterval::from_str(value_str).map_err(serde::de::Error::custom)?;
+                        let value = UnitInterval::from_str(value_str).map_err(Error::custom)?;
                         return Ok(Self::Value::CycleScale(value));
                     }
                     if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
-                        let count = Count::from_str(count_str).map_err(serde::de::Error::custom)?;
+                        let count = Count::from_str(count_str).map_err(Error::custom)?;
                         return Ok(Self::Value::Cycles(count));
                     }
                     if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {
-                        let time = PValue::from_str(time_str).map_err(serde::de::Error::custom)?;
+                        let time = PValue::from_str(time_str).map_err(Error::custom)?;
                         return Ok(Self::Value::Time(time));
                     }
                     let msg = format!(
                         "expected a number prefixed by \"{CYCLES_PREFIX}\", \"{TIME_PREFIX}\", \"{SPOOL_SCALE_PREFIX}\", or \"{CYCLE_SCALE_PREFIX}\", got \"{v}\""
                     );
-                    Err(serde::de::Error::custom(msg))
+                    Err(Error::custom(msg))
                 }
             }
 
-            deserializer.deserialize_str(Visitor)
+            deserializer.deserialize_str(VisitorState)
         }
     }
 }

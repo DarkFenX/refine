@@ -70,15 +70,17 @@ impl PartialOrd for FitSecStatus {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde {
+    use serde::de::{Deserialize, Deserializer, Error};
+
     use super::*;
 
-    impl<'de> serde::Deserialize<'de> for FitSecStatus {
+    impl<'de> Deserialize<'de> for FitSecStatus {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
             f64::deserialize(deserializer)
-                .and_then(|value| FitSecStatus::from_f64_checked(value).map_err(serde::de::Error::custom))
+                .and_then(|value| FitSecStatus::from_f64_checked(value).map_err(Error::custom))
         }
     }
 }

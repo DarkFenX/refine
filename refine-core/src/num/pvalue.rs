@@ -230,6 +230,8 @@ impl std::iter::Sum<PValue> for PValue {
 mod custom_serde {
     use std::str::FromStr;
 
+    use serde::de::{Deserialize, Deserializer, Error};
+
     use super::*;
 
     impl FromStr for PValue {
@@ -250,13 +252,12 @@ mod custom_serde {
         InitCheckFailed(#[from] PValueError),
     }
 
-    impl<'de> serde::Deserialize<'de> for PValue {
+    impl<'de> Deserialize<'de> for PValue {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            f64::deserialize(deserializer)
-                .and_then(|value| PValue::from_f64_checked(value).map_err(serde::de::Error::custom))
+            f64::deserialize(deserializer).and_then(|value| PValue::from_f64_checked(value).map_err(Error::custom))
         }
     }
 }

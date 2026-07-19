@@ -93,6 +93,8 @@ impl std::hash::Hash for UnitInterval {
 mod custom_serde {
     use std::str::FromStr;
 
+    use serde::de::{Deserialize, Deserializer, Error};
+
     use super::*;
 
     impl FromStr for UnitInterval {
@@ -113,13 +115,13 @@ mod custom_serde {
         InitCheckFailed(#[from] UnitIntervalError),
     }
 
-    impl<'de> serde::Deserialize<'de> for UnitInterval {
+    impl<'de> Deserialize<'de> for UnitInterval {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
             f64::deserialize(deserializer)
-                .and_then(|value| UnitInterval::from_f64_checked(value).map_err(serde::de::Error::custom))
+                .and_then(|value| UnitInterval::from_f64_checked(value).map_err(Error::custom))
         }
     }
 }

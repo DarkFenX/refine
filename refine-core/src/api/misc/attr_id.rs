@@ -69,6 +69,11 @@ impl AttrId {
 mod custom_serde {
     use std::str::FromStr;
 
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
+
     use super::*;
 
     impl FromStr for AttrId {
@@ -93,24 +98,24 @@ mod custom_serde {
         InvalidInt(#[from] std::num::ParseIntError),
     }
 
-    impl serde::Serialize for AttrId {
+    impl Serialize for AttrId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
-            S: serde::ser::Serializer,
+            S: Serializer,
         {
             let string = format!("{self}");
             serializer.serialize_str(&string)
         }
     }
 
-    impl<'de> serde::Deserialize<'de> for AttrId {
+    impl<'de> Deserialize<'de> for AttrId {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor;
+            struct VisitorState;
 
-            impl<'de> serde::de::Visitor<'de> for Visitor {
+            impl<'de> Visitor<'de> for VisitorState {
                 type Value = AttrId;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -119,13 +124,13 @@ mod custom_serde {
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
-                    Self::Value::from_str(v).map_err(serde::de::Error::custom)
+                    Self::Value::from_str(v).map_err(Error::custom)
                 }
             }
 
-            deserializer.deserialize_str(Visitor)
+            deserializer.deserialize_str(VisitorState)
         }
     }
 }

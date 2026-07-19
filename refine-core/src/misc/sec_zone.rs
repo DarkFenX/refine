@@ -18,6 +18,11 @@ pub enum SecZoneCorruption {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde {
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
+
     use super::*;
 
     const HISEC: &str = "hisec";
@@ -28,10 +33,10 @@ mod custom_serde {
     const WSPACE: &str = "wspace";
     const HAZARD: &str = "hazard";
 
-    impl serde::Serialize for SecZone {
+    impl Serialize for SecZone {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
-            S: serde::ser::Serializer,
+            S: Serializer,
         {
             let string = match self {
                 Self::HiSec(SecZoneCorruption::None) => HISEC,
@@ -46,14 +51,14 @@ mod custom_serde {
         }
     }
 
-    impl<'de> serde::Deserialize<'de> for SecZone {
+    impl<'de> Deserialize<'de> for SecZone {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor;
+            struct VisitorState;
 
-            impl<'de> serde::de::Visitor<'de> for Visitor {
+            impl<'de> Visitor<'de> for VisitorState {
                 type Value = SecZone;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -62,7 +67,7 @@ mod custom_serde {
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     if v == HISEC {
                         return Ok(Self::Value::HiSec(SecZoneCorruption::None));
@@ -88,11 +93,11 @@ mod custom_serde {
                     let msg = format!(
                         "expected one of: \"{HISEC}\", \"{HISEC_CORRUPTED}\", \"{LOWSEC}\", \"{LOWSEC_CORRUPTED}\", \"{NULLSEC}\", \"{WSPACE}\", or \"{HAZARD}\", got \"{v}\""
                     );
-                    Err(serde::de::Error::custom(msg))
+                    Err(Error::custom(msg))
                 }
             }
 
-            deserializer.deserialize_str(Visitor)
+            deserializer.deserialize_str(VisitorState)
         }
     }
 }

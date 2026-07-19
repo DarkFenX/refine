@@ -60,17 +60,21 @@ impl<T, E> From<Result<T, E>> for TriStateField<Vec<T>> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde {
-    use serde::Deserialize;
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
+    use serde_with::de::{DeserializeAs, DeserializeAsWrap};
 
     use super::*;
 
-    impl<T> serde::Serialize for TriStateField<T>
+    impl<T> Serialize for TriStateField<T>
     where
-        T: serde::Serialize,
+        T: Serialize,
     {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
-            S: serde::Serializer,
+            S: Serializer,
         {
             match self {
                 // This still serializes None, still have to declare "skip_serializing_if" in
@@ -88,13 +92,13 @@ mod custom_serde {
     {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor<T> {
+            struct VisitorState<T> {
                 marker: std::marker::PhantomData<T>,
             }
 
-            impl<'de, T> serde::de::Visitor<'de> for Visitor<T>
+            impl<'de, T> Visitor<'de> for VisitorState<T>
             where
                 T: Deserialize<'de>,
             {
@@ -107,7 +111,7 @@ mod custom_serde {
                 #[inline]
                 fn visit_none<E>(self) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::None)
                 }
@@ -115,7 +119,7 @@ mod custom_serde {
                 #[inline]
                 fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
                 where
-                    D: serde::Deserializer<'de>,
+                    D: Deserializer<'de>,
                 {
                     T::deserialize(deserializer).map(Self::Value::Value)
                 }
@@ -123,28 +127,28 @@ mod custom_serde {
                 #[inline]
                 fn visit_unit<E>(self) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::None)
                 }
             }
 
-            deserializer.deserialize_option(Visitor::<T> {
+            deserializer.deserialize_option(VisitorState::<T> {
                 marker: std::marker::PhantomData,
             })
         }
     }
 
-    impl<'de, T, U> serde_with::DeserializeAs<'de, TriStateField<T>> for TriStateField<U>
+    impl<'de, T, U> DeserializeAs<'de, TriStateField<T>> for TriStateField<U>
     where
-        U: serde_with::DeserializeAs<'de, T>,
+        U: DeserializeAs<'de, T>,
     {
         fn deserialize_as<D>(deserializer: D) -> Result<TriStateField<T>, D::Error>
         where
-            D: serde::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
             Ok(
-                match TriStateField::<serde_with::de::DeserializeAsWrap<T, U>>::deserialize(deserializer)? {
+                match TriStateField::<DeserializeAsWrap<T, U>>::deserialize(deserializer)? {
                     TriStateField::Value(v) => TriStateField::Value(v.into_inner()),
                     TriStateField::None => TriStateField::None,
                     TriStateField::Absent => TriStateField::Absent,

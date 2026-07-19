@@ -100,19 +100,21 @@ fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: AttrId, roll: UnitIn
 mod custom_serde {
     use std::str::FromStr;
 
+    use serde::de::{Deserialize, Deserializer, Error, Visitor};
+
     use super::*;
 
     const ROLL_PREFIX: &str = "r";
     const ABS_PREFIX: &str = "a";
 
-    impl<'de> serde::Deserialize<'de> for AttrMutation {
+    impl<'de> Deserialize<'de> for AttrMutation {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor;
+            struct VisitorState;
 
-            impl<'de> serde::de::Visitor<'de> for Visitor {
+            impl<'de> Visitor<'de> for VisitorState {
                 type Value = AttrMutation;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -123,95 +125,95 @@ mod custom_serde {
                 // TODO: f64 / f64+i32 is sufficient
                 fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_u16<E>(self, v: u16) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_u32<E>(self, v: u32) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_i128<E>(self, v: i128) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_u128<E>(self, v: u128) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
 
                 fn visit_f32<E>(self, v: f32) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     Ok(Self::Value::Absolute(Value::from_f64(v)))
                 }
 
                 fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
                 where
-                    E: serde::de::Error,
+                    E: Error,
                 {
                     if let Some(roll_str) = v.strip_prefix(ROLL_PREFIX) {
-                        let roll = UnitInterval::from_str(roll_str).map_err(|e| serde::de::Error::custom(e))?;
+                        let roll = UnitInterval::from_str(roll_str).map_err(|e| Error::custom(e))?;
                         return Ok(Self::Value::Roll(roll));
                     }
                     if let Some(abs_str) = v.strip_prefix(ABS_PREFIX) {
-                        let abs = Value::from_str(abs_str).map_err(|e| serde::de::Error::custom(e))?;
+                        let abs = Value::from_str(abs_str).map_err(|e| Error::custom(e))?;
                         return Ok(Self::Value::Absolute(abs));
                     }
-                    let abs_str = Value::from_str(v).map_err(|e| serde::de::Error::custom(e))?;
+                    let abs_str = Value::from_str(v).map_err(|e| Error::custom(e))?;
                     Ok(Self::Value::Absolute(abs_str))
                 }
             }
-            deserializer.deserialize_any(Visitor)
+            deserializer.deserialize_any(VisitorState)
         }
     }
 }
@@ -219,23 +221,25 @@ mod custom_serde {
 // TODO: add full serialization support and merge with module above
 #[cfg(feature = "serde")]
 mod custom_serde_x1 {
+    use serde::de::{Deserialize, Deserializer, Visitor};
+
     use super::*;
 
-    impl<'de> serde::Deserialize<'de> for AddMutation {
+    impl<'de> Deserialize<'de> for AddMutation {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor;
+            struct VisitorState;
 
-            impl<'de> serde::de::Visitor<'de> for Visitor {
+            impl<'de> Visitor<'de> for VisitorState {
                 type Value = AddMutation;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                     formatter.write_str("integer with mutator ID, or sequence with mutator ID and attribute map")
                 }
             }
-            deserializer.deserialize_any(Visitor)
+            deserializer.deserialize_any(VisitorState)
         }
     }
 }
@@ -243,16 +247,18 @@ mod custom_serde_x1 {
 // TODO: add full serialization support and merge with module above
 #[cfg(feature = "serde")]
 mod custom_serde_x2 {
+    use serde::de::{Deserialize, Deserializer, Visitor};
+
     use super::*;
 
-    impl<'de> serde::Deserialize<'de> for ChangeMutation {
+    impl<'de> Deserialize<'de> for ChangeMutation {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
-            D: serde::de::Deserializer<'de>,
+            D: Deserializer<'de>,
         {
-            struct Visitor;
+            struct VisitorState;
 
-            impl<'de> serde::de::Visitor<'de> for Visitor {
+            impl<'de> Visitor<'de> for VisitorState {
                 type Value = ChangeMutation;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -261,7 +267,7 @@ mod custom_serde_x2 {
                     )
                 }
             }
-            deserializer.deserialize_any(Visitor)
+            deserializer.deserialize_any(VisitorState)
         }
     }
 }
