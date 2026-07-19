@@ -110,4 +110,14 @@ mod custom_serde {
         #[error("{0}")]
         InitCheckFailed(#[from] UnitIntervalError),
     }
+
+    impl<'de> serde::Deserialize<'de> for UnitInterval {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            f64::deserialize(deserializer)
+                .and_then(|value| UnitInterval::from_f64_checked(value).map_err(serde::de::Error::custom))
+        }
+    }
 }

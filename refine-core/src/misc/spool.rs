@@ -84,19 +84,19 @@ mod custom_serde {
                     E: serde::de::Error,
                 {
                     if let Some(value_str) = v.strip_prefix(SPOOL_SCALE_PREFIX) {
-                        let value = UnitInterval::from_str(value_str).map_err(|e| serde::de::Error::custom(e))?;
+                        let value = UnitInterval::from_str(value_str).map_err(serde::de::Error::custom)?;
                         return Ok(Self::Value::SpoolScale(value));
                     }
                     if let Some(value_str) = v.strip_prefix(CYCLE_SCALE_PREFIX) {
-                        let value = UnitInterval::from_str(value_str).map_err(|e| serde::de::Error::custom(e))?;
+                        let value = UnitInterval::from_str(value_str).map_err(serde::de::Error::custom)?;
                         return Ok(Self::Value::CycleScale(value));
                     }
                     if let Some(count_str) = v.strip_prefix(CYCLES_PREFIX) {
-                        let count = Count::from_str(count_str).map_err(|e| serde::de::Error::custom(e))?;
+                        let count = Count::from_str(count_str).map_err(serde::de::Error::custom)?;
                         return Ok(Self::Value::Cycles(count));
                     }
                     if let Some(time_str) = v.strip_prefix(TIME_PREFIX) {
-                        let time = PValue::from_str(time_str).map_err(|e| serde::de::Error::custom(e))?;
+                        let time = PValue::from_str(time_str).map_err(serde::de::Error::custom)?;
                         return Ok(Self::Value::Time(time));
                     }
                     let msg = format!(

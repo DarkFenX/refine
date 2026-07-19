@@ -1625,6 +1625,7 @@ dependencies = [
  "ordered-float",
  "rustc-hash",
  "serde",
+ "serde_tuple",
  "slab",
  "smallvec",
  "thiserror",

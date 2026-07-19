@@ -247,6 +247,16 @@ mod custom_serde {
         #[error("{0}")]
         InitCheckFailed(#[from] PValueError),
     }
+
+    impl<'de> serde::Deserialize<'de> for PValue {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: serde::de::Deserializer<'de>,
+        {
+            f64::deserialize(deserializer)
+                .and_then(|value| PValue::from_f64_checked(value).map_err(serde::de::Error::custom))
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
