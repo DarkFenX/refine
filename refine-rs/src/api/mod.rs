@@ -4,7 +4,9 @@ pub use item::{GetItemError, Item, RemoveItemError};
 pub use refine::Refine;
 #[cfg(feature = "serde")]
 pub use sol::ParseSolarSystemIdError;
-pub use sol::{AddSolError, ChangeSolError, GetSolError, RemoveSolError, SolarSystem, SolarSystemId};
+pub use sol::{
+    AddSolError, ChangeSolError, GetSolError, RemoveSolError, SolSwitchSrcError, SolarSystem, SolarSystemId,
+};
 pub use src::{AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias};
 
 mod dev;

@@ -6,7 +6,7 @@ pub use crate::api::ParseSolarSystemIdError;
 pub use crate::{
     api::{
         AddSolError, ChangeFitError, ChangeFleetError, ChangeSolError, GetFitError, GetFleetError, GetItemError,
-        GetSolError, RemoveItemError, RemoveSolError,
+        GetSolError, RemoveItemError, RemoveSolError, SolSwitchSrcError,
     },
     cmd::{
         AddFitError, AddFleetError, AddItemEnumError, AddProjEffectError, BackrefRenderError, ChangeCharacterError,

@@ -32,6 +32,8 @@ pub(crate) enum ApiError {
     PathSolParseFailed(#[from] rs::err::ParseSolarSystemIdError),
     #[error("failed to get solar system: {0}")]
     PathSolNotFound(#[from] rs::err::GetSolError),
+    #[error("failed to switch solar system source: {0}")]
+    SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
     // Fleet-related
     #[error("failed to add fleet: {0}")]
     FleetAddFailed(#[from] rs::err::AddFleetError),
@@ -102,6 +104,7 @@ impl ApiError {
             },
             Self::PathSolParseFailed(_) => StatusCode::NOT_FOUND,
             Self::PathSolNotFound(_) => StatusCode::NOT_FOUND,
+            Self::SolSrcSwitch(_) => StatusCode::BAD_REQUEST,
             // Fleet-related
             Self::FleetAddFailed(rs_err) => match rs_err {
                 rs::err::AddFleetError::FitAddFailed(_) => StatusCode::BAD_REQUEST,
@@ -166,6 +169,7 @@ impl ApiError {
             Self::PathSolNotFound(rs_err) => match rs_err {
                 rs::err::GetSolError::SolNotFound(_) => "SOL-003",
             },
+            Self::SolSrcSwitch(_) => "SOL-006",
             // Fleet-related
             Self::FleetAddFailed(rs_err) => match rs_err {
                 rs::err::AddFleetError::FitAddFailed(_) => "FLT-001",
