@@ -3,8 +3,10 @@ use crate::{
     cmd::inner::{ICmdItemRemoveICtx, ItemRemoveItemError},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct RemoveItemCmd {
+    #[cfg_attr(feature = "serde", serde(flatten))]
     inner: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
 }
 
