@@ -25,7 +25,7 @@ Interface is built to unify multiple smaller changes into commands and command b
 High-level HTTP interface built on top of `refine-rs`.
 
 # Documentation
-HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client, as well as [non-synthetic-data tests](refine-http/tests/playground/actual_data.py) which use it.
+HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client, as well as [non-synthetic-data tests](tests/playground/actual_data.py) which use it.
 
 # Features
 In no particular order:
