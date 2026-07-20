@@ -17,7 +17,7 @@ pub(crate) async fn get_sol(
     WithRejection(Query(params), _): WithRejection<Query<SolInfoParams>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_sol(state, sol_id, params).await {
-        Ok(sol_info) => (StatusCode::CREATED, Json(sol_info)).into_response(),
+        Ok(sol_info) => (StatusCode::OK, Json(sol_info)).into_response(),
         Err(err) => err.into_response(),
     }
 }
