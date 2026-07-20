@@ -98,7 +98,7 @@ fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: AttrId, roll: UnitIn
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
 mod custom_serde_add {
-    use serde::de::{Deserialize, Deserializer, Error, MapAccess, SeqAccess, Visitor};
+    use serde::de::{Deserialize, Deserializer, Error, SeqAccess, Visitor};
 
     use super::*;
 
@@ -152,11 +152,13 @@ mod custom_serde_add {
                 {
                     let mutator_id: ItemTypeId = match seq.next_element()? {
                         Some(mutator_id) => mutator_id,
-                        None => return Err(Error::invalid_length(0, &"sequence with 2 elements")),
+                        None => return Err(Error::invalid_length(0, &self)),
                     };
                     let attrs: Attrs = match seq.next_element()? {
                         Some(attrs) => attrs,
-                        None => return Err(Error::invalid_length(1, &"sequence with 2 elements")),
+                        None => {
+                            return Ok(Self::Value { mutator_id, .. });
+                        }
                     };
                     Ok(Self::Value {
                         mutator_id,
@@ -169,37 +171,9 @@ mod custom_serde_add {
         }
     }
 
-    struct Attrs(Vec<(AttrId, AttrMutation)>);
-
-    impl<'de> Deserialize<'de> for Attrs {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            struct VisitorState;
-
-            impl<'de> Visitor<'de> for VisitorState {
-                type Value = Attrs;
-
-                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("attribute mutation map")
-                }
-
-                fn visit_map<M>(self, mut map: M) -> Result<Attrs, M::Error>
-                where
-                    M: MapAccess<'de>,
-                {
-                    let mut attrs = Vec::with_capacity(map.size_hint().unwrap_or(0));
-                    while let Some((attr_id, attr_mutation)) = map.next_entry()? {
-                        attrs.push((attr_id, attr_mutation));
-                    }
-                    Ok(Attrs(attrs))
-                }
-            }
-
-            deserializer.deserialize_map(VisitorState)
-        }
-    }
+    #[serde_with::serde_as]
+    #[derive(serde::Deserialize)]
+    struct Attrs(#[serde_as(as = "serde_with::Map<_, _>")] Vec<(AttrId, AttrMutation)>);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
