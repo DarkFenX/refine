@@ -93,7 +93,7 @@ impl std::hash::Hash for UnitInterval {
 mod custom_serde {
     use std::str::FromStr;
 
-    use serde::de::{Deserialize, Deserializer, Error};
+    use serde::de::{Deserialize, Deserializer};
 
     use super::*;
 
@@ -102,7 +102,7 @@ mod custom_serde {
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let value = f64::from_str(s)?;
-            let value = Self::from_f64_checked(value)?;
+            let value = Self::from_f64_clamped(value);
             Ok(value)
         }
     }
@@ -111,8 +111,6 @@ mod custom_serde {
     pub enum UnitIntervalParseError {
         #[error("{0}")]
         InvalidFloat(#[from] std::num::ParseFloatError),
-        #[error("{0}")]
-        InitCheckFailed(#[from] UnitIntervalError),
     }
 
     impl<'de> Deserialize<'de> for UnitInterval {
@@ -120,8 +118,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            f64::deserialize(deserializer)
-                .and_then(|value| UnitInterval::from_f64_checked(value).map_err(Error::custom))
+            f64::deserialize(deserializer).map(|value| UnitInterval::from_f64_clamped(value))
         }
     }
 }

@@ -55,7 +55,7 @@ impl From<SkillLevel> for i32 {
 mod custom_serde {
     use std::str::FromStr;
 
-    use serde::de::{Deserialize, Deserializer, Error};
+    use serde::de::{Deserialize, Deserializer};
 
     use super::*;
 
@@ -64,7 +64,7 @@ mod custom_serde {
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let value = i32::from_str(s)?;
-            let value = Self::from_i32_checked(value)?;
+            let value = Self::from_i32_clamped(value);
             Ok(value)
         }
     }
@@ -73,8 +73,6 @@ mod custom_serde {
     pub enum SkillLevelParseError {
         #[error("{0}")]
         InvalidInt(#[from] std::num::ParseIntError),
-        #[error("{0}")]
-        InitCheckFailed(#[from] SkillLevelError),
     }
 
     impl<'de> Deserialize<'de> for SkillLevel {
@@ -82,7 +80,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            i32::deserialize(deserializer).and_then(|value| SkillLevel::from_i32_checked(value).map_err(Error::custom))
+            i32::deserialize(deserializer).map(|value| SkillLevel::from_i32_clamped(value))
         }
     }
 }

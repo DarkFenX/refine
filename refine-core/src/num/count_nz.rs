@@ -4,7 +4,7 @@ use crate::num::{PValue, Value};
 
 const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize), serde(transparent))]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct CountNz(NonZeroU32);
 impl CountNz {
@@ -67,5 +67,24 @@ impl From<CountNz> for u32 {
 impl Default for CountNz {
     fn default() -> Self {
         Self(DEFAULT)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for CountNz {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            u32::deserialize(deserializer).map(|value| CountNz::from_u32_clamped(value))
+        }
     }
 }
