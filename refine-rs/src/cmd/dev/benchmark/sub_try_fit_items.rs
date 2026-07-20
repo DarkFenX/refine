@@ -2,6 +2,7 @@ use tokio_rayon::rayon::prelude::*;
 
 use crate::{FitId, ItemTypeId, cmd::shared::SolCloner, dev::DevBenchmarkCmd, val::ValOptions};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct DevBenchmarkTryFitItemsCmd {
     fit_id: FitId,
     type_ids: Vec<ItemTypeId>,
@@ -22,12 +23,11 @@ impl DevBenchmarkTryFitItemsCmd {
         }
     }
 }
-// TODO: re-enable after validation options deserialization is implemented
-// impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
-//     fn from(sub_cmd: DevBenchmarkTryFitItemsCmd) -> Self {
-//         DevBenchmarkCmd::TryFitItems(sub_cmd)
-//     }
-// }
+impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
+    fn from(sub_cmd: DevBenchmarkTryFitItemsCmd) -> Self {
+        DevBenchmarkCmd::TryFitItems(sub_cmd)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution

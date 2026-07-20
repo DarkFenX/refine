@@ -8,8 +8,7 @@ use crate::dev::{DevBenchmarkAttrCalcCmd, DevBenchmarkStatsCmd, DevBenchmarkTryF
 pub enum DevBenchmarkCmd {
     AttrCalc(DevBenchmarkAttrCalcCmd),
     Stats(DevBenchmarkStatsCmd),
-    // TODO: re-enable after validation options deserialization is implemented
-    // TryFitItems(DevBenchmarkTryFitItemsCmd),
+    TryFitItems(DevBenchmarkTryFitItemsCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -20,8 +19,7 @@ impl DevBenchmarkCmd {
         match self {
             Self::AttrCalc(cmd) => cmd.execute(core_sol),
             Self::Stats(cmd) => cmd.execute(core_sol),
-            // TODO: re-enable after validation options deserialization is implemented
-            // Self::TryFitItems(cmd) => cmd.execute(core_sol),
+            Self::TryFitItems(cmd) => cmd.execute(core_sol),
         }
     }
 }
