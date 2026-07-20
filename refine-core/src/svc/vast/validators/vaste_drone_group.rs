@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use itertools::Itertools;
 
 use crate::{
     api::ItemGrpId,
@@ -7,11 +7,18 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValDroneGroupFail {
     /// Drone item groups allowed by the ship.
     pub allowed_group_ids: Vec<ItemGrpId>,
     /// Drones breaking the validation and their groups.
-    pub drone_groups: HashMap<ItemId, ItemGrpId>,
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub drone_groups: Vec<(ItemId, ItemGrpId)>,
 }
 
 impl VastFitData {
@@ -31,7 +38,7 @@ impl VastFitData {
         if self.drone_groups.is_empty() {
             return None;
         }
-        let drone_groups: HashMap<_, _> = self
+        let drone_groups = self
             .drone_groups
             .iter()
             .filter(|(drone_uid, _)| !kfs.contains(drone_uid))
@@ -41,7 +48,7 @@ impl VastFitData {
                     ItemGrpId::from_aid(*drone_group_aid),
                 )
             })
-            .collect();
+            .collect_vec();
         match drone_groups.is_empty() {
             true => None,
             false => Some(ValDroneGroupFail {

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use itertools::Itertools;
 
 use crate::{
     api::ItemTypeId,
@@ -8,11 +8,21 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValSrqFail {
-    /// Map between item IDs and their unsatisfied skill requirements, which are defined as another
-    /// map, with keys being skill type IDs, and values containing further info about levels..
-    pub items: HashMap<ItemId, HashMap<ItemTypeId, ValSrqSkillInfo>>,
+    /// Items and their unsatisfied skill requirements, which are defined as another list of skills
+    /// and info about levels.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, serde_with::Map<_, _>>"))]
+    pub items: Vec<(ItemId, Vec<(ItemTypeId, ValSrqSkillInfo)>)>,
 }
+
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValSrqSkillInfo {
     /// Current skill level, None if skill is absent on fit.
@@ -35,7 +45,7 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValSrqFail> {
-        let items: HashMap<_, _> = self
+        let items = self
             .srqs_missing
             .iter()
             .filter(|(item_uid, _)| !kfs.contains(item_uid))
@@ -45,10 +55,10 @@ impl VastFitData {
                     missing_skills
                         .iter()
                         .map(|(skill_item_aid, skill_info)| (ItemTypeId::from_aid(*skill_item_aid), *skill_info))
-                        .collect(),
+                        .collect_vec(),
                 )
             })
-            .collect();
+            .collect_vec();
         match items.is_empty() {
             true => None,
             false => Some(ValSrqFail { items }),

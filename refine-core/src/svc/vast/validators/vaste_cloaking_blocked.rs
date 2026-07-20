@@ -5,8 +5,9 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct ValCloakingBlockedFail {
-    /// Item IDs of cloaks which are active, but their activation is blocked by something.
+    /// Cloaks which are active, but their activation is blocked by something.
     pub module_ids: Vec<ItemId>,
 }
 

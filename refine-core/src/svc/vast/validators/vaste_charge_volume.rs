@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::{
     num::PValue,
     svc::{SvcCtx, vast::VastFitData},
@@ -7,11 +5,20 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValChargeVolumeFail {
-    /// Map between charge IDs and info about failed validation.
-    pub charges: HashMap<ItemId, ValChargeVolumeChargeInfo>,
+    /// Charges and info about failed validation.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    pub charges: Vec<(ItemId, ValChargeVolumeChargeInfo)>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValChargeVolumeChargeInfo {
     /// Parent module item ID.
     pub parent_item_id: ItemId,
@@ -35,16 +42,16 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValChargeVolumeFail> {
-        let mut charges = HashMap::new();
+        let mut charges = Vec::new();
         for (&charge_uid, &cont_uid) in self.charge_volume.difference(kfs) {
-            charges.insert(
+            charges.push((
                 ctx.u_data.items.ext_id_by_int_id(charge_uid),
                 ValChargeVolumeChargeInfo {
                     parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
                     charge_volume: ctx.u_data.items.get(charge_uid).get_axt().unwrap().volume,
                     max_volume: ctx.u_data.items.get(cont_uid).get_axt().unwrap().capacity,
                 },
-            );
+            ));
         }
         match charges.is_empty() {
             true => None,

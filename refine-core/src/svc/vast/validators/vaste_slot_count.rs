@@ -10,6 +10,7 @@ use crate::{
     util::{RMap, RSet},
 };
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValSlotCountFail {
     /// How many slots are taken by all the relevant items.
     pub used: Count,

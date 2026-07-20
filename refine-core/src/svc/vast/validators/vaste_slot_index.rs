@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use itertools::Itertools;
 
 use crate::{
     num::SlotIndex,
@@ -7,9 +7,17 @@ use crate::{
     util::{RMapRSet, RSet},
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValSlotIndexFail {
-    /// Map between slot number and multiple items trying to take it.
-    pub slot_users: HashMap<SlotIndex, Vec<ItemId>>,
+    /// Slot number and items trying to take it.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    pub slot_users: Vec<(SlotIndex, Vec<ItemId>)>,
 }
 
 impl VastFitData {
@@ -56,15 +64,17 @@ fn validate_slot_index_verbose(
     ctx: SvcCtx,
     data: &RMapRSet<SlotIndex, UItemId>,
 ) -> Option<ValSlotIndexFail> {
-    let mut slot_users = HashMap::new();
-    for (a_slot, users) in data.iter() {
+    let mut slot_users = Vec::new();
+    for (slot_index, users) in data.iter() {
         if users.len() >= 2 {
-            let users: Vec<_> = users
-                .filter(|item_uid| !kfs.contains(item_uid))
-                .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
-                .collect();
+            let users = users
+                .filter_map(|item_uid| match kfs.contains(item_uid) {
+                    true => None,
+                    false => Some(ctx.u_data.items.ext_id_by_int_id(*item_uid)),
+                })
+                .collect_vec();
             if !users.is_empty() {
-                slot_users.insert(*a_slot, users);
+                slot_users.push((*slot_index, users));
             }
         }
     }

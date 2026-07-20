@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use itertools::Itertools;
 
 use crate::{
     svc::{SvcCtx, vast::VastFitData},
@@ -6,13 +6,21 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValItemVsShipKindFail {
     /// Kind of current ship.
     pub ship_kind: ValShipKind,
-    /// Map with items which need other ship kind, and what kind they need (either ship or
-    /// structure).
-    pub items: HashMap<ItemId, ValShipKind>,
+    /// Items which need other ship kind, and what kind they need (either ship or structure).
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, ValShipKind)>,
 }
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum ValShipKind {
     Ship,
@@ -44,11 +52,11 @@ impl VastFitData {
         ctx: SvcCtx,
         fit: &UFit,
     ) -> Option<ValItemVsShipKindFail> {
-        let items: HashMap<_, _> = self
+        let items = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
             .map(|(item_uid, needed_kind)| (ctx.u_data.items.ext_id_by_int_id(*item_uid), *needed_kind))
-            .collect();
+            .collect_vec();
         match items.is_empty() {
             true => None,
             false => Some(ValItemVsShipKindFail {

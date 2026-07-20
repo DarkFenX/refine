@@ -5,6 +5,7 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 /// Fails when a ship which can't have a stance but has one.
 pub struct ValShipStanceFail {
     /// Stance item ID.

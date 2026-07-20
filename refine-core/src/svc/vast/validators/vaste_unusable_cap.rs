@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::{
     nd::NEffectOutputGetter,
     num::{PValue, UnitInterval, Value},
@@ -9,11 +7,18 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: PValue,
     /// List of items breaking validation, and their cap uses.
-    pub items: HashMap<ItemId, PValue>,
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, PValue)>,
 }
 
 impl VastFitData {
@@ -64,7 +69,7 @@ impl VastFitData {
         // Pass validation if ship is not loaded
         let max_cap = calc.get_item_oattr_afb_oextra(ctx, ship_uid, ctx.ac().capacitor_capacity, Value::ZERO)?;
         let max_cap = PValue::from_value_clamped(max_cap);
-        let mut items = HashMap::new();
+        let mut items = Vec::new();
         for &item_uid in self.mods_cap_consumers.iter() {
             let u_item = ctx.u_data.items.get(item_uid);
             let Some(max_item_use) = u_item
@@ -77,7 +82,7 @@ impl VastFitData {
                 continue;
             };
             if max_item_use > max_cap && !kfs.contains(&item_uid) {
-                items.insert(ctx.u_data.items.ext_id_by_int_id(item_uid), max_item_use);
+                items.push((ctx.u_data.items.ext_id_by_int_id(item_uid), max_item_use));
             }
         }
         match items.is_empty() {

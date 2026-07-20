@@ -4,8 +4,9 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct ValActivationBlockedFail {
-    /// Item IDs of modules which are active, but their activation is blocked by something.
+    /// Modules which are active, but their activation is blocked by something.
     pub module_ids: Vec<ItemId>,
 }
 

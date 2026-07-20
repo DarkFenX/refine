@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::{
     api::{ItemGrpId, ItemTypeId},
     rd::RItemShipLimit,
@@ -8,15 +6,23 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValShipLimitFail {
     /// Type ID of current ship.
     pub ship_type_id: Option<ItemTypeId>,
     /// Group ID of current ship.
     pub ship_group_id: Option<ItemGrpId>,
-    /// Map with IDs of items which cannot be fit to current ship, with their requirements.
-    pub items: HashMap<ItemId, ValShipLimitItemInfo>,
+    /// Items which cannot be fit to current ship with their requirements.
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, ValShipLimitItemInfo)>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValShipLimitItemInfo {
     /// Ship type IDs item can be fit to.
     pub allowed_type_ids: Vec<ItemTypeId>,
@@ -81,7 +87,7 @@ impl VastFitData {
             Some(ship) => (Some(ship.get_type_aid()), ship.get_group_id()),
             None => (None, None),
         };
-        let mut mismatches = HashMap::new();
+        let mut mismatches = Vec::new();
         for (limited_item_uid, ship_limit) in self.ship_limited_items.iter() {
             if let Some(ship_type_aid) = ship_type_aid
                 && ship_limit.type_aids.contains(&ship_type_aid)
@@ -96,10 +102,10 @@ impl VastFitData {
             if kfs.contains(limited_item_uid) {
                 continue;
             }
-            mismatches.insert(
+            mismatches.push((
                 ctx.u_data.items.ext_id_by_int_id(*limited_item_uid),
                 ValShipLimitItemInfo::from_r_item_ship_limit(ship_limit),
-            );
+            ));
         }
         match mismatches.is_empty() {
             true => None,

@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use itertools::Itertools;
 
 use crate::{
     misc::{SecZone, SecZoneCorruption},
@@ -13,12 +13,19 @@ use crate::{
     util::{RMap, RSet},
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValItemSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
-    /// Map between IDs of items which cannot be used in current security zone, and a list of
-    /// security zones they can be used in.
-    pub items: HashMap<ItemId, Vec<SecZone>>,
+    /// Items which cannot be used in current security zone, and a list of security zones they can
+    /// be used in.
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, Vec<SecZone>)>,
 }
 
 impl VastFitData {
@@ -343,16 +350,18 @@ fn class_check_verbose(
         return None;
     }
     let current_class = zone_to_class(ctx.u_data.sec_zone);
-    let items: HashMap<_, _> = limitable_items
+    let items = limitable_items
         .iter()
-        .filter(|(item_uid, item_sec_class)| **item_sec_class < current_class && !kfs.contains(item_uid))
-        .map(|(&item_uid, &item_sec_class)| {
-            (
-                ctx.u_data.items.ext_id_by_int_id(item_uid),
-                class_to_allowed_zones(item_sec_class),
-            )
-        })
-        .collect();
+        .filter_map(
+            |(item_uid, item_sec_class)| match *item_sec_class < current_class && !kfs.contains(item_uid) {
+                true => Some((
+                    ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    class_to_allowed_zones(*item_sec_class),
+                )),
+                false => None,
+            },
+        )
+        .collect_vec();
     match items.is_empty() {
         true => None,
         false => Some(ValItemSecZoneFail {

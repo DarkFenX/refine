@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use super::shared::get_max_resource;
 use crate::{
     num::Value,
@@ -9,13 +7,20 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValResourceFail {
     /// How much resource is used by all of its consumers.
     pub used: Value,
     /// Max available resource (e.g. amount of CPU produced by ship).
     pub max: Option<Value>,
-    /// Map between consumer item IDs and amount consumed.
-    pub users: HashMap<ItemId, Value>,
+    /// Consumer items and amount consumed.
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub users: Vec<(ItemId, Value)>,
 }
 
 impl VastFitData {
@@ -276,12 +281,13 @@ fn validate_verbose_fitting(
     max_attr_rid: Option<RAttrId>,
 ) -> Option<ValResourceFail> {
     let mut total_use = Value::ZERO;
-    let mut users = HashMap::with_capacity(items.len());
+    let mut users = Vec::with_capacity(items.len());
     for item_uid in items {
         let item_use = calc.get_item_oattr_ffb_extra(ctx, item_uid, use_attr_rid, Value::ZERO);
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
-            users.insert(ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
+            let user = (ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
+            users.push(user);
         }
     }
     if users.is_empty() {
@@ -307,11 +313,12 @@ fn validate_verbose_other(
     max_attr_rid: Option<RAttrId>,
 ) -> Option<ValResourceFail> {
     let mut total_use = Value::ZERO;
-    let mut users = HashMap::with_capacity(items.len());
+    let mut users = Vec::with_capacity(items.len());
     for (item_uid, item_use) in items {
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
-            users.insert(ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
+            let user = (ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
+            users.push(user);
         }
     }
     if users.is_empty() {

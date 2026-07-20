@@ -1,17 +1,22 @@
-use std::collections::HashMap;
-
 use crate::{
     api::EffectId,
     misc::EffectSpec,
     num::PValue,
     svc::{SvcCtx, calc::Calc, vast::VastFitData},
     ud::{ItemId, UItemId},
-    util::RSet,
+    util::{RMap, RSet},
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValEffectStopperFail {
     /// Items and their running effects which should be stopped.
-    pub items: HashMap<ItemId, Vec<EffectId>>,
+    pub items: Vec<(ItemId, Vec<EffectId>)>,
 }
 
 impl VastFitData {
@@ -41,7 +46,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValEffectStopperFail> {
-        let mut items = HashMap::new();
+        let mut items = RMap::new();
         for (stopped_espec, stopper_especs) in self.stopped_effects.iter() {
             let stopped_u_item = ctx.u_data.items.get(stopped_espec.item_uid);
             if let Some(stopped_reffs) = stopped_u_item.get_reffs()
@@ -59,7 +64,9 @@ impl VastFitData {
         }
         match items.is_empty() {
             true => None,
-            false => Some(ValEffectStopperFail { items }),
+            false => Some(ValEffectStopperFail {
+                items: items.into_iter().collect(),
+            }),
         }
     }
 }

@@ -1,16 +1,22 @@
-use std::collections::HashMap;
-
 use crate::{
     misc::EffectSpec,
     rd::RItemListId,
     svc::{SvcCtx, vast::VastFitData},
     ud::{ItemId, UItemId},
-    util::RSet,
+    util::{RMap, RSet},
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValProjFilterFail {
-    /// Map between projecting item IDs and targets they can't be projected to.
-    pub items: HashMap<ItemId, Vec<ItemId>>,
+    /// Projecting items and targets they can't be projected to.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, Vec<ItemId>)>,
 }
 
 impl VastFitData {
@@ -31,7 +37,7 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValProjFilterFail> {
-        let mut items = HashMap::new();
+        let mut items = RMap::new();
         for (projector_espec, projectee_data) in self.projectee_filter.iter() {
             for (&projectee_uid, &allowed_type_list_id) in projectee_data.iter() {
                 if !validate_projection(kfs, ctx, projector_espec, allowed_type_list_id, projectee_uid) {
@@ -46,7 +52,9 @@ impl VastFitData {
         }
         match items.is_empty() {
             true => None,
-            false => Some(ValProjFilterFail { items }),
+            false => Some(ValProjFilterFail {
+                items: items.into_iter().collect(),
+            }),
         }
     }
 }

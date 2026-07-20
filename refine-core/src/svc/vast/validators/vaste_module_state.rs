@@ -1,4 +1,4 @@
-use std::collections::HashMap;
+use itertools::Itertools;
 
 use crate::{
     api::ModuleState,
@@ -7,10 +7,20 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValModuleStateFail {
-    /// Map between module item IDs and module state info.
-    pub modules: HashMap<ItemId, ValModuleStateModuleInfo>,
+    /// Modules and their state info.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    pub modules: Vec<(ItemId, ValModuleStateModuleInfo)>,
 }
+
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValModuleStateModuleInfo {
     /// Current module state.
@@ -33,12 +43,12 @@ impl VastFitData {
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValModuleStateFail> {
-        let modules: HashMap<_, _> = self
+        let modules = self
             .mods_state
             .iter()
             .filter(|(module_uid, _)| !kfs.contains(module_uid))
             .map(|(module_uid, module_info)| (ctx.u_data.items.ext_id_by_int_id(*module_uid), *module_info))
-            .collect();
+            .collect_vec();
         match modules.is_empty() {
             true => None,
             false => Some(ValModuleStateFail { modules }),

@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::{
     ad::AItemGrpId,
     api::ItemGrpId,
@@ -10,16 +8,31 @@ use crate::{
     util::{RMap, RMapRSet, RSet},
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValMaxGroupFail {
     /// Map between group IDs which had failed items, and detailed group info.
-    pub groups: HashMap<ItemGrpId, ValMaxGroupGroupInfo>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    pub groups: Vec<(ItemGrpId, ValMaxGroupGroupInfo)>,
 }
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValMaxGroupGroupInfo {
     /// How many items from that group are in an appropriate state.
     pub group_item_count: Count,
-    /// Map between offending item IDs and per-item group count limits.
-    pub items: HashMap<ItemId, Count>,
+    /// Offending items and their group limits.
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, Count)>,
 }
 
 impl VastFitData {
@@ -147,7 +160,7 @@ fn validate_verbose(
     attr_rid: Option<RAttrId>,
 ) -> Option<ValMaxGroupFail> {
     let attr_rid = attr_rid?;
-    let mut groups = HashMap::new();
+    let mut groups = RMap::new();
     for (&item_uid, item_grp_aid) in max_group_limited.iter() {
         let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
         let actual = get_actual_item_count(max_group_all, item_grp_aid);
@@ -156,15 +169,17 @@ fn validate_verbose(
                 .entry(ItemGrpId::from_aid(*item_grp_aid))
                 .or_insert_with(|| ValMaxGroupGroupInfo {
                     group_item_count: actual,
-                    items: HashMap::new(),
+                    items: Vec::new(),
                 })
                 .items
-                .insert(ctx.u_data.items.ext_id_by_int_id(item_uid), allowed);
+                .push((ctx.u_data.items.ext_id_by_int_id(item_uid), allowed));
         }
     }
     match groups.is_empty() {
         true => None,
-        false => Some(ValMaxGroupFail { groups }),
+        false => Some(ValMaxGroupFail {
+            groups: groups.into_iter().collect(),
+        }),
     }
 }
 

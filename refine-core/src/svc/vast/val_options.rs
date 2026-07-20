@@ -233,12 +233,7 @@ pub struct ValEnabled {
     ///
     /// Every validation failure is attached to an item. Items listed here will not be returned as
     /// validation failures. If all validation's failures are known, it is passed.
-    pub kfs: Vec<ItemId>,
-}
-impl ValEnabled {
-    pub fn new() -> Self {
-        Self { kfs: Vec::default() }
-    }
+    pub kfs: Vec<ItemId> = Vec::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

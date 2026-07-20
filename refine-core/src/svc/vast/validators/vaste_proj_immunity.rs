@@ -1,17 +1,23 @@
-use std::collections::HashMap;
-
 use crate::{
     misc::EffectSpec,
     num::PValue,
     rd::{RAttrId, REffectResist},
     svc::{SvcCtx, calc::Calc, funcs::is_attr_flag_set, vast::VastFitData},
     ud::{ItemId, UItemId},
-    util::{RMapRSet, RSet},
+    util::{RMap, RMapRSet, RSet},
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 pub struct ValProjImmunityFail {
-    /// Map between projecting item IDs and targets they can't be projected to.
-    pub items: HashMap<ItemId, Vec<ItemId>>,
+    /// Projecting items and targets they can't be projected to.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    pub items: Vec<(ItemId, Vec<ItemId>)>,
 }
 
 impl VastFitData {
@@ -87,7 +93,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        let mut items = HashMap::new();
+        let mut items = RMap::new();
         for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
             if REffectResist::get_mult_by_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO) {
                 let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_aspec.item_uid);
@@ -105,7 +111,9 @@ impl VastFitData {
         }
         match items.is_empty() {
             true => None,
-            false => Some(ValProjImmunityFail { items }),
+            false => Some(ValProjImmunityFail {
+                items: items.into_iter().collect(),
+            }),
         }
     }
 }
@@ -143,7 +151,7 @@ fn validate_verbose(
     attr_rid: Option<RAttrId>,
 ) -> Option<ValProjImmunityFail> {
     let attr_rid = attr_rid?;
-    let mut items = HashMap::new();
+    let mut items = RMap::new();
     for (&projectee_uid, projector_especs) in blockable.iter() {
         if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) && projector_especs.len() > 0 {
             let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_uid);
@@ -161,6 +169,8 @@ fn validate_verbose(
     }
     match items.is_empty() {
         true => None,
-        false => Some(ValProjImmunityFail { items }),
+        false => Some(ValProjImmunityFail {
+            items: items.into_iter().collect(),
+        }),
     }
 }

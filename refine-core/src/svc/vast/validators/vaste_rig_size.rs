@@ -1,5 +1,3 @@
-use std::collections::HashMap;
-
 use crate::{
     num::Value,
     svc::{SvcCtx, vast::VastFitData},
@@ -7,11 +5,18 @@ use crate::{
     util::RSet,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 pub struct ValRigSizeFail {
     /// Rig size compatible with the ship.
     pub allowed_size: Value,
     /// Sizes of incompatible rigs.
-    pub rig_sizes: HashMap<ItemId, Option<Value>>,
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub rig_sizes: Vec<(ItemId, Option<Value>)>,
 }
 
 impl VastFitData {
@@ -35,10 +40,10 @@ impl VastFitData {
         ship: Option<&UShip>,
     ) -> Option<ValRigSizeFail> {
         let allowed_size = get_allowed_size(ship)?;
-        let mut rig_sizes = HashMap::new();
+        let mut rig_sizes = Vec::new();
         for (rig_uid, &rig_size) in self.rigs_rig_size.iter() {
             if rig_size != Some(allowed_size) && !kfs.contains(rig_uid) {
-                rig_sizes.insert(ctx.u_data.items.ext_id_by_int_id(*rig_uid), rig_size);
+                rig_sizes.push((ctx.u_data.items.ext_id_by_int_id(*rig_uid), rig_size));
             }
         }
         match rig_sizes.is_empty() {
