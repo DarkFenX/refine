@@ -12,7 +12,7 @@ pub use modes::{FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfoMode, SrcInfoMo
 pub use sol::{SolInfo, SolInfoExt};
 pub use src::{SrcInfo, SrcInfoExt, SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 pub use stats::{
-    FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw,
+    FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
 };
 pub use val::{FitValInfo, SolValInfo};
 

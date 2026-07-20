@@ -4,7 +4,7 @@ use crate::{
         FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps, err::FitShipAppliedStatError,
     },
 };
 
@@ -308,7 +308,7 @@ impl GetFitStatsCmd {
         // Ship mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
-            stats.speed = core_fit.get_stat_speed().ok().map(|v| vec![v]);
+            stats.speed = core_fit.get_stat_speed().into();
         }
         if self.agility.into_enabled(self.default) {
             stats.agility = core_fit.get_stat_agility().ok().flatten().map(|v| vec![v]);
@@ -558,12 +558,11 @@ fn get_jump_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionJump>) -> Op
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn is_fatal_ship_app(core_err: rc::err::FitShipAppliedStatError) -> bool {
+fn is_fatal_ship_app(core_err: FitShipAppliedStatError) -> bool {
     match core_err {
-        rc::err::FitShipAppliedStatError::NoShip(_)
-        | rc::err::FitShipAppliedStatError::ItemNotLoaded(_)
-        | rc::err::FitShipAppliedStatError::UnsupportedStat(_) => true,
-        rc::err::FitShipAppliedStatError::ProjecteeNotFound(_)
-        | rc::err::FitShipAppliedStatError::ProjecteeCantTakeProjs(_) => false,
+        FitShipAppliedStatError::NoShip(_)
+        | FitShipAppliedStatError::ItemNotLoaded(_)
+        | FitShipAppliedStatError::UnsupportedStat(_) => true,
+        FitShipAppliedStatError::ProjecteeNotFound(_) | FitShipAppliedStatError::ProjecteeCantTakeProjs(_) => false,
     }
 }

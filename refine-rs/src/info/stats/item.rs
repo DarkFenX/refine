@@ -2,7 +2,7 @@ pub use crate::{
     Count, PValue, UnitInterval, Value,
     stats::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
-        StatRps, StatSensors,
+        StatResult, StatRps, StatSensors, err::ItemStatError,
     },
 };
 
@@ -59,8 +59,8 @@ pub struct ItemStats {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub incoming_jam: Option<Vec<StatInJam>> = None,
     // Mobility
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub speed: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub speed: StatResult<PValue, ItemStatError> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub agility: Option<Vec<PValue>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]

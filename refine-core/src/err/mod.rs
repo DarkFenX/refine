@@ -4,15 +4,13 @@ pub use basic::ItemKindMatchError;
 pub use crate::ud::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
 pub use crate::{
     api::{
-        AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, FitAppliedStatError, FitCharacterStatError,
-        FitShipAppliedStatError, FitShipStatError, FleetAddFitError, FleetRemoveFitError, FleetStatAppliedError,
+        AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, FleetAddFitError, FleetRemoveFitError,
         GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError,
         GetFighterError, GetFitError, GetFleetError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError,
         GetModuleError, GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError,
         GetServiceError, GetShipError, GetSideEffectError, GetSkillError, GetStanceError, GetSubsystemError,
-        GetSwEffectError, ItemAppliedStatError, ItemStatError, IterItemAttrsError, IterItemEffectsError,
-        IterItemModifiersError, RemoveFitRahIncomingDpsError, RemoveItemError, SetFitFleetError, SetSkillTypeIdError,
-        UnsetFitFleetError,
+        GetSwEffectError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
+        RemoveFitRahIncomingDpsError, RemoveItemError, SetFitFleetError, SetSkillTypeIdError, UnsetFitFleetError,
     },
     num::{CountNzError, FitSecStatusError, PValueError, SkillLevelError, UnitIntervalError},
 };

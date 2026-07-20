@@ -1,4 +1,5 @@
 #![feature(default_field_values)]
+#![feature(never_type)]
 #![feature(const_trait_impl)]
 #![feature(const_default)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]

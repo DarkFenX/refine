@@ -1,8 +1,8 @@
 use crate::{
     api::{FitMut, ItemMutCommon},
-    err::FitShipStatError,
     misc::DpsProfile,
     num::UnitInterval,
+    stats::err::FitShipStatError,
     svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
 };
 

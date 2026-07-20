@@ -8,3 +8,10 @@ pub use crate::svc::vast::{
     StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst,
     StatTimeOptionsSim,
 };
+
+pub mod err {
+    pub use crate::api::{
+        FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError, FleetStatAppliedError,
+        ItemAppliedStatError, ItemStatError,
+    };
+}

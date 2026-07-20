@@ -7,6 +7,7 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
         StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps,
+        err::{ItemAppliedStatError, ItemStatError},
     },
 };
 
@@ -192,7 +193,7 @@ impl GetItemStatsCmd {
         // Mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
-            stats.speed = core_item.get_stat_speed().ok().map(|v| vec![v]);
+            stats.speed = core_item.get_stat_speed().into();
         }
         if self.agility.into_enabled(self.default) {
             stats.agility = core_item.get_stat_agility().ok().flatten().map(|v| vec![v]);
@@ -492,16 +493,15 @@ fn get_jump_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionJump>) -> 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn is_fatal(core_err: rc::err::ItemStatError) -> bool {
+fn is_fatal(core_err: ItemStatError) -> bool {
     match core_err {
-        rc::err::ItemStatError::ItemNotLoaded(_) | rc::err::ItemStatError::UnsupportedStat(_) => true,
+        ItemStatError::ItemNotLoaded(_) | ItemStatError::UnsupportedStat(_) => true,
     }
 }
 
-fn is_fatal_app(core_err: rc::err::ItemAppliedStatError) -> bool {
+fn is_fatal_app(core_err: ItemAppliedStatError) -> bool {
     match core_err {
-        rc::err::ItemAppliedStatError::ItemNotLoaded(_) | rc::err::ItemAppliedStatError::UnsupportedStat(_) => true,
-        rc::err::ItemAppliedStatError::ProjecteeNotFound(_)
-        | rc::err::ItemAppliedStatError::ProjecteeCantTakeProjs(_) => false,
+        ItemAppliedStatError::ItemNotLoaded(_) | ItemAppliedStatError::UnsupportedStat(_) => true,
+        ItemAppliedStatError::ProjecteeNotFound(_) | ItemAppliedStatError::ProjecteeCantTakeProjs(_) => false,
     }
 }

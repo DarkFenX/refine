@@ -18,5 +18,12 @@ pub use crate::{
         StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass,
         StatOptionRps,
     },
-    info::{FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw},
+    info::{
+        FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw,
+        StatResult,
+    },
 };
+
+pub mod err {
+    pub use rc::stats::err::*;
+}
