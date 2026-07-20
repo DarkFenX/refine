@@ -28,19 +28,19 @@ def test_ship(client, consts):
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_src_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_src_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_charge_proj_dmg_stats.dps == [0, 0, 0, 0]
     assert api_charge_proj_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_charge_nonproj_dmg_stats.dps == [0, 0, 0, 0]
     assert api_charge_nonproj_dmg_stats.volley == [0, 0, 0, 0]
 
@@ -68,10 +68,10 @@ def test_tgt_not_loaded(client, consts):
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_charge_proj_dmg_stats.dps == [0, 0, 0, 0]
     assert api_charge_proj_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_charge_nonproj_dmg_stats.dps == [0, 0, 0, 0]
     assert api_charge_nonproj_dmg_stats.volley == [0, 0, 0, 0]

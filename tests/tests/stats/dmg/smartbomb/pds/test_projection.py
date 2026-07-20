@@ -26,20 +26,20 @@ def test_range(client, consts):
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - surface-to-surface range is used, with perfect application
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(52.083333), approx(52.083333), approx(52.083333), approx(52.083333)]
     assert api_fleet_dmg_stats.volley == [approx(625), approx(625), approx(625), approx(625)]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_src_fit_dmg_stats.dps == [approx(52.083333), approx(52.083333), approx(52.083333), approx(52.083333)]
     assert api_src_fit_dmg_stats.volley == [approx(625), approx(625), approx(625), approx(625)]
     api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_proj_dmg_stats.dps == [
         approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
     assert api_module_proj_dmg_stats.volley == [approx(312.5), approx(312.5), approx(312.5), approx(312.5)]
     api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_nonproj_dmg_stats.dps == [
         approx(26.041667), approx(26.041667), approx(26.041667), approx(26.041667)]
     assert api_module_nonproj_dmg_stats.volley == [approx(312.5), approx(312.5), approx(312.5), approx(312.5)]
@@ -47,18 +47,18 @@ def test_range(client, consts):
     api_tgt_ship.change_ship(coordinates=(0, 178501, 0))
     # Verification - since target is now barely out of range, PDS deals no damage
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_src_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_src_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_proj_dmg_stats.dps == [0, 0, 0, 0]
     assert api_module_proj_dmg_stats.volley == [0, 0, 0, 0]
     api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dmg=(True, [StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))).dmg.one()
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_nonproj_dmg_stats.dps == [0, 0, 0, 0]
     assert api_module_nonproj_dmg_stats.volley == [0, 0, 0, 0]

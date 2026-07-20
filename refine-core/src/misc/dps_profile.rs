@@ -8,7 +8,7 @@ pub struct DpsProfile {
     pub thermal: PValue = PValue::ZERO,
     pub kinetic: PValue = PValue::ZERO,
     pub explosive: PValue = PValue::ZERO,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    #[cfg_attr(feature = "serde", serde(default, skip_serializing_if = "Option::is_none"))]
     pub breacher: Option<BreacherProfile> = None,
 }
 

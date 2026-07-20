@@ -31,17 +31,17 @@ def test_simple(client, consts):
     # approximate (non-applied) stats and accurate (applied) stats. Non-applied stats just take max
     # of absolute and relative values (which, if applied to a 75k HP ship, would result in 750 dps),
     # while applied stats see that neither breacher applies more than 600, and expose that.
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=None)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(750), approx(0.01)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(750), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(600)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(600)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=None)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(750), approx(0.01)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(750), approx(0.01)]
@@ -77,45 +77,45 @@ def test_reload_gap_realistic(client, consts):
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     # Verification - burst stats, no reload - no gaps
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeBurst()),
-        StatsOptionFitDmg(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(250), approx(0.0075)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(250)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats over infinite period with gaps during reload
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=None)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(249.292929), approx(0.007491515)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(249.292929)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats just after first damage tick
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=0.1)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=0.1), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=0.1), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(2500), approx(0.075)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(2500)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats just before second damage tick
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=0.9)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=0.9), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=0.9), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(277.777778), approx(0.008333333)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(277.777778)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats just after second damage tick
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=1.1)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1.1), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=1.1), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(454.545455), approx(0.01363636)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
@@ -123,9 +123,9 @@ def test_reload_gap_realistic(client, consts):
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats with time just after the last pre-gap tick (39 * 24 + 40 for first
     # launcher), dps is slightly higher than 250 since it's 977 damage ticks but 976.1 seconds
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=976.1)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=976.1), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=976.1), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(250.179285), approx(0.007506301)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
@@ -133,18 +133,18 @@ def test_reload_gap_realistic(client, consts):
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats with time just after the last gap tick (40 * 24 + 30), here dps falls
     # a bit, because during the first launcher gap dps is limited to 200 from second launcher
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=990.1)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=990.1), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=990.1), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(249.52025), approx(0.007498334)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(249.52025)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(250)
     # Verification - sim stats with time just after the first post-gap tick, dps increases a bit
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=991.1)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=991.1), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=991.1), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(249.520735), approx(0.007498335)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(250), approx(0.0075)]
@@ -188,34 +188,34 @@ def test_cycle_and_reload_gaps(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     # Verification - burst stats, no reload - only cycle gaps. Each breacher individually covers
     # only half of time, but both are 3/4, due to how their cycles are laid out
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeBurst()),
-        StatsOptionFitDmg(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(625), approx(0.00625)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(375)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeBurst()),
-        StatsOptionFitDmg(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeBurst(), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(625), approx(0.00625)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_src_fit_dmg_stats_applied.dps.breacher == approx(375)
     assert api_src_fit_dmg_stats_applied.volley.breacher == approx(500)
     # Verification - sim stats over infinite period with both gaps considered
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=None)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(599.206349), approx(0.005992063)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(361.111111)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=None)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=None), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(599.206349), approx(0.005992063)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
@@ -223,51 +223,51 @@ def test_cycle_and_reload_gaps(client, consts):
     assert api_src_fit_dmg_stats_applied.volley.breacher == approx(500)
     # Verification - sim stats with time which is the least common multiple of both full cycle times
     # (but does not get next tick into scope) yields the same result as full loop
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=629.999999999)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(599.206349), approx(0.005992063)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(361.111111)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=629.999999999)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=629.999999999), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(599.206349), approx(0.005992063)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_src_fit_dmg_stats_applied.dps.breacher == approx(361.111111)
     assert api_src_fit_dmg_stats_applied.volley.breacher == approx(500)
     # Verification - multiple LCMs to see if various optimizations do not break expected result
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=1889.999999999)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(599.206349), approx(0.005992063)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(361.111111)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=1889.999999999)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=1889.999999999), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(599.206349), approx(0.005992063)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_src_fit_dmg_stats_applied.dps.breacher == approx(361.111111)
     assert api_src_fit_dmg_stats_applied.volley.breacher == approx(500)
     # Verification - some random time into second "loop"
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=852.2)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(607.838536), approx(0.006031448)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(362.590941)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=852.2)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=852.2), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(607.838536), approx(0.006031448)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
@@ -275,17 +275,17 @@ def test_cycle_and_reload_gaps(client, consts):
     assert api_src_fit_dmg_stats_applied.volley.breacher == approx(500)
     # Verification - some random time as in last step, but into 4th loop, result should be
     # different (closer to average) in this case
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=2112.2)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)]))
     api_fleet_dmg_stats_raw, api_fleet_dmg_stats_applied = api_fleet_stats.dmg
     assert api_fleet_dmg_stats_raw.dps.breacher == [approx(602.689139), approx(0.006007954)]
     assert api_fleet_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]
     assert api_fleet_dmg_stats_applied.dps.breacher == approx(361.708172)
     assert api_fleet_dmg_stats_applied.volley.breacher == approx(500)
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(time_options=StatTimeSim(time=2112.2)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(time_options=StatTimeSim(time=2112.2), projectee_item_id=api_tgt_ship.id)]))
     api_src_fit_dmg_stats_raw, api_src_fit_dmg_stats_applied = api_src_fit_stats.dmg
     assert api_src_fit_dmg_stats_raw.dps.breacher == [approx(602.689139), approx(0.006007954)]
     assert api_src_fit_dmg_stats_raw.volley.breacher == [approx(1000), approx(0.01)]

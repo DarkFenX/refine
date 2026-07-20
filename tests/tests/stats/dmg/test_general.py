@@ -19,12 +19,12 @@ def test_not_loaded(client, consts):
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
-    api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(dmg=True)).dmg
-    assert api_module_dmg_stats is None
-    api_drone_dmg_stats = api_drone.get_stats(options=ItemStatsOptions(dmg=True)).dmg
-    assert api_drone_dmg_stats is None
-    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=True)).dmg
-    assert api_fighter_dmg_stats is None
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=True))
+    assert api_module_stats.dmg is None
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(dmg=True))
+    assert api_drone_stats.dmg is None
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=True))
+    assert api_fighter_stats.dmg is None
 
 
 def test_incorrect_item_kind(client, consts):
@@ -56,20 +56,20 @@ def test_incorrect_projectee(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitDmg(projectee_item_id=api_implant.id),
-        StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(dmg=[
         StatsOptionFitDmg(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitDmg(projectee_item_id=api_implant.id),
-        StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
-    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=(True, [
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
         StatsOptionItemDmg(projectee_item_id=api_tgt_tmp.id),
         StatsOptionItemDmg(projectee_item_id=api_implant.id),
-        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
 
 

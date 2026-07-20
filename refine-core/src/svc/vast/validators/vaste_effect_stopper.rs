@@ -16,6 +16,7 @@ use crate::{
 )]
 pub struct ValEffectStopperFail {
     /// Items and their running effects which should be stopped.
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     pub items: Vec<(ItemId, Vec<EffectId>)>,
 }
 
