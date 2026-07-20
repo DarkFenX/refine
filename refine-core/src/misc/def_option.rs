@@ -67,3 +67,78 @@ impl<T> DefOptionExt<T> {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer, Error, Visitor};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for DefOption {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorState;
+
+            impl<'de> Visitor<'de> for VisitorState {
+                type Value = DefOption;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("bool or null")
+                }
+
+                fn visit_bool<E>(self, v: bool) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Ok(match v {
+                        true => Self::Value::Enabled,
+                        false => Self::Value::Disabled,
+                    })
+                }
+                fn visit_unit<E>(self) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Ok(Self::Value::Default)
+                }
+                fn visit_none<E>(self) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Ok(Self::Value::Default)
+                }
+            }
+
+            deserializer.deserialize_any(VisitorState)
+        }
+    }
+
+    impl<'de, T> Deserialize<'de> for DefOptionExt<T>
+    where
+        T: Deserialize<'de>,
+    {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            Ok(match DefOptionExtFormats::deserialize(deserializer)? {
+                DefOptionExtFormats::Simple(DefOption::Default) => Self::Default,
+                DefOptionExtFormats::Simple(DefOption::Disabled) => Self::Disabled,
+                DefOptionExtFormats::Simple(DefOption::Enabled) => Self::Enabled,
+                DefOptionExtFormats::Extension(data) => Self::EnabledExtended(data),
+            })
+        }
+    }
+
+    #[derive(serde::Deserialize)]
+    #[serde(untagged)]
+    enum DefOptionExtFormats<T> {
+        Simple(DefOption),
+        Extension(T),
+    }
+}

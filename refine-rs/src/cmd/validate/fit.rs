@@ -1,7 +1,9 @@
 use crate::val::{FitValInfo, ValInfoMode, ValOptions};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
 pub struct ValidateFitCmd {
-    options: ValOptions,
+    options: ValOptions = ValOptions { .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

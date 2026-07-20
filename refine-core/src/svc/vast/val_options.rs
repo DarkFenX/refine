@@ -17,10 +17,11 @@ pub struct ValOptionsSol {
 }
 
 /// Validation options.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone)]
 pub struct ValOptions {
     /// True to have all validations enabled by default, false to have them disabled.
-    pub default: bool,
+    pub default: bool = true,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
     ////////////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +226,7 @@ pub struct ValOptions {
     pub sec_zone_effect: DefOptionExt<ValEnabled> = DefOptionExt::Default,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(transparent))]
 #[derive(Clone, Default)]
 pub struct ValEnabled {
     /// Known failures of a validation.
