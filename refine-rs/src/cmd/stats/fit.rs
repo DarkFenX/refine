@@ -8,77 +8,139 @@ use crate::{
     },
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct GetFitStatsCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub default: bool = true,
     // Fit output stats
+    #[cfg_attr(feature = "serde", serde(default))]
     pub dmg: StatOptionExt<StatOptionFitDmg> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mps: StatOptionExt<StatOptionFitMining> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_nps: StatOptionExt<StatOptionFitOutNps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_rps: StatOptionExt<StatOptionFitOutRps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_cps: StatOptionExt<StatOptionFitOutCps> = StatOptionExt::Default,
     // Fit resources
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cpu: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub powergrid: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub calibration: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub drone_bay_volume: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub drone_bandwidth: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub fighter_bay_volume: StatOption = StatOption::Default,
     // Fit slots
+    #[cfg_attr(feature = "serde", serde(default))]
     pub high_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mid_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub low_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub turret_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launcher_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub rig_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub service_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub subsystem_slots: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_drones: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_fighters: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_light_fighters: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_heavy_fighters: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_support_fighters: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_st_light_fighters: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_st_heavy_fighters: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub launched_st_support_fighters: StatOption = StatOption::Default,
     // Ship tank
+    #[cfg_attr(feature = "serde", serde(default))]
     pub resists: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub hp: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub ehp: StatOptionExt<StatOptionEhp> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub wc_ehp: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub rps: StatOptionExt<StatOptionRps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub erps: StatOptionExt<StatOptionErps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub breach_resist: StatOption = StatOption::Default,
     // Ship cap
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_amount: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub neut_resist: StatOption = StatOption::Default,
     // Ship sensors
     pub locks: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub lock_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub scan_res: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub sensors: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub dscan_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub probing_size: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub incoming_jam: StatOptionExt<StatOptionIncomingJam> = StatOptionExt::Default,
     // Ship mobility
+    #[cfg_attr(feature = "serde", serde(default))]
     pub speed: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub agility: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub align_time: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub sig_radius: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub warp_speed: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub max_warp_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub jump: StatOptionExt<StatOptionJump> = StatOptionExt::Default,
     // Ship misc stats
+    #[cfg_attr(feature = "serde", serde(default))]
     pub drone_control_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_warp: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_jump_gate: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_jump_wormhole: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_jump_drive: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_dock_station: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_dock_citadel: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_tether: StatOption = StatOption::Default,
 }
 

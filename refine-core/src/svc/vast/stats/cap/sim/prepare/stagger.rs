@@ -26,6 +26,9 @@ impl StatCapSimStagger {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Internal representation
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
 pub(crate) struct StatCapSimStaggerInt {
     default: bool,
@@ -88,5 +91,37 @@ pub(super) fn process_staggers(
         {
             merger.add_entry(stagger_period * PValue::from_usize(i), iter_data, direction)
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for StatCapSimStagger {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            Ok(match StatCapSimStaggerFormats::deserialize(deserializer)? {
+                StatCapSimStaggerFormats::Simple(default) => StatCapSimStagger { default, .. },
+                StatCapSimStaggerFormats::Extended(default, exception_item_ids) => StatCapSimStagger {
+                    default,
+                    exception_item_ids,
+                },
+            })
+        }
+    }
+
+    #[derive(serde::Deserialize)]
+    #[serde(untagged)]
+    enum StatCapSimStaggerFormats {
+        Simple(bool),
+        Extended(bool, Vec<ItemId>),
     }
 }

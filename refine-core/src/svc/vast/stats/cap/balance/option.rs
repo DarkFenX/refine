@@ -5,22 +5,32 @@ use crate::{
 };
 
 /// Capacitor change sources which will be considered for cap balance stats.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcSrcKinds {
-    pub default: bool,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub regen: DefOptionExt<StatCapBlcRegen> = DefOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_injectors: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub nosfs: DefOptionExt<StatCapBlcNosfs> = DefOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub consumers: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub incoming_transfers: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub incoming_neuts: DefOption = DefOption::Default,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcRegen {
     pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcNosfs {
     pub projectee_item_id: Option<ItemId> = None,
