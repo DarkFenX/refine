@@ -73,7 +73,7 @@ async fn main() {
         .route("/sol/{sol_id}/fleet/{fleet_id}", patch(handlers::change_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", delete(handlers::remove_fleet))
         // .route("/sol/{sol_id}/fleet/{fleet_id}/stats", post(handlers::get_fleet_stats))
-        // .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
+        .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
         // Development-related handlers
         .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
         .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))

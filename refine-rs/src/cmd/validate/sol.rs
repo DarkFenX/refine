@@ -3,9 +3,11 @@ use crate::{
     val::{SolValInfo, ValInfoMode, ValOptions},
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
 pub struct ValidateSolCmd {
-    options: ValOptions,
-    fit_ids: Vec<FitId>,
+    options: ValOptions = ValOptions { default: true, .. },
+    fit_ids: Vec<FitId> = Vec::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
