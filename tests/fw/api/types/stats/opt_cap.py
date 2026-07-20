@@ -19,9 +19,9 @@ class StatsOptionCapBalance:
 class StatCapSrcKinds:
 
     default: bool | type[Absent] = Absent
-    regen: bool | tuple[bool, StatCapRegenOptions] | type[Absent] = Absent
+    regen: bool | StatCapRegenOptions | type[Absent] = Absent
     cap_injectors: bool | type[Absent] = Absent
-    nosfs: bool | tuple[bool, StatCapNosfsOptions] | type[Absent] = Absent
+    nosfs: bool | StatCapNosfsOptions | type[Absent] = Absent
     consumers: bool | type[Absent] = Absent
     incoming_transfers: bool | type[Absent] = Absent
     incoming_neuts: bool | type[Absent] = Absent
