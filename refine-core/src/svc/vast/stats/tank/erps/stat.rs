@@ -1,5 +1,6 @@
 use crate::num::PValue;
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct StatErps {
     pub shield: Option<StatErpsLayerRegen>,
@@ -7,6 +8,7 @@ pub struct StatErps {
     pub hull: Option<StatErpsLayer>,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct StatErpsLayerRegen {
     pub local: PValue,
@@ -16,6 +18,7 @@ pub struct StatErpsLayerRegen {
     pub mult: PValue,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct StatErpsLayer {
     pub local: PValue,

@@ -17,9 +17,6 @@ mod custom_serde_attr {
 
     use super::*;
 
-    const ROLL_PREFIX: &str = "r";
-    const ABS_PREFIX: &str = "a";
-
     impl<'de> Deserialize<'de> for StatJumpRange {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where

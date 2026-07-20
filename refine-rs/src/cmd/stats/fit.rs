@@ -151,211 +151,211 @@ impl GetFitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
         if self.cpu.into_enabled(self.default) {
-            stats.cpu = Some(vec![core_fit.get_stat_cpu()])
+            stats.cpu = vec![core_fit.get_stat_cpu()]
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit output stats
         ////////////////////////////////////////////////////////////////////////////////////////////
         if let Some(options) = self.dmg.into_enabled(self.default) {
-            stats.dmg = Some(get_dmg_stats(core_fit, options));
+            stats.dmg = get_dmg_stats(core_fit, options);
         }
         if let Some(options) = self.mps.into_enabled(self.default) {
-            stats.mps = Some(get_mps_stats(core_fit, options));
+            stats.mps = get_mps_stats(core_fit, options);
         }
         if let Some(options) = self.outgoing_nps.into_enabled(self.default) {
-            stats.outgoing_nps = Some(get_outgoing_nps_stats(core_fit, options));
+            stats.outgoing_nps = get_outgoing_nps_stats(core_fit, options);
         }
         if let Some(options) = self.outgoing_cps.into_enabled(self.default) {
-            stats.outgoing_cps = Some(get_outgoing_cps_stats(core_fit, options));
+            stats.outgoing_cps = get_outgoing_cps_stats(core_fit, options);
         }
         if let Some(options) = self.outgoing_rps.into_enabled(self.default) {
-            stats.outgoing_rps = Some(get_outgoing_rps_stats(core_fit, options));
+            stats.outgoing_rps = get_outgoing_rps_stats(core_fit, options);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit resources
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.powergrid.into_enabled(self.default) {
-            stats.powergrid = Some(vec![core_fit.get_stat_powergrid()])
+            stats.powergrid = vec![core_fit.get_stat_powergrid()];
         }
         if self.calibration.into_enabled(self.default) {
-            stats.calibration = Some(vec![core_fit.get_stat_calibration()])
+            stats.calibration = vec![core_fit.get_stat_calibration()];
         }
         if self.drone_bay_volume.into_enabled(self.default) {
-            stats.drone_bay_volume = Some(vec![core_fit.get_stat_drone_bay_volume()])
+            stats.drone_bay_volume = vec![core_fit.get_stat_drone_bay_volume()];
         }
         if self.drone_bandwidth.into_enabled(self.default) {
-            stats.drone_bandwidth = Some(vec![core_fit.get_stat_drone_bandwidth()])
+            stats.drone_bandwidth = vec![core_fit.get_stat_drone_bandwidth()];
         }
         if self.fighter_bay_volume.into_enabled(self.default) {
-            stats.fighter_bay_volume = Some(vec![core_fit.get_stat_fighter_bay_volume()])
+            stats.fighter_bay_volume = vec![core_fit.get_stat_fighter_bay_volume()];
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit slots
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.high_slots.into_enabled(self.default) {
-            stats.high_slots = Some(vec![core_fit.get_stat_high_slots()]);
+            stats.high_slots = vec![core_fit.get_stat_high_slots()];
         }
         if self.mid_slots.into_enabled(self.default) {
-            stats.mid_slots = Some(vec![core_fit.get_stat_mid_slots()]);
+            stats.mid_slots = vec![core_fit.get_stat_mid_slots()];
         }
         if self.low_slots.into_enabled(self.default) {
-            stats.low_slots = Some(vec![core_fit.get_stat_low_slots()]);
+            stats.low_slots = vec![core_fit.get_stat_low_slots()];
         }
         if self.turret_slots.into_enabled(self.default) {
-            stats.turret_slots = Some(vec![core_fit.get_stat_turret_slots()]);
+            stats.turret_slots = vec![core_fit.get_stat_turret_slots()];
         }
         if self.launcher_slots.into_enabled(self.default) {
-            stats.launcher_slots = Some(vec![core_fit.get_stat_launcher_slots()]);
+            stats.launcher_slots = vec![core_fit.get_stat_launcher_slots()];
         }
         if self.rig_slots.into_enabled(self.default) {
-            stats.rig_slots = Some(vec![core_fit.get_stat_rig_slots()]);
+            stats.rig_slots = vec![core_fit.get_stat_rig_slots()];
         }
         if self.service_slots.into_enabled(self.default) {
-            stats.service_slots = Some(vec![core_fit.get_stat_service_slots()]);
+            stats.service_slots = vec![core_fit.get_stat_service_slots()];
         }
         if self.subsystem_slots.into_enabled(self.default) {
-            stats.subsystem_slots = Some(vec![core_fit.get_stat_subsystem_slots()]);
+            stats.subsystem_slots = vec![core_fit.get_stat_subsystem_slots()];
         }
         if self.launched_drones.into_enabled(self.default) {
-            stats.launched_drones = Some(vec![core_fit.get_stat_launched_drones()]);
+            stats.launched_drones = vec![core_fit.get_stat_launched_drones()];
         }
         if self.launched_fighters.into_enabled(self.default) {
-            stats.launched_fighters = Some(vec![core_fit.get_stat_launched_fighters()]);
+            stats.launched_fighters = vec![core_fit.get_stat_launched_fighters()];
         }
         if self.launched_light_fighters.into_enabled(self.default) {
-            stats.launched_light_fighters = Some(vec![core_fit.get_stat_launched_light_fighters()]);
+            stats.launched_light_fighters = vec![core_fit.get_stat_launched_light_fighters()];
         }
         if self.launched_heavy_fighters.into_enabled(self.default) {
-            stats.launched_heavy_fighters = Some(vec![core_fit.get_stat_launched_heavy_fighters()]);
+            stats.launched_heavy_fighters = vec![core_fit.get_stat_launched_heavy_fighters()];
         }
         if self.launched_support_fighters.into_enabled(self.default) {
-            stats.launched_support_fighters = Some(vec![core_fit.get_stat_launched_support_fighters()]);
+            stats.launched_support_fighters = vec![core_fit.get_stat_launched_support_fighters()];
         }
         if self.launched_st_light_fighters.into_enabled(self.default) {
-            stats.launched_st_light_fighters = Some(vec![core_fit.get_stat_launched_st_light_fighters()]);
+            stats.launched_st_light_fighters = vec![core_fit.get_stat_launched_st_light_fighters()];
         }
         if self.launched_st_heavy_fighters.into_enabled(self.default) {
-            stats.launched_st_heavy_fighters = Some(vec![core_fit.get_stat_launched_st_heavy_fighters()]);
+            stats.launched_st_heavy_fighters = vec![core_fit.get_stat_launched_st_heavy_fighters()];
         }
         if self.launched_st_support_fighters.into_enabled(self.default) {
-            stats.launched_st_support_fighters = Some(vec![core_fit.get_stat_launched_st_support_fighters()]);
+            stats.launched_st_support_fighters = vec![core_fit.get_stat_launched_st_support_fighters()];
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship tank
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.resists.into_enabled(self.default) {
-            stats.resists = core_fit.get_stat_resists().into();
+            stats.resists = core_fit.get_stat_resists().ok().map(|v| vec![v]);
         }
         if self.hp.into_enabled(self.default) {
-            stats.hp = core_fit.get_stat_hp().into();
+            stats.hp = core_fit.get_stat_hp().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.ehp.into_enabled(self.default) {
-            stats.ehp = get_ehp_stats(core_fit, options).into();
+            stats.ehp = get_ehp_stats(core_fit, options);
         }
         if self.wc_ehp.into_enabled(self.default) {
-            stats.wc_ehp = core_fit.get_stat_wc_ehp().into();
+            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.rps.into_enabled(self.default) {
-            stats.rps = get_rps_stats(core_fit, options).into();
+            stats.rps = get_rps_stats(core_fit, options);
         }
         if let Some(options) = self.erps.into_enabled(self.default) {
-            stats.erps = get_erps_stats(core_fit, options).into();
+            stats.erps = get_erps_stats(core_fit, options);
         }
         if self.breach_resist.into_enabled(self.default) {
-            stats.breach_resist = core_fit.get_stat_breach_resist().into();
+            stats.breach_resist = core_fit.get_stat_breach_resist().ok().map(|v| vec![v]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship cap
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cap_amount.into_enabled(self.default) {
-            stats.cap_amount = core_fit.get_stat_cap_amount().into();
+            stats.cap_amount = core_fit.get_stat_cap_amount().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.cap_balance.into_enabled(self.default) {
-            stats.cap_balance = get_cap_balance_stats(core_fit, options).into();
+            stats.cap_balance = get_cap_balance_stats(core_fit, options);
         }
         if let Some(options) = self.cap_sim.into_enabled(self.default) {
-            stats.cap_sim = get_cap_sim_stats(core_fit, options).into();
+            stats.cap_sim = get_cap_sim_stats(core_fit, options);
         }
         if self.neut_resist.into_enabled(self.default) {
-            stats.neut_resist = core_fit.get_stat_neut_resist().into();
+            stats.neut_resist = core_fit.get_stat_neut_resist().ok().map(|v| vec![v]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship sensors
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.locks.into_enabled(self.default) {
-            stats.locks = core_fit.get_stat_locks().into();
+            stats.locks = core_fit.get_stat_locks().ok().map(|v| vec![v]);
         }
         if self.lock_range.into_enabled(self.default) {
-            stats.lock_range = core_fit.get_stat_lock_range().into();
+            stats.lock_range = core_fit.get_stat_lock_range().ok().map(|v| vec![v]);
         }
         if self.scan_res.into_enabled(self.default) {
-            stats.scan_res = core_fit.get_stat_scan_res().into();
+            stats.scan_res = core_fit.get_stat_scan_res().ok().map(|v| vec![v]);
         }
         if self.sensors.into_enabled(self.default) {
-            stats.sensors = core_fit.get_stat_sensors().into();
+            stats.sensors = core_fit.get_stat_sensors().ok().map(|v| vec![v]);
         }
         if self.dscan_range.into_enabled(self.default) {
-            stats.dscan_range = core_fit.get_stat_dscan_range().into();
+            stats.dscan_range = core_fit.get_stat_dscan_range().ok().map(|v| vec![v]);
         }
         if self.probing_size.into_enabled(self.default) {
-            stats.probing_size = core_fit.get_stat_probing_size().unwrap_or_default().into();
+            stats.probing_size = core_fit.get_stat_probing_size().ok().flatten().map(|v| vec![v]);
         }
         if let Some(options) = self.incoming_jam.into_enabled(self.default) {
-            stats.incoming_jam = get_incoming_jam_stats(core_fit, options).into();
+            stats.incoming_jam = get_incoming_jam_stats(core_fit, options);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
-            stats.speed = core_fit.get_stat_speed().into();
+            stats.speed = core_fit.get_stat_speed().ok().map(|v| vec![v]);
         }
         if self.agility.into_enabled(self.default) {
-            stats.agility = core_fit.get_stat_agility().unwrap_or_default().into();
+            stats.agility = core_fit.get_stat_agility().ok().flatten().map(|v| vec![v]);
         }
         if self.align_time.into_enabled(self.default) {
-            stats.align_time = core_fit.get_stat_align_time().unwrap_or_default().into();
+            stats.align_time = core_fit.get_stat_align_time().ok().flatten().map(|v| vec![v]);
         }
         if self.sig_radius.into_enabled(self.default) {
-            stats.sig_radius = core_fit.get_stat_sig_radius().into();
+            stats.sig_radius = core_fit.get_stat_sig_radius().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.mass.into_enabled(self.default) {
-            stats.mass = get_mass_stats(core_fit, options).into();
+            stats.mass = get_mass_stats(core_fit, options);
         }
         if self.warp_speed.into_enabled(self.default) {
-            stats.warp_speed = core_fit.get_stat_warp_speed().unwrap_or_default().into();
+            stats.warp_speed = core_fit.get_stat_warp_speed().ok().flatten().map(|v| vec![v]);
         }
         if self.max_warp_range.into_enabled(self.default) {
-            stats.max_warp_range = core_fit.get_stat_max_warp_range().unwrap_or_default().into();
+            stats.max_warp_range = core_fit.get_stat_max_warp_range().ok().flatten().map(|v| vec![v]);
         }
         if let Some(options) = self.jump.into_enabled(self.default) {
-            stats.jump = get_jump_stats(core_fit, options).into();
+            stats.jump = get_jump_stats(core_fit, options);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship misc stats
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.into_enabled(self.default) {
-            stats.drone_control_range = core_fit.get_stat_drone_control_range().into();
+            stats.drone_control_range = core_fit.get_stat_drone_control_range().ok().map(|v| vec![v]);
         }
         if self.can_warp.into_enabled(self.default) {
-            stats.can_warp = core_fit.get_stat_can_warp().into();
+            stats.can_warp = core_fit.get_stat_can_warp().ok().map(|v| vec![v]);
         }
         if self.can_jump_gate.into_enabled(self.default) {
-            stats.can_jump_gate = core_fit.get_stat_can_jump_gate().into();
+            stats.can_jump_gate = core_fit.get_stat_can_jump_gate().ok().map(|v| vec![v]);
         }
         if self.can_jump_wormhole.into_enabled(self.default) {
-            stats.can_jump_wormhole = core_fit.get_stat_can_jump_wormhole().into();
+            stats.can_jump_wormhole = core_fit.get_stat_can_jump_wormhole().ok().map(|v| vec![v]);
         }
         if self.can_jump_drive.into_enabled(self.default) {
-            stats.can_jump_drive = core_fit.get_stat_can_jump_drive().into();
+            stats.can_jump_drive = core_fit.get_stat_can_jump_drive().ok().map(|v| vec![v]);
         }
         if self.can_dock_station.into_enabled(self.default) {
-            stats.can_dock_station = core_fit.get_stat_can_dock_station().into();
+            stats.can_dock_station = core_fit.get_stat_can_dock_station().ok().map(|v| vec![v]);
         }
         if self.can_dock_citadel.into_enabled(self.default) {
-            stats.can_dock_citadel = core_fit.get_stat_can_dock_citadel().into();
+            stats.can_dock_citadel = core_fit.get_stat_can_dock_citadel().ok().map(|v| vec![v]);
         }
         if self.can_tether.into_enabled(self.default) {
-            stats.can_tether = core_fit.get_stat_can_tether().into();
+            stats.can_tether = core_fit.get_stat_can_tether().ok().map(|v| vec![v]);
         }
         stats
     }

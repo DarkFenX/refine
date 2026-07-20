@@ -1,5 +1,6 @@
 use crate::num::PValue;
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct StatHp {
     pub shield: StatHpLayer,
@@ -7,6 +8,7 @@ pub struct StatHp {
     pub hull: StatHpLayer,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct StatHpLayer {
     pub buffer: PValue,
