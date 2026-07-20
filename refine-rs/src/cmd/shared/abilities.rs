@@ -7,7 +7,7 @@
 )]
 #[derive(Default)]
 pub(in crate::cmd) struct Abilities {
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<serde_with::DisplayFromStr, _>"))]
     data: Vec<(rc::AbilityId, bool)>,
 }
 impl Abilities {

@@ -39,6 +39,7 @@ pub(in crate::cmd) struct ICmdModuleChangeICtxRIds {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::cmd) struct ICmdModuleChangeShared {
     pub(in crate::cmd) type_id: Option<ItemTypeId> = None,
+    #[cfg_attr(feature = "serde", serde(rename = "move"))]
     pub(in crate::cmd) move_: Option<MoveMode> = None,
     pub(in crate::cmd) state: Option<ModuleState> = None,
     #[cfg_attr(feature = "serde", serde(default))]
