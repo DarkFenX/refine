@@ -322,19 +322,19 @@ def test_known_failures(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     api_module3 = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.online)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(module_state=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.module_state == {
         api_module3.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
-    api_val = api_fit.validate(options=ValOptions(module_state=(True, [api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(module_state=[api_module3.id]))
     assert api_val.passed is False
     assert api_val.details.module_state == {
         api_module2.id: [consts.ApiModuleState.online, consts.ApiModuleState.offline]}
-    api_val = api_fit.validate(options=ValOptions(module_state=(True, [api_module2.id, api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id, api_module3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(module_state=(True, [api_module2.id, api_other.id, api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id, api_other.id, api_module3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -419,7 +419,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification - KF module itself, we still check its charge
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(module_state=(True, [api_module.id])))
+    api_val = api_fit.validate(options=ValOptions(module_state=[api_module.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

@@ -449,95 +449,91 @@ def test_known_failures(client, consts):
     api_module3 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.disabled)
     api_module4 = api_fit.add_module(type_id=eve_module2_id, state=consts.ApiModuleState.disabled)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unactivable.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unactivable.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_unactivable=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_unactivable.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_unactivable.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_unactivable=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_unactivable.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_unactivable.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_unactivable=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_unactivable.items == {
         api_module2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_unactivable.items == {
         api_module1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_unactivable=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module3.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_unactivable.items == {api_module4.id: sorted([
@@ -545,7 +541,7 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module4.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unactivable.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_unactivable.items == {api_module3.id: sorted([
@@ -553,12 +549,11 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=(True, [api_module3.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module3.id, api_module4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_unactivable=(True, [api_module3.id, api_other.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unactivable=[api_module3.id, api_other.id, api_module4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

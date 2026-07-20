@@ -2,7 +2,7 @@ import dataclasses
 
 from fw.util import Absent, dc_to_dict
 
-type ValOption = bool | tuple[bool, list[int]] | type[Absent]
+type ValOption = bool | list[int] | type[Absent]
 
 
 @dataclasses.dataclass(kw_only=True)

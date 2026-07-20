@@ -173,24 +173,23 @@ def test_known_failures(client, consts):
         state=consts.ApiMinionState.engaging,
         abilities={eve_abil1_id: True, eve_abil2_id: True, eve_abil3_id: True})
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=(True, [api_fighter1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_effect.items == {api_fighter2.id: {
         eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
         eve_effect2_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard]),
         eve_effect3_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=(True, [api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_effect.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_effect.items == {api_fighter1.id: {
         eve_effect1_id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_effect=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

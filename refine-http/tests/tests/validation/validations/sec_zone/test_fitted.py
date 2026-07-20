@@ -561,95 +561,91 @@ def test_known_failures(client, consts):
     api_service3 = api_fit.add_service(type_id=eve_service2_id)
     api_service4 = api_fit.add_service(type_id=eve_service2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_fitted.items == {
         api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_fitted.items == {
         api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_fitted=(True, [api_service1.id, api_other.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_fitted.items == {
         api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hisec_c5
     assert api_val.details.sec_zone_fitted.items == {
         api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_fitted=(True, [api_service1.id, api_other.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_fitted.items == {
         api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec
     assert api_val.details.sec_zone_fitted.items == {
         api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_fitted=(True, [api_service1.id, api_other.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_fitted.items == {
         api_service2.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service2.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.lowsec_c5
     assert api_val.details.sec_zone_fitted.items == {
         api_service1.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service1.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_fitted=(True, [api_service1.id, api_other.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service3.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_fitted.items == {api_service4.id: sorted([
@@ -657,7 +653,7 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service4.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_fitted.zone == consts.ApiSecZone.hazard
     assert api_val.details.sec_zone_fitted.items == {api_service3.id: sorted([
@@ -665,23 +661,22 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.lowsec,
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_service3.id, api_service4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id, api_service4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_fitted=(True, [api_service3.id, api_other.id, api_service4.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id, api_other.id, api_service4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_ship.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_ship.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=(True, [api_other.id, api_ship.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_other.id, api_ship.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

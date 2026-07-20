@@ -380,34 +380,34 @@ def test_known_failures(client, consts):
     api_ship_rig = api_fit.add_rig(type_id=eve_ship_item_id)
     api_ship_service = api_fit.add_service(type_id=eve_ship_item_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=(True, [api_ship_module.id])))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=[api_ship_module.id]))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
         api_ship_rig.id: consts.ApiValShipType.ship,
         api_ship_service.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=(True, [api_ship_rig.id])))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=[api_ship_rig.id]))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {
         api_ship_module.id: consts.ApiValShipType.ship,
         api_ship_service.id: consts.ApiValShipType.ship}
-    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=(True, [api_ship_module.id, api_ship_service.id])))
+    api_val = api_fit.validate(options=ValOptions(item_vs_ship_kind=[api_ship_module.id, api_ship_service.id]))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}
     api_val = api_fit.validate(options=ValOptions(
-        item_vs_ship_kind=(True, [api_ship_module.id, api_other.id, api_ship_service.id])))
+        item_vs_ship_kind=[api_ship_module.id, api_other.id, api_ship_service.id]))
     assert api_val.passed is False
     assert api_val.details.item_vs_ship_kind.ship_kind == consts.ApiValShipType.structure
     assert api_val.details.item_vs_ship_kind.items == {api_ship_rig.id: consts.ApiValShipType.ship}
     api_val = api_fit.validate(options=ValOptions(
-        item_vs_ship_kind=(True, [api_ship_module.id, api_ship_rig.id, api_ship_service.id])))
+        item_vs_ship_kind=[api_ship_module.id, api_ship_rig.id, api_ship_service.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        item_vs_ship_kind=(True, [api_ship_module.id, api_ship_rig.id, api_other.id, api_ship_service.id])))
+        item_vs_ship_kind=[api_ship_module.id, api_ship_rig.id, api_other.id, api_ship_service.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

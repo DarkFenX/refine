@@ -104,7 +104,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(150), approx(125))
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -113,21 +113,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(250), approx(125))
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id]))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(250)
     assert api_val.details.calibration.max == approx(125)
     assert api_val.details.calibration.users == {api_rig2.id: 100}
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig2.id]))
     assert api_val.passed is False
     assert api_val.details.calibration.used == approx(250)
     assert api_val.details.calibration.max == approx(125)
     assert api_val.details.calibration.users == {api_rig1.id: 150}
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_other.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_other.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -136,7 +136,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(240), approx(125))
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -146,7 +146,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(250), approx(125))
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -156,7 +156,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(calibration=True))
     assert api_stats.calibration.one() == (approx(250.5), approx(125))
-    api_val = api_fit.validate(options=ValOptions(calibration=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is False
     assert api_val.details.calibration.used == 250.5
     assert api_val.details.calibration.max == 125

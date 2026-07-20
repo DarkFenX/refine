@@ -105,7 +105,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(cpu=True))
     assert api_stats.cpu.one() == (150, 125)
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -114,21 +114,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(cpu=True))
     assert api_stats.cpu.one() == (250, 125)
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module2.id: 100}
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250
     assert api_val.details.cpu.max == 125
     assert api_val.details.cpu.users == {api_module1.id: 150}
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -137,7 +137,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(cpu=True))
     assert api_stats.cpu.one() == (240, 125)
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -147,7 +147,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(cpu=True))
     assert api_stats.cpu.one() == (250, 125)
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -157,7 +157,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(cpu=True))
     assert api_stats.cpu.one() == (250.5, 125)
-    api_val = api_fit.validate(options=ValOptions(cpu=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(cpu=[api_module1.id, api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.cpu.used == 250.5
     assert api_val.details.cpu.max == 125

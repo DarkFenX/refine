@@ -64,25 +64,24 @@ def test_known_failures(client, consts):
     api_booster2 = api_fit.add_booster(type_id=eve_booster2_id)
     api_booster3 = api_fit.add_booster(type_id=eve_booster1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(booster_slot_index=(True, [api_booster1.id])))
+    api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id]))
     assert api_val.passed is False
     assert api_val.details.booster_slot_index == {1: [api_booster3.id]}
-    api_val = api_fit.validate(options=ValOptions(booster_slot_index=(True, [api_booster3.id])))
+    api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster3.id]))
     assert api_val.passed is False
     assert api_val.details.booster_slot_index == {1: [api_booster1.id]}
-    api_val = api_fit.validate(options=ValOptions(booster_slot_index=(True, [api_booster1.id, api_booster3.id])))
+    api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id, api_booster3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        booster_slot_index=(True, [api_booster1.id, api_other.id, api_booster3.id])))
+    api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id, api_other.id, api_booster3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_booster4 = api_fit.add_booster(type_id=eve_booster2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(booster_slot_index=(True, [api_booster1.id, api_booster3.id])))
+    api_val = api_fit.validate(options=ValOptions(booster_slot_index=[api_booster1.id, api_booster3.id]))
     assert api_val.passed is False
     assert api_val.details.booster_slot_index == {2: sorted([api_booster2.id, api_booster4.id])}
 

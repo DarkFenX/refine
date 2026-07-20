@@ -300,23 +300,23 @@ def test_known_failures(client, consts):
     api_tgt_item2 = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id, state=consts.ApiMinionState.engaging)
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item1.id, api_tgt_item2.id])
     # Verification
-    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_src_item.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_src_item.id]))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {
         api_tgt_item1.id: [eve_tgt_effect_id],
         api_tgt_item2.id: [eve_tgt_effect_id]}
-    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item1.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item1.id]))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item2.id: [eve_tgt_effect_id]}
-    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item2.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item2.id]))
     assert api_val.passed is False
     assert api_val.details.effect_stopper == {api_tgt_item1.id: [eve_tgt_effect_id]}
-    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=(True, [api_tgt_item1.id, api_tgt_item2.id])))
+    api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item1.id, api_tgt_item2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_tgt_fit.validate(options=ValOptions(
-        effect_stopper=(True, [api_tgt_item1.id, api_tgt_other.id, api_tgt_item2.id])))
+        effect_stopper=[api_tgt_item1.id, api_tgt_other.id, api_tgt_item2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

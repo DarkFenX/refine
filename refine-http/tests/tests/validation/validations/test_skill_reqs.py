@@ -296,17 +296,17 @@ def test_known_failures(client):
     api_module1 = api_fit.add_module(type_id=eve_module_id)
     api_module2 = api_fit.add_module(type_id=eve_module_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.skill_reqs == {api_module2.id: {eve_skill_id: (None, 3)}}
-    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.skill_reqs == {api_module1.id: {eve_skill_id: (None, 3)}}
-    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(skill_reqs=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

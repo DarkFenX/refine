@@ -704,42 +704,42 @@ def test_known_failures(client, consts):
     api_module1 = api_fit.add_module(type_id=eve_module_id)
     api_module2 = api_fit.add_module(type_id=eve_module_id)
     # Verification - no ship case has to be checked as well, since there is no-ship logic
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
     assert api_val.details.ship_limit.ship_group_id is None
     assert api_val.details.ship_limit.items == {api_module2.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id is None
     assert api_val.details.ship_limit.ship_group_id is None
     assert api_val.details.ship_limit.items == {api_module1.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_fit.set_ship(type_id=eve_ship_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id]))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_grp1_id
     assert api_val.details.ship_limit.items == {api_module2.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.ship_limit.ship_type_id == eve_ship_id
     assert api_val.details.ship_limit.ship_group_id == eve_grp1_id
     assert api_val.details.ship_limit.items == {api_module1.id: ([eve_other_id], [eve_grp2_id])}
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(ship_limit=(True, [api_module1.id, api_other.id, api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_limit=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

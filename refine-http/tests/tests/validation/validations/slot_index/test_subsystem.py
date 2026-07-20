@@ -64,25 +64,25 @@ def test_known_failures(client, consts):
     api_subsystem2 = api_fit.add_subsystem(type_id=eve_subsystem2_id)
     api_subsystem3 = api_fit.add_subsystem(type_id=eve_subsystem1_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=(True, [api_subsystem1.id])))
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem1.id]))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: [api_subsystem3.id]}
-    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=(True, [api_subsystem3.id])))
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem3.id]))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {1: [api_subsystem1.id]}
-    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=(True, [api_subsystem1.id, api_subsystem3.id])))
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem1.id, api_subsystem3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        subsystem_slot_index=(True, [api_subsystem1.id, api_other.id, api_subsystem3.id])))
+        subsystem_slot_index=[api_subsystem1.id, api_other.id, api_subsystem3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_subsystem4 = api_fit.add_subsystem(type_id=eve_subsystem2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=(True, [api_subsystem1.id, api_subsystem3.id])))
+    api_val = api_fit.validate(options=ValOptions(subsystem_slot_index=[api_subsystem1.id, api_subsystem3.id]))
     assert api_val.passed is False
     assert api_val.details.subsystem_slot_index == {2: sorted([api_subsystem2.id, api_subsystem4.id])}
 

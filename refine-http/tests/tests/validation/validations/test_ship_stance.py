@@ -142,14 +142,14 @@ def test_known_failures(client):
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_stance = api_fit.set_stance(type_id=eve_stance_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(ship_stance=(True, [api_ship.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_stance=[api_ship.id]))
     assert api_val.passed is False
     assert api_val.details.ship_stance.item_id == api_stance.id
-    api_val = api_fit.validate(options=ValOptions(ship_stance=(True, [api_stance.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_stance=[api_stance.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(ship_stance=(True, [api_other.id, api_stance.id])))
+    api_val = api_fit.validate(options=ValOptions(ship_stance=[api_other.id, api_stance.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

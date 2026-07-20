@@ -65,20 +65,19 @@ def test_known_failures(client, consts):
     api_drone1 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     api_drone2 = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=(True, [api_drone1.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id]))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_slot.max == 0
     assert api_val.details.unlaunchable_drone_slot.users == [api_drone2.id]
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone2.id]))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_slot.max == 0
     assert api_val.details.unlaunchable_drone_slot.users == [api_drone1.id]
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=(True, [api_drone1.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        unlaunchable_drone_slot=(True, [api_drone1.id, api_other.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id, api_other.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

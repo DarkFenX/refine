@@ -532,30 +532,29 @@ def test_known_failures(client, consts):
     api_other = api_fit.add_rig(type_id=eve_other_id)
     api_module_cloak1 = api_fit.add_module(type_id=eve_module_cloak_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=(True, [api_module_cloak1.id])))
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_module_cloak1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=(True, [api_other.id, api_module_cloak1.id])))
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_other.id, api_module_cloak1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_module_cloak2 = api_fit.add_module(type_id=eve_module_cloak_id, state=consts.ApiModuleState.active)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=(True, [api_module_cloak1.id])))
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_module_cloak1.id]))
     assert api_val.passed is False
     assert api_val.details.cloaking_blocked == [api_module_cloak2.id]
-    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=(True, [api_module_cloak2.id])))
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_module_cloak2.id]))
     assert api_val.passed is False
     assert api_val.details.cloaking_blocked == [api_module_cloak1.id]
-    api_val = api_fit.validate(options=ValOptions(
-        cloaking_blocked=(True, [api_module_cloak1.id, api_module_cloak2.id])))
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_module_cloak1.id, api_module_cloak2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        cloaking_blocked=(True, [api_module_cloak1.id, api_other.id, api_module_cloak2.id])))
+        cloaking_blocked=[api_module_cloak1.id, api_other.id, api_module_cloak2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

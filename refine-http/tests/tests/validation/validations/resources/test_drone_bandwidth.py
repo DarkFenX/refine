@@ -104,7 +104,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
     assert api_stats.drone_bandwidth.one() == (approx(150), approx(125))
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -113,21 +113,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
     assert api_stats.drone_bandwidth.one() == (approx(250), approx(125))
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id]))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(250)
     assert api_val.details.drone_bandwidth.max == approx(125)
     assert api_val.details.drone_bandwidth.users == {api_drone2.id: 100}
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone2.id]))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == approx(250)
     assert api_val.details.drone_bandwidth.max == approx(125)
     assert api_val.details.drone_bandwidth.users == {api_drone1.id: 150}
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_other.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id, api_other.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -136,7 +136,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
     assert api_stats.drone_bandwidth.one() == (approx(240), approx(125))
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -146,7 +146,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
     assert api_stats.drone_bandwidth.one() == (approx(250), approx(125))
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -156,7 +156,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(drone_bandwidth=True))
     assert api_stats.drone_bandwidth.one() == (approx(250.5), approx(125))
-    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=(True, [api_drone1.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(drone_bandwidth=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is False
     assert api_val.details.drone_bandwidth.used == 250.5
     assert api_val.details.drone_bandwidth.max == 125

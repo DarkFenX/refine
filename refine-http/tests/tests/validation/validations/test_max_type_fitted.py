@@ -42,18 +42,17 @@ def test_known_failures(client, consts):
     api_service1 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     api_service2 = api_fit.add_service(type_id=eve_service_id, state=consts.ApiServiceState.offline)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=(True, [api_service1.id])))
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id]))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service2.id: 1}]}
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=(True, [api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service2.id]))
     assert api_val.passed is False
     assert api_val.details.max_type_fitted == {eve_service_id: [2, {api_service1.id: 1}]}
-    api_val = api_fit.validate(options=ValOptions(max_type_fitted=(True, [api_service1.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        max_type_fitted=(True, [api_service1.id, api_other.id, api_service2.id])))
+    api_val = api_fit.validate(options=ValOptions(max_type_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

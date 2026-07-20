@@ -98,27 +98,27 @@ def test_known_failures(client, consts):
     api_fit.add_drone(type_id=eve_drone1_id, state=consts.ApiMinionState.in_bay)
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     # Action
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id]))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone3.id: 50}
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone3.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone3.id]))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_drone_bandwidth.max == approx(20)
     assert api_val.details.unlaunchable_drone_bandwidth.users == {api_drone2.id: 25}
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_drone3.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id, api_drone3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        unlaunchable_drone_bandwidth=(True, [api_drone2.id, api_other.id, api_drone3.id])))
+        unlaunchable_drone_bandwidth=[api_drone2.id, api_other.id, api_drone3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

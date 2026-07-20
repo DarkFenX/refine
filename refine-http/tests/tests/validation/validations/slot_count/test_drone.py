@@ -74,22 +74,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=True))
     assert api_stats.launched_drones.one() == (2, 1)
-    api_val = api_fit.validate(options=ValOptions(launched_drone_count=(True, [api_drone1.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_drone_count=[api_drone1.id]))
     assert api_val.passed is False
     assert api_val.details.launched_drone_count.used == 2
     assert api_val.details.launched_drone_count.max == 1
     assert api_val.details.launched_drone_count.users == [api_drone2.id]
-    api_val = api_fit.validate(options=ValOptions(launched_drone_count=(True, [api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_drone_count=[api_drone2.id]))
     assert api_val.passed is False
     assert api_val.details.launched_drone_count.used == 2
     assert api_val.details.launched_drone_count.max == 1
     assert api_val.details.launched_drone_count.users == [api_drone1.id]
-    api_val = api_fit.validate(options=ValOptions(launched_drone_count=(True, [api_drone1.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_drone_count=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        launched_drone_count=(True, [api_drone1.id, api_other.id, api_drone2.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_drone_count=[api_drone1.id, api_other.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

@@ -107,12 +107,12 @@ def test_known_failures(client, consts):
     api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_service_id, state=consts.ApiServiceState.disabled)
     api_nullsec_service = api_fit.add_service(type_id=eve_null_service_id, state=consts.ApiServiceState.disabled)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [api_lowsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=[api_lowsec_service.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [api_nullsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=[api_nullsec_service.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_unonlineable.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_unonlineable.items == {api_lowsec_service.id: sorted([
@@ -120,16 +120,15 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace,
         consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_unonlineable=(True, [api_lowsec_service.id, api_nullsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=[api_lowsec_service.id, api_nullsec_service.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=(True, [
+    api_val = api_fit.validate(options=ValOptions(sec_zone_unonlineable=[
         api_lowsec_service.id,
         api_other.id,
         api_nullsec_service.id,
-        api_hisec_service.id])))
+        api_hisec_service.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

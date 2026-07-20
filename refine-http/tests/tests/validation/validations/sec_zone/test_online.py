@@ -107,12 +107,12 @@ def test_known_failures(client, consts):
     api_lowsec_service = api_fit.add_service(type_id=eve_lowsec_service_id, state=consts.ApiServiceState.online)
     api_nullsec_service = api_fit.add_service(type_id=eve_null_service_id, state=consts.ApiServiceState.online)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(sec_zone_online=(True, [api_lowsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_lowsec_service.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_online.items == {
         api_nullsec_service.id: sorted([consts.ApiSecZone.nullsec, consts.ApiSecZone.wspace, consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(sec_zone_online=(True, [api_nullsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_nullsec_service.id]))
     assert api_val.passed is False
     assert api_val.details.sec_zone_online.zone == consts.ApiSecZone.hisec
     assert api_val.details.sec_zone_online.items == {api_lowsec_service.id: sorted([
@@ -120,13 +120,12 @@ def test_known_failures(client, consts):
         consts.ApiSecZone.nullsec,
         consts.ApiSecZone.wspace,
         consts.ApiSecZone.hazard])}
-    api_val = api_fit.validate(options=ValOptions(
-        sec_zone_online=(True, [api_lowsec_service.id, api_nullsec_service.id])))
+    api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_lowsec_service.id, api_nullsec_service.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        sec_zone_online=(True, [api_lowsec_service.id, api_other.id, api_nullsec_service.id, api_hisec_service.id])))
+        sec_zone_online=[api_lowsec_service.id, api_other.id, api_nullsec_service.id, api_hisec_service.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

@@ -94,21 +94,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(rig_slots=True))
     assert api_stats.rig_slots.one() == (2, 1)
-    api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_slot_count=[api_rig1.id]))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
     assert api_val.details.rig_slot_count.max == 1
     assert api_val.details.rig_slot_count.users == [api_rig2.id]
-    api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_slot_count=[api_rig2.id]))
     assert api_val.passed is False
     assert api_val.details.rig_slot_count.used == 2
     assert api_val.details.rig_slot_count.max == 1
     assert api_val.details.rig_slot_count.users == [api_rig1.id]
-    api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_slot_count=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(rig_slot_count=(True, [api_rig1.id, api_other.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_slot_count=[api_rig1.id, api_other.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

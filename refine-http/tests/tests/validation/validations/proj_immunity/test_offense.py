@@ -783,18 +783,18 @@ def test_known_failures(client, consts):
     api_src_offense.change_module(add_proj_item_ids=[api_tgt_item.id])
     api_src_assist.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=(True, [api_src_offense.id])))
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=[api_src_offense.id]))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_assist.id: [api_tgt_item.id]}
-    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=(True, [api_src_assist.id])))
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=[api_src_assist.id]))
     assert api_val.passed is False
     assert api_val.details.offense_immunity == {api_src_offense.id: [api_tgt_item.id]}
-    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=(True, [api_src_offense.id, api_src_assist.id])))
+    api_val = api_src_fit.validate(options=ValOptions(offense_immunity=[api_src_offense.id, api_src_assist.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_src_fit.validate(options=ValOptions(
-        offense_immunity=(True, [api_src_offense.id, api_src_other.id, api_src_assist.id])))
+        offense_immunity=[api_src_offense.id, api_src_other.id, api_src_assist.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

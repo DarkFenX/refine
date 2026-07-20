@@ -87,21 +87,20 @@ def test_known_failures(client, consts):
     api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=(True, [api_fighter1.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=[api_fighter1.id]))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_st_light_fighter.max == 0
     assert api_val.details.unlaunchable_st_light_fighter.users == [api_fighter2.id]
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=(True, [api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=[api_fighter2.id]))
     assert api_val.passed is False
     assert api_val.details.unlaunchable_st_light_fighter.max == 0
     assert api_val.details.unlaunchable_st_light_fighter.users == [api_fighter1.id]
-    api_val = api_fit.validate(options=ValOptions(
-        unlaunchable_st_light_fighter=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        unlaunchable_st_light_fighter=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
+        unlaunchable_st_light_fighter=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -381,7 +380,7 @@ def test_criterion_item_kind(client, consts):
     api_fit.add_subsystem(type_id=eve_item_id)
     # Verification - KF fighter itself, we still check its autocharge
     assert len(api_fighter.autocharges) == 1
-    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=(True, [api_fighter.id])))
+    api_val = api_fit.validate(options=ValOptions(unlaunchable_st_light_fighter=[api_fighter.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

@@ -99,23 +99,22 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(launched_st_heavy_fighters=True))
     assert api_stats.launched_st_heavy_fighters.one() == (2, 1)
-    api_val = api_fit.validate(options=ValOptions(launched_st_heavy_fighter_count=(True, [api_fighter1.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_st_heavy_fighter_count=[api_fighter1.id]))
     assert api_val.passed is False
     assert api_val.details.launched_st_heavy_fighter_count.used == 2
     assert api_val.details.launched_st_heavy_fighter_count.max == 1
     assert api_val.details.launched_st_heavy_fighter_count.users == [api_fighter2.id]
-    api_val = api_fit.validate(options=ValOptions(launched_st_heavy_fighter_count=(True, [api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_st_heavy_fighter_count=[api_fighter2.id]))
     assert api_val.passed is False
     assert api_val.details.launched_st_heavy_fighter_count.used == 2
     assert api_val.details.launched_st_heavy_fighter_count.max == 1
     assert api_val.details.launched_st_heavy_fighter_count.users == [api_fighter1.id]
-    api_val = api_fit.validate(options=ValOptions(
-        launched_st_heavy_fighter_count=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(launched_st_heavy_fighter_count=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_fit.validate(options=ValOptions(
-        launched_st_heavy_fighter_count=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
+        launched_st_heavy_fighter_count=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

@@ -160,7 +160,7 @@ def test_known_failures(client, consts):
     # Verification - check case with KF specified, but used <= max being true
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 3)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module1.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -173,7 +173,7 @@ def test_known_failures(client, consts):
     # Verification - check case with KF specified, but used <= max being true
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (3, 3)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -186,12 +186,12 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (7, 3)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module2.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module2.id]))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
     assert api_val.details.mid_slot_count.max == 3
     assert api_val.details.mid_slot_count.users == [api_module3.id]
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module3.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -204,22 +204,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (7, 3)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module3.id]))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
     assert api_val.details.mid_slot_count.max == 3
     assert api_val.details.mid_slot_count.users == [api_module4.id]
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module4.id]))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
     assert api_val.details.mid_slot_count.max == 3
     assert api_val.details.mid_slot_count.users == [api_module3.id]
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module3.id, api_module4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        mid_slot_count=(True, [api_module3.id, api_other.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module3.id, api_other.id, api_module4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -232,7 +231,7 @@ def test_known_failures(client, consts):
     # Verification - module has been added within slot limit, so it does not trigger anything
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (7, 3)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module3.id, api_module4.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -245,7 +244,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (7, 3)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module3.id, api_module4.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module3.id, api_module4.id]))
     assert api_val.passed is False
     assert api_val.details.mid_slot_count.used == 7
     assert api_val.details.mid_slot_count.max == 3
@@ -495,7 +494,7 @@ def test_criterion_item_kind(client, consts):
     assert len(api_fighter.autocharges) == 1
     api_stats = api_fit.get_stats(options=FitStatsOptions(mid_slots=True))
     assert api_stats.mid_slots.one() == (1, 0)
-    api_val = api_fit.validate(options=ValOptions(mid_slot_count=(True, [api_module.id])))
+    api_val = api_fit.validate(options=ValOptions(mid_slot_count=[api_module.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

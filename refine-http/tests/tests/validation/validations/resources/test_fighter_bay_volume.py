@@ -109,7 +109,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(9000), approx(8000))
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -118,22 +118,21 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(18600), approx(8000))
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id]))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
     assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter2.id: approx(9600)}
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter2.id]))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18600)
     assert api_val.details.fighter_bay_volume.max == approx(8000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter1.id: approx(9000)}
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(
-        fighter_bay_volume=(True, [api_fighter1.id, api_other.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -142,7 +141,7 @@ def test_known_failures(client, consts):
     # Verification - negative volume is considered as 0
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(18600), approx(8000))
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -152,7 +151,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(18600), approx(8000))
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
@@ -162,7 +161,7 @@ def test_known_failures(client, consts):
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(18601.5), approx(8000))
-    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=(True, [api_fighter1.id, api_fighter2.id])))
+    api_val = api_fit.validate(options=ValOptions(fighter_bay_volume=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is False
     assert api_val.details.fighter_bay_volume.used == approx(18601.5)
     assert api_val.details.fighter_bay_volume.max == approx(8000)

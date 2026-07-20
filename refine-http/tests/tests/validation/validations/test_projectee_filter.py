@@ -443,18 +443,18 @@ def test_known_failures(client, consts):
     api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
     api_src_item2.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
-    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=(True, [api_src_item1.id])))
+    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item1.id]))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_item2.id: [api_tgt_item.id]}
-    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=(True, [api_src_item2.id])))
+    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item2.id]))
     assert api_val.passed is False
     assert api_val.details.projectee_filter == {api_src_item1.id: [api_tgt_item.id]}
-    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=(True, [api_src_item1.id, api_src_item2.id])))
+    api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item1.id, api_src_item2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
     api_val = api_src_fit.validate(options=ValOptions(
-        projectee_filter=(True, [api_src_item1.id, api_src_other.id, api_src_item2.id])))
+        projectee_filter=[api_src_item1.id, api_src_other.id, api_src_item2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

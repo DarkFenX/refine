@@ -65,15 +65,15 @@ def test_known_failures(client, consts):
     api_rig2 = api_fit.add_rig(type_id=eve_rig1_id)
     api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(rig_size=(True, [api_rig1.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig1.id]))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig2.id: 1}
-    api_val = api_fit.validate(options=ValOptions(rig_size=(True, [api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig2.id]))
     assert api_val.passed is False
     assert api_val.details.rig_size.allowed_size == 3
     assert api_val.details.rig_size.rig_sizes == {api_rig1.id: 1}
-    api_val = api_fit.validate(options=ValOptions(rig_size=(True, [api_rig1.id, api_rig2.id])))
+    api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

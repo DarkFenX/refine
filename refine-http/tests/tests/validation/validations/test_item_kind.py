@@ -487,19 +487,19 @@ def test_known_failures(client, consts):
     api_booster1 = api_fit.add_booster(type_id=eve_implant_id)
     api_booster2 = api_fit.add_booster(type_id=eve_implant_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(item_kind=(True, [api_booster1.id])))
+    api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id]))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_booster2.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
-    api_val = api_fit.validate(options=ValOptions(item_kind=(True, [api_booster2.id])))
+    api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster2.id]))
     assert api_val.passed is False
     assert api_val.details.item_kind == {
         api_booster1.id: (consts.ApiValItemType.implant, consts.ApiValItemType.booster)}
-    api_val = api_fit.validate(options=ValOptions(item_kind=(True, [api_booster1.id, api_booster2.id])))
+    api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_booster2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(options=ValOptions(item_kind=(True, [api_booster1.id, api_other.id, api_booster2.id])))
+    api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_other.id, api_booster2.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018

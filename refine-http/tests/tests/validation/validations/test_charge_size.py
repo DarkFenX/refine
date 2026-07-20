@@ -88,18 +88,18 @@ def test_known_failures(client, consts):
     api_module2 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     api_module3 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
-    api_val = api_fit.validate(options=ValOptions(charge_size=(True, [api_module2.charge.id])))
+    api_val = api_fit.validate(options=ValOptions(charge_size=[api_module2.charge.id]))
     assert api_val.passed is False
     assert api_val.details.charge_size == {api_module3.charge.id: (api_module3.id, 3, 2)}
-    api_val = api_fit.validate(options=ValOptions(charge_size=(True, [api_module3.charge.id])))
+    api_val = api_fit.validate(options=ValOptions(charge_size=[api_module3.charge.id]))
     assert api_val.passed is False
     assert api_val.details.charge_size == {api_module2.charge.id: (api_module2.id, 3, 2)}
-    api_val = api_fit.validate(options=ValOptions(charge_size=(True, [api_module2.charge.id, api_module3.charge.id])))
+    api_val = api_fit.validate(options=ValOptions(charge_size=[api_module2.charge.id, api_module3.charge.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
-    api_val = api_fit.validate(
-        options=ValOptions(charge_size=(True, [api_module2.charge.id, api_other.id, api_module3.charge.id])))
+    api_val = api_fit.validate(options=ValOptions(
+        charge_size=[api_module2.charge.id, api_other.id, api_module3.charge.id]))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # noqa: B018
