@@ -51,6 +51,7 @@ pub struct GetItemStatsCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     pub neut_resist: StatOption = StatOption::Default,
     // Sensors
+    #[cfg_attr(feature = "serde", serde(default))]
     pub locks: StatOption = StatOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
     pub lock_range: StatOption = StatOption::Default,
@@ -65,6 +66,7 @@ pub struct GetItemStatsCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     pub incoming_jam: StatOptionExt<StatOptionIncomingJam> = StatOptionExt::Default,
     // Mobility
+    #[cfg_attr(feature = "serde", serde(default))]
     pub speed: StatOption = StatOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
     pub agility: StatOption = StatOption::Default,

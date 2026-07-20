@@ -95,6 +95,7 @@ pub struct GetFitStatsCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     pub neut_resist: StatOption = StatOption::Default,
     // Ship sensors
+    #[cfg_attr(feature = "serde", serde(default))]
     pub locks: StatOption = StatOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
     pub lock_range: StatOption = StatOption::Default,
