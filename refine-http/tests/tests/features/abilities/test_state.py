@@ -443,13 +443,13 @@ def test_src_switch_not_loaded(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(abilities={eve_primary_abil_id: False, eve_secondary_abil_id: True})
     # Verification - nothing is affected
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - attempt to change state of ability when fighter was not loaded did not change
@@ -474,7 +474,7 @@ def test_src_switch_not_loaded(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - states were kept as they were on 2nd source

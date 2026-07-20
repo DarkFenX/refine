@@ -18,11 +18,11 @@ def test_src_module_tgt_ship_project_unproject(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
@@ -32,18 +32,18 @@ def test_src_module_tgt_ship_project_unproject(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_drone_fighter_with_attr_def(client, consts):
@@ -96,7 +96,7 @@ def test_src_drone_fighter_with_attr_def(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_proj_effect(client, consts):
@@ -117,7 +117,7 @@ def test_src_proj_effect(client, consts):
     api_val = api_sol.validate(fit_ids=[api_src_fit.id], options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_tgt_drone_fighter(client, consts):
@@ -156,7 +156,7 @@ def test_multiple_src_effects(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
@@ -181,7 +181,7 @@ def test_multiple_src_effects(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_resist_values(client, consts):
@@ -239,7 +239,7 @@ def test_tgt_modified(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_mod_item = api_tgt_fit.add_module(type_id=eve_mod_item_id)
     # Verification
@@ -254,7 +254,7 @@ def test_tgt_modified(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_modified(client, consts):
@@ -338,7 +338,7 @@ def test_tgt_mutation(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_item.change_drone(mutation={eve_resist_attr_id: Muta.roll_to_api(val=0)})
     # Verification
@@ -353,7 +353,7 @@ def test_tgt_mutation(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_item.change_drone(mutation=None)
     # Verification
@@ -448,7 +448,7 @@ def test_criterion_effect_cat(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -468,7 +468,7 @@ def test_no_attr(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -498,12 +498,12 @@ def test_known_failures(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=[api_src_item1.id, api_src_item2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(
         resist_immunity=[api_src_item1.id, api_src_other.id, api_src_item2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_src(client, consts):
@@ -520,7 +520,7 @@ def test_not_loaded_src(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_tgt(client, consts):
@@ -539,4 +539,4 @@ def test_not_loaded_tgt(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(resist_immunity=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

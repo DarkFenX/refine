@@ -135,7 +135,7 @@ class DmgBasicInfo:
 def setup_dmg_basics(
         *,
         client: TestClient,
-        consts,  # noqa: ANN001
+        consts,  # ruff:ignore[missing-type-function-argument]
         effect_duration: bool = True,
         effect_range: bool = True,
         effect_falloff: bool = True,

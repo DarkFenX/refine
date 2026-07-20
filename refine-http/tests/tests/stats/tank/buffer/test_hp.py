@@ -1184,7 +1184,7 @@ def test_not_requested(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(hp=False))
     with check_no_field():
-        api_fit_stats.hp  # noqa: B018
+        api_fit_stats.hp  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(hp=False))
     with check_no_field():
-        api_ship_stats.hp  # noqa: B018
+        api_ship_stats.hp  # ruff:ignore[useless-expression]

@@ -17,7 +17,7 @@ class EveDataManager:
         self.__defsrc_stack_alias_map: dict[TestKey, str] = {}
 
     def mk_eve_data(self) -> EveObjects:
-        global data_id  # noqa: PLW0603
+        global data_id  # ruff:ignore[global-statement]
         alias = str(data_id)
         data = self.__datas[alias] = EveObjects(alias=alias)
         data_id += 1

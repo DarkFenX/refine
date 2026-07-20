@@ -31,42 +31,42 @@ def test_switch_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_hecate_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_jackdaw_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_svipul_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_skua_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_anhinga_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_switch_ship_type_id(client, consts):
@@ -93,42 +93,42 @@ def test_switch_ship_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_hecate_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_jackdaw_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_svipul_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_skua_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_anhinga_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client):
@@ -148,11 +148,11 @@ def test_known_failures(client):
     api_val = api_fit.validate(options=ValOptions(ship_stance=[api_stance.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(ship_stance=[api_other.id, api_stance.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client):
@@ -178,14 +178,14 @@ def test_no_stance(client, consts):
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_other_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_ship(client, consts):
@@ -201,7 +201,7 @@ def test_not_loaded_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_other_id)
     # Verification
@@ -223,7 +223,7 @@ def test_not_loaded_stance(client, consts):
     api_val = api_fit.validate(options=ValOptions(ship_stance=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_other_id)
     # Verification

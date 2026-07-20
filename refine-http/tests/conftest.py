@@ -85,7 +85,7 @@ def client(
 
 
 @pytest.fixture
-def consts():  # noqa: ANN201
+def consts():  # ruff:ignore[missing-return-type-undocumented-public-function]
     return eve_consts
 
 

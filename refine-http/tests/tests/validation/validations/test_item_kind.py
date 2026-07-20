@@ -22,7 +22,7 @@ def test_kind_autocharge(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_kind_booster(client, consts):
@@ -37,7 +37,7 @@ def test_kind_booster(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_booster(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_booster_id)
@@ -60,7 +60,7 @@ def test_kind_character(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.set_character(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_character_id)
@@ -85,7 +85,7 @@ def test_kind_charge(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module = api_fit.add_module(type_id=eve_module_id, rack=consts.ApiRack.high, charge_type_id=eve_other_id)
     api_other = api_fit.add_implant(type_id=eve_charge_id)
@@ -108,7 +108,7 @@ def test_kind_drone(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_drone(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_drone_id)
@@ -131,7 +131,7 @@ def test_kind_fighter(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_fighter(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_fighter_id)
@@ -155,7 +155,7 @@ def test_kind_implant(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_implant(type_id=eve_other_id)
     api_other2 = api_fit.add_booster(type_id=eve_implant_id)
@@ -181,7 +181,7 @@ def test_kind_module_high(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.ApiRack.high)
     api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.low)
@@ -213,7 +213,7 @@ def test_kind_module_mid(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.ApiRack.mid)
     api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.high)
@@ -245,7 +245,7 @@ def test_kind_module_low(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_module(type_id=eve_other_id, rack=consts.ApiRack.low)
     api_other2 = api_fit.add_module(type_id=eve_ship_module_id, rack=consts.ApiRack.mid)
@@ -277,7 +277,7 @@ def test_kind_rig(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_rig(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_rig_id)
@@ -305,7 +305,7 @@ def test_kind_service(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_service(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_service_id)
@@ -330,7 +330,7 @@ def test_kind_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.set_ship(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_ship_id)
@@ -353,7 +353,7 @@ def test_kind_skill(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_skill(type_id=eve_other_id, level=1)
     api_other2 = api_fit.add_implant(type_id=eve_skill_id)
@@ -376,7 +376,7 @@ def test_kind_stance(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.set_stance(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_stance_id)
@@ -399,7 +399,7 @@ def test_kind_subsystem(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_other1 = api_fit.add_subsystem(type_id=eve_other_id)
     api_other2 = api_fit.add_implant(type_id=eve_subsystem_id)
@@ -498,11 +498,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_booster2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(item_kind=[api_booster1.id, api_other.id, api_booster2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_effect(client, consts):
@@ -527,7 +527,7 @@ def test_mutation_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_high_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -600,4 +600,4 @@ def test_not_loaded(client):
     api_val = api_fit.validate(options=ValOptions(item_kind=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

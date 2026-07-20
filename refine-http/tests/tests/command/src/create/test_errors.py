@@ -111,9 +111,9 @@ def test_data_typedogma_key_prefix(client, log):
     # Verification
     api_item1.update()
     with check_no_field():
-        api_item1.attrs  # noqa: B018
+        api_item1.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_item1.effects  # noqa: B018
+        api_item1.effects  # ruff:ignore[useless-expression]
     api_item2.update()
     assert eve_attr_id in api_item2.attrs
     assert eve_effect_id in api_item2.effects
@@ -141,9 +141,9 @@ def test_data_typedogma_value_string(client, log):
     # Verification
     api_item1.update()
     with check_no_field():
-        api_item1.attrs  # noqa: B018
+        api_item1.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_item1.effects  # noqa: B018
+        api_item1.effects  # ruff:ignore[useless-expression]
     api_item2.update()
     assert eve_attr_id in api_item2.attrs
     assert eve_effect_id in api_item2.effects

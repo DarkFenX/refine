@@ -452,7 +452,7 @@ def test_remove_remove(client, consts):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.modules  # noqa: B018
+        api_fit.modules  # ruff:ignore[useless-expression]
 
 
 def test_remove_free(client, consts):
@@ -494,7 +494,7 @@ def test_remove_free(client, consts):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.modules  # noqa: B018
+        api_fit.modules  # ruff:ignore[useless-expression]
 
 
 def test_remove_absent(client, consts):
@@ -537,4 +537,4 @@ def test_remove_absent(client, consts):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.modules  # noqa: B018
+        api_fit.modules  # ruff:ignore[useless-expression]

@@ -143,13 +143,13 @@ def test_switch_type_id_affected_to_not_loaded_remove(client, consts):
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_fw_effect.remove()
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
 
 
 def test_switch_type_id_not_loaded_to_affected_remove(client, consts):
@@ -162,7 +162,7 @@ def test_switch_type_id_not_loaded_to_affected_remove(client, consts):
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_affectee_item.change_character(type_id=eve_affectee_loaded_id)
     # Verification

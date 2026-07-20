@@ -76,21 +76,21 @@ def test_main(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -123,12 +123,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=[api_lowsec_service.id, api_nullsec_service.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         sec_zone_online=[api_lowsec_service.id, api_other.id, api_nullsec_service.id, api_hisec_service.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -281,7 +281,7 @@ def test_no_value(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -296,7 +296,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -310,7 +310,7 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_service_state(client, consts):
@@ -325,7 +325,7 @@ def test_criterion_service_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -360,4 +360,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_online=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

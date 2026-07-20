@@ -105,7 +105,7 @@ class FitCmdCtx(BaseCmdCtx):
         if resp.status_code == 200:
             resp_data = resp.json()
             # Fit which initiated the command chain
-            self._fit._data = resp_data['fit']  # noqa: SLF001
+            self._fit._data = resp_data['fit']  # ruff:ignore[private-member-access]
             self._fill_entity_ids(resp_data=resp_data)
 
     # Item

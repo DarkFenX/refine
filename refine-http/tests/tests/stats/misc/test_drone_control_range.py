@@ -99,7 +99,7 @@ def test_not_requested(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(drone_control_range=False))
     with check_no_field():
-        api_fit_stats.drone_control_range  # noqa: B018
+        api_fit_stats.drone_control_range  # ruff:ignore[useless-expression]
     api_char_stats = api_char.get_stats(options=ItemStatsOptions(drone_control_range=False))
     with check_no_field():
-        api_char_stats.drone_control_range  # noqa: B018
+        api_char_stats.drone_control_range  # ruff:ignore[useless-expression]

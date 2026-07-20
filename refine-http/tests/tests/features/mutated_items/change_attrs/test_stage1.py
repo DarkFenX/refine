@@ -45,7 +45,7 @@ def test_rolls_range(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -65,7 +65,7 @@ def test_rolls_range(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -145,7 +145,7 @@ def test_absolute_value_range(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -165,7 +165,7 @@ def test_absolute_value_range(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -244,9 +244,9 @@ def test_no_base_item(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_item.attrs  # noqa: B018
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation={
         eve_add_roll_attr_id: Muta.roll_to_api(val=0.9),
@@ -258,9 +258,9 @@ def test_no_base_item(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_item.attrs  # noqa: B018
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification

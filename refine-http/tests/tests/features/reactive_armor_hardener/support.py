@@ -30,7 +30,7 @@ class RahBasicInfo:
 def setup_rah_basics(
         *,
         client: TestClient,
-        consts,  # noqa: ANN001
+        consts,  # ruff:ignore[missing-type-function-argument]
         datas: list[EveObjects] | type[Default] = Default,
         attr_shield_hp: type[Default] | None = Default,
         attr_armor_hp: type[Default] | None = Default,

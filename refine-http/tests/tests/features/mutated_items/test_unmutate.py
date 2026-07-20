@@ -28,7 +28,7 @@ def test_from_stage4(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification - after mutating item again, all the old mutations should be gone
@@ -58,21 +58,21 @@ def test_from_stage3(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
 
 
 def test_from_stage2(client):
@@ -92,21 +92,21 @@ def test_from_stage2(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
 
 
 def test_from_stage1(client):
@@ -123,21 +123,21 @@ def test_from_stage1(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
 
 
 def test_from_unmutated(client):
@@ -155,14 +155,14 @@ def test_from_unmutated(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=None)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation=eve_mutator_id)
     # Verification
@@ -256,7 +256,7 @@ def test_drone(client):
     api_drone.update()
     assert api_drone.type_id == eve_base_item_id
     with check_no_field():
-        api_drone.mutation  # noqa: B018
+        api_drone.mutation  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification - after mutating item again, all the old mutations should be gone

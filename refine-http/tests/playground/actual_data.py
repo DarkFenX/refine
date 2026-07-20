@@ -25,8 +25,9 @@ SCRIPT_DIR_PATH = Path(__file__).resolve().absolute().parent
 PHOBOS_BASE_PATH = Path('~', 'Desktop', 'phobos_tq_en-us').expanduser()
 
 
-def test_benchmark_attr_calc(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_benchmark_attr_calc(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     with api_fit.commands() as api_fit_cmds:
@@ -34,20 +35,22 @@ def test_benchmark_attr_calc(client, consts):  # noqa: ANN001, ANN201
         for eve_skill_id in get_skill_type_ids():
             api_fit_cmds.add_skill(type_id=eve_skill_id, level=5)
         api_fit_cmds.set_ship(type_id=11184)  # Crusader
-        # api_fit_cmds.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)  # noqa: ERA001
+        # ruff:ignore[commented-out-code]
+        # api_fit_cmds.add_module(type_id=4403, rack=consts.ApiRack.low, state=consts.ApiModuleState.active)
     iterations = 1000000
-    print('starting attr-calc benchmark')  # noqa: T201
+    print('starting attr-calc benchmark')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={'type': 'attr_calc', 'fit_id': api_fit.id, 'type_id': 1306, 'iterations': iterations})
     after = time()
-    print('done with attr-calc benchmark')  # noqa: T201
+    print('done with attr-calc benchmark')  # ruff:ignore[print]
     delta = after - before
     ips = iterations / delta
-    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # noqa: T201
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # ruff:ignore[print]
 
 
-def test_benchmark_stats(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_benchmark_stats(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
 
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_src_fit = api_sol.create_fit()
@@ -126,20 +129,21 @@ def test_benchmark_stats(client, consts):  # noqa: ANN001, ANN201
         api_tgt_fit_cmds.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
 
     iterations = 1000000
-    print('starting stats benchmark')  # noqa: T201
+    print('starting stats benchmark')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={
         'type': 'stats', 'fit_id': api_src_fit.id,
         'projectee_item_id': api_tgt_ship.id, 'iterations': iterations})
     after = time()
-    print('done with stats benchmark')  # noqa: T201
+    print('done with stats benchmark')  # ruff:ignore[print]
     delta = after - before
     ips = iterations / delta
-    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # noqa: T201
+    print(f'{iterations} iterations done in {delta:.3f} seconds, {ips:.2f} iterations per second')  # ruff:ignore[print]
 
 
-def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_benchmark_try_fit_items(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     with api_fit.commands() as api_fit_cmds:
@@ -207,7 +211,7 @@ def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
     iterations = 1000
     try_fit_type_ids = get_try_fit_type_ids()
     options = ValOptions(default=True).to_dict()
-    print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')  # noqa: T201
+    print(f'starting try-fit-items benchmark, trying {len(try_fit_type_ids)} items per iteration')  # ruff:ignore[print]
     before = time()
     api_sol.benchmark(command={
         'type': 'try_fit_items',
@@ -216,17 +220,18 @@ def test_benchmark_try_fit_items(client, consts):  # noqa: ANN001, ANN201
         'validation_options': options,
         'iterations': iterations})
     after = time()
-    print('done with try-fit-items benchmark')  # noqa: T201
+    print('done with try-fit-items benchmark')  # ruff:ignore[print]
     delta = after - before
     iters_ps = iterations / delta
     items_ps = iters_ps * len(try_fit_type_ids)
-    print(  # noqa: T201
+    print(  # ruff:ignore[print]
         f'{iterations} iterations done in {delta:.3f} seconds, {iters_ps:.2f} iterations per second,'
         f' {items_ps:.2f} items per second')
 
 
-def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_try_fit_items_nphoon(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit = api_sol.create_fit()
     with api_fit.commands() as api_fit_cmds:
@@ -285,13 +290,14 @@ def test_try_fit_items_nphoon(client, consts):  # noqa: ANN001, ANN201
     assert api_val.passed is True
     try_fit_type_ids = get_try_fit_type_ids()
     type_ids = api_fit.try_fit_items(type_ids=try_fit_type_ids, options=ValOptions(default=True))
-    print('---')  # noqa: T201
-    print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # noqa: T201
+    print('---')  # ruff:ignore[print]
+    print(f'Sent {len(try_fit_type_ids)} items, received {len(type_ids)} eligible items')  # ruff:ignore[print]
     print_items(type_ids=type_ids, print_types=False)
 
 
-def test_stacking(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_stacking(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_fit_m = api_sol.create_fit()
     with api_fit_m.commands() as api_fit_m_cmds:
@@ -317,8 +323,9 @@ def test_stacking(client, consts):  # noqa: ANN001, ANN201
     assert api_male.update().attrs[564].modified == approx(5264.18055777, accuracy=9)
 
 
-def test_item_attrs(client):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_item_attrs(client):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     with api_fit.commands() as api_fit_cmds:
@@ -332,8 +339,9 @@ def test_item_attrs(client):  # noqa: ANN001, ANN201
     print_attr_diff(attrs1=api_attrs_before, attrs2=api_attrs_after)
 
 
-def test_stats(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_stats(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     api_src_fit = api_sol.create_fit()
     with api_src_fit.commands() as api_src_fit_cmds:
@@ -417,13 +425,14 @@ def test_stats(client, consts):  # noqa: ANN001, ANN201
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_injectors=True)),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))]),
         cap_sim=(True, [StatsOptionCapSim(cap_perc=1)])))
-    print(api_src_fit_stats.dmg.one())  # noqa: T201
-    print(api_src_fit_stats.cap_balance)  # noqa: T201
-    print(api_src_fit_stats.cap_sim.one())  # noqa: T201
+    print(api_src_fit_stats.dmg.one())  # ruff:ignore[print]
+    print(api_src_fit_stats.cap_balance)  # ruff:ignore[print]
+    print(api_src_fit_stats.cap_sim.one())  # ruff:ignore[print]
 
 
-def test_playground(client, consts):  # noqa: ANN001, ANN201
-    setup_eve_data(client=client, data=client._get_default_eve_data())  # noqa: SLF001
+# ruff:ignore[missing-type-function-argument, missing-return-type-undocumented-public-function]
+def test_playground(client, consts):
+    setup_eve_data(client=client, data=client._get_default_eve_data())  # ruff:ignore[private-member-access]
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)
     with api_sol.commands() as api_sol_cmds:
         api_fit = api_sol_cmds.create_fit()
@@ -444,10 +453,11 @@ def test_playground(client, consts):  # noqa: ANN001, ANN201
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
         jump=(True, [StatsOptionJump(range=5, passenger_fit_ids=[api_fit_psg.id])])))
-    print(api_fit_stats.jump)  # noqa: T201
+    print(api_fit_stats.jump)  # ruff:ignore[print]
 
 
-def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
+# ruff:ignore[missing-type-function-argument]
+def setup_eve_data(*, client, data) -> None:
     files = [
         'fsd_built/types.json',
         'fsd_built/groups.json',
@@ -463,7 +473,8 @@ def setup_eve_data(*, client, data) -> None:  # noqa: ANN001
         'fsd_built/dynamicitemattributes.json']
     for file in files:
         with (PHOBOS_BASE_PATH / file).open() as f:
-            client._EveDataServer__setup_handler(url=f'/{data.alias}/{file}', data=f.read())  # noqa: SLF001
+            # ruff:ignore[private-member-access]
+            client._EveDataServer__setup_handler(url=f'/{data.alias}/{file}', data=f.read())
     client.create_source(data=data, cleanup_check=False)
 
 
@@ -509,7 +520,7 @@ def print_items(*, type_ids: list[int], print_types: bool = False) -> None:
             line = (f'  {item_id_category_name_map[item_id]}'
                     f' / {item_id_group_name_map[item_id]}'
                     f' / {item_id_item_name_map[item_id]}')
-            print(line)  # noqa: T201
+            print(line)  # ruff:ignore[print]
     else:
         seen_lines = set()
         for item_id in sorted(type_ids, key=sorter):
@@ -517,7 +528,7 @@ def print_items(*, type_ids: list[int], print_types: bool = False) -> None:
             if line in seen_lines:
                 continue
             seen_lines.add(line)
-            print(line)  # noqa: T201
+            print(line)  # ruff:ignore[print]
 
 
 def print_attrs(*, api_item: Item) -> None:
@@ -529,12 +540,12 @@ def print_attrs(*, api_item: Item) -> None:
     with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
         for entry in json.load(f).values():
             attr_id_attr_name_map[entry['attributeID']] = entry['name']
-    print('---')  # noqa: T201
-    print(f'{item_id_item_name_map[api_item.type_id]}:')  # noqa: T201
+    print('---')  # ruff:ignore[print]
+    print(f'{item_id_item_name_map[api_item.type_id]}:')  # ruff:ignore[print]
     for attr_id in sorted(api_item.attrs, key=lambda i: attr_id_attr_name_map[i]):
         attr_name = attr_id_attr_name_map[attr_id]
         attr_val = api_item.attrs[attr_id].modified
-        print(f'  {attr_name}: {attr_val}')  # noqa: T201
+        print(f'  {attr_name}: {attr_val}')  # ruff:ignore[print]
 
 
 def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
@@ -546,7 +557,7 @@ def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
     with (PHOBOS_BASE_PATH / 'fsd_built' / 'dogmaattributes.json').open() as f:
         for entry in json.load(f).values():
             attr_id_attr_name_map[entry['attributeID']] = entry['name']
-    print('---')  # noqa: T201
+    print('---')  # ruff:ignore[print]
     attr_ids = set(attrs1.keys()) | set(attrs2.keys())
     for attr_id in sorted(attr_ids, key=lambda i: attr_id_attr_name_map[i]):
         try:
@@ -559,4 +570,4 @@ def print_attr_diff(*, attrs1: dict, attrs2: dict) -> None:
             attr2_val = None
         if attr1_val != attr2_val:
             attr_name = attr_id_attr_name_map[attr_id]
-            print(f'  {attr_name}: {attr1_val} -> {attr2_val}')  # noqa: T201
+            print(f'  {attr_name}: {attr1_val} -> {attr2_val}')  # ruff:ignore[print]

@@ -352,7 +352,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone1.attrs[eve_affectee_attr_id].modified == approx(575)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
     # Action - mutate drones + mutate radius attribute on drone 1
     api_affectee_drone1.change_drone(
         mutation=(eve_affectee_drone1_mutator1_id, {eve_radius_attr_id: Muta.roll_to_api(val=0)}))
@@ -369,7 +369,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone2.update().attrs[eve_affectee_attr_id].modified == approx(575.0)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
     # Action - remove projections
     api_affector_module.change_module(
         rm_proj_item_ids=[api_affectee_drone1.id, api_affectee_drone2.id, api_affectee_drone3.id])
@@ -380,7 +380,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone2.update().attrs[eve_affectee_attr_id].modified == approx(1000)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
     # Action - restore projections
     api_affector_module.change_module(
         add_proj_item_ids=[api_affectee_drone1.id, api_affectee_drone2.id, api_affectee_drone3.id])
@@ -395,7 +395,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone2.update().attrs[eve_affectee_attr_id].modified == approx(575.0)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
     # Action - change item's base type ID
     api_affectee_drone1.change_drone(type_id=eve_affectee_drone1_base2_id)
     api_affectee_drone2.change_drone(type_id=eve_affectee_drone2_base2_id)
@@ -411,7 +411,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone2.update().attrs[eve_affectee_attr_id].modified == approx(575.0)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
     # Action - change item's mutator ID
     api_affectee_drone1.change_drone(mutation=eve_affectee_drone1_mutator2_id)
     api_affectee_drone2.change_drone(mutation=eve_affectee_drone2_mutator2_id)
@@ -427,7 +427,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone2.update().attrs[eve_affectee_attr_id].modified == approx(575.0)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
     # Action - unmutate item
     api_affectee_drone1.change_drone(mutation=None)
     api_affectee_drone2.change_drone(mutation=None)
@@ -443,7 +443,7 @@ def test_mutation_incoming(client, consts):
     assert api_affectee_drone2.update().attrs[eve_affectee_attr_id].modified == approx(575.0)
     api_affectee_drone3.update()
     with check_no_field():
-        api_affectee_drone3.attrs  # noqa: B018
+        api_affectee_drone3.attrs  # ruff:ignore[useless-expression]
 
 
 def test_switch_type_id_outgoing(client, consts):
@@ -570,7 +570,7 @@ def test_switch_type_id_incoming(client, consts):
     assert api_affector_module.update().projs[api_affectee_drone.id] == (approx(11025), approx(11025))
     api_affectee_drone.update()
     with check_no_field():
-        api_affectee_drone.attrs  # noqa: B018
+        api_affectee_drone.attrs  # ruff:ignore[useless-expression]
     # Action
     api_affectee_drone.change_drone(type_id=eve_affectee_drone1_id)
     # Verification
@@ -732,7 +732,7 @@ def test_switch_src_incoming(client, consts):
     assert api_affector_module.update().projs[api_affectee_drone.id] == (approx(11025), approx(11025))
     api_affectee_drone.update()
     with check_no_field():
-        api_affectee_drone.attrs  # noqa: B018
+        api_affectee_drone.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification

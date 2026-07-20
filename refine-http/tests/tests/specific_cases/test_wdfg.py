@@ -347,7 +347,7 @@ def test_block_module_mwd_dscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
@@ -356,7 +356,7 @@ def test_block_module_mwd_dscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=None)
     # Verification
@@ -365,7 +365,7 @@ def test_block_module_mwd_dscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_block_module_mwd_sscript(client, consts):
@@ -403,7 +403,7 @@ def test_block_module_mwd_sscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
@@ -420,7 +420,7 @@ def test_block_module_mwd_sscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_block_module_mjd_dscript(client, consts):
@@ -462,7 +462,7 @@ def test_block_module_mjd_dscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
@@ -479,7 +479,7 @@ def test_block_module_mjd_dscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_block_module_mjd_sscript(client, consts):
@@ -521,7 +521,7 @@ def test_block_module_mjd_sscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification - script should be successfully applied even to ewar immune target
@@ -538,7 +538,7 @@ def test_block_module_mjd_sscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_block_fighter_mwd_mjd_dscript(client, consts):
@@ -570,7 +570,7 @@ def test_block_fighter_mwd_mjd_dscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification
@@ -607,7 +607,7 @@ def test_block_fighter_mwd_mjd_sscript(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_wdfg.change_module(charge_type_id=eve_script_id)
     # Verification

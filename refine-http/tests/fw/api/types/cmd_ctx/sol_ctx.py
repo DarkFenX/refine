@@ -127,7 +127,7 @@ class SolCmdCtx(BaseCmdCtx):
         if resp.status_code == 200:
             resp_data = resp.json()
             # Solar system which initiated the command chain
-            self._sol._data = resp_data['solar_system']  # noqa: SLF001
+            self._sol._data = resp_data['solar_system']  # ruff:ignore[private-member-access]
             self._fill_entity_ids(resp_data=resp_data)
 
     # Entity making methods are supposed to be called after command has been added

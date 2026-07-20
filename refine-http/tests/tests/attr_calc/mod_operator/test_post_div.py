@@ -258,7 +258,7 @@ def test_insignificant_base(client, consts):
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(0)
     with check_no_field():
-        api_affectee.mods  # noqa: B018
+        api_affectee.mods  # ruff:ignore[useless-expression]
 
 
 def test_insignificant_modified_base(client, consts):
@@ -320,4 +320,4 @@ def test_zero(client, consts):
     api_affectee.update()
     assert api_affectee.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
-        api_affectee.mods  # noqa: B018
+        api_affectee.mods  # ruff:ignore[useless-expression]

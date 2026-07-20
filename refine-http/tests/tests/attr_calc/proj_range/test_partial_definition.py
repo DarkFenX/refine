@@ -34,7 +34,7 @@ def test_optimal_undefined(client, consts):
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # noqa: B018
+        api_affectee_struct.mods  # ruff:ignore[useless-expression]
     # Action
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_struct.id])
     # Verification
@@ -53,7 +53,7 @@ def test_optimal_undefined(client, consts):
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # noqa: B018
+        api_affectee_struct.mods  # ruff:ignore[useless-expression]
 
 
 def test_falloff_undefined(client, consts):
@@ -89,7 +89,7 @@ def test_falloff_undefined(client, consts):
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # noqa: B018
+        api_affectee_struct.mods  # ruff:ignore[useless-expression]
     # Action
     api_affector_module.change_module(add_proj_item_ids=[api_affectee_struct.id])
     # Verification
@@ -109,11 +109,11 @@ def test_falloff_undefined(client, consts):
     assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     # Here, modification was filtered out as ineffective
     with check_no_field():
-        api_affectee_struct.mods  # noqa: B018
+        api_affectee_struct.mods  # ruff:ignore[useless-expression]
     # Action
     api_affector_module.change_module(rm_proj_item_ids=[api_affectee_struct.id])
     # Verification
     api_affectee_struct.update()
     assert api_affectee_struct.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_struct.mods  # noqa: B018
+        api_affectee_struct.mods  # ruff:ignore[useless-expression]

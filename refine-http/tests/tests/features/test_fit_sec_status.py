@@ -77,7 +77,7 @@ def test_sec_status_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(2)
     with check_no_field():
-        api_item.mods  # noqa: B018
+        api_item.mods  # ruff:ignore[useless-expression]
     # Action
     api_fit.change(sec_status=3)
     # Verification
@@ -86,4 +86,4 @@ def test_sec_status_modification(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].base == approx(0)
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(3)
     with check_no_field():
-        api_item.mods  # noqa: B018
+        api_item.mods  # ruff:ignore[useless-expression]

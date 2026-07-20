@@ -18,9 +18,9 @@ def test_autocharge(client, consts):
     api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert isinstance(api_autocharge.id, str)
     with check_no_field():
-        api_autocharge.kind  # noqa: B018
+        api_autocharge.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_autocharge.attrs  # noqa: B018
+        api_autocharge.attrs  # ruff:ignore[useless-expression]
     api_autocharge_id = api_autocharge.id
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
@@ -28,15 +28,15 @@ def test_autocharge(client, consts):
     api_autocharge = api_fighter.autocharges[eve_effect_id]
     assert api_autocharge.id == api_autocharge_id
     with check_no_field():
-        api_autocharge.kind  # noqa: B018
+        api_autocharge.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_autocharge.attrs  # noqa: B018
+        api_autocharge.attrs  # ruff:ignore[useless-expression]
     api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_autocharge.id == api_autocharge_id
     with check_no_field():
-        api_autocharge.kind  # noqa: B018
+        api_autocharge.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_autocharge.attrs  # noqa: B018
+        api_autocharge.attrs  # ruff:ignore[useless-expression]
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert len(api_fighter.autocharges) == 1
@@ -44,12 +44,12 @@ def test_autocharge(client, consts):
     assert api_autocharge.id == api_autocharge_id
     assert api_autocharge.kind == consts.ApiItemKind.autocharge
     with check_no_field():
-        api_autocharge.attrs  # noqa: B018
+        api_autocharge.attrs  # ruff:ignore[useless-expression]
     api_autocharge.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert api_autocharge.id == api_autocharge_id
     assert api_autocharge.kind == consts.ApiItemKind.autocharge
     with check_no_field():
-        api_autocharge.attrs  # noqa: B018
+        api_autocharge.attrs  # ruff:ignore[useless-expression]
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert len(api_fighter.autocharges) == 1
@@ -76,19 +76,19 @@ def test_invalid_reference(client, consts):
     # Check default upon addition
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
 
 
 def test_no_reference(client, consts):
@@ -102,16 +102,16 @@ def test_no_reference(client, consts):
     # Check default upon addition
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # ID only
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.id)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # Partial
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.partial)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # Full
     api_fighter.update(item_info_mode=consts.ApiItemInfoMode.full)
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]

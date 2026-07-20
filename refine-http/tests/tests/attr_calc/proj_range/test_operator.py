@@ -58,7 +58,7 @@ def test_pre_assign(client, consts):
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_ship.mods  # noqa: B018
+        api_affectee_ship.mods  # ruff:ignore[useless-expression]
 
 
 def test_pre_mul(client, consts):
@@ -420,4 +420,4 @@ def test_post_assign(client, consts):
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_ship.mods  # noqa: B018
+        api_affectee_ship.mods  # ruff:ignore[useless-expression]

@@ -73,7 +73,7 @@ def test_charge_switch(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
-        api_aar_item.mods  # noqa: B018
+        api_aar_item.mods  # ruff:ignore[useless-expression]
     # Action
     api_aar_item.change_module(charge_type_id=eve_paste_item_id)
     # Verification
@@ -86,7 +86,7 @@ def test_charge_switch(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
-        api_aar_item.mods  # noqa: B018
+        api_aar_item.mods  # ruff:ignore[useless-expression]
 
 
 def test_charge_type_id_switch(client, consts):
@@ -115,7 +115,7 @@ def test_charge_type_id_switch(client, consts):
     api_aar_item.update()
     assert api_aar_item.attrs[eve_affectee_attr_id].modified == approx(100)
     with check_no_field():
-        api_aar_item.mods  # noqa: B018
+        api_aar_item.mods  # ruff:ignore[useless-expression]
     # Action
     api_aar_item.charge.change_charge(type_id=eve_paste_item_id)
     # Verification

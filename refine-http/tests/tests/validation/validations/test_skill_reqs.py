@@ -149,14 +149,14 @@ def test_item_add_remove(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module1 = api_fit.add_module(type_id=eve_module1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module2_id)
     # Verification
@@ -209,7 +209,7 @@ def test_item_add_remove(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_skill_level_change(client):
@@ -305,11 +305,11 @@ def test_known_failures(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(skill_reqs=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_skill_switch_type_id(client):
@@ -325,7 +325,7 @@ def test_skill_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_skill.change_skill(type_id=eve_skill2_id)
     # Verification
@@ -338,7 +338,7 @@ def test_skill_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_module_switch_type_id(client):
@@ -360,7 +360,7 @@ def test_module_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module1_id)
     # Verification
@@ -390,7 +390,7 @@ def test_mutation(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification
@@ -404,7 +404,7 @@ def test_mutation(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=None)
     # Verification
@@ -431,7 +431,7 @@ def test_self_req(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_skill.change_skill(level=0)
     # Verification
@@ -453,7 +453,7 @@ def test_skill_state(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_item_state(client, consts):
@@ -469,7 +469,7 @@ def test_item_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_item_kinds(client, consts):
@@ -544,7 +544,7 @@ def test_not_loaded_skill(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_skill.change_skill(level=0)
     # Verification
@@ -572,14 +572,14 @@ def test_failed_replacement(client):
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.add_skill(type_id=eve_skill_id, level=2, status_code=409)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_skill.change_skill(level=2)
     # Verification

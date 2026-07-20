@@ -5,7 +5,7 @@ import pytest
 
 
 # Wrapper around pytest approx function, to override default parameters
-def approx(expected: float, accuracy: int = 7):  # noqa: ANN201
+def approx(expected: float, accuracy: int = 7):  # ruff:ignore[missing-return-type-undocumented-public-function]
     # 6 digits after dot for numbers more than 1 and less than -1
     if abs(expected) >= 1:
         tolerance = 10 ** -(accuracy - 1)
@@ -21,6 +21,6 @@ def approx(expected: float, accuracy: int = 7):  # noqa: ANN201
 
 
 @contextlib.contextmanager
-def check_no_field():  # noqa: ANN201
+def check_no_field():  # ruff:ignore[missing-return-type-undocumented-public-function]
     with pytest.raises(AttributeError):
         yield

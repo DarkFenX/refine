@@ -126,7 +126,7 @@ def test_valid_effect_to_valid_effect_different(client, consts):
     assert api_ship.update().attrs[eve_d1_affectee_attr_id].modified == approx(100)
     api_module.update()
     with check_no_field():
-        api_module.attrs  # noqa: B018
+        api_module.attrs  # ruff:ignore[useless-expression]
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is False
@@ -137,7 +137,7 @@ def test_valid_effect_to_valid_effect_different(client, consts):
     # Verification
     api_ship.update()
     with check_no_field():
-        api_ship.attrs  # noqa: B018
+        api_ship.attrs  # ruff:ignore[useless-expression]
     assert api_module.update().attrs[eve_d2_affectee_attr_id].modified == approx(150)
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.5)
@@ -149,7 +149,7 @@ def test_valid_effect_to_valid_effect_different(client, consts):
     # Verification
     api_ship.update()
     with check_no_field():
-        api_ship.attrs  # noqa: B018
+        api_ship.attrs  # ruff:ignore[useless-expression]
     assert api_module.update().attrs[eve_d2_affectee_attr_id].modified == approx(195)
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.5)
@@ -162,7 +162,7 @@ def test_valid_effect_to_valid_effect_different(client, consts):
     assert api_ship.update().attrs[eve_d1_affectee_attr_id].modified == approx(125)
     api_module.update()
     with check_no_field():
-        api_module.attrs  # noqa: B018
+        api_module.attrs  # ruff:ignore[useless-expression]
     api_side = api_booster.update().side_effects[eve_effect_id]
     assert api_side.chance == approx(0.4)
     assert api_side.state is True
@@ -217,14 +217,14 @@ def test_regular_effect_toggle(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action - attempt to switch state of an effect which is not a side effect
     api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -240,14 +240,14 @@ def test_regular_effect_toggle(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action - attempt to switch state of an effect which is not a side effect
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(260)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -291,14 +291,14 @@ def test_absent_effect_to_valid_effect(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -323,14 +323,14 @@ def test_absent_effect_to_valid_effect(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -373,14 +373,14 @@ def test_not_loaded_booster_to_valid_effect(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: True})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -405,14 +405,14 @@ def test_not_loaded_booster_to_valid_effect(client, consts):
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_booster.change_booster(side_effects={eve_effect_id: False})
     # Verification
     assert api_ship.update().attrs[eve_affectee_attr_id].modified == approx(100)
     api_booster.update()
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification

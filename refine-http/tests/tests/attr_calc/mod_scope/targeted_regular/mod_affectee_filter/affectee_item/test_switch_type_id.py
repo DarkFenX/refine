@@ -95,13 +95,13 @@ def test_root_ship_to_not_loaded_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_root_struct_to_ship_remove(client, consts):
@@ -161,7 +161,7 @@ def test_root_not_loaded_to_ship_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_affectee_ship_id)
     # Verification
@@ -204,7 +204,7 @@ def test_child_drone(client, consts):
     # Verification
     api_drone.update()
     with check_no_field():
-        api_drone.attrs  # noqa: B018
+        api_drone.attrs  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(type_id=eve_drone1_id)
     # Verification

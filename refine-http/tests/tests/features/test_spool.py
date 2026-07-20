@@ -131,7 +131,7 @@ def test_time_cycle_time_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # noqa: B018
+        api_module.spool_cycles  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == 0
 
@@ -247,7 +247,7 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # noqa: B018
+        api_module.spool_cycles  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
@@ -255,7 +255,7 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # noqa: B018
+        api_module.spool_cycles  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
@@ -263,7 +263,7 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # noqa: B018
+        api_module.spool_cycles  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)
     # Action
@@ -271,6 +271,6 @@ def test_step_zero(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.spool_cycles  # noqa: B018
+        api_module.spool_cycles  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=True))
     assert api_module_stats.outgoing_rps.one().armor == approx(85.333333)

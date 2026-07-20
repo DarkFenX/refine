@@ -12,7 +12,7 @@ def test_add_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     # Verification
@@ -25,7 +25,7 @@ def test_add_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_change(client, consts):
@@ -39,7 +39,7 @@ def test_change(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=10)
     # Verification
@@ -52,7 +52,7 @@ def test_change(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=11)
     # Verification
@@ -65,7 +65,7 @@ def test_change(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_equal(client, consts):
@@ -79,21 +79,21 @@ def test_equal(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=9)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -116,11 +116,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_max(client, consts):
@@ -149,7 +149,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=10)
     # Verification
@@ -171,7 +171,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -214,7 +214,7 @@ def test_no_value(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
     # Verification - when not specified, max amount is assumed to be 1
@@ -234,7 +234,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=10)
     # Verification - when attribute is not specified, max size of 1 is set
@@ -254,4 +254,4 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

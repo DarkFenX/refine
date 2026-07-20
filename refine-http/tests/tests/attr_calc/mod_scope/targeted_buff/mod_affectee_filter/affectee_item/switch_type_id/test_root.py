@@ -68,13 +68,13 @@ def test_loaded_onlist_to_unloaded_onlist_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_loaded_onlist_to_unloaded_offlist_remove(client, consts):
@@ -94,13 +94,13 @@ def test_loaded_onlist_to_unloaded_offlist_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_loaded_offlist_to_loaded_onlist_remove(client, consts):
@@ -137,7 +137,7 @@ def test_unloaded_onlist_to_loaded_onlist_remove(client, consts):
     api_module.change_module(add_proj_item_ids=[api_root.id])
     # Verification
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -161,7 +161,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification

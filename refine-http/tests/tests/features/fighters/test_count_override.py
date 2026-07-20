@@ -18,13 +18,13 @@ def test_set_not_loaded(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.count  # noqa: B018
+        api_fighter.count  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=3)
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.count  # noqa: B018
+        api_fighter.count  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification

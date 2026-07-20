@@ -301,7 +301,7 @@ def test_switch_type_id_incoming(client, consts):
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (approx(11025), approx(11025))
     api_affectee_fighter.update()
     with check_no_field():
-        api_affectee_fighter.attrs  # noqa: B018
+        api_affectee_fighter.attrs  # ruff:ignore[useless-expression]
     # Action
     api_affectee_fighter.change_fighter(type_id=eve_affectee_fighter1_id)
     # Verification
@@ -527,7 +527,7 @@ def test_switch_src_incoming(client, consts):
     assert api_affector_drone.update().projs[api_affectee_fighter.id] == (approx(11025), approx(11025))
     api_affectee_fighter.update()
     with check_no_field():
-        api_affectee_fighter.attrs  # noqa: B018
+        api_affectee_fighter.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification

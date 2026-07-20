@@ -13,7 +13,7 @@ def test_multiple(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant2 = api_fit.add_implant(type_id=eve_implant_id)
     # Verification
@@ -26,7 +26,7 @@ def test_multiple(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_different_slots(client, consts):
@@ -42,7 +42,7 @@ def test_different_slots(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant3 = api_fit.add_implant(type_id=eve_implant1_id)
     # Verification
@@ -73,11 +73,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=[api_implant1.id, api_implant3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=[api_implant1.id, api_other.id, api_implant3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant4 = api_fit.add_implant(type_id=eve_implant2_id)
     # Verification
@@ -150,7 +150,7 @@ def test_no_value(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -165,7 +165,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -180,7 +180,7 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_implant_state(client, consts):
@@ -239,4 +239,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(implant_slot_index=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

@@ -54,4 +54,4 @@ def test_charge_count(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]

@@ -82,7 +82,7 @@ def test_equal(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -107,7 +107,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig2 = api_fit.add_rig(type_id=eve_rig2_id)
     # Verification
@@ -126,11 +126,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_other.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig3 = api_fit.add_rig(type_id=eve_rig3_id)
     # Verification
@@ -139,7 +139,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig3.remove()
     api_rig4 = api_fit.add_rig(type_id=eve_rig4_id)
@@ -149,7 +149,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig4.remove()
     api_rig5 = api_fit.add_rig(type_id=eve_rig5_id)
@@ -244,7 +244,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -325,7 +325,7 @@ def test_not_loaded_user(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -408,7 +408,7 @@ def test_no_attr_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_max(client, consts):
@@ -445,7 +445,7 @@ def test_criterion_rig_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig.change_rig(state=True)
     # Verification
@@ -464,7 +464,7 @@ def test_criterion_rig_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -502,4 +502,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(calibration=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

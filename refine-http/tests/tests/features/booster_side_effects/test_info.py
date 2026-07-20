@@ -20,35 +20,35 @@ def test_no_side_effects(client, consts):
     api_booster = api_fit.add_booster(type_id=eve_booster_id)
     assert isinstance(api_booster.id, str)
     with check_no_field():
-        api_booster.kind  # noqa: B018
+        api_booster.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.attrs  # noqa: B018
+        api_booster.attrs  # ruff:ignore[useless-expression]
     api_booster_id = api_booster.id
     # ID only
     api_booster.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_booster.id == api_booster_id
     with check_no_field():
-        api_booster.kind  # noqa: B018
+        api_booster.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.attrs  # noqa: B018
+        api_booster.attrs  # ruff:ignore[useless-expression]
     # Partial
     api_booster.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert api_booster.id == api_booster_id
     assert api_booster.kind == consts.ApiItemKind.booster
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.attrs  # noqa: B018
+        api_booster.attrs  # ruff:ignore[useless-expression]
     # Full
     api_booster.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert api_booster.id == api_booster_id
     assert api_booster.kind == consts.ApiItemKind.booster
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     assert len(api_booster.attrs) == 1
     assert api_booster.attrs[eve_affector_attr_id].modified == approx(20)
 
@@ -96,21 +96,21 @@ def test_with_side_effects(client, consts):
     api_booster = api_fit.add_booster(type_id=eve_booster_id, side_effects={eve_side2_effect_id: True})
     assert isinstance(api_booster.id, str)
     with check_no_field():
-        api_booster.kind  # noqa: B018
+        api_booster.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.attrs  # noqa: B018
+        api_booster.attrs  # ruff:ignore[useless-expression]
     api_booster_id = api_booster.id
     # ID only
     api_booster.update(item_info_mode=consts.ApiItemInfoMode.id)
     assert api_booster.id == api_booster_id
     with check_no_field():
-        api_booster.kind  # noqa: B018
+        api_booster.kind  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.side_effects  # noqa: B018
+        api_booster.side_effects  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_booster.attrs  # noqa: B018
+        api_booster.attrs  # ruff:ignore[useless-expression]
     # Partial
     api_booster.update(item_info_mode=consts.ApiItemInfoMode.partial)
     assert api_booster.id == api_booster_id
@@ -127,7 +127,7 @@ def test_with_side_effects(client, consts):
     assert api_side2.mod.op == consts.ApiSideEffectOp.perc
     assert api_side2.mod.str == approx(10)
     with check_no_field():
-        api_booster.attrs  # noqa: B018
+        api_booster.attrs  # ruff:ignore[useless-expression]
     # Full
     api_booster.update(item_info_mode=consts.ApiItemInfoMode.full)
     assert api_booster.id == api_booster_id

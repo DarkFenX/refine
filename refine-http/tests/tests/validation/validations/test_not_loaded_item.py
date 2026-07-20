@@ -27,7 +27,7 @@ def test_booster_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_booster.change_booster(type_id=eve_not_loaded_id)
     # Verification
@@ -40,7 +40,7 @@ def test_booster_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_character(client):
@@ -54,7 +54,7 @@ def test_character(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_char = api_fit.set_character(type_id=eve_not_loaded_id)
     # Verification
@@ -74,7 +74,7 @@ def test_character_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_char.change_character(type_id=eve_not_loaded_id)
     # Verification
@@ -87,7 +87,7 @@ def test_character_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_charge(client):
@@ -117,7 +117,7 @@ def test_charge_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.change_charge(type_id=eve_not_loaded_id)
     # Verification
@@ -130,7 +130,7 @@ def test_charge_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_drone(client):
@@ -158,7 +158,7 @@ def test_drone_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(type_id=eve_not_loaded_id)
     # Verification
@@ -171,7 +171,7 @@ def test_drone_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fighter(client):
@@ -199,7 +199,7 @@ def test_fighter_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(type_id=eve_not_loaded_id)
     # Verification
@@ -212,7 +212,7 @@ def test_fighter_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fw_effect(client):
@@ -240,7 +240,7 @@ def test_fw_effect_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fw_effect.change_fw_effect(type_id=eve_not_loaded_id)
     # Verification
@@ -253,7 +253,7 @@ def test_fw_effect_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_implant(client):
@@ -281,7 +281,7 @@ def test_implant_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.change_implant(type_id=eve_not_loaded_id)
     # Verification
@@ -294,7 +294,7 @@ def test_implant_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_module_high(client, consts):
@@ -322,7 +322,7 @@ def test_module_high_switch_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_not_loaded_id)
     # Verification
@@ -335,7 +335,7 @@ def test_module_high_switch_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_module_low(client, consts):
@@ -363,7 +363,7 @@ def test_module_low_switch_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_not_loaded_id)
     # Verification
@@ -376,7 +376,7 @@ def test_module_low_switch_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_module_mid(client, consts):
@@ -404,7 +404,7 @@ def test_module_mid_switch_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_not_loaded_id)
     # Verification
@@ -417,7 +417,7 @@ def test_module_mid_switch_type_id(client, consts):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_proj_effect(client):
@@ -443,7 +443,7 @@ def test_proj_effect_switch_type_id(client):
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_proj_effect.change_proj_effect(type_id=eve_not_loaded_id)
     # Verification
@@ -456,7 +456,7 @@ def test_proj_effect_switch_type_id(client):
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rig(client):
@@ -484,7 +484,7 @@ def test_rig_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig.change_rig(type_id=eve_not_loaded_id)
     # Verification
@@ -497,7 +497,7 @@ def test_rig_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_service(client):
@@ -525,7 +525,7 @@ def test_service_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_service.change_service(type_id=eve_not_loaded_id)
     # Verification
@@ -538,7 +538,7 @@ def test_service_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_ship(client):
@@ -552,7 +552,7 @@ def test_ship(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship = api_fit.set_ship(type_id=eve_not_loaded_id)
     # Verification
@@ -572,7 +572,7 @@ def test_ship_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_not_loaded_id)
     # Verification
@@ -585,7 +585,7 @@ def test_ship_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_skill(client):
@@ -613,7 +613,7 @@ def test_skill_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_skill.change_skill(type_id=eve_not_loaded_id)
     # Verification
@@ -626,7 +626,7 @@ def test_skill_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_stance(client):
@@ -640,7 +640,7 @@ def test_stance(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_stance = api_fit.set_stance(type_id=eve_not_loaded_id)
     # Verification
@@ -660,7 +660,7 @@ def test_stance_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_stance.change_stance(type_id=eve_not_loaded_id)
     # Verification
@@ -673,7 +673,7 @@ def test_stance_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_subsystem(client):
@@ -701,7 +701,7 @@ def test_subsystem_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_subsystem.change_subsystem(type_id=eve_not_loaded_id)
     # Verification
@@ -714,7 +714,7 @@ def test_subsystem_switch_type_id(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_sw_effect(client):
@@ -740,7 +740,7 @@ def test_sw_effect_switch_type_id(client):
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sw_effect.change_sw_effect(type_id=eve_not_loaded_id)
     # Verification
@@ -753,7 +753,7 @@ def test_sw_effect_switch_type_id(client):
     api_val = api_sol.validate(options=ValOptions(not_loaded_item=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client):
@@ -777,12 +777,12 @@ def test_known_failures(client):
     api_val = api_fit.validate(options=ValOptions(not_loaded_item=[api_not_loaded1.id, api_not_loaded2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         not_loaded_item=[api_not_loaded1.id, api_other.id, api_not_loaded2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_state(client, consts):

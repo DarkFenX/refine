@@ -22,11 +22,11 @@ def test_module_project_unproject(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
@@ -36,18 +36,18 @@ def test_module_project_unproject(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_drone_fighter(client, consts):
@@ -77,7 +77,7 @@ def test_drone_fighter(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item2.change_fighter(add_proj_item_ids=[api_tgt_item.id])
     # Verification
@@ -106,7 +106,7 @@ def test_proj_effect(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_range(client, consts):
@@ -175,7 +175,7 @@ def test_range(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_ship1.change_ship(coordinates=(1500, 0, 0))
     # Verification - back to 1/2
@@ -204,7 +204,7 @@ def test_multiple_src_items(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item1.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
@@ -229,7 +229,7 @@ def test_multiple_src_items(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_src_effects(client, consts):
@@ -252,7 +252,7 @@ def test_multiple_src_effects(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
@@ -277,7 +277,7 @@ def test_multiple_src_effects(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -314,12 +314,12 @@ def test_known_failures(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=[api_tgt_item1.id, api_tgt_item2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(
         effect_stopper=[api_tgt_item1.id, api_tgt_other.id, api_tgt_item2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_src(client, consts):
@@ -336,21 +336,21 @@ def test_not_loaded_src(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_tgt(client, consts):
@@ -372,21 +372,21 @@ def test_not_loaded_tgt(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(add_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_item.change_module(rm_proj_item_ids=[api_tgt_item.id])
     # Verification
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_effect_cat(client, consts):
@@ -410,8 +410,8 @@ def test_criterion_effect_cat(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(effect_stopper=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

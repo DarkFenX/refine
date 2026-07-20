@@ -11,4 +11,4 @@ def test_error_params_malformed(client):
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
     api_sol.update()
     with check_no_field():
-        api_sol.fleets  # noqa: B018
+        api_sol.fleets  # ruff:ignore[useless-expression]

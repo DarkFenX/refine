@@ -181,7 +181,7 @@ def test_not_requested(client, consts):
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(lock_range=False))
     with check_no_field():
-        api_fit_stats.lock_range  # noqa: B018
+        api_fit_stats.lock_range  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(lock_range=False))
     with check_no_field():
-        api_ship_stats.lock_range  # noqa: B018
+        api_ship_stats.lock_range  # ruff:ignore[useless-expression]

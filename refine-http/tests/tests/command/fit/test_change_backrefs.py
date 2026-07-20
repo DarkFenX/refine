@@ -13,7 +13,7 @@ def test_item_remove(client):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.charge  # noqa: B018
+        api_module.charge  # ruff:ignore[useless-expression]
 
 
 def test_booster_change(client):

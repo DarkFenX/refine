@@ -24,7 +24,7 @@ def test_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_struct(client, consts):
@@ -49,7 +49,7 @@ def test_struct(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -76,7 +76,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=[api_rig1.id, api_rig2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -149,7 +149,7 @@ def test_ship_absent(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -191,7 +191,7 @@ def test_no_value_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_value_rig(client, consts):
@@ -224,7 +224,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_ship_not_loaded(client, consts):
@@ -240,7 +240,7 @@ def test_ship_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rig_not_loaded(client, consts):
@@ -256,7 +256,7 @@ def test_rig_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_state(client, consts):
@@ -318,4 +318,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(rig_size=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

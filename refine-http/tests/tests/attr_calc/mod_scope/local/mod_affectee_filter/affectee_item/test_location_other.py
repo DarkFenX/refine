@@ -251,13 +251,13 @@ def test_switch_type_id_module_affected_to_not_loaded_remove(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.attrs  # noqa: B018
+        api_module.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.remove()
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.attrs  # noqa: B018
+        api_module.attrs  # ruff:ignore[useless-expression]
 
 
 def test_switch_type_id_module_not_loaded_to_affected_remove(client, consts):
@@ -271,7 +271,7 @@ def test_switch_type_id_module_not_loaded_to_affected_remove(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.attrs  # noqa: B018
+        api_module.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_affectee_loaded_id)
     # Verification
@@ -297,7 +297,7 @@ def test_switch_type_id_module_affected_to_not_loaded_to_affected(client, consts
     # Verification
     api_charge = api_module.charge.update()
     with check_no_field():
-        api_charge.attrs  # noqa: B018
+        api_charge.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.change_charge(type_id=eve_affectee_loaded_id)
     # Verification

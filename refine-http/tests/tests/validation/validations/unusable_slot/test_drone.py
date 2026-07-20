@@ -49,7 +49,7 @@ def test_one(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -76,11 +76,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=[api_drone1.id, api_other.id, api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_max(client, consts):
@@ -114,7 +114,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fractional_max(client, consts):
@@ -138,7 +138,7 @@ def test_fractional_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_char(client, consts):
@@ -248,4 +248,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_slot=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

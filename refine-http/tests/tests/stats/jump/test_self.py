@@ -33,7 +33,7 @@ def test_ship_ranges(client, consts):
      api_fit_jump_rounding) = api_fit.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
     assert api_fit_jump_default.self.fuel_use == approx(15000)
     with check_no_field():
-        api_fit_jump_excessive.self  # noqa: B018
+        api_fit_jump_excessive.self  # ruff:ignore[useless-expression]
     assert api_fit_jump_max_num.self.fuel_use == approx(15000)
     assert api_fit_jump_max_spec.self.fuel_use == approx(15000)
     assert api_fit_jump_med.self.fuel_use == approx(6000)
@@ -50,7 +50,7 @@ def test_ship_ranges(client, consts):
      api_ship_jump_rounding) = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
     assert api_ship_jump_default.self.fuel_use == approx(15000)
     with check_no_field():
-        api_ship_jump_excessive.self  # noqa: B018
+        api_ship_jump_excessive.self  # ruff:ignore[useless-expression]
     assert api_ship_jump_max_num.self.fuel_use == approx(15000)
     assert api_ship_jump_max_spec.self.fuel_use == approx(15000)
     assert api_ship_jump_med.self.fuel_use == approx(6000)
@@ -74,8 +74,8 @@ def test_struct(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stat = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stat.self  # noqa: B018
+        api_fit_jump_stat.self  # ruff:ignore[useless-expression]
     api_struct_stats = api_struct.get_stats(options=ItemStatsOptions(jump=True))
     api_struct_jump_stat = api_struct_stats.jump.one()
     with check_no_field():
-        api_struct_jump_stat.self  # noqa: B018
+        api_struct_jump_stat.self  # ruff:ignore[useless-expression]

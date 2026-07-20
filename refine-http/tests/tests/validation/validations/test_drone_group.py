@@ -30,7 +30,7 @@ def test_drone_add_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
@@ -43,7 +43,7 @@ def test_drone_add_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_ship_add_set_remove(client, consts):
@@ -68,7 +68,7 @@ def test_ship_add_set_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
@@ -81,7 +81,7 @@ def test_ship_add_set_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship3_id)
     # Verification
@@ -94,7 +94,7 @@ def test_ship_add_set_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_drone_add_remove_non_limited_ship(client, consts):
@@ -112,14 +112,14 @@ def test_drone_add_remove_non_limited_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -132,21 +132,21 @@ def test_drone_add_remove_non_limited_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -205,11 +205,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=[api_drone2.id, api_drone3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(drone_group=[api_drone2.id, api_other.id, api_drone3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_limit(client, consts):
@@ -270,7 +270,7 @@ def test_mutation_drone_group(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=eve_mutator_id)
     # Verification
@@ -283,7 +283,7 @@ def test_mutation_drone_group(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=None)
     # Verification
@@ -313,7 +313,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification - having some attributes which do not exist does not prevent existing attributes
@@ -335,7 +335,7 @@ def test_not_loaded_ship(client):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_drone(client, consts):
@@ -352,7 +352,7 @@ def test_not_loaded_drone(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -390,4 +390,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(drone_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

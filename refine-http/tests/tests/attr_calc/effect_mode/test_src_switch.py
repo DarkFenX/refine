@@ -31,28 +31,28 @@ def test_src_switch(client, consts):
     # Verification
     api_normal.update()
     with check_no_field():
-        api_normal.attrs  # noqa: B018
+        api_normal.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_normal.effects  # noqa: B018
+        api_normal.effects  # ruff:ignore[useless-expression]
     api_mutable.update()
     with check_no_field():
-        api_mutable.attrs  # noqa: B018
+        api_mutable.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_mutable.effects  # noqa: B018
+        api_mutable.effects  # ruff:ignore[useless-expression]
     # Action
     api_normal.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     api_mutable.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     # Verification
     api_normal.update()
     with check_no_field():
-        api_normal.attrs  # noqa: B018
+        api_normal.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_normal.effects  # noqa: B018
+        api_normal.effects  # ruff:ignore[useless-expression]
     api_mutable.update()
     with check_no_field():
-        api_mutable.attrs  # noqa: B018
+        api_mutable.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_mutable.effects  # noqa: B018
+        api_mutable.effects  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification

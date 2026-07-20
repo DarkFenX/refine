@@ -230,13 +230,13 @@ def test_switch_type_id_ship_to_not_loaded_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_rig.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_switch_type_id_struct_to_ship_remove(client, consts):
@@ -293,7 +293,7 @@ def test_switch_type_id_not_loaded_to_ship_remove(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_root_ship_id)
     # Verification

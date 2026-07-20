@@ -428,7 +428,7 @@ def test_no_base_value(client):
     api_item.update()
     assert len(api_item.mutation.attrs) == 0
     with check_no_field():
-        api_item.attrs  # noqa: B018
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(mutation={
         eve_add_roll_attr_id: Muta.roll_to_api(val=0.7),
@@ -440,7 +440,7 @@ def test_no_base_value(client):
     api_item.update()
     assert len(api_item.mutation.attrs) == 0
     with check_no_field():
-        api_item.attrs  # noqa: B018
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - since there were no base attribute values on first source, attribute mutations

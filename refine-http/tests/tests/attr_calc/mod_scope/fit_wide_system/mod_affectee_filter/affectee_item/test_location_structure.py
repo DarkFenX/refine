@@ -198,13 +198,13 @@ def test_switch_type_id_struct_to_not_loaded_remove(client, consts):
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_fw_effect.remove()
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
 
 
 def test_switch_type_id_ship_to_struct_remove(client, consts):
@@ -261,7 +261,7 @@ def test_switch_type_id_not_loaded_to_struct_remove(client, consts):
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_affectee_item.change_ship(type_id=eve_affectee_struct_id)
     # Verification

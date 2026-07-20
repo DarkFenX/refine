@@ -76,7 +76,7 @@ def test_equal(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -107,12 +107,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         launched_fighter_count=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_max(client, consts):
@@ -152,7 +152,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fractional_max(client, consts):
@@ -181,7 +181,7 @@ def test_fractional_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client, consts):
@@ -291,7 +291,7 @@ def test_criterion_fighter_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
     # Verification
@@ -310,7 +310,7 @@ def test_criterion_fighter_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -344,4 +344,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(launched_fighter_count=[api_fighter.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

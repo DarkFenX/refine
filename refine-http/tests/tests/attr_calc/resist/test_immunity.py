@@ -39,15 +39,15 @@ def test_cutoff(client, consts):
     api_affectee_drone1.update()
     assert api_affectee_drone1.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_drone1.mods  # noqa: B018
+        api_affectee_drone1.mods  # ruff:ignore[useless-expression]
     api_affectee_drone2.update()
     assert api_affectee_drone2.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_drone2.mods  # noqa: B018
+        api_affectee_drone2.mods  # ruff:ignore[useless-expression]
     api_affectee_drone3.update()
     assert api_affectee_drone3.attrs[eve_affectee_attr_id].modified == approx(500)
     with check_no_field():
-        api_affectee_drone3.mods  # noqa: B018
+        api_affectee_drone3.mods  # ruff:ignore[useless-expression]
     api_affectee_drone4.update()
     assert api_affectee_drone4.attrs[eve_affectee_attr_id].modified == approx(499.967)
     api_mod = api_affectee_drone4.mods[eve_affectee_attr_id].one()

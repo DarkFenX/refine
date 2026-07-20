@@ -14,7 +14,7 @@ def test_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(abilities={eve_abil_id: True})
     # Verification
@@ -29,7 +29,7 @@ def test_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     # Verification
@@ -128,21 +128,21 @@ def test_sec_zones(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -188,11 +188,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=[api_fighter1.id, api_other.id, api_fighter2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -205,4 +205,4 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_effect=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

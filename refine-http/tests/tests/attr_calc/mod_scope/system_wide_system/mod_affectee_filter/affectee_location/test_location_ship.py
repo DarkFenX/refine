@@ -273,7 +273,7 @@ def test_switch_type_id_affectee(client, consts):
     # Verification
     api_affectee_item.update()
     with check_no_field():
-        api_affectee_item.attrs  # noqa: B018
+        api_affectee_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_affectee_item.change_rig(type_id=eve_affectee_item1_id)
     # Verification

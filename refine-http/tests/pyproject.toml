@@ -57,11 +57,11 @@ select = [
     "FURB",  # refurb
     "RUF",  # Ruff-specific rules
 ]
-ignore = ["ANN003", "ANN401", "PLR2004", "PLW1641"]
+ignore = ["missing-type-kwargs", "any-type", "magic-value-comparison", "eq-without-hash"]
 
 [tool.ruff.lint.per-file-ignores]
-"tests/**/test_*.py" = ["ANN", "RUF069"]
-"**/__init__.py" = ["F401"]
+"tests/**/test_*.py" = ["ANN", "float-equality-comparison"]
+"**/__init__.py" = ["unused-import"]
 
 [tool.ruff.lint.isort]
 no-lines-before = ["local-folder"]

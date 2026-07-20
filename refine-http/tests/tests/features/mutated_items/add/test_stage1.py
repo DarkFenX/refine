@@ -28,7 +28,7 @@ def test_rolls_range(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -75,7 +75,7 @@ def test_absolute_value_range(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_higher_attr_id].base == approx(100)
@@ -123,9 +123,9 @@ def test_no_base_item(client):
     # Verification
     api_item.update()
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     with check_no_field():
-        api_item.attrs  # noqa: B018
+        api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - on first source lib couldn't interpret absolute values, so defaults are exposed

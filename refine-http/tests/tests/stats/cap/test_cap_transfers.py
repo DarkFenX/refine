@@ -388,10 +388,10 @@ def test_not_requested(client, consts):
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=False))
     with check_no_field():
-        api_fleet_stats.outgoing_cps  # noqa: B018
+        api_fleet_stats.outgoing_cps  # ruff:ignore[useless-expression]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=False))
     with check_no_field():
-        api_fit_stats.outgoing_cps  # noqa: B018
+        api_fit_stats.outgoing_cps  # ruff:ignore[useless-expression]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_cps=False))
     with check_no_field():
-        api_module_stats.outgoing_cps  # noqa: B018
+        api_module_stats.outgoing_cps  # ruff:ignore[useless-expression]

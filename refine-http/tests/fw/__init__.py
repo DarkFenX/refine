@@ -1,6 +1,6 @@
 import pytest
 
-# ruff: noqa: RUF067
+# ruff:file-ignore[non-empty-init-module]
 pytest.register_assert_rewrite(
     'fw.api.client.sol',
     'fw.api.client.src',
@@ -10,7 +10,7 @@ pytest.register_assert_rewrite(
     'fw.util.ntt_list',
 )
 
-# ruff: noqa: E402
+# ruff:file-ignore[module-import-not-at-top-of-file]
 from unittest.mock import ANY as ANY_VALUE
 
 from .api import (

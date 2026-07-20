@@ -79,7 +79,7 @@ def test_eqial_below_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -101,7 +101,7 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone3 = api_fit.add_drone(type_id=eve_drone3_id, state=consts.ApiMinionState.in_bay)
     # Verification
@@ -116,12 +116,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=[api_drone2.id, api_drone3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         unlaunchable_drone_bandwidth=[api_drone2.id, api_other.id, api_drone3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_use(client, consts):
@@ -196,7 +196,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_use(client, consts):
@@ -218,7 +218,7 @@ def test_mutation_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone.change_drone(mutation=(eve_mutator_id, {eve_use_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
@@ -287,7 +287,7 @@ def test_no_value_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_drone2 = api_fit.add_drone(type_id=eve_drone2_id, state=consts.ApiMinionState.in_bay)
     # Verification
@@ -328,7 +328,7 @@ def test_no_attr_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_max(client, consts):
@@ -380,7 +380,7 @@ def test_not_loaded_user(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_non_positive(client, consts):
@@ -439,4 +439,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(unlaunchable_drone_bandwidth=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

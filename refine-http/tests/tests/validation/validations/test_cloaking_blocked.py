@@ -18,7 +18,7 @@ def test_single_add_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
     # Verification
@@ -31,7 +31,7 @@ def test_single_add_remove(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_state_switch(client, consts):
@@ -49,7 +49,7 @@ def test_single_state_switch(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_cloak.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -62,7 +62,7 @@ def test_single_state_switch(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_effects(client, consts):
@@ -133,7 +133,7 @@ def test_single_multiple_effects(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_modified(client, consts):
@@ -176,7 +176,7 @@ def test_single_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_no_cloak_module.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -189,7 +189,7 @@ def test_single_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_no_cloak_sw_effect.change_sw_effect(state=True)
     # Verification
@@ -202,7 +202,7 @@ def test_single_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_values(client, consts):
@@ -228,21 +228,21 @@ def test_single_values(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship3_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship4_id)
     # Verification
@@ -255,7 +255,7 @@ def test_single_values(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship6_id)
     # Verification
@@ -295,7 +295,7 @@ def test_single_ship_absent(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_ship_not_loaded(client, consts):
@@ -313,7 +313,7 @@ def test_single_ship_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_absent_attr1(client, consts):
@@ -331,7 +331,7 @@ def test_single_absent_attr1(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
@@ -361,7 +361,7 @@ def test_single_absent_attr2(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_absent_attrs(client, consts):
@@ -377,7 +377,7 @@ def test_single_absent_attrs(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_state_and_effects(client, consts):
@@ -400,7 +400,7 @@ def test_multiple_state_and_effects(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_cloak1.change_module(state=consts.ApiModuleState.active)
     api_cloak2.change_module(state=consts.ApiModuleState.disabled)
@@ -508,14 +508,14 @@ def test_multiple_multiple_effects(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_cloak.change_module(effect_modes={eve_effect2_id: consts.ApiEffMode.force_run})
     # Verification - it is one cloak even if it has multiple cloak effects
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -535,11 +535,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_module_cloak1.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_other.id, api_module_cloak1.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module_cloak2 = api_fit.add_module(type_id=eve_module_cloak_id, state=consts.ApiModuleState.active)
     # Verification
@@ -552,12 +552,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=[api_module_cloak1.id, api_module_cloak2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         cloaking_blocked=[api_module_cloak1.id, api_other.id, api_module_cloak2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_module_not_loaded(client, consts):
@@ -574,7 +574,7 @@ def test_module_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -616,4 +616,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

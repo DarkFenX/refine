@@ -75,7 +75,7 @@ def test_different_values(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -99,11 +99,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified(client, consts):
@@ -142,7 +142,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig.remove()
     # Verification
@@ -171,7 +171,7 @@ def test_mutation_limit_priority(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=eve_mutator_id)
     # Verification
@@ -186,7 +186,7 @@ def test_mutation_limit_priority(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=2)}))
     # Verification
@@ -194,7 +194,7 @@ def test_mutation_limit_priority(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation_limit_inheritance(client, consts):
@@ -217,7 +217,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=eve_mutator_id)
     # Verification
@@ -232,7 +232,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2.change_module(mutation=(eve_mutator_id, {eve_limit_attr_id: Muta.abs_to_api(val=2)}))
     # Verification
@@ -240,7 +240,7 @@ def test_mutation_limit_inheritance(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -258,7 +258,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -273,7 +273,7 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_module_state(client, consts):
@@ -322,4 +322,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(max_group_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

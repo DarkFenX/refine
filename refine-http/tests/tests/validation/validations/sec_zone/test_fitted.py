@@ -341,14 +341,14 @@ def test_flags_service(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
@@ -425,7 +425,7 @@ def test_flags_rig(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_flags_ship(client, consts):
@@ -450,7 +450,7 @@ def test_flags_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_wspace_ban_ship(client, consts):
@@ -469,7 +469,7 @@ def test_wspace_ban_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_ship2 = api_fit.set_ship(type_id=eve_ship2_id)
     # Verification
@@ -487,7 +487,7 @@ def test_wspace_ban_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_flags_and_wspace_ban_ship(client, consts):
@@ -538,7 +538,7 @@ def test_flags_and_wspace_ban_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -574,11 +574,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hisec_c5)
     # Verification
@@ -595,11 +595,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec)
     # Verification
@@ -616,11 +616,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.lowsec_c5)
     # Verification
@@ -637,11 +637,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service1.id, api_other.id, api_service2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.hazard)
     # Verification
@@ -664,22 +664,22 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id, api_service4.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_service3.id, api_other.id, api_service4.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_sol.change(sec_zone=consts.ApiSecZone.wspace)
     # Verification
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_ship.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=[api_other.id, api_ship.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified(client, consts):
@@ -710,7 +710,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_rig1.remove()
     api_fit.add_rig(type_id=eve_rig2_id)
@@ -765,7 +765,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded(client, consts):
@@ -779,7 +779,7 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_state(client, consts):
@@ -829,4 +829,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(sec_zone_fitted=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

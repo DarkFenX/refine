@@ -17,14 +17,14 @@ def test_bundled(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module1.remove()
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module2 = api_fit.add_module(type_id=eve_module_id, charge_type_id=eve_charge2_id)
     # Verification
@@ -37,7 +37,7 @@ def test_bundled(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_separate(client, consts):
@@ -55,14 +55,14 @@ def test_separate(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=eve_charge1_id)
     # Verification
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=eve_charge2_id)
     # Verification
@@ -75,7 +75,7 @@ def test_separate(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_different(client, consts):
@@ -96,7 +96,7 @@ def test_multiple_different(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module1.remove()
     api_module2 = api_fit.add_module(type_id=eve_module2_id, charge_type_id=eve_charge_id)
@@ -112,7 +112,7 @@ def test_multiple_different(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -140,12 +140,12 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=[api_module2.charge.id, api_module3.charge.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(
         charge_parent_group=[api_module2.charge.id, api_other.id, api_module3.charge.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_rounding(client, consts):
@@ -170,7 +170,7 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module1.remove()
     api_module2 = api_fit.add_module(type_id=eve_module3_id, charge_type_id=eve_charge_id)
@@ -186,7 +186,7 @@ def test_rounding(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_switch_type_id_module(client, consts):
@@ -205,7 +205,7 @@ def test_switch_type_id_module(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification
@@ -218,7 +218,7 @@ def test_switch_type_id_module(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module2_id)
     # Verification
@@ -243,7 +243,7 @@ def test_switch_type_id_charge(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.change_charge(type_id=eve_charge2_id)
     # Verification
@@ -256,7 +256,7 @@ def test_switch_type_id_charge(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.charge.change_charge(type_id=eve_charge2_id)
     # Verification
@@ -302,7 +302,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
@@ -310,7 +310,7 @@ def test_modified(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module1_id)
     # Verification
@@ -337,7 +337,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -350,7 +350,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
@@ -369,7 +369,7 @@ def test_no_charge(client):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -388,7 +388,7 @@ def test_no_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_module(client, consts):
@@ -404,7 +404,7 @@ def test_not_loaded_module(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_charge(client):
@@ -418,7 +418,7 @@ def test_not_loaded_charge(client):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_state(client, consts):
@@ -482,4 +482,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(charge_parent_group=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

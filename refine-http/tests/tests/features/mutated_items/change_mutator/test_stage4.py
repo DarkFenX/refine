@@ -19,7 +19,7 @@ def test_from_stage1(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)
@@ -56,7 +56,7 @@ def test_from_stage2(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)
@@ -92,7 +92,7 @@ def test_from_stage3(client):
     api_item.update()
     assert api_item.type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation  # noqa: B018
+        api_item.mutation  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)

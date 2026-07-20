@@ -24,7 +24,7 @@ def test_ship_modules(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -99,7 +99,7 @@ def test_ship_modules(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_structure_modules(client, consts):
@@ -132,7 +132,7 @@ def test_structure_modules(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.online)
     api_passive_module.change_module(state=consts.ApiModuleState.online)
@@ -207,7 +207,7 @@ def test_structure_modules(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_states(client, consts):
@@ -233,7 +233,7 @@ def test_multiple_states(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.overload)
     api_passive_module.change_module(state=consts.ApiModuleState.overload)
@@ -284,7 +284,7 @@ def test_multiple_states(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_none_module.change_module(state=consts.ApiModuleState.active)
     api_passive_module.change_module(state=consts.ApiModuleState.active)
@@ -308,7 +308,7 @@ def test_multiple_states(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -333,11 +333,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id, api_module3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module2.id, api_other.id, api_module3.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_mutation(client, consts):
@@ -363,7 +363,7 @@ def test_mutation(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
@@ -386,7 +386,7 @@ def test_not_loaded(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -422,4 +422,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(module_state=[api_module.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

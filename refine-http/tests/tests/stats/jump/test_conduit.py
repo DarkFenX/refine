@@ -39,7 +39,7 @@ def test_ranges(client, consts):
      api_fit_jump_rounding) = api_fit.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
     assert api_fit_jump_default.conduit.fuel_use_self == 15000
     with check_no_field():
-        api_fit_jump_excessive.conduit  # noqa: B018
+        api_fit_jump_excessive.conduit  # ruff:ignore[useless-expression]
     assert api_fit_jump_max_num.conduit.fuel_use_self == 15000
     assert api_fit_jump_max_spec.conduit.fuel_use_self == 15000
     assert api_fit_jump_med.conduit.fuel_use_self == 6000
@@ -56,7 +56,7 @@ def test_ranges(client, consts):
      api_ship_jump_rounding) = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
     assert api_ship_jump_default.conduit.fuel_use_self == 15000
     with check_no_field():
-        api_ship_jump_excessive.conduit  # noqa: B018
+        api_ship_jump_excessive.conduit  # ruff:ignore[useless-expression]
     assert api_ship_jump_max_num.conduit.fuel_use_self == 15000
     assert api_ship_jump_max_spec.conduit.fuel_use_self == 15000
     assert api_ship_jump_med.conduit.fuel_use_self == 6000
@@ -244,22 +244,22 @@ def test_attr_conduit_flag_values_ship(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.conduit  # noqa: B018
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.conduit  # noqa: B018
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
     # Action
     api_ship.change_ship(type_id=eve_ship6_id)
     # Verification - no conduit with no flag
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.conduit  # noqa: B018
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.conduit  # noqa: B018
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
 
 
 def test_attr_conduit_flag_values_portal(client, consts):
@@ -288,22 +288,22 @@ def test_attr_conduit_flag_values_portal(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.conduit  # noqa: B018
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.conduit  # noqa: B018
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
     # Action
     api_portal = api_fit.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.offline)
     # Verification - portal needs to be at least online to make conduit work
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.conduit  # noqa: B018
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.conduit  # noqa: B018
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
     # Action
     api_portal.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -346,22 +346,22 @@ def test_attr_conduit_flag_values_portal(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.conduit  # noqa: B018
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.conduit  # noqa: B018
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
     # Action
     api_portal.change_module(type_id=eve_portal6_id)
     # Verification - no conduit with no flag
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.conduit  # noqa: B018
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.conduit  # noqa: B018
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
 
 
 def test_attr_psg_count_rounding(client, consts):

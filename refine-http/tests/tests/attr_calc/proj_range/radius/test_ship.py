@@ -389,7 +389,7 @@ def test_switch_type_id_incoming(client, consts):
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11025), approx(11025))
     api_affectee_ship.update()
     with check_no_field():
-        api_affectee_ship.attrs  # noqa: B018
+        api_affectee_ship.attrs  # ruff:ignore[useless-expression]
     # Action
     api_affectee_ship.change_ship(type_id=eve_affectee_ship1_id)
     # Verification
@@ -570,7 +570,7 @@ def test_switch_src_incoming(client, consts):
     assert api_affector_fighter.update().projs[api_affectee_ship.id] == (approx(11025), approx(11025))
     api_affectee_ship.update()
     with check_no_field():
-        api_affectee_ship.attrs  # noqa: B018
+        api_affectee_ship.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
@@ -831,7 +831,7 @@ def test_affector_ship_absent(client, consts):
     # Verification
     api_affector_module.update()
     with check_no_field():
-        api_affector_module.projs  # noqa: B018
+        api_affector_module.projs  # ruff:ignore[useless-expression]
     api_affectee_ship.update()
     assert api_affectee_ship.attrs[eve_affectee_attr1_id].modified == approx(500)
     assert api_affectee_ship.attrs[eve_affectee_attr2_id].modified == approx(500)

@@ -151,7 +151,7 @@ def test_ship_switch(client, consts):
     # Verification
     api_ship.update()
     with check_no_field():
-        api_ship.attrs  # noqa: B018
+        api_ship.attrs  # ruff:ignore[useless-expression]
     # Action
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
@@ -201,7 +201,7 @@ def test_state(client, consts):
     assert api_ship.attrs[eve_sig_affectee_attr_id].modified == approx(32)
     assert api_ship.attrs[eve_speed_attr_id].modified == approx(455)
     with check_no_field():
-        api_ship.mods  # noqa: B018
+        api_ship.mods  # ruff:ignore[useless-expression]
 
 
 def test_speed_modifier_stacking(client, consts):
@@ -321,7 +321,7 @@ def test_speed_modifier_mass_zero(client, consts):
     assert api_ship.attrs[eve_mass_attr_id].modified == approx(0)
     assert api_ship.attrs[eve_speed_attr_id].modified == approx(455)
     with check_no_field():
-        api_ship.mods  # noqa: B018
+        api_ship.mods  # ruff:ignore[useless-expression]
 
 
 def test_speed_modifier_mass_changed(client, consts):

@@ -406,7 +406,7 @@ def test_switch_type_id_affectee(client, consts):
     # Verification
     api_implant.update()
     with check_no_field():
-        api_implant.attrs  # noqa: B018
+        api_implant.attrs  # ruff:ignore[useless-expression]
     # Action
     api_implant.change_implant(type_id=eve_implant1_id)
     # Verification

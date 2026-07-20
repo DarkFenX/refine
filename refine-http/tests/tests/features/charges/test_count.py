@@ -37,7 +37,7 @@ def test_no_charge(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.charge_count  # noqa: B018
+        api_module.charge_count  # ruff:ignore[useless-expression]
 
 
 def test_modified_capacity(client, consts):

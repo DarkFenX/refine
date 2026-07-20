@@ -92,7 +92,7 @@ def test_valid_to_invalid_reference_to_valid(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(type_id=eve_fighter1_id)
     # Verification
@@ -127,7 +127,7 @@ def test_valid_to_no_reference_to_valid(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.autocharges  # noqa: B018
+        api_fighter.autocharges  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(type_id=eve_fighter1_id)
     # Verification

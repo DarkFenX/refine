@@ -32,7 +32,7 @@ def test_no_charge(client, consts):
     # Verification - can cycle infinitely w/o charge, but info is not exposed when charge is not set
     api_module.update()
     with check_no_field():
-        api_module.charged_cycles  # noqa: B018
+        api_module.charged_cycles  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_charge(client, consts):

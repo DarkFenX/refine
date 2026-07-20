@@ -377,7 +377,7 @@ def test_affectee_self(client, consts):
     # Verification
     api_rig.update()
     with check_no_field():
-        api_rig.attrs  # noqa: B018
+        api_rig.attrs  # ruff:ignore[useless-expression]
     # Action
     api_rig.change_rig(type_id=eve_rig1_id)
     # Verification
@@ -419,7 +419,7 @@ def test_affectee_fleeted(client, consts):
     # Verification
     api_rig.update()
     with check_no_field():
-        api_rig.attrs  # noqa: B018
+        api_rig.attrs  # ruff:ignore[useless-expression]
     # Action
     api_rig.change_rig(type_id=eve_rig1_id)
     # Verification

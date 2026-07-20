@@ -32,7 +32,7 @@ def test_state(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_items(client, consts):
@@ -111,7 +111,7 @@ def test_asb(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification - without charge validation fails
@@ -145,11 +145,11 @@ def test_known_failures(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=[api_module1.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_fit.validate(options=ValOptions(unusable_cap=[api_module1.id, api_other.id, api_module2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_negative_use(client, consts):
@@ -167,7 +167,7 @@ def test_negative_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_modified_use(client, consts):
@@ -203,7 +203,7 @@ def test_modified_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
@@ -245,7 +245,7 @@ def test_modified_max(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_implant.remove()
     # Verification
@@ -291,7 +291,7 @@ def test_mutation_attr(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=None)
     # Verification
@@ -317,7 +317,7 @@ def test_mutation_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -330,7 +330,7 @@ def test_mutation_effect(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_ship(client, consts):
@@ -346,7 +346,7 @@ def test_no_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_use(client, consts):
@@ -364,7 +364,7 @@ def test_no_attr_use(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr_max(client, consts):
@@ -399,7 +399,7 @@ def test_not_loaded_ship(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_item(client, consts):
@@ -415,7 +415,7 @@ def test_not_loaded_item(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_criterion_item_kind(client, consts):
@@ -459,4 +459,4 @@ def test_criterion_item_kind(client, consts):
     api_val = api_fit.validate(options=ValOptions(unusable_cap=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

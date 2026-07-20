@@ -31,7 +31,7 @@ def test_fit(client):
     # Verification
     api_fleet.update()
     with check_no_field():
-        api_fleet.fit_ids  # noqa: B018
+        api_fleet.fit_ids  # ruff:ignore[useless-expression]
 
 
 def test_error_no_fleet_full(client, consts):

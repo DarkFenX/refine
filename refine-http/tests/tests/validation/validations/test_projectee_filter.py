@@ -30,11 +30,11 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_launcher.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
@@ -44,18 +44,18 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     api_val = api_tgt_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_launcher.change_module(rm_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_tgt_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_launcher.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
@@ -68,7 +68,7 @@ def test_src_breacher_tgt_ship_project_unproject(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_direct_dd(client, consts):
@@ -108,7 +108,7 @@ def test_src_direct_dd(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_standup_vorton(client, consts):
@@ -138,7 +138,7 @@ def test_src_standup_vorton(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_src_effects(client, consts):
@@ -180,7 +180,7 @@ def test_multiple_src_effects(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_filter_reference_values(client, consts):
@@ -223,14 +223,14 @@ def test_filter_reference_values(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(type_id=eve_module3_id)
     # Verification - ID is rounded to our type list ID again
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(type_id=eve_module4_id)
     # Verification - ID is resolved to higher value which is an empty list
@@ -288,7 +288,7 @@ def test_tgt_mutation(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_drone.change_drone(mutation=eve_tgt_mutator_id)
     # Verification
@@ -301,7 +301,7 @@ def test_tgt_mutation(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_drone.change_drone(mutation=None)
     # Verification
@@ -347,7 +347,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(mutation={eve_tgt_list_attr_id: Muta.roll_to_api(val=0)})
     # Verification
@@ -355,7 +355,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
@@ -370,7 +370,7 @@ def test_src_mutation_itemlist_replaced(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_src_mutation_itemlist_inherited(client, consts):
@@ -393,7 +393,7 @@ def test_src_mutation_itemlist_inherited(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_src_module.change_module(mutation=eve_mutator_id)
     # Verification
@@ -406,7 +406,7 @@ def test_src_mutation_itemlist_inherited(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship1_id)
     # Verification
@@ -419,7 +419,7 @@ def test_src_mutation_itemlist_inherited(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_known_failures(client, consts):
@@ -452,12 +452,12 @@ def test_known_failures(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=[api_src_item1.id, api_src_item2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     api_val = api_src_fit.validate(options=ValOptions(
         projectee_filter=[api_src_item1.id, api_src_other.id, api_src_item2.id]))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_no_attr(client, consts):
@@ -481,7 +481,7 @@ def test_no_attr(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_src(client, consts):
@@ -498,7 +498,7 @@ def test_not_loaded_src(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_not_loaded_tgt(client, consts):
@@ -528,4 +528,4 @@ def test_not_loaded_tgt(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(projectee_filter=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]

@@ -66,7 +66,7 @@ class TankBasicInfo:
 def setup_tank_basics(
         *,
         client: TestClient,
-        consts,  # noqa: ANN001
+        consts,  # ruff:ignore[missing-type-function-argument]
         effect_duration: bool = True,
 ) -> TankBasicInfo:
     # Attributes - buffer

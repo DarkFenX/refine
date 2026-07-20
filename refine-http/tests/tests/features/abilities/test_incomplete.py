@@ -21,7 +21,7 @@ def test_no_effect(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]
     api_fighter.change_fighter(abilities={eve_abil_id: False})
     # Action
     api_sol.change_src(data=eve_d2)
@@ -49,7 +49,7 @@ def test_no_ability(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]
     api_fighter.change_fighter(abilities={eve_abil_id: False})
     # Action
     api_sol.change_src(data=eve_d2)
@@ -89,7 +89,7 @@ def test_no_item_ability_data(client, consts):
     # Verification
     api_fighter.update()
     with check_no_field():
-        api_fighter.abilities  # noqa: B018
+        api_fighter.abilities  # ruff:ignore[useless-expression]
     api_fighter.change_fighter(abilities={eve_abil_id: False})
     # Action
     api_sol.change_src(data=eve_d2)

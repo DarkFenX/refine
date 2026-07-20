@@ -24,7 +24,7 @@ def test_fleet_change(client):
     assert api_fleet.update().fit_ids == [api_fit2.id]
     api_fit1.update()
     with check_no_field():
-        api_fit1.fleet_id  # noqa: B018
+        api_fit1.fleet_id  # ruff:ignore[useless-expression]
     assert api_fit2.update().fleet_id == api_fleet.id
 
 
@@ -39,7 +39,7 @@ def test_fleet_remove(client):
     api_fleet.update(status_code=404)
     api_fit.update()
     with check_no_field():
-        api_fit.fleet_id  # noqa: B018
+        api_fit.fleet_id  # ruff:ignore[useless-expression]
 
 
 def test_fit_create(client):
@@ -65,7 +65,7 @@ def test_fit_change(client):
     assert api_fit.update().fleet_id == api_fleet2.id
     assert api_fleet1.update()
     with check_no_field():
-        api_fleet1.fit_ids  # noqa: B018
+        api_fleet1.fit_ids  # ruff:ignore[useless-expression]
     assert api_fleet2.update().fit_ids == [api_fit.id]
 
 
@@ -80,7 +80,7 @@ def test_fit_remove(client):
     api_fit.update(status_code=404)
     api_fleet.update()
     with check_no_field():
-        api_fleet.fit_ids  # noqa: B018
+        api_fleet.fit_ids  # ruff:ignore[useless-expression]
 
 
 def test_item_remove(client):
@@ -95,7 +95,7 @@ def test_item_remove(client):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.charge  # noqa: B018
+        api_module.charge  # ruff:ignore[useless-expression]
 
 
 def test_booster_add(client):
@@ -167,7 +167,7 @@ def test_character_unset(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.character  # noqa: B018
+        api_fit.character  # ruff:ignore[useless-expression]
 
 
 def test_charge_change_after_module_add(client):
@@ -461,7 +461,7 @@ def test_ship_unset(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.ship  # noqa: B018
+        api_fit.ship  # ruff:ignore[useless-expression]
 
 
 def test_skill_add(client):
@@ -535,7 +535,7 @@ def test_stance_unset(client):
     # Verification
     api_fit.update()
     with check_no_field():
-        api_fit.stance  # noqa: B018
+        api_fit.stance  # ruff:ignore[useless-expression]
 
 
 def test_subsystem_add(client):

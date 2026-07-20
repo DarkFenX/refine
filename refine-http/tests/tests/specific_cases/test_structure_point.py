@@ -81,7 +81,7 @@ def test_module_mwd_block(client, consts):
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
@@ -94,7 +94,7 @@ def test_module_mwd_block(client, consts):
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_module_mjd_block(client, consts):
@@ -138,7 +138,7 @@ def test_module_mjd_block(client, consts):
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
     # Action
     api_point.change_module(charge_type_id=eve_script_id)
     # Verification
@@ -151,7 +151,7 @@ def test_module_mjd_block(client, consts):
     api_val = api_affectee_fit.validate(options=ValOptions(activation_blocked=True))
     assert api_val.passed is True
     with check_no_field():
-        api_val.details  # noqa: B018
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_fighter_mwd_mjd_block(client, consts):

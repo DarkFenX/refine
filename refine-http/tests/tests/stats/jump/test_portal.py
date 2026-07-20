@@ -51,7 +51,7 @@ def test_ranges(client, consts):
      api_fit_jump_rounding) = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
     assert api_fit_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     with check_no_field():
-        api_fit_jump_excessive.portals  # noqa: B018
+        api_fit_jump_excessive.portals  # ruff:ignore[useless-expression]
     assert api_fit_jump_max_num.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     assert api_fit_jump_max_spec.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     assert api_fit_jump_med.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 59
@@ -68,7 +68,7 @@ def test_ranges(client, consts):
      api_ship_jump_rounding) = api_main_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
     assert api_ship_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     with check_no_field():
-        api_ship_jump_excessive.portals  # noqa: B018
+        api_ship_jump_excessive.portals  # ruff:ignore[useless-expression]
     assert api_ship_jump_max_num.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     assert api_ship_jump_max_spec.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     assert api_ship_jump_med.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 59
@@ -97,7 +97,7 @@ def test_ranges(client, consts):
      api_fit_jump_rounding) = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
     assert api_fit_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     with check_no_field():
-        api_fit_jump_excessive.portals  # noqa: B018
+        api_fit_jump_excessive.portals  # ruff:ignore[useless-expression]
     assert api_fit_jump_max_num.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     assert api_fit_jump_max_spec.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     assert api_fit_jump_med.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 109
@@ -114,7 +114,7 @@ def test_ranges(client, consts):
      api_ship_jump_rounding) = api_main_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
     assert api_ship_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     with check_no_field():
-        api_ship_jump_excessive.portals  # noqa: B018
+        api_ship_jump_excessive.portals  # ruff:ignore[useless-expression]
     assert api_ship_jump_max_num.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     assert api_ship_jump_max_spec.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     assert api_ship_jump_med.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 109
@@ -408,12 +408,12 @@ def test_attr_portal_flag_values_portal(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
     # Action
     api_portal = api_fit_main.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.online)
     # Verification - no bridge without active portal
@@ -421,12 +421,12 @@ def test_attr_portal_flag_values_portal(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
     # Action
     api_portal.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -470,12 +470,12 @@ def test_attr_portal_flag_values_portal(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
     # Action
     api_portal.change_module(type_id=eve_portal6_id)
     # Verification
@@ -483,12 +483,12 @@ def test_attr_portal_flag_values_portal(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
 
 
 def test_attr_fuel_absent(client, consts):
@@ -829,12 +829,12 @@ def test_ansiblex_state(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
     # Action
     api_portal = api_fit_main.add_service(type_id=eve_portal_id, state=consts.ApiServiceState.offline)
     # Verification - no bridging still, need to have it online
@@ -842,12 +842,12 @@ def test_ansiblex_state(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
     # Action
     api_portal.change_service(state=consts.ApiServiceState.online)
     # Verification
@@ -864,12 +864,12 @@ def test_ansiblex_state(client, consts):
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
-        api_fit_jump_stats.portals  # noqa: B018
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
-        api_ship_jump_stats.portals  # noqa: B018
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
 
 
 def test_ansiblex_mass_limit(client, consts):

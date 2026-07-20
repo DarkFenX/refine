@@ -196,7 +196,7 @@ def test_child_module(client, consts):
     # Verification
     api_module.update()
     with check_no_field():
-        api_module.attrs  # noqa: B018
+        api_module.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.change_module(type_id=eve_module1_id)
     # Verification

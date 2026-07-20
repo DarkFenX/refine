@@ -96,13 +96,13 @@ def test_loaded_onlist_to_unloaded_onlist_self(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_loaded_onlist_to_unloaded_onlist_fleeted(client, consts):
@@ -125,13 +125,13 @@ def test_loaded_onlist_to_unloaded_onlist_fleeted(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_loaded_onlist_to_unloaded_offlist_remove_self(client, consts):
@@ -152,13 +152,13 @@ def test_loaded_onlist_to_unloaded_offlist_remove_self(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_loaded_onlist_to_unloaded_offlist_remove_fleeted(client, consts):
@@ -181,13 +181,13 @@ def test_loaded_onlist_to_unloaded_offlist_remove_fleeted(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_module.remove()
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
 
 
 def test_loaded_offlist_to_loaded_onlist_remove_self(client, consts):
@@ -252,7 +252,7 @@ def test_unloaded_onlist_to_loaded_onlist_remove_self(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -279,7 +279,7 @@ def test_unloaded_onlist_to_loaded_onlist_remove_fleeted(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -304,7 +304,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove_self(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
@@ -331,7 +331,7 @@ def test_unloaded_offlist_to_loaded_onlist_remove_fleeted(client, consts):
     # Verification
     api_root.update()
     with check_no_field():
-        api_root.attrs  # noqa: B018
+        api_root.attrs  # ruff:ignore[useless-expression]
     # Action
     api_root.change_ship(type_id=eve_loaded_onlist_id)
     # Verification
