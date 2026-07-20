@@ -11,7 +11,10 @@ pub struct StatJump {
     pub fuel_type_id: ItemTypeId,
     #[cfg_attr(feature = "serde", serde(rename = "self", skip_serializing_if = "Option::is_none"))]
     pub jump_self: Option<StatJumpSelf>,
-    #[cfg_attr(feature = "serde", serde(rename = "conduit", skip_serializing_if = "Option::is_none"))]
+    #[cfg_attr(
+        feature = "serde",
+        serde(rename = "conduit", skip_serializing_if = "Option::is_none")
+    )]
     pub jump_conduit: Option<StatJumpConduit>,
     #[cfg_attr(feature = "serde", serde(rename = "portals", skip_serializing_if = "Vec::is_empty"))]
     pub jump_portals: Vec<StatJumpPortal>,

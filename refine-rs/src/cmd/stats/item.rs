@@ -10,53 +10,92 @@ use crate::{
     },
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct GetItemStatsCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub default: bool = true,
     // Output
+    #[cfg_attr(feature = "serde", serde(default))]
     pub dmg: StatOptionExt<StatOptionItemDmg> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mps: StatOptionExt<StatOptionItemMining> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_nps: StatOptionExt<StatOptionItemOutNps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_rps: StatOptionExt<StatOptionItemOutRps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_cps: StatOptionExt<StatOptionItemOutCps> = StatOptionExt::Default,
     // Tank
+    #[cfg_attr(feature = "serde", serde(default))]
     pub resists: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub hp: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub ehp: StatOptionExt<StatOptionEhp> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub wc_ehp: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub rps: StatOptionExt<StatOptionRps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub erps: StatOptionExt<StatOptionErps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub breach_resist: StatOption = StatOption::Default,
     // Cap
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_amount: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub neut_resist: StatOption = StatOption::Default,
     // Sensors
     pub locks: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub lock_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub scan_res: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub sensors: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub dscan_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub probing_size: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub incoming_jam: StatOptionExt<StatOptionIncomingJam> = StatOptionExt::Default,
     // Mobility
     pub speed: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub agility: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub align_time: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub sig_radius: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub warp_speed: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub max_warp_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub jump: StatOptionExt<StatOptionJump> = StatOptionExt::Default,
     // Misc
+    #[cfg_attr(feature = "serde", serde(default))]
     pub drone_control_range: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_warp: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_jump_gate: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_jump_wormhole: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_jump_drive: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_dock_station: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_dock_citadel: StatOption = StatOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub can_tether: StatOption = StatOption::Default,
 }
 
@@ -70,136 +109,136 @@ impl GetItemStatsCmd {
         // Output
         ////////////////////////////////////////////////////////////////////////////////////////////
         if let Some(options) = self.dmg.into_enabled(self.default) {
-            stats.dmg = get_dmg_stats(core_item, options).into();
+            stats.dmg = get_dmg_stats(core_item, options);
         }
         if let Some(options) = self.mps.into_enabled(self.default) {
-            stats.mps = get_mps_stats(core_item, options).into();
+            stats.mps = get_mps_stats(core_item, options);
         }
         if let Some(options) = self.outgoing_nps.into_enabled(self.default) {
-            stats.outgoing_nps = get_outgoing_nps_stats(core_item, options).into();
+            stats.outgoing_nps = get_outgoing_nps_stats(core_item, options);
         }
         if let Some(options) = self.outgoing_cps.into_enabled(self.default) {
-            stats.outgoing_cps = get_outgoing_cps_stats(core_item, options).into();
+            stats.outgoing_cps = get_outgoing_cps_stats(core_item, options);
         }
         if let Some(options) = self.outgoing_rps.into_enabled(self.default) {
-            stats.outgoing_rps = get_outgoing_rps_stats(core_item, options).into();
+            stats.outgoing_rps = get_outgoing_rps_stats(core_item, options);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Tank
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.resists.into_enabled(self.default) {
-            stats.resists = core_item.get_stat_resists().into();
+            stats.resists = core_item.get_stat_resists().ok().map(|v| vec![v]);
         }
         if self.hp.into_enabled(self.default) {
-            stats.hp = core_item.get_stat_hp().into();
+            stats.hp = core_item.get_stat_hp().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.ehp.into_enabled(self.default) {
-            stats.ehp = get_ehp_stats(core_item, options).into()
+            stats.ehp = get_ehp_stats(core_item, options);
         }
         if self.wc_ehp.into_enabled(self.default) {
-            stats.wc_ehp = core_item.get_stat_wc_ehp().into();
+            stats.wc_ehp = core_item.get_stat_wc_ehp().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.rps.into_enabled(self.default) {
-            stats.rps = get_rps_stats(core_item, options).into();
+            stats.rps = get_rps_stats(core_item, options);
         }
         if let Some(options) = self.erps.into_enabled(self.default) {
-            stats.erps = get_erps_stats(core_item, options).into();
+            stats.erps = get_erps_stats(core_item, options);
         }
         if self.breach_resist.into_enabled(self.default) {
-            stats.breach_resist = core_item.get_stat_breach_resist().into();
+            stats.breach_resist = core_item.get_stat_breach_resist().ok().map(|v| vec![v]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Cap
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cap_amount.into_enabled(self.default) {
-            stats.cap_amount = core_item.get_stat_cap_amount().into();
+            stats.cap_amount = core_item.get_stat_cap_amount().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.cap_balance.into_enabled(self.default) {
-            stats.cap_balance = get_cap_balance_stats(core_item, options).into();
+            stats.cap_balance = get_cap_balance_stats(core_item, options);
         }
         if let Some(options) = self.cap_sim.into_enabled(self.default) {
-            stats.cap_sim = get_cap_sim_stats(core_item, options).into();
+            stats.cap_sim = get_cap_sim_stats(core_item, options);
         }
         if self.neut_resist.into_enabled(self.default) {
-            stats.neut_resist = core_item.get_stat_neut_resist().into();
+            stats.neut_resist = core_item.get_stat_neut_resist().ok().map(|v| vec![v]);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Sensors
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.locks.into_enabled(self.default) {
-            stats.locks = core_item.get_stat_locks().into();
+            stats.locks = core_item.get_stat_locks().ok().map(|v| vec![v]);
         }
         if self.lock_range.into_enabled(self.default) {
-            stats.lock_range = core_item.get_stat_lock_range().into();
+            stats.lock_range = core_item.get_stat_lock_range().ok().map(|v| vec![v]);
         }
         if self.scan_res.into_enabled(self.default) {
-            stats.scan_res = core_item.get_stat_scan_res().into();
+            stats.scan_res = core_item.get_stat_scan_res().ok().map(|v| vec![v]);
         }
         if self.sensors.into_enabled(self.default) {
-            stats.sensors = core_item.get_stat_sensors().into();
+            stats.sensors = core_item.get_stat_sensors().ok().map(|v| vec![v]);
         }
         if self.dscan_range.into_enabled(self.default) {
-            stats.dscan_range = core_item.get_stat_dscan_range().into();
+            stats.dscan_range = core_item.get_stat_dscan_range().ok().map(|v| vec![v]);
         }
         if self.probing_size.into_enabled(self.default) {
-            stats.probing_size = core_item.get_stat_probing_size().unwrap_or_default().into();
+            stats.probing_size = core_item.get_stat_probing_size().ok().flatten().map(|v| vec![v]);
         }
         if let Some(options) = self.incoming_jam.into_enabled(self.default) {
-            stats.incoming_jam = get_incoming_jam_stats(core_item, options).into();
+            stats.incoming_jam = get_incoming_jam_stats(core_item, options);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
-            stats.speed = core_item.get_stat_speed().into();
+            stats.speed = core_item.get_stat_speed().ok().map(|v| vec![v]);
         }
         if self.agility.into_enabled(self.default) {
-            stats.agility = core_item.get_stat_agility().unwrap_or_default().into();
+            stats.agility = core_item.get_stat_agility().ok().flatten().map(|v| vec![v]);
         }
         if self.align_time.into_enabled(self.default) {
-            stats.align_time = core_item.get_stat_align_time().unwrap_or_default().into();
+            stats.align_time = core_item.get_stat_align_time().ok().flatten().map(|v| vec![v]);
         }
         if self.sig_radius.into_enabled(self.default) {
-            stats.sig_radius = core_item.get_stat_sig_radius().into();
+            stats.sig_radius = core_item.get_stat_sig_radius().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.mass.into_enabled(self.default) {
-            stats.mass = get_mass_stats(core_item, options).into();
+            stats.mass = get_mass_stats(core_item, options);
         }
         if self.warp_speed.into_enabled(self.default) {
-            stats.warp_speed = core_item.get_stat_warp_speed().unwrap_or_default().into();
+            stats.warp_speed = core_item.get_stat_warp_speed().ok().flatten().map(|v| vec![v]);
         }
         if self.max_warp_range.into_enabled(self.default) {
-            stats.max_warp_range = core_item.get_stat_max_warp_range().unwrap_or_default().into();
+            stats.max_warp_range = core_item.get_stat_max_warp_range().ok().flatten().map(|v| vec![v]);
         }
         if let Some(options) = self.jump.into_enabled(self.default) {
-            stats.jump = get_jump_stats(core_item, options).into();
+            stats.jump = get_jump_stats(core_item, options);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Misc
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.into_enabled(self.default) {
-            stats.drone_control_range = core_item.get_stat_drone_control_range().into();
+            stats.drone_control_range = core_item.get_stat_drone_control_range().ok().map(|v| vec![v]);
         }
         if self.can_warp.into_enabled(self.default) {
-            stats.can_warp = core_item.get_stat_can_warp().into();
+            stats.can_warp = core_item.get_stat_can_warp().ok().map(|v| vec![v]);
         }
         if self.can_jump_gate.into_enabled(self.default) {
-            stats.can_jump_gate = core_item.get_stat_can_jump_gate().into();
+            stats.can_jump_gate = core_item.get_stat_can_jump_gate().ok().map(|v| vec![v]);
         }
         if self.can_jump_wormhole.into_enabled(self.default) {
-            stats.can_jump_wormhole = core_item.get_stat_can_jump_wormhole().into();
+            stats.can_jump_wormhole = core_item.get_stat_can_jump_wormhole().ok().map(|v| vec![v]);
         }
         if self.can_jump_drive.into_enabled(self.default) {
-            stats.can_jump_drive = core_item.get_stat_can_jump_drive().into();
+            stats.can_jump_drive = core_item.get_stat_can_jump_drive().ok().map(|v| vec![v]);
         }
         if self.can_dock_station.into_enabled(self.default) {
-            stats.can_dock_station = core_item.get_stat_can_dock_station().into();
+            stats.can_dock_station = core_item.get_stat_can_dock_station().ok().map(|v| vec![v]);
         }
         if self.can_dock_citadel.into_enabled(self.default) {
-            stats.can_dock_citadel = core_item.get_stat_can_dock_citadel().into();
+            stats.can_dock_citadel = core_item.get_stat_can_dock_citadel().ok().map(|v| vec![v]);
         }
         if self.can_tether.into_enabled(self.default) {
-            stats.can_tether = core_item.get_stat_can_tether().into();
+            stats.can_tether = core_item.get_stat_can_tether().ok().map(|v| vec![v]);
         }
         stats
     }
