@@ -9,12 +9,19 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct GetFleetStatsCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub dmg: StatOptionExt<StatOptionFitDmg> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mps: StatOptionExt<StatOptionFitMining> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_nps: StatOptionExt<StatOptionFitOutNps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_rps: StatOptionExt<StatOptionFitOutRps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub outgoing_cps: StatOptionExt<StatOptionFitOutCps> = StatOptionExt::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
 }
 
