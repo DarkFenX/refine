@@ -75,7 +75,7 @@ class ApiClientFit(ApiClientBase):
         body = {'type_ids': type_ids}
         conditional_insert(
             container=body,
-            path=['validation_options'],
+            path=['val_options'],
             value=options.to_dict() if isinstance(options, ValOptions) else options)
         return Request(
             client=self,

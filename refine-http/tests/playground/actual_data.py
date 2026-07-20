@@ -217,7 +217,7 @@ def test_benchmark_try_fit_items(client, consts):
         'type': 'try_fit_items',
         'fit_id': api_fit.id,
         'type_ids': try_fit_type_ids,
-        'validation_options': options,
+        'val_options': options,
         'iterations': iterations})
     after = time()
     print('done with try-fit-items benchmark')  # ruff:ignore[print]

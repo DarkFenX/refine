@@ -5,6 +5,7 @@ pub(crate) use item::{add_item, change_item, get_item, remove_item};
 pub(crate) use root::root;
 pub(crate) use sol::{add_sol, change_sol, get_sol, remove_sol, switch_sol_src};
 pub(crate) use src::{add_source, remove_source};
+pub(crate) use try_fit_items::try_fit_items;
 pub(crate) use validate::{validate_fit, validate_sol};
 
 mod dev;
@@ -14,4 +15,5 @@ mod item;
 mod root;
 mod sol;
 mod src;
+mod try_fit_items;
 mod validate;

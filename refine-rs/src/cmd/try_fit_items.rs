@@ -1,5 +1,6 @@
 use crate::{ItemTypeId, val::ValOptions};
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct TryFitItemsCmd {
     type_ids: Vec<ItemTypeId>,
     val_options: ValOptions,
