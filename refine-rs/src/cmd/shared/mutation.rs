@@ -94,10 +94,149 @@ fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: AttrId, roll: UnitIn
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom serialization/deserialization
+// Custom serialization/deserialization - adding mutation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
-mod custom_serde {
+mod custom_serde_add {
+    use serde::de::{Deserialize, Deserializer, Error, MapAccess, SeqAccess, Visitor};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for AddMutation {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorState;
+
+            impl<'de> Visitor<'de> for VisitorState {
+                type Value = AddMutation;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("integer with mutator ID, or sequence with mutator ID and attribute map")
+                }
+
+                fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    let mutator_id = i32::try_from(v).map_err(|e| Error::custom(e))?;
+                    Ok(Self::Value {
+                        mutator_id: ItemTypeId::from_i32(mutator_id),
+                        ..
+                    })
+                }
+                fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    let mutator_id = i32::try_from(v).map_err(|e| Error::custom(e))?;
+                    Ok(Self::Value {
+                        mutator_id: ItemTypeId::from_i32(mutator_id),
+                        ..
+                    })
+                }
+                fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Ok(Self::Value {
+                        mutator_id: ItemTypeId::from_i32(v as i32),
+                        ..
+                    })
+                }
+
+                fn visit_seq<A>(self, mut seq: A) -> Result<AddMutation, A::Error>
+                where
+                    A: SeqAccess<'de>,
+                {
+                    let mutator_id: ItemTypeId = match seq.next_element()? {
+                        Some(mutator_id) => mutator_id,
+                        None => return Err(Error::invalid_length(0, &"sequence with 2 elements")),
+                    };
+                    let attrs: Attrs = match seq.next_element()? {
+                        Some(attrs) => attrs,
+                        None => return Err(Error::invalid_length(1, &"sequence with 2 elements")),
+                    };
+                    Ok(Self::Value {
+                        mutator_id,
+                        attrs: attrs.0,
+                    })
+                }
+            }
+
+            deserializer.deserialize_any(VisitorState)
+        }
+    }
+
+    struct Attrs(Vec<(AttrId, AttrMutation)>);
+
+    impl<'de> Deserialize<'de> for Attrs {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorState;
+
+            impl<'de> Visitor<'de> for VisitorState {
+                type Value = Attrs;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("attribute mutation map")
+                }
+
+                fn visit_map<M>(self, mut map: M) -> Result<Attrs, M::Error>
+                where
+                    M: MapAccess<'de>,
+                {
+                    let mut attrs = Vec::with_capacity(map.size_hint().unwrap_or(0));
+                    while let Some((attr_id, attr_mutation)) = map.next_entry()? {
+                        attrs.push((attr_id, attr_mutation));
+                    }
+                    Ok(Attrs(attrs))
+                }
+            }
+
+            deserializer.deserialize_map(VisitorState)
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization - changing mutation
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde_change {
+    use serde::de::{Deserialize, Deserializer, Visitor};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for ChangeMutation {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorState;
+
+            impl<'de> Visitor<'de> for VisitorState {
+                type Value = ChangeMutation;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str(
+                        "integer with mutator ID, attribute map, or sequence with mutator ID and attribute map",
+                    )
+                }
+            }
+            deserializer.deserialize_any(VisitorState)
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom serialization/deserialization - attribute definition
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde_attr {
     use std::str::FromStr;
 
     use serde::de::{Deserialize, Deserializer, Error, Visitor};
@@ -121,44 +260,6 @@ mod custom_serde {
                     formatter.write_str("number or string with number with optional type prefix")
                 }
 
-                // TODO: experiment with visit methods and decide if this many is necessary, or just
-                // TODO: f64 / f64+i32 is sufficient
-                fn visit_i8<E>(self, v: i8) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_u8<E>(self, v: u8) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_i16<E>(self, v: i16) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_u16<E>(self, v: u16) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_i32<E>(self, v: i32) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_u32<E>(self, v: u32) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
                 fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
                 where
                     E: Error,
@@ -166,25 +267,6 @@ mod custom_serde {
                     Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
                 }
                 fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_i128<E>(self, v: i128) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-                fn visit_u128<E>(self, v: u128) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::Absolute(Value::from_f64(v as f64)))
-                }
-
-                fn visit_f32<E>(self, v: f32) -> Result<Self::Value, E>
                 where
                     E: Error,
                 {
@@ -211,60 +293,6 @@ mod custom_serde {
                     }
                     let abs_str = Value::from_str(v).map_err(|e| Error::custom(e))?;
                     Ok(Self::Value::Absolute(abs_str))
-                }
-            }
-            deserializer.deserialize_any(VisitorState)
-        }
-    }
-}
-
-// TODO: add full serialization support and merge with module above
-#[cfg(feature = "serde")]
-mod custom_serde_x1 {
-    use serde::de::{Deserialize, Deserializer, Visitor};
-
-    use super::*;
-
-    impl<'de> Deserialize<'de> for AddMutation {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            struct VisitorState;
-
-            impl<'de> Visitor<'de> for VisitorState {
-                type Value = AddMutation;
-
-                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("integer with mutator ID, or sequence with mutator ID and attribute map")
-                }
-            }
-            deserializer.deserialize_any(VisitorState)
-        }
-    }
-}
-
-// TODO: add full serialization support and merge with module above
-#[cfg(feature = "serde")]
-mod custom_serde_x2 {
-    use serde::de::{Deserialize, Deserializer, Visitor};
-
-    use super::*;
-
-    impl<'de> Deserialize<'de> for ChangeMutation {
-        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            struct VisitorState;
-
-            impl<'de> Visitor<'de> for VisitorState {
-                type Value = ChangeMutation;
-
-                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str(
-                        "integer with mutator ID, attribute map, or sequence with mutator ID and attribute map",
-                    )
                 }
             }
             deserializer.deserialize_any(VisitorState)
