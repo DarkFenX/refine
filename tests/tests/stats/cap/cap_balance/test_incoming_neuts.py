@@ -283,9 +283,9 @@ def test_src_kind(client, consts):
         StatsOptionCapBalance(),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, incoming_neuts=True)),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=True, incoming_neuts=False))]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_balance=api_options))
     assert api_tgt_fit_stats.cap_balance == [approx(-25.0), approx(-25.0), 0]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_balance=api_options))
     assert api_tgt_ship_stats.cap_balance == [approx(-25.0), approx(-25.0), 0]
 
 
@@ -329,32 +329,32 @@ def test_time(client, consts):
     assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
     # Burst stats - first cycle of each module
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeBurst())]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeBurst())]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-46)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-46)
     # Sim with time just after neut applied its deduction, and nosf did not (nosf cycle happens at
     # the end of its cycle)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=1))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-600)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=1))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-600)
     # Sim with time nosf applied its deduction as well
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=11))]))
     assert api_tgt_fit_stats.cap_balance.one() == approx(-73.636364)
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=11))]))
     assert api_tgt_ship_stats.cap_balance.one() == approx(-73.636364)
 
 

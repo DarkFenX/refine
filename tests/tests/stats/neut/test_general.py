@@ -65,20 +65,20 @@ def test_incorrect_projectee(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitOutNps(projectee_item_id=api_implant.id),
-        StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps == [None, None, approx(25)]
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitOutNps(projectee_item_id=api_implant.id),
-        StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps == [None, None, approx(25)]
-    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionItemOutNps(projectee_item_id=api_implant.id),
-        StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_nps == [None, None, approx(25)]
 
 

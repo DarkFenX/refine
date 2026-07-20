@@ -174,9 +174,9 @@ def test_src_kind(client, consts):
         StatsOptionCapBalance(),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, cap_injectors=True)),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=True, cap_injectors=False))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=api_options))
     assert api_fit_stats.cap_balance == [approx(9.782609), approx(9.782609), 0]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=api_options))
     assert api_ship_stats.cap_balance == [approx(9.782609), approx(9.782609), 0]
 
 
@@ -209,31 +209,31 @@ def test_time(client, consts):
     assert api_ship_stats.cap_balance.one() == approx(9.782609)
     # Burst stats - first cycle of the module
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeBurst())]))
     assert api_fit_stats.cap_balance.one() == approx(12.5)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeBurst())]))
     assert api_ship_stats.cap_balance.one() == approx(12.5)
     # Sim without specified time - looped stats
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
     assert api_fit_stats.cap_balance.one() == approx(9.782609)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
     assert api_ship_stats.cap_balance.one() == approx(9.782609)
     # Sim with time just after cap was used on 1st cycle
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=1))]))
     assert api_fit_stats.cap_balance.one() == approx(150)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=1))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=1))]))
     assert api_ship_stats.cap_balance.one() == approx(150)
     # Sim with time in the middle of reload
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=41))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=41))]))
     assert api_fit_stats.cap_balance.one() == approx(10.97561)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=41))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=41))]))
     assert api_ship_stats.cap_balance.one() == approx(10.97561)
 
 

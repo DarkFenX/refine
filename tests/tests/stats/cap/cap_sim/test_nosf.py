@@ -107,19 +107,19 @@ def test_projection_range_and_limit(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 20520, 0))
     # Verification - gain limited by target ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.9519129)}
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.9519129)}
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 30520, 0))
     # Verification - gain limited by range
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.529436)}
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.529436)}
 
 
@@ -167,19 +167,19 @@ def test_projection_resist_and_limit(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
     # Verification - gain limited by target ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.9519129)}
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.stable: approx(0.9519129)}
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - gain limited by resisted nosf amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(674)}
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_sim=(True, [StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        cap_sim=[StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_ship_stats.cap_sim.one() == {consts.ApiCapSimResult.time: approx(674)}
 
 
@@ -212,13 +212,13 @@ def test_incorrect_projectee(client, consts):
     api_tmp.remove()
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(cap_sim=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(cap_sim=[
         StatsOptionCapSim(nosf_projectee_item_id=api_tmp.id),
         StatsOptionCapSim(nosf_projectee_item_id=api_nosf.id),
-        StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.cap_sim == [None, None, {consts.ApiCapSimResult.stable: 1}]
-    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, [
+    api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(cap_sim=[
         StatsOptionCapSim(nosf_projectee_item_id=api_tmp.id),
         StatsOptionCapSim(nosf_projectee_item_id=api_nosf.id),
-        StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionCapSim(nosf_projectee_item_id=api_tgt_ship.id)]))
     assert api_src_ship_stats.cap_sim == [None, None, {consts.ApiCapSimResult.stable: 1}]

@@ -92,12 +92,12 @@ def test_dps_profiles_drone(client, consts):
     api_fit = api_sol.create_fit()
     api_drone = api_fit.add_drone(type_id=eve_drone_id)
     # Verification
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(ehp=(True, [
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(),
         StatsOptionEhp(incoming_dps=(100, 100, -5, -25)),
         StatsOptionEhp(incoming_dps=(0, 0, 0, 0)),
-        StatsOptionEhp(incoming_dps=(0, 0, 1, 1))])))
+        StatsOptionEhp(incoming_dps=(0, 0, 1, 1))]))
     (api_drone_ehp_uniform,
      api_drone_ehp_default,
      api_drone_ehp_negative,
@@ -136,12 +136,12 @@ def test_dps_profiles_fighter(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(ehp=(True, [
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
         StatsOptionEhp(),
         StatsOptionEhp(incoming_dps=(100, 100, -5, -25)),
         StatsOptionEhp(incoming_dps=(0, 0, 0, 0)),
-        StatsOptionEhp(incoming_dps=(0, 0, 1, 1))])))
+        StatsOptionEhp(incoming_dps=(0, 0, 1, 1))]))
     (api_fighter_ehp_uniform,
      api_fighter_ehp_default,
      api_fighter_ehp_negative,
@@ -249,9 +249,9 @@ def test_local_asb(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, [
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_fit_ehp_uniform, api_fit_ehp_em_therm = api_fit_stats.ehp
     assert api_fit_ehp_uniform.shield == (approx(1904), approx(3003.428571), 0, approx(2.285714))
     assert api_fit_ehp_uniform.armor == (approx(880.963855), 0, 0, approx(1.927711))
@@ -259,9 +259,9 @@ def test_local_asb(client, consts):
     assert api_fit_ehp_em_therm.shield == (approx(2563.076923), approx(4043.076923), 0, approx(3.076923))
     assert api_fit_ehp_em_therm.armor == (approx(2150.588235), 0, 0, approx(4.705882))
     assert api_fit_ehp_em_therm.hull == (approx(902.985075), 0, 0, approx(1.492537))
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, [
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_ship_ehp_uniform, api_ship_ehp_em_therm = api_ship_stats.ehp
     assert api_ship_ehp_uniform.shield == (approx(1904), approx(3003.428571), 0, approx(2.285714))
     assert api_ship_ehp_uniform.armor == (approx(880.963855), 0, 0, approx(1.927711))
@@ -299,9 +299,9 @@ def test_local_aar(client, consts):
         state=consts.ApiModuleState.active,
         charge_type_id=eve_charge_item_id)
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, [
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_fit_ehp_uniform, api_fit_ehp_em_therm = api_fit_stats.ehp
     assert api_fit_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
     assert api_fit_ehp_uniform.armor == (approx(884.615385), approx(1920), 0, approx(1.538462))
@@ -309,9 +309,9 @@ def test_local_aar(client, consts):
     assert api_fit_ehp_em_therm.shield == (approx(250), 0, 0, approx(1.111111))
     assert api_fit_ehp_em_therm.armor == (approx(1000), approx(2170.434782), 0, approx(1.73913))
     assert api_fit_ehp_em_therm.hull == (approx(783.58209), 0, 0, approx(1.492537))
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, [
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_ship_ehp_uniform, api_ship_ehp_em_therm = api_ship_stats.ehp
     assert api_ship_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
     assert api_ship_ehp_uniform.armor == (approx(884.615385), approx(1920), 0, approx(1.538462))
@@ -344,9 +344,9 @@ def test_remote_asb(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_rasb.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(ehp=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_tgt_fit_ehp_uniform, api_tgt_fit_ehp_em_therm = api_tgt_fit_stats.ehp
     assert api_tgt_fit_ehp_uniform.shield == (approx(1904), 0, approx(9771.428571), approx(2.285714))
     assert api_tgt_fit_ehp_uniform.armor == (approx(880.963855), 0, 0, approx(1.927711))
@@ -354,9 +354,9 @@ def test_remote_asb(client, consts):
     assert api_tgt_fit_ehp_em_therm.shield == (approx(2563.076923), 0, approx(13153.846154), approx(3.076923))
     assert api_tgt_fit_ehp_em_therm.armor == (approx(2150.588235), 0, 0, approx(4.705882))
     assert api_tgt_fit_ehp_em_therm.hull == (approx(902.985075), 0, 0, approx(1.492537))
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(ehp=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_tgt_ship_ehp_uniform, api_tgt_ship_ehp_em_therm = api_tgt_ship_stats.ehp
     assert api_tgt_ship_ehp_uniform.shield == (approx(1904), 0, approx(9771.428571), approx(2.285714))
     assert api_tgt_ship_ehp_uniform.armor == (approx(880.963855), 0, 0, approx(1.927711))
@@ -396,9 +396,9 @@ def test_remote_aar(client, consts):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_raar.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(ehp=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_tgt_fit_ehp_uniform, api_tgt_fit_ehp_em_therm = api_tgt_fit_stats.ehp
     assert api_tgt_fit_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
     assert api_tgt_fit_ehp_uniform.armor == (approx(884.615385), 0, approx(1366.153846), approx(1.538462))
@@ -406,9 +406,9 @@ def test_remote_aar(client, consts):
     assert api_tgt_fit_ehp_em_therm.shield == (approx(250), 0, 0, approx(1.111111))
     assert api_tgt_fit_ehp_em_therm.armor == (approx(1000), 0, approx(1544.347826), approx(1.73913))
     assert api_tgt_fit_ehp_em_therm.hull == (approx(783.58209), 0, 0, approx(1.492537))
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(ehp=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(ehp=[
         StatsOptionEhp(incoming_dps=(1, 1, 1, 1)),
-        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))])))
+        StatsOptionEhp(incoming_dps=(1, 1, 0, 0))]))
     api_tgt_ship_ehp_uniform, api_tgt_ship_ehp_em_therm = api_tgt_ship_stats.ehp
     assert api_tgt_ship_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
     assert api_tgt_ship_ehp_uniform.armor == (approx(884.615385), 0, approx(1366.153846), approx(1.538462))
@@ -424,7 +424,7 @@ def test_no_ship(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=[StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]))
     assert api_fit_stats.ehp is None
 
 

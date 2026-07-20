@@ -107,9 +107,9 @@ def test_src_kind(client, consts):
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds()),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=True, regen=False)),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=api_options))
     assert api_fit_stats.cap_balance == [approx(5.555663), 0, approx(5.555663)]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=api_options))
     assert api_ship_stats.cap_balance == [approx(5.555663), 0, approx(5.555663)]
 
 
@@ -130,10 +130,10 @@ def test_cap_perc(client, consts):
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions()))),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=0.9)))),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(regen=(True, StatCapRegenOptions(cap_perc=1))))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=api_options))
     assert api_fit_stats.cap_balance == [
         approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(5.555663), approx(1.081871), 0]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=api_options))
     assert api_ship_stats.cap_balance == [
         approx(5.555663), approx(5.555663), 0, approx(3.036948), approx(5.555663), approx(1.081871), 0]
 

@@ -40,9 +40,9 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=True))
     assert api_fit_stats.outgoing_rps.one().hull == 0
     api_stat_options = [StatsOptionItemOutRps(ignore_state=False), StatsOptionItemOutRps(ignore_state=True)]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=(True, api_stat_options)))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_rps=api_stat_options))
     assert api_module_stats.outgoing_rps.map(lambda i: i.hull) == [0, approx(2.5)]
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(outgoing_rps=(True, api_stat_options)))
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(outgoing_rps=api_stat_options))
     assert api_drone_stats.outgoing_rps.map(lambda i: i.hull) == [0, approx(7.2)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
@@ -72,25 +72,25 @@ def test_hp_limit_and_resist(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(8.333333)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_rps.one().hull == approx(8.333333)
     api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_rps.one().hull == approx(8.333333)
     # Action
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(5.75)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_rps.one().hull == approx(5.75)
     api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_rps.one().hull == approx(5.75)
 
 
@@ -111,25 +111,25 @@ def test_hp_limit_and_range(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification - range is close enough to be limited by HP
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(8.333333)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_rps.one().hull == approx(8.333333)
     api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_rps.one().hull == approx(8.333333)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 22770, 0))
     # Verification - range is far enough not to be limited by range
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(1.197917)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionFitOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_rps.one().hull == approx(1.197917)
     api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_rps=[StatsOptionItemOutRps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_rps.one().hull == approx(1.197917)
 
 
@@ -144,18 +144,18 @@ def test_item_kind(client, consts):
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=[
         StatsOptionFitOutRps(),
         StatsOptionFitOutRps(item_kinds=StatOutRepItemKinds(default=False, module=True)),
-        StatsOptionFitOutRps(item_kinds=StatOutRepItemKinds(default=False, minion=True))])))
+        StatsOptionFitOutRps(item_kinds=StatOutRepItemKinds(default=False, minion=True))]))
     api_fleet_rrps_default, api_fleet_rrps_module, api_fleet_rrps_minion = api_fleet_stats.outgoing_rps
     assert api_fleet_rrps_default.hull == approx(9.7)
     assert api_fleet_rrps_module.hull == approx(2.5)
     assert api_fleet_rrps_minion.hull == approx(7.2)
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=(True, [
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=[
         StatsOptionFitOutRps(),
         StatsOptionFitOutRps(item_kinds=StatOutRepItemKinds(default=False, module=True)),
-        StatsOptionFitOutRps(item_kinds=StatOutRepItemKinds(default=False, minion=True))])))
+        StatsOptionFitOutRps(item_kinds=StatOutRepItemKinds(default=False, minion=True))]))
     api_fit_rrps_default, api_fit_rrps_module, api_fit_rrps_minion = api_fit_stats.outgoing_rps
     assert api_fit_rrps_default.hull == approx(9.7)
     assert api_fit_rrps_module.hull == approx(2.5)
@@ -172,43 +172,43 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeBurst())])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeBurst())]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(2.5)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeBurst())])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeBurst())]))
     assert api_fit_stats.outgoing_rps.one().hull == approx(2.5)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeBurst())])))
+        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeBurst())]))
     assert api_module_stats.outgoing_rps.one().hull == approx(2.5)
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=None))])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=None))]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(2.5)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=None))])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=None))]))
     assert api_fit_stats.outgoing_rps.one().hull == approx(2.5)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=None))])))
+        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=None))]))
     assert api_module_stats.outgoing_rps.one().hull == approx(2.5)
     # Sim with time before first cycle is completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=23))])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=23))]))
     assert api_fleet_stats.outgoing_rps.one().hull == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=23))])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=23))]))
     assert api_fit_stats.outgoing_rps.one().hull == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=23))])))
+        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=23))]))
     assert api_module_stats.outgoing_rps.one().hull == 0
     # Sim with time just after first cycle is completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=25))])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=25))]))
     assert api_fleet_stats.outgoing_rps.one().hull == approx(2.4)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=(True, [StatsOptionFitOutRps(time_options=StatTimeSim(time=25))])))
+        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=25))]))
     assert api_fit_stats.outgoing_rps.one().hull == approx(2.4)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_rps=(True, [StatsOptionItemOutRps(time_options=StatTimeSim(time=25))])))
+        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=25))]))
     assert api_module_stats.outgoing_rps.one().hull == approx(2.4)
 
 

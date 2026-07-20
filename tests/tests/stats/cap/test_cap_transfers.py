@@ -41,7 +41,7 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_cps=True))
     assert api_fit_stats.outgoing_cps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(ignore_state=False), StatsOptionItemOutCps(ignore_state=True)])))
+        outgoing_cps=[StatsOptionItemOutCps(ignore_state=False), StatsOptionItemOutCps(ignore_state=True)]))
     assert api_module_stats.outgoing_cps == [0, approx(70.2)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
@@ -72,53 +72,53 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats (first cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeBurst())])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeBurst())]))
     assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeBurst())])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeBurst())]))
     assert api_fit_stats.outgoing_cps.one() == approx(70.2)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeBurst())])))
+        outgoing_cps=[StatsOptionItemOutCps(time_options=StatTimeBurst())]))
     assert api_module_stats.outgoing_cps.one() == approx(70.2)
     # Sim stats without time - loop stats are exposed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=None))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=None))]))
     assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=None))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=None))]))
     assert api_fit_stats.outgoing_cps.one() == approx(70.2)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=None))])))
+        outgoing_cps=[StatsOptionItemOutCps(time_options=StatTimeSim(time=None))]))
     assert api_module_stats.outgoing_cps.one() == approx(70.2)
     # Sim with time before transfer effect is applied (which happens at the end of cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=4))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=4))]))
     assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=4))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=4))]))
     assert api_fit_stats.outgoing_cps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=4))])))
+        outgoing_cps=[StatsOptionItemOutCps(time_options=StatTimeSim(time=4))]))
     assert api_module_stats.outgoing_cps.one() == 0
     # Sim with time just after 2nd cycle has started
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=6))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=6))]))
     assert api_fleet_stats.outgoing_cps.one() == approx(58.5)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=6))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=6))]))
     assert api_fit_stats.outgoing_cps.one() == approx(58.5)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=6))])))
+        outgoing_cps=[StatsOptionItemOutCps(time_options=StatTimeSim(time=6))]))
     assert api_module_stats.outgoing_cps.one() == approx(58.5)
     # Sim with time just before completion of 2nd cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=9))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=9))]))
     assert api_fleet_stats.outgoing_cps.one() == approx(39)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(time_options=StatTimeSim(time=9))])))
+        outgoing_cps=[StatsOptionFitOutCps(time_options=StatTimeSim(time=9))]))
     assert api_fit_stats.outgoing_cps.one() == approx(39)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(time_options=StatTimeSim(time=9))])))
+        outgoing_cps=[StatsOptionItemOutCps(time_options=StatTimeSim(time=9))]))
     assert api_module_stats.outgoing_cps.one() == approx(39)
 
 
@@ -151,31 +151,31 @@ def test_range(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_cps.one() == approx(140.4)
     api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fit_stats.outgoing_cps.one() == approx(140.4)
     api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_proj_stats.outgoing_cps.one() == approx(70.2)
     api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_nonproj_stats.outgoing_cps.one() == approx(70.2)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 8171, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_cps.one() == 0
     api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fit_stats.outgoing_cps.one() == 0
     api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_proj_stats.outgoing_cps.one() == 0
     api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_nonproj_stats.outgoing_cps.one() == 0
 
 
@@ -213,31 +213,31 @@ def test_resist_and_limit(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_cps.one() == approx(120)
     api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fit_stats.outgoing_cps.one() == approx(120)
     api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_proj_stats.outgoing_cps.one() == approx(60)
     api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_nonproj_stats.outgoing_cps.one() == approx(60)
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_cps.one() == approx(70.2)
     api_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_cps=(True, [StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fit_stats.outgoing_cps.one() == approx(70.2)
     api_module_proj_stats = api_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_proj_stats.outgoing_cps.one() == approx(35.1)
     api_module_nonproj_stats = api_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_cps=(True, [StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_cps=[StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_module_nonproj_stats.outgoing_cps.one() == approx(35.1)
 
 
@@ -352,20 +352,20 @@ def test_incorrect_projectee(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_cps=[
         StatsOptionFitOutCps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitOutCps(projectee_item_id=api_implant.id),
-        StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_cps == [None, None, approx(70.2)]
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_cps=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_cps=[
         StatsOptionFitOutCps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionFitOutCps(projectee_item_id=api_implant.id),
-        StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionFitOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_cps == [None, None, approx(70.2)]
-    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(outgoing_cps=(True, [
+    api_src_module_stats = api_src_module.get_stats(options=ItemStatsOptions(outgoing_cps=[
         StatsOptionItemOutCps(projectee_item_id=api_tgt_tmp.id),
         StatsOptionItemOutCps(projectee_item_id=api_implant.id),
-        StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)])))
+        StatsOptionItemOutCps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.outgoing_cps == [None, None, approx(70.2)]
 
 

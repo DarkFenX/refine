@@ -24,12 +24,12 @@ def test_consumers(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     # Verification - no cap to run mods at all when not staggered
     api_options = [StatsOptionCapSim(), StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.time: 0},
         {consts.ApiCapSimResult.stable: approx(0.4264583)},
         {consts.ApiCapSimResult.time: 0}]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.time: 0},
         {consts.ApiCapSimResult.stable: approx(0.4264583)},
@@ -63,11 +63,11 @@ def test_neuts(client, consts):
     # Verification - when neuts are applied together, they break through peak regen, but when
     # staggered, they do not
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.2891368)},
         {consts.ApiCapSimResult.time: approx(390)}]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.2891368)},
         {consts.ApiCapSimResult.time: approx(390)}]
@@ -107,11 +107,11 @@ def test_transfers(client, consts):
         api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.3963343)},
         {consts.ApiCapSimResult.time: approx(54)}]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.3963343)},
         {consts.ApiCapSimResult.time: approx(54)}]
@@ -153,11 +153,11 @@ def test_cross_group(client, consts):
     # Verification - neuts and cap consumers are in different stagger groups, and are not staggered
     # against each other even if their cycle parameters coincide
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.time: approx(390)},
         {consts.ApiCapSimResult.time: approx(390)}]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.time: approx(390)},
         {consts.ApiCapSimResult.time: approx(390)}]
@@ -195,11 +195,11 @@ def test_different_amounts(client, consts):
         api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.3049515)},
         {consts.ApiCapSimResult.time: approx(630)}]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.3049515)},
         {consts.ApiCapSimResult.time: approx(630)}]
@@ -245,11 +245,11 @@ def test_different_delays(client, consts):
     # reason for that is that they have different application delays (neut is applied immediately,
     # nosf in the end of cycle), so the sim puts those into different staggering groups
     api_options = [StatsOptionCapSim(stagger=True), StatsOptionCapSim(stagger=False)]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.time: approx(640)},
         {consts.ApiCapSimResult.time: approx(640)}]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.time: approx(640)},
         {consts.ApiCapSimResult.time: approx(640)}]
@@ -297,7 +297,7 @@ def test_exceptions(client, consts):
         StatsOptionCapSim(stagger=(False, [api_src_neut1.id, api_src_neut2.id, api_src_neut3.id])),
         StatsOptionCapSim(stagger=(False, [api_src_neut1.id, api_src_neut2.id, api_src_neut3.id, api_src_neut4.id])),
     ]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(cap_sim=api_options))
     assert api_tgt_fit_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.2891368)},
         {consts.ApiCapSimResult.stable: approx(0.2803728)},
@@ -309,7 +309,7 @@ def test_exceptions(client, consts):
         {consts.ApiCapSimResult.time: approx(930)},
         {consts.ApiCapSimResult.stable: approx(0.2803728)},
         {consts.ApiCapSimResult.stable: approx(0.2891368)}]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=(True, api_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(cap_sim=api_options))
     assert api_tgt_ship_stats.cap_sim == [
         {consts.ApiCapSimResult.stable: approx(0.2891368)},
         {consts.ApiCapSimResult.stable: approx(0.2803728)},

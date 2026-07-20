@@ -244,9 +244,9 @@ def test_hp_limit_and_spool(client, consts):
         StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
         StatsOptionRps(),
         StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, api_stat_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=api_stat_options))
     assert api_tgt_fit_stats.rps.map(lambda i: i.armor.remote) == [approx(85.333333), approx(150), approx(150)]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, api_stat_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=api_stat_options))
     assert api_tgt_ship_stats.rps.map(lambda i: i.armor.remote) == [approx(85.333333), approx(150), approx(150)]
 
 
@@ -288,48 +288,48 @@ def test_time(client, consts):
     # Verification - burst stats. For spool rep, on-module value is taken, since setting request
     # does not override it.
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+        rps=[StatsOptionRps(time_options=StatTimeBurst())]))
     assert api_tgt_fit_stats.rps.one().armor == [approx(96.583333), approx(316.233333), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+        rps=[StatsOptionRps(time_options=StatTimeBurst())]))
     assert api_tgt_ship_stats.rps.one().armor == [approx(96.583333), approx(316.233333), ANY_VALUE]
     # Sim without specified time - looped stats. Spool value is ignored and just max spool is taken
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_fit_stats.rps.map(lambda i: i.armor) == [
         [approx(62.083333), approx(267.9), ANY_VALUE],
         [approx(76.679487), approx(275.955556), ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_ship_stats.rps.map(lambda i: i.armor) == [
         [approx(62.083333), approx(267.9), ANY_VALUE],
         [approx(76.679487), approx(275.955556), ANY_VALUE]]
     # Sim with time before any of rep cycles complete
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=4))])))
+        rps=[StatsOptionRps(time_options=StatTimeSim(time=4))]))
     assert api_tgt_fit_stats.rps.one().armor == [0, 0, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=4))])))
+        rps=[StatsOptionRps(time_options=StatTimeSim(time=4))]))
     assert api_tgt_ship_stats.rps.one().armor == [0, 0, ANY_VALUE]
     # Sim with time just after first rep cycle has completed for slowest items (some completed 2)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=13))])))
+        rps=[StatsOptionRps(time_options=StatTimeSim(time=13))]))
     assert api_tgt_fit_stats.rps.one().armor == [approx(89.153846), approx(219.341538), ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=13))])))
+        rps=[StatsOptionRps(time_options=StatTimeSim(time=13))]))
     assert api_tgt_ship_stats.rps.one().armor == [approx(89.153846), approx(219.341538), ANY_VALUE]
     # Sim with time when AARs exhausted their clips, and trig rep spooled a bit
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_fit_stats.rps.map(lambda i: i.armor) == [
         [approx(91.899083), approx(266.296514), ANY_VALUE],
         [approx(90), approx(252.993761), ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=109, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_ship_stats.rps.map(lambda i: i.armor) == [
         [approx(91.899083), approx(266.296514), ANY_VALUE],
         [approx(90), approx(252.993761), ANY_VALUE]]
@@ -337,14 +337,14 @@ def test_time(client, consts):
     api_module_laar.change_module(charge_type_id=None)
     api_module_raar.change_module(charge_type_id=None)
     # Verification - check same modes again, but with ancils not loaded
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(time=4)),
         StatsOptionRps(time_options=StatTimeSim(time=13)),
         StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_fit_stats.rps.map(lambda i: i.armor) == [
         [approx(62.083333), approx(267.9), ANY_VALUE],
         [approx(62.083333), approx(267.9), ANY_VALUE],
@@ -353,14 +353,14 @@ def test_time(client, consts):
         [approx(57.307692), approx(174.726154), ANY_VALUE],
         [approx(57.864078), approx(243.818641), ANY_VALUE],
         [approx(57.864078), approx(243.818641), ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(time=4)),
         StatsOptionRps(time_options=StatTimeSim(time=13)),
         StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=103, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_ship_stats.rps.map(lambda i: i.armor) == [
         [approx(62.083333), approx(267.9), ANY_VALUE],
         [approx(62.083333), approx(267.9), ANY_VALUE],

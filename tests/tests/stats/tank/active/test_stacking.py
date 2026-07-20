@@ -163,12 +163,12 @@ def test_spool(client, consts):
         StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
         StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0.5))),
         StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, api_stat_options)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=api_stat_options))
     api_tgt_fit_stats_prespool, api_tgt_fit_stats_midspool, api_tgt_fit_stats_spooled = api_tgt_fit_stats.rps
     assert api_tgt_fit_stats_prespool.armor == [0, approx(3413.333333), approx(3225.597)]
     assert api_tgt_fit_stats_midspool.armor == [0, approx(6690.133333), approx(6039.5067468)]
     assert api_tgt_fit_stats_spooled.armor == [0, approx(9557.333333), approx(8402.05019)]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, api_stat_options)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=api_stat_options))
     api_tgt_ship_stats_prespool, api_tgt_ship_stats_midspool, api_tgt_ship_stats_spooled = api_tgt_ship_stats.rps
     assert api_tgt_ship_stats_prespool.armor == [0, approx(3413.333333), approx(3225.597)]
     assert api_tgt_ship_stats_midspool.armor == [0, approx(6690.133333), approx(6039.5067468)]

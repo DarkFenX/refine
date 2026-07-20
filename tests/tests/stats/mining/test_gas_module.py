@@ -48,7 +48,7 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
     assert api_fit_stats.mps.one().gas == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=(True, [StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)])))
+        mps=[StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)]))
     api_module_mps_normal, api_module_mps_ignored = api_module_stats.mps
     assert api_module_mps_normal.gas == [0, 0]
     assert api_module_mps_ignored.gas == [approx(1.333333), approx(1.786667)]
@@ -120,20 +120,20 @@ def test_mission(client, consts):
     api_module = api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - default is non-mission ore, for mission ore waste is disabled
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
-        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)])))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=[
+        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)]))
     assert api_fleet_stats.mps.map(lambda i: i.gas) == [
         [approx(1.333333), approx(1.786667)],
         [approx(1.333333), approx(1.333333)],
         [approx(1.333333), approx(1.786667)]]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
-        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)])))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[
+        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)]))
     assert api_fit_stats.mps.map(lambda i: i.gas) == [
         [approx(1.333333), approx(1.786667)],
         [approx(1.333333), approx(1.333333)],
         [approx(1.333333), approx(1.786667)]]
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=(True, [
-        StatsOptionItemMining(), StatsOptionItemMining(mission=True), StatsOptionItemMining(mission=False)])))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[
+        StatsOptionItemMining(), StatsOptionItemMining(mission=True), StatsOptionItemMining(mission=False)]))
     assert api_module_stats.mps.map(lambda i: i.gas) == [
         [approx(1.333333), approx(1.786667)],
         [approx(1.333333), approx(1.333333)],
@@ -237,21 +237,21 @@ def test_item_kind(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=[
         StatsOptionFitMining(),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds()),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, module=True)),
-        StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))])))
+        StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))]))
     assert api_fleet_stats.mps.map(lambda i: i.gas) == [
         [approx(1.333333), approx(1.786667)],
         [approx(1.333333), approx(1.786667)],
         [approx(1.333333), approx(1.786667)],
         [0, 0]]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=(True, [
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[
         StatsOptionFitMining(),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds()),
         StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=False, module=True)),
-        StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))])))
+        StatsOptionFitMining(item_kinds=StatMiningItemKinds(default=True, module=False))]))
     assert api_fit_stats.mps.map(lambda i: i.gas) == [
         [approx(1.333333), approx(1.786667)],
         [approx(1.333333), approx(1.786667)],
@@ -283,43 +283,43 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeBurst())])))
+        mps=[StatsOptionFitMining(time_options=StatTimeBurst())]))
     assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeBurst())])))
+        mps=[StatsOptionFitMining(time_options=StatTimeBurst())]))
     assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=(True, [StatsOptionItemMining(time_options=StatTimeBurst())])))
+        mps=[StatsOptionItemMining(time_options=StatTimeBurst())]))
     assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=None))])))
+        mps=[StatsOptionFitMining(time_options=StatTimeSim(time=None))]))
     assert api_fleet_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=None))])))
+        mps=[StatsOptionFitMining(time_options=StatTimeSim(time=None))]))
     assert api_fit_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=None))])))
+        mps=[StatsOptionItemMining(time_options=StatTimeSim(time=None))]))
     assert api_module_stats.mps.one().gas == [approx(1.333333), approx(1.786667)]
     # Sim with time at the end of first cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=29))])))
+        mps=[StatsOptionFitMining(time_options=StatTimeSim(time=29))]))
     assert api_fleet_stats.mps.one().gas == [0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=29))])))
+        mps=[StatsOptionFitMining(time_options=StatTimeSim(time=29))]))
     assert api_fit_stats.mps.one().gas == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=29))])))
+        mps=[StatsOptionItemMining(time_options=StatTimeSim(time=29))]))
     assert api_module_stats.mps.one().gas == [0, 0]
     # Sim with time just after first cycle was completed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=31))])))
+        mps=[StatsOptionFitMining(time_options=StatTimeSim(time=31))]))
     assert api_fleet_stats.mps.one().gas == [approx(1.290323), approx(1.729032)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        mps=(True, [StatsOptionFitMining(time_options=StatTimeSim(time=31))])))
+        mps=[StatsOptionFitMining(time_options=StatTimeSim(time=31))]))
     assert api_fit_stats.mps.one().gas == [approx(1.290323), approx(1.729032)]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=(True, [StatsOptionItemMining(time_options=StatTimeSim(time=31))])))
+        mps=[StatsOptionItemMining(time_options=StatTimeSim(time=31))]))
     assert api_module_stats.mps.one().gas == [approx(1.290323), approx(1.729032)]
 
 

@@ -208,41 +208,41 @@ def test_time(client, consts):
     api_drone.change_drone(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+        rps=[StatsOptionRps(time_options=StatTimeBurst())]))
     assert api_tgt_fit_stats.rps.one().shield == [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeBurst())])))
+        rps=[StatsOptionRps(time_options=StatTimeBurst())]))
     assert api_tgt_ship_stats.rps.one().shield == [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE]
     # Sim without specified time - looped stats
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_fit_stats.rps.map(lambda i: i.shield) == [
         [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
         [approx(91.103448), approx(142.672727), ANY_VALUE, ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_ship_stats.rps.map(lambda i: i.shield) == [
         [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
         [approx(91.103448), approx(142.672727), ANY_VALUE, ANY_VALUE]]
     # Sim with time just after 1st cycle has started
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=1))])))
+        rps=[StatsOptionRps(time_options=StatTimeSim(time=1))]))
     assert api_tgt_fit_stats.rps.one().shield == [approx(374), approx(1530), ANY_VALUE, ANY_VALUE]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        rps=(True, [StatsOptionRps(time_options=StatTimeSim(time=1))])))
+        rps=[StatsOptionRps(time_options=StatTimeSim(time=1))]))
     assert api_tgt_ship_stats.rps.one().shield == [approx(374), approx(1530), ANY_VALUE, ANY_VALUE]
     # Sim with time when ASBs exhausted their clips
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_fit_stats.rps.map(lambda i: i.shield) == [
         [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
         [approx(95.037037), approx(189.654321), ANY_VALUE, ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_ship_stats.rps.map(lambda i: i.shield) == [
         [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
         [approx(95.037037), approx(189.654321), ANY_VALUE, ANY_VALUE]]
@@ -250,13 +250,13 @@ def test_time(client, consts):
     api_module_lasb.change_module(charge_type_id=None)
     api_module_rasb.change_module(charge_type_id=None)
     # Verification - check same modes again, but with ancils not loaded
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=(True, [
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(time=1)),
         StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_fit_stats.rps.map(lambda i: i.shield) == [
         [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
         [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
@@ -264,13 +264,13 @@ def test_time(client, consts):
         [approx(374), approx(1530), ANY_VALUE, ANY_VALUE],
         [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE],
         [approx(129.283951), approx(213.111111), ANY_VALUE, ANY_VALUE]]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=(True, [
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(rps=[
         StatsOptionRps(time_options=StatTimeBurst()),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
         StatsOptionRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
         StatsOptionRps(time_options=StatTimeSim(time=1)),
         StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))])))
+        StatsOptionRps(time_options=StatTimeSim(time=81, optional_reloads=consts.ApiOptionalReload.on_empty))]))
     assert api_tgt_ship_stats.rps.map(lambda i: i.shield) == [
         [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
         [approx(124.666667), approx(196.65), ANY_VALUE, ANY_VALUE],
@@ -362,10 +362,10 @@ def test_regen_shield_perc(client, consts):
         StatsOptionRps(shield_perc=1),
         StatsOptionRps(shield_perc=-2),
         StatsOptionRps(shield_perc=25)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(rps=api_options))
     assert api_fit_stats.rps.map(lambda i: i.shield.regen) == [
         approx(8.333333), 0, approx(7.207592), approx(8.333333), approx(4.555334), 0, 0, 0]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(rps=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(rps=api_options))
     assert api_ship_stats.rps.map(lambda i: i.shield.regen) == [
         approx(8.333333), 0, approx(7.207592), approx(8.333333), approx(4.555334), 0, 0, 0]
 

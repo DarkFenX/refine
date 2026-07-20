@@ -124,6 +124,7 @@ pub struct FitStats {
     // Ship misc stats
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub drone_control_range: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub can_warp: Option<Vec<bool>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub can_jump_gate: Option<Vec<bool>> = None,

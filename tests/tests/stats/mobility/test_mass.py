@@ -36,11 +36,11 @@ def test_ship_affectors(client, consts):
         StatsOptionMass(affectors=consts.ApiCtlAffector.offline),
         StatsOptionMass(affectors=consts.ApiCtlAffector.deactivate),
         StatsOptionMass(affectors=consts.ApiCtlAffector.unmodified)]
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=(True, api_options)))
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mass=api_options))
     assert api_fleet_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mass=api_options))
     assert api_fit_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(mass=api_options))
     assert api_ship_stats.mass == [approx(175), approx(100), approx(125), approx(175)]
 
 

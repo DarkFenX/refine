@@ -49,13 +49,13 @@ def test_ship_dps_profiles(client, consts):
         StatsOptionErps(incoming_dps=(100, 100, -5, -25)),
         StatsOptionErps(incoming_dps=(0, 0, 0, 0)),
         StatsOptionErps(incoming_dps=(0, 0, 1, 1))]
-    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=(True, api_stat_options)))
+    api_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=api_stat_options))
     (api_fit_uniform,
      api_fit_default,
      api_fit_negative,
      api_fit_zero,
      api_fit_kin_exp) = api_fit_stats.erps
-    api_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=(True, api_stat_options)))
+    api_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=api_stat_options))
     (api_ship_uniform,
      api_ship_default,
      api_ship_negative,
@@ -134,7 +134,7 @@ def test_drone_dps_profiles(client, consts):
         StatsOptionErps(incoming_dps=(100, 100, -5, -25)),
         StatsOptionErps(incoming_dps=(0, 0, 0, 0)),
         StatsOptionErps(incoming_dps=(0, 0, 1, 1))]
-    api_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(erps=(True, api_stat_options)))
+    api_drone_stats = api_tgt_drone.get_stats(options=ItemStatsOptions(erps=api_stat_options))
     (api_drone_uniform,
      api_drone_default,
      api_drone_negative,
@@ -263,10 +263,10 @@ def test_shield_regen(client, consts):
         StatsOptionErps(shield_perc=0.25),
         StatsOptionErps(shield_perc=0.7),
         StatsOptionErps(shield_perc=1)]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(erps=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(erps=api_options))
     assert api_fit_stats.erps.map(lambda i: i.shield.regen) == [
         approx(31.746032), 0, approx(27.457494), approx(31.746032), approx(17.353654), 0]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(erps=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(erps=api_options))
     assert api_ship_stats.erps.map(lambda i: i.shield.regen) == [
         approx(31.746032), 0, approx(27.457494), approx(31.746032), approx(17.353654), 0]
 
@@ -303,52 +303,52 @@ def test_time(client, consts):
     api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeBurst())])))
+        erps=[StatsOptionErps(time_options=StatTimeBurst())]))
     assert api_tgt_fit_stats.erps.one() == [
         [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
         [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeBurst())])))
+        erps=[StatsOptionErps(time_options=StatTimeBurst())]))
     assert api_tgt_ship_stats.erps.one() == [
         [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
         [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
     # Sim without specified time - looped stats
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=None))])))
+        erps=[StatsOptionErps(time_options=StatTimeSim(time=None))]))
     assert api_tgt_fit_stats.erps.one() == [
         [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
         [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=None))])))
+        erps=[StatsOptionErps(time_options=StatTimeSim(time=None))]))
     assert api_tgt_ship_stats.erps.one() == [
         [approx(4444.444444), approx(1909.777778), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6956.521739), approx(2989.217391), ANY_VALUE, ANY_VALUE],
         [approx(5970.149254), approx(2565.373134), ANY_VALUE, ANY_VALUE]]
     # Sim with time before any of rep cycles complete
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=4))])))
+        erps=[StatsOptionErps(time_options=StatTimeSim(time=4))]))
     assert api_tgt_fit_stats.erps.one() == [
         [approx(12500), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [0, 0, ANY_VALUE, ANY_VALUE],
         [0, 0, ANY_VALUE, ANY_VALUE]]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=4))])))
+        erps=[StatsOptionErps(time_options=StatTimeSim(time=4))]))
     assert api_tgt_ship_stats.erps.one() == [
         [approx(12500), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [0, 0, ANY_VALUE, ANY_VALUE],
         [0, 0, ANY_VALUE, ANY_VALUE]]
     # Sim with time just after first rep cycle has completed for slowest items (some completed 2)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=12))])))
+        erps=[StatsOptionErps(time_options=StatTimeSim(time=12))]))
     assert api_tgt_fit_stats.erps.one() == [
         [approx(8333.333333), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6521.73913), approx(2491.014493), ANY_VALUE, ANY_VALUE],
         [approx(5597.014925), approx(2137.810945), ANY_VALUE, ANY_VALUE]]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        erps=(True, [StatsOptionErps(time_options=StatTimeSim(time=12))])))
+        erps=[StatsOptionErps(time_options=StatTimeSim(time=12))]))
     assert api_tgt_ship_stats.erps.one() == [
         [approx(8333.333333), approx(2387.222222), ANY_VALUE, ANY_VALUE, ANY_VALUE],
         [approx(6521.73913), approx(2491.014493), ANY_VALUE, ANY_VALUE],

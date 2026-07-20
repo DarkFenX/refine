@@ -53,13 +53,13 @@ def test_state(client, consts):
     assert api_fleet_stats.outgoing_nps.one() == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
-    api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)])))
+        StatsOptionItemOutNps(ignore_state=True)]))
     assert api_module_ship_stats.outgoing_nps == [0, approx(25)]
-    api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)])))
+        StatsOptionItemOutNps(ignore_state=True)]))
     assert api_module_struct_stats.outgoing_nps == [0, approx(120)]
     # Action
     api_module_ship.change_module(state=consts.ApiModuleState.active)
@@ -102,68 +102,68 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats (first cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeBurst())]))
     assert api_fleet_stats.outgoing_nps.one() == approx(145)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeBurst())])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeBurst())]))
     assert api_fit_stats.outgoing_nps.one() == approx(145)
     api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeBurst())])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeBurst())]))
     assert api_module_ship_stats.outgoing_nps.one() == approx(25)
     api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeBurst())])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeBurst())]))
     assert api_module_struct_stats.outgoing_nps.one() == approx(120)
     # Sim stats without time - loop stats are exposed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=None))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=None))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(145)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=None))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=None))]))
     assert api_fit_stats.outgoing_nps.one() == approx(145)
     api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=None))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=None))]))
     assert api_module_ship_stats.outgoing_nps.one() == approx(25)
     api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=None))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=None))]))
     assert api_module_struct_stats.outgoing_nps.one() == approx(120)
     # Sim with time 1 second after first cycle has started
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=1))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=1))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(2400)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=1))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=1))]))
     assert api_fit_stats.outgoing_nps.one() == approx(2400)
     api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=1))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=1))]))
     assert api_module_ship_stats.outgoing_nps.one() == approx(600)
     api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=1))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=1))]))
     assert api_module_struct_stats.outgoing_nps.one() == approx(1800)
     # Sim with time which is mid-cycle for both neuts
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=12))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=12))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(200)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=12))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=12))]))
     assert api_fit_stats.outgoing_nps.one() == approx(200)
     api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=12))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=12))]))
     assert api_module_ship_stats.outgoing_nps.one() == approx(50)
     api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=12))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=12))]))
     assert api_module_struct_stats.outgoing_nps.one() == approx(150)
     # Sim with time when both neuts are in 2nd cycle
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=25))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=25))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(192)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(time_options=StatTimeSim(time=25))])))
+        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=25))]))
     assert api_fit_stats.outgoing_nps.one() == approx(192)
     api_module_ship_stats = api_module_ship.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=25))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=25))]))
     assert api_module_ship_stats.outgoing_nps.one() == approx(48)
     api_module_struct_stats = api_module_struct.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(time_options=StatTimeSim(time=25))])))
+        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=25))]))
     assert api_module_struct_stats.outgoing_nps.one() == approx(144)
 
 
@@ -204,91 +204,91 @@ def test_range_and_cap_limit(client, consts):
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - target has high enough cap pool, so full strength is exposed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(50)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(50)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(25)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(25)
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - cap pool is lower than neut amount, so strength is reduced
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(41.666667)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(41.666667)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(20.833333)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(20.833333)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 30770, 0))
     # Verification - target now has high enough cap pool, considering amount is reduced by range
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(25)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(25)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(12.5)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(12.5)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 40770, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(3.125)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(3.125)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(1.5625)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(1.5625)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 50769, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(0.09769687)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(0.09769687)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(0.04884844)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(0.04884844)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 50771, 0))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == 0
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == 0
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == 0
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == 0
 
 
@@ -323,57 +323,57 @@ def test_application_and_cap_limit(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id, api_tgt_drone.id])
     # Verification - application against ship is limited by cap pool
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_fleet_stats.outgoing_nps == [approx(83.333333), approx(2.291667)]
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_fit_stats.outgoing_nps == [approx(83.333333), approx(2.291667)]
-    api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_module_proj_stats.outgoing_nps == [approx(41.666667), approx(1.145833)]
-    api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps == [approx(41.666667), approx(1.145833)]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
     # Verification - application vs ship now is limited by sig and not cap pool, and drone sig is
     # blown
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_fleet_stats.outgoing_nps == [approx(4.583333), approx(13.75)]
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_fit_stats.outgoing_nps == [approx(4.583333), approx(13.75)]
-    api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_module_proj_stats.outgoing_nps == [approx(2.291667), approx(6.875)]
-    api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(outgoing_nps=(True, [
+    api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id),
-        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
+        StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps == [approx(2.291667), approx(6.875)]
     # Action
     api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(2.291667)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(2.291667)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(1.145833)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_drone.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(1.145833)
 
 
@@ -407,31 +407,31 @@ def test_resist_and_cap_limit(client, consts):
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(33.333333)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(33.333333)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(16.666667)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(16.666667)
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_fleet_stats.outgoing_nps.one() == approx(20)
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=(True, [StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionFitOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_fit_stats.outgoing_nps.one() == approx(20)
     api_src_module_proj_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_proj_stats.outgoing_nps.one() == approx(10)
     api_src_module_nonproj_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        outgoing_nps=(True, [StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)])))
+        outgoing_nps=[StatsOptionItemOutNps(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_nonproj_stats.outgoing_nps.one() == approx(10)
 
 
@@ -452,15 +452,15 @@ def test_item_kind(client, consts):
     api_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
-    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=(True, [
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(),
         StatsOptionFitOutNps(item_kinds=StatNeutItemKinds(default=False, module=True)),
-        StatsOptionFitOutNps(item_kinds=StatNeutItemKinds(default=True, module=False))])))
+        StatsOptionFitOutNps(item_kinds=StatNeutItemKinds(default=True, module=False))]))
     assert api_fleet_stats.outgoing_nps == [approx(25), approx(25), 0]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=(True, [
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=[
         StatsOptionFitOutNps(),
         StatsOptionFitOutNps(item_kinds=StatNeutItemKinds(default=False, module=True)),
-        StatsOptionFitOutNps(item_kinds=StatNeutItemKinds(default=True, module=False))])))
+        StatsOptionFitOutNps(item_kinds=StatNeutItemKinds(default=True, module=False))]))
     assert api_fit_stats.outgoing_nps == [approx(25), approx(25), 0]
 
 

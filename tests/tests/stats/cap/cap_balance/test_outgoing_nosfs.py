@@ -106,9 +106,9 @@ def test_src_kind(client, consts):
         StatsOptionCapBalance(),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, nosfs=True)),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=True, nosfs=False))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=(True, api_options)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=api_options))
     assert api_fit_stats.cap_balance == [approx(12), approx(12), 0]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(cap_balance=api_options))
     assert api_ship_stats.cap_balance == [approx(12), approx(12), 0]
 
 
@@ -149,31 +149,31 @@ def test_projection_range_and_limit(client, consts):
     api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 20520, 0))
-    api_src_kinds = StatCapSrcKinds(default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))
+    api_src_kinds = StatCapSrcKinds(default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id))
     # Verification - gain limited by target ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_fit_stats.cap_balance.one() == approx(10)
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_ship_stats.cap_balance.one() == approx(10)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 30520, 0))
     # Verification - gain limited by range
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_fit_stats.cap_balance.one() == approx(6)
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_ship_stats.cap_balance.one() == approx(6)
     # Action
     api_src_ship.change_ship(type_id=eve_src_ship2_id)
     # Verification - gain limited by nosf carrier ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_fit_stats.cap_balance.one() == approx(5)
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_ship_stats.cap_balance.one() == approx(5)
 
 
@@ -209,31 +209,31 @@ def test_projection_resist_and_limit(client, consts):
     api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship1_id)
-    api_src_kinds = StatCapSrcKinds(default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))
+    api_src_kinds = StatCapSrcKinds(default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id))
     # Verification - gain limited by target ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_fit_stats.cap_balance.one() == approx(10)
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_ship_stats.cap_balance.one() == approx(10)
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship2_id)
     # Verification - gain limited by resisted nosf amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_fit_stats.cap_balance.one() == approx(4.8)
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_ship_stats.cap_balance.one() == approx(4.8)
     # Action
     api_src_ship.change_ship(type_id=eve_src_ship2_id)
     # Verification - gain limited by nosf carrier ship cap amount
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_fit_stats.cap_balance.one() == approx(3)
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(src_kinds=api_src_kinds)])))
+        cap_balance=[StatsOptionCapBalance(src_kinds=api_src_kinds)]))
     assert api_src_ship_stats.cap_balance.one() == approx(3)
 
 
@@ -264,31 +264,31 @@ def test_time(client, consts):
     assert api_ship_stats.cap_balance.one() == approx(12)
     # Burst stats - first cycle of the module
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeBurst())]))
     assert api_fit_stats.cap_balance.one() == approx(12)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeBurst())])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeBurst())]))
     assert api_ship_stats.cap_balance.one() == approx(12)
     # Sim without specified time - looped stats
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
     assert api_fit_stats.cap_balance.one() == approx(12)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=None))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
     assert api_ship_stats.cap_balance.one() == approx(12)
     # Sim with time at the end of nosf first cycle
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=9))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=9))]))
     assert api_fit_stats.cap_balance.one() == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=9))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=9))]))
     assert api_ship_stats.cap_balance.one() == 0
     # Sim with time just after first cycle was completed
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=11))]))
     assert api_fit_stats.cap_balance.one() == approx(10.909091)
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [StatsOptionCapBalance(time_options=StatTimeSim(time=11))])))
+        cap_balance=[StatsOptionCapBalance(time_options=StatTimeSim(time=11))]))
     assert api_ship_stats.cap_balance.one() == approx(10.909091)
 
 
@@ -321,20 +321,20 @@ def test_incorrect_projectee(client, consts):
     api_tmp.remove()
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
-    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(cap_balance=(True, [
+    api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(cap_balance=[
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-            default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tmp.id)))),
+            default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tmp.id))),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-            default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_nosf.id)))),
+            default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_nosf.id))),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-            default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id))))])))
+            default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))]))
     assert api_src_fit_stats.cap_balance == [None, None, approx(10)]
     api_src_ship_stats = api_src_ship.get_stats(options=ItemStatsOptions(
-        cap_balance=(True, [
+        cap_balance=[
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-                default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tmp.id)))),
+                default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tmp.id))),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-                default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_nosf.id)))),
+                default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_nosf.id))),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-                default=False, nosfs=(True, StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id))))])))
+                default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))]))
     assert api_src_ship_stats.cap_balance == [None, None, approx(10)]
