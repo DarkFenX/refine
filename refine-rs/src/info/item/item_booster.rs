@@ -24,7 +24,11 @@ pub struct BoosterInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub slot: Option<SlotIndex>,
     pub state: bool,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
     pub side_effects: Vec<(EffectId, SideEffectInfo)>,
     #[cfg_attr(
         feature = "serde",
