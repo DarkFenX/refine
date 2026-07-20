@@ -6,6 +6,7 @@ use crate::{
     },
 };
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct GetFleetStatsCmd {
     pub default: bool = true,
@@ -24,22 +25,22 @@ impl GetFleetStatsCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         let mut stats = FleetStats { .. };
         if let Some(options) = self.dmg.into_enabled(self.default) {
-            stats.dmg = Some(get_dmg_stats(core_fleet, options));
+            stats.dmg = get_dmg_stats(core_fleet, options);
         }
         if let Some(options) = self.mps.into_enabled(self.default) {
-            stats.mps = Some(get_mps_stats(core_fleet, options));
+            stats.mps = get_mps_stats(core_fleet, options);
         }
         if let Some(options) = self.outgoing_nps.into_enabled(self.default) {
-            stats.outgoing_nps = Some(get_outgoing_nps_stats(core_fleet, options));
+            stats.outgoing_nps = get_outgoing_nps_stats(core_fleet, options);
         }
         if let Some(options) = self.outgoing_cps.into_enabled(self.default) {
-            stats.outgoing_cps = Some(get_outgoing_cps_stats(core_fleet, options));
+            stats.outgoing_cps = get_outgoing_cps_stats(core_fleet, options);
         }
         if let Some(options) = self.outgoing_rps.into_enabled(self.default) {
-            stats.outgoing_rps = Some(get_outgoing_rps_stats(core_fleet, options));
+            stats.outgoing_rps = get_outgoing_rps_stats(core_fleet, options);
         }
         if let Some(options) = self.mass.into_enabled(self.default) {
-            stats.mass = Some(get_mass_stats(core_fleet, options));
+            stats.mass = get_mass_stats(core_fleet, options);
         }
         stats
     }

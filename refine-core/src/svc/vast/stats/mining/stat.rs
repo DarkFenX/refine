@@ -1,5 +1,6 @@
 use crate::{nd::NEffectMiningAmount, num::PValue};
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone, Default)]
 pub struct StatMining {
     pub ore: StatMiningEntry,
@@ -7,6 +8,7 @@ pub struct StatMining {
     pub gas: StatMiningEntry,
 }
 
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone, Default)]
 pub struct StatMiningEntry {
     pub yield_: PValue,

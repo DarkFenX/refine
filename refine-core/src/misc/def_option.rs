@@ -130,7 +130,7 @@ mod custom_serde {
                 DefOptionExtFormats::Simple(DefOption::Default) => Self::Default,
                 DefOptionExtFormats::Simple(DefOption::Disabled) => Self::Disabled,
                 DefOptionExtFormats::Simple(DefOption::Enabled) => Self::Enabled,
-                DefOptionExtFormats::Extension(data) => Self::EnabledExtended(data),
+                DefOptionExtFormats::Extended(data) => Self::EnabledExtended(data),
             })
         }
     }
@@ -139,6 +139,6 @@ mod custom_serde {
     #[serde(untagged)]
     enum DefOptionExtFormats<T> {
         Simple(DefOption),
-        Extension(T),
+        Extended(T),
     }
 }

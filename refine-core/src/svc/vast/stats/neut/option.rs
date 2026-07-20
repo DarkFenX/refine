@@ -1,12 +1,18 @@
 use crate::{misc::DefOption, nd::NEffectNeutKind, rd::REffect};
 
 /// Items which will be included in neut stats.
-#[derive(Copy, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Copy, Clone, Default)]
 pub struct StatNeutItemKinds {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub module: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub minion: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub bomb: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub side_effect: DefOption = DefOption::Default,
 }
 impl StatNeutItemKinds {

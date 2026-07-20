@@ -3,6 +3,11 @@ use crate::{
     num::PValue,
 };
 
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(tag = "mode", rename_all = "snake_case")
+)]
 #[derive(Copy, Clone)]
 pub enum StatTimeOptions {
     /// Burst value of parameter is considered, with ability to set some overrides.
@@ -17,6 +22,7 @@ const impl Default for StatTimeOptions {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatTimeOptionsBurst {
     /// Set spool parameters override in the stats request. If not set, uses on-item value or
@@ -24,6 +30,7 @@ pub struct StatTimeOptionsBurst {
     pub spool: Option<Spool> = None,
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatTimeOptionsSim {
     /// Time over which period stats will be considered. If not set or invalid, fetches stats over

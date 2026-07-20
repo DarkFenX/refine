@@ -1,18 +1,29 @@
 use crate::{misc::DefOption, nd::NEffectDmgKind, rd::REffect, ud::UItem};
 
 /// Items which will be included in damage stats.
-#[derive(Copy, Clone)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Copy, Clone, Default)]
 pub struct StatDmgItemKinds {
+    #[cfg_attr(feature = "serde", serde(default))]
     pub default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub turret: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub missile: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub breacher: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub vorton: DefOption = DefOption::Default,
     /// LR fighter bomb damage is triggered by this flag as well
+    #[cfg_attr(feature = "serde", serde(default))]
     pub bomb: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub smartbomb: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub superweapon: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub minion_mobile: DefOption = DefOption::Default,
+    #[cfg_attr(feature = "serde", serde(default))]
     pub minion_static: DefOption = DefOption::Default,
 }
 impl StatDmgItemKinds {
