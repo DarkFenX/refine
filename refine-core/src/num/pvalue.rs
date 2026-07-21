@@ -255,7 +255,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            f64::deserialize(deserializer).map(|value| PValue::from_f64_clamped(value))
+            f64::deserialize(deserializer).map(PValue::from_f64_clamped)
         }
     }
 }

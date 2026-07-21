@@ -14,7 +14,7 @@ pub struct Src<'r> {
 }
 impl<'r> Src<'r> {
     pub fn get_alias(&self) -> &SrcAlias {
-        &self.inner.get_alias()
+        self.inner.get_alias()
     }
 }
 

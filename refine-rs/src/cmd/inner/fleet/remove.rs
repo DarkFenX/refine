@@ -34,7 +34,8 @@ impl ICmdFleetRemoveFCtxBIds {
 impl ICmdFleetRemoveFCtxRIds {
     pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetRemoveFleetError> {
         let core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
-        Ok(self.ictx_cmd.execute(core_fleet))
+        self.ictx_cmd.execute(core_fleet);
+        Ok(())
     }
 }
 

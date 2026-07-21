@@ -118,7 +118,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            f64::deserialize(deserializer).map(|value| UnitInterval::from_f64_clamped(value))
+            f64::deserialize(deserializer).map(UnitInterval::from_f64_clamped)
         }
     }
 }

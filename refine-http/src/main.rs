@@ -31,7 +31,7 @@ async fn main() {
     let state = AppState::new(
         settings.server.standard_threads,
         settings.server.heavy_threads,
-        settings.cache.dir.into(),
+        settings.cache.dir,
     );
 
     // Cleanup task

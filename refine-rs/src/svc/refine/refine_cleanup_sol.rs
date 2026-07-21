@@ -13,7 +13,7 @@ impl Refine {
             .await
             .iter()
             .filter_map(|(sol_id, inner_sol)| match inner_sol.try_lock() {
-                Ok(sol) if sol.get_last_accessed() + sol_inact_limit < now => Some(sol_id.clone()),
+                Ok(sol) if sol.get_last_accessed() + sol_inact_limit < now => Some(*sol_id),
                 // If it's locked - it means it's being worked on, we don't touch that
                 _ => None,
             })

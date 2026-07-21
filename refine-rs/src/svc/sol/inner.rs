@@ -36,7 +36,7 @@ impl std::ops::Deref for SolOwnedMutexGuard {
         &self.guard
     }
 }
-impl<'m> std::ops::DerefMut for SolOwnedMutexGuard {
+impl std::ops::DerefMut for SolOwnedMutexGuard {
     fn deref_mut(&mut self) -> &mut Self::Target {
         &mut self.guard
     }

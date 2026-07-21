@@ -84,7 +84,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            u32::deserialize(deserializer).map(|value| CountNz::from_u32_clamped(value))
+            u32::deserialize(deserializer).map(CountNz::from_u32_clamped)
         }
     }
 }

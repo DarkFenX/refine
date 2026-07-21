@@ -80,7 +80,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            i32::deserialize(deserializer).map(|value| SkillLevel::from_i32_clamped(value))
+            i32::deserialize(deserializer).map(SkillLevel::from_i32_clamped)
         }
     }
 }

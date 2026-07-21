@@ -23,7 +23,7 @@ impl Refine {
 
 impl Src<'_> {
     pub async fn remove(self) -> Result<(), RemoveSrcError> {
-        self.refine.remove_src(&self.inner.get_alias()).await
+        self.refine.remove_src(self.inner.get_alias()).await
     }
 }
 

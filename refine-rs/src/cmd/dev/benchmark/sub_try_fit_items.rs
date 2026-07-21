@@ -25,7 +25,7 @@ impl DevBenchmarkTryFitItemsCmd {
 }
 impl From<DevBenchmarkTryFitItemsCmd> for DevBenchmarkCmd {
     fn from(sub_cmd: DevBenchmarkTryFitItemsCmd) -> Self {
-        DevBenchmarkCmd::TryFitItems(sub_cmd)
+        DevBenchmarkCmd::TryFitItems(Box::new(sub_cmd))
     }
 }
 

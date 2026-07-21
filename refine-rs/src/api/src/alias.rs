@@ -5,22 +5,22 @@ pub struct SrcAlias(String);
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl From<String> for SrcAlias {
-    fn from(value: String) -> Self {
-        Self(value)
+    fn from(string: String) -> Self {
+        Self(string)
     }
 }
 impl From<&str> for SrcAlias {
-    fn from(value: &str) -> Self {
-        Self(value.to_string())
+    fn from(str: &str) -> Self {
+        Self(str.to_string())
     }
 }
-impl Into<String> for SrcAlias {
-    fn into(self) -> String {
-        self.0
+impl From<SrcAlias> for String {
+    fn from(alias: SrcAlias) -> String {
+        alias.0
     }
 }
-impl Into<String> for &SrcAlias {
-    fn into(self) -> String {
-        self.0.clone()
+impl From<&SrcAlias> for String {
+    fn from(alias: &SrcAlias) -> String {
+        alias.0.clone()
     }
 }

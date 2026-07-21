@@ -3,22 +3,27 @@ use crate::SolarSystem;
 
 impl<'r> SolarSystem<'r> {
     /// Methods which execute solar system changes in a threadpool are split into three groups:
+    ///
     /// - safe/infallible methods guarantee that solar system will stay in consistent and expected
     ///   state even if underlying operations can produce errors. For example:
+    ///
     ///   - attempt to remove something that does not exist produces an error, but does not apply
     ///     any changes;
     ///   - attempt to mutate a module makes core library to unregister existing module from
     ///     services before realizing it cannot be mutated (because it already is mutated). In this
     ///     case, this specific operation is still considered safe, because core library has code
     ///     which restores state (register the module in services again).
+    ///
     ///   Note that for a command to be safe, solar system state does not have to be exactly equal
     ///   to what it was before command execution. Failed operations can increment ID counters, but
     ///   it since it does not affect anything but IDs of newly created entities, it is considered
     ///   safe.
+    ///
     /// - fallible methods have to back solar system up, and restore its state in case of failure.
     ///   Commands executed by those methods could have rollback code in case of errors, but it is
     ///   too hard to write, and is likely to become a source of bugs. Cloning is easier, and is
     ///   fast enough.
+    ///
     /// - rollback methods always back system up and restore it, regardless of results.
     pub(crate) async fn exec_standard_safe<F, R>(&mut self, func: F) -> R
     where

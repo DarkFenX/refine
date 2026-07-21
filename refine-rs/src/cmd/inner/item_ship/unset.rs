@@ -34,7 +34,8 @@ impl ICmdShipUnsetFCtxBIds {
 impl ICmdShipUnsetFCtxRIds {
     pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitUnsetShipError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit))
+        self.ictx_cmd.execute(&mut core_fit);
+        Ok(())
     }
 }
 

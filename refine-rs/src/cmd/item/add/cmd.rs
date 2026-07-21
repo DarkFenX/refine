@@ -38,21 +38,21 @@ pub enum AddItemEnumCmd {
 impl AddItemEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, AddItemEnumError> {
         match self {
-            Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Implant(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Module(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Service(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Skill(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_sol)?.into()),
-            Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_sol).into()),
+            Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Implant(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Module(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Rig(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Service(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Skill(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_sol)),
         }
     }
 }

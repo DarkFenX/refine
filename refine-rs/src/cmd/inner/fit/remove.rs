@@ -34,7 +34,8 @@ impl ICmdFitRemoveFCtxBIds {
 impl ICmdFitRemoveFCtxRIds {
     pub(in crate::cmd) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitRemoveFitError> {
         let core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(core_fit))
+        self.ictx_cmd.execute(core_fit);
+        Ok(())
     }
 }
 

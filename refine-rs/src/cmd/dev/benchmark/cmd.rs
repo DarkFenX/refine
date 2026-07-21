@@ -8,7 +8,7 @@ use crate::dev::{DevBenchmarkAttrCalcCmd, DevBenchmarkStatsCmd, DevBenchmarkTryF
 pub enum DevBenchmarkCmd {
     AttrCalc(DevBenchmarkAttrCalcCmd),
     Stats(DevBenchmarkStatsCmd),
-    TryFitItems(DevBenchmarkTryFitItemsCmd),
+    TryFitItems(Box<DevBenchmarkTryFitItemsCmd>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
