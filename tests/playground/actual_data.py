@@ -419,12 +419,12 @@ def test_stats(client, consts):
         api_tgt_fit_cmds.add_module(type_id=12068, rack=consts.ApiRack.mid, state=consts.ApiModuleState.active)
 
     api_src_fit_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dmg=(True, [StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]),
-        cap_balance=(True, [
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)],
+        cap_balance=[
             StatsOptionCapBalance(),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, regen=True, cap_injectors=True)),
-            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))]),
-        cap_sim=(True, [StatsOptionCapSim(cap_perc=1)])))
+            StatsOptionCapBalance(src_kinds=StatCapSrcKinds(default=False, consumers=True))],
+        cap_sim=[StatsOptionCapSim(cap_perc=1)]))
     print(api_src_fit_stats.dmg.one())  # ruff:ignore[print]
     print(api_src_fit_stats.cap_balance)  # ruff:ignore[print]
     print(api_src_fit_stats.cap_sim.one())  # ruff:ignore[print]
@@ -452,7 +452,7 @@ def test_playground(client, consts):
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(range=5, passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(range=5, passenger_fit_ids=[api_fit_psg.id])]))
     print(api_fit_stats.jump)  # ruff:ignore[print]
 
 
