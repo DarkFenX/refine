@@ -36,14 +36,14 @@ pub struct ItemStats {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub breach_resist: Option<Vec<UnitInterval>> = None,
     // Cap
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub cap_amount: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub cap_amount: StatResult<PValue, ItemStatError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub cap_balance: Option<Vec<Option<Value>>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub cap_sim: Option<Vec<Option<StatCapSim>>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub neut_resist: Option<Vec<UnitInterval>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub neut_resist: StatResult<UnitInterval, ItemStatError<!>, !> = StatResult::NotRequested,
     // Sensors
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub locks: Option<Vec<Count>> = None,

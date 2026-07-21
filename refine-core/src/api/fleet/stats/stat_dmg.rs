@@ -1,5 +1,5 @@
 use crate::{
-    api::{FleetMut, FleetStatAppliedError},
+    api::{FleetAppliedStatError, FleetMut},
     svc::{
         cycle::CseqMap,
         vast::{StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions},
@@ -23,7 +23,7 @@ impl<'s> FleetMut<'s> {
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, FleetStatAppliedError> {
+    ) -> Result<StatDmgApplied, FleetAppliedStatError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         Ok(self.sol.svc.get_stat_fits_dmg_applied(

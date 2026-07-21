@@ -1,4 +1,4 @@
-use super::fatal::StatError;
+use crate::svc::StatErrorFatality;
 
 pub enum StatResult<T, EO, EI> {
     NotRequested,
@@ -39,7 +39,7 @@ impl<T, E> StatResult<T, !, E> {
 impl<T, E> StatResult<T, E, E> {
     pub(crate) fn from_result_auto(result: Result<T, E>) -> Self
     where
-        E: StatError,
+        E: StatErrorFatality,
     {
         match result {
             Ok(stat) => Self::Result(vec![Ok(stat)]),

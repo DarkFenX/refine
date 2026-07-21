@@ -2,7 +2,7 @@ use crate::{
     PValue,
     stats::{
         FleetStats, StatDmg, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps,
+        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::FleetAppliedStatError,
     },
 };
 
@@ -53,102 +53,105 @@ impl GetFleetStatsCmd {
     }
 }
 
-fn get_dmg_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitDmg>) -> Vec<Option<StatDmg>> {
+fn get_dmg_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<StatOptionFitDmg>,
+) -> StatResult<StatDmg, !, FleetAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_dmg_applied(option.item_kinds, option.time_options, &projectee_item_id) {
-                    Ok(core_stat) => stats.push(Some(StatDmg::from_core_applied(core_stat))),
-                    Err(_) => stats.push(None),
-                };
+                let stat = core_fleet
+                    .get_stat_dmg_applied(option.item_kinds, option.time_options, &projectee_item_id)
+                    .map(StatDmg::from_core_applied);
+                stats.push(stat);
             }
             None => {
-                let core_stat = core_fleet.get_stat_dmg(option.item_kinds, option.time_options);
-                stats.push(Some(StatDmg::from_core(core_stat)));
+                let stat = StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time_options));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining>) -> Vec<StatMining> {
+fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining>) -> StatResult<StatMining, !, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         let stat = core_fleet.get_stat_mps(option.item_kinds, option.time_options, option.mission);
-        stats.push(stat);
+        stats.push(Ok(stat));
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_outgoing_nps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitOutNps>) -> Vec<Option<PValue>> {
+fn get_outgoing_nps_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<StatOptionFitOutNps>,
+) -> StatResult<PValue, !, FleetAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_outgoing_nps_applied(
+                let stat = core_fleet.get_stat_outgoing_nps_applied(
                     option.item_kinds,
                     option.time_options,
                     &projectee_item_id,
-                ) {
-                    Ok(stat) => stats.push(Some(stat)),
-                    Err(_) => stats.push(None),
-                }
+                );
+                stats.push(stat)
             }
             None => {
                 let stat = core_fleet.get_stat_outgoing_nps(option.item_kinds, option.time_options);
-                stats.push(Some(stat));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
 fn get_outgoing_rps_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<StatOptionFitOutRps>,
-) -> Vec<Option<StatOutReps>> {
+) -> StatResult<StatOutReps, !, FleetAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_outgoing_rps_applied(
+                let stat = core_fleet.get_stat_outgoing_rps_applied(
                     option.item_kinds,
                     option.time_options,
                     &projectee_item_id,
-                ) {
-                    Ok(stat) => stats.push(Some(stat)),
-                    Err(_) => stats.push(None),
-                }
+                );
+                stats.push(stat);
             }
             None => {
                 let stat = core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time_options);
-                stats.push(Some(stat));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_outgoing_cps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitOutCps>) -> Vec<Option<PValue>> {
+fn get_outgoing_cps_stats(
+    core_fleet: &mut rc::FleetMut,
+    options: Vec<StatOptionFitOutCps>,
+) -> StatResult<PValue, !, FleetAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fleet.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id) {
-                    Ok(stat) => stats.push(Some(stat)),
-                    Err(_) => stats.push(None),
-                }
+                let stat = core_fleet.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id);
+                stats.push(stat);
             }
             None => {
                 let stat = core_fleet.get_stat_outgoing_cps(option.time_options);
-                stats.push(Some(stat));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_mass_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionMass>) -> Vec<PValue> {
+fn get_mass_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionMass>) -> StatResult<PValue, !, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         let stat = core_fleet.get_stat_mass(option.affectors);
-        stats.push(stat);
+        stats.push(Ok(stat));
     }
-    stats
+    StatResult::Result(stats)
 }

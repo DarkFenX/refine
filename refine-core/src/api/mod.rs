@@ -2,7 +2,7 @@ pub use fit::{
     Fit, FitAppliedStatError, FitCharacterStatError, FitMut, FitShipAppliedStatError, FitShipStatError, GetFitError,
     RemoveFitRahIncomingDpsError, SetFitFleetError, UnsetFitFleetError,
 };
-pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, FleetStatAppliedError, GetFleetError};
+pub use fleet::{Fleet, FleetAddFitError, FleetAppliedStatError, FleetMut, FleetRemoveFitError, GetFleetError};
 pub use item::{
     Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, Autocharge,
     AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut, EffectiveMutation,

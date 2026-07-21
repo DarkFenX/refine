@@ -1,5 +1,5 @@
 use crate::{
-    api::{FleetMut, FleetStatAppliedError},
+    api::{FleetAppliedStatError, FleetMut},
     num::PValue,
     svc::{
         cycle::CseqMap,
@@ -29,7 +29,7 @@ impl<'s> FleetMut<'s> {
         item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<StatOutReps, FleetStatAppliedError> {
+    ) -> Result<StatOutReps, FleetAppliedStatError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         Ok(self.sol.svc.get_stat_fits_outgoing_rps(
@@ -55,7 +55,7 @@ impl<'s> FleetMut<'s> {
         &mut self,
         time_options: StatTimeOptions,
         projectee_item_id: &ItemId,
-    ) -> Result<PValue, FleetStatAppliedError> {
+    ) -> Result<PValue, FleetAppliedStatError> {
         let projectee_uid = self.get_stat_applied_projectee_uid(projectee_item_id)?;
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         Ok(self.sol.svc.get_stat_fits_outgoing_cps(

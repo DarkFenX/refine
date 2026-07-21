@@ -1,4 +1,4 @@
-pub use shared::FleetStatAppliedError;
+pub use shared::FleetAppliedStatError;
 
 mod shared;
 mod stat_dmg;

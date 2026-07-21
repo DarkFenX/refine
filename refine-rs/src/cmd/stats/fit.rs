@@ -270,7 +270,7 @@ impl GetFitStatsCmd {
         // Ship cap
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cap_amount.into_enabled(self.default) {
-            stats.cap_amount = core_fit.get_stat_cap_amount().ok().map(|v| vec![v]);
+            stats.cap_amount = StatResult::from_result_outer(core_fit.get_stat_cap_amount());
         }
         if let Some(options) = self.cap_balance.into_enabled(self.default) {
             stats.cap_balance = get_cap_balance_stats(core_fit, options);
@@ -279,7 +279,7 @@ impl GetFitStatsCmd {
             stats.cap_sim = get_cap_sim_stats(core_fit, options);
         }
         if self.neut_resist.into_enabled(self.default) {
-            stats.neut_resist = core_fit.get_stat_neut_resist().ok().map(|v| vec![v]);
+            stats.neut_resist = StatResult::from_result_outer(core_fit.get_stat_neut_resist());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship sensors

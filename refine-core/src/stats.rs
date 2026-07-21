@@ -13,7 +13,7 @@ pub mod err {
     pub use crate::{
         api::{
             FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
-            FleetStatAppliedError, ItemAppliedStatError, ItemStatError,
+            FleetAppliedStatError, ItemAppliedStatError, ItemStatError,
         },
         svc::vast::AgilityStatError,
     };
