@@ -5,7 +5,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        err::IntStatItemError,
+        err::IntItemStatError,
         vast::{
             StatTimeOptions, Vast, VastFitData,
             aggr::{
@@ -27,7 +27,7 @@ impl Vast {
         item_uid: UItemId,
         src_kinds: StatCapBlcSrcKindsInt,
         time_options: StatTimeOptions,
-    ) -> Result<Value, IntStatItemError<!>> {
+    ) -> Result<Value, IntItemStatError<!>> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         let mut balance = Value::ZERO;

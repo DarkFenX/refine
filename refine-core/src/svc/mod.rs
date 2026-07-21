@@ -1,7 +1,9 @@
 //! Solar system services - attribute & stats calculations, validation, and so on.
 
+pub(crate) use calc::Calc;
 pub(crate) use ctx::SvcCtx;
 pub(crate) use svc::Svc;
+use vast::Vast;
 
 mod api;
 pub(crate) mod calc;

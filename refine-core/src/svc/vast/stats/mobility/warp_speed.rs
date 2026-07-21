@@ -1,11 +1,6 @@
 use crate::{
-    num::{PValue, Value},
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        err::IntStatItemError,
-        vast::{Vast, stats::item_checks::check_fighter_ship_no_struct},
-    },
+    PValue, Value,
+    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_fighter_ship_no_struct},
     ud::UItemId,
 };
 
@@ -14,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntStatItemError<!>> {
+    ) -> Result<Option<PValue>, IntItemStatError<!>> {
         check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         let warp_speed = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_speed_mult, Value::ZERO);
         let warp_speed = match warp_speed > Value::FLOAT_TOLERANCE {

@@ -1,12 +1,6 @@
 use crate::{
-    num::PValue,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        err::IntStatItemError,
-        funcs,
-        vast::{Vast, stats::item_checks::check_drone_fighter_ship},
-    },
+    PValue,
+    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, funcs, vast::stats::item_checks::check_drone_fighter_ship},
     ud::UItemId,
 };
 
@@ -15,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, IntStatItemError<!>> {
+    ) -> Result<PValue, IntItemStatError<!>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(Self::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid))
     }

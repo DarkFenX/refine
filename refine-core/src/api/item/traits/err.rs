@@ -1,6 +1,6 @@
 use crate::{
     err::basic::{AttrFoundError, ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
-    svc::err::IntStatItemError,
+    svc::err::IntItemStatError,
     ud::{ProjecteeUidError, UItems},
 };
 
@@ -38,10 +38,10 @@ pub enum ItemStatError {
     UnsupportedStat(#[from] SupportedStatError),
 }
 impl ItemStatError {
-    pub(crate) fn from_svc_err(svc_err: IntStatItemError<!>, u_items: &UItems) -> Self {
+    pub(crate) fn from_svc_err(svc_err: IntItemStatError<!>, u_items: &UItems) -> Self {
         match svc_err {
-            IntStatItemError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
-            IntStatItemError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
+            IntItemStatError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
+            IntItemStatError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
         }
     }
 }
@@ -58,10 +58,10 @@ pub enum ItemAppliedStatError {
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 impl ItemAppliedStatError {
-    pub(super) fn from_svc_err(svc_err: IntStatItemError<!>, u_items: &UItems) -> Self {
+    pub(super) fn from_svc_err(svc_err: IntItemStatError<!>, u_items: &UItems) -> Self {
         match svc_err {
-            IntStatItemError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
-            IntStatItemError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
+            IntItemStatError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
+            IntItemStatError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
         }
     }
 }

@@ -5,7 +5,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::CseqMap,
-        err::IntStatItemError,
+        err::IntItemStatError,
         vast::{
             Vast,
             stats::{
@@ -31,7 +31,7 @@ impl Vast {
         optional_reloads: Option<OptionalReload>,
         stagger: &StatCapSimStaggerInt,
         nosf_projectee_item_uid: Option<UItemId>,
-    ) -> Result<StatCapSim, IntStatItemError<!>> {
+    ) -> Result<StatCapSim, IntItemStatError<!>> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let max_cap = Self::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
         let recharge_time_ms = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO);

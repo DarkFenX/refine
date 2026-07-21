@@ -2,7 +2,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,
-        err::IntStatItemError,
+        err::IntItemStatError,
         vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
     },
     ud::{UData, UFitId, UItemId},
@@ -54,7 +54,7 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         mission_ore: bool,
-    ) -> Result<StatMining, IntStatItemError<!>> {
+    ) -> Result<StatMining, IntItemStatError<!>> {
         Vast::get_stat_item_mps(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),

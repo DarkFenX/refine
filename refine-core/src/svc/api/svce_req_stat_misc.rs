@@ -1,6 +1,6 @@
 use crate::{
     num::PValue,
-    svc::{Svc, SvcCtx, err::IntStatItemError, vast::Vast},
+    svc::{Svc, SvcCtx, err::IntItemStatError, vast::Vast},
     ud::{UData, UItemId},
 };
 
@@ -9,14 +9,14 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntStatItemError<!>> {
+    ) -> Result<PValue, IntItemStatError<!>> {
         Vast::get_stat_item_drone_control_range(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_can_warp(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_warp(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
@@ -24,7 +24,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_jump_gate(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
@@ -32,7 +32,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_jump_wormhole(SvcCtx::new(u_data, &self.eff_projs), item_uid)
     }
@@ -40,7 +40,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_jump_drive(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
@@ -48,7 +48,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_dock_station(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
@@ -56,7 +56,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_dock_citadel(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
@@ -64,7 +64,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<bool, IntStatItemError<!>> {
+    ) -> Result<bool, IntItemStatError<!>> {
         self.vast
             .get_stat_item_can_tether(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }

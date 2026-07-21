@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,
-        err::IntStatItemError,
+        err::IntItemStatError,
         vast::{StatOutRepItemKinds, StatOutReps, StatTimeOptions, Vast},
     },
     ud::{UData, UFitId, UItemId},
@@ -55,7 +55,7 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> Result<StatOutReps, IntStatItemError<!>> {
+    ) -> Result<StatOutReps, IntItemStatError<!>> {
         Vast::get_stat_item_outgoing_rps(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
@@ -106,7 +106,7 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> Result<PValue, IntStatItemError<!>> {
+    ) -> Result<PValue, IntItemStatError<!>> {
         Vast::get_stat_item_outgoing_cps(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),

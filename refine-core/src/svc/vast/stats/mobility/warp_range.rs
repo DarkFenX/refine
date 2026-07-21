@@ -1,11 +1,6 @@
 use crate::{
-    num::{PValue, Value},
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        err::IntStatItemError,
-        vast::{Vast, stats::item_checks::check_ship_no_struct},
-    },
+    PValue, Value,
+    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_ship_no_struct},
     ud::UItemId,
 };
 
@@ -14,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntStatItemError<!>> {
+    ) -> Result<Option<PValue>, IntItemStatError<!>> {
         check_ship_no_struct(ctx.u_data, item_uid)?;
         let cap = Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
         let mass = Self::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);

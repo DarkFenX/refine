@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::CseqMap,
-        err::IntStatItemError,
+        err::IntItemStatError,
         vast::{
             StatHp, StatResistsLayer, Vast,
             stats::{item_checks::check_drone_fighter_ship, tank::shared::get_tanking_efficiency},
@@ -23,7 +23,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         incoming_dps: Option<DpsProfile>,
-    ) -> Result<StatEhp, IntStatItemError<!>> {
+    ) -> Result<StatEhp, IntItemStatError<!>> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let hp = self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item);
         let resists = Self::get_stat_item_resists_unchecked(ctx, calc, item_uid);
@@ -40,7 +40,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<StatEhp, IntStatItemError<!>> {
+    ) -> Result<StatEhp, IntItemStatError<!>> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let hp = self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item);
         let resists = Self::get_stat_item_resists_unchecked(ctx, calc, item_uid);

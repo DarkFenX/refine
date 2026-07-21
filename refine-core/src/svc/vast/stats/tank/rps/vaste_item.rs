@@ -7,7 +7,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CseqMap, CyclingOptions, GetMainDuration, get_item_cseq_map},
-        err::IntStatItemError,
+        err::IntItemStatError,
         vast::{
             StatTimeOptions, Vast,
             aggr::{
@@ -30,7 +30,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatRps, IntStatItemError<!>> {
+    ) -> Result<StatRps, IntItemStatError<!>> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(self.get_stat_item_rps_unchecked(reuse_cseq_map, ctx, calc, item_uid, item, time_options, shield_perc))
     }
