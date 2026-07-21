@@ -39,7 +39,6 @@ mod custom_serde {
         de::{Deserialize, Deserializer, Error, Visitor},
         ser::{Serialize, Serializer},
     };
-    use serde_with::de::{DeserializeAs, DeserializeAsWrap};
 
     use super::*;
 
@@ -111,24 +110,6 @@ mod custom_serde {
             deserializer.deserialize_option(VisitorState::<T> {
                 marker: std::marker::PhantomData,
             })
-        }
-    }
-
-    impl<'de, T, U> DeserializeAs<'de, TriStateField<T>> for TriStateField<U>
-    where
-        U: DeserializeAs<'de, T>,
-    {
-        fn deserialize_as<D>(deserializer: D) -> Result<TriStateField<T>, D::Error>
-        where
-            D: Deserializer<'de>,
-        {
-            Ok(
-                match TriStateField::<DeserializeAsWrap<T, U>>::deserialize(deserializer)? {
-                    TriStateField::Value(v) => TriStateField::Value(v.into_inner()),
-                    TriStateField::None => TriStateField::None,
-                    TriStateField::Absent => TriStateField::Absent,
-                },
-            )
         }
     }
 }
