@@ -8,7 +8,7 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcSrcKinds {
-    #[cfg_attr(feature = "serde", serde(default))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::src_default"))]
     pub default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
     pub regen: DefOptionExt<StatCapBlcRegen> = DefOptionExt::Default,
@@ -27,7 +27,7 @@ pub struct StatCapBlcSrcKinds {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcRegen {
-    #[cfg_attr(feature = "serde", serde(default = "cap_perc_default"))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::cap_perc_default"))]
     pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }
 
@@ -84,6 +84,14 @@ impl StatCapBlcNosfsOptionsInt {
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
-fn cap_perc_default() -> UnitInterval {
-    UnitInterval::from_f64_clamped(0.25)
+mod custom_serde {
+    use super::*;
+
+    pub(super) fn src_default() -> bool {
+        true
+    }
+
+    pub(super) fn cap_perc_default() -> UnitInterval {
+        UnitInterval::from_f64_clamped(0.25)
+    }
 }

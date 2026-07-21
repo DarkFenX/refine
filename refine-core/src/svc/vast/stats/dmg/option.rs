@@ -4,7 +4,7 @@ use crate::{misc::DefOption, nd::NEffectDmgKind, rd::REffect, ud::UItem};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatDmgItemKinds {
-    #[cfg_attr(feature = "serde", serde(default))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::kind_default"))]
     pub default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
     pub turret: DefOption = DefOption::Default,
@@ -56,5 +56,15 @@ impl StatDmgItemKinds {
             NEffectDmgKind::Smartbomb => self.smartbomb.is_enabled(self.default),
             NEffectDmgKind::Superweapon => self.superweapon.is_enabled(self.default),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    pub(super) fn kind_default() -> bool {
+        true
     }
 }

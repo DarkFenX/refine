@@ -23,7 +23,7 @@ pub struct ValOptionsSol {
 #[derive(Clone)]
 pub struct ValOptions {
     /// True to have all validations enabled by default, false to have them disabled.
-    #[cfg_attr(feature = "serde", serde(default))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::val_default"))]
     pub default: bool = true,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
@@ -578,4 +578,14 @@ impl ValOptionInt {
 
 pub(in crate::svc::vast) struct ValOptionEnabledInt {
     pub(in crate::svc::vast) kfs: RSet<UItemId>,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    pub(super) fn val_default() -> bool {
+        true
+    }
 }

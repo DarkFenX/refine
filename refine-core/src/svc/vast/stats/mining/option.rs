@@ -4,7 +4,7 @@ use crate::{misc::DefOption, ud::UItem};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatMiningItemKinds {
-    #[cfg_attr(feature = "serde", serde(default))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::kind_default"))]
     pub default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
     pub module: DefOption = DefOption::Default,
@@ -18,5 +18,15 @@ impl StatMiningItemKinds {
             UItem::Module(_) => self.module.is_enabled(self.default),
             _ => false,
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    pub(super) fn kind_default() -> bool {
+        true
     }
 }
