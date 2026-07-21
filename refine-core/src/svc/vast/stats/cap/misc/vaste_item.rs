@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        err::StatItemCheckError,
+        err::IntStatItemError,
         vast::{Vast, stats::item_checks::check_ship},
     },
     ud::UItemId,
@@ -14,7 +14,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, StatItemCheckError> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_ship(ctx.u_data, item_uid)?;
         Ok(Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid))
     }
@@ -30,7 +30,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<UnitInterval, StatItemCheckError> {
+    ) -> Result<UnitInterval, IntStatItemError<!>> {
         check_ship(ctx.u_data, item_uid)?;
         let neut_resist =
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().energy_warfare_resist, Value::ZERO);

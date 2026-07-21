@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        err::StatItemCheckError,
+        err::IntStatItemError,
         vast::{
             Vast,
             stats::item_checks::{check_character, check_fighter_ship_no_struct, check_ship_no_struct},
@@ -17,7 +17,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, StatItemCheckError> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_character(ctx.u_data, item_uid)?;
         let drone_control_range =
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().drone_control_distance, Value::ZERO);
@@ -28,7 +28,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let item = check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         // Warping is blocked by either of:
         // - standard warp scram status attribute (points, HIC scripted points)
@@ -63,7 +63,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Gating is blocked by either of:
         // - having aggro modules active
@@ -92,7 +92,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)
@@ -111,7 +111,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Jumping (with a jump drive) is blocked by either of:
         // - standard warp scram status attribute (points, HIC scripted points)
@@ -143,7 +143,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Station docking is blocked by either of:
         // - having any aggro effects active
@@ -167,7 +167,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Citadel docking is blocked by either of:
         // - having any aggro effects active
@@ -196,7 +196,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, StatItemCheckError> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Tether is blocked by either of:
         // - having any aggro effects active

@@ -10,7 +10,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        err::StatItemCheckError,
+        err::IntStatItemError,
         funcs,
         vast::{Vast, stats::item_checks::check_ship},
     },
@@ -25,7 +25,7 @@ impl Vast {
         item_uid: UItemId,
         range: StatJumpRange,
         psg_fit_uids: &[UFitId],
-    ) -> Result<Option<StatJump>, StatItemCheckError> {
+    ) -> Result<Option<StatJump>, IntStatItemError<!>> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         Ok(self.internal_get_stat_item_jump_unchecked(ctx, calc, item_uid, ship, range, psg_fit_uids))
     }

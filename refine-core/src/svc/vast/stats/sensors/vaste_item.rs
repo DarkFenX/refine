@@ -3,7 +3,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        err::StatItemCheckError,
+        err::IntStatItemError,
         vast::{
             StatSensors, StatSensorsKind, Vast,
             stats::item_checks::{check_drone_fighter_ship, check_fighter_ship, check_ship},
@@ -17,7 +17,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Count, StatItemCheckError> {
+    ) -> Result<Count, IntStatItemError<!>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let attr_consts = ctx.ac();
         let mut item_locks = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.max_locked_targets, Value::ZERO);
@@ -43,7 +43,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, StatItemCheckError> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_fighter_ship(ctx.u_data, item_uid)?;
         let lock_range = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().max_target_range, Value::ZERO);
         Ok(PValue::from_value_clamped(lock_range))
@@ -52,7 +52,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, StatItemCheckError> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_fighter_ship(ctx.u_data, item_uid)?;
         let scan_res = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().scan_resolution, Value::ZERO);
         Ok(PValue::from_value_clamped(scan_res))
@@ -61,7 +61,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<StatSensors, StatItemCheckError> {
+    ) -> Result<StatSensors, IntStatItemError<!>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(Self::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid))
     }
@@ -118,7 +118,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, StatItemCheckError> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_ship(ctx.u_data, item_uid)?;
         let dscan_range =
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().max_directional_scan_range, Value::ZERO) / Value::AU;
@@ -128,7 +128,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, StatItemCheckError> {
+    ) -> Result<Option<PValue>, IntStatItemError<!>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let sensor_str = Self::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid).strength;
         let sig_radius = Self::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid);

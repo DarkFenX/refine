@@ -1,0 +1,22 @@
+use crate::{
+    num::PValue,
+    svc::{
+        SvcCtx,
+        calc::Calc,
+        err::IntStatItemError,
+        funcs,
+        vast::{Vast, stats::item_checks::check_drone_fighter_ship_no_struct},
+    },
+    ud::UItemId,
+};
+
+impl Vast {
+    pub(in crate::svc) fn get_stat_item_speed(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+    ) -> Result<PValue, IntStatItemError<!>> {
+        check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
+        Ok(funcs::get_speed(ctx, calc, item_uid))
+    }
+}

@@ -6,7 +6,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        err::StatItemCheckError,
+        err::IntStatItemError,
         vast::{
             StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions, Vast,
             aggr::{SeqAccum, SeqInstanceAccumMax, aggr_proj_burst, aggr_proj_split, aggr_proj_time},
@@ -24,7 +24,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-    ) -> Result<StatDmg, StatItemCheckError> {
+    ) -> Result<StatDmg, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = BreacherAccum::new();
@@ -62,7 +62,7 @@ impl Vast {
         time_options: StatTimeOptions,
         include_charges: bool,
         projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, StatItemCheckError> {
+    ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
         let mut breacher_accum = AppliedBreacherAccum::new();
@@ -103,7 +103,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-    ) -> Result<(), StatItemCheckError> {
+    ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
@@ -203,7 +203,7 @@ impl Vast {
         time_options: StatTimeOptions,
         include_charges: bool,
         projectee_uid: UItemId,
-    ) -> Result<(), StatItemCheckError> {
+    ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {

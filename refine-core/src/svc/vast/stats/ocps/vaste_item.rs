@@ -4,7 +4,7 @@ use crate::{
         SvcCtx,
         calc::Calc,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        err::StatItemCheckError,
+        err::IntStatItemError,
         vast::{
             StatTimeOptions, Vast,
             aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
@@ -22,7 +22,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> Result<PValue, StatItemCheckError> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_drone_fighter_module(ctx.u_data, item_uid)?;
         let mut ocps = PValue::ZERO;
         let cycling_options = CyclingOptions::from_time_options(time_options);

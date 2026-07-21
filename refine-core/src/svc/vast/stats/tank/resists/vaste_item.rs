@@ -5,7 +5,7 @@ use crate::{
     svc::{
         SvcCtx,
         calc::Calc,
-        err::StatItemCheckError,
+        err::IntStatItemError,
         vast::{
             Vast,
             stats::item_checks::{check_drone_fighter_ship, check_ship},
@@ -19,7 +19,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<StatResists, StatItemCheckError> {
+    ) -> Result<StatResists, IntStatItemError<!>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(Self::get_stat_item_resists_unchecked(ctx, calc, item_uid))
     }
@@ -71,7 +71,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<UnitInterval, StatItemCheckError> {
+    ) -> Result<UnitInterval, IntStatItemError<!>> {
         check_ship(ctx.u_data, item_uid)?;
         let neut_resist =
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().breacher_pod_dmg_resist, Value::ZERO);
