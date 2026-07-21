@@ -3,7 +3,10 @@ use crate::{
     stats::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
         StatResource, StatResult, StatRps, StatSensors, StatSlot,
-        err::{AgilityStatError, FitAppliedStatError, FitShipAppliedStatError, FitShipStatError, ProbingSizeStatError},
+        err::{
+            AgilityStatError, FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
+            ProbingSizeStatError,
+        },
     },
 };
 
@@ -112,10 +115,10 @@ pub struct FitStats {
     pub agility: StatResult<PValue, FitShipStatError<AgilityStatError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub align_time: StatResult<PValue, FitShipStatError<AgilityStatError>, !> = StatResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub sig_radius: Option<Vec<PValue>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub mass: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub sig_radius: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub mass: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub warp_speed: Option<Vec<PValue>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
@@ -123,22 +126,22 @@ pub struct FitStats {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub jump: Option<Vec<StatJump>> = None,
     // Ship misc stats
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub drone_control_range: Option<Vec<PValue>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_warp: Option<Vec<bool>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_jump_gate: Option<Vec<bool>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_jump_wormhole: Option<Vec<bool>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_jump_drive: Option<Vec<bool>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_dock_station: Option<Vec<bool>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_dock_citadel: Option<Vec<bool>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub can_tether: Option<Vec<bool>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub drone_control_range: StatResult<PValue, FitCharacterStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_warp: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_jump_gate: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_jump_wormhole: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_jump_drive: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_dock_station: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_dock_citadel: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub can_tether: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

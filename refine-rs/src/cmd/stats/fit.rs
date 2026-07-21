@@ -320,7 +320,7 @@ impl GetFitStatsCmd {
             stats.align_time = StatResult::from_result_outer(core_fit.get_stat_align_time());
         }
         if self.sig_radius.into_enabled(self.default) {
-            stats.sig_radius = core_fit.get_stat_sig_radius().ok().map(|v| vec![v]);
+            stats.sig_radius = StatResult::from_result_outer(core_fit.get_stat_sig_radius());
         }
         if let Some(options) = self.mass.into_enabled(self.default) {
             stats.mass = get_mass_stats(core_fit, options);
@@ -338,28 +338,28 @@ impl GetFitStatsCmd {
         // Ship misc stats
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.into_enabled(self.default) {
-            stats.drone_control_range = core_fit.get_stat_drone_control_range().ok().map(|v| vec![v]);
+            stats.drone_control_range = StatResult::from_result_outer(core_fit.get_stat_drone_control_range());
         }
         if self.can_warp.into_enabled(self.default) {
-            stats.can_warp = core_fit.get_stat_can_warp().ok().map(|v| vec![v]);
+            stats.can_warp = StatResult::from_result_outer(core_fit.get_stat_can_warp());
         }
         if self.can_jump_gate.into_enabled(self.default) {
-            stats.can_jump_gate = core_fit.get_stat_can_jump_gate().ok().map(|v| vec![v]);
+            stats.can_jump_gate = StatResult::from_result_outer(core_fit.get_stat_can_jump_gate());
         }
         if self.can_jump_wormhole.into_enabled(self.default) {
-            stats.can_jump_wormhole = core_fit.get_stat_can_jump_wormhole().ok().map(|v| vec![v]);
+            stats.can_jump_wormhole = StatResult::from_result_outer(core_fit.get_stat_can_jump_wormhole());
         }
         if self.can_jump_drive.into_enabled(self.default) {
-            stats.can_jump_drive = core_fit.get_stat_can_jump_drive().ok().map(|v| vec![v]);
+            stats.can_jump_drive = StatResult::from_result_outer(core_fit.get_stat_can_jump_drive());
         }
         if self.can_dock_station.into_enabled(self.default) {
-            stats.can_dock_station = core_fit.get_stat_can_dock_station().ok().map(|v| vec![v]);
+            stats.can_dock_station = StatResult::from_result_outer(core_fit.get_stat_can_dock_station());
         }
         if self.can_dock_citadel.into_enabled(self.default) {
-            stats.can_dock_citadel = core_fit.get_stat_can_dock_citadel().ok().map(|v| vec![v]);
+            stats.can_dock_citadel = StatResult::from_result_outer(core_fit.get_stat_can_dock_citadel());
         }
         if self.can_tether.into_enabled(self.default) {
-            stats.can_tether = core_fit.get_stat_can_tether().ok().map(|v| vec![v]);
+            stats.can_tether = StatResult::from_result_outer(core_fit.get_stat_can_tether());
         }
         stats
     }
@@ -511,9 +511,9 @@ fn get_cap_balance_stats(
     for option in options.into_iter() {
         match core_fit.get_stat_cap_balance(&option.src_kinds, option.time_options) {
             Ok(stat) => stats.push(Ok(stat)),
-            Err(core_err) => match core_err.is_fatal() {
-                true => return StatResult::Error(core_err),
-                false => stats.push(Err(core_err)),
+            Err(err) => match err.is_fatal() {
+                true => return StatResult::Error(err),
+                false => stats.push(Err(err)),
             },
         }
     }
@@ -532,9 +532,9 @@ fn get_cap_sim_stats(
             option.nosf_projectee_item_id.as_ref(),
         ) {
             Ok(stat) => stats.push(Ok(stat)),
-            Err(core_err) => match core_err.is_fatal() {
-                true => return StatResult::Error(core_err),
-                false => stats.push(Err(core_err)),
+            Err(err) => match err.is_fatal() {
+                true => return StatResult::Error(err),
+                false => stats.push(Err(err)),
             },
         }
     }
@@ -561,15 +561,18 @@ fn get_incoming_jam_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_mass_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionMass>) -> Option<Vec<PValue>> {
+fn get_mass_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionMass>,
+) -> StatResult<PValue, FitShipStatError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_mass(option.affectors) {
-            Ok(stat) => stats.push(stat),
-            _ => return None,
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
 fn get_jump_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionJump>) -> Option<Vec<StatJump>> {
     let mut stats = Vec::with_capacity(options.len());
