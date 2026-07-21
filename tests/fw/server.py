@@ -34,8 +34,8 @@ def build_config(*, config_path: Path, port: int, log_dir: Path) -> ConfigInfo:
     contents = [
         '[server]',
         f'port = {port}',
-        'solsys_lifetime = 30',
-        'solsys_cleanup_interval = 5',
+        'sol_lifetime = 30',
+        'sol_cleanup_interval = 5',
         'standard_threads = 2',
         'heavy_threads = 4',
         '[log]',

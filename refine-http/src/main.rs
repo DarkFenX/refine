@@ -40,8 +40,8 @@ async fn main() {
         state_cleanup
             .get_refine()
             .setup_periodic_cleanup(
-                Duration::from_secs(settings.server.solsys_cleanup_interval),
-                Duration::from_secs(settings.server.solsys_lifetime),
+                Duration::from_secs(settings.server.sol_cleanup_interval),
+                Duration::from_secs(settings.server.sol_lifetime),
             )
             .await
     });

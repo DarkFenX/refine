@@ -15,8 +15,8 @@ impl Settings {
 #[derive(Debug, Deserialize)]
 pub(crate) struct SettingsServer {
     pub(crate) port: u16,
-    pub(crate) solsys_lifetime: u64,
-    pub(crate) solsys_cleanup_interval: u64,
+    pub(crate) sol_lifetime: u64,
+    pub(crate) sol_cleanup_interval: u64,
     pub(crate) standard_threads: usize,
     pub(crate) heavy_threads: usize,
 }
