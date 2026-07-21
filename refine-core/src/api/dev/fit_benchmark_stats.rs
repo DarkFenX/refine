@@ -2,13 +2,14 @@ use crate::{
     api::FitMut,
     misc::DpsProfile,
     num::{PValue, UnitInterval},
+    stats::{
+        StatCapBlcRegen, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds,
+        StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+    },
     svc::{
         cycle::CseqMap,
-        vast::{
-            StatCapBlcNosfsOptionsInt, StatCapBlcRegen, StatCapBlcSrcKindsInt, StatDmgItemKinds, StatJumpRange,
-            StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst,
-            StatTimeOptionsSim,
-        },
+        err::IntItemStatError,
+        vast::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt},
     },
     ud::ItemId,
 };
@@ -524,10 +525,10 @@ impl<'s> FitMut<'s> {
             self.sol.svc.get_stat_item_scan_res(&self.sol.u_data, ship_uid).unwrap();
             self.sol.svc.get_stat_item_sensors(&self.sol.u_data, ship_uid).unwrap();
             self.sol.svc.get_stat_dscan_range(&self.sol.u_data, ship_uid).unwrap();
-            self.sol
-                .svc
-                .get_stat_item_probing_size(&self.sol.u_data, ship_uid)
-                .unwrap();
+            match self.sol.svc.get_stat_item_probing_size(&self.sol.u_data, ship_uid) {
+                Ok(_) | Err(IntItemStatError::StatSpecific(_)) => (),
+                _ => panic!(),
+            }
             self.sol
                 .svc
                 .get_stat_item_incoming_jam(&mut reuse_cseq_map, &self.sol.u_data, ship_uid, time_burst)
@@ -544,28 +545,35 @@ impl<'s> FitMut<'s> {
             // Mobility
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             self.sol.svc.get_stat_item_speed(&self.sol.u_data, ship_uid).unwrap();
-            self.sol.svc.get_stat_item_agility(&self.sol.u_data, ship_uid).unwrap();
-            self.sol
-                .svc
-                .get_stat_item_align_time(&self.sol.u_data, ship_uid)
-                .unwrap();
+            match self.sol.svc.get_stat_item_agility(&self.sol.u_data, ship_uid) {
+                Ok(_) | Err(IntItemStatError::StatSpecific(_)) => (),
+                _ => panic!(),
+            };
+            match self.sol.svc.get_stat_item_align_time(&self.sol.u_data, ship_uid) {
+                Ok(_) | Err(IntItemStatError::StatSpecific(_)) => (),
+                _ => panic!(),
+            };
             self.sol
                 .svc
                 .get_stat_item_sig_radius(&self.sol.u_data, ship_uid)
                 .unwrap();
             self.sol.svc.get_stat_item_mass(&self.sol.u_data, ship_uid).unwrap();
-            self.sol
-                .svc
-                .get_stat_item_warp_speed(&self.sol.u_data, ship_uid)
-                .unwrap();
-            self.sol
-                .svc
-                .get_stat_item_max_warp_range(&self.sol.u_data, ship_uid)
-                .unwrap();
-            self.sol
+            match self.sol.svc.get_stat_item_warp_speed(&self.sol.u_data, ship_uid) {
+                Ok(_) | Err(IntItemStatError::StatSpecific(_)) => (),
+                _ => panic!(),
+            };
+            match self.sol.svc.get_stat_item_max_warp_range(&self.sol.u_data, ship_uid) {
+                Ok(_) | Err(IntItemStatError::StatSpecific(_)) => (),
+                _ => panic!(),
+            };
+            match self
+                .sol
                 .svc
                 .get_stat_item_jump(&self.sol.u_data, ship_uid, jump_range, &jump_passengers)
-                .unwrap();
+            {
+                Ok(_) | Err(IntItemStatError::StatSpecific(_)) => (),
+                _ => panic!(),
+            };
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Misc
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
