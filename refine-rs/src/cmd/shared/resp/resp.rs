@@ -2,13 +2,11 @@ use rc::ItemCommon;
 
 use crate::{FitId, FleetId, ItemId};
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
 pub enum CmdResp {
     AddedFleetId(AddedFleetIdResp),
     AddedFitId(AddedFitIdResp),
     AddedItemIds(AddedItemIdsResp),
     ChangedItemIds(ChangedItemIdsResp),
-    // TODO: this variant serializes into null in JSON, but NoData {} is ugly, write custom ser impl
     NoData,
 }
 impl CmdResp {
@@ -205,6 +203,36 @@ impl ChangedItemIdsResp {
     pub(in crate::cmd) fn from_core_charge(core_charge: rc::ChargeMut) -> Self {
         Self {
             charge_item_id: Some(core_charge.get_item_id()),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{Serialize, SerializeStruct, Serializer};
+
+    use super::*;
+
+    impl Serialize for CmdResp {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            match self {
+                Self::AddedFleetId(inner) => inner.serialize(serializer),
+                Self::AddedFitId(inner) => inner.serialize(serializer),
+                Self::AddedItemIds(inner) => inner.serialize(serializer),
+                Self::ChangedItemIds(inner) => inner.serialize(serializer),
+                // Command response has custom serialization implementation just for the NoData
+                // variant to be serialized as {} in JSON instead of null
+                Self::NoData => {
+                    let empty = serializer.serialize_struct("Empty", 0)?;
+                    empty.end()
+                }
+            }
         }
     }
 }
