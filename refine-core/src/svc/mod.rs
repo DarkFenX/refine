@@ -3,7 +3,6 @@
 pub(crate) use calc::Calc;
 pub(crate) use ctx::SvcCtx;
 pub(crate) use svc::Svc;
-pub use vast::AgilityStatError;
 use vast::Vast;
 
 mod api;

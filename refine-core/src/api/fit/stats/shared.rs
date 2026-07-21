@@ -4,6 +4,7 @@ use crate::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
     },
+    stats::err::StatError,
     ud::ProjecteeUidError,
 };
 
@@ -26,6 +27,9 @@ impl<'s> FitMut<'s> {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit errors
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(thiserror::Error, Debug)]
 pub enum FitAppliedStatError {
     #[error("{0}")]
@@ -33,6 +37,15 @@ pub enum FitAppliedStatError {
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
+impl StatError for FitAppliedStatError {
+    fn is_fatal(&self) -> bool {
+        match self {
+            Self::ProjecteeNotFound(_) => false,
+            Self::ProjecteeCantTakeProjs(_) => false,
+        }
+    }
+}
+// Conversions
 impl From<ProjecteeUidError> for FitAppliedStatError {
     fn from(uid_err: ProjecteeUidError) -> Self {
         match uid_err {
@@ -42,10 +55,13 @@ impl From<ProjecteeUidError> for FitAppliedStatError {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit ship errors
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(thiserror::Error, Debug)]
 pub enum FitShipStatError<SS>
 where
-    SS: std::error::Error,
+    SS: StatError,
 {
     #[error("{0}")]
     NoShip(#[from] FitHasShipError),
@@ -56,9 +72,23 @@ where
     #[error("{0}")]
     StatSpecific(#[source] SS),
 }
+impl<SS> StatError for FitShipStatError<SS>
+where
+    SS: StatError + 'static,
+{
+    fn is_fatal(&self) -> bool {
+        match self {
+            Self::NoShip(_) => true,
+            Self::ItemNotLoaded(_) => true,
+            Self::UnsupportedStat(_) => true,
+            Self::StatSpecific(stat_err) => stat_err.is_fatal(),
+        }
+    }
+}
+// Conversions
 impl<SS> From<ItemStatError<SS>> for FitShipStatError<SS>
 where
-    SS: std::error::Error,
+    SS: StatError,
 {
     fn from(item_err: ItemStatError<SS>) -> Self {
         match item_err {
@@ -72,7 +102,7 @@ where
 #[derive(thiserror::Error, Debug)]
 pub enum FitShipAppliedStatError<SS>
 where
-    SS: std::error::Error,
+    SS: StatError,
 {
     #[error("{0}")]
     NoShip(#[from] FitHasShipError),
@@ -87,9 +117,25 @@ where
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
+impl<SS> StatError for FitShipAppliedStatError<SS>
+where
+    SS: StatError + 'static,
+{
+    fn is_fatal(&self) -> bool {
+        match self {
+            Self::NoShip(_) => true,
+            Self::ItemNotLoaded(_) => true,
+            Self::UnsupportedStat(_) => true,
+            Self::StatSpecific(stat_err) => stat_err.is_fatal(),
+            Self::ProjecteeNotFound(_) => false,
+            Self::ProjecteeCantTakeProjs(_) => false,
+        }
+    }
+}
+// Conversions
 impl<SS> From<ItemAppliedStatError<SS>> for FitShipAppliedStatError<SS>
 where
-    SS: std::error::Error,
+    SS: StatError,
 {
     fn from(item_err: ItemAppliedStatError<SS>) -> Self {
         match item_err {
@@ -102,10 +148,13 @@ where
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit character errors
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(thiserror::Error, Debug)]
 pub enum FitCharacterStatError<SS>
 where
-    SS: std::error::Error,
+    SS: StatError,
 {
     #[error("{0}")]
     NoCharacter(#[from] FitHasCharacterError),
@@ -116,9 +165,23 @@ where
     #[error("{0}")]
     StatSpecific(#[source] SS),
 }
+impl<SS> StatError for FitCharacterStatError<SS>
+where
+    SS: StatError + 'static,
+{
+    fn is_fatal(&self) -> bool {
+        match self {
+            Self::NoCharacter(_) => true,
+            Self::ItemNotLoaded(_) => true,
+            Self::UnsupportedStat(_) => true,
+            Self::StatSpecific(stat_err) => stat_err.is_fatal(),
+        }
+    }
+}
+// Conversions
 impl<SS> From<ItemStatError<SS>> for FitCharacterStatError<SS>
 where
-    SS: std::error::Error,
+    SS: StatError,
 {
     fn from(item_err: ItemStatError<SS>) -> Self {
         match item_err {

@@ -1,7 +1,8 @@
 use crate::{
-    api::FleetMut,
+    FleetMut, ItemId,
     err::basic::{ItemFoundError, ItemReceiveProjError},
-    ud::{ItemId, UItemId},
+    stats::err::StatError,
+    ud::UItemId,
 };
 
 impl<'s> FleetMut<'s> {
@@ -22,10 +23,21 @@ impl<'s> FleetMut<'s> {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Error
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(thiserror::Error, Debug)]
 pub enum FleetStatAppliedError {
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
+}
+impl StatError for FleetStatAppliedError {
+    fn is_fatal(&self) -> bool {
+        match self {
+            Self::ProjecteeNotFound(_) => false,
+            Self::ProjecteeCantTakeProjs(_) => false,
+        }
+    }
 }
