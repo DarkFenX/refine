@@ -48,7 +48,7 @@ def test_ranges(client, consts):
      api_fit_jump_med,
      api_fit_jump_low,
      api_fit_jump_zero,
-     api_fit_jump_rounding) = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
+     api_fit_jump_rounding) = api_fit_main.get_stats(options=FitStatsOptions(jump=api_jump_options)).jump
     assert api_fit_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     with check_no_field():
         api_fit_jump_excessive.portals  # ruff:ignore[useless-expression]
@@ -65,7 +65,7 @@ def test_ranges(client, consts):
      api_ship_jump_med,
      api_ship_jump_low,
      api_ship_jump_zero,
-     api_ship_jump_rounding) = api_main_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
+     api_ship_jump_rounding) = api_main_ship.get_stats(options=ItemStatsOptions(jump=api_jump_options)).jump
     assert api_ship_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 147
     with check_no_field():
         api_ship_jump_excessive.portals  # ruff:ignore[useless-expression]
@@ -94,7 +94,7 @@ def test_ranges(client, consts):
      api_fit_jump_med,
      api_fit_jump_low,
      api_fit_jump_zero,
-     api_fit_jump_rounding) = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
+     api_fit_jump_rounding) = api_fit_main.get_stats(options=FitStatsOptions(jump=api_jump_options)).jump
     assert api_fit_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     with check_no_field():
         api_fit_jump_excessive.portals  # ruff:ignore[useless-expression]
@@ -111,7 +111,7 @@ def test_ranges(client, consts):
      api_ship_jump_med,
      api_ship_jump_low,
      api_ship_jump_zero,
-     api_ship_jump_rounding) = api_main_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
+     api_ship_jump_rounding) = api_main_ship.get_stats(options=ItemStatsOptions(jump=api_jump_options)).jump
     assert api_ship_jump_default.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 197
     with check_no_field():
         api_ship_jump_excessive.portals  # ruff:ignore[useless-expression]
@@ -168,22 +168,22 @@ def test_passenger_status(client, consts):
     api_fit_psg_not_loaded.set_ship(type_id=eve_psg_not_loaded_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[
+        jump=[StatsOptionJump(passenger_fit_ids=[
             api_fit_psg_enabled.id,
             api_fit_psg_disabled.id,
             api_fit_psg_not_set.id,
-            api_fit_psg_not_loaded.id])])))
+            api_fit_psg_not_loaded.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg_enabled.id] == 147
     assert api_fit_main_psgs[api_fit_psg_disabled.id] is None
     assert api_fit_main_psgs[api_fit_psg_not_set.id] is None
     assert api_fit_main_psgs[api_fit_psg_not_loaded.id] is None
     api_ship_main_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[
+        jump=[StatsOptionJump(passenger_fit_ids=[
             api_fit_psg_enabled.id,
             api_fit_psg_disabled.id,
             api_fit_psg_not_set.id,
-            api_fit_psg_not_loaded.id])])))
+            api_fit_psg_not_loaded.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg_enabled.id] == 147
     assert api_ship_main_psgs[api_fit_psg_disabled.id] is None
@@ -194,11 +194,11 @@ def test_passenger_status(client, consts):
     # Verification - when passenger flag is modified to value which enables it, fit is allowed to be
     # a passenger
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg_disabled.id] == 147
     api_ship_main_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg_disabled.id] == 147
 
@@ -253,11 +253,11 @@ def test_passenger_fuel_affectors(client, consts):
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
-    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_options)))
+    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [195, 147, 158, 195]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [195, 147, 158, 195]
@@ -269,11 +269,11 @@ def test_passenger_fuel_affectors(client, consts):
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
-    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_options)))
+    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [195, 147, 158, 195]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [195, 147, 158, 195]
@@ -285,11 +285,11 @@ def test_passenger_fuel_affectors(client, consts):
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
-    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_options)))
+    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [184, 147, 147, 184]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [184, 147, 147, 184]
@@ -301,11 +301,11 @@ def test_passenger_fuel_affectors(client, consts):
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.offline),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.deactivate),
         StatsOptionJump(passenger_fit_ids=[api_fit_psg.id], passenger_fuel_affectors=consts.ApiCtlAffector.unmodified)]
-    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=(True, api_options)))
+    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(jump=api_options))
     assert api_fit_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [147, 147, 147, 147]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_options)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=api_options))
     assert api_ship_stats.jump.map(
         lambda i: i.portals[api_portal.id].fuel_use_passengers[api_fit_psg.id],
     ) == [147, 147, 147, 147]
@@ -349,7 +349,7 @@ def test_multiple_portals(client, consts):
     api_fit_psg3.set_ship(type_id=eve_psg_ship3_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id, api_fit_psg3.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id, api_fit_psg3.id])]))
     api_fit_portal1_psg_stats = api_fit_stats.jump.one().portals[api_portal1.id].fuel_use_passengers
     assert api_fit_portal1_psg_stats[api_fit_psg1.id] == 147
     assert api_fit_portal1_psg_stats[api_fit_psg2.id] is None
@@ -359,7 +359,7 @@ def test_multiple_portals(client, consts):
     assert api_fit_portal2_psg_stats[api_fit_psg2.id] == 147
     assert api_fit_portal2_psg_stats[api_fit_psg3.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id, api_fit_psg3.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id, api_fit_psg3.id])]))
     api_ship_portal1_psg_stats = api_ship_stats.jump.one().portals[api_portal1.id].fuel_use_passengers
     assert api_ship_portal1_psg_stats[api_fit_psg1.id] == 147
     assert api_ship_portal1_psg_stats[api_fit_psg2.id] is None
@@ -405,12 +405,12 @@ def test_attr_portal_flag_values_portal(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification - no bridge without portal
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -418,12 +418,12 @@ def test_attr_portal_flag_values_portal(client, consts):
     api_portal = api_fit_main.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.online)
     # Verification - no bridge without active portal
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -431,48 +431,48 @@ def test_attr_portal_flag_values_portal(client, consts):
     api_portal.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal2_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal3_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal4_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal5_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -480,12 +480,12 @@ def test_attr_portal_flag_values_portal(client, consts):
     api_portal.change_module(type_id=eve_portal6_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -518,10 +518,10 @@ def test_attr_fuel_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 0
 
 
@@ -552,10 +552,10 @@ def test_attr_fuel_mult_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 0
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 0
 
 
@@ -599,65 +599,65 @@ def test_attr_psg_ref_rounding(client, consts):
     api_ship_psg = api_fit_psg.set_ship(type_id=eve_psg_ship1_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal2_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal3_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal4_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
     # Action
     api_portal.change_module(type_id=eve_portal5_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
     # Action
     api_portal.change_module(type_id=eve_portal6_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_module(type_id=eve_portal7_id)
     api_ship_psg.change_ship(type_id=eve_psg_ship2_id)
     # Verification - 0 means no reference in EVE terms, so passengers are accepted
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
 
 
@@ -689,10 +689,10 @@ def test_attr_psg_ref_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
 
 
@@ -727,46 +727,46 @@ def test_attr_psg_flag_values(client, consts):
     api_ship_psg = api_fit_psg.set_ship(type_id=eve_psg_ship1_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_ship_psg.change_ship(type_id=eve_psg_ship2_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_ship_psg.change_ship(type_id=eve_psg_ship3_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_ship_psg.change_ship(type_id=eve_psg_ship4_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_ship_psg.change_ship(type_id=eve_psg_ship5_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
 
 
@@ -797,10 +797,10 @@ def test_attr_psg_flag_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] is None
 
 
@@ -826,12 +826,12 @@ def test_ansiblex_state(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification - no bridging without portal service
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -839,12 +839,12 @@ def test_ansiblex_state(client, consts):
     api_portal = api_fit_main.add_service(type_id=eve_portal_id, state=consts.ApiServiceState.offline)
     # Verification - no bridging still, need to have it online
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -852,21 +852,21 @@ def test_ansiblex_state(client, consts):
     api_portal.change_service(state=consts.ApiServiceState.online)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers[api_fit_psg.id] == 147
     # Action
     api_portal.change_service(state=consts.ApiServiceState.offline)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
     with check_no_field():
         api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_jump_stats = api_ship_stats.jump.one()
     with check_no_field():
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
@@ -900,12 +900,12 @@ def test_ansiblex_mass_limit(client, consts):
     api_portal = api_fit_main.add_service(type_id=eve_portal_id, state=consts.ApiServiceState.online)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_fit_fuel_stat = api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_fit_fuel_stat[api_fit_psg1.id] == 147
     assert api_fit_fuel_stat[api_fit_psg2.id] is None
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_ship_fuel_stat = api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_ship_fuel_stat[api_fit_psg1.id] == 147
     assert api_ship_fuel_stat[api_fit_psg2.id] is None
@@ -940,12 +940,12 @@ def test_unexpected_fit(client, consts):
     api_fit_psg2.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_fit_psg_stats = api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_fit_psg_stats[api_fit_psg1.id] == 147
     assert api_fit_psg_stats[api_fit_psg2.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_ship_psg_stats = api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert api_ship_psg_stats[api_fit_psg1.id] == 147
     assert api_ship_psg_stats[api_fit_psg2.id] == 147
@@ -953,12 +953,12 @@ def test_unexpected_fit(client, consts):
     api_fit_psg1.remove()
     # Verification - removed fit should be ignored
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_fit_psg_stats = api_fit_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert len(api_fit_psg_stats) == 1
     assert api_fit_psg_stats[api_fit_psg2.id] == 147
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_ship_psg_stats = api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert len(api_ship_psg_stats) == 1
     assert api_ship_psg_stats[api_fit_psg2.id] == 147

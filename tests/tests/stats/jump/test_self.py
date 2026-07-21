@@ -30,7 +30,7 @@ def test_ship_ranges(client, consts):
      api_fit_jump_med,
      api_fit_jump_low,
      api_fit_jump_zero,
-     api_fit_jump_rounding) = api_fit.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
+     api_fit_jump_rounding) = api_fit.get_stats(options=FitStatsOptions(jump=api_jump_options)).jump
     assert api_fit_jump_default.self.fuel_use == approx(15000)
     with check_no_field():
         api_fit_jump_excessive.self  # ruff:ignore[useless-expression]
@@ -47,7 +47,7 @@ def test_ship_ranges(client, consts):
      api_ship_jump_med,
      api_ship_jump_low,
      api_ship_jump_zero,
-     api_ship_jump_rounding) = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
+     api_ship_jump_rounding) = api_ship.get_stats(options=ItemStatsOptions(jump=api_jump_options)).jump
     assert api_ship_jump_default.self.fuel_use == approx(15000)
     with check_no_field():
         api_ship_jump_excessive.self  # ruff:ignore[useless-expression]

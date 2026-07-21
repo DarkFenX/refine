@@ -36,7 +36,7 @@ def test_ranges(client, consts):
      api_fit_jump_med,
      api_fit_jump_low,
      api_fit_jump_zero,
-     api_fit_jump_rounding) = api_fit.get_stats(options=FitStatsOptions(jump=(True, api_jump_options))).jump
+     api_fit_jump_rounding) = api_fit.get_stats(options=FitStatsOptions(jump=api_jump_options)).jump
     assert api_fit_jump_default.conduit.fuel_use_self == 15000
     with check_no_field():
         api_fit_jump_excessive.conduit  # ruff:ignore[useless-expression]
@@ -53,7 +53,7 @@ def test_ranges(client, consts):
      api_ship_jump_med,
      api_ship_jump_low,
      api_ship_jump_zero,
-     api_ship_jump_rounding) = api_ship.get_stats(options=ItemStatsOptions(jump=(True, api_jump_options))).jump
+     api_ship_jump_rounding) = api_ship.get_stats(options=ItemStatsOptions(jump=api_jump_options)).jump
     assert api_ship_jump_default.conduit.fuel_use_self == 15000
     with check_no_field():
         api_ship_jump_excessive.conduit  # ruff:ignore[useless-expression]
@@ -109,22 +109,22 @@ def test_passenger_status(client, consts):
     api_fit_psg_not_loaded.set_ship(type_id=eve_psg_not_loaded_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[
+        jump=[StatsOptionJump(passenger_fit_ids=[
             api_fit_psg_enabled.id,
             api_fit_psg_disabled.id,
             api_fit_psg_not_set.id,
-            api_fit_psg_not_loaded.id])])))
+            api_fit_psg_not_loaded.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg_enabled.id] == 0
     assert api_fit_main_psgs[api_fit_psg_disabled.id] is None
     assert api_fit_main_psgs[api_fit_psg_not_set.id] is None
     assert api_fit_main_psgs[api_fit_psg_not_loaded.id] is None
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[
+        jump=[StatsOptionJump(passenger_fit_ids=[
             api_fit_psg_enabled.id,
             api_fit_psg_disabled.id,
             api_fit_psg_not_set.id,
-            api_fit_psg_not_loaded.id])])))
+            api_fit_psg_not_loaded.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg_enabled.id] == 0
     assert api_ship_main_psgs[api_fit_psg_disabled.id] is None
@@ -135,11 +135,11 @@ def test_passenger_status(client, consts):
     # Verification - when passenger flag is modified to value which enables it, fit is allowed to be
     # a passenger
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg_disabled.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg_disabled.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg_disabled.id] == 0
 
@@ -169,10 +169,10 @@ def test_attr_fuel_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_fit_main_stats.jump.one().conduit.fuel_use_self == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     assert api_ship_main_stats.jump.one().conduit.fuel_use_self == 0
 
 
@@ -505,66 +505,66 @@ def test_attr_psg_ref_rounding(client, consts):
     api_ship_psg = api_fit_psg.set_ship(type_id=eve_psg_ship1_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] == 0
     # Action
     api_ship_main.change_ship(type_id=eve_main_ship2_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] == 0
     # Action
     api_ship_main.change_ship(type_id=eve_main_ship3_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] == 0
     # Action
     api_ship_main.change_ship(type_id=eve_main_ship4_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] is None
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] is None
     # Action
     api_ship_main.change_ship(type_id=eve_main_ship5_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] is None
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] is None
     # Action
     api_ship_main.change_ship(type_id=eve_main_ship6_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] == 0
     # Action
@@ -572,11 +572,11 @@ def test_attr_psg_ref_rounding(client, consts):
     api_ship_psg.change_ship(type_id=eve_psg_ship2_id)
     # Verification - 0 means no reference in EVE terms, so passengers are accepted
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psg = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psg[api_fit_psg.id] == 0
 
@@ -606,11 +606,11 @@ def test_attr_psg_ref_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] == 0
 
@@ -644,55 +644,55 @@ def test_attr_psg_flag_values(client, consts):
     api_psg_ship = api_fit_psg.set_ship(type_id=eve_psg_ship1_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] == 0
     # Action
     api_psg_ship.change_ship(type_id=eve_psg_ship2_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] == 0
     # Action
     api_psg_ship.change_ship(type_id=eve_psg_ship3_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] == 0
     # Action
     api_psg_ship.change_ship(type_id=eve_psg_ship4_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] == 0
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] == 0
     # Action
     api_psg_ship.change_ship(type_id=eve_psg_ship5_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] is None
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] is None
 
@@ -722,11 +722,11 @@ def test_attr_psg_flag_absent(client, consts):
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_main_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_main_psgs = api_fit_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_main_psgs[api_fit_psg.id] is None
     api_ship_main_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_ship_main_psgs = api_ship_main_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_main_psgs[api_fit_psg.id] is None
 
@@ -759,12 +759,12 @@ def test_unexpected_fit(client, consts):
     api_fit_psg2.set_ship(type_id=eve_psg_ship_id)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_fit_psg_stats = api_fit_stats.jump.one().conduit.fuel_use_passengers
     assert api_fit_psg_stats[api_fit_psg1.id] == 0
     assert api_fit_psg_stats[api_fit_psg2.id] == 0
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_ship_psg_stats = api_ship_stats.jump.one().conduit.fuel_use_passengers
     assert api_ship_psg_stats[api_fit_psg1.id] == 0
     assert api_ship_psg_stats[api_fit_psg2.id] == 0
@@ -772,12 +772,12 @@ def test_unexpected_fit(client, consts):
     api_fit_psg1.remove()
     # Verification - removed fit should be ignored
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_fit_psg_stats = api_fit_stats.jump.one().conduit.fuel_use_passengers
     assert len(api_fit_psg_stats) == 1
     assert api_fit_psg_stats[api_fit_psg2.id] == 0
     api_ship_stats = api_ship_main.get_stats(options=ItemStatsOptions(
-        jump=(True, [StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])])))
+        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg1.id, api_fit_psg2.id])]))
     api_ship_psg_stats = api_ship_stats.jump.one().conduit.fuel_use_passengers
     assert len(api_ship_psg_stats) == 1
     assert api_ship_psg_stats[api_fit_psg2.id] == 0
