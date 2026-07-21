@@ -27,6 +27,7 @@ pub struct StatCapBlcSrcKinds {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct StatCapBlcRegen {
+    #[cfg_attr(feature = "serde", serde(default = "cap_perc_default"))]
     pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }
 
@@ -77,4 +78,12 @@ impl StatCapBlcNosfsOptionsInt {
             },
         })
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+fn cap_perc_default() -> UnitInterval {
+    UnitInterval::from_f64_clamped(0.25)
 }
