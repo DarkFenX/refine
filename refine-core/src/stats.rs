@@ -10,8 +10,11 @@ pub use crate::svc::vast::{
 };
 
 pub mod err {
-    pub use crate::api::{
-        FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError, FleetStatAppliedError,
-        ItemAppliedStatError, ItemStatError,
+    pub use crate::{
+        api::{
+            FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
+            FleetStatAppliedError, ItemAppliedStatError, ItemStatError,
+        },
+        svc::AgilityStatError,
     };
 }

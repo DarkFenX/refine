@@ -196,10 +196,10 @@ impl GetItemStatsCmd {
             stats.speed = core_item.get_stat_speed().into();
         }
         if self.agility.into_enabled(self.default) {
-            stats.agility = core_item.get_stat_agility().ok().flatten().map(|v| vec![v]);
+            stats.agility = core_item.get_stat_agility().ok().map(|v| vec![v]);
         }
         if self.align_time.into_enabled(self.default) {
-            stats.align_time = core_item.get_stat_align_time().ok().flatten().map(|v| vec![v]);
+            stats.align_time = core_item.get_stat_align_time().ok().map(|v| vec![v]);
         }
         if self.sig_radius.into_enabled(self.default) {
             stats.sig_radius = core_item.get_stat_sig_radius().ok().map(|v| vec![v]);
@@ -493,13 +493,13 @@ fn get_jump_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionJump>) -> 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn is_fatal(core_err: ItemStatError) -> bool {
+fn is_fatal(core_err: ItemStatError<!>) -> bool {
     match core_err {
         ItemStatError::ItemNotLoaded(_) | ItemStatError::UnsupportedStat(_) => true,
     }
 }
 
-fn is_fatal_app(core_err: ItemAppliedStatError) -> bool {
+fn is_fatal_app(core_err: ItemAppliedStatError<!>) -> bool {
     match core_err {
         ItemAppliedStatError::ItemNotLoaded(_) | ItemAppliedStatError::UnsupportedStat(_) => true,
         ItemAppliedStatError::ProjecteeNotFound(_) | ItemAppliedStatError::ProjecteeCantTakeProjs(_) => false,

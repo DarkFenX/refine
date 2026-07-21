@@ -43,61 +43,88 @@ impl From<ProjecteeUidError> for FitAppliedStatError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum FitShipStatError {
+pub enum FitShipStatError<SS>
+where
+    SS: std::error::Error,
+{
     #[error("{0}")]
     NoShip(#[from] FitHasShipError),
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error("{0}")]
     UnsupportedStat(#[from] SupportedStatError),
+    #[error("{0}")]
+    StatSpecific(#[source] SS),
 }
-impl From<ItemStatError> for FitShipStatError {
-    fn from(item_err: ItemStatError) -> Self {
+impl<SS> From<ItemStatError<SS>> for FitShipStatError<SS>
+where
+    SS: std::error::Error,
+{
+    fn from(item_err: ItemStatError<SS>) -> Self {
         match item_err {
-            ItemStatError::ItemNotLoaded(e) => e.into(),
-            ItemStatError::UnsupportedStat(e) => e.into(),
+            ItemStatError::ItemNotLoaded(err) => err.into(),
+            ItemStatError::UnsupportedStat(err) => err.into(),
+            ItemStatError::StatSpecific(err) => Self::StatSpecific(err),
         }
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum FitShipAppliedStatError {
+pub enum FitShipAppliedStatError<SS>
+where
+    SS: std::error::Error,
+{
     #[error("{0}")]
     NoShip(#[from] FitHasShipError),
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error("{0}")]
     UnsupportedStat(#[from] SupportedStatError),
+    #[error("{0}")]
+    StatSpecific(#[source] SS),
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
-impl From<ItemAppliedStatError> for FitShipAppliedStatError {
-    fn from(item_err: ItemAppliedStatError) -> Self {
+impl<SS> From<ItemAppliedStatError<SS>> for FitShipAppliedStatError<SS>
+where
+    SS: std::error::Error,
+{
+    fn from(item_err: ItemAppliedStatError<SS>) -> Self {
         match item_err {
-            ItemAppliedStatError::ItemNotLoaded(e) => e.into(),
-            ItemAppliedStatError::UnsupportedStat(e) => e.into(),
-            ItemAppliedStatError::ProjecteeNotFound(e) => e.into(),
-            ItemAppliedStatError::ProjecteeCantTakeProjs(e) => e.into(),
+            ItemAppliedStatError::ItemNotLoaded(err) => err.into(),
+            ItemAppliedStatError::UnsupportedStat(err) => err.into(),
+            ItemAppliedStatError::StatSpecific(err) => Self::StatSpecific(err),
+            ItemAppliedStatError::ProjecteeNotFound(err) => err.into(),
+            ItemAppliedStatError::ProjecteeCantTakeProjs(err) => err.into(),
         }
     }
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum FitCharacterStatError {
+pub enum FitCharacterStatError<SS>
+where
+    SS: std::error::Error,
+{
     #[error("{0}")]
     NoCharacter(#[from] FitHasCharacterError),
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error("{0}")]
     UnsupportedStat(#[from] SupportedStatError),
+    #[error("{0}")]
+    StatSpecific(#[source] SS),
 }
-impl From<ItemStatError> for FitCharacterStatError {
-    fn from(item_err: ItemStatError) -> Self {
+impl<SS> From<ItemStatError<SS>> for FitCharacterStatError<SS>
+where
+    SS: std::error::Error,
+{
+    fn from(item_err: ItemStatError<SS>) -> Self {
         match item_err {
-            ItemStatError::ItemNotLoaded(e) => e.into(),
-            ItemStatError::UnsupportedStat(e) => e.into(),
+            ItemStatError::ItemNotLoaded(err) => err.into(),
+            ItemStatError::UnsupportedStat(err) => err.into(),
+            ItemStatError::StatSpecific(err) => Self::StatSpecific(err),
         }
     }
 }

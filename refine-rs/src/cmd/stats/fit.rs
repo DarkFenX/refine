@@ -311,10 +311,10 @@ impl GetFitStatsCmd {
             stats.speed = core_fit.get_stat_speed().into();
         }
         if self.agility.into_enabled(self.default) {
-            stats.agility = core_fit.get_stat_agility().ok().flatten().map(|v| vec![v]);
+            stats.agility = core_fit.get_stat_agility().ok().map(|v| vec![v]);
         }
         if self.align_time.into_enabled(self.default) {
-            stats.align_time = core_fit.get_stat_align_time().ok().flatten().map(|v| vec![v]);
+            stats.align_time = core_fit.get_stat_align_time().ok().map(|v| vec![v]);
         }
         if self.sig_radius.into_enabled(self.default) {
             stats.sig_radius = core_fit.get_stat_sig_radius().ok().map(|v| vec![v]);
@@ -558,7 +558,7 @@ fn get_jump_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionJump>) -> Op
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn is_fatal_ship_app(core_err: FitShipAppliedStatError) -> bool {
+fn is_fatal_ship_app(core_err: FitShipAppliedStatError<!>) -> bool {
     match core_err {
         FitShipAppliedStatError::NoShip(_)
         | FitShipAppliedStatError::ItemNotLoaded(_)

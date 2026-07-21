@@ -7,14 +7,14 @@ pub(crate) struct UItemKindVsStatError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub(crate) enum IntItemStatError<CE>
+pub(crate) enum IntItemStatError<SS>
 where
-    CE: std::error::Error,
+    SS: std::error::Error,
 {
     #[error("{0}")]
     ItemNotLoaded(#[from] UItemLoadedError),
     #[error("{0}")]
     UnsupportedStat(#[from] UItemKindVsStatError),
     #[error("{0}")]
-    StatSpecific(CE),
+    StatSpecific(#[source] SS),
 }

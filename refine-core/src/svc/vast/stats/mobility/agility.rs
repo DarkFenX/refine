@@ -12,32 +12,44 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntItemStatError<!>> {
+    ) -> Result<PValue, IntItemStatError<AgilityStatError>> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
-        Ok(Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid))
+        Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid).map_err(IntItemStatError::StatSpecific)
     }
-    fn internal_get_stat_item_agility_unchecked(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
+    fn internal_get_stat_item_agility_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+    ) -> Result<PValue, AgilityStatError> {
         let attr_consts = ctx.ac();
         let agility = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.agility, Value::ZERO);
         let agility = match agility > Value::ZERO {
             true => PValue::from_value_unchecked(agility),
-            false => return None,
+            false => return Err(AgilityStatError::AgilityError(agility)),
         };
         let mass = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.mass, Value::ZERO);
         let mass = match mass > Value::ZERO {
             true => PValue::from_value_unchecked(mass),
-            false => return None,
+            false => return Err(AgilityStatError::MassError(mass)),
         };
-        Some(AGILITY_CONST * agility * mass)
+        Ok(AGILITY_CONST * agility * mass)
     }
     pub(in crate::svc) fn get_stat_item_align_time(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntItemStatError<!>> {
+    ) -> Result<PValue, IntItemStatError<AgilityStatError>> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
-        let agility = Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid);
-        let align_time = agility.map(PValue::ceil_tick);
-        Ok(align_time)
+        Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid)
+            .map(PValue::ceil_tick)
+            .map_err(IntItemStatError::StatSpecific)
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum AgilityStatError {
+    #[error("agility {0} should be > 0")]
+    AgilityError(Value),
+    #[error("mass {0} should be > 0")]
+    MassError(Value),
 }

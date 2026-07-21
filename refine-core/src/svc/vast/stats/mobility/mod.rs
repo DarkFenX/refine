@@ -1,3 +1,5 @@
+pub use agility::AgilityStatError;
+
 mod agility;
 mod mass;
 mod sig_radius;
