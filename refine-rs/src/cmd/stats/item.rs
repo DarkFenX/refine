@@ -196,10 +196,10 @@ impl GetItemStatsCmd {
             stats.speed = StatResult::from_result_outer(core_item.get_stat_speed());
         }
         if self.agility.into_enabled(self.default) {
-            stats.agility = core_item.get_stat_agility().ok().map(|v| vec![v]);
+            stats.agility = StatResult::from_result_outer(core_item.get_stat_agility());
         }
         if self.align_time.into_enabled(self.default) {
-            stats.align_time = core_item.get_stat_align_time().ok().map(|v| vec![v]);
+            stats.align_time = StatResult::from_result_outer(core_item.get_stat_align_time());
         }
         if self.sig_radius.into_enabled(self.default) {
             stats.sig_radius = core_item.get_stat_sig_radius().ok().map(|v| vec![v]);

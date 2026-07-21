@@ -151,9 +151,6 @@ pub struct GetFitStatsCmd {
 impl GetFitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
-        if self.cpu.into_enabled(self.default) {
-            stats.cpu = vec![core_fit.get_stat_cpu()]
-        }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit output stats
         ////////////////////////////////////////////////////////////////////////////////////////////
@@ -175,71 +172,75 @@ impl GetFitStatsCmd {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit resources
         ////////////////////////////////////////////////////////////////////////////////////////////
+        if self.cpu.into_enabled(self.default) {
+            stats.cpu = StatResult::from_stat(core_fit.get_stat_cpu());
+        }
         if self.powergrid.into_enabled(self.default) {
-            stats.powergrid = vec![core_fit.get_stat_powergrid()];
+            stats.powergrid = StatResult::from_stat(core_fit.get_stat_powergrid());
         }
         if self.calibration.into_enabled(self.default) {
-            stats.calibration = vec![core_fit.get_stat_calibration()];
+            stats.calibration = StatResult::from_stat(core_fit.get_stat_calibration());
         }
         if self.drone_bay_volume.into_enabled(self.default) {
-            stats.drone_bay_volume = vec![core_fit.get_stat_drone_bay_volume()];
+            stats.drone_bay_volume = StatResult::from_stat(core_fit.get_stat_drone_bay_volume());
         }
         if self.drone_bandwidth.into_enabled(self.default) {
-            stats.drone_bandwidth = vec![core_fit.get_stat_drone_bandwidth()];
+            stats.drone_bandwidth = StatResult::from_stat(core_fit.get_stat_drone_bandwidth());
         }
         if self.fighter_bay_volume.into_enabled(self.default) {
-            stats.fighter_bay_volume = vec![core_fit.get_stat_fighter_bay_volume()];
+            stats.fighter_bay_volume = StatResult::from_stat(core_fit.get_stat_fighter_bay_volume());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit slots
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.high_slots.into_enabled(self.default) {
-            stats.high_slots = vec![core_fit.get_stat_high_slots()];
+            stats.high_slots = StatResult::from_stat(core_fit.get_stat_high_slots());
         }
         if self.mid_slots.into_enabled(self.default) {
-            stats.mid_slots = vec![core_fit.get_stat_mid_slots()];
+            stats.mid_slots = StatResult::from_stat(core_fit.get_stat_mid_slots());
         }
         if self.low_slots.into_enabled(self.default) {
-            stats.low_slots = vec![core_fit.get_stat_low_slots()];
+            stats.low_slots = StatResult::from_stat(core_fit.get_stat_low_slots());
         }
         if self.turret_slots.into_enabled(self.default) {
-            stats.turret_slots = vec![core_fit.get_stat_turret_slots()];
+            stats.turret_slots = StatResult::from_stat(core_fit.get_stat_turret_slots());
         }
         if self.launcher_slots.into_enabled(self.default) {
-            stats.launcher_slots = vec![core_fit.get_stat_launcher_slots()];
+            stats.launcher_slots = StatResult::from_stat(core_fit.get_stat_launcher_slots());
         }
         if self.rig_slots.into_enabled(self.default) {
-            stats.rig_slots = vec![core_fit.get_stat_rig_slots()];
+            stats.rig_slots = StatResult::from_stat(core_fit.get_stat_rig_slots());
         }
         if self.service_slots.into_enabled(self.default) {
-            stats.service_slots = vec![core_fit.get_stat_service_slots()];
+            stats.service_slots = StatResult::from_stat(core_fit.get_stat_service_slots());
         }
         if self.subsystem_slots.into_enabled(self.default) {
-            stats.subsystem_slots = vec![core_fit.get_stat_subsystem_slots()];
+            stats.subsystem_slots = StatResult::from_stat(core_fit.get_stat_subsystem_slots());
         }
         if self.launched_drones.into_enabled(self.default) {
-            stats.launched_drones = vec![core_fit.get_stat_launched_drones()];
+            stats.launched_drones = StatResult::from_stat(core_fit.get_stat_launched_drones());
         }
         if self.launched_fighters.into_enabled(self.default) {
-            stats.launched_fighters = vec![core_fit.get_stat_launched_fighters()];
+            stats.launched_fighters = StatResult::from_stat(core_fit.get_stat_launched_fighters());
         }
         if self.launched_light_fighters.into_enabled(self.default) {
-            stats.launched_light_fighters = vec![core_fit.get_stat_launched_light_fighters()];
+            stats.launched_light_fighters = StatResult::from_stat(core_fit.get_stat_launched_light_fighters());
         }
         if self.launched_heavy_fighters.into_enabled(self.default) {
-            stats.launched_heavy_fighters = vec![core_fit.get_stat_launched_heavy_fighters()];
+            stats.launched_heavy_fighters = StatResult::from_stat(core_fit.get_stat_launched_heavy_fighters());
         }
         if self.launched_support_fighters.into_enabled(self.default) {
-            stats.launched_support_fighters = vec![core_fit.get_stat_launched_support_fighters()];
+            stats.launched_support_fighters = StatResult::from_stat(core_fit.get_stat_launched_support_fighters());
         }
         if self.launched_st_light_fighters.into_enabled(self.default) {
-            stats.launched_st_light_fighters = vec![core_fit.get_stat_launched_st_light_fighters()];
+            stats.launched_st_light_fighters = StatResult::from_stat(core_fit.get_stat_launched_st_light_fighters());
         }
         if self.launched_st_heavy_fighters.into_enabled(self.default) {
-            stats.launched_st_heavy_fighters = vec![core_fit.get_stat_launched_st_heavy_fighters()];
+            stats.launched_st_heavy_fighters = StatResult::from_stat(core_fit.get_stat_launched_st_heavy_fighters());
         }
         if self.launched_st_support_fighters.into_enabled(self.default) {
-            stats.launched_st_support_fighters = vec![core_fit.get_stat_launched_st_support_fighters()];
+            stats.launched_st_support_fighters =
+                StatResult::from_stat(core_fit.get_stat_launched_st_support_fighters());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship tank
@@ -311,10 +312,10 @@ impl GetFitStatsCmd {
             stats.speed = StatResult::from_result_outer(core_fit.get_stat_speed());
         }
         if self.agility.into_enabled(self.default) {
-            stats.agility = core_fit.get_stat_agility().ok().map(|v| vec![v]);
+            stats.agility = StatResult::from_result_outer(core_fit.get_stat_agility());
         }
         if self.align_time.into_enabled(self.default) {
-            stats.align_time = core_fit.get_stat_align_time().ok().map(|v| vec![v]);
+            stats.align_time = StatResult::from_result_outer(core_fit.get_stat_align_time());
         }
         if self.sig_radius.into_enabled(self.default) {
             stats.sig_radius = core_fit.get_stat_sig_radius().ok().map(|v| vec![v]);

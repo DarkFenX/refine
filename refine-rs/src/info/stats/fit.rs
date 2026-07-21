@@ -2,7 +2,8 @@ use crate::{
     Count, PValue, UnitInterval, Value,
     stats::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
-        StatResource, StatResult, StatRps, StatSensors, StatSlot, err::FitShipStatError,
+        StatResource, StatResult, StatRps, StatSensors, StatSlot,
+        err::{AgilityStatError, FitShipStatError},
     },
 };
 
@@ -20,51 +21,51 @@ pub struct FitStats {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub outgoing_cps: Vec<Option<PValue>> = Vec::new(),
     // Fit resources
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub cpu: Vec<StatResource> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub powergrid: Vec<StatResource> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub calibration: Vec<StatResource> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub drone_bay_volume: Vec<StatResource> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub drone_bandwidth: Vec<StatResource> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub fighter_bay_volume: Vec<StatResource> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub cpu: StatResult<StatResource, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub powergrid: StatResult<StatResource, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub calibration: StatResult<StatResource, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub drone_bay_volume: StatResult<StatResource, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub drone_bandwidth: StatResult<StatResource, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub fighter_bay_volume: StatResult<StatResource, !, !> = StatResult::NotRequested,
     // Fit slots
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub high_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub mid_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub low_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub turret_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launcher_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub rig_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub service_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub subsystem_slots: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_drones: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_fighters: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_light_fighters: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_heavy_fighters: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_support_fighters: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_st_light_fighters: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_st_heavy_fighters: Vec<StatSlot> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub launched_st_support_fighters: Vec<StatSlot> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub high_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub mid_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub low_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub turret_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launcher_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub rig_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub service_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub subsystem_slots: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_drones: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_light_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_heavy_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_support_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_st_light_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_st_heavy_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub launched_st_support_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
     // Ship tank
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub resists: Option<Vec<StatResists>> = None,
@@ -107,10 +108,10 @@ pub struct FitStats {
     // Ship mobility
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub speed: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub agility: Option<Vec<PValue>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub align_time: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub agility: StatResult<PValue, FitShipStatError<AgilityStatError>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub align_time: StatResult<PValue, FitShipStatError<AgilityStatError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub sig_radius: Option<Vec<PValue>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]

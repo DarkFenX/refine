@@ -2,7 +2,8 @@ pub use crate::{
     Count, PValue, UnitInterval, Value,
     stats::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
-        StatResult, StatRps, StatSensors, err::ItemStatError,
+        StatResult, StatRps, StatSensors,
+        err::{AgilityStatError, ItemStatError},
     },
 };
 
@@ -61,10 +62,10 @@ pub struct ItemStats {
     // Mobility
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub speed: StatResult<PValue, ItemStatError<!>, !> = StatResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub agility: Option<Vec<PValue>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub align_time: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub agility: StatResult<PValue, ItemStatError<AgilityStatError>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub align_time: StatResult<PValue, ItemStatError<AgilityStatError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub sig_radius: Option<Vec<PValue>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
