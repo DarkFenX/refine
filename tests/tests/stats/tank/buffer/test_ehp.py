@@ -30,13 +30,13 @@ def test_dps_profiles_ship(client, consts):
         StatsOptionEhp(incoming_dps=(100, 100, -5, -25)),
         StatsOptionEhp(incoming_dps=(0, 0, 0, 0)),
         StatsOptionEhp(incoming_dps=(0, 0, 1, 1))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_profiles)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=api_profiles))
     (api_fit_ehp_uniform,
      api_fit_ehp_default,
      api_fit_ehp_negative,
      api_fit_ehp_zero,
      api_fit_ehp_kin_exp) = api_fit_stats.ehp
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_profiles)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=api_profiles))
     (api_ship_ehp_uniform,
      api_ship_ehp_default,
      api_ship_ehp_negative,
@@ -190,7 +190,7 @@ def test_immunity(client, consts):
     api_ship = api_fit.set_ship(type_id=eve_ship1_id)
     # Verification
     api_profiles = [StatsOptionEhp(incoming_dps=(1, 0, 0, 0)), StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_profiles)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=api_profiles))
     api_fit_ehp_em, api_fit_ehp_uniform = api_fit_stats.ehp
     assert api_fit_ehp_em.shield == (approx(225), 0, 0, approx(1))
     assert api_fit_ehp_em.armor is None
@@ -198,7 +198,7 @@ def test_immunity(client, consts):
     assert api_fit_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
     assert api_fit_ehp_uniform.armor is None
     assert api_fit_ehp_uniform.hull == (approx(783.58209), 0, 0, approx(1.492537))
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_profiles)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=api_profiles))
     api_ship_ehp_em, api_ship_ehp_uniform = api_ship_stats.ehp
     assert api_ship_ehp_em.shield == (approx(225), 0, 0, approx(1))
     assert api_ship_ehp_em.armor is None
@@ -210,7 +210,7 @@ def test_immunity(client, consts):
     api_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_profiles = [StatsOptionEhp(incoming_dps=(1, 0, 0, 0)), StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_profiles)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=api_profiles))
     api_fit_ehp_em, api_fit_ehp_uniform = api_fit_stats.ehp
     assert api_fit_ehp_em.shield == (approx(225), 0, 0, approx(1))
     assert api_fit_ehp_em.armor is None
@@ -218,7 +218,7 @@ def test_immunity(client, consts):
     assert api_fit_ehp_uniform.shield == (approx(321.428571), 0, 0, approx(1.428571))
     assert api_fit_ehp_uniform.armor == (approx(1095.238095), 0, 0, approx(1.904762))
     assert api_fit_ehp_uniform.hull == (approx(783.58209), 0, 0, approx(1.492537))
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_profiles)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=api_profiles))
     api_ship_ehp_em, api_ship_ehp_uniform = api_ship_stats.ehp
     assert api_ship_ehp_em.shield == (approx(225), 0, 0, approx(1))
     assert api_ship_ehp_em.armor is None
@@ -439,13 +439,13 @@ def test_item_not_loaded(client, consts):
     api_fighter = api_fit.add_fighter(type_id=eve_item_id)
     # Verification
     api_dps_profiles = [StatsOptionEhp(incoming_dps=(1, 1, 1, 1))]
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=(True, api_dps_profiles)))
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(ehp=api_dps_profiles))
     assert api_fit_stats.ehp is None
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(ehp=api_dps_profiles))
     assert api_ship_stats.ehp is None
-    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(ehp=api_dps_profiles))
     assert api_drone_stats.ehp is None
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(ehp=(True, api_dps_profiles)))
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(ehp=api_dps_profiles))
     assert api_fighter_stats.ehp is None
 
 

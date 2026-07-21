@@ -201,7 +201,7 @@ def test_immunity(client, consts):
     api_module_rhr.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification
     api_profiles = [StatsOptionErps(incoming_dps=(1, 0, 0, 0)), StatsOptionErps(incoming_dps=(1, 1, 1, 1))]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=(True, api_profiles)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=api_profiles))
     api_fit_em, api_fit_uniform = api_tgt_fit_stats.erps
     assert api_fit_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(22.222222), approx(1)]
     assert api_fit_em.armor is None
@@ -210,7 +210,7 @@ def test_immunity(client, consts):
         approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(31.746032), approx(1.428571)]
     assert api_fit_uniform.armor is None
     assert api_fit_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=(True, api_profiles)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=api_profiles))
     api_ship_em, api_ship_uniform = api_tgt_ship_stats.erps
     assert api_ship_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(22.222222), approx(1)]
     assert api_ship_em.armor is None
@@ -223,7 +223,7 @@ def test_immunity(client, consts):
     api_tgt_ship.change_ship(type_id=eve_ship2_id)
     # Verification
     api_profiles = [StatsOptionErps(incoming_dps=(1, 0, 0, 0)), StatsOptionErps(incoming_dps=(1, 1, 1, 1))]
-    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=(True, api_profiles)))
+    api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(erps=api_profiles))
     api_fit_em, api_fit_uniform = api_tgt_fit_stats.erps
     assert api_fit_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(22.222222), approx(1)]
     assert api_fit_em.armor is None
@@ -232,7 +232,7 @@ def test_immunity(client, consts):
         approx(5714.285714), approx(2455.428571), approx(2455.428571), approx(31.746032), approx(1.428571)]
     assert api_fit_uniform.armor == [approx(7619.047619), approx(3273.904761), approx(3273.904761), approx(1.904762)]
     assert api_fit_uniform.hull == [approx(5970.149254), approx(2565.373134), approx(2565.373134), approx(1.492537)]
-    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=(True, api_profiles)))
+    api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(erps=api_profiles))
     api_ship_em, api_ship_uniform = api_tgt_ship_stats.erps
     assert api_ship_em.shield == [approx(4000), approx(1718.8), approx(1718.8), approx(22.222222), approx(1)]
     assert api_ship_em.armor is None
