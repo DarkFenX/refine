@@ -6,7 +6,7 @@ use crate::{
         ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
         StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{ItemAppliedStatError, ItemStatError},
     },
 };
@@ -193,7 +193,7 @@ impl GetItemStatsCmd {
         // Mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
-            stats.speed = core_item.get_stat_speed().into();
+            stats.speed = StatResult::from_result_outer(core_item.get_stat_speed());
         }
         if self.agility.into_enabled(self.default) {
             stats.agility = core_item.get_stat_agility().ok().map(|v| vec![v]);

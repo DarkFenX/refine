@@ -1,7 +1,6 @@
 use crate::{
     FleetMut, ItemId,
     err::basic::{ItemFoundError, ItemReceiveProjError},
-    stats::err::StatError,
     ud::UItemId,
 };
 
@@ -32,12 +31,4 @@ pub enum FleetStatAppliedError {
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
-}
-impl StatError for FleetStatAppliedError {
-    fn is_fatal(&self) -> bool {
-        match self {
-            Self::ProjecteeNotFound(_) => false,
-            Self::ProjecteeCantTakeProjs(_) => false,
-        }
-    }
 }

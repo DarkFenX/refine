@@ -1,6 +1,5 @@
 use crate::{
     PValue, Value,
-    stats::err::StatError,
     svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_drone_fighter_ship_no_struct},
     ud::UItemId,
 };
@@ -53,9 +52,4 @@ pub enum AgilityStatError {
     AgilityError(Value),
     #[error("mass {0} should be > 0")]
     MassError(Value),
-}
-impl StatError for AgilityStatError {
-    fn is_fatal(&self) -> bool {
-        true
-    }
 }

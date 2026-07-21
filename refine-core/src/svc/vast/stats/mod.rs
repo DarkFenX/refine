@@ -1,7 +1,6 @@
 pub use cap::{StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger};
 pub(crate) use cap::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
-pub use err_trait::StatError;
 pub use in_jam::StatInJam;
 pub use jump::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf};
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};

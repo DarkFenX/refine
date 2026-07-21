@@ -1,6 +1,5 @@
 use crate::{
     err::basic::{AttrFoundError, ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
-    stats::err::StatError,
     svc::err::IntItemStatError,
     ud::{ProjecteeUidError, UItems},
 };
@@ -37,7 +36,7 @@ pub enum IterItemModifiersError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemStatError<SS>
 where
-    SS: StatError,
+    SS: std::error::Error,
 {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
@@ -46,21 +45,10 @@ where
     #[error("{0}")]
     StatSpecific(#[source] SS),
 }
-impl<SS> StatError for ItemStatError<SS>
-where
-    SS: StatError + 'static,
-{
-    fn is_fatal(&self) -> bool {
-        match self {
-            Self::ItemNotLoaded(_) => true,
-            Self::UnsupportedStat(_) => true,
-            Self::StatSpecific(err) => err.is_fatal(),
-        }
-    }
-}
+// Conversions
 impl<SS> ItemStatError<SS>
 where
-    SS: StatError,
+    SS: std::error::Error,
 {
     pub(crate) fn from_svc_err(svc_err: IntItemStatError<SS>, u_items: &UItems) -> Self {
         match svc_err {
@@ -74,7 +62,7 @@ where
 #[derive(thiserror::Error, Debug)]
 pub enum ItemAppliedStatError<SS>
 where
-    SS: StatError,
+    SS: std::error::Error,
 {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
@@ -87,24 +75,10 @@ where
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
-impl<SS> StatError for ItemAppliedStatError<SS>
-where
-    SS: StatError + 'static,
-{
-    fn is_fatal(&self) -> bool {
-        match self {
-            Self::ItemNotLoaded(_) => true,
-            Self::UnsupportedStat(_) => true,
-            Self::StatSpecific(err) => err.is_fatal(),
-            Self::ProjecteeNotFound(_) => false,
-            Self::ProjecteeCantTakeProjs(_) => false,
-        }
-    }
-}
 // Conversions
 impl<SS> ItemAppliedStatError<SS>
 where
-    SS: StatError,
+    SS: std::error::Error,
 {
     pub(super) fn from_svc_err(svc_err: IntItemStatError<SS>, u_items: &UItems) -> Self {
         match svc_err {
@@ -116,7 +90,7 @@ where
 }
 impl<SS> From<ProjecteeUidError> for ItemAppliedStatError<SS>
 where
-    SS: StatError,
+    SS: std::error::Error,
 {
     fn from(uid_err: ProjecteeUidError) -> Self {
         match uid_err {

@@ -4,7 +4,7 @@ use crate::{
         FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatRps, err::FitShipAppliedStatError,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps, err::FitShipAppliedStatError,
     },
 };
 
@@ -308,7 +308,7 @@ impl GetFitStatsCmd {
         // Ship mobility
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
-            stats.speed = core_fit.get_stat_speed().into();
+            stats.speed = StatResult::from_result_outer(core_fit.get_stat_speed());
         }
         if self.agility.into_enabled(self.default) {
             stats.agility = core_fit.get_stat_agility().ok().map(|v| vec![v]);

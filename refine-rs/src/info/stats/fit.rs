@@ -106,7 +106,7 @@ pub struct FitStats {
     pub incoming_jam: Option<Vec<StatInJam>> = None,
     // Ship mobility
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub speed: StatResult<PValue, FitShipStatError<!>> = StatResult::NotRequested,
+    pub speed: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub agility: Option<Vec<PValue>> = None,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]

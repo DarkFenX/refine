@@ -15,6 +15,6 @@ pub mod err {
             FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
             FleetStatAppliedError, ItemAppliedStatError, ItemStatError,
         },
-        svc::vast::{AgilityStatError, StatError},
+        svc::vast::AgilityStatError,
     };
 }
