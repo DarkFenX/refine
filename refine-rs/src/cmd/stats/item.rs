@@ -208,10 +208,10 @@ impl GetItemStatsCmd {
             stats.mass = get_mass_stats(core_item, options);
         }
         if self.warp_speed.into_enabled(self.default) {
-            stats.warp_speed = core_item.get_stat_warp_speed().ok().flatten().map(|v| vec![v]);
+            stats.warp_speed = core_item.get_stat_warp_speed().ok().map(|v| vec![v]);
         }
         if self.max_warp_range.into_enabled(self.default) {
-            stats.max_warp_range = core_item.get_stat_max_warp_range().ok().flatten().map(|v| vec![v]);
+            stats.max_warp_range = core_item.get_stat_max_warp_range().ok().map(|v| vec![v]);
         }
         if let Some(options) = self.jump.into_enabled(self.default) {
             stats.jump = get_jump_stats(core_item, options);

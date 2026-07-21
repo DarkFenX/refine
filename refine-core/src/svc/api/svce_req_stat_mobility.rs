@@ -1,6 +1,9 @@
 use crate::{
     PValue,
-    stats::{StatJump, StatJumpRange, err::AgilityStatError},
+    stats::{
+        StatJump, StatJumpRange,
+        err::{AgilityStatError, MaxWarpRangeStatError, WarpSpeedStatError},
+    },
     svc::{Svc, SvcCtx, Vast, err::IntItemStatError},
     ud::{UData, UFitId, UItemId},
 };
@@ -45,14 +48,14 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntItemStatError<!>> {
+    ) -> Result<PValue, IntItemStatError<WarpSpeedStatError>> {
         Vast::get_stat_item_warp_speed(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_max_warp_range(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntItemStatError<!>> {
+    ) -> Result<PValue, IntItemStatError<MaxWarpRangeStatError>> {
         Vast::get_stat_item_max_warp_range(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_jump(

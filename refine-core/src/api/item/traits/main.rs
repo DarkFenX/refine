@@ -13,7 +13,10 @@ use crate::{
         StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg, StatDmgApplied, StatEhp, StatErps, StatHp,
         StatInJam, StatJump, StatJumpRange, StatMining, StatOutReps, StatResists, StatRps, StatSensors,
         StatTimeOptions,
-        err::{AgilityStatError, ItemAppliedStatError, ItemStatError, ProbingSizeStatError},
+        err::{
+            AgilityStatError, ItemAppliedStatError, ItemStatError, MaxWarpRangeStatError, ProbingSizeStatError,
+            WarpSpeedStatError,
+        },
     },
     svc::{
         cycle::CseqMap,
@@ -554,14 +557,14 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
         result
     }
-    fn get_stat_warp_speed(&mut self) -> Result<Option<PValue>, ItemStatError<!>> {
+    fn get_stat_warp_speed(&mut self) -> Result<PValue, ItemStatError<WarpSpeedStatError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_warp_speed(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_max_warp_range(&mut self) -> Result<Option<PValue>, ItemStatError<!>> {
+    fn get_stat_max_warp_range(&mut self) -> Result<PValue, ItemStatError<MaxWarpRangeStatError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc

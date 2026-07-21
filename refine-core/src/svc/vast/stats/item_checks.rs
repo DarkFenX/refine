@@ -26,7 +26,10 @@ pub(super) fn check_ship(u_data: &UData, item_uid: UItemId) -> Result<&UShip, In
     }
 }
 
-pub(super) fn check_ship_no_struct(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntItemStatError<!>> {
+pub(super) fn check_ship_no_struct<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntItemStatError<SS>>
+where
+    SS: std::error::Error,
+{
     let item = u_data.items.get(item_uid);
     let ship = match item {
         UItem::Ship(ship) => match ship.get_ship_kind() {
@@ -54,7 +57,13 @@ pub(super) fn check_fighter_ship(u_data: &UData, item_uid: UItemId) -> Result<()
     }
 }
 
-pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_uid: UItemId) -> Result<&UItem, IntItemStatError<!>> {
+pub(super) fn check_fighter_ship_no_struct<SS>(
+    u_data: &UData,
+    item_uid: UItemId,
+) -> Result<&UItem, IntItemStatError<SS>>
+where
+    SS: std::error::Error,
+{
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Fighter(fighter) => fighter.is_loaded(),

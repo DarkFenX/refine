@@ -326,10 +326,10 @@ impl GetFitStatsCmd {
             stats.mass = get_mass_stats(core_fit, options);
         }
         if self.warp_speed.into_enabled(self.default) {
-            stats.warp_speed = core_fit.get_stat_warp_speed().ok().flatten().map(|v| vec![v]);
+            stats.warp_speed = StatResult::from_result_outer(core_fit.get_stat_warp_speed());
         }
         if self.max_warp_range.into_enabled(self.default) {
-            stats.max_warp_range = core_fit.get_stat_max_warp_range().ok().flatten().map(|v| vec![v]);
+            stats.max_warp_range = StatResult::from_result_outer(core_fit.get_stat_max_warp_range());
         }
         if let Some(options) = self.jump.into_enabled(self.default) {
             stats.jump = get_jump_stats(core_fit, options);

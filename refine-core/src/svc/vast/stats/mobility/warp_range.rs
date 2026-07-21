@@ -9,21 +9,44 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntItemStatError<!>> {
+    ) -> Result<PValue, IntItemStatError<MaxWarpRangeStatError>> {
         check_ship_no_struct(ctx.u_data, item_uid)?;
+        Self::internal_get_stat_item_max_warp_range_unchecked(ctx, calc, item_uid)
+            .map_err(IntItemStatError::StatSpecific)
+    }
+    fn internal_get_stat_item_max_warp_range_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+    ) -> Result<PValue, MaxWarpRangeStatError> {
         let cap = Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid);
-        let mass = Self::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);
         let cap_need = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
             ctx,
             item_uid,
             ctx.ac().warp_capacitor_need,
             Value::ZERO,
         ));
-        let warp_range = cap / mass / cap_need;
-        let warp_range = match warp_range.is_finite() && warp_range > PValue::FLOAT_TOLERANCE {
-            true => Some(warp_range),
-            false => None,
-        };
+        let mass = Self::internal_get_stat_item_mass_unchecked(ctx, calc, item_uid);
+        let warp_range = cap / cap_need / mass;
+        if !warp_range.is_finite() {
+            if cap_need == PValue::ZERO {
+                return Err(MaxWarpRangeStatError::CapNeedError(cap_need));
+            }
+            return Err(MaxWarpRangeStatError::MassError(mass));
+        }
+        if warp_range < PValue::FLOAT_TOLERANCE {
+            return Err(MaxWarpRangeStatError::CapAmountError(cap));
+        }
         Ok(warp_range)
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum MaxWarpRangeStatError {
+    #[error("capacitor capacity should be > 0, but is {0}")]
+    CapAmountError(PValue),
+    #[error("warp capacitor need should be > 0, but is {0}")]
+    CapNeedError(PValue),
+    #[error("mass should be > 0, but is {0}")]
+    MassError(PValue),
 }

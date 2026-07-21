@@ -11,16 +11,19 @@ impl Vast {
         item_uid: UItemId,
     ) -> Result<PValue, IntItemStatError<ProbingSizeStatError>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
+        Self::internal_get_stat_item_probing_size_unchecked(ctx, calc, item_uid).map_err(IntItemStatError::StatSpecific)
+    }
+    fn internal_get_stat_item_probing_size_unchecked(
+        ctx: SvcCtx,
+        calc: &mut Calc,
+        item_uid: UItemId,
+    ) -> Result<PValue, ProbingSizeStatError> {
         let sensor_str = Self::internal_get_stat_item_sensors_unchecked(ctx, calc, item_uid).strength;
         let sig_radius = Self::internal_get_stat_item_sig_radius_unchecked(ctx, calc, item_uid);
         let ratio = sig_radius / sensor_str;
         let probing_size = match ratio.is_finite() {
             true => ratio.max(PValue::from_f64_unchecked(1.08)),
-            false => {
-                return Err(IntItemStatError::StatSpecific(ProbingSizeStatError::SensorStrError(
-                    sensor_str,
-                )));
-            }
+            false => return Err(ProbingSizeStatError::SensorStrError(sensor_str)),
         };
         Ok(probing_size)
     }

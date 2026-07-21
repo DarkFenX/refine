@@ -5,7 +5,7 @@ use crate::{
         StatResource, StatResult, StatRps, StatSensors, StatSlot,
         err::{
             AgilityStatError, FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
-            ProbingSizeStatError,
+            MaxWarpRangeStatError, ProbingSizeStatError, WarpSpeedStatError,
         },
     },
 };
@@ -119,10 +119,10 @@ pub struct FitStats {
     pub sig_radius: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub mass: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub warp_speed: Option<Vec<PValue>> = None,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub max_warp_range: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub warp_speed: StatResult<PValue, FitShipStatError<WarpSpeedStatError>, !> = StatResult::NotRequested,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub max_warp_range: StatResult<PValue, FitShipStatError<MaxWarpRangeStatError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
     pub jump: Option<Vec<StatJump>> = None,
     // Ship misc stats

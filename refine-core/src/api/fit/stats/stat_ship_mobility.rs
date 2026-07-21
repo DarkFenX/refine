@@ -2,7 +2,7 @@ use crate::{
     CtlAffectors, FitMut, ItemMutCommon, PValue,
     stats::{
         StatJump, StatJumpRange,
-        err::{AgilityStatError, FitShipStatError},
+        err::{AgilityStatError, FitShipStatError, MaxWarpRangeStatError, WarpSpeedStatError},
     },
     ud::FitId,
 };
@@ -23,10 +23,10 @@ impl<'s> FitMut<'s> {
     pub fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, FitShipStatError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_mass(affectors)?)
     }
-    pub fn get_stat_warp_speed(&mut self) -> Result<Option<PValue>, FitShipStatError<!>> {
+    pub fn get_stat_warp_speed(&mut self) -> Result<PValue, FitShipStatError<WarpSpeedStatError>> {
         Ok(self.get_ship_for_stats()?.get_stat_warp_speed()?)
     }
-    pub fn get_stat_max_warp_range(&mut self) -> Result<Option<PValue>, FitShipStatError<!>> {
+    pub fn get_stat_max_warp_range(&mut self) -> Result<PValue, FitShipStatError<MaxWarpRangeStatError>> {
         Ok(self.get_ship_for_stats()?.get_stat_max_warp_range()?)
     }
     pub fn get_stat_jump(

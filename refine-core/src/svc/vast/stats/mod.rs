@@ -4,7 +4,7 @@ pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDm
 pub use in_jam::StatInJam;
 pub use jump::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf};
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
-pub use mobility::AgilityStatError;
+pub use mobility::{AgilityStatError, MaxWarpRangeStatError, WarpSpeedStatError};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;
