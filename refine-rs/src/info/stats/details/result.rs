@@ -1,5 +1,3 @@
-use crate::svc::StatErrorFatality;
-
 pub enum StatResult<T, EO, EI> {
     NotRequested,
     Result(Vec<Result<T, EI>>),
@@ -26,27 +24,6 @@ impl<T, E> StatResult<T, E, !> {
         match result {
             Ok(stat) => Self::Result(vec![Ok(stat)]),
             Err(err) => Self::Error(err),
-        }
-    }
-}
-// All errors become inner errors
-impl<T, E> StatResult<T, !, E> {
-    pub(crate) fn from_result_inner(result: Result<T, E>) -> Self {
-        Self::Result(vec![result])
-    }
-}
-// Outer or inner error, depending on fatality
-impl<T, E> StatResult<T, E, E> {
-    pub(crate) fn from_result_auto(result: Result<T, E>) -> Self
-    where
-        E: StatErrorFatality,
-    {
-        match result {
-            Ok(stat) => Self::Result(vec![Ok(stat)]),
-            Err(err) => match err.is_fatal() {
-                true => Self::Error(err),
-                false => Self::Result(vec![Err(err)]),
-            },
         }
     }
 }
