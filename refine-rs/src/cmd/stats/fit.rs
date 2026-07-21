@@ -5,8 +5,9 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
-        err::{FitAppliedStatError, FitShipAppliedStatError},
+        err::{FitAppliedStatError, FitShipAppliedStatError, FitShipStatError},
     },
+    svc::StatErrorFatality,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -247,16 +248,16 @@ impl GetFitStatsCmd {
         // Ship tank
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.resists.into_enabled(self.default) {
-            stats.resists = core_fit.get_stat_resists().ok().map(|v| vec![v]);
+            stats.resists = StatResult::from_result_outer(core_fit.get_stat_resists());
         }
         if self.hp.into_enabled(self.default) {
-            stats.hp = core_fit.get_stat_hp().ok().map(|v| vec![v]);
+            stats.hp = StatResult::from_result_outer(core_fit.get_stat_hp());
         }
         if let Some(options) = self.ehp.into_enabled(self.default) {
             stats.ehp = get_ehp_stats(core_fit, options);
         }
         if self.wc_ehp.into_enabled(self.default) {
-            stats.wc_ehp = core_fit.get_stat_wc_ehp().ok().map(|v| vec![v]);
+            stats.wc_ehp = StatResult::from_result_outer(core_fit.get_stat_wc_ehp());
         }
         if let Some(options) = self.rps.into_enabled(self.default) {
             stats.rps = get_rps_stats(core_fit, options);
@@ -265,7 +266,7 @@ impl GetFitStatsCmd {
             stats.erps = get_erps_stats(core_fit, options);
         }
         if self.breach_resist.into_enabled(self.default) {
-            stats.breach_resist = core_fit.get_stat_breach_resist().ok().map(|v| vec![v]);
+            stats.breach_resist = StatResult::from_result_outer(core_fit.get_stat_breach_resist());
         }
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship cap
@@ -286,19 +287,19 @@ impl GetFitStatsCmd {
         // Ship sensors
         ////////////////////////////////////////////////////////////////////////////////////////////
         if self.locks.into_enabled(self.default) {
-            stats.locks = core_fit.get_stat_locks().ok().map(|v| vec![v]);
+            stats.locks = StatResult::from_result_outer(core_fit.get_stat_locks());
         }
         if self.lock_range.into_enabled(self.default) {
-            stats.lock_range = core_fit.get_stat_lock_range().ok().map(|v| vec![v]);
+            stats.lock_range = StatResult::from_result_outer(core_fit.get_stat_lock_range());
         }
         if self.scan_res.into_enabled(self.default) {
-            stats.scan_res = core_fit.get_stat_scan_res().ok().map(|v| vec![v]);
+            stats.scan_res = StatResult::from_result_outer(core_fit.get_stat_scan_res());
         }
         if self.sensors.into_enabled(self.default) {
-            stats.sensors = core_fit.get_stat_sensors().ok().map(|v| vec![v]);
+            stats.sensors = StatResult::from_result_outer(core_fit.get_stat_sensors());
         }
         if self.dscan_range.into_enabled(self.default) {
-            stats.dscan_range = core_fit.get_stat_dscan_range().ok().map(|v| vec![v]);
+            stats.dscan_range = StatResult::from_result_outer(core_fit.get_stat_dscan_range());
         }
         if self.probing_size.into_enabled(self.default) {
             stats.probing_size = core_fit.get_stat_probing_size().ok().flatten().map(|v| vec![v]);
@@ -459,54 +460,69 @@ fn get_outgoing_cps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_ehp_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionEhp>) -> Option<Vec<StatEhp>> {
+fn get_ehp_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionEhp>,
+) -> StatResult<StatEhp, FitShipStatError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_ehp(option.incoming_dps) {
-            Ok(stat) => stats.push(stat),
-            Err(_) => return None,
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
-fn get_rps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionRps>) -> Option<Vec<StatRps>> {
+fn get_rps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionRps>,
+) -> StatResult<StatRps, FitShipStatError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_rps(option.time_options, option.shield_perc) {
-            Ok(stat) => stats.push(stat),
-            Err(_) => return None,
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
-fn get_erps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionErps>) -> Option<Vec<StatErps>> {
+fn get_erps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionErps>,
+) -> StatResult<StatErps, FitShipStatError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_erps(option.incoming_dps, option.time_options, option.shield_perc) {
-            Ok(stat) => stats.push(stat),
-            Err(_) => return None,
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_cap_balance_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapBlc>) -> Option<Vec<Option<Value>>> {
+fn get_cap_balance_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionCapBlc>,
+) -> StatResult<Value, FitShipAppliedStatError<!>, FitShipAppliedStatError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_cap_balance(&option.src_kinds, option.time_options) {
-            Ok(stat) => stats.push(Some(stat)),
-            Err(core_err) => match is_fatal_ship_app(core_err) {
-                true => return None,
-                false => stats.push(None),
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(core_err) => match core_err.is_fatal() {
+                true => return StatResult::Error(core_err),
+                false => stats.push(Err(core_err)),
             },
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
-fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapSim>) -> Option<Vec<Option<StatCapSim>>> {
+fn get_cap_sim_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionCapSim>,
+) -> StatResult<StatCapSim, FitShipAppliedStatError<!>, FitShipAppliedStatError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_cap_sim(
@@ -515,28 +531,31 @@ fn get_cap_sim_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionCapSim>) 
             option.stagger,
             option.nosf_projectee_item_id.as_ref(),
         ) {
-            Ok(stat) => stats.push(Some(stat)),
-            Err(core_err) => match is_fatal_ship_app(core_err) {
-                true => return None,
-                false => stats.push(None),
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(core_err) => match core_err.is_fatal() {
+                true => return StatResult::Error(core_err),
+                false => stats.push(Err(core_err)),
             },
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship sensors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_incoming_jam_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionIncomingJam>) -> Option<Vec<StatInJam>> {
+fn get_incoming_jam_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionIncomingJam>,
+) -> StatResult<StatInJam, FitShipStatError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_incoming_jam(option.time_options) {
-            Ok(stat) => stats.push(stat),
-            Err(_) => return None,
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -561,16 +580,4 @@ fn get_jump_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionJump>) -> Op
         }
     }
     Some(stats)
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Helpers
-////////////////////////////////////////////////////////////////////////////////////////////////////
-fn is_fatal_ship_app(core_err: FitShipAppliedStatError<!>) -> bool {
-    match core_err {
-        FitShipAppliedStatError::NoShip(_)
-        | FitShipAppliedStatError::ItemNotLoaded(_)
-        | FitShipAppliedStatError::UnsupportedStat(_) => true,
-        FitShipAppliedStatError::ProjecteeNotFound(_) | FitShipAppliedStatError::ProjecteeCantTakeProjs(_) => false,
-    }
 }
