@@ -3,7 +3,7 @@ use crate::{
     stats::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
         StatResource, StatResult, StatRps, StatSensors, StatSlot,
-        err::{AgilityStatError, FitAppliedStatError, FitShipAppliedStatError, FitShipStatError},
+        err::{AgilityStatError, FitAppliedStatError, FitShipAppliedStatError, FitShipStatError, ProbingSizeStatError},
     },
 };
 
@@ -101,8 +101,8 @@ pub struct FitStats {
     pub sensors: StatResult<StatSensors, FitShipStatError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub dscan_range: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub probing_size: Option<Vec<PValue>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub probing_size: StatResult<PValue, FitShipStatError<ProbingSizeStatError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub incoming_jam: StatResult<StatInJam, FitShipStatError<!>, !> = StatResult::NotRequested,
     // Ship mobility

@@ -1,6 +1,9 @@
 use crate::{
     Count, FitMut, ItemMutCommon, PValue,
-    stats::{StatInJam, StatSensors, StatTimeOptions, err::FitShipStatError},
+    stats::{
+        StatInJam, StatSensors, StatTimeOptions,
+        err::{FitShipStatError, ProbingSizeStatError},
+    },
 };
 
 impl<'s> FitMut<'s> {
@@ -19,7 +22,7 @@ impl<'s> FitMut<'s> {
     pub fn get_stat_dscan_range(&mut self) -> Result<PValue, FitShipStatError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_dscan_range()?)
     }
-    pub fn get_stat_probing_size(&mut self) -> Result<Option<PValue>, FitShipStatError<!>> {
+    pub fn get_stat_probing_size(&mut self) -> Result<PValue, FitShipStatError<ProbingSizeStatError>> {
         Ok(self.get_ship_for_stats()?.get_stat_probing_size()?)
     }
     pub fn get_stat_incoming_jam(&mut self, time_options: StatTimeOptions) -> Result<StatInJam, FitShipStatError<!>> {

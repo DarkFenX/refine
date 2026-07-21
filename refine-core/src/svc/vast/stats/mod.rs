@@ -8,7 +8,7 @@ pub use mobility::AgilityStatError;
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;
-pub use sensors::{StatSensors, StatSensorsKind};
+pub use sensors::{ProbingSizeStatError, StatSensors, StatSensorsKind};
 pub use slot::StatSlot;
 pub use tank::{
     StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatResists,

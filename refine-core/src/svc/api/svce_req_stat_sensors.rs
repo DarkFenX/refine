@@ -1,11 +1,7 @@
 use crate::{
-    num::{Count, PValue},
-    svc::{
-        Svc, SvcCtx,
-        cycle::CseqMap,
-        err::IntItemStatError,
-        vast::{StatInJam, StatSensors, StatTimeOptions, Vast},
-    },
+    Count, PValue,
+    stats::{StatInJam, StatSensors, StatTimeOptions, err::ProbingSizeStatError},
+    svc::{Svc, SvcCtx, Vast, cycle::CseqMap, err::IntItemStatError},
     ud::{UData, UItemId},
 };
 
@@ -49,7 +45,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<Option<PValue>, IntItemStatError<!>> {
+    ) -> Result<PValue, IntItemStatError<ProbingSizeStatError>> {
         Vast::get_stat_item_probing_size(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_incoming_jam(

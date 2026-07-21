@@ -70,7 +70,10 @@ pub(super) fn check_fighter_ship_no_struct(u_data: &UData, item_uid: UItemId) ->
     }
 }
 
-pub(super) fn check_drone_fighter_ship(u_data: &UData, item_uid: UItemId) -> Result<&UItem, IntItemStatError<!>> {
+pub(super) fn check_drone_fighter_ship<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UItem, IntItemStatError<SS>>
+where
+    SS: std::error::Error,
+{
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Drone(drone) => drone.is_loaded(),
@@ -84,12 +87,12 @@ pub(super) fn check_drone_fighter_ship(u_data: &UData, item_uid: UItemId) -> Res
     }
 }
 
-pub(super) fn check_drone_fighter_ship_no_struct<SE>(
+pub(super) fn check_drone_fighter_ship_no_struct<SS>(
     u_data: &UData,
     item_uid: UItemId,
-) -> Result<(), IntItemStatError<SE>>
+) -> Result<(), IntItemStatError<SS>>
 where
-    SE: std::error::Error,
+    SS: std::error::Error,
 {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {

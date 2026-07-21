@@ -48,8 +48,8 @@ impl Vast {
 
 #[derive(thiserror::Error, Debug)]
 pub enum AgilityStatError {
-    #[error("agility {0} should be > 0")]
+    #[error("agility should be > 0, but is {0}")]
     AgilityError(Value),
-    #[error("mass {0} should be > 0")]
+    #[error("mass should be > 0, but is {0}")]
     MassError(Value),
 }

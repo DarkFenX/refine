@@ -302,7 +302,7 @@ impl GetFitStatsCmd {
             stats.dscan_range = StatResult::from_result_outer(core_fit.get_stat_dscan_range());
         }
         if self.probing_size.into_enabled(self.default) {
-            stats.probing_size = core_fit.get_stat_probing_size().ok().flatten().map(|v| vec![v]);
+            stats.probing_size = StatResult::from_result_outer(core_fit.get_stat_probing_size());
         }
         if let Some(options) = self.incoming_jam.into_enabled(self.default) {
             stats.incoming_jam = get_incoming_jam_stats(core_fit, options);

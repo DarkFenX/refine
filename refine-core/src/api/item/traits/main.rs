@@ -13,7 +13,7 @@ use crate::{
         StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg, StatDmgApplied, StatEhp, StatErps, StatHp,
         StatInJam, StatJump, StatJumpRange, StatMining, StatOutReps, StatResists, StatRps, StatSensors,
         StatTimeOptions,
-        err::{AgilityStatError, ItemAppliedStatError, ItemStatError},
+        err::{AgilityStatError, ItemAppliedStatError, ItemStatError, ProbingSizeStatError},
     },
     svc::{
         cycle::CseqMap,
@@ -489,7 +489,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             .get_stat_dscan_range(&sol.u_data, item_uid)
             .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_probing_size(&mut self) -> Result<Option<PValue>, ItemStatError<!>> {
+    fn get_stat_probing_size(&mut self) -> Result<PValue, ItemStatError<ProbingSizeStatError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
