@@ -1,10 +1,9 @@
-//! Adapted data cachers for `refine-core`. They implement persistent for adapted data.
+//! Adapted data cachers for `refine-core`. They implement persistence for adapted data.
 //!
 //! ## Feature flags
 //!
 //! This library provides only one cacher.
 //!
-//! - `full`: Enables all available cachers.
 //! - `json-zfile`: Enables cacher which writes compressed JSON cache to disk.
 
 #[cfg(feature = "json-zfile")]
