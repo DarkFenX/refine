@@ -5,7 +5,7 @@ use crate::{
         StatResource, StatResult, StatRps, StatSensors, StatSlot,
         err::{
             AgilityStatError, FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
-            MaxWarpRangeStatError, ProbingSizeStatError, WarpSpeedStatError,
+            JumpStatError, MaxWarpRangeStatError, ProbingSizeStatError, WarpSpeedStatError,
         },
     },
 };
@@ -123,8 +123,8 @@ pub struct FitStats {
     pub warp_speed: StatResult<PValue, FitShipStatError<WarpSpeedStatError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub max_warp_range: StatResult<PValue, FitShipStatError<MaxWarpRangeStatError>, !> = StatResult::NotRequested,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "skip_stat"))]
-    pub jump: Option<Vec<StatJump>> = None,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
+    pub jump: StatResult<StatJump, FitShipStatError<JumpStatError>, !> = StatResult::NotRequested,
     // Ship misc stats
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub drone_control_range: StatResult<PValue, FitCharacterStatError<!>, !> = StatResult::NotRequested,
@@ -142,15 +142,4 @@ pub struct FitStats {
     pub can_dock_citadel: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub can_tether: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-fn skip_stat<T>(details: &Option<Vec<T>>) -> bool {
-    match details {
-        Some(details) => details.is_empty(),
-        None => true,
-    }
 }

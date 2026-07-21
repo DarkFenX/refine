@@ -483,7 +483,7 @@ fn get_jump_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionJump>) -> 
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors) {
-            Ok(Some(stat)) => stats.push(stat),
+            Ok(stat) => stats.push(stat),
             _ => return None,
         }
     }

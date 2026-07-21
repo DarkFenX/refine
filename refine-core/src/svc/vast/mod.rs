@@ -1,5 +1,5 @@
 pub use stats::{
-    AgilityStatError, MaxWarpRangeStatError, ProbingSizeStatError, StatCapBlcNosfs, StatCapBlcRegen,
+    AgilityStatError, JumpStatError, MaxWarpRangeStatError, ProbingSizeStatError, StatCapBlcNosfs, StatCapBlcRegen,
     StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied,
     StatDmgEntryBreacher, StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp,
     StatHpLayer, StatInJam, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf,

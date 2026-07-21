@@ -14,8 +14,8 @@ use crate::{
         StatInJam, StatJump, StatJumpRange, StatMining, StatOutReps, StatResists, StatRps, StatSensors,
         StatTimeOptions,
         err::{
-            AgilityStatError, ItemAppliedStatError, ItemStatError, MaxWarpRangeStatError, ProbingSizeStatError,
-            WarpSpeedStatError,
+            AgilityStatError, ItemAppliedStatError, ItemStatError, JumpStatError, MaxWarpRangeStatError,
+            ProbingSizeStatError, WarpSpeedStatError,
         },
     },
     svc::{
@@ -576,7 +576,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
         passenger_fuel_affectors: CtlAffectors,
-    ) -> Result<Option<StatJump>, ItemStatError<!>> {
+    ) -> Result<StatJump, ItemStatError<JumpStatError>> {
         let mut saved_states = RMap::new();
         let mut reuse_eupdates = UEffectUpdates::new();
         let item_uid = self.get_uid();

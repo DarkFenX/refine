@@ -2,7 +2,7 @@ use crate::{
     CtlAffectors, FitMut, ItemMutCommon, PValue,
     stats::{
         StatJump, StatJumpRange,
-        err::{AgilityStatError, FitShipStatError, MaxWarpRangeStatError, WarpSpeedStatError},
+        err::{AgilityStatError, FitShipStatError, JumpStatError, MaxWarpRangeStatError, WarpSpeedStatError},
     },
     ud::FitId,
 };
@@ -34,7 +34,7 @@ impl<'s> FitMut<'s> {
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
         passenger_fuel_affectors: CtlAffectors,
-    ) -> Result<Option<StatJump>, FitShipStatError<!>> {
+    ) -> Result<StatJump, FitShipStatError<JumpStatError>> {
         Ok(self
             .get_ship_for_stats()?
             .get_stat_jump(range, passenger_fit_ids, passenger_fuel_affectors)?)

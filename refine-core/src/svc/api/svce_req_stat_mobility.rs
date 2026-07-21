@@ -2,7 +2,7 @@ use crate::{
     PValue,
     stats::{
         StatJump, StatJumpRange,
-        err::{AgilityStatError, MaxWarpRangeStatError, WarpSpeedStatError},
+        err::{AgilityStatError, JumpStatError, MaxWarpRangeStatError, WarpSpeedStatError},
     },
     svc::{Svc, SvcCtx, Vast, err::IntItemStatError},
     ud::{UData, UFitId, UItemId},
@@ -64,7 +64,7 @@ impl Svc {
         item_uid: UItemId,
         range: StatJumpRange,
         passenger_fit_uids: &[UFitId],
-    ) -> Result<Option<StatJump>, IntItemStatError<!>> {
+    ) -> Result<StatJump, IntItemStatError<JumpStatError>> {
         self.vast.get_stat_item_jump(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,

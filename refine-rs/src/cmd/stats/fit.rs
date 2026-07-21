@@ -5,7 +5,7 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
-        err::{FitAppliedStatError, FitShipAppliedStatError, FitShipStatError},
+        err::{FitAppliedStatError, FitShipAppliedStatError, FitShipStatError, JumpStatError},
     },
     svc::StatErrorFatality,
 };
@@ -574,13 +574,16 @@ fn get_mass_stats(
     }
     StatResult::Result(stats)
 }
-fn get_jump_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionJump>) -> Option<Vec<StatJump>> {
+fn get_jump_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionJump>,
+) -> StatResult<StatJump, FitShipStatError<JumpStatError>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors) {
-            Ok(Some(stat)) => stats.push(stat),
-            _ => return None,
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
         }
     }
-    Some(stats)
+    StatResult::Result(stats)
 }

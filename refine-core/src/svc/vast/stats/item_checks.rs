@@ -15,7 +15,10 @@ pub(super) fn check_character(u_data: &UData, item_uid: UItemId) -> Result<(), I
     }
 }
 
-pub(super) fn check_ship(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntItemStatError<!>> {
+pub(super) fn check_ship<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntItemStatError<SS>>
+where
+    SS: std::error::Error,
+{
     let item = u_data.items.get(item_uid);
     let UItem::Ship(ship) = item else {
         return Err(UItemKindVsStatError { item_uid }.into());

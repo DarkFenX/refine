@@ -25,9 +25,10 @@ impl Vast {
         item_uid: UItemId,
         range: StatJumpRange,
         psg_fit_uids: &[UFitId],
-    ) -> Result<Option<StatJump>, IntItemStatError<!>> {
+    ) -> Result<StatJump, IntItemStatError<JumpStatError>> {
         let ship = check_ship(ctx.u_data, item_uid)?;
-        Ok(self.internal_get_stat_item_jump_unchecked(ctx, calc, item_uid, ship, range, psg_fit_uids))
+        self.internal_get_stat_item_jump_unchecked(ctx, calc, item_uid, ship, range, psg_fit_uids)
+            .map_err(IntItemStatError::StatSpecific)
     }
     fn internal_get_stat_item_jump_unchecked(
         &self,
@@ -37,17 +38,16 @@ impl Vast {
         ship: &UShip,
         range: StatJumpRange,
         psg_fit_uids: &[UFitId],
-    ) -> Option<StatJump> {
-        let fuel_type_id = ItemTypeId::from_aid(ship.get_axt().unwrap().jump_fuel_type_id?);
-        let max_range = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
-            ctx,
-            ship_uid,
-            ctx.ac().jump_drive_range,
-            Value::ZERO,
-        ));
-        if max_range < PValue::FLOAT_TOLERANCE {
-            return None;
-        }
+    ) -> Result<StatJump, JumpStatError> {
+        let fuel_type_id = match ship.get_axt().unwrap().jump_fuel_type_id {
+            Some(type_aid) => ItemTypeId::from_aid(type_aid),
+            None => return Err(JumpStatError::NoFuelTypeId),
+        };
+        let max_range = calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_range, Value::ZERO);
+        let max_range = match max_range > Value::FLOAT_TOLERANCE {
+            true => PValue::from_value_unchecked(max_range),
+            false => return Err(JumpStatError::JumpRange(max_range)),
+        };
         let mut stat = StatJump {
             max_range,
             fuel_type_id,
@@ -59,7 +59,7 @@ impl Vast {
             // If requested range was higher than item allows, exclude all the jump stats besides
             // basic ones
             StatJumpRange::LightYears(range) => match range > max_range + PValue::FLOAT_TOLERANCE {
-                true => return Some(stat),
+                true => return Ok(stat),
                 false => range,
             },
             StatJumpRange::Max => max_range,
@@ -85,8 +85,16 @@ impl Vast {
                 psg_fit_uids,
             ));
         }
-        Some(stat)
+        Ok(stat)
     }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum JumpStatError {
+    #[error("fuel type ID is not defined")]
+    NoFuelTypeId,
+    #[error("jump range should be > 0, but is {0}")]
+    JumpRange(Value),
 }
 
 // Higher level jump fetchers

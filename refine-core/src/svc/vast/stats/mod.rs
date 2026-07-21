@@ -2,7 +2,9 @@ pub use cap::{StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, 
 pub(crate) use cap::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
-pub use jump::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf};
+pub use jump::{
+    JumpStatError, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf,
+};
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
 pub use mobility::{AgilityStatError, MaxWarpRangeStatError, WarpSpeedStatError};
 pub use neut::StatNeutItemKinds;
