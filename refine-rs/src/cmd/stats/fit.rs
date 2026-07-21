@@ -4,7 +4,8 @@ use crate::{
         FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps, err::FitShipAppliedStatError,
+        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
+        err::{FitAppliedStatError, FitShipAppliedStatError},
     },
 };
 
@@ -366,87 +367,93 @@ impl GetFitStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit output stats
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_dmg_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitDmg>) -> Vec<Option<StatDmg>> {
+fn get_dmg_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionFitDmg>,
+) -> StatResult<StatDmg, !, FitAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_dmg_applied(option.item_kinds, option.time_options, &projectee_item_id) {
-                    Ok(core_stat) => stats.push(Some(StatDmg::from_core_applied(core_stat))),
-                    Err(_) => stats.push(None),
-                };
+                let stat = core_fit
+                    .get_stat_dmg_applied(option.item_kinds, option.time_options, &projectee_item_id)
+                    .map(StatDmg::from_core_applied);
+                stats.push(stat);
             }
             None => {
-                let core_stat = core_fit.get_stat_dmg(option.item_kinds, option.time_options);
-                stats.push(Some(StatDmg::from_core(core_stat)));
+                let stat = StatDmg::from_core(core_fit.get_stat_dmg(option.item_kinds, option.time_options));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitMining>) -> Vec<StatMining> {
+fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitMining>) -> StatResult<StatMining, !, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         let stat = core_fit.get_stat_mps(option.item_kinds, option.time_options, option.mission);
-        stats.push(stat);
+        stats.push(Ok(stat));
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_outgoing_nps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitOutNps>) -> Vec<Option<PValue>> {
+fn get_outgoing_nps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionFitOutNps>,
+) -> StatResult<PValue, !, FitAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time_options, &projectee_item_id)
-                {
-                    Ok(stat) => stats.push(Some(stat)),
-                    Err(_) => stats.push(None),
-                }
+                let stat =
+                    core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time_options, &projectee_item_id);
+                stats.push(stat);
             }
             None => {
                 let stat = core_fit.get_stat_outgoing_nps(option.item_kinds, option.time_options);
-                stats.push(Some(stat));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_outgoing_rps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitOutRps>) -> Vec<Option<StatOutReps>> {
+fn get_outgoing_rps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionFitOutRps>,
+) -> StatResult<StatOutReps, !, FitAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time_options, &projectee_item_id)
-                {
-                    Ok(stat) => stats.push(Some(stat)),
-                    Err(_) => stats.push(None),
-                }
+                let stat =
+                    core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time_options, &projectee_item_id);
+                stats.push(stat);
             }
             None => {
                 let stat = core_fit.get_stat_outgoing_rps(option.item_kinds, option.time_options);
-                stats.push(Some(stat));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
-fn get_outgoing_cps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitOutCps>) -> Vec<Option<PValue>> {
+fn get_outgoing_cps_stats(
+    core_fit: &mut rc::FitMut,
+    options: Vec<StatOptionFitOutCps>,
+) -> StatResult<PValue, !, FitAppliedStatError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                match core_fit.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id) {
-                    Ok(stat) => stats.push(Some(stat)),
-                    Err(_) => stats.push(None),
-                }
+                let stat = core_fit.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id);
+                stats.push(stat);
             }
             None => {
                 let stat = core_fit.get_stat_outgoing_cps(option.time_options);
-                stats.push(Some(stat));
+                stats.push(Ok(stat));
             }
         }
     }
-    stats
+    StatResult::Result(stats)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
