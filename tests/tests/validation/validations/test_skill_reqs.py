@@ -574,7 +574,7 @@ def test_failed_replacement(client):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fit.add_skill(type_id=eve_skill_id, level=2, status_code=409)
+    api_fit.add_skill(type_id=eve_skill_id, level=2, status_code=400)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is True
@@ -587,7 +587,7 @@ def test_failed_replacement(client):
     assert api_val.passed is False
     assert api_val.details.skill_reqs == {api_module.id: {eve_skill_id: (2, 3)}}
     # Action
-    api_fit.add_skill(type_id=eve_skill_id, level=4, status_code=409)
+    api_fit.add_skill(type_id=eve_skill_id, level=4, status_code=400)
     # Verification
     api_val = api_fit.validate(options=ValOptions(skill_reqs=True))
     assert api_val.passed is False

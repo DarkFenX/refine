@@ -128,8 +128,8 @@ def test_duplicate_loaded(client, consts):
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
     # Action
-    api_fit.add_skill(type_id=eve_item_id, level=4, status_code=409, json_predicate={
-        'code': 'SKL-001',
+    api_fit.add_skill(type_id=eve_item_id, level=4, status_code=400, json_predicate={
+        'code': 'SKL-002',
         'message': f'skill {eve_item_id} already exists on fit {api_fit.id}, item {api_item.id} has the same type ID'})
     # Verification - nothing should've changed
     api_item.update()
@@ -156,8 +156,8 @@ def test_duplicate_not_loaded(client, consts):
     assert len(api_fit.skills) == 1
     assert api_fit.skills[0].id == api_item.id
     # Action
-    api_fit.add_skill(type_id=eve_item_id, level=4, status_code=409, json_predicate={
-        'code': 'SKL-001',
+    api_fit.add_skill(type_id=eve_item_id, level=4, status_code=400, json_predicate={
+        'code': 'SKL-002',
         'message': f'skill {eve_item_id} already exists on fit {api_fit.id}, item {api_item.id} has the same type ID'})
     # Verification - nothing should've changed
     api_item.update()

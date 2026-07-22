@@ -21,7 +21,7 @@ def test_no_item_full(client, consts):
         item_id='1',
         item_info_mode=consts.ApiItemInfoMode.full,
         status_code=404,
-        json_predicate={'code': 'ITM-002', 'message': 'item 1 not found'})
+        json_predicate={'code': 'ITM-001', 'message': 'item 1 not found'})
 
 
 def test_no_item_id(client, consts):
@@ -32,7 +32,7 @@ def test_no_item_id(client, consts):
         item_id='1',
         item_info_mode=consts.ApiItemInfoMode.id,
         status_code=404,
-        json_predicate={'code': 'ITM-002', 'message': 'item 1 not found'})
+        json_predicate={'code': 'ITM-001', 'message': 'item 1 not found'})
 
 
 def test_no_item_malformed(client):
@@ -43,4 +43,4 @@ def test_no_item_malformed(client):
         item_id='abc',
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'ITM-001', 'message': 'invalid digit found in string'})
+        json_predicate={'code': 'ITM-002', 'message': 'invalid digit found in string'})

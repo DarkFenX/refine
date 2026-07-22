@@ -293,7 +293,7 @@ def test_error_no_fit_full(client, consts):
         fit_info_mode=consts.ApiFitInfoMode.full,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'FIT-002', 'message': 'fit 1 not found'})
+        json_predicate={'code': 'FIT-001', 'message': 'fit 1 not found'})
 
 
 def test_error_no_fit_id(client, consts):
@@ -305,7 +305,7 @@ def test_error_no_fit_id(client, consts):
         fit_info_mode=consts.ApiFitInfoMode.id,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'FIT-002', 'message': 'fit 1 not found'})
+        json_predicate={'code': 'FIT-001', 'message': 'fit 1 not found'})
 
 
 def test_error_no_fit_malformed(client):
@@ -317,4 +317,4 @@ def test_error_no_fit_malformed(client):
         fit_info_mode=Absent,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'FIT-001', 'message': 'invalid digit found in string'})
+        json_predicate={'code': 'FIT-002', 'message': 'invalid digit found in string'})

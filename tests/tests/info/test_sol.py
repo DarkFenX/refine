@@ -110,7 +110,7 @@ def test_error_no_sol_full(client, consts):
         fit_info_mode=Absent,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'SOL-001', 'message': 'failed to parse a UUID'})
+        json_predicate={'code': 'SOL-002', 'message': 'failed to parse a UUID'})
 
 
 def test_error_no_sol_id(client, consts):
@@ -123,4 +123,4 @@ def test_error_no_sol_id(client, consts):
         fit_info_mode=Absent,
         item_info_mode=Absent,
         status_code=404,
-        json_predicate={'code': 'SOL-001', 'message': 'failed to parse a UUID'})
+        json_predicate={'code': 'SOL-002', 'message': 'failed to parse a UUID'})
