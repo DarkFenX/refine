@@ -3,14 +3,6 @@ use crate::{
     api::ItemTypeId,
 };
 
-const DOGMA_PREFIX: &str = "d";
-const SC_SYSWIDE_PREFIX: &str = "scsw";
-const SC_SYSEMIT_PREFIX: &str = "scse";
-const SC_PROXYEFF_PREFIX: &str = "scpe";
-const SC_PROXYTRAP_PREFIX: &str = "scpt";
-const SC_SHIPLINK_PREFIX: &str = "scsl";
-const CUSTOM_PREFIX: &str = "c";
-
 /// ID of an effect.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum EffectId {
@@ -28,19 +20,6 @@ pub enum EffectId {
     ScShipLink(ItemTypeId),
     /// ID of an effect created by the library.
     Custom(CustomEffectId),
-}
-impl std::fmt::Display for EffectId {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Dogma(id) => write!(f, "{DOGMA_PREFIX}{id}"),
-            Self::ScSystemWide(id) => write!(f, "{SC_SYSWIDE_PREFIX}{id}"),
-            Self::ScSystemEmitter(id) => write!(f, "{SC_SYSEMIT_PREFIX}{id}"),
-            Self::ScProxyEffect(id) => write!(f, "{SC_PROXYEFF_PREFIX}{id}"),
-            Self::ScProxyTrap(id) => write!(f, "{SC_PROXYTRAP_PREFIX}{id}"),
-            Self::ScShipLink(id) => write!(f, "{SC_SHIPLINK_PREFIX}{id}"),
-            Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
-        }
-    }
 }
 
 #[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
@@ -98,6 +77,28 @@ impl EffectId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+const DOGMA_PREFIX: &str = "d";
+const SC_SYSWIDE_PREFIX: &str = "scsw";
+const SC_SYSEMIT_PREFIX: &str = "scse";
+const SC_PROXYEFF_PREFIX: &str = "scpe";
+const SC_PROXYTRAP_PREFIX: &str = "scpt";
+const SC_SHIPLINK_PREFIX: &str = "scsl";
+const CUSTOM_PREFIX: &str = "c";
+
+impl std::fmt::Display for EffectId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Dogma(id) => write!(f, "{DOGMA_PREFIX}{id}"),
+            Self::ScSystemWide(id) => write!(f, "{SC_SYSWIDE_PREFIX}{id}"),
+            Self::ScSystemEmitter(id) => write!(f, "{SC_SYSEMIT_PREFIX}{id}"),
+            Self::ScProxyEffect(id) => write!(f, "{SC_PROXYEFF_PREFIX}{id}"),
+            Self::ScProxyTrap(id) => write!(f, "{SC_PROXYTRAP_PREFIX}{id}"),
+            Self::ScShipLink(id) => write!(f, "{SC_SHIPLINK_PREFIX}{id}"),
+            Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
+        }
+    }
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
     use std::str::FromStr;

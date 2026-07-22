@@ -1,8 +1,5 @@
 use crate::ad::{AAttrId, ACustomAttrId, AEveAttrId};
 
-const EVE_PREFIX: &str = "e";
-const CUSTOM_PREFIX: &str = "c";
-
 /// ID of an attribute.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AttrId {
@@ -10,14 +7,6 @@ pub enum AttrId {
     Eve(EveAttrId),
     /// ID of an attribute created by the library.
     Custom(CustomAttrId),
-}
-impl std::fmt::Display for AttrId {
-    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        match self {
-            Self::Eve(id) => write!(f, "{EVE_PREFIX}{id}"),
-            Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
-        }
-    }
 }
 
 #[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
@@ -65,6 +54,18 @@ impl AttrId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+const EVE_PREFIX: &str = "e";
+const CUSTOM_PREFIX: &str = "c";
+
+impl std::fmt::Display for AttrId {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Eve(id) => write!(f, "{EVE_PREFIX}{id}"),
+            Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
+        }
+    }
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
     use std::str::FromStr;

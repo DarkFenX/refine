@@ -1,6 +1,6 @@
 use crate::util::SlabId;
 
-#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug, derive_more::Display)]
+#[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, Hash, Debug)]
 pub(crate) struct UItemId(usize);
 
 impl SlabId for UItemId {
