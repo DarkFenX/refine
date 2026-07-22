@@ -74,7 +74,7 @@ pub enum AddItemEnumError {
     #[error("failed to add module: {0}")]
     ModuleFailed(#[from] GetFitAddModuleError),
     #[error("failed to add projected effect: {0}")]
-    ProjEffect(#[from] AddProjEffectError),
+    ProjEffectFailed(#[from] AddProjEffectError),
     #[error("failed to add rig: {0}")]
     RigFailed(#[from] GetFitAddRigError),
     #[error("failed to add service: {0}")]
