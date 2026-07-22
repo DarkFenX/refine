@@ -67,7 +67,7 @@ pub(crate) enum ApiError {
 
 #[derive(Serialize)]
 struct ApiErrorResponse {
-    code: String,
+    code: &'static str,
     message: String,
 }
 
@@ -75,129 +75,71 @@ struct ApiErrorResponse {
 // Codes & messages
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ApiError {
-    fn get_http_code(&self) -> StatusCode {
+    fn get_codes(&self) -> (StatusCode, &'static str) {
         match self {
-            Self::Query(_) => StatusCode::BAD_REQUEST,
-            Self::Json(_) => StatusCode::BAD_REQUEST,
-            Self::BatchParseFailed(_, _) => StatusCode::BAD_REQUEST,
+            Self::Query(_) => (StatusCode::BAD_REQUEST, "PRM-001"),
+            Self::Json(_) => (StatusCode::BAD_REQUEST, "JSN-001"),
+            Self::BatchParseFailed(_, _) => (StatusCode::BAD_REQUEST, "JSN-002"),
             // Source-related
             Self::SrcAddFailed(rs_err) => match rs_err {
-                rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => StatusCode::FORBIDDEN,
-                rs::src::err::AddSrcError::EdhInitFailed(_) => StatusCode::BAD_REQUEST,
-                rs::src::err::AddSrcError::SrcInitFailed(_) => StatusCode::UNPROCESSABLE_ENTITY,
+                rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => (StatusCode::FORBIDDEN, "SRC-001"),
+                rs::src::err::AddSrcError::EdhInitFailed(_) => (StatusCode::BAD_REQUEST, "EDH-001"),
+                rs::src::err::AddSrcError::SrcInitFailed(_) => (StatusCode::UNPROCESSABLE_ENTITY, "SIN-001"),
             },
             Self::SrcRemoveFailed(rs_err) => match rs_err {
-                rs::src::err::RemoveSrcError::SrcNotFound(_) => StatusCode::NOT_FOUND,
-            },
-            Self::PathSrcNotFound(_) => StatusCode::NOT_FOUND,
-            // Solar system-related
-            Self::SolAddFailed(rs_err) => match rs_err {
-                rs::err::AddSolError::GetSrcFailed(_) => StatusCode::BAD_REQUEST,
-            },
-            Self::SolChangeFailed(rs_err) => match rs_err {
-                rs::err::ChangeSolError::RenderFailed(_, _) => StatusCode::BAD_REQUEST,
-                // TODO: adjust error codes based on specific responses
-                rs::err::ChangeSolError::ExecFailed(_, _) => StatusCode::BAD_REQUEST,
-            },
-            Self::SolRemoveFailed(rs_err) => match rs_err {
-                rs::err::RemoveSolError::SolNotFound(_) => StatusCode::NOT_FOUND,
-            },
-            Self::PathSolParseFailed(_) => StatusCode::NOT_FOUND,
-            Self::PathSolNotFound(_) => StatusCode::NOT_FOUND,
-            Self::SolSrcSwitch(_) => StatusCode::BAD_REQUEST,
-            // Fleet-related
-            Self::FleetAddFailed(rs_err) => match rs_err {
-                rs::err::AddFleetError::FitAddFailed(_) => StatusCode::BAD_REQUEST,
-            },
-            // TODO: adjust error codes based on specific responses
-            Self::FleetChangeFailed(_) => StatusCode::BAD_REQUEST,
-            Self::PathFleetParseFailed(_) => StatusCode::NOT_FOUND,
-            Self::PathFleetNotFound(_) => StatusCode::NOT_FOUND,
-            // Fit-related
-            Self::FitAddFailed(rs_err) => match rs_err {
-                rs::err::AddFitError::FleetSetFailed(_) => StatusCode::BAD_REQUEST,
-            },
-            Self::FitChangeFailed(rs_err) => match rs_err {
-                rs::err::ChangeFitError::RenderFailed(_, _) => StatusCode::BAD_REQUEST,
-                // TODO: adjust error codes based on specific responses
-                rs::err::ChangeFitError::ExecFailed(_, _) => StatusCode::BAD_REQUEST,
-            },
-            Self::PathFitParseFailed(_) => StatusCode::NOT_FOUND,
-            Self::PathFitNotFound(_) => StatusCode::NOT_FOUND,
-            // Item-related
-            // TODO: adjust error codes based on specific responses
-            Self::ItemAddFailed(_) => StatusCode::BAD_REQUEST,
-            // TODO: adjust error codes based on specific responses
-            Self::ItemChangeFailed(_) => StatusCode::BAD_REQUEST,
-            // TODO: adjust error codes based on specific responses
-            Self::ItemRemoveFailed(_) => StatusCode::FORBIDDEN,
-            Self::PathItemParseFailed(_) => StatusCode::NOT_FOUND,
-            Self::PathItemNotFound(_) => StatusCode::NOT_FOUND,
-        }
-    }
-    fn get_api_code(&self) -> &str {
-        match self {
-            Self::Query(_) => "PRM-001",
-            Self::Json(_) => "JSN-001",
-            Self::BatchParseFailed(_, _) => "JSN-002",
-            // Source-related
-            Self::SrcAddFailed(rs_err) => match rs_err {
-                rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => "SRC-001",
-                rs::src::err::AddSrcError::EdhInitFailed(_) => "EDH-001",
-                rs::src::err::AddSrcError::SrcInitFailed(_) => "SIN-001",
-            },
-            Self::SrcRemoveFailed(rs_err) => match rs_err {
-                rs::src::err::RemoveSrcError::SrcNotFound(_) => "SRC-004",
+                rs::src::err::RemoveSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-004"),
             },
             Self::PathSrcNotFound(rs_err) => match rs_err {
-                rs::src::err::GetSrcError::SrcNotFound(_) => "SRC-002",
-                rs::src::err::GetSrcError::DefaultNotDefined => "SRC-003",
+                rs::src::err::GetSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-002"),
+                rs::src::err::GetSrcError::DefaultNotDefined => (StatusCode::NOT_FOUND, "SRC-003"),
             },
             // Solar system-related
             Self::SolAddFailed(rs_err) => match rs_err {
-                rs::err::AddSolError::GetSrcFailed(_) => "SOL-001",
+                rs::err::AddSolError::GetSrcFailed(_) => (StatusCode::BAD_REQUEST, "SOL-001"),
             },
             Self::SolChangeFailed(rs_err) => match rs_err {
                 // TODO: adjust error codes based on specific responses
-                rs::err::ChangeSolError::RenderFailed(_, _) => "SOL-004",
-                rs::err::ChangeSolError::ExecFailed(_, _) => "SOL-004",
+                rs::err::ChangeSolError::RenderFailed(_, _) => (StatusCode::BAD_REQUEST, "SOL-004"),
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeSolError::ExecFailed(_, _) => (StatusCode::BAD_REQUEST, "SOL-004"),
             },
             Self::SolRemoveFailed(rs_err) => match rs_err {
-                rs::err::RemoveSolError::SolNotFound(_) => "SOL-005",
+                rs::err::RemoveSolError::SolNotFound(_) => (StatusCode::NOT_FOUND, "SOL-005"),
             },
-            Self::PathSolParseFailed(_) => "SOL-002",
+            Self::PathSolParseFailed(_) => (StatusCode::NOT_FOUND, "SOL-002"),
             Self::PathSolNotFound(rs_err) => match rs_err {
-                rs::err::GetSolError::SolNotFound(_) => "SOL-003",
+                rs::err::GetSolError::SolNotFound(_) => (StatusCode::NOT_FOUND, "SOL-003"),
             },
-            Self::SolSrcSwitch(_) => "SOL-006",
+            Self::SolSrcSwitch(_) => (StatusCode::BAD_REQUEST, "SOL-006"),
             // Fleet-related
             Self::FleetAddFailed(rs_err) => match rs_err {
-                rs::err::AddFleetError::FitAddFailed(_) => "FLT-001",
+                rs::err::AddFleetError::FitAddFailed(_) => (StatusCode::BAD_REQUEST, "FLT-001"),
             },
             // TODO: adjust error codes based on specific responses
-            Self::FleetChangeFailed(_) => "FLT-004",
-            Self::PathFleetParseFailed(_) => "FLT-002",
-            Self::PathFleetNotFound(_) => "FLT-003",
+            Self::FleetChangeFailed(_) => (StatusCode::BAD_REQUEST, "FLT-004"),
+            Self::PathFleetParseFailed(_) => (StatusCode::NOT_FOUND, "FLT-002"),
+            Self::PathFleetNotFound(_) => (StatusCode::NOT_FOUND, "FLT-003"),
             // Fit-related
             Self::FitAddFailed(rs_err) => match rs_err {
-                rs::err::AddFitError::FleetSetFailed(_) => "FIT-001",
+                rs::err::AddFitError::FleetSetFailed(_) => (StatusCode::BAD_REQUEST, "FIT-001"),
             },
             Self::FitChangeFailed(rs_err) => match rs_err {
                 // TODO: adjust error codes based on specific responses
-                rs::err::ChangeFitError::RenderFailed(_, _) => "FIT-004",
-                rs::err::ChangeFitError::ExecFailed(_, _) => "FIT-004",
+                rs::err::ChangeFitError::RenderFailed(_, _) => (StatusCode::BAD_REQUEST, "FIT-004"),
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeFitError::ExecFailed(_, _) => (StatusCode::BAD_REQUEST, "FIT-004"),
             },
-            Self::PathFitParseFailed(_) => "FIT-002",
-            Self::PathFitNotFound(_) => "FIT-003",
+            Self::PathFitParseFailed(_) => (StatusCode::NOT_FOUND, "FIT-002"),
+            Self::PathFitNotFound(_) => (StatusCode::NOT_FOUND, "FIT-003"),
             // Item-related
             // TODO: adjust error codes based on specific responses
-            Self::ItemAddFailed(_) => "ITM-001",
+            Self::ItemAddFailed(_) => (StatusCode::BAD_REQUEST, "ITM-001"),
             // TODO: adjust error codes based on specific responses
-            Self::ItemChangeFailed(_) => "ITM-004",
+            Self::ItemChangeFailed(_) => (StatusCode::BAD_REQUEST, "ITM-004"),
             // TODO: adjust error codes based on specific responses
-            Self::ItemRemoveFailed(_) => "ITM-005",
-            Self::PathItemParseFailed(_) => "ITM-002",
-            Self::PathItemNotFound(_) => "ITM-003",
+            Self::ItemRemoveFailed(_) => (StatusCode::FORBIDDEN, "ITM-005"),
+            Self::PathItemParseFailed(_) => (StatusCode::NOT_FOUND, "ITM-002"),
+            Self::PathItemNotFound(_) => (StatusCode::NOT_FOUND, "ITM-003"),
         }
     }
 }
@@ -218,12 +160,10 @@ impl From<JsonRejection> for ApiError {
 
 impl IntoResponse for ApiError {
     fn into_response(self) -> axum::response::Response {
-        let http_code = self.get_http_code();
-        let api_code = self.get_api_code().to_string();
-        let api_message = self.to_string();
+        let (http_code, api_code) = self.get_codes();
         let payload = ApiErrorResponse {
             code: api_code,
-            message: api_message,
+            message: self.to_string(),
         };
         (http_code, Json(payload)).into_response()
     }
