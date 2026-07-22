@@ -69,6 +69,8 @@ pub(crate) enum ApiError {
 struct ApiErrorResponse {
     code: &'static str,
     message: String,
+    #[serde(skip_serializing_if = "Option::is_none")]
+    cmd_idx: Option<usize>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -142,6 +144,16 @@ impl ApiError {
             Self::PathItemNotFound(_) => (StatusCode::NOT_FOUND, "ITM-003"),
         }
     }
+    fn get_cmd_idx(&self) -> Option<usize> {
+        match self {
+            Self::BatchParseFailed(index, _) => Some(*index),
+            Self::SolChangeFailed(rs::err::ChangeSolError::RenderFailed(index, _)) => Some(*index),
+            Self::SolChangeFailed(rs::err::ChangeSolError::ExecFailed(index, _)) => Some(*index),
+            Self::FitChangeFailed(rs::err::ChangeFitError::RenderFailed(index, _)) => Some(*index),
+            Self::FitChangeFailed(rs::err::ChangeFitError::ExecFailed(index, _)) => Some(*index),
+            _ => None,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -161,9 +173,11 @@ impl From<JsonRejection> for ApiError {
 impl IntoResponse for ApiError {
     fn into_response(self) -> axum::response::Response {
         let (http_code, api_code) = self.get_codes();
+        let cmd_idx = self.get_cmd_idx();
         let payload = ApiErrorResponse {
             code: api_code,
             message: self.to_string(),
+            cmd_idx,
         };
         (http_code, Json(payload)).into_response()
     }
