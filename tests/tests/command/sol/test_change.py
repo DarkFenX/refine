@@ -56,7 +56,10 @@ def test_rollback_error_execution(client):
     api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, proj_item_ids=[api_tgt_ship.id])
     with api_sol.commands(
             status_code=400,
-            json_predicate={'code': 'ITM-001', 'message': f'command #1 failed: item {api_src_drone.id} not found'},
+            json_predicate={
+                'code': 'ITM-001',
+                'message': f'failed to change drone: item {api_src_drone.id} not found',
+                'cmd_index': 1},
     ) as api_sol_cmds:
         api_sol_cmds.remove_item(item_id=api_src_drone.id)
         api_sol_cmds.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])

@@ -30,7 +30,7 @@ pub(crate) enum ApiError {
     PathSolNotFound(#[from] rs::err::GetSolError),
     #[error("{0}")]
     SolAddFailed(#[from] rs::err::AddSolError),
-    #[error("{0}")]
+    #[error("{1}")]
     SolChangeFailed(usize, #[source] rs::err::ChangeSolEnumError),
     #[error("{0}")]
     SolRemoveFailed(#[from] rs::err::RemoveSolError),
@@ -52,7 +52,7 @@ pub(crate) enum ApiError {
     PathFitNotFound(#[from] rs::err::GetFitError),
     #[error("{0}")]
     FitAddFailed(#[from] rs::err::AddFitError),
-    #[error("{0}")]
+    #[error("{1}")]
     FitChangeFailed(usize, #[source] rs::err::ChangeFitEnumError),
     // Item-related
     #[error("{0}")]
