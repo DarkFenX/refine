@@ -3,6 +3,7 @@
 #![feature(step_trait)]
 #![feature(option_reduce)]
 #![feature(never_type)]
+#![feature(integer_casts)]
 #![feature(const_trait_impl)]
 #![feature(const_cmp)]
 #![feature(const_ops)]

@@ -32,7 +32,7 @@ use crate::{
     util::RMap,
 };
 
-const DAY_TICKS: Count = Count::from_u32(24 * 60 * 60 * SERVER_TICK_HZ as u32);
+const DAY_TICKS: Count = Count::from_u32(SERVER_TICK_HZ as u32 * 24 * 60 * 60);
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular accumulator

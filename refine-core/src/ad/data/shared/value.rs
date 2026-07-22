@@ -27,7 +27,7 @@ impl AValue {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ACount {
     pub(in crate::ad) fn from_eint_clamped(value: EInt) -> Self {
-        Self(value.into_i32().max(0) as u32)
+        Self(value.into_i32().saturating_cast())
     }
 }
 impl AValue {

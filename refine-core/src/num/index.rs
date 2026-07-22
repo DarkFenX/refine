@@ -28,7 +28,7 @@ impl From<Index> for usize {
 }
 impl From<Index> for u32 {
     fn from(v: Index) -> Self {
-        v.0.min(u32::MAX as usize) as u32
+        v.0.saturating_cast()
     }
 }
 

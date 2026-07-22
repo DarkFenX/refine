@@ -24,7 +24,7 @@ impl KeyMergeOne<rc::ed::EItemAbil> for PItemFighterAbils {
             vec.push(rc::ed::EItemAbil {
                 item_id: rc::ed::EItemId::from_i32(key),
                 abil_id: rc::ed::EAbilId::from_i32(p_abil_data.abil_id),
-                slot: rc::ed::EInt::from_i32(slot as i32),
+                slot: rc::ed::EInt::from_i32(slot.saturating_cast()),
                 cooldown: p_abil_data.cooldown.map(rc::ed::EFloat::from_f64),
                 charge_count: charge_count.map(rc::ed::EInt::from_i32),
                 charge_rearm_duration: charge_rearm_duration.map(rc::ed::EFloat::from_f64),
