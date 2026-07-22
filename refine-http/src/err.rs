@@ -82,66 +82,88 @@ impl ApiError {
             Self::Query(_) => (StatusCode::BAD_REQUEST, "PRM-001"),
             Self::Json(_) => (StatusCode::BAD_REQUEST, "JSN-001"),
             Self::BatchParseFailed(_, _) => (StatusCode::BAD_REQUEST, "JSN-002"),
+            ////////////////////////////////////////////////////////////////////////////////////////
             // Source-related
+            ////////////////////////////////////////////////////////////////////////////////////////
             Self::SrcAddFailed(rs_err) => match rs_err {
                 rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => (StatusCode::FORBIDDEN, "SRC-001"),
                 rs::src::err::AddSrcError::EdhInitFailed(_) => (StatusCode::BAD_REQUEST, "EDH-001"),
-                rs::src::err::AddSrcError::SrcInitFailed(_) => (StatusCode::UNPROCESSABLE_ENTITY, "SIN-001"),
-            },
-            Self::SrcRemoveFailed(rs_err) => match rs_err {
-                rs::src::err::RemoveSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-004"),
+                rs::src::err::AddSrcError::SrcInitFailed(_) => (StatusCode::UNPROCESSABLE_ENTITY, "SNT-001"),
             },
             Self::PathSrcNotFound(rs_err) => match rs_err {
                 rs::src::err::GetSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-002"),
                 rs::src::err::GetSrcError::DefaultNotDefined => (StatusCode::NOT_FOUND, "SRC-003"),
             },
+            Self::SrcRemoveFailed(rs_err) => match rs_err {
+                rs::src::err::RemoveSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-004"),
+            },
+            ////////////////////////////////////////////////////////////////////////////////////////
             // Solar system-related
+            ////////////////////////////////////////////////////////////////////////////////////////
             Self::SolAddFailed(rs_err) => match rs_err {
                 rs::err::AddSolError::GetSrcFailed(_) => (StatusCode::BAD_REQUEST, "SOL-001"),
-            },
-            Self::SolChangeFailed(rs_err) => match rs_err {
-                // TODO: adjust error codes based on specific responses
-                rs::err::ChangeSolError::RenderFailed(_, _) => (StatusCode::BAD_REQUEST, "SOL-004"),
-                // TODO: adjust error codes based on specific responses
-                rs::err::ChangeSolError::ExecFailed(_, _) => (StatusCode::BAD_REQUEST, "SOL-004"),
-            },
-            Self::SolRemoveFailed(rs_err) => match rs_err {
-                rs::err::RemoveSolError::SolNotFound(_) => (StatusCode::NOT_FOUND, "SOL-005"),
             },
             Self::PathSolParseFailed(_) => (StatusCode::NOT_FOUND, "SOL-002"),
             Self::PathSolNotFound(rs_err) => match rs_err {
                 rs::err::GetSolError::SolNotFound(_) => (StatusCode::NOT_FOUND, "SOL-003"),
             },
-            Self::SolSrcSwitch(_) => (StatusCode::BAD_REQUEST, "SOL-006"),
+            Self::SolChangeFailed(rs_err) => match rs_err {
+                rs::err::ChangeSolError::RenderFailed(_, br_err) => match br_err {
+                    rs::err::BackrefRenderError::NotFound(_) => (StatusCode::BAD_REQUEST, "SOL-004"),
+                    rs::err::BackrefRenderError::NoFitId(_) => (StatusCode::BAD_REQUEST, "SOL-005"),
+                    rs::err::BackrefRenderError::NoFleetId(_) => (StatusCode::BAD_REQUEST, "SOL-006"),
+                    rs::err::BackrefRenderError::NoItemId(_) => (StatusCode::BAD_REQUEST, "SOL-007"),
+                    rs::err::BackrefRenderError::NoChargeItemId(_) => (StatusCode::BAD_REQUEST, "SOL-008"),
+                },
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeSolError::ExecFailed(_, _) => (StatusCode::BAD_REQUEST, "SOL-000"),
+            },
+            Self::SolRemoveFailed(rs_err) => match rs_err {
+                rs::err::RemoveSolError::SolNotFound(_) => (StatusCode::NOT_FOUND, "SOL-009"),
+            },
+            Self::SolSrcSwitch(rs_err) => match rs_err {
+                rs::err::SolSwitchSrcError::SrcGetFailed(_) => (StatusCode::BAD_REQUEST, "SOL-010"),
+            },
+            ////////////////////////////////////////////////////////////////////////////////////////
             // Fleet-related
+            ////////////////////////////////////////////////////////////////////////////////////////
             Self::FleetAddFailed(rs_err) => match rs_err {
                 rs::err::AddFleetError::FitAddFailed(_) => (StatusCode::BAD_REQUEST, "FLT-001"),
             },
-            // TODO: adjust error codes based on specific responses
-            Self::FleetChangeFailed(_) => (StatusCode::BAD_REQUEST, "FLT-004"),
             Self::PathFleetParseFailed(_) => (StatusCode::NOT_FOUND, "FLT-002"),
             Self::PathFleetNotFound(_) => (StatusCode::NOT_FOUND, "FLT-003"),
+            Self::FleetChangeFailed(_) => (StatusCode::BAD_REQUEST, "FLT-004"),
+            ////////////////////////////////////////////////////////////////////////////////////////
             // Fit-related
+            ////////////////////////////////////////////////////////////////////////////////////////
             Self::FitAddFailed(rs_err) => match rs_err {
                 rs::err::AddFitError::FleetSetFailed(_) => (StatusCode::BAD_REQUEST, "FIT-001"),
             },
-            Self::FitChangeFailed(rs_err) => match rs_err {
-                // TODO: adjust error codes based on specific responses
-                rs::err::ChangeFitError::RenderFailed(_, _) => (StatusCode::BAD_REQUEST, "FIT-004"),
-                // TODO: adjust error codes based on specific responses
-                rs::err::ChangeFitError::ExecFailed(_, _) => (StatusCode::BAD_REQUEST, "FIT-004"),
-            },
             Self::PathFitParseFailed(_) => (StatusCode::NOT_FOUND, "FIT-002"),
             Self::PathFitNotFound(_) => (StatusCode::NOT_FOUND, "FIT-003"),
+            Self::FitChangeFailed(rs_err) => match rs_err {
+                rs::err::ChangeFitError::RenderFailed(_, br_err) => match br_err {
+                    rs::err::BackrefRenderError::NotFound(_) => (StatusCode::BAD_REQUEST, "FIT-004"),
+                    rs::err::BackrefRenderError::NoFitId(_) => (StatusCode::BAD_REQUEST, "FIT-005"),
+                    rs::err::BackrefRenderError::NoFleetId(_) => (StatusCode::BAD_REQUEST, "FIT-006"),
+                    rs::err::BackrefRenderError::NoItemId(_) => (StatusCode::BAD_REQUEST, "FIT-007"),
+                    rs::err::BackrefRenderError::NoChargeItemId(_) => (StatusCode::BAD_REQUEST, "FIT-008"),
+                },
+                // TODO: adjust error codes based on specific responses
+                rs::err::ChangeFitError::ExecFailed(_, _) => (StatusCode::BAD_REQUEST, "FIT-000"),
+            },
+            ////////////////////////////////////////////////////////////////////////////////////////
             // Item-related
+            ////////////////////////////////////////////////////////////////////////////////////////
             // TODO: adjust error codes based on specific responses
             Self::ItemAddFailed(_) => (StatusCode::BAD_REQUEST, "ITM-001"),
-            // TODO: adjust error codes based on specific responses
-            Self::ItemChangeFailed(_) => (StatusCode::BAD_REQUEST, "ITM-004"),
-            // TODO: adjust error codes based on specific responses
-            Self::ItemRemoveFailed(_) => (StatusCode::FORBIDDEN, "ITM-005"),
             Self::PathItemParseFailed(_) => (StatusCode::NOT_FOUND, "ITM-002"),
             Self::PathItemNotFound(_) => (StatusCode::NOT_FOUND, "ITM-003"),
+            // TODO: adjust error codes based on specific responses
+            Self::ItemChangeFailed(_) => (StatusCode::BAD_REQUEST, "ITM-004"),
+            Self::ItemRemoveFailed(rs::err::RemoveItemError(rs::err::ItemRemoveItemError::ItemRemoveFailed(
+                rs::err::core::RemoveItemError::UnremovableAutocharge,
+            ))) => (StatusCode::FORBIDDEN, "ACH-001"),
         }
     }
     fn get_cmd_idx(&self) -> Option<usize> {
