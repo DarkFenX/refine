@@ -343,3 +343,18 @@ def test_criterion_item_kind(client, consts):
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_stat_not_requested(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_active_drones)
+    eve_drone_id = client.mk_eve_item()
+    eve_char_id = client.mk_eve_item(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_character(type_id=eve_char_id)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    # Verification
+    api_stats = api_fit.get_stats(options=FitStatsOptions(launched_drones=False))
+    with check_no_field():
+        api_stats.launched_drones  # ruff:ignore[useless-expression]

@@ -358,3 +358,18 @@ def test_t3c_slot_override(client, consts):
     assert api_val.details.subsystem_slot_count.used == 5
     assert api_val.details.subsystem_slot_count.max == 4
     assert len(api_val.details.subsystem_slot_count.users) == 5
+
+
+def test_stat_not_requested(client, consts):
+    eve_max_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_subsystems)
+    eve_subsystem_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_max_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_subsystem(type_id=eve_subsystem_id)
+    # Verification
+    api_stats = api_fit.get_stats(options=FitStatsOptions(subsystem_slots=False))
+    with check_no_field():
+        api_stats.subsystem_slots  # ruff:ignore[useless-expression]
