@@ -67,7 +67,7 @@ impl ICmdStanceChangeFFitCtxRIds {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         let mut core_stance = match core_fit.get_stance_mut() {
             Some(core_stance) => core_stance,
-            None => return Err(GetFitChangeStanceError::NoStance(core_fit.get_fit_id())),
+            None => return Err(GetFitChangeStanceError::FitNoStance(core_fit.get_fit_id())),
         };
         Ok(self.ictx_cmd.execute(&mut core_stance))
     }
@@ -76,9 +76,9 @@ impl ICmdStanceChangeFFitCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeStanceError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetFitError),
+    FitGetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no stance set")]
-    NoStance(FitId),
+    FitNoStance(FitId),
 }
 
 impl ICmdStanceChangeFItemCtxRIds {
@@ -94,7 +94,7 @@ impl ICmdStanceChangeFItemCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeStanceError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetStanceError),
+    ItemGetFailed(#[from] rc::err::GetStanceError),
 }
 
 impl ICmdStanceChangeICtx {
@@ -104,7 +104,7 @@ impl ICmdStanceChangeICtx {
     ) -> Result<ChangedItemIdsResp, FitChangeStanceError> {
         let mut core_stance = match core_fit.get_stance_mut() {
             Some(core_stance) => core_stance,
-            None => return Err(FitChangeStanceError::NoStance(core_fit.get_fit_id())),
+            None => return Err(FitChangeStanceError::FitNoStance(core_fit.get_fit_id())),
         };
         Ok(self.execute(&mut core_stance))
     }
@@ -130,7 +130,7 @@ impl ICmdStanceChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeStanceError {
     #[error("fit {0} has no stance set")]
-    NoStance(FitId),
+    FitNoStance(FitId),
 }
 
 #[derive(thiserror::Error, Debug)]

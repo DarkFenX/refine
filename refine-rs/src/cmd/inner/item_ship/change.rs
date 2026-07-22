@@ -69,7 +69,7 @@ impl ICmdShipChangeFFitCtxRIds {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         let mut core_ship = match core_fit.get_ship_mut() {
             Some(core_ship) => core_ship,
-            None => return Err(GetFitChangeShipError::NoShip(core_fit.get_fit_id())),
+            None => return Err(GetFitChangeShipError::FitNoShip(core_fit.get_fit_id())),
         };
         Ok(self.ictx_cmd.execute(&mut core_ship))
     }
@@ -78,9 +78,9 @@ impl ICmdShipChangeFFitCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeShipError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetFitError),
+    FitGetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no ship set")]
-    NoShip(FitId),
+    FitNoShip(FitId),
 }
 
 impl ICmdShipChangeFItemCtxRIds {
@@ -96,7 +96,7 @@ impl ICmdShipChangeFItemCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeShipError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetShipError),
+    ItemGetFailed(#[from] rc::err::GetShipError),
 }
 
 impl ICmdShipChangeICtx {
@@ -106,7 +106,7 @@ impl ICmdShipChangeICtx {
     ) -> Result<ChangedItemIdsResp, FitChangeShipError> {
         let mut core_ship = match core_fit.get_ship_mut() {
             Some(core_ship) => core_ship,
-            None => return Err(FitChangeShipError::NoShip(core_fit.get_fit_id())),
+            None => return Err(FitChangeShipError::FitNoShip(core_fit.get_fit_id())),
         };
         Ok(self.execute(&mut core_ship))
     }
@@ -138,7 +138,7 @@ impl ICmdShipChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeShipError {
     #[error("fit {0} has no ship set")]
-    NoShip(FitId),
+    FitNoShip(FitId),
 }
 
 #[derive(thiserror::Error, Debug)]

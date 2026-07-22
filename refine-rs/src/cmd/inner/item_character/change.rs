@@ -70,7 +70,7 @@ impl ICmdCharacterChangeFFitCtxRIds {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         let mut core_character = match core_fit.get_character_mut() {
             Some(core_character) => core_character,
-            None => return Err(GetFitChangeCharacterError::NoCharacter(core_fit.get_fit_id())),
+            None => return Err(GetFitChangeCharacterError::FitNoCharacter(core_fit.get_fit_id())),
         };
         Ok(self.ictx_cmd.execute(&mut core_character))
     }
@@ -79,9 +79,9 @@ impl ICmdCharacterChangeFFitCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeCharacterError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetFitError),
+    FitGetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no character set")]
-    NoCharacter(FitId),
+    FitNoCharacter(FitId),
 }
 
 impl ICmdCharacterChangeFItemCtxRIds {
@@ -97,7 +97,7 @@ impl ICmdCharacterChangeFItemCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeCharacterError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetCharacterError),
+    ItemGetFailed(#[from] rc::err::GetCharacterError),
 }
 
 impl ICmdCharacterChangeICtx {
@@ -107,7 +107,7 @@ impl ICmdCharacterChangeICtx {
     ) -> Result<ChangedItemIdsResp, FitChangeCharacterError> {
         let mut core_character = match core_fit.get_character_mut() {
             Some(core_character) => core_character,
-            None => return Err(FitChangeCharacterError::NoCharacter(core_fit.get_fit_id())),
+            None => return Err(FitChangeCharacterError::FitNoCharacter(core_fit.get_fit_id())),
         };
         Ok(self.execute(&mut core_character))
     }
@@ -133,7 +133,7 @@ impl ICmdCharacterChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeCharacterError {
     #[error("fit {0} has no character set")]
-    NoCharacter(FitId),
+    FitNoCharacter(FitId),
 }
 
 #[derive(thiserror::Error, Debug)]

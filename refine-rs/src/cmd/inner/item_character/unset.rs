@@ -42,7 +42,7 @@ impl ICmdCharacterUnsetFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitUnsetCharacterError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetFitError),
+    FitGetFailed(#[from] rc::err::GetFitError),
 }
 
 impl ICmdCharacterUnsetICtx {
