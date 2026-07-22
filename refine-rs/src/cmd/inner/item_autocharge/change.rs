@@ -50,12 +50,12 @@ pub enum GetItemChangeAutochargeError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotAutocharge(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeAutochargeError> for GetItemChangeAutochargeError {
     fn from(err: ItemChangeAutochargeError) -> Self {
         match err {
-            ItemChangeAutochargeError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeAutochargeError::ItemIsNotAutocharge(inner) => Self::ItemIsNotAutocharge(inner),
         }
     }
 }
@@ -77,5 +77,5 @@ impl ICmdAutochargeChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeAutochargeError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotAutocharge(#[from] rc::err::ItemKindMatchError),
 }

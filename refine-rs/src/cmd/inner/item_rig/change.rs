@@ -53,12 +53,12 @@ pub enum GetItemChangeRigError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotRig(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeRigError> for GetItemChangeRigError {
     fn from(err: ItemChangeRigError) -> Self {
         match err {
-            ItemChangeRigError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeRigError::ItemIsNotRig(inner) => Self::ItemIsNotRig(inner),
         }
     }
 }
@@ -80,5 +80,5 @@ impl ICmdRigChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeRigError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotRig(#[from] rc::err::ItemKindMatchError),
 }

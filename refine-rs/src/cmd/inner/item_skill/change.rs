@@ -55,14 +55,14 @@ pub enum GetItemChangeSkillError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotSkill(#[source] rc::err::ItemKindMatchError),
     #[error("{0}")]
     TypeIdSetFailed(#[source] rc::err::SetSkillTypeIdError),
 }
 impl From<ItemChangeSkillError> for GetItemChangeSkillError {
     fn from(err: ItemChangeSkillError) -> Self {
         match err {
-            ItemChangeSkillError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeSkillError::ItemIsNotSkill(inner) => Self::ItemIsNotSkill(inner),
             ItemChangeSkillError::TypeIdSetFailed(inner) => Self::TypeIdSetFailed(inner),
         }
     }
@@ -91,7 +91,7 @@ impl ICmdSkillChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeSkillError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotSkill(#[from] rc::err::ItemKindMatchError),
     #[error("{0}")]
     TypeIdSetFailed(#[from] rc::err::SetSkillTypeIdError),
 }

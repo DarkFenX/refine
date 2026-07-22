@@ -94,7 +94,7 @@ pub enum GetItemChangeModuleError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotModule(#[source] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection: {0}")]
@@ -105,7 +105,7 @@ pub enum GetItemChangeModuleError {
 impl From<ItemChangeModuleError> for GetItemChangeModuleError {
     fn from(err: ItemChangeModuleError) -> Self {
         match err {
-            ItemChangeModuleError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeModuleError::ItemIsNotModule(inner) => Self::ItemIsNotModule(inner),
             ItemChangeModuleError::NotMutated(inner) => Self::NotMutated(inner),
             ItemChangeModuleError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
             ItemChangeModuleError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
@@ -191,7 +191,7 @@ impl ICmdModuleChangeICtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeModuleError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotModule(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection: {0}")]

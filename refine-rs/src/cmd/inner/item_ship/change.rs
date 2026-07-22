@@ -144,5 +144,5 @@ pub enum FitChangeShipError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeShipError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotShip(#[from] rc::err::ItemKindMatchError),
 }

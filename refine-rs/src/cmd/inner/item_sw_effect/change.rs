@@ -53,12 +53,12 @@ pub enum GetItemChangeSwEffectError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotSwEffect(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeSwEffectError> for GetItemChangeSwEffectError {
     fn from(err: ItemChangeSwEffectError) -> Self {
         match err {
-            ItemChangeSwEffectError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeSwEffectError::ItemIsNotSwEffect(inner) => Self::ItemIsNotSwEffect(inner),
         }
     }
 }
@@ -83,5 +83,5 @@ impl ICmdSwEffectChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeSwEffectError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotSwEffect(#[from] rc::err::ItemKindMatchError),
 }

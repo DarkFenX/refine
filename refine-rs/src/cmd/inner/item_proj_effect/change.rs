@@ -81,7 +81,7 @@ pub enum GetItemChangeProjEffectError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotProjEffect(#[source] rc::err::ItemKindMatchError),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[source] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
@@ -90,7 +90,7 @@ pub enum GetItemChangeProjEffectError {
 impl From<ItemChangeProjEffectError> for GetItemChangeProjEffectError {
     fn from(err: ItemChangeProjEffectError) -> Self {
         match err {
-            ItemChangeProjEffectError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeProjEffectError::ItemIsNotProjEffect(inner) => Self::ItemIsNotProjEffect(inner),
             ItemChangeProjEffectError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
             ItemChangeProjEffectError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
         }
@@ -123,7 +123,7 @@ impl ICmdProjEffectChangeICtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeProjEffectError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]

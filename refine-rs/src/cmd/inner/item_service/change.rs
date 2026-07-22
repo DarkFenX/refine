@@ -54,12 +54,12 @@ pub enum GetItemChangeServiceError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotService(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeServiceError> for GetItemChangeServiceError {
     fn from(err: ItemChangeServiceError) -> Self {
         match err {
-            ItemChangeServiceError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeServiceError::ItemIsNotService(inner) => Self::ItemIsNotService(inner),
         }
     }
 }
@@ -84,5 +84,5 @@ impl ICmdServiceChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeServiceError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotService(#[from] rc::err::ItemKindMatchError),
 }

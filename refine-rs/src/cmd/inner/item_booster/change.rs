@@ -57,12 +57,12 @@ pub enum GetItemChangeBoosterError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotBooster(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeBoosterError> for GetItemChangeBoosterError {
     fn from(err: ItemChangeBoosterError) -> Self {
         match err {
-            ItemChangeBoosterError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeBoosterError::ItemIsNotBooster(inner) => Self::ItemIsNotBooster(inner),
         }
     }
 }
@@ -88,5 +88,5 @@ impl ICmdBoosterChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeBoosterError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotBooster(#[from] rc::err::ItemKindMatchError),
 }

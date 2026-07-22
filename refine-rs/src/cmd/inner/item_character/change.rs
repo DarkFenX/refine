@@ -139,5 +139,5 @@ pub enum FitChangeCharacterError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeCharacterError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotCharacter(#[from] rc::err::ItemKindMatchError),
 }

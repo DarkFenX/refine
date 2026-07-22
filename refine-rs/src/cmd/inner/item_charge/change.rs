@@ -53,12 +53,12 @@ pub enum GetItemChangeChargeError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotCharge(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeChargeError> for GetItemChangeChargeError {
     fn from(err: ItemChangeChargeError) -> Self {
         match err {
-            ItemChangeChargeError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeChargeError::ItemIsNotCharge(inner) => Self::ItemIsNotCharge(inner),
         }
     }
 }
@@ -83,5 +83,5 @@ impl ICmdChargeChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeChargeError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotCharge(#[from] rc::err::ItemKindMatchError),
 }

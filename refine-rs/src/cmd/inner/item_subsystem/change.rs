@@ -53,12 +53,12 @@ pub enum GetItemChangeSubsystemError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotSubsystem(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeSubsystemError> for GetItemChangeSubsystemError {
     fn from(err: ItemChangeSubsystemError) -> Self {
         match err {
-            ItemChangeSubsystemError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeSubsystemError::ItemIsNotSubsystem(inner) => Self::ItemIsNotSubsystem(inner),
         }
     }
 }
@@ -83,5 +83,5 @@ impl ICmdSubsystemChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeSubsystemError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotSubsystem(#[from] rc::err::ItemKindMatchError),
 }

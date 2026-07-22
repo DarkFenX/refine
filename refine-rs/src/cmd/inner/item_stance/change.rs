@@ -136,5 +136,5 @@ pub enum FitChangeStanceError {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeStanceError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotStance(#[from] rc::err::ItemKindMatchError),
 }

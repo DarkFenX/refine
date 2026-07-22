@@ -90,7 +90,7 @@ pub enum GetItemChangeDroneError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotDrone(#[source] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection: {0}")]
@@ -101,7 +101,7 @@ pub enum GetItemChangeDroneError {
 impl From<ItemChangeDroneError> for GetItemChangeDroneError {
     fn from(err: ItemChangeDroneError) -> Self {
         match err {
-            ItemChangeDroneError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeDroneError::ItemIsNotDrone(inner) => Self::ItemIsNotDrone(inner),
             ItemChangeDroneError::NotMutated(inner) => Self::NotMutated(inner),
             ItemChangeDroneError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
             ItemChangeDroneError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
@@ -170,7 +170,7 @@ impl ICmdDroneChangeICtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeDroneError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotDrone(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection: {0}")]

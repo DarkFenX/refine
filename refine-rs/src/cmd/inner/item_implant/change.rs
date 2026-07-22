@@ -53,12 +53,12 @@ pub enum GetItemChangeImplantError {
     #[error("{0}")]
     ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    ItemIsNotImplant(#[source] rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeImplantError> for GetItemChangeImplantError {
     fn from(err: ItemChangeImplantError) -> Self {
         match err {
-            ItemChangeImplantError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeImplantError::ItemIsNotImplant(inner) => Self::ItemIsNotImplant(inner),
         }
     }
 }
@@ -83,5 +83,5 @@ impl ICmdImplantChangeICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeImplantError {
     #[error("{0}")]
-    ItemKindMismatch(#[from] rc::err::ItemKindMatchError),
+    ItemIsNotImplant(#[from] rc::err::ItemKindMatchError),
 }
