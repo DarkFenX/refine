@@ -74,7 +74,7 @@ def test_rollback_error_parsing(client):
     with api_src_fit.commands(
             hook_req=hook_req,
             status_code=400,
-            json_predicate={'code': 'JSN-002', 'message': 're:command #1 failed: .+'},
+            json_predicate={'code': 'JSN-002', 'message': 're:.+', 'cmd_index': 1},
     ) as api_src_fit_cmds:
         api_src_fit_cmds.remove_item(item_id=api_src_drone.id)
         api_src_fit_cmds.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])

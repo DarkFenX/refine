@@ -79,9 +79,8 @@ def test_data_types_json_closing_brace_absent(client):
         hook_data_str=hook_data_str,
         status_code=422,
         json_predicate={
-            'code': 'SIN-001',
+            'code': 'SNT-001',
             'message': 're:'
-                       'failed to add source: '
                        'source initialization failed: '
                        'failed to fetch EVE data: '
                        'fsd_built/types.json parsing failed:.+'})
@@ -162,9 +161,8 @@ def test_data_typedogma_json_closing_brace_wrong(client):
         hook_data_str=hook_data_str,
         status_code=422,
         json_predicate={
-            'code': 'SIN-001',
+            'code': 'SNT-001',
             'message': 're:'
-                       'failed to add source: '
                        'source initialization failed: '
                        'failed to fetch EVE data: '
                        'fsd_built/typedogma.json parsing failed:.+'})
@@ -217,9 +215,8 @@ def test_data_dogmaattributes_json_opening_brace_absent(client):
         hook_data_str=hook_data_str,
         status_code=422,
         json_predicate={
-            'code': 'SIN-001',
+            'code': 'SNT-001',
             'message': 're:'
-                       'failed to add source: '
                        'source initialization failed: '
                        'failed to fetch EVE data: '
                        'fsd_built/dogmaattributes.json parsing failed:.+'})
@@ -272,9 +269,8 @@ def test_data_dogmaeffects_json_opening_brace_wrong(client):
         hook_data_str=hook_data_str,
         status_code=422,
         json_predicate={
-            'code': 'SIN-001',
+            'code': 'SNT-001',
             'message': 're:'
-                       'failed to add source: '
                        'source initialization failed: '
                        'failed to fetch EVE data: '
                        'fsd_built/dogmaeffects.json parsing failed:.+'})
