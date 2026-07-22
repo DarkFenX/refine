@@ -51,9 +51,16 @@ impl ICmdImplantChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeImplantError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ItemChangeImplantError),
+    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+}
+impl From<ItemChangeImplantError> for GetItemChangeImplantError {
+    fn from(err: ItemChangeImplantError) -> Self {
+        match err {
+            ItemChangeImplantError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+        }
+    }
 }
 
 impl ICmdImplantChangeICtx {

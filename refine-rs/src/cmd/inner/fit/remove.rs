@@ -42,7 +42,7 @@ impl ICmdFitRemoveFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitRemoveFitError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetFitError),
+    FitGetFailed(#[from] rc::err::GetFitError),
 }
 
 impl ICmdFitRemoveICtx {

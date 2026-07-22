@@ -43,9 +43,16 @@ impl ICmdItemRemoveFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemRemoveItemError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    RemoveFailed(#[from] ItemRemoveItemError),
+    ItemRemoveFailed(#[source] rc::err::RemoveItemError),
+}
+impl From<ItemRemoveItemError> for GetItemRemoveItemError {
+    fn from(err: ItemRemoveItemError) -> Self {
+        match err {
+            ItemRemoveItemError::ItemRemoveFailed(inner) => Self::ItemRemoveFailed(inner),
+        }
+    }
 }
 
 impl ICmdItemRemoveICtx {
@@ -58,5 +65,5 @@ impl ICmdItemRemoveICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemRemoveItemError {
     #[error("{0}")]
-    RemoveFailed(#[from] rc::err::RemoveItemError),
+    ItemRemoveFailed(#[from] rc::err::RemoveItemError),
 }

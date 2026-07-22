@@ -92,9 +92,25 @@ impl ICmdModuleChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeModuleError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ItemChangeModuleError),
+    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    #[error("unable to mutate attributes: item {0} is not mutated")]
+    NotMutated(ItemId),
+    #[error("unable to add projection: {0}")]
+    ProjAddFailed(#[source] rc::err::AddProjError),
+    #[error("unable to remove projection: {0}")]
+    ProjRemoveFailed(#[source] rc::err::GetRangedProjError),
+}
+impl From<ItemChangeModuleError> for GetItemChangeModuleError {
+    fn from(err: ItemChangeModuleError) -> Self {
+        match err {
+            ItemChangeModuleError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeModuleError::NotMutated(inner) => Self::NotMutated(inner),
+            ItemChangeModuleError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
+            ItemChangeModuleError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
+        }
+    }
 }
 
 impl ICmdModuleChangeICtxRIds {

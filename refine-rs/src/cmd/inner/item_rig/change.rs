@@ -51,9 +51,16 @@ impl ICmdRigChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeRigError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ItemChangeRigError),
+    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+}
+impl From<ItemChangeRigError> for GetItemChangeRigError {
+    fn from(err: ItemChangeRigError) -> Self {
+        match err {
+            ItemChangeRigError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+        }
+    }
 }
 
 impl ICmdRigChangeICtx {

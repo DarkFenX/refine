@@ -51,9 +51,16 @@ impl ICmdChargeChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeChargeError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ItemChangeChargeError),
+    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+}
+impl From<ItemChangeChargeError> for GetItemChangeChargeError {
+    fn from(err: ItemChangeChargeError) -> Self {
+        match err {
+            ItemChangeChargeError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+        }
+    }
 }
 
 impl ICmdChargeChangeICtx {

@@ -51,9 +51,16 @@ impl ICmdSubsystemChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeSubsystemError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ItemChangeSubsystemError),
+    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+}
+impl From<ItemChangeSubsystemError> for GetItemChangeSubsystemError {
+    fn from(err: ItemChangeSubsystemError) -> Self {
+        match err {
+            ItemChangeSubsystemError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+        }
+    }
 }
 
 impl ICmdSubsystemChangeICtx {

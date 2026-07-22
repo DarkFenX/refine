@@ -88,9 +88,25 @@ impl ICmdDroneChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeDroneError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetItemError),
+    ItemGetFailed(#[from] rc::err::GetItemError),
     #[error("{0}")]
-    ChangeFailed(#[from] ItemChangeDroneError),
+    ItemKindMismatch(#[source] rc::err::ItemKindMatchError),
+    #[error("unable to mutate attributes: item {0} is not mutated")]
+    NotMutated(ItemId),
+    #[error("unable to add projection: {0}")]
+    ProjAddFailed(#[source] rc::err::AddProjError),
+    #[error("unable to remove projection: {0}")]
+    ProjRemoveFailed(#[source] rc::err::GetRangedProjError),
+}
+impl From<ItemChangeDroneError> for GetItemChangeDroneError {
+    fn from(err: ItemChangeDroneError) -> Self {
+        match err {
+            ItemChangeDroneError::ItemKindMismatch(inner) => Self::ItemKindMismatch(inner),
+            ItemChangeDroneError::NotMutated(inner) => Self::NotMutated(inner),
+            ItemChangeDroneError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
+            ItemChangeDroneError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
+        }
+    }
 }
 
 impl ICmdDroneChangeICtxRIds {

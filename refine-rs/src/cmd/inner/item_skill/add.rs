@@ -55,9 +55,16 @@ impl ICmdSkillAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddSkillError {
     #[error("{0}")]
-    GetFailed(#[from] rc::err::GetFitError),
+    FitGetFailed(#[from] rc::err::GetFitError),
     #[error("{0}")]
-    AddFailed(#[from] FitAddSkillError),
+    SkillAddFailed(#[source] rc::err::AddSkillError),
+}
+impl From<FitAddSkillError> for GetFitAddSkillError {
+    fn from(err: FitAddSkillError) -> Self {
+        match err {
+            FitAddSkillError::SkillAddFailed(inner) => Self::SkillAddFailed(inner),
+        }
+    }
 }
 
 impl ICmdSkillAddICtx {
