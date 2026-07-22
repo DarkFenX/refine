@@ -84,7 +84,7 @@ impl ApiError {
             Self::Query(_) => (StatusCode::BAD_REQUEST, "PRM-001"),
             Self::Json(_) => (StatusCode::BAD_REQUEST, "JSN-001"),
             Self::BatchParseFailed(_, _) => (StatusCode::BAD_REQUEST, "JSN-002"),
-            Self::BackrefRenderFailed(_, _) => (StatusCode::BAD_REQUEST, "JSN-002"),
+            Self::BackrefRenderFailed(_, _) => (StatusCode::BAD_REQUEST, "BRF-001"),
             ////////////////////////////////////////////////////////////////////////////////////////
             // Source-related
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ impl ApiError {
                 rs::err::RemoveSolError::SolNotFound(_) => (StatusCode::NOT_FOUND, "SOL-004"),
             },
             Self::SolSrcSwitch(rs_err) => match rs_err {
-                rs::err::SolSwitchSrcError::SrcGetFailed(_) => (StatusCode::BAD_REQUEST, "SOL-05"),
+                rs::err::SolSwitchSrcError::SrcGetFailed(_) => (StatusCode::BAD_REQUEST, "SOL-005"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Fleet-related
