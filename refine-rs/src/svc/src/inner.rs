@@ -8,8 +8,8 @@ use crate::src::SrcAlias;
 #[derive(Clone)]
 pub(crate) struct SrcInnerGuarded(Arc<SrcInner>);
 impl SrcInnerGuarded {
-    pub(crate) fn new(alias: SrcAlias, core_src: Arc<rc::Src>) -> Self {
-        Self(Arc::new(SrcInner::new(alias, core_src)))
+    pub(crate) fn new(alias: SrcAlias, time_created: time::UtcDateTime, core_src: Arc<rc::Src>) -> Self {
+        Self(Arc::new(SrcInner::new(alias, time_created, core_src)))
     }
     pub(crate) fn get_alias(&self) -> SrcAlias {
         self.0.alias
@@ -34,10 +34,10 @@ struct SrcInner {
     core_src: Arc<rc::Src>,
 }
 impl SrcInner {
-    fn new(alias: SrcAlias, core_src: Arc<rc::Src>) -> Self {
+    fn new(alias: SrcAlias, time_created: time::UtcDateTime, core_src: Arc<rc::Src>) -> Self {
         Self {
             alias,
-            time_created: time::UtcDateTime::now(),
+            time_created,
             core_src,
         }
     }

@@ -50,6 +50,8 @@ impl Refine {
         ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
     ) -> Result<Src<'_>, AddSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
+        // Source creation time is the time request was received
+        let time_created = time::UtcDateTime::now();
         // Disallow creating of sources with the same name until this one is created/fails
         if !self.check_alias_availability(&alias).await {
             return Err(AddSrcError::SrcAliasNotAvailable(alias));
@@ -66,7 +68,7 @@ impl Refine {
                     ed_handler,
                     ad_caching,
                 )
-                .map(|core_src| SrcInnerGuarded::new(alias, Arc::new(core_src)))
+                .map(|core_src| SrcInnerGuarded::new(alias, time_created, Arc::new(core_src)))
             })
             .await;
         // Write results and unlock alias

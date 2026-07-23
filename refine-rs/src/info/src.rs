@@ -4,6 +4,7 @@ use crate::src::{SrcAlias, SrcInfoMode};
 #[derive(Clone)]
 pub struct SrcInfo {
     pub alias: SrcAlias,
+    /// Time when the request to create the source was received, not when it has been completed.
     #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::format_time"))]
     pub time_created: time::UtcDateTime,
     pub origin: SrcOrigin,
