@@ -6,7 +6,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::query::SolInfoParams;
+use super::shared::{SolInfoParams, parse_src_alias_from_body};
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Default, serde::Deserialize)]
@@ -33,10 +33,11 @@ async fn internal_add_sol(
     params: SolInfoParams,
     payload: AddSolReqBody,
 ) -> Result<rs::SolInfo, ApiError> {
+    let src_alias = parse_src_alias_from_body(payload.src_alias)?;
     let (_, sol_info) = state
         .get_refine()
         .add_sol_and_get_info(
-            payload.src_alias.map(Into::into),
+            src_alias,
             payload.cmd,
             params.sol.unwrap_or_default(),
             params.fleet.unwrap_or_default(),

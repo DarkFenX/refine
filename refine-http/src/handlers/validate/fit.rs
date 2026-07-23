@@ -8,7 +8,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::query::ValInfoParams;
+use super::shared::ValInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn validate_fit(

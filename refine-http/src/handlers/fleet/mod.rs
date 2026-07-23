@@ -6,5 +6,5 @@ pub(crate) use remove::remove_fleet;
 mod add;
 mod change;
 mod get;
-mod query;
 mod remove;
+mod shared;

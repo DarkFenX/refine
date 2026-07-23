@@ -8,7 +8,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::query::FitInfoParams;
+use super::shared::FitInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn add_fit(

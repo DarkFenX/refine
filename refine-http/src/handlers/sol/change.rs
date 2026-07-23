@@ -9,7 +9,7 @@ use axum::{
 use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
-use super::query::SolInfoParams;
+use super::shared::SolInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Deserialize)]

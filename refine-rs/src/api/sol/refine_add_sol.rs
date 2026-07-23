@@ -13,13 +13,7 @@ impl Refine {
         let inner_src = self.internal_get_src(src_alias).await?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
-        let core_sol = self
-            .tpool
-            .exec_standard(move || {
-                let core_sol = cmd.execute(&core_src);
-                core_sol
-            })
-            .await;
+        let core_sol = self.tpool.exec_standard(move || cmd.execute(&core_src)).await;
         let src_alias = inner_src.get_alias().clone();
         let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
         let sol = SolarSystem::new(self, inner_sol).await;

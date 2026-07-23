@@ -9,7 +9,7 @@ use axum::{
 use axum_extra::extract::WithRejection;
 use serde::Deserialize;
 
-use super::query::SolInfoParams;
+use super::shared::{SolInfoParams, parse_src_alias_from_body};
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Deserialize)]
@@ -36,12 +36,13 @@ async fn internal_switch_sol_src(
     payload: ChangeSolSrcReqBody,
 ) -> Result<rs::SolInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
+    let src_alias = parse_src_alias_from_body(payload.src_alias)?;
     let sol_info = state
         .get_refine()
         .get_sol(sol_id)
         .await?
         .switch_src_and_get_info(
-            payload.src_alias.map(Into::into),
+            src_alias,
             params.sol.unwrap_or_default(),
             params.fleet.unwrap_or_default(),
             params.fit.unwrap_or_default(),

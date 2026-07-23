@@ -9,7 +9,7 @@ use axum::{
 use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
-use super::query::FitInfoParams;
+use super::shared::FitInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Deserialize)]

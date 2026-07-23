@@ -14,11 +14,8 @@ pub(crate) async fn remove_source(State(state): State<AppState>, Path(src_alias)
 }
 
 async fn internal_remove_source(state: AppState, src_alias: String) -> Result<(), ApiError> {
-    state
-        .get_refine()
-        .get_src(Some(src_alias.into()))
-        .await?
-        .remove()
-        .await?;
+    let src_alias =
+        rs::src::SrcAlias::try_pruned(&src_alias).ok_or(ApiError::PathSrcParseFailedMisc(src_alias))?;
+    state.get_refine().get_src(Some(src_alias)).await?.remove().await?;
     Ok(())
 }

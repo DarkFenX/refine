@@ -7,6 +7,6 @@ pub(crate) use switch_src::switch_sol_src;
 mod add;
 mod change;
 mod get;
-mod query;
 mod remove;
+mod shared;
 mod switch_src;

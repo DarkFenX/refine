@@ -8,7 +8,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::query::ItemInfoParams;
+use super::shared::ItemInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn change_item(

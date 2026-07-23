@@ -8,7 +8,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::query::SolInfoParams;
+use super::shared::SolInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn get_sol(

@@ -17,8 +17,14 @@ pub(crate) enum ApiError {
     #[error("{1}")]
     BackrefRenderFailed(usize, #[source] rs::err::BackrefRenderError),
     // Source-related
+    #[error("\"{0}\" cannot be used as a source alias")]
+    PathSrcParseFailedOnAdd(String),
+    #[error("alias \"{0}\" not found")]
+    PathSrcParseFailedMisc(String),
     #[error("{0}")]
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
+    #[error("alias \"{0}\" not found")]
+    BodySrcParseFailed(String),
     #[error("{0}")]
     SrcAddFailed(#[from] rs::src::err::AddSrcError),
     #[error("{0}")]
@@ -88,17 +94,20 @@ impl ApiError {
             ////////////////////////////////////////////////////////////////////////////////////////
             // Source-related
             ////////////////////////////////////////////////////////////////////////////////////////
+            Self::PathSrcParseFailedOnAdd(_) => (StatusCode::FORBIDDEN, "SRC-004"),
+            Self::PathSrcParseFailedMisc(_) => (StatusCode::NOT_FOUND, "SRC-003"),
             Self::PathSrcNotFound(err) => match err {
                 rs::src::err::GetSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-001"),
                 rs::src::err::GetSrcError::DefaultNotDefined => (StatusCode::NOT_FOUND, "SRC-002"),
             },
+            Self::BodySrcParseFailed(_) => (StatusCode::BAD_REQUEST, "SRC-005"),
             Self::SrcAddFailed(err) => match err {
-                rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => (StatusCode::FORBIDDEN, "SRC-003"),
+                rs::src::err::AddSrcError::SrcAliasNotAvailable(_) => (StatusCode::FORBIDDEN, "SRC-006"),
                 rs::src::err::AddSrcError::EdhInitFailed(_) => (StatusCode::BAD_REQUEST, "EDH-001"),
                 rs::src::err::AddSrcError::SrcInitFailed(_) => (StatusCode::UNPROCESSABLE_ENTITY, "SNT-001"),
             },
             Self::SrcRemoveFailed(err) => match err {
-                rs::src::err::RemoveSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-004"),
+                rs::src::err::RemoveSrcError::SrcNotFound(_) => (StatusCode::NOT_FOUND, "SRC-007"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Solar system-related
