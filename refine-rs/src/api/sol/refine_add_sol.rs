@@ -10,7 +10,8 @@ use crate::{
 impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
     pub async fn add_sol(&self, src_alias: Option<SrcAlias>, cmd: AddSolCmd) -> Result<SolarSystem<'_>, AddSolError> {
-        let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
+        let inner_src = self.internal_get_src(src_alias).await?;
+        let core_src = inner_src.get_core().clone();
         let core_sol = self
             .tpool
             .exec_standard(move || {
@@ -18,7 +19,8 @@ impl Refine {
                 core_sol
             })
             .await;
-        let inner_sol = self.create_and_store_inner_sol(core_sol).await;
+        let src_alias = inner_src.get_alias().clone();
+        let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
         let sol = SolarSystem::new(self, inner_sol).await;
         Ok(sol)
     }
@@ -32,7 +34,8 @@ impl Refine {
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Result<(SolarSystem<'_>, SolInfo), AddSolError> {
-        let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
+        let inner_src = self.internal_get_src(src_alias).await?;
+        let core_src = inner_src.get_core().clone();
         let (core_sol, info_ext) = self
             .tpool
             .exec_standard(move || {
@@ -41,18 +44,23 @@ impl Refine {
                 (core_sol, info_ext)
             })
             .await;
-        let inner_sol = self.create_and_store_inner_sol(core_sol).await;
+        let src_alias = inner_src.get_alias().clone();
+        let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
         let sol = SolarSystem::new(self, inner_sol).await;
         let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
         Ok((sol, info))
     }
-    async fn create_and_store_inner_sol(&self, core_sol: rc::SolarSystem) -> SolarSystemInnerGuarded {
+    async fn create_and_store_inner_sol(
+        &self,
+        src_alias: SrcAlias,
+        core_sol: rc::SolarSystem,
+    ) -> SolarSystemInnerGuarded {
         let mut id = SolarSystemId::new();
         let mut id_sol_map = self.id_sol_map.write().await;
         loop {
             match id_sol_map.entry(id) {
                 Entry::Vacant(entry) => {
-                    let inner_sol = SolarSystemInnerGuarded::new(id, core_sol);
+                    let inner_sol = SolarSystemInnerGuarded::new(id, src_alias, core_sol);
                     entry.insert(inner_sol.clone());
                     return inner_sol;
                 }

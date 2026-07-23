@@ -20,13 +20,15 @@ impl SolarSystem<'_> {
         item_mode: ItemInfoMode,
     ) -> Result<SolInfo, SolSwitchSrcError> {
         let sol_id = self.get_id();
-        let src = self.refine.internal_get_src(src_alias).await?.get_core().clone();
+        let inner_src = self.refine.internal_get_src(src_alias).await?;
+        let src = inner_src.get_core().clone();
         let sol_info = self
             .exec_standard_safe(move |core_sol| {
                 core_sol.set_src(&src);
                 SolInfo::from_id_and_core(sol_id, core_sol, sol_mode, fleet_mode, fit_mode, item_mode)
             })
             .await;
+        self.inner.set_src_alias(inner_src.get_alias().clone());
         Ok(sol_info)
     }
 }
