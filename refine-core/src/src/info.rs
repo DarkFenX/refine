@@ -1,12 +1,14 @@
 use crate::ad::AData;
 
 /// Info about data source: how it was made, and what warnings were encountered while making it.
+#[derive(Clone)]
 pub struct SrcInfo {
     pub origin: SrcOrigin,
     pub warnings: SrcWarnings,
 }
 
 /// Was data source read from cache or generated from passed EVE data.
+#[derive(Clone)]
 pub enum SrcOrigin {
     /// Data was generated from scratch, with a reason why.
     Generated(SrcOriginGeneratedReason),
@@ -15,6 +17,12 @@ pub enum SrcOrigin {
 }
 
 /// Reason why data was generated from scratch.
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Serialize),
+    serde(tag = "type", rename_all = "snake_case", content = "message")
+)]
+#[derive(Clone)]
 pub enum SrcOriginGeneratedReason {
     NoCacher,
     /// EVE data handler did not return EVE data version, with error message which was returned.

@@ -1,4 +1,4 @@
-use crate::src::{SrcAlias, SrcInfoMode};
+use crate::src::{SrcAlias, SrcInfoMode, SrcOriginGeneratedReason, SrcWarnings};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -15,27 +15,19 @@ pub struct SrcInfo {
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct SrcInfoExt {
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "rc::src::SrcWarnings::is_empty"))]
-    pub warnings: rc::src::SrcWarnings,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "SrcWarnings::is_empty"))]
+    pub warnings: SrcWarnings,
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename_all = "snake_case"))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Serialize),
+    serde(tag = "type", rename_all = "snake_case")
+)]
 #[derive(Clone)]
 pub enum SrcOrigin {
     Generated { reason: SrcOriginGeneratedReason },
     Cached { fingerprint: String },
-}
-
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[cfg_attr(feature = "serde", serde(tag = "type", rename_all = "snake_case"))]
-#[derive(Clone)]
-pub enum SrcOriginGeneratedReason {
-    NoCacher,
-    NoEveDataVersion { message: String },
-    NoCachedFingerprint { message: String },
-    FingerprintMismatch { message: String },
-    CacheLoadFailed { message: String },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -65,31 +57,9 @@ impl SrcInfo {
 impl SrcOrigin {
     fn from_core(core_origin: &rc::src::SrcOrigin) -> Self {
         match core_origin {
-            rc::src::SrcOrigin::Generated(core_reason) => Self::Generated {
-                reason: SrcOriginGeneratedReason::from_core(core_reason),
-            },
+            rc::src::SrcOrigin::Generated(reason) => Self::Generated { reason: reason.clone() },
             rc::src::SrcOrigin::Cached(fingerprint) => Self::Cached {
-                fingerprint: fingerprint.to_string(),
-            },
-        }
-    }
-}
-
-impl SrcOriginGeneratedReason {
-    fn from_core(core_reason: &rc::src::SrcOriginGeneratedReason) -> Self {
-        match core_reason {
-            rc::src::SrcOriginGeneratedReason::NoCacher => Self::NoCacher,
-            rc::src::SrcOriginGeneratedReason::NoEveDataVersion(message) => Self::NoEveDataVersion {
-                message: message.to_string(),
-            },
-            rc::src::SrcOriginGeneratedReason::NoCachedFingerprint(message) => Self::NoCachedFingerprint {
-                message: message.to_string(),
-            },
-            rc::src::SrcOriginGeneratedReason::FingerprintMismatch(message) => Self::FingerprintMismatch {
-                message: message.to_string(),
-            },
-            rc::src::SrcOriginGeneratedReason::CacheLoadFailed(message) => Self::CacheLoadFailed {
-                message: message.to_string(),
+                fingerprint: fingerprint.clone(),
             },
         }
     }
