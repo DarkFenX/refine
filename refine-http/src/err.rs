@@ -18,13 +18,13 @@ pub(crate) enum ApiError {
     BackrefRenderFailed(usize, #[source] rs::err::BackrefRenderError),
     // Source-related
     #[error("\"{0}\" cannot be used as a source alias: {1}")]
-    PathSrcParseFailedOnAdd(String, #[source] rs::src::err::SrcAliasPruneError),
+    PathSrcParseFailedOnAdd(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error("alias \"{0}\" not found")]
-    PathSrcParseFailedMisc(#[source] rs::src::err::SrcAliasPruneError),
+    PathSrcParseFailedMisc(#[source] rs::src::err::SrcAliasPruneInitError),
     #[error("{0}")]
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
     #[error("alias \"{0}\" not found")]
-    BodySrcParseFailed(String, #[source] rs::src::err::SrcAliasPruneError),
+    BodySrcParseFailed(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error("{0}")]
     SrcAddFailed(#[from] rs::src::err::AddSrcError),
     #[error("{0}")]

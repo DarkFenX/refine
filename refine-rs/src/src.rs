@@ -4,5 +4,5 @@ pub use crate::{
 };
 
 pub mod err {
-    pub use crate::api::{AddSrcError, GetSrcError, RemoveSrcError, SrcAliasPruneError};
+    pub use crate::api::{AddSrcError, GetSrcError, RemoveSrcError, SrcAliasPruneInitError, SrcAliasStrictInitError};
 }

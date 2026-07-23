@@ -7,7 +7,9 @@ pub use sol::ParseSolarSystemIdError;
 pub use sol::{
     AddSolError, ChangeSolError, GetSolError, RemoveSolError, SolSwitchSrcError, SolarSystem, SolarSystemId,
 };
-pub use src::{AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias, SrcAliasPruneError};
+pub use src::{
+    AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError,
+};
 
 mod dev;
 mod fit;

@@ -1,5 +1,3 @@
-const MAX_LEN: usize = 100;
-
 /// Source alias is a string, which can contain:
 ///
 /// - lowercase letters `a-z`;
@@ -11,7 +9,10 @@ const MAX_LEN: usize = 100;
 /// Length is also limited, max is 100 characters.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
-pub struct SrcAlias(heapless::String<MAX_LEN>);
+pub struct SrcAlias(heapless::String<{ SrcAlias::MAX_LEN }>);
+impl SrcAlias {
+    pub const MAX_LEN: usize = 100;
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
@@ -36,7 +37,7 @@ impl SrcAlias {
     /// - if result is longer than 100 characters, only first 100 characters are used.
     ///
     /// If result is an empty string (string of 0 length), None is returned.
-    pub fn try_pruned(src_alias: &str) -> Result<Self, SrcAliasPruneError> {
+    pub fn try_pruned(src_alias: &str) -> Result<Self, SrcAliasPruneInitError> {
         let mut string: String = src_alias
             .chars()
             .map(|c| match c {
@@ -47,10 +48,10 @@ impl SrcAlias {
         string.make_ascii_lowercase();
         let mut slice = string.trim_start_matches("_-.").trim_end_matches("_-.");
         if slice.is_empty() {
-            return Err(SrcAliasPruneError);
+            return Err(SrcAliasPruneInitError);
         }
-        if slice.len() > MAX_LEN {
-            slice = &slice[..MAX_LEN];
+        if slice.len() > Self::MAX_LEN {
+            slice = &slice[..Self::MAX_LEN];
         }
         Ok(SrcAlias(slice.try_into().unwrap()))
     }
@@ -58,4 +59,45 @@ impl SrcAlias {
 
 #[derive(thiserror::Error, Debug)]
 #[error("alias is empty after pruning")]
-pub struct SrcAliasPruneError;
+pub struct SrcAliasPruneInitError;
+
+impl SrcAlias {
+    /// Do not try to fix passed string, fail alias instantiation with an error if any of checks do
+    /// not pass.
+    pub fn try_strict(src_alias: &str) -> Result<Self, SrcAliasStrictInitError> {
+        if src_alias.is_empty() {
+            return Err(SrcAliasStrictInitError::IsEmpty);
+        }
+        if src_alias.len() > Self::MAX_LEN {
+            return Err(SrcAliasStrictInitError::TooLong(src_alias.len()));
+        }
+        for c in src_alias.chars() {
+            match c {
+                'a'..='z' | '0'..='9' | '_' | '-' | '.' => (),
+                _ => return Err(SrcAliasStrictInitError::InvalidChar(c)),
+            }
+        }
+        let mut char_iter = src_alias.chars();
+        if let Some(c @ '_' | c @ '-' | c @ '.') = char_iter.next() {
+            return Err(SrcAliasStrictInitError::InvalidFirstChar(c));
+        }
+        if let Some(c @ '_' | c @ '-' | c @ '.') = char_iter.last() {
+            return Err(SrcAliasStrictInitError::InvalidLastChar(c));
+        }
+        Ok(SrcAlias(src_alias.try_into().unwrap()))
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum SrcAliasStrictInitError {
+    #[error("string is empty")]
+    IsEmpty,
+    #[error("string has length of {0}, which is longer than max allowed {max}", max = SrcAlias::MAX_LEN)]
+    TooLong(usize),
+    #[error("invalid char \"{0}\"")]
+    InvalidChar(char),
+    #[error("invalid first char \"{0}\"")]
+    InvalidFirstChar(char),
+    #[error("invalid last char \"{0}\"")]
+    InvalidLastChar(char),
+}
