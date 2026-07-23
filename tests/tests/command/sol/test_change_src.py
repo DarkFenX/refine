@@ -35,6 +35,17 @@ def test_error_params_malformed(client):
     assert api_sw_effect.update().attrs[eve_attr_id].modified == approx(50)
 
 
+def test_src_alias(client):
+    eve_d1 = client.mk_eve_data()
+    eve_d2 = client.mk_eve_data()
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_d1)
+    api_sol.change_src(data=eve_d2)
+    # Verification
+    assert api_sol.src_alias == eve_d2.alias
+    assert api_sol.update().src_alias == eve_d2.alias
+
+
 def test_ship_loaded_to_loaded(client):
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()

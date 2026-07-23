@@ -28,6 +28,16 @@ def test_error_params_malformed(client):
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
 
 
+def test_src_alias(client, consts):
+    eve_data = client.mk_eve_data()
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_data)
+    # Verification
+    assert api_sol.src_alias == eve_data.alias
+    assert api_sol.update(sol_info_mode=consts.ApiSolInfoMode.id).src_alias == eve_data.alias
+    assert api_sol.update(sol_info_mode=consts.ApiSolInfoMode.full).src_alias == eve_data.alias
+
+
 def test_fleet(client):
     client.create_sources()
     api_sol = client.create_sol()
