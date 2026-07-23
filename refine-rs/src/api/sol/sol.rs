@@ -1,5 +1,6 @@
 use crate::{
     Refine, SolarSystemId,
+    src::SrcAlias,
     svc::{SolOwnedMutexGuard, SolarSystemInnerGuarded},
 };
 
@@ -10,6 +11,9 @@ pub struct SolarSystem<'r> {
 impl<'r> SolarSystem<'r> {
     pub fn get_id(&self) -> SolarSystemId {
         self.inner.get_id()
+    }
+    pub fn get_src_alias(&self) -> &SrcAlias {
+        self.inner.get_src_alias()
     }
 }
 // Private part

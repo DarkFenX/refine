@@ -21,10 +21,13 @@ impl SolarSystem<'_> {
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Result<(CmdResps, SolInfo), ChangeSolError> {
+        // Variables for move
         let sol_id = self.get_id();
+        let src_alias = self.get_src_alias().clone();
         self.exec_standard_fallible(move |core_sol| {
             let cmd_resps = execute_commands(core_sol, cmds)?;
-            let sol_info = SolInfo::from_id_and_core(sol_id, core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+            let sol_info =
+                SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
             Ok((cmd_resps, sol_info))
         })
         .await

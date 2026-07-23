@@ -49,7 +49,7 @@ async fn main() {
         .await
         .unwrap();
     let fit = sol.get_fit(resps.get(1).unwrap().get_fit_id().unwrap()).await.unwrap();
-    tracing::error!("fit ID {}", fit.get_fit_id());
+    tracing::error!("fit ID {}", fit.get_id());
     // fleet.remove(rs::RemoveFleetCmd::new());
     // Cleanup
     sol.remove();

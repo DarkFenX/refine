@@ -5,7 +5,7 @@ pub struct Item<'r, 's> {
     pub(super) id: ItemId,
 }
 impl<'r, 's> Item<'r, 's> {
-    pub fn get_item_id(&self) -> ItemId {
+    pub fn get_id(&self) -> ItemId {
         self.id
     }
 }

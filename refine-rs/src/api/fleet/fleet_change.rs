@@ -3,6 +3,7 @@ use crate::{ChangeFleetCmd, Fleet, FleetInfo, FleetInfoMode, err::FleetChangeFle
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-chg", level = "trace", skip_all)]
     pub async fn change(&mut self, cmd: ChangeFleetCmd) -> Result<(), ChangeFleetError> {
+        // Variables for move
         let fleet_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {
@@ -20,6 +21,7 @@ impl Fleet<'_, '_> {
         cmd: ChangeFleetCmd,
         fleet_mode: FleetInfoMode,
     ) -> Result<FleetInfo, ChangeFleetError> {
+        // Variables for move
         let fleet_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {

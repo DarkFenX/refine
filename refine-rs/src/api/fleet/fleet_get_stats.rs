@@ -5,6 +5,7 @@ use crate::{
 
 impl Fleet<'_, '_> {
     pub async fn get_stats(&mut self, cmd: GetFleetStatsCmd) -> FleetStats {
+        // Variables for move
         let fleet_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

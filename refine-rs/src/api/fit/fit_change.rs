@@ -6,6 +6,7 @@ use crate::{
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
     pub async fn change(&mut self, cmds: Vec<ChangeFitEnumCmd>) -> Result<CmdResps, ChangeFitError> {
+        // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {
@@ -24,6 +25,7 @@ impl Fit<'_, '_> {
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Result<(CmdResps, FitInfo), ChangeFitError> {
+        // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {

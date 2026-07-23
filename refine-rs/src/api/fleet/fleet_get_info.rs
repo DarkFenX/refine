@@ -2,6 +2,7 @@ use crate::{Fleet, FleetInfo, FleetInfoMode};
 
 impl Fleet<'_, '_> {
     pub async fn get_info(&mut self, fleet_mode: FleetInfoMode) -> FleetInfo {
+        // Variables for move
         let fleet_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

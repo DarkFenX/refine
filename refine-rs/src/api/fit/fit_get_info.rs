@@ -2,6 +2,7 @@ use crate::{Fit, FitInfo, FitInfoMode, ItemInfoMode};
 
 impl Fit<'_, '_> {
     pub async fn get_info(&mut self, fit_mode: FitInfoMode, item_mode: ItemInfoMode) -> FitInfo {
+        // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

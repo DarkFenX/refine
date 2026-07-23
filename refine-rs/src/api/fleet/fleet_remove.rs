@@ -3,6 +3,7 @@ use crate::{Fleet, RemoveFleetCmd};
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-rmv", level = "trace", skip_all)]
     pub async fn remove(self, cmd: RemoveFleetCmd) {
+        // Variables for move
         let fleet_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

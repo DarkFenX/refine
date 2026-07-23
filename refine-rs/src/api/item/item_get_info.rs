@@ -2,6 +2,7 @@ use crate::{Item, ItemInfo, ItemInfoMode};
 
 impl Item<'_, '_> {
     pub async fn get_info(&mut self, item_mode: ItemInfoMode) -> ItemInfo {
+        // Variables for move
         let item_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

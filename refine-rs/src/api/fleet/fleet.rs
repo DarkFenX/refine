@@ -5,7 +5,7 @@ pub struct Fleet<'r, 's> {
     pub(super) id: FleetId,
 }
 impl<'r, 's> Fleet<'r, 's> {
-    pub fn get_fleet_id(&self) -> FleetId {
+    pub fn get_id(&self) -> FleetId {
         self.id
     }
 }

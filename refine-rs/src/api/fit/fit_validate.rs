@@ -6,6 +6,7 @@ use crate::{
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-val", level = "trace", skip_all)]
     pub async fn validate(&mut self, cmd: ValidateFitCmd, val_mode: ValInfoMode) -> FitValInfo {
+        // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

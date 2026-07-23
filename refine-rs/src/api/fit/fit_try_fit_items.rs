@@ -3,6 +3,7 @@ use crate::{Fit, ItemTypeId, val::TryFitItemsCmd};
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-try", level = "trace", skip_all)]
     pub async fn try_fit_items(&mut self, cmd: TryFitItemsCmd) -> Vec<ItemTypeId> {
+        // Variables for move
         let fit_id = self.id;
         // Try-fit-items method is modifying sol state even if it does not fail - due to how charge
         // checks are done. Always roll sol state back because of that

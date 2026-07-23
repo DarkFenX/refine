@@ -3,6 +3,7 @@ use crate::{Fit, RemoveFitCmd};
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-rmv", level = "trace", skip_all)]
     pub async fn remove(self, cmd: RemoveFitCmd) {
+        // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

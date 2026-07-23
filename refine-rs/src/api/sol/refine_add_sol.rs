@@ -11,6 +11,7 @@ impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
     pub async fn add_sol(&self, src_alias: Option<SrcAlias>, cmd: AddSolCmd) -> Result<SolarSystem<'_>, AddSolError> {
         let inner_src = self.internal_get_src(src_alias).await?;
+        // Variables for move
         let core_src = inner_src.get_core().clone();
         let core_sol = self
             .tpool
@@ -35,6 +36,7 @@ impl Refine {
         item_mode: ItemInfoMode,
     ) -> Result<(SolarSystem<'_>, SolInfo), AddSolError> {
         let inner_src = self.internal_get_src(src_alias).await?;
+        // Variables for move
         let core_src = inner_src.get_core().clone();
         let (core_sol, info_ext) = self
             .tpool
@@ -47,7 +49,7 @@ impl Refine {
         let src_alias = inner_src.get_alias().clone();
         let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
         let sol = SolarSystem::new(self, inner_sol).await;
-        let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
+        let info = SolInfo::from_ids_and_ext(sol.get_id(), sol.get_src_alias().clone(), info_ext);
         Ok((sol, info))
     }
     async fn create_and_store_inner_sol(

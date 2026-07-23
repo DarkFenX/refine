@@ -3,6 +3,7 @@ use crate::{Item, RemoveItemCmd, err::ItemRemoveItemError};
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-rmv", level = "trace", skip_all)]
     pub async fn remove(self, cmd: RemoveItemCmd) -> Result<(), RemoveItemError> {
+        // Variables for move
         let item_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

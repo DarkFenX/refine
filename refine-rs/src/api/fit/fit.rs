@@ -5,7 +5,7 @@ pub struct Fit<'r, 's> {
     pub(super) id: FitId,
 }
 impl<'r, 's> Fit<'r, 's> {
-    pub fn get_fit_id(&self) -> FitId {
+    pub fn get_id(&self) -> FitId {
         self.id
     }
 }

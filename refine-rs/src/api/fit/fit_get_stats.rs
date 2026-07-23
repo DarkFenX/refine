@@ -5,6 +5,7 @@ use crate::{
 
 impl Fit<'_, '_> {
     pub async fn get_stats(&mut self, cmd: GetFitStatsCmd) -> FitStats {
+        // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

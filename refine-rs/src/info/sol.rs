@@ -2,12 +2,13 @@ use rc::Lender;
 
 use crate::{
     DpsProfile, FitInfo, FitInfoMode, FleetInfo, FleetInfoMode, ItemInfoMode, ProjEffectInfo, SecZone, SolInfoMode,
-    SolarSystemId, Spool, SwEffectInfo,
+    SolarSystemId, Spool, SwEffectInfo, src::SrcAlias,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 pub struct SolInfo {
     pub id: SolarSystemId,
+    pub src_alias: SrcAlias,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SolInfoExt>,
 }
@@ -31,8 +32,9 @@ pub struct SolInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfo {
-    pub(crate) fn from_id_and_core(
+    pub(crate) fn from_ids_and_core(
         sol_id: SolarSystemId,
+        src_alias: SrcAlias,
         core_sol: &mut rc::SolarSystem,
         sol_mode: SolInfoMode,
         fleet_mode: FleetInfoMode,
@@ -41,15 +43,21 @@ impl SolInfo {
     ) -> Self {
         Self {
             id: sol_id,
+            src_alias,
             extended: match sol_mode {
                 SolInfoMode::Id => None,
                 SolInfoMode::Full => SolInfoExt::try_from_core(core_sol, sol_mode, fleet_mode, fit_mode, item_mode),
             },
         }
     }
-    pub(crate) fn from_id_and_ext(sol_id: SolarSystemId, sol_info_ext: Option<SolInfoExt>) -> Self {
+    pub(crate) fn from_ids_and_ext(
+        sol_id: SolarSystemId,
+        src_alias: SrcAlias,
+        sol_info_ext: Option<SolInfoExt>,
+    ) -> Self {
         Self {
             id: sol_id,
+            src_alias,
             extended: sol_info_ext,
         }
     }

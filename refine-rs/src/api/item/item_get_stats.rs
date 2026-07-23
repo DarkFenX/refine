@@ -5,6 +5,7 @@ use crate::{
 
 impl Item<'_, '_> {
     pub async fn get_stats(&mut self, cmd: GetItemStatsCmd) -> ItemStats {
+        // Variables for move
         let item_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {

@@ -3,6 +3,7 @@ use crate::{ChangeItemEnumCmd, ChangedItemIdsResp, Item, ItemInfo, ItemInfoMode,
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
     pub async fn change(&mut self, cmd: ChangeItemEnumCmd) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
+        // Variables for move
         let item_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {
@@ -18,6 +19,7 @@ impl Item<'_, '_> {
         cmd: ChangeItemEnumCmd,
         item_mode: ItemInfoMode,
     ) -> Result<(ChangedItemIdsResp, ItemInfo), ChangeItemEnumError> {
+        // Variables for move
         let item_id = self.id;
         self.sol
             .exec_standard_fallible(move |core_sol| {
