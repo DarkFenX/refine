@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use crate::{
     AddSolCmd, FitInfoMode, FleetInfoMode, ItemInfoMode, Refine, SolInfo, SolInfoExt, SolInfoMode, SolarSystem,
     SolarSystemId,
@@ -9,15 +11,15 @@ impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
     pub async fn add_sol(&self, src_alias: Option<SrcAlias>, cmd: AddSolCmd) -> Result<SolarSystem<'_>, AddSolError> {
         let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
-        let inner_sol = self
+        let core_sol = self
             .tpool
             .exec_standard(move || {
                 let core_sol = cmd.execute(&core_src);
-                SolarSystemInnerGuarded::new(core_sol)
+                core_sol
             })
             .await;
-        let id = self.store_inner_sol(inner_sol.clone()).await;
-        let sol = SolarSystem::new(self, id, inner_sol).await;
+        let inner_sol = self.create_and_store_inner_sol(core_sol).await;
+        let sol = SolarSystem::new(self, inner_sol).await;
         Ok(sol)
     }
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
@@ -31,28 +33,35 @@ impl Refine {
         item_mode: ItemInfoMode,
     ) -> Result<(SolarSystem<'_>, SolInfo), AddSolError> {
         let core_src = self.internal_get_src(src_alias).await?.get_core().clone();
-        let (inner_sol, info_ext) = self
+        let (core_sol, info_ext) = self
             .tpool
             .exec_standard(move || {
                 let mut core_sol = cmd.execute(&core_src);
                 let info_ext = SolInfoExt::try_from_core(&mut core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
-                let inner_sol = SolarSystemInnerGuarded::new(core_sol);
-                (inner_sol, info_ext)
+                (core_sol, info_ext)
             })
             .await;
-        let id = self.store_inner_sol(inner_sol.clone()).await;
-        let info = SolInfo::from_id_and_ext(id, info_ext);
-        let sol = SolarSystem::new(self, id, inner_sol).await;
+        let inner_sol = self.create_and_store_inner_sol(core_sol).await;
+        let sol = SolarSystem::new(self, inner_sol).await;
+        let info = SolInfo::from_id_and_ext(sol.get_id(), info_ext);
         Ok((sol, info))
     }
-    async fn store_inner_sol(&self, inner_sol: SolarSystemInnerGuarded) -> SolarSystemId {
+    async fn create_and_store_inner_sol(&self, core_sol: rc::SolarSystem) -> SolarSystemInnerGuarded {
         let mut id = SolarSystemId::new();
         let mut id_sol_map = self.id_sol_map.write().await;
-        while id_sol_map.contains_key(&id) {
-            id = SolarSystemId::new();
+        loop {
+            match id_sol_map.entry(id) {
+                Entry::Vacant(entry) => {
+                    let inner_sol = SolarSystemInnerGuarded::new(id, core_sol);
+                    entry.insert(inner_sol.clone());
+                    return inner_sol;
+                }
+                Entry::Occupied(_) => {
+                    id = SolarSystemId::new();
+                    continue;
+                }
+            }
         }
-        id_sol_map.insert(id, inner_sol);
-        id
     }
 }
 

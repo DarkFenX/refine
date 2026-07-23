@@ -7,7 +7,7 @@ impl Refine {
             Some(sol) => sol.clone(),
             None => return Err(GetSolError::SolNotFound(id)),
         };
-        let sol = SolarSystem::new(self, id, guarded_inner_sol).await;
+        let sol = SolarSystem::new(self, guarded_inner_sol).await;
         Ok(sol)
     }
 }

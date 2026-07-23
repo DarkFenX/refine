@@ -21,7 +21,7 @@ impl SolarSystem<'_> {
         fit_mode: FitInfoMode,
         item_mode: ItemInfoMode,
     ) -> Result<(CmdResps, SolInfo), ChangeSolError> {
-        let sol_id = self.id;
+        let sol_id = self.get_id();
         self.exec_standard_fallible(move |core_sol| {
             let cmd_resps = execute_commands(core_sol, cmds)?;
             let sol_info = SolInfo::from_id_and_core(sol_id, core_sol, sol_mode, fleet_mode, fit_mode, item_mode);

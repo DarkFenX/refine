@@ -12,7 +12,7 @@ impl Refine {
 
 impl SolarSystem<'_> {
     pub async fn remove(self) -> Result<(), RemoveSolError> {
-        self.refine.remove_sol(self.id).await
+        self.refine.remove_sol(self.get_id()).await
     }
 }
 

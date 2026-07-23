@@ -2,14 +2,16 @@ use std::{sync::Arc, time::Instant};
 
 use tokio::sync::{Mutex, MutexGuard, OwnedMutexGuard, TryLockError};
 
+use crate::SolarSystemId;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Guarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
 pub(crate) struct SolarSystemInnerGuarded(Arc<Mutex<SolarSystemInner>>);
 impl SolarSystemInnerGuarded {
-    pub(crate) fn new(core_sol: rc::SolarSystem) -> Self {
-        Self(Arc::new(Mutex::new(SolarSystemInner::new(core_sol))))
+    pub(crate) fn new(id: SolarSystemId, core_sol: rc::SolarSystem) -> Self {
+        Self(Arc::new(Mutex::new(SolarSystemInner::new(id, core_sol))))
     }
     pub(in crate::svc) fn try_lock(&self) -> Result<MutexGuard<'_, SolarSystemInner>, TryLockError> {
         self.0.try_lock()
@@ -46,15 +48,20 @@ impl std::ops::DerefMut for SolOwnedMutexGuard {
 // Unguarded
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SolarSystemInner {
+    id: SolarSystemId,
     last_accessed: Instant,
     pub(super) core_sol: Option<Box<rc::SolarSystem>>,
 }
 impl SolarSystemInner {
-    fn new(core_sol: rc::SolarSystem) -> Self {
+    fn new(id: SolarSystemId, core_sol: rc::SolarSystem) -> Self {
         Self {
+            id,
             last_accessed: Instant::now(),
             core_sol: Some(Box::new(core_sol)),
         }
+    }
+    pub(crate) fn get_id(&self) -> SolarSystemId {
+        self.id
     }
     pub(in crate::svc) fn get_last_accessed(&self) -> Instant {
         self.last_accessed
