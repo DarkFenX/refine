@@ -11,8 +11,8 @@ impl SrcInnerGuarded {
     pub(crate) fn new(alias: SrcAlias, core_src: Arc<rc::Src>) -> Self {
         Self(Arc::new(SrcInner { alias, core_src }))
     }
-    pub(crate) fn get_alias(&self) -> &SrcAlias {
-        &self.0.alias
+    pub(crate) fn get_alias(&self) -> SrcAlias {
+        self.0.alias
     }
     pub(crate) fn get_core(&self) -> &Arc<rc::Src> {
         &self.0.core_src

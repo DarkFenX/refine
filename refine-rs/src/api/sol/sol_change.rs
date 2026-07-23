@@ -23,7 +23,7 @@ impl SolarSystem<'_> {
     ) -> Result<(CmdResps, SolInfo), ChangeSolError> {
         // Variables for move
         let sol_id = self.get_id();
-        let src_alias = self.get_src_alias().clone();
+        let src_alias = self.get_src_alias();
         self.exec_standard_fallible(move |core_sol| {
             let cmd_resps = execute_commands(core_sol, cmds)?;
             let sol_info =

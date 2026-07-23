@@ -11,7 +11,7 @@ rc = { package = "refine-core", path = "../refine-core" }
 redh = { package = "refine-edh", path = "../refine-edh", optional = true }
 radc = { package = "refine-adc", path = "../refine-adc", optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
-heapless = ">=0.9.3"
+fixedstr =  { version = ">=0.5.11", features = ["fstr"] }
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }
 serde = { version = ">=1.0.229", features = ["derive"], optional = true }
 serde_json = { version = ">=1.0.150", optional = true }
@@ -30,7 +30,7 @@ serde = [
     "dep:serde_tuple",
     "dep:serde_with",
     "rc/serde",
-    "heapless/serde",
+    "fixedstr/serde",
     "uuid/serde",
 ]
 edh-phb-fs = [

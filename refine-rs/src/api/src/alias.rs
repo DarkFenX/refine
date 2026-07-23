@@ -6,10 +6,10 @@
 /// - hyphen `-` (except for leading and trailing position);
 /// - period `.` (except for leading and trailing position).
 ///
-/// Length is also limited, max is 100 characters.
+/// Length is also limited, max is 128 characters.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
-#[derive(Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
-pub struct SrcAlias(heapless::String<{ SrcAlias::MAX_LEN }>);
+#[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
+pub struct SrcAlias(fixedstr::fstr<{ SrcAlias::MAX_LEN }>);
 impl SrcAlias {
     pub const MAX_LEN: usize = 100;
 }
@@ -47,15 +47,15 @@ impl SrcAlias {
             .collect();
         string.make_ascii_lowercase();
         let mut slice = string
-            .trim_start_matches(|c| matches!(c, '_' | '-' | '.'))
-            .trim_end_matches(|c| matches!(c, '_' | '-' | '.'));
+            .trim_start_matches(['_', '-', '.'])
+            .trim_end_matches(['_', '-', '.']);
         if slice.is_empty() {
             return Err(SrcAliasPruneInitError);
         }
         if slice.len() > Self::MAX_LEN {
             slice = &slice[..Self::MAX_LEN];
         }
-        Ok(SrcAlias(slice.try_into().unwrap()))
+        Ok(SrcAlias(slice.into()))
     }
 }
 
@@ -86,7 +86,7 @@ impl SrcAlias {
         if let Some(c @ '_' | c @ '-' | c @ '.') = char_iter.last() {
             return Err(SrcAliasStrictInitError::InvalidLastChar(c));
         }
-        Ok(SrcAlias(src_alias.try_into().unwrap()))
+        Ok(SrcAlias(src_alias.into()))
     }
 }
 

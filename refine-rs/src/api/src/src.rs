@@ -13,7 +13,7 @@ pub struct Src<'r> {
     pub(super) inner: SrcInnerGuarded,
 }
 impl<'r> Src<'r> {
-    pub fn get_alias(&self) -> &SrcAlias {
+    pub fn get_alias(&self) -> SrcAlias {
         self.inner.get_alias()
     }
 }

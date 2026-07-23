@@ -65,8 +65,8 @@ impl SolarSystemInner {
     pub(crate) fn get_id(&self) -> SolarSystemId {
         self.id
     }
-    pub(crate) fn get_src_alias(&self) -> &SrcAlias {
-        &self.src_alias
+    pub(crate) fn get_src_alias(&self) -> SrcAlias {
+        self.src_alias
     }
     pub(crate) fn set_src_alias(&mut self, src_alias: SrcAlias) {
         self.src_alias = src_alias

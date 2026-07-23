@@ -10,7 +10,7 @@ impl SolarSystem<'_> {
     ) -> SolInfo {
         // Variables for move
         let sol_id = self.get_id();
-        let src_alias = self.get_src_alias().clone();
+        let src_alias = self.get_src_alias();
         self.exec_standard_safe(move |core_sol| {
             SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, sol_mode, fleet_mode, fit_mode, item_mode)
         })

@@ -24,14 +24,14 @@ impl SolarSystem<'_> {
         let src = inner_src.get_core().clone();
         // Variables for move
         let sol_id = self.get_id();
-        let src_alias = inner_src.get_alias().clone();
+        let src_alias = inner_src.get_alias();
         let sol_info = self
             .exec_standard_safe(move |core_sol| {
                 core_sol.set_src(&src);
                 SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, sol_mode, fleet_mode, fit_mode, item_mode)
             })
             .await;
-        self.inner.set_src_alias(inner_src.get_alias().clone());
+        self.inner.set_src_alias(inner_src.get_alias());
         Ok(sol_info)
     }
 }

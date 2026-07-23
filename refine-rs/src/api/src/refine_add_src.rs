@@ -54,27 +54,26 @@ impl Refine {
         if !self.check_alias_availability(&alias).await {
             return Err(AddSrcError::SrcAliasNotAvailable(alias));
         }
-        self.lock_alias(alias.clone()).await;
+        self.lock_alias(alias).await;
         // Create source in a heavy threadpool
-        let alias_cloned = alias.clone();
         let ad_caching = self.ad_caching.clone();
         let result = self
             .tpool
             .exec_heavy(move || {
                 create_core_src(
                     #[cfg(feature = "adc-fs")]
-                    &alias_cloned,
+                    &alias,
                     ed_handler,
                     ad_caching,
                 )
-                .map(|core_src| SrcInnerGuarded::new(alias_cloned, Arc::new(core_src)))
+                .map(|core_src| SrcInnerGuarded::new(alias, Arc::new(core_src)))
             })
             .await;
         // Write results and unlock alias
         match result {
             Ok(inner_src) => {
                 let mut alias_data = self.src_alias_data.write().await;
-                alias_data.map.insert(alias.clone(), inner_src.clone());
+                alias_data.map.insert(alias, inner_src.clone());
                 if make_default {
                     alias_data.default = Some(inner_src.clone());
                 }
