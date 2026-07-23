@@ -50,6 +50,7 @@ async fn main() {
     let router = Router::new()
         .route("/", get(handlers::root))
         .route("/src/{alias}", post(handlers::add_source))
+        .route("/src/{alias}", get(handlers::get_source))
         .route("/src/{alias}", delete(handlers::remove_source))
         .route("/sol", post(handlers::add_sol))
         .route("/sol/{sol_id}", get(handlers::get_sol))

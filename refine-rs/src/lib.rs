@@ -49,6 +49,7 @@ pub use rc::{
     OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
     SlotIndex, Spool, UnitInterval, Value,
 };
+pub use src::{Src, SrcAlias};
 pub use util::TriStateField;
 
 mod api;
