@@ -5,7 +5,7 @@ use crate::{
     dbg::DebugResult,
     def::AU,
     num::PValue,
-    util::{FLOAT_TOLERANCE, round, sig_round},
+    util::{FLOAT_TOLERANCE, round, sig_round, sum_pai_owned, sum_pai_ref},
 };
 
 /// Float value.
@@ -78,7 +78,10 @@ impl PartialOrd for Value {
 }
 
 impl std::hash::Hash for Value {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: std::hash::Hasher,
+    {
         OrderedFloat(self.0).hash(state);
     }
 }
@@ -220,23 +223,35 @@ impl std::ops::DivAssign<Value> for Value {
 }
 // Sum
 impl std::iter::Sum<Value> for Value {
-    fn sum<I: Iterator<Item = Value>>(iter: I) -> Self {
-        Value(iter.map(|v| v.0).sum())
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Value>,
+    {
+        Value(sum_pai_owned(iter.map(|v| v.0)))
     }
 }
 impl<'a> std::iter::Sum<&'a Value> for Value {
-    fn sum<I: Iterator<Item = &'a Value>>(iter: I) -> Self {
-        Value(iter.map(|v| v.0).sum())
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Value>,
+    {
+        Value(sum_pai_ref(iter.map(|v| &v.0)))
     }
 }
 // Product
 impl std::iter::Product<Value> for Value {
-    fn product<I: Iterator<Item = Value>>(iter: I) -> Self {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = Value>,
+    {
         Value(iter.map(|v| v.0).product())
     }
 }
 impl<'a> std::iter::Product<&'a Value> for Value {
-    fn product<I: Iterator<Item = &'a Value>>(iter: I) -> Self {
+    fn product<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = &'a Value>,
+    {
         Value(iter.map(|v| v.0).product())
     }
 }

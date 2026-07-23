@@ -2,6 +2,9 @@ use crate::def::SERVER_TICK_HZ;
 
 pub(crate) const FLOAT_TOLERANCE: f64 = 0.0000000001;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Math
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Round number to a specified significant digit.
 pub(crate) fn sig_round(val: f64, sig_digits: u32) -> f64 {
     if val == 0.0 {
@@ -16,6 +19,20 @@ pub(crate) fn sig_round(val: f64, sig_digits: u32) -> f64 {
 pub(crate) fn round(val: f64, digits: i32) -> f64 {
     let mul = 10.0_f64.powi(digits);
     (val * mul).round() / mul
+}
+
+// Sum with positive zero as additive identity, to avoid having -0.0 exposed in e.g. stats
+pub(crate) fn sum_pai_owned<I>(iter: I) -> f64
+where
+    I: Iterator<Item = f64>,
+{
+    iter.fold(0.0, |a, b| a + b)
+}
+pub(crate) fn sum_pai_ref<'a, I>(iter: I) -> f64
+where
+    I: Iterator<Item = &'a f64>,
+{
+    iter.fold(0.0, |a, b| a + b)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

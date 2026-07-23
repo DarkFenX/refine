@@ -81,7 +81,10 @@ impl PartialOrd for UnitInterval {
 }
 
 impl std::hash::Hash for UnitInterval {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: std::hash::Hasher,
+    {
         OrderedFloat(self.0).hash(state);
     }
 }

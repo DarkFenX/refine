@@ -5,7 +5,7 @@ use crate::{
     dbg::DebugResult,
     def::{SERVER_TICK_HZ, SERVER_TICK_S},
     num::{Count, Value},
-    util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round},
+    util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round, sum_pai_owned},
 };
 
 /// Positive float value.
@@ -100,7 +100,10 @@ impl PartialOrd for PValue {
 }
 
 impl std::hash::Hash for PValue {
-    fn hash<H: std::hash::Hasher>(&self, state: &mut H) {
+    fn hash<H>(&self, state: &mut H)
+    where
+        H: std::hash::Hasher,
+    {
         OrderedFloat(self.0).hash(state);
     }
 }
@@ -218,8 +221,11 @@ impl std::ops::Rem<PValue> for PValue {
 }
 // Sum
 impl std::iter::Sum<PValue> for PValue {
-    fn sum<I: Iterator<Item = PValue>>(iter: I) -> Self {
-        PValue(iter.map(|v| v.0).sum())
+    fn sum<I>(iter: I) -> Self
+    where
+        I: Iterator<Item = PValue>,
+    {
+        PValue(sum_pai_owned(iter.map(|v| v.0)))
     }
 }
 
