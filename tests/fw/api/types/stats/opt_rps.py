@@ -4,7 +4,7 @@ import typing
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfileAlias
     from .opt_shared import StatTimeBurst, StatTimeSim
 
 
@@ -18,6 +18,6 @@ class StatsOptionRps:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionErps:
 
-    incoming_dps: DpsProfile | type[Absent] = Absent
+    incoming_dps: DpsProfileAlias | type[Absent] = Absent
     time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     shield_perc: float | type[Absent] = Absent

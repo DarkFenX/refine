@@ -59,7 +59,7 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfile, MutaAdd, MutaChange, ReqHook
+    from fw.api.aliases import DpsProfileAlias, MutaAdd, MutaChange, ReqHook
     from fw.api.types.item import Item
     from fw.api.types.sol import SolarSystem
     from fw.consts import (
@@ -147,7 +147,7 @@ class SolCmdCtx(BaseCmdCtx):
     def change_sol(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dps: DpsProfile | type[Absent] = Absent,
+            default_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
             default_spool: str | type[Absent] = Absent,
             default_npc_prop: ApiNpcProp | type[Absent] = Absent,
             default_optional_reloads: ApiOptionalReload | type[Absent] = Absent,
@@ -192,7 +192,7 @@ class SolCmdCtx(BaseCmdCtx):
             self, *,
             fleet_id: str | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: DpsProfile | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
     ) -> Fit:
         command = SolFitAddCmd(
             fleet_id=fleet_id,
@@ -206,7 +206,7 @@ class SolCmdCtx(BaseCmdCtx):
             fit_id: str,
             fleet_id: str | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: DpsProfile | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
     ) -> None:
         command = SolFitChangeCmd(
             fit_id=fit_id,

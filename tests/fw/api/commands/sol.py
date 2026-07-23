@@ -5,7 +5,7 @@ from fw.util import conditional_insert
 from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfileAlias
     from fw.consts import ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.util import Absent
 
@@ -14,7 +14,7 @@ if typing.TYPE_CHECKING:
 class BaseSolCmd(BaseCommand):
 
     sec_zone: ApiSecZone | type[Absent]
-    default_incoming_dps: DpsProfile | type[Absent]
+    default_incoming_dps: DpsProfileAlias | type[Absent]
     default_spool: str | type[Absent]
     default_npc_prop: ApiNpcProp | type[Absent]
     default_optional_reloads: ApiOptionalReload | type[Absent]

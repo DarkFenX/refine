@@ -26,7 +26,8 @@ class EveDataManager:
             alias = str(data_id)
             data_id += 1
         if alias in self.__datas:
-            raise AliasExistsError(f'alias "{alias}" is already registered')
+            msg = f'alias "{alias}" is already registered'
+            raise AliasExistsError(msg)
         data = self.__datas[alias] = EveObjects(alias=alias)
         return data
 

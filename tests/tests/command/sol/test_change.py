@@ -4,6 +4,13 @@ if typing.TYPE_CHECKING:
     from fw.request import Request
 
 
+def test_default_incoming_dps(client):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_sol.change(default_incoming_dps=(0, 0, 1.5, 0.5))
+    assert api_sol.update().default_incoming_dps == (0, 0, 1.5, 0.5)
+
+
 def test_error_params_malformed(client, consts):
     client.create_sources()
     api_sol = client.create_sol(sec_zone=consts.ApiSecZone.hisec)

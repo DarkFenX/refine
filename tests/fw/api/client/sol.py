@@ -9,7 +9,7 @@ from fw.util import Absent, Default, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfileAlias
     from fw.api.commands import BaseCommand
     from fw.consts import (
         ApiFitInfoMode,
@@ -37,7 +37,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default],
             sec_zone: ApiSecZone | type[Absent],
-            default_incoming_dps: DpsProfile | type[Absent],
+            default_incoming_dps: DpsProfileAlias | type[Absent],
             default_spool: str | type[Absent],
             default_npc_prop: ApiNpcProp | type[Absent],
             default_optional_reloads: ApiOptionalReload | type[Absent],
@@ -82,7 +82,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             self, *,
             data: eve.EveObjects | type[Absent | Default] = Default,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dps: DpsProfile | type[Absent] = Absent,
+            default_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
             default_spool: str | type[Absent] = Absent,
             default_npc_prop: ApiNpcProp | type[Absent] = Absent,
             default_optional_reloads: ApiOptionalReload | type[Absent] = Absent,

@@ -2,7 +2,7 @@ import typing
 
 from fw.api.commands import ItemProjEffectAddCmd, ItemSwEffectAddCmd, SolSolChangeCmd
 from fw.api.types.cmd_ctx.sol_ctx import SolCmdCtx
-from fw.api.types.dmg_types import DmgTypes
+from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request
@@ -14,7 +14,7 @@ from fw.util import Absent, AttrDict, AttrHookDef, Default, is_subset
 if typing.TYPE_CHECKING:
     from fw import eve
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfile, ReqHook
+    from fw.api.aliases import DpsProfileAlias, ReqHook
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion, ApiSecZone
     from fw.response import Response
@@ -24,8 +24,7 @@ class SolarSystem(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict) -> None:
         super().__init__(data=data, hooks={
-            'default_incoming_dps': AttrHookDef(
-                func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3])),
+            'default_incoming_dps': AttrHookDef(func=lambda dp: DpsProfile(data=dp)),
             'fits': AttrHookDef(
                 func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]}),
             'fleets': AttrHookDef(
@@ -112,7 +111,7 @@ class SolarSystem(AttrDict):
     def change(
             self, *,
             sec_zone: ApiSecZone | type[Absent] = Absent,
-            default_incoming_dps: DpsProfile | type[Absent] = Absent,
+            default_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
             default_spool: str | type[Absent] = Absent,
             default_npc_prop: ApiNpcProp | type[Absent] = Absent,
             default_optional_reloads: ApiOptionalReload | type[Absent] = Absent,
@@ -304,7 +303,7 @@ class SolarSystem(AttrDict):
             self, *,
             fleet_id: str | type[Absent] = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: DpsProfile | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
             item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             status_code: int = 201,

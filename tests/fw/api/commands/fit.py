@@ -5,7 +5,7 @@ from fw.util import conditional_insert
 from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfileAlias
     from fw.util import Absent
 
 
@@ -14,7 +14,7 @@ class BaseFitCmd(BaseCommand):
 
     fleet_id: str | type[Absent] | None
     sec_status: float | type[Absent]
-    rah_incoming_dps: DpsProfile | type[Absent] | None
+    rah_incoming_dps: DpsProfileAlias | type[Absent] | None
 
     def serialize(self) -> dict:
         body = super().serialize()

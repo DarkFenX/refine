@@ -4,10 +4,10 @@ import typing
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import DpsProfile
+    from fw.api.aliases import DpsProfileAlias
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionEhp:
 
-    incoming_dps: DpsProfile | type[Absent] = Absent
+    incoming_dps: DpsProfileAlias | type[Absent] = Absent

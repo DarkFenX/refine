@@ -20,7 +20,7 @@ from fw.api.commands import (
     ItemSubsystemAddCmd,
 )
 from fw.api.types.cmd_ctx.fit_ctx import FitCmdCtx
-from fw.api.types.dmg_types import DmgTypes
+from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
 from fw.api.types.stats import FitStats
@@ -40,7 +40,7 @@ from fw.util import Absent, AttrDict, AttrHookDef, is_subset
 
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfile, MutaAdd, ReqHook
+    from fw.api.aliases import DpsProfileAlias, MutaAdd, ReqHook
     from fw.api.types.stats import FitStatsOptions
     from fw.api.types.validation import ValOptions
     from fw.consts import ApiEffMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
@@ -52,7 +52,7 @@ class Fit(AttrDict):
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
         super().__init__(data=data, hooks={
             'rah_incoming_dps': AttrHookDef(
-                func=lambda dp: DmgTypes(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
+                func=lambda dp: DpsProfile(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
         self._client = client
         self._sol_id = sol_id
 
@@ -237,7 +237,7 @@ class Fit(AttrDict):
             self, *,
             fleet_id: str | type[Absent] | None = Absent,
             sec_status: float | type[Absent] = Absent,
-            rah_incoming_dps: DpsProfile | type[Absent] | None = Absent,
+            rah_incoming_dps: DpsProfileAlias | type[Absent] | None = Absent,
             fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.full,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
