@@ -36,3 +36,10 @@ def test_strip_trailing(client):
     client.create_sources()
     api_sol = client.create_sol(data=eve_data)
     assert api_sol.src_alias == 'test-tranquility'
+
+
+def test_length_limit(client):
+    eve_data = client.mk_eve_data(alias='a' * 150)
+    client.create_sources()
+    api_sol = client.create_sol(data=eve_data)
+    assert api_sol.src_alias == 'a' * 100
