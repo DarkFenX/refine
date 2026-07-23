@@ -1,8 +1,9 @@
-use crate::src::SrcInfoMode;
+use crate::src::{SrcAlias, SrcInfoMode};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct SrcInfo {
+    pub alias: SrcAlias,
     pub origin: SrcOrigin,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
     pub extended: Option<SrcInfoExt>,
@@ -72,8 +73,9 @@ impl SrcWarnings {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SrcInfo {
-    pub(crate) fn from_core(core_info: &rc::src::SrcInfo, src_mode: SrcInfoMode) -> Self {
+    pub(crate) fn from_alias_and_core(alias: SrcAlias, core_info: &rc::src::SrcInfo, src_mode: SrcInfoMode) -> Self {
         Self {
+            alias,
             origin: SrcOrigin::from_core(&core_info.origin),
             extended: match src_mode {
                 SrcInfoMode::Partial => None,
