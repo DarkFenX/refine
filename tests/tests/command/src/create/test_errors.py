@@ -17,6 +17,15 @@ if typing.TYPE_CHECKING:
     from fw.eve.containers import EvePrimitives, EveStrings
 
 
+def test_alias_pruning_empty(client):
+    client.mk_eve_data(alias='_')
+    client.create_sources(
+        status_code=403,
+        json_predicate={
+            'code': 'SRC-004',
+            'message': '"_" cannot be used as a source alias: alias is empty after pruning'})
+
+
 def test_params_malformed(client):
     client.create_sources(
         src_info_mode='random',

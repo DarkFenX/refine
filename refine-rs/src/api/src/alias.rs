@@ -46,7 +46,9 @@ impl SrcAlias {
             })
             .collect();
         string.make_ascii_lowercase();
-        let mut slice = string.trim_start_matches("_-.").trim_end_matches("_-.");
+        let mut slice = string
+            .trim_start_matches(|c| matches!(c, '_' | '-' | '.'))
+            .trim_end_matches(|c| matches!(c, '_' | '-' | '.'));
         if slice.is_empty() {
             return Err(SrcAliasPruneInitError);
         }
