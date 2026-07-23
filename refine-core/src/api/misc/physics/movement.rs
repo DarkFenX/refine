@@ -111,21 +111,12 @@ mod custom_serde {
                 where
                     S: SeqAccess<'de>,
                 {
-                    let azimuth = match SeqAccess::next_element(&mut seq)? {
-                        Some(azimuth) => azimuth,
-                        None => return Err(Error::invalid_length(0, &self)),
-                    };
-                    let elevation = match SeqAccess::next_element(&mut seq)? {
-                        Some(elevation) => elevation,
-                        None => return Err(Error::invalid_length(1, &self)),
-                    };
-                    let speed = match SeqAccess::next_element(&mut seq)? {
-                        Some(speed) => speed,
-                        None => return Err(Error::invalid_length(2, &self)),
-                    };
                     Ok(Movement {
-                        direction: Direction { azimuth, elevation },
-                        speed,
+                        direction: Direction {
+                            azimuth: seq.next_element()?.ok_or(Error::invalid_length(0, &self))?,
+                            elevation: seq.next_element()?.ok_or(Error::invalid_length(1, &self))?,
+                        },
+                        speed: seq.next_element()?.ok_or(Error::invalid_length(2, &self))?,
                     })
                 }
             }

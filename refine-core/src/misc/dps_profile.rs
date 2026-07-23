@@ -1,19 +1,14 @@
 use crate::num::{PValue, UnitInterval};
 
-// TODO: switch to serde_tuple once it supports default fields
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct DpsProfile {
     pub em: PValue = PValue::ZERO,
     pub thermal: PValue = PValue::ZERO,
     pub kinetic: PValue = PValue::ZERO,
     pub explosive: PValue = PValue::ZERO,
-    #[cfg_attr(feature = "serde", serde(default, skip_serializing_if = "Option::is_none"))]
     pub breacher: Option<BreacherProfile> = None,
 }
 
-// TODO: switch to serde_tuple once it supports default fields
-#[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct BreacherProfile {
     pub absolute_max: PValue = PValue::ZERO,
@@ -32,5 +27,119 @@ impl DpsProfile {
     }
     pub(crate) fn get_sum_regular(&self) -> PValue {
         self.em + self.thermal + self.kinetic + self.explosive
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// TODO: switch to serde_tuple once it supports default fields
+#[cfg(feature = "serde")]
+mod custom_serde_dps {
+    use serde::{
+        de::{Deserialize, Deserializer, Error, SeqAccess, Visitor},
+        ser::{Serialize, SerializeSeq, Serializer},
+    };
+
+    use super::*;
+
+    impl Serialize for DpsProfile {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut seq = serializer.serialize_seq(None)?;
+            seq.serialize_element(&self.em)?;
+            seq.serialize_element(&self.thermal)?;
+            seq.serialize_element(&self.kinetic)?;
+            seq.serialize_element(&self.explosive)?;
+            if let Some(breacher) = &self.breacher {
+                seq.serialize_element(breacher)?;
+            }
+            seq.end()
+        }
+    }
+
+    impl<'de> Deserialize<'de> for DpsProfile {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorState;
+
+            impl<'de> Visitor<'de> for VisitorState {
+                type Value = DpsProfile;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("sequence with 3 elements")
+                }
+
+                fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
+                where
+                    S: SeqAccess<'de>,
+                {
+                    Ok(Self::Value {
+                        em: seq.next_element()?.ok_or(Error::invalid_length(0, &self))?,
+                        thermal: seq.next_element()?.ok_or(Error::invalid_length(1, &self))?,
+                        kinetic: seq.next_element()?.ok_or(Error::invalid_length(2, &self))?,
+                        explosive: seq.next_element()?.ok_or(Error::invalid_length(3, &self))?,
+                        breacher: seq.next_element()?,
+                    })
+                }
+            }
+
+            deserializer.deserialize_seq(VisitorState)
+        }
+    }
+}
+
+#[cfg(feature = "serde")]
+mod custom_serde_breacher {
+    use serde::{
+        de::{Deserialize, Deserializer, Error, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTuple, Serializer},
+    };
+
+    use super::*;
+
+    impl Serialize for BreacherProfile {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut tuple = serializer.serialize_tuple(2)?;
+            tuple.serialize_element(&self.absolute_max)?;
+            tuple.serialize_element(&self.relative_max)?;
+            tuple.end()
+        }
+    }
+
+    impl<'de> Deserialize<'de> for BreacherProfile {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorState;
+
+            impl<'de> Visitor<'de> for VisitorState {
+                type Value = BreacherProfile;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("sequence with 3 elements")
+                }
+
+                fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
+                where
+                    S: SeqAccess<'de>,
+                {
+                    Ok(Self::Value {
+                        absolute_max: seq.next_element()?.ok_or(Error::invalid_length(0, &self))?,
+                        relative_max: seq.next_element()?.ok_or(Error::invalid_length(1, &self))?,
+                    })
+                }
+            }
+
+            deserializer.deserialize_seq(VisitorState)
+        }
     }
 }
