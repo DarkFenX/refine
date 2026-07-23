@@ -1,5 +1,5 @@
 use crate::{
-    svc::{SvcCtx, calc::Calc, funcs::is_attr_flag_set, vast::VastFitData},
+    svc::{Calc, SvcCtx, funcs::is_attr_flag_set, vast::VastFitData},
     ud::{ItemId, UItemId},
     util::RSet,
 };

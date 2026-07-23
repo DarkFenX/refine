@@ -1,7 +1,7 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    svc::vast::{ValFighterSquadSizeFighterInfo, ValSrqSkillInfo, Vast},
+    svc::vast::{ValSrqSkillInfo, Vast, validators::ValFighterSquadSizeStored},
     ud::{UData, UFighter, UItemId, USkill},
     util::RMap,
 };
@@ -77,7 +77,7 @@ impl Vast {
         match count.current > count.max {
             true => fit_data.fighter_squad_size.insert(
                 fighter_uid,
-                ValFighterSquadSizeFighterInfo {
+                ValFighterSquadSizeStored {
                     size: count.current,
                     max_size: count.max,
                 },

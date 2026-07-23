@@ -1,7 +1,7 @@
 use crate::{
-    num::Count,
-    svc::{SvcCtx, calc::Calc, funcs::is_oattr_flag_set, vast::VastFitData},
-    ud::{ItemId, UFit, UItemId},
+    Count, ItemId,
+    svc::{Calc, SvcCtx, funcs::is_oattr_flag_set, vast::VastFitData},
+    ud::{UFit, UItemId},
     util::RSet,
 };
 

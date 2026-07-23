@@ -8,8 +8,8 @@ use crate::{
     num::{Count, PValue, SkillLevel, SlotIndex, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
-        ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
-        validators::EffectSecZoneInfo,
+        ValModuleStateModuleInfo, ValShipKind, ValSrqSkillInfo,
+        validators::{EffectSecZoneInfo, ValFighterSquadSizeStored, ValItemKindItemStored},
     },
     ud::{UFitId, UItemId},
     util::{RMap, RMapRMap, RMapRMapRMap, RMapRSet, RSet, SSlabUnchecked},
@@ -132,12 +132,12 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) sec_zone_effect: RMapRMap<UItemId, REffectId, EffectSecZoneInfo>,
     // Validation-related - misc
     pub(in crate::svc::vast) not_loaded: RSet<UItemId>,
-    pub(in crate::svc::vast) item_kind: RMap<UItemId, ValItemKindItemInfo>,
+    pub(in crate::svc::vast) item_kind: RMap<UItemId, ValItemKindItemStored>,
     pub(in crate::svc::vast) mods_state: RMap<UItemId, ValModuleStateModuleInfo>,
     pub(in crate::svc::vast) mods_active: RSet<UItemId>,
     pub(in crate::svc::vast) mods_active_cloaks: RSet<EffectSpec>,
     pub(in crate::svc::vast) mods_cap_consumers: RSet<UItemId>,
-    pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeFighterInfo>,
+    pub(in crate::svc::vast) fighter_squad_size: RMap<UItemId, ValFighterSquadSizeStored>,
     pub(in crate::svc::vast) mods_fitted_cloaks: Count,
     // Stats-related - damage output
     pub(in crate::svc::vast) dmg_normal: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectDmgOutputGetter>>,

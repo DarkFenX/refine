@@ -1,11 +1,18 @@
 use itertools::Itertools;
 
 use crate::{
-    misc::DetectedItemKind,
+    ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::RSet,
+    val::DetectedItemKind,
 };
+
+#[derive(Copy, Clone)]
+pub(in crate::svc::vast) struct ValItemKindItemStored {
+    pub(in crate::svc::vast) kind: Option<DetectedItemKind>,
+    pub(in crate::svc::vast) expected_kind: DetectedItemKind,
+}
 
 #[cfg_attr(
     feature = "serde",
@@ -15,14 +22,15 @@ use crate::{
     serde(transparent)
 )]
 pub struct ValItemKindFail {
-    /// Items and info about failed validation.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub item_kinds: Vec<(ItemId, ValItemKindItemInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub item_kinds: Vec<ValItemKindItemInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
-#[derive(Copy, Clone)]
 pub struct ValItemKindItemInfo {
+    /// Item which failed validation
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub item_id: ItemId,
     /// Detected item kind.
     pub kind: Option<DetectedItemKind>,
     /// Expected item kind for position it was put in.
@@ -46,8 +54,14 @@ impl VastFitData {
         let item_kinds = self
             .item_kind
             .iter()
-            .filter(|(item_uid, _)| !kfs.contains(item_uid))
-            .map(|(item_uid, item_info)| (ctx.u_data.items.ext_id_by_int_id(*item_uid), *item_info))
+            .filter_map(|(item_uid, item_info)| match kfs.contains(item_uid) {
+                true => None,
+                false => Some(ValItemKindItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    kind: item_info.kind,
+                    expected_kind: item_info.expected_kind,
+                }),
+            })
             .collect_vec();
         match item_kinds.is_empty() {
             true => None,

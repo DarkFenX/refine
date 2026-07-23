@@ -1,7 +1,7 @@
 use crate::{
-    api::ItemGrpId,
+    ItemGrpId, ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::RSet,
 };
 
@@ -14,11 +14,11 @@ use crate::{
 )]
 pub struct ValChargeParentGroupFail {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
-    pub charges: Vec<ValChargeParentGroupInfo>,
+    pub charges: Vec<ValChargeParentGroupChargeInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
-pub struct ValChargeParentGroupInfo {
+pub struct ValChargeParentGroupChargeInfo {
     /// Charge item ID.
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub charge_item_id: ItemId,
@@ -46,7 +46,7 @@ impl VastFitData {
     ) -> Option<ValChargeParentGroupFail> {
         let mut charges = Vec::new();
         for (&charge_uid, &cont_uid) in self.charge_cont_group.difference(kfs) {
-            charges.push(ValChargeParentGroupInfo {
+            charges.push(ValChargeParentGroupChargeInfo {
                 charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
                 parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
                 parent_group_id: ItemGrpId::from_aid(ctx.u_data.items.get(cont_uid).get_group_id().unwrap()),

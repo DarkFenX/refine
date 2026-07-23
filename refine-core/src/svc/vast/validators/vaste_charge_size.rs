@@ -1,7 +1,7 @@
 use crate::{
-    num::Value,
+    ItemId, Value,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::RSet,
 };
 

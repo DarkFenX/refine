@@ -1,11 +1,17 @@
 use itertools::Itertools;
 
 use crate::{
-    num::CountNz,
+    CountNz, ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::RSet,
 };
+
+#[derive(Copy, Clone)]
+pub(in crate::svc::vast) struct ValFighterSquadSizeStored {
+    pub(in crate::svc::vast) size: CountNz,
+    pub(in crate::svc::vast) max_size: CountNz,
+}
 
 #[cfg_attr(
     feature = "serde",
@@ -16,13 +22,15 @@ use crate::{
 )]
 pub struct ValFighterSquadSizeFail {
     /// Fighters and info about failed validation.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub fighters: Vec<(ItemId, ValFighterSquadSizeFighterInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub fighters: Vec<ValFighterSquadSizeFighterInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
-#[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
+    /// Current squad size.
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub fighter_id: ItemId,
     /// Current squad size.
     pub size: CountNz,
     /// Max allowed squad size.
@@ -46,8 +54,14 @@ impl VastFitData {
         let fighters = self
             .fighter_squad_size
             .iter()
-            .filter(|(fighter_uid, _)| !kfs.contains(fighter_uid))
-            .map(|(fighter_uid, fighter_info)| (ctx.u_data.items.ext_id_by_int_id(*fighter_uid), *fighter_info))
+            .filter_map(|(fighter_uid, fighter_info)| match kfs.contains(fighter_uid) {
+                true => None,
+                false => Some(ValFighterSquadSizeFighterInfo {
+                    fighter_id: ctx.u_data.items.ext_id_by_int_id(*fighter_uid),
+                    size: fighter_info.size,
+                    max_size: fighter_info.max_size,
+                }),
+            })
             .collect_vec();
         match fighters.is_empty() {
             true => None,

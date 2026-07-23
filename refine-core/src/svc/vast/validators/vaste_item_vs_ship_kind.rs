@@ -1,23 +1,26 @@
 use itertools::Itertools;
 
 use crate::{
+    ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UFit, UItemId, UShipKind},
+    ud::{UFit, UItemId, UShipKind},
     util::RSet,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValItemVsShipKindFail {
     /// Kind of current ship.
     pub ship_kind: ValShipKind,
     /// Items which need other ship kind, and what kind they need (either ship or structure).
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, ValShipKind)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValItemVsShipKindItemInfo>,
+}
+
+pub struct ValItemVsShipKindItemInfo {
+    /// Items which need other ship kind.
+    pub item_id: ItemId,
+    /// Ship kind item needs.
+    pub needed_ship_kind: ValShipKind,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
@@ -55,7 +58,10 @@ impl VastFitData {
         let items = self
             .mods_rigs_svcs_vs_ship_kind
             .difference(kfs)
-            .map(|(item_uid, needed_kind)| (ctx.u_data.items.ext_id_by_int_id(*item_uid), *needed_kind))
+            .map(|(item_uid, needed_kind)| ValItemVsShipKindItemInfo {
+                item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                needed_ship_kind: *needed_kind,
+            })
             .collect_vec();
         match items.is_empty() {
             true => None,
@@ -64,5 +70,26 @@ impl VastFitData {
                 items,
             }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValItemVsShipKindItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.needed_ship_kind)?;
+        }
+        map.end()
     }
 }

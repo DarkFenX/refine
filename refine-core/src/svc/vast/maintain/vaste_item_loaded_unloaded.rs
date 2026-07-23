@@ -5,7 +5,10 @@ use crate::{
     misc::{DetectedItemKind, ModRack},
     num::Count,
     rd::{RItemAXt, RShipKind},
-    svc::vast::{ValFighterSquadSizeFighterInfo, ValItemKindItemInfo, ValShipKind, ValSrqSkillInfo, Vast, VastFitData},
+    svc::vast::{
+        ValShipKind, ValSrqSkillInfo, Vast, VastFitData,
+        validators::{ValFighterSquadSizeStored, ValItemKindItemStored},
+    },
     ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},
     util::RMap,
 };
@@ -95,7 +98,7 @@ impl Vast {
                 if count.current > count.max {
                     fit_data.fighter_squad_size.insert(
                         item_uid,
-                        ValFighterSquadSizeFighterInfo {
+                        ValFighterSquadSizeStored {
                             size: count.current,
                             max_size: count.max,
                         },
@@ -575,7 +578,7 @@ fn item_kind_add(
     if item_kind != Some(expected_kind) {
         fit_data.item_kind.insert(
             item_uid,
-            ValItemKindItemInfo {
+            ValItemKindItemStored {
                 kind: item_kind,
                 expected_kind,
             },

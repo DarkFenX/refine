@@ -1,24 +1,25 @@
 use itertools::Itertools;
 
 use crate::{
-    api::ItemGrpId,
+    ItemGrpId, ItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::RSet,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValDroneGroupFail {
     /// Drone item groups allowed by the ship.
     pub allowed_group_ids: Vec<ItemGrpId>,
     /// Drones breaking the validation and their groups.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub drone_groups: Vec<(ItemId, ItemGrpId)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub drone_groups: Vec<ValDroneGroupInfo>,
+}
+
+/// Drones which break the validation and their group.
+pub struct ValDroneGroupInfo {
+    pub drone_id: ItemId,
+    pub group_id: ItemGrpId,
 }
 
 impl VastFitData {
@@ -41,12 +42,12 @@ impl VastFitData {
         let drone_groups = self
             .drone_groups
             .iter()
-            .filter(|(drone_uid, _)| !kfs.contains(drone_uid))
-            .map(|(drone_uid, drone_group_aid)| {
-                (
-                    ctx.u_data.items.ext_id_by_int_id(*drone_uid),
-                    ItemGrpId::from_aid(*drone_group_aid),
-                )
+            .filter_map(|(drone_uid, drone_group_aid)| match kfs.contains(drone_uid) {
+                true => None,
+                false => Some(ValDroneGroupInfo {
+                    drone_id: ctx.u_data.items.ext_id_by_int_id(*drone_uid),
+                    group_id: ItemGrpId::from_aid(*drone_group_aid),
+                }),
             })
             .collect_vec();
         match drone_groups.is_empty() {
@@ -60,5 +61,26 @@ impl VastFitData {
                 drone_groups,
             }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValDroneGroupInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.drone_id, &item.group_id)?;
+        }
+        map.end()
     }
 }

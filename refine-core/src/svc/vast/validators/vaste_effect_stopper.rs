@@ -1,23 +1,21 @@
 use crate::{
-    api::EffectId,
+    EffectId, ItemId, PValue,
     misc::EffectSpec,
-    num::PValue,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    svc::{Calc, SvcCtx, vast::VastFitData},
+    ud::UItemId,
     util::{RMap, RSet},
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde::Serialize),
-    serde(transparent)
-)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct ValEffectStopperFail {
-    /// Items and their running effects which should be stopped.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, Vec<EffectId>)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValEffectStopperItemInfo>,
+}
+
+/// Item and its running effects which should be stopped.
+pub struct ValEffectStopperItemInfo {
+    pub item_id: ItemId,
+    pub effect_ids: Vec<EffectId>,
 }
 
 impl VastFitData {
@@ -66,7 +64,10 @@ impl VastFitData {
         match items.is_empty() {
             true => None,
             false => Some(ValEffectStopperFail {
-                items: items.into_iter().collect(),
+                items: items
+                    .into_iter()
+                    .map(|(item_id, effect_ids)| ValEffectStopperItemInfo { item_id, effect_ids })
+                    .collect(),
             }),
         }
     }
@@ -106,4 +107,25 @@ fn get_espec_proj_mult(
         projectee_uid,
         proj_data,
     ))
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValEffectStopperItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.effect_ids)?;
+        }
+        map.end()
+    }
 }
