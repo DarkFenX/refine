@@ -1,4 +1,4 @@
-use crate::src::{SrcAlias, SrcInfoMode, SrcOriginGeneratedReason, SrcWarnings};
+use crate::src::{SrcAlias, SrcInfoMode, SrcOrigin, SrcWarnings};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -19,17 +19,6 @@ pub struct SrcInfoExt {
     pub warnings: SrcWarnings,
 }
 
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Serialize),
-    serde(tag = "type", rename_all = "snake_case")
-)]
-#[derive(Clone)]
-pub enum SrcOrigin {
-    Generated { reason: SrcOriginGeneratedReason },
-    Cached { fingerprint: String },
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -43,23 +32,12 @@ impl SrcInfo {
         Self {
             alias,
             time_created,
-            origin: SrcOrigin::from_core(&core_info.origin),
+            origin: core_info.origin.clone(),
             extended: match src_mode {
                 SrcInfoMode::Partial => None,
                 SrcInfoMode::Full => Some(SrcInfoExt {
                     warnings: core_info.warnings.clone(),
                 }),
-            },
-        }
-    }
-}
-
-impl SrcOrigin {
-    fn from_core(core_origin: &rc::src::SrcOrigin) -> Self {
-        match core_origin {
-            rc::src::SrcOrigin::Generated(reason) => Self::Generated { reason: reason.clone() },
-            rc::src::SrcOrigin::Cached(fingerprint) => Self::Cached {
-                fingerprint: fingerprint.clone(),
             },
         }
     }

@@ -98,3 +98,35 @@ impl SrcWarnings {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{Serialize, SerializeStruct, Serializer};
+
+    use super::*;
+
+    impl Serialize for SrcOrigin {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            match self {
+                Self::Generated(reason) => {
+                    let mut variant = serializer.serialize_struct("Generated", 2)?;
+                    variant.serialize_field("type", "generated")?;
+                    variant.serialize_field("reason", reason)?;
+                    variant.end()
+                }
+                Self::Cached(fingerprint) => {
+                    let mut variant = serializer.serialize_struct("Cached", 2)?;
+                    variant.serialize_field("type", "cached")?;
+                    variant.serialize_field("fingerprint", fingerprint)?;
+                    variant.end()
+                }
+            }
+        }
+    }
+}
