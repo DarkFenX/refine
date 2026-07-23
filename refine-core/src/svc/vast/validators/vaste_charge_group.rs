@@ -13,13 +13,15 @@ use crate::{
     serde(transparent)
 )]
 pub struct ValChargeGroupFail {
-    /// Charges and info about failed validation.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub charges: Vec<(ItemId, ValChargeGroupChargeInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub charges: Vec<ValChargeGroupChargeInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValChargeGroupChargeInfo {
+    /// Charge item ID.
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub charge_item_id: ItemId,
     /// Parent module item ID.
     pub parent_item_id: ItemId,
     /// Group ID of current charge.
@@ -44,26 +46,24 @@ impl VastFitData {
     ) -> Option<ValChargeGroupFail> {
         let mut charges = Vec::new();
         for (&charge_uid, &cont_uid) in self.charge_group.difference(kfs) {
-            charges.push((
-                ctx.u_data.items.ext_id_by_int_id(charge_uid),
-                ValChargeGroupChargeInfo {
-                    parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
-                    charge_group_id: ItemGrpId::from_aid(ctx.u_data.items.get(charge_uid).get_group_id().unwrap()),
-                    allowed_group_ids: ctx
-                        .u_data
-                        .items
-                        .get(cont_uid)
-                        .get_axt()
-                        .unwrap()
-                        .charge_limit
-                        .as_ref()
-                        .unwrap()
-                        .group_ids
-                        .iter()
-                        .map(|&grp_aid| ItemGrpId::from_aid(grp_aid))
-                        .collect(),
-                },
-            ));
+            charges.push(ValChargeGroupChargeInfo {
+                charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
+                parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
+                charge_group_id: ItemGrpId::from_aid(ctx.u_data.items.get(charge_uid).get_group_id().unwrap()),
+                allowed_group_ids: ctx
+                    .u_data
+                    .items
+                    .get(cont_uid)
+                    .get_axt()
+                    .unwrap()
+                    .charge_limit
+                    .as_ref()
+                    .unwrap()
+                    .group_ids
+                    .iter()
+                    .map(|&grp_aid| ItemGrpId::from_aid(grp_aid))
+                    .collect(),
+            });
         }
         match charges.is_empty() {
             true => None,

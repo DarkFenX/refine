@@ -13,7 +13,7 @@ pub use val_options::{ValEnabled, ValOptions, ValOptionsSol};
 pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
 pub use val_result::{ValResultFit, ValResultSol};
 pub use validators::{
-    ValActivationBlockedFail, ValCapitalModFail, ValChargeGroupChargeInfo, ValChargeGroupFail,
+    ValActivationBlockedFail, ValCapitalModFail, ValCapitalModItem, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupFail, ValChargeParentGroupInfo, ValChargeSizeChargeInfo, ValChargeSizeFail,
     ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValEffectSecZoneFail,
     ValEffectStopperFail, ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail,

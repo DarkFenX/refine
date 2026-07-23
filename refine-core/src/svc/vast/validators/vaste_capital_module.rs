@@ -9,18 +9,18 @@ use crate::{
     util::RSet,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValCapitalModFail {
     /// Modules up to and including this volume are not considered capital.
     pub max_subcap_volume: PValue,
-    /// List of modules breaking validation, and their volumes.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub module_volumes: Vec<(ItemId, PValue)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub module_volumes: Vec<ValCapitalModItem>,
+}
+
+/// Module which breaks the validation and its volume.
+pub struct ValCapitalModItem {
+    pub item_id: ItemId,
+    pub volume: PValue,
 }
 
 impl VastFitData {
@@ -47,8 +47,13 @@ impl VastFitData {
         let module_volumes = self
             .mods_capital
             .iter()
-            .filter(|(module_uid, _)| !kfs.contains(module_uid))
-            .map(|(module_uid, module_volume)| (ctx.u_data.items.ext_id_by_int_id(*module_uid), *module_volume))
+            .filter_map(|(module_uid, module_volume)| match kfs.contains(module_uid) {
+                true => None,
+                false => Some(ValCapitalModItem {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(*module_uid),
+                    volume: *module_volume,
+                }),
+            })
             .collect_vec();
         match module_volumes.is_empty() {
             true => None,
@@ -65,4 +70,25 @@ fn is_ship_subcap(ship: Option<&UShip>) -> bool {
         return false;
     };
     matches!(ship.get_r_kind(), Some(RShipKind::Ship))
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValCapitalModItem], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.volume)?;
+        }
+        map.end()
+    }
 }

@@ -4,3 +4,4 @@ List of hacks used in the project due to external bugs, with intention to check 
 #### De/serialization
 - `serde_json` normally allows integer map keys. However, this breaks in certain cases due to [issue #1183](https://github.com/serde-rs/serde/issues/1183). Once it's resolved, look for code which uses `DisplayFromStr`, replace it by `_`, and remove `FromStr` implementations on keys if they are not used anywhere else.
 - `serde` cannot use default field values for defaults; when [issue #3086] (https://github.com/serde-rs/serde/issues/3086) is resolved, look for all macroses with `default = ` and remove those set defaults. 
+- `serde_with` has `KeyValueMap` which allows to turn a sequence of structs into a map. However, it does not provide a way to transform value (pick one of struct fields as map value). Once [issue #981](https://github.com/jonasbb/serde_with/issues/981) is resolved, go through all uses of `KeyValueMap` and replace it by value tag where applicable. 

@@ -13,13 +13,15 @@ use crate::{
     serde(transparent)
 )]
 pub struct ValChargeVolumeFail {
-    /// Charges and info about failed validation.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub charges: Vec<(ItemId, ValChargeVolumeChargeInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub charges: Vec<ValChargeVolumeChargeInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValChargeVolumeChargeInfo {
+    /// Charge item ID.
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub charge_item_id: ItemId,
     /// Parent module item ID.
     pub parent_item_id: ItemId,
     /// Volume of current charge.
@@ -44,14 +46,12 @@ impl VastFitData {
     ) -> Option<ValChargeVolumeFail> {
         let mut charges = Vec::new();
         for (&charge_uid, &cont_uid) in self.charge_volume.difference(kfs) {
-            charges.push((
-                ctx.u_data.items.ext_id_by_int_id(charge_uid),
-                ValChargeVolumeChargeInfo {
-                    parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
-                    charge_volume: ctx.u_data.items.get(charge_uid).get_axt().unwrap().volume,
-                    max_volume: ctx.u_data.items.get(cont_uid).get_axt().unwrap().capacity,
-                },
-            ));
+            charges.push(ValChargeVolumeChargeInfo {
+                charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
+                parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
+                charge_volume: ctx.u_data.items.get(charge_uid).get_axt().unwrap().volume,
+                max_volume: ctx.u_data.items.get(cont_uid).get_axt().unwrap().capacity,
+            });
         }
         match charges.is_empty() {
             true => None,
