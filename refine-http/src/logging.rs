@@ -1,6 +1,6 @@
 use std::str::FromStr;
 
-use time::macros::format_description;
+use time::{format_description::FormatDescriptionV3, macros::format_description};
 use tracing::Level;
 use tracing_appender::{non_blocking::WorkerGuard, rolling::RollingFileAppender};
 use tracing_subscriber::{
@@ -9,16 +9,19 @@ use tracing_subscriber::{
     prelude::*,
 };
 
+const TIME_FORMAT_FULL: FormatDescriptionV3<'_> = format_description!(
+    version = 3,
+    r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
+);
+const TIME_FORMAT_SHORT: FormatDescriptionV3<'_> =
+    format_description!(version = 3, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]");
+
 pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) -> Option<WorkerGuard> {
-    let time_format_full = format_description!(
-        version = 3,
-        r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
-    );
     // We always log warnings and higher to stdout
     let stdout_log = layer()
         .with_writer(std::io::stdout.with_max_level(Level::WARN))
         .with_ansi(true)
-        .with_timer(UtcTime::new(time_format_full.clone()))
+        .with_timer(UtcTime::new(TIME_FORMAT_FULL))
         .with_target(false)
         .pretty();
     // We log into file only if we've been given path and appropriate log level
@@ -26,11 +29,8 @@ pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) 
     let (file_log, file_guard) = match (dir, file_max_level_res) {
         (Some(dir), Ok(max_level)) => {
             let (rotation, time_format) = match rotate {
-                true => (
-                    tracing_appender::rolling::Rotation::DAILY,
-                    format_description!(version = 3, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]"),
-                ),
-                false => (tracing_appender::rolling::Rotation::NEVER, time_format_full),
+                true => (tracing_appender::rolling::Rotation::DAILY, TIME_FORMAT_SHORT),
+                false => (tracing_appender::rolling::Rotation::NEVER, TIME_FORMAT_FULL),
             };
             let appender = RollingFileAppender::new(rotation, dir, "refine-http.log");
             let (file_writer, file_guard) = tracing_appender::non_blocking(appender);

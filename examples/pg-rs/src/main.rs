@@ -30,8 +30,9 @@ async fn main() {
     setup_logger();
     // Initial setup
     let mut refine = Refine::with_fs_adc(2, 4, "./cache/".into());
+    let alias_tq = SrcAlias::try_pruned("tq").unwrap();
     refine
-        .add_src_with_phb_fs("tq", true, "/home/dfx/Desktop/phobos_tq_en-us".into())
+        .add_src_with_phb_fs(alias_tq, true, "/home/dfx/Desktop/phobos_tq_en-us".into())
         .await
         .unwrap();
     // Main part
