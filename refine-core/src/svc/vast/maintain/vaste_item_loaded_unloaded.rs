@@ -7,7 +7,7 @@ use crate::{
     rd::{RItemAXt, RShipKind},
     svc::vast::{
         ValShipKind, ValSrqSkillInfo, Vast, VastFitData,
-        validators::{ValFighterSquadSizeStored, ValItemKindItemStored},
+        validators::{ValFighterSquadSizeFighterStored, ValItemKindItemStored},
     },
     ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},
     util::RMap,
@@ -98,7 +98,7 @@ impl Vast {
                 if count.current > count.max {
                     fit_data.fighter_squad_size.insert(
                         item_uid,
-                        ValFighterSquadSizeStored {
+                        ValFighterSquadSizeFighterStored {
                             size: count.current,
                             max_size: count.max,
                         },

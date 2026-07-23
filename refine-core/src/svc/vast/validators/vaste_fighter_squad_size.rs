@@ -8,7 +8,7 @@ use crate::{
 };
 
 #[derive(Copy, Clone)]
-pub(in crate::svc::vast) struct ValFighterSquadSizeStored {
+pub(in crate::svc::vast) struct ValFighterSquadSizeFighterStored {
     pub(in crate::svc::vast) size: CountNz,
     pub(in crate::svc::vast) max_size: CountNz,
 }

@@ -18,11 +18,12 @@ pub use validators::{
     ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValDroneGroupInfo,
     ValEffectSecZoneFail, ValEffectStopperFail, ValEffectStopperItemInfo, ValFighterSquadSizeFail,
     ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail, ValItemVsShipKindFail,
-    ValItemVsShipKindItemInfo, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxTypeFail, ValMaxTypeTypeInfo,
-    ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOverloadSkillFail, ValProjFilterFail,
-    ValProjImmunityFail, ValResourceFail, ValRigSizeFail, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo,
-    ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableCapFail,
-    ValUnusableResFail, ValUnusableSlotFail,
+    ValItemVsShipKindItemInfo, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxGroupItemInfo, ValMaxTypeFail,
+    ValMaxTypeItemInfo, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail,
+    ValOverloadSkillFail, ValOverloadSkillItemInfo, ValProjFilterFail, ValProjFilterItemInfo, ValProjImmunityFail,
+    ValProjImmunityItemInfo, ValResourceFail, ValResourceItemInfo, ValRigSizeFail, ValShipKind, ValShipLimitFail,
+    ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo,
+    ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
 };
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;

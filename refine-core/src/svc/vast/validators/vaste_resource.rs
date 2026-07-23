@@ -1,26 +1,28 @@
 use super::shared::get_max_resource;
 use crate::{
-    num::Value,
+    ItemId, Value,
     rd::RAttrId,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{ItemId, UFit, UItemId},
+    svc::{Calc, SvcCtx, vast::VastFitData},
+    ud::{UFit, UItemId},
     util::RSet,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValResourceFail {
     /// How much resource is used by all of its consumers.
     pub used: Value,
     /// Max available resource (e.g. amount of CPU produced by ship).
     pub max: Option<Value>,
     /// Consumer items and amount consumed.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub users: Vec<(ItemId, Value)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub users: Vec<ValResourceItemInfo>,
+}
+
+pub struct ValResourceItemInfo {
+    /// Item which consumes the resource.
+    pub item_id: ItemId,
+    /// How much resource is used by the item.
+    pub used: Value,
 }
 
 impl VastFitData {
@@ -286,7 +288,10 @@ fn validate_verbose_fitting(
         let item_use = calc.get_item_oattr_ffb_extra(ctx, item_uid, use_attr_rid, Value::ZERO);
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
-            let user = (ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
+            let user = ValResourceItemInfo {
+                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                used: item_use,
+            };
             users.push(user);
         }
     }
@@ -317,7 +322,10 @@ fn validate_verbose_other(
     for (item_uid, item_use) in items {
         total_use += item_use;
         if item_use > Value::FLOAT_TOLERANCE && !kfs.contains(&item_uid) {
-            let user = (ctx.u_data.items.ext_id_by_int_id(item_uid), item_use);
+            let user = ValResourceItemInfo {
+                item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                used: item_use,
+            };
             users.push(user);
         }
     }
@@ -333,4 +341,25 @@ fn validate_verbose_other(
         max,
         users,
     })
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValResourceItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.used)?;
+        }
+        map.end()
+    }
 }

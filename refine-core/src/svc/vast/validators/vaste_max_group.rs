@@ -1,10 +1,10 @@
 use crate::{
+    Count, ItemId,
     ad::AItemGrpId,
     api::ItemGrpId,
-    num::Count,
     rd::RAttrId,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    svc::{Calc, SvcCtx, vast::VastFitData},
+    ud::UItemId,
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -17,8 +17,8 @@ use crate::{
 )]
 pub struct ValMaxGroupFail {
     /// Map between group IDs which had failed items, and detailed group info.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub groups: Vec<(ItemGrpId, ValMaxGroupGroupInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub groups: Vec<ValMaxGroupGroupInfo>,
 }
 
 #[cfg_attr(
@@ -28,11 +28,21 @@ pub struct ValMaxGroupFail {
     derive(serde_tuple::Serialize_tuple)
 )]
 pub struct ValMaxGroupGroupInfo {
-    /// How many items from that group are in an appropriate state.
+    /// Group which has failed items.
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub group_id: ItemGrpId,
+    /// How many items are in the group, in high enough state to count for validation purposes.
     pub group_item_count: Count,
     /// Offending items and their group limits.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, Count)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValMaxGroupItemInfo>,
+}
+
+pub struct ValMaxGroupItemInfo {
+    /// Item which failed validation.
+    pub item_id: ItemId,
+    /// Max count of items in the group for this item not to fail the validation.
+    pub limit: Count,
 }
 
 impl VastFitData {
@@ -161,24 +171,28 @@ fn validate_verbose(
 ) -> Option<ValMaxGroupFail> {
     let attr_rid = attr_rid?;
     let mut groups = RMap::new();
-    for (&item_uid, item_grp_aid) in max_group_limited.iter() {
-        let allowed = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
-        let actual = get_actual_item_count(max_group_all, item_grp_aid);
-        if actual > allowed && !kfs.contains(&item_uid) {
+    for (&item_uid, &item_grp_aid) in max_group_limited.iter() {
+        let item_limit = get_max_allowed_item_count(ctx, calc, item_uid, attr_rid);
+        let actual = get_actual_item_count(max_group_all, &item_grp_aid);
+        if actual > item_limit && !kfs.contains(&item_uid) {
             groups
-                .entry(ItemGrpId::from_aid(*item_grp_aid))
+                .entry(item_grp_aid)
                 .or_insert_with(|| ValMaxGroupGroupInfo {
+                    group_id: ItemGrpId::from_aid(item_grp_aid),
                     group_item_count: actual,
                     items: Vec::new(),
                 })
                 .items
-                .push((ctx.u_data.items.ext_id_by_int_id(item_uid), allowed));
+                .push(ValMaxGroupItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    limit: item_limit,
+                });
         }
     }
     match groups.is_empty() {
         true => None,
         false => Some(ValMaxGroupFail {
-            groups: groups.into_iter().collect(),
+            groups: groups.into_values().collect(),
         }),
     }
 }
@@ -188,4 +202,25 @@ fn get_max_allowed_item_count(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, a
 }
 fn get_actual_item_count(max_group_all: &RMapRSet<AItemGrpId, UItemId>, item_grp_aid: &AItemGrpId) -> Count {
     Count::from_usize(max_group_all.get(item_grp_aid).len())
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValMaxGroupItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.limit)?;
+        }
+        map.end()
+    }
 }

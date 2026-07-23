@@ -1,8 +1,7 @@
 use crate::{
-    api::ItemTypeId,
-    num::Count,
+    Count, ItemId, ItemTypeId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::{RMap, RSet},
 };
 
@@ -15,22 +14,27 @@ use crate::{
 )]
 pub struct ValMaxTypeFail {
     /// Items and details about failures.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub item_types: Vec<(ItemTypeId, ValMaxTypeTypeInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub item_types: Vec<ValMaxTypeTypeInfo>,
 }
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValMaxTypeTypeInfo {
+    /// Type ID of an item this fit has too many.
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub item_type_id: ItemTypeId,
     /// How many items of this type is fit.
     pub item_type_count: Count,
     /// Items which break the limit, and what the limit is.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, Count)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValMaxTypeItemInfo>,
+}
+
+pub struct ValMaxTypeItemInfo {
+    /// Item which failed validation.
+    pub item_id: ItemId,
+    /// Max count of items of the same type ID this item allows to have.
+    pub limit: Count,
 }
 
 impl VastFitData {
@@ -53,26 +57,51 @@ impl VastFitData {
         ctx: SvcCtx,
     ) -> Option<ValMaxTypeFail> {
         let mut item_types = RMap::new();
-        for (item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
+        for (&item_aid, item_type_data) in self.mods_svcs_max_type_fitted.iter() {
             let fitted = Count::from_usize(item_type_data.len());
             for (item_uid, &allowed) in item_type_data.iter() {
                 if fitted > allowed && !kfs.contains(item_uid) {
                     item_types
-                        .entry(ItemTypeId::from_aid(*item_aid))
+                        .entry(item_aid)
                         .or_insert_with(|| ValMaxTypeTypeInfo {
+                            item_type_id: ItemTypeId::from_aid(item_aid),
                             item_type_count: fitted,
                             items: Vec::new(),
                         })
                         .items
-                        .push((ctx.u_data.items.ext_id_by_int_id(*item_uid), allowed));
+                        .push(ValMaxTypeItemInfo {
+                            item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                            limit: allowed,
+                        });
                 }
             }
         }
         match item_types.is_empty() {
             true => None,
             false => Some(ValMaxTypeFail {
-                item_types: item_types.into_iter().collect(),
+                item_types: item_types.into_values().collect(),
             }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValMaxTypeItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.limit)?;
+        }
+        map.end()
     }
 }

@@ -1,22 +1,24 @@
 use crate::{
+    ItemId,
     misc::EffectSpec,
     rd::RItemListId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::{RMap, RSet},
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde::Serialize),
-    serde(transparent)
-)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct ValProjFilterFail {
     /// Projecting items and targets they can't be projected to.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, Vec<ItemId>)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValProjFilterItemInfo>,
+}
+
+pub struct ValProjFilterItemInfo {
+    /// Item-projector which fails the validation.
+    pub item_id: ItemId,
+    /// Projectee item IDs the projector can't be projected to.
+    pub projectee_item_ids: Vec<ItemId>,
 }
 
 impl VastFitData {
@@ -53,7 +55,13 @@ impl VastFitData {
         match items.is_empty() {
             true => None,
             false => Some(ValProjFilterFail {
-                items: items.into_iter().collect(),
+                items: items
+                    .into_iter()
+                    .map(|(projector_item_id, projectee_item_ids)| ValProjFilterItemInfo {
+                        item_id: projector_item_id,
+                        projectee_item_ids,
+                    })
+                    .collect(),
             }),
         }
     }
@@ -69,4 +77,25 @@ fn validate_projection(
     let allowed_type_list = ctx.u_data.r_data.get_item_list_by_rid(allowed_type_list_rid);
     let projectee_type_aid = ctx.u_data.items.get(projectee_uid).get_type_aid();
     allowed_type_list.item_aids.contains(&projectee_type_aid) || kfs.contains(&projector_espec.item_uid)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValProjFilterItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.projectee_item_ids)?;
+        }
+        map.end()
+    }
 }

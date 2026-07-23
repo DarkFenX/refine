@@ -1,7 +1,7 @@
 use crate::{
     api::ModuleState,
     rd::RState,
-    svc::vast::{ValModuleStateModuleInfo, Vast},
+    svc::vast::{Vast, validators::ValModuleStateModuleStored},
     ud::{UItem, UItemId},
 };
 
@@ -62,7 +62,7 @@ impl Vast {
                     if let RState::Offline = module.get_max_state().unwrap() {
                         fit_data.mods_state.insert(
                             item_uid,
-                            ValModuleStateModuleInfo {
+                            ValModuleStateModuleStored {
                                 state: ModuleState::Online,
                                 max_state: ModuleState::Offline,
                             },
@@ -116,7 +116,7 @@ impl Vast {
                         RState::Online => {
                             fit_data.mods_state.insert(
                                 item_uid,
-                                ValModuleStateModuleInfo {
+                                ValModuleStateModuleStored {
                                     state: ModuleState::Active,
                                     max_state: ModuleState::Online,
                                 },
@@ -145,7 +145,7 @@ impl Vast {
                         RState::Active => {
                             fit_data.mods_state.insert(
                                 item_uid,
-                                ValModuleStateModuleInfo {
+                                ValModuleStateModuleStored {
                                     state: ModuleState::Overload,
                                     max_state: ModuleState::Active,
                                 },
