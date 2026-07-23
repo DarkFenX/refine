@@ -11,14 +11,14 @@ use tracing_subscriber::{
 
 pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) -> Option<WorkerGuard> {
     let time_format_full = format_description!(
-        version = 2,
+        version = 3,
         r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
     );
     // We always log warnings and higher to stdout
     let stdout_log = layer()
         .with_writer(std::io::stdout.with_max_level(Level::WARN))
         .with_ansi(true)
-        .with_timer(UtcTime::new(time_format_full))
+        .with_timer(UtcTime::new(time_format_full.clone()))
         .with_target(false)
         .pretty();
     // We log into file only if we've been given path and appropriate log level
@@ -28,7 +28,7 @@ pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) 
             let (rotation, time_format) = match rotate {
                 true => (
                     tracing_appender::rolling::Rotation::DAILY,
-                    format_description!(version = 2, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]"),
+                    format_description!(version = 3, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]"),
                 ),
                 false => (tracing_appender::rolling::Rotation::NEVER, time_format_full),
             };
