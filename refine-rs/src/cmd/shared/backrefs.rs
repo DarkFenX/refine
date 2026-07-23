@@ -38,9 +38,9 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState;
+            struct VisitorImpl;
 
-            impl<'de> Visitor<'de> for VisitorState {
+            impl<'de> Visitor<'de> for VisitorImpl {
                 type Value = FleetIdBackref;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -59,7 +59,7 @@ mod custom_serde {
                     Ok(Self::Value::Id(fleet_id))
                 }
             }
-            deserializer.deserialize_str(VisitorState)
+            deserializer.deserialize_str(VisitorImpl)
         }
     }
 
@@ -68,9 +68,9 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState;
+            struct VisitorImpl;
 
-            impl<'de> Visitor<'de> for VisitorState {
+            impl<'de> Visitor<'de> for VisitorImpl {
                 type Value = FitIdBackref;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -89,7 +89,7 @@ mod custom_serde {
                     Ok(Self::Value::Id(fit_id))
                 }
             }
-            deserializer.deserialize_str(VisitorState)
+            deserializer.deserialize_str(VisitorImpl)
         }
     }
 
@@ -98,9 +98,9 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState;
+            struct VisitorImpl;
 
-            impl<'de> Visitor<'de> for VisitorState {
+            impl<'de> Visitor<'de> for VisitorImpl {
                 type Value = ItemIdBackref;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -123,7 +123,7 @@ mod custom_serde {
                     Ok(Self::Value::Id(item_id))
                 }
             }
-            deserializer.deserialize_str(VisitorState)
+            deserializer.deserialize_str(VisitorImpl)
         }
     }
 }

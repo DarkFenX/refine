@@ -59,9 +59,9 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState;
+            struct VisitorImpl;
 
-            impl<'de> Visitor<'de> for VisitorState {
+            impl<'de> Visitor<'de> for VisitorImpl {
                 type Value = StatOption;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -91,7 +91,7 @@ mod custom_serde {
                 }
             }
 
-            deserializer.deserialize_any(VisitorState)
+            deserializer.deserialize_any(VisitorImpl)
         }
     }
 

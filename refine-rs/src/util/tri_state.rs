@@ -68,11 +68,11 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState<T> {
+            struct VisitorImpl<T> {
                 marker: std::marker::PhantomData<T>,
             }
 
-            impl<'de, T> Visitor<'de> for VisitorState<T>
+            impl<'de, T> Visitor<'de> for VisitorImpl<T>
             where
                 T: Deserialize<'de>,
             {
@@ -107,7 +107,7 @@ mod custom_serde {
                 }
             }
 
-            deserializer.deserialize_option(VisitorState::<T> {
+            deserializer.deserialize_option(VisitorImpl::<T> {
                 marker: std::marker::PhantomData,
             })
         }

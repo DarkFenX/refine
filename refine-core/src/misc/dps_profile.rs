@@ -65,9 +65,9 @@ mod custom_serde_dps {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState;
+            struct VisitorImpl;
 
-            impl<'de> Visitor<'de> for VisitorState {
+            impl<'de> Visitor<'de> for VisitorImpl {
                 type Value = DpsProfile;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -88,7 +88,7 @@ mod custom_serde_dps {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorState)
+            deserializer.deserialize_seq(VisitorImpl)
         }
     }
 }
@@ -119,9 +119,9 @@ mod custom_serde_breacher {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorState;
+            struct VisitorImpl;
 
-            impl<'de> Visitor<'de> for VisitorState {
+            impl<'de> Visitor<'de> for VisitorImpl {
                 type Value = BreacherProfile;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
@@ -139,7 +139,7 @@ mod custom_serde_breacher {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorState)
+            deserializer.deserialize_seq(VisitorImpl)
         }
     }
 }
