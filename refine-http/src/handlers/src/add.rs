@@ -35,7 +35,7 @@ async fn internal_add_source(
     payload: AddSrcReqBody,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
-        rs::src::SrcAlias::try_pruned(&src_alias).ok_or(ApiError::PathSrcParseFailedOnAdd(src_alias))?;
+        rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseFailedOnAdd(src_alias, err))?;
     let data_version = payload.data_version;
     let data_base_url = payload.data_base_url;
     let make_default = payload.make_default.unwrap_or(false);

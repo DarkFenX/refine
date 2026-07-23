@@ -1,4 +1,4 @@
-pub use alias::SrcAlias;
+pub use alias::{SrcAlias, SrcAliasPruneError};
 pub use refine_add_src::AddSrcError;
 pub use refine_get_src::GetSrcError;
 pub use src::Src;
