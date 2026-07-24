@@ -63,3 +63,110 @@ impl AItemEffects {
         self.data.remove(id)
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde-ad")]
+mod custom_serde_ad_entry {
+    use serde::{
+        de::{Deserialize, Deserializer, Error, SeqAccess, Visitor},
+        ser::{Serialize, SerializeTuple, Serializer},
+    };
+
+    use super::*;
+
+    impl Serialize for AItemEffect {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut tuple = serializer.serialize_tuple(2)?;
+            tuple.serialize_element(&self.id)?;
+            tuple.serialize_element(&self.data)?;
+            tuple.end()
+        }
+    }
+
+    impl<'de> Deserialize<'de> for AItemEffect {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorImpl;
+
+            impl<'de> Visitor<'de> for VisitorImpl {
+                type Value = AItemEffect;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("sequence with 2 elements")
+                }
+
+                fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
+                where
+                    S: SeqAccess<'de>,
+                {
+                    Ok(Self::Value {
+                        id: seq.next_element()?.ok_or(Error::invalid_length(0, &self))?,
+                        data: seq.next_element()?.ok_or(Error::invalid_length(1, &self))?,
+                    })
+                }
+            }
+
+            deserializer.deserialize_seq(VisitorImpl)
+        }
+    }
+}
+
+#[cfg(feature = "serde-ad")]
+mod custom_serde_ad_container {
+    use serde::{
+        de::{Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeSeq, Serializer},
+    };
+
+    use super::*;
+
+    impl Serialize for AItemEffects {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut seq = serializer.serialize_seq(Some(self.data.len()))?;
+            for attr in self.data.values() {
+                seq.serialize_element(attr)?;
+            }
+            seq.end()
+        }
+    }
+
+    impl<'de> Deserialize<'de> for AItemEffects {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorImpl;
+
+            impl<'de> Visitor<'de> for VisitorImpl {
+                type Value = AItemEffects;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("sequence with item effects")
+                }
+
+                fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
+                where
+                    S: SeqAccess<'de>,
+                {
+                    let mut data = CMap::const_new();
+                    while let Some(element) = seq.next_element::<AItemEffect>()? {
+                        data.insert(element.id, element);
+                    }
+                    Ok(AItemEffects { data })
+                }
+            }
+
+            deserializer.deserialize_seq(VisitorImpl)
+        }
+    }
+}

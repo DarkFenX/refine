@@ -1,5 +1,9 @@
 use crate::ad::{AAttrId, ABuffAffecteeFilter};
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 pub struct ABuffModifier {
     pub affectee_filter: ABuffAffecteeFilter,
     pub affectee_attr_id: AAttrId,
@@ -8,6 +12,11 @@ pub struct ABuffModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct ABuffModifiers {
     data: Vec<ABuffModifier>,

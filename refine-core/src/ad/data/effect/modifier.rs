@@ -1,5 +1,9 @@
 use crate::ad::{AAttrId, AEffectAffecteeFilter, AEffectModStrength, AOp};
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 #[derive(PartialEq)]
 pub struct AEffectModifier {
     pub strength: AEffectModStrength,
@@ -11,6 +15,11 @@ pub struct AEffectModifier {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct AEffectModifiers {
     data: Vec<AEffectModifier>,

@@ -1,5 +1,10 @@
 use crate::ad::AAbilId;
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct AItemAbils {
     data: Vec<AAbilId>,

@@ -1,3 +1,7 @@
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 pub struct ADataWarnings {
     pub data_fetch: Vec<String>,
     pub pk_duplicates: Vec<String>,

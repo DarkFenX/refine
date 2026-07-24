@@ -76,27 +76,55 @@ impl std::fmt::Display for ABuffId {
 mod custom_serde_ad {
     use std::str::FromStr;
 
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
+
     use super::*;
 
-    impl FromStr for ABuffId {
-        type Err = ABuffIdParseError;
-
-        fn from_str(s: &str) -> Result<Self, Self::Err> {
-            if let Some(id_str) = s.strip_prefix(EVE_PREFIX) {
-                return Ok(Self::Eve(AEveBuffId::from_str(id_str)?));
-            }
-            if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
-                return Ok(Self::Custom(ACustomBuffId::from_str(id_str)?));
-            }
-            Err(ABuffIdParseError::InvalidPrefix)
+    impl Serialize for ABuffId {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            serializer.serialize_str(&self.to_string())
         }
     }
 
-    #[derive(Debug, thiserror::Error)]
-    pub enum ABuffIdParseError {
-        #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
-        InvalidPrefix,
-        #[error("{0}")]
-        InvalidInt(#[from] std::num::ParseIntError),
+    impl<'de> Deserialize<'de> for ABuffId {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorImpl;
+
+            impl<'de> Visitor<'de> for VisitorImpl {
+                type Value = ABuffId;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("string with buff type-prefixed integer")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    if let Some(id_str) = v.strip_prefix(EVE_PREFIX) {
+                        return Ok(Self::Value::Eve(AEveBuffId::from_str(id_str).map_err(Error::custom)?));
+                    }
+                    if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
+                        return Ok(Self::Value::Custom(
+                            ACustomBuffId::from_str(id_str).map_err(Error::custom)?,
+                        ));
+                    }
+                    let msg =
+                        format!("expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", got \"{v}\"");
+                    Err(Error::custom(msg))
+                }
+            }
+
+            deserializer.deserialize_str(VisitorImpl)
+        }
     }
 }

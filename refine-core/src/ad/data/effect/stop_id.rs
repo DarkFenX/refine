@@ -1,5 +1,10 @@
 use crate::ad::AEffectId;
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct AEffectStopIds {
     data: Vec<AEffectId>,

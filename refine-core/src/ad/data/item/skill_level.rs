@@ -1,3 +1,4 @@
+#[cfg_attr(feature = "serde-ad", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ASkillLevel(u8);
 impl ASkillLevel {
@@ -9,5 +10,24 @@ impl ASkillLevel {
     }
     pub fn into_u8(self) -> u8 {
         self.0
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde-ad")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer};
+
+    use super::*;
+
+    impl<'de> Deserialize<'de> for ASkillLevel {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            i32::deserialize(deserializer).map(ASkillLevel::from_i32_clamped)
+        }
     }
 }

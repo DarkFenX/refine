@@ -1,5 +1,10 @@
 use crate::ed::EAbilId;
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AAbilId(i32);
 impl AAbilId {

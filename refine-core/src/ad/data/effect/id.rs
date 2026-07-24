@@ -104,10 +104,15 @@ impl std::fmt::Display for AEffectId {
 mod custom_serde_ad {
     use std::str::FromStr;
 
+    use serde::{
+        de::{Deserialize, Deserializer, Error, Visitor},
+        ser::{Serialize, Serializer},
+    };
+
     use super::*;
 
     impl FromStr for AEffectId {
-        type Err = AEffectIdParseError;
+        type Err = EffectIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             // Process longer prefixes first in case of conflicting starting letters
@@ -132,12 +137,12 @@ mod custom_serde_ad {
             if let Some(id_str) = s.strip_prefix(CUSTOM_PREFIX) {
                 return Ok(Self::Custom(ACustomEffectId::from_str(id_str)?));
             }
-            Err(AEffectIdParseError::InvalidPrefix)
+            Err(EffectIdParseError::InvalidPrefix)
         }
     }
 
     #[derive(Debug, thiserror::Error)]
-    pub enum AEffectIdParseError {
+    pub enum EffectIdParseError {
         #[error(
             "invalid prefix, expected \"{d}\", \"{scsw}\", \"{scse}\", \"{scpe}\", \"{scpt}\", \"{scsl}\", or \"{c}\" prefix",
             d = DOGMA_PREFIX,
@@ -151,5 +156,40 @@ mod custom_serde_ad {
         InvalidPrefix,
         #[error("{0}")]
         InvalidInt(#[from] std::num::ParseIntError),
+    }
+
+    impl Serialize for AEffectId {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            serializer.serialize_str(&self.to_string())
+        }
+    }
+
+    impl<'de> Deserialize<'de> for AEffectId {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorImpl;
+
+            impl<'de> Visitor<'de> for VisitorImpl {
+                type Value = AEffectId;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("string with effect type-prefixed integer")
+                }
+
+                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Self::Value::from_str(v).map_err(Error::custom)
+                }
+            }
+
+            deserializer.deserialize_str(VisitorImpl)
+        }
     }
 }

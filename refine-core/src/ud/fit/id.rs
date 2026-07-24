@@ -65,8 +65,7 @@ mod custom_serde {
         where
             S: Serializer,
         {
-            let string = format!("{self}");
-            serializer.serialize_str(&string)
+            serializer.serialize_str(&self.to_string())
         }
     }
 

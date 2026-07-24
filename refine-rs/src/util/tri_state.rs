@@ -53,9 +53,9 @@ mod custom_serde {
             match self {
                 // This still serializes None, still have to declare "skip_serializing_if" in
                 // containing struct
-                TriStateField::Absent => serializer.serialize_unit(),
-                TriStateField::None => serializer.serialize_none(),
-                TriStateField::Value(value) => value.serialize(serializer),
+                Self::Absent => serializer.serialize_unit(),
+                Self::None => serializer.serialize_none(),
+                Self::Value(value) => value.serialize(serializer),
             }
         }
     }
@@ -82,23 +82,18 @@ mod custom_serde {
                     formatter.write_str("TriStateField<T>")
                 }
 
-                #[inline]
                 fn visit_none<E>(self) -> Result<Self::Value, E>
                 where
                     E: Error,
                 {
                     Ok(Self::Value::None)
                 }
-
-                #[inline]
                 fn visit_some<D>(self, deserializer: D) -> Result<Self::Value, D::Error>
                 where
                     D: Deserializer<'de>,
                 {
                     T::deserialize(deserializer).map(Self::Value::Value)
                 }
-
-                #[inline]
                 fn visit_unit<E>(self) -> Result<Self::Value, E>
                 where
                     E: Error,

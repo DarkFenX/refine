@@ -3,6 +3,10 @@ use crate::{
     util::CMap,
 };
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 pub struct AItemSkillReq {
     pub id: AItemId,
     pub level: ASkillLevel,
@@ -49,5 +53,61 @@ impl FromIterator<AItemSkillReq> for AItemSkillReqs {
 impl AItemSkillReqs {
     pub(crate) fn contains_id(&self, id: &AItemId) -> bool {
         self.data.contains_key(id)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde-ad")]
+mod custom_serde_ad {
+    use serde::{
+        de::{Deserialize, Deserializer, SeqAccess, Visitor},
+        ser::{Serialize, SerializeSeq, Serializer},
+    };
+
+    use super::*;
+
+    impl Serialize for AItemSkillReqs {
+        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
+        where
+            S: Serializer,
+        {
+            let mut seq = serializer.serialize_seq(Some(self.data.len()))?;
+            for attr in self.data.values() {
+                seq.serialize_element(attr)?;
+            }
+            seq.end()
+        }
+    }
+
+    impl<'de> Deserialize<'de> for AItemSkillReqs {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            struct VisitorImpl;
+
+            impl<'de> Visitor<'de> for VisitorImpl {
+                type Value = AItemSkillReqs;
+
+                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+                    formatter.write_str("sequence with item skill requirements")
+                }
+
+                fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
+                where
+                    S: SeqAccess<'de>,
+                {
+                    let mut data = CMap::const_new();
+                    while let Some(element) = seq.next_element::<AItemSkillReq>()? {
+                        data.insert(element.id, element);
+                    }
+                    Ok(AItemSkillReqs { data })
+                }
+            }
+
+            deserializer.deserialize_seq(VisitorImpl)
+        }
     }
 }

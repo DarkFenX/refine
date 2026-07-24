@@ -1,5 +1,9 @@
 use crate::ad::{AAttrId, AMutaAttrRange};
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 pub struct AMutaAttr {
     pub attr_id: AAttrId,
     pub range: AMutaAttrRange,
@@ -7,6 +11,11 @@ pub struct AMutaAttr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct AMutaAttrs {
     data: Vec<AMutaAttr>,

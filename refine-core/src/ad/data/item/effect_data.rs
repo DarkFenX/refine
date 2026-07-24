@@ -1,5 +1,9 @@
 use crate::ad::{ACount, AItemId, AItemListId, AValue};
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 pub struct AItemEffectData {
     pub autocharge: Option<AItemId>,
     pub cooldown: Option<AValue>,

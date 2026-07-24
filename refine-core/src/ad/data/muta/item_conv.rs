@@ -1,5 +1,9 @@
 use crate::ad::AItemId;
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
+)]
 pub struct AMutaItemConv {
     pub base_item_id: AItemId,
     pub mutated_item_id: AItemId,
@@ -7,6 +11,11 @@ pub struct AMutaItemConv {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct AMutaItemConvs {
     data: Vec<AMutaItemConv>,

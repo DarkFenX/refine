@@ -1,5 +1,10 @@
 use crate::ad::AItemListId;
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Default)]
 pub struct AItemBuffItemLists {
     data: Vec<AItemListId>,

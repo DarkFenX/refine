@@ -1,5 +1,10 @@
 use crate::ed::EEffectCatId;
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEffectCatId(i32);
 impl AEffectCatId {

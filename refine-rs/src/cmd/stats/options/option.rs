@@ -68,15 +68,6 @@ mod custom_serde {
                     formatter.write_str("bool or null")
                 }
 
-                fn visit_bool<E>(self, v: bool) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(match v {
-                        true => Self::Value::Enabled,
-                        false => Self::Value::Disabled,
-                    })
-                }
                 fn visit_unit<E>(self) -> Result<Self::Value, E>
                 where
                     E: Error,
@@ -88,6 +79,15 @@ mod custom_serde {
                     E: Error,
                 {
                     Ok(Self::Value::Default)
+                }
+                fn visit_bool<E>(self, v: bool) -> Result<Self::Value, E>
+                where
+                    E: Error,
+                {
+                    Ok(match v {
+                        true => Self::Value::Enabled,
+                        false => Self::Value::Disabled,
+                    })
                 }
             }
 

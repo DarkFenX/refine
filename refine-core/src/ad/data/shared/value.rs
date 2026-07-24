@@ -1,5 +1,10 @@
 use crate::ed::{EFloat, EInt};
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone)]
 pub struct ACount(u32);
 impl ACount {
@@ -11,6 +16,11 @@ impl ACount {
     }
 }
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, PartialEq)]
 pub struct AValue(f64);
 impl AValue {

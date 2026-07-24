@@ -1,5 +1,10 @@
 use crate::{ed::EItemGrpId, util::round_f64_to_i32};
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AItemGrpId(i32);
 impl AItemGrpId {
