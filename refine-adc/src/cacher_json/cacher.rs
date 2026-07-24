@@ -6,8 +6,8 @@ use std::{
 };
 
 use super::{
-    data::CData,
     error::{JsonZfileAdcDataReadError, JsonZfileAdcFpReadError, JsonZfileAdcWriteError},
+    stream::{try_deserialize, try_serialize},
 };
 use crate::VERSION;
 
@@ -41,7 +41,7 @@ impl JsonZfileAdc {
             }
         }
     }
-    fn write_data(&self, c_data: CData) -> Result<(), JsonZfileAdcWriteError> {
+    fn write_data(&self, a_data: &rc::ad::AData) -> Result<(), JsonZfileAdcWriteError> {
         let cache_path = self.get_cache_path();
         let file = OpenOptions::new()
             .create(true)
@@ -49,7 +49,7 @@ impl JsonZfileAdc {
             .truncate(true)
             .open(cache_path)?;
         let writer = zstd::stream::Encoder::new(file, 7)?.auto_finish();
-        c_data.try_serialize(writer)?;
+        try_serialize(a_data, writer)?;
         Ok(())
     }
     fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), JsonZfileAdcWriteError> {
@@ -87,8 +87,8 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
             .map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
         let reader =
             zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
-        let c_data = CData::try_deserialize(reader)?;
-        Ok(c_data.into_adapted())
+        let a_data = try_deserialize(reader)?;
+        Ok(a_data)
     }
     fn write_cache(
         &mut self,
@@ -96,7 +96,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
         fingerprint: rc::ad::AFingerprint,
     ) -> Result<(), Box<dyn std::error::Error>> {
         self.create_cache_dir()?;
-        self.write_data(CData::from_adapted(a_data))?;
+        self.write_data(a_data)?;
         self.write_fingerprint(fingerprint)?;
         Ok(())
     }
