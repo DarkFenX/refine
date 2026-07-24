@@ -1,6 +1,5 @@
 //! Cacheable data types.
 
-use abil::CAbil;
 use attr::CAttr;
 use buff::CBuff;
 pub(in crate::cacher_json) use data::CData;
@@ -12,7 +11,6 @@ use shared::{CModifierSrq, COp, CState};
 use traits::AdaptedConv;
 use warnings::CDataWarnings;
 
-mod abil;
 mod attr;
 mod buff;
 mod data;

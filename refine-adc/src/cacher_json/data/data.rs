@@ -4,7 +4,7 @@ use struson::{
 };
 
 use crate::cacher_json::{
-    data::{AdaptedConv, CAbil, CAttr, CBuff, CDataWarnings, CEffect, CItem, CItemList, CMuta},
+    data::{AdaptedConv, CAttr, CBuff, CDataWarnings, CEffect, CItem, CItemList, CMuta},
     error::{JsonZfileAdcDataReadError, JsonZfileAdcWriteError},
 };
 
@@ -15,7 +15,7 @@ pub(in crate::cacher_json) struct CData {
     mutas: Vec<CMuta>,
     effects: Vec<CEffect>,
     buffs: Vec<CBuff>,
-    abils: Vec<CAbil>,
+    abils: Vec<rc::ad::AAbil>,
     item_lists: Vec<CItemList>,
     warnings: CDataWarnings,
 }
