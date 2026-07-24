@@ -10,7 +10,7 @@ edition = "2024"
 angle-sc = ">=1.1.5"
 cranelift-entity = ">=0.134.2"
 derive_more = { version = ">=2.1.1", features = ["display"] }
-either = ">=0.16.0"
+either = ">=0.17.0"
 indexmap = ">=2.14.0"
 itertools = ">=0.15.0"
 lender = ">=0.8.0"
