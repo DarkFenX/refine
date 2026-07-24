@@ -2,6 +2,7 @@
     feature = "serde-ad",
     derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
 )]
+#[derive(Default)]
 pub struct ADataWarnings {
     pub data_fetch: Vec<String>,
     pub pk_duplicates: Vec<String>,
@@ -13,15 +14,7 @@ pub struct ADataWarnings {
 }
 impl ADataWarnings {
     pub fn new() -> Self {
-        Self {
-            data_fetch: Vec::new(),
-            pk_duplicates: Vec::new(),
-            cleanup: Vec::new(),
-            validation: Vec::new(),
-            conversion_main: Vec::new(),
-            customization: Vec::new(),
-            conversion_aux: Vec::new(),
-        }
+        Self::default()
     }
     pub fn is_empty(&self) -> bool {
         self.data_fetch.is_empty()

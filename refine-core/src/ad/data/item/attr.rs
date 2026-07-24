@@ -15,8 +15,9 @@ pub struct AItemAttr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AItemAttrs {
-    data: CMap<AAttrId, AItemAttr>,
+    data: CMap<AAttrId, AItemAttr> = CMap::const_new(),
 }
 impl AItemAttrs {
     pub const fn new() -> Self {
@@ -29,11 +30,6 @@ impl AItemAttrs {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AItemAttr> {
         self.data.values()
-    }
-}
-impl Default for AItemAttrs {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AItemAttr> for AItemAttrs {

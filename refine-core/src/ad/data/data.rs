@@ -1,6 +1,7 @@
 use crate::ad::{AAbils, AAttrs, ABuffs, ADataWarnings, AEffects, AItemLists, AItems, AMutas};
 
 #[cfg_attr(feature = "serde-ad", derive(serde::Serialize, serde::Deserialize))]
+#[derive(Default)]
 pub struct AData {
     #[cfg_attr(feature = "serde-ad", serde(skip_serializing_if = "AItems::is_empty"))]
     pub items: AItems,
@@ -21,15 +22,6 @@ pub struct AData {
 }
 impl AData {
     pub fn new() -> Self {
-        Self {
-            items: AItems::new(),
-            attrs: AAttrs::new(),
-            mutas: AMutas::new(),
-            effects: AEffects::new(),
-            buffs: ABuffs::new(),
-            abils: AAbils::new(),
-            item_lists: AItemLists::new(),
-            warnings: ADataWarnings::new(),
-        }
+        Self::default()
     }
 }

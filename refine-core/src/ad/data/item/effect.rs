@@ -11,8 +11,9 @@ pub struct AItemEffect {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AItemEffects {
-    data: CMap<AEffectId, AItemEffect>,
+    data: CMap<AEffectId, AItemEffect> = CMap::const_new(),
 }
 impl AItemEffects {
     pub const fn new() -> Self {
@@ -25,11 +26,6 @@ impl AItemEffects {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AItemEffect> {
         self.data.values()
-    }
-}
-impl Default for AItemEffects {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AItemEffect> for AItemEffects {

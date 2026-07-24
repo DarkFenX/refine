@@ -15,8 +15,9 @@ pub struct AItemSkillReq {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Container
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Default)]
 pub struct AItemSkillReqs {
-    data: CMap<AItemId, AItemSkillReq>,
+    data: CMap<AItemId, AItemSkillReq> = CMap::const_new(),
 }
 impl AItemSkillReqs {
     pub const fn new() -> Self {
@@ -29,11 +30,6 @@ impl AItemSkillReqs {
     }
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AItemSkillReq> {
         self.data.values()
-    }
-}
-impl Default for AItemSkillReqs {
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl FromIterator<AItemSkillReq> for AItemSkillReqs {
