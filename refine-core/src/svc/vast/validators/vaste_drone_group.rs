@@ -8,6 +8,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValDroneGroupFail {
     /// Drone item groups allowed by the ship.
     pub allowed_group_ids: Vec<ItemGrpId>,
@@ -17,6 +18,7 @@ pub struct ValDroneGroupFail {
 }
 
 /// Drones which break the validation and their group.
+#[derive(Copy, Clone)]
 pub struct ValDroneGroupInfo {
     pub drone_id: ItemId,
     pub group_id: ItemGrpId,

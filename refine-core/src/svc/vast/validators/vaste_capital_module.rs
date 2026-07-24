@@ -10,6 +10,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValCapitalModFail {
     /// Modules up to and including this volume are not considered capital.
     pub max_subcap_volume: PValue,
@@ -18,6 +19,7 @@ pub struct ValCapitalModFail {
 }
 
 /// Module which breaks the validation and its volume.
+#[derive(Copy, Clone)]
 pub struct ValCapitalModInfo {
     pub module_id: ItemId,
     pub volume: PValue,

@@ -6,6 +6,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[derive(Clone)]
 pub struct ValNotLoadedItemFail {
     /// Items which couldn't be loaded from current sol data source.
     pub item_ids: Vec<ItemId>,

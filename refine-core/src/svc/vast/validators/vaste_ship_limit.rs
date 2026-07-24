@@ -12,6 +12,7 @@ use crate::{
     serde_with::serde_as,
     derive(serde_tuple::Serialize_tuple)
 )]
+#[derive(Clone)]
 pub struct ValShipLimitFail {
     /// Type ID of current ship.
     pub ship_type_id: Option<ItemTypeId>,
@@ -22,6 +23,7 @@ pub struct ValShipLimitFail {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValShipLimitItemInfo {
     /// Item which cannot be fit to current ship.
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]

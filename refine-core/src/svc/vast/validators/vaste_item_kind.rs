@@ -21,12 +21,14 @@ pub(in crate::svc::vast) struct ValItemKindItemStored {
     derive(serde::Serialize),
     serde(transparent)
 )]
+#[derive(Clone)]
 pub struct ValItemKindFail {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub item_kinds: Vec<ValItemKindItemInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct ValItemKindItemInfo {
     /// Item which failed validation
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]

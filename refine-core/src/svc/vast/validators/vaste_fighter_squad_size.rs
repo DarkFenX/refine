@@ -20,6 +20,7 @@ pub(in crate::svc::vast) struct ValFighterSquadSizeFighterStored {
     derive(serde::Serialize),
     serde(transparent)
 )]
+#[derive(Clone)]
 pub struct ValFighterSquadSizeFail {
     /// Fighters and info about failed validation.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
@@ -27,6 +28,7 @@ pub struct ValFighterSquadSizeFail {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
     /// Current squad size.
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]

@@ -9,6 +9,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValUnusableResFail {
     /// Max available resource.
     pub max: Option<Value>,
@@ -16,6 +17,7 @@ pub struct ValUnusableResFail {
     pub users: Vec<ValUnusableResItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValUnusableResItemInfo {
     /// Item which consumes the resource.
     pub item_id: ItemId,

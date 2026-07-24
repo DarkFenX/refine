@@ -12,12 +12,14 @@ use crate::{
     derive(serde::Serialize),
     serde(transparent)
 )]
+#[derive(Clone)]
 pub struct ValChargeSizeFail {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub charges: Vec<ValChargeSizeChargeInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct ValChargeSizeChargeInfo {
     /// Charge item ID.
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]

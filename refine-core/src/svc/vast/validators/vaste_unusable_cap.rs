@@ -8,6 +8,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: PValue,
@@ -15,6 +16,7 @@ pub struct ValUnusableCapFail {
     pub items: Vec<ValUnusableCapItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValUnusableCapItemInfo {
     /// Item which fails the validation.
     pub item_id: ItemId,

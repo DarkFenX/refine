@@ -15,6 +15,7 @@ use crate::{
     derive(serde::Serialize),
     serde(transparent)
 )]
+#[derive(Clone)]
 pub struct ValMaxGroupFail {
     /// Map between group IDs which had failed items, and detailed group info.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
@@ -27,6 +28,7 @@ pub struct ValMaxGroupFail {
     serde_with::serde_as,
     derive(serde_tuple::Serialize_tuple)
 )]
+#[derive(Clone)]
 pub struct ValMaxGroupGroupInfo {
     /// Group which has failed items.
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
@@ -38,6 +40,7 @@ pub struct ValMaxGroupGroupInfo {
     pub items: Vec<ValMaxGroupItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValMaxGroupItemInfo {
     /// Item which failed validation.
     pub item_id: ItemId,

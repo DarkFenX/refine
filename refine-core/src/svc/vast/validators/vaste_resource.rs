@@ -8,6 +8,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValResourceFail {
     /// How much resource is used by all of its consumers.
     pub used: Value,
@@ -18,6 +19,7 @@ pub struct ValResourceFail {
     pub users: Vec<ValResourceItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValResourceItemInfo {
     /// Item which consumes the resource.
     pub item_id: ItemId,

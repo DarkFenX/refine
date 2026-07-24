@@ -8,12 +8,14 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[derive(Clone)]
 pub struct ValSlotIndexFail {
     /// Slot number and items trying to take it.
     #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
     pub slot_users: Vec<ValSlotIndexSlotInfo>,
 }
 
+#[derive(Clone)]
 pub struct ValSlotIndexSlotInfo {
     /// Slot number.
     pub slot: SlotIndex,

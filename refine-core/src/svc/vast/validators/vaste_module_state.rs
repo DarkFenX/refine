@@ -20,6 +20,7 @@ pub(in crate::svc::vast) struct ValModuleStateModuleStored {
     derive(serde::Serialize),
     serde(transparent)
 )]
+#[derive(Clone)]
 pub struct ValModuleStateFail {
     /// Modules and their state info.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]

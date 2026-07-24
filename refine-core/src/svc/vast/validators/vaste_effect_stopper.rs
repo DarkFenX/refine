@@ -7,12 +7,14 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[derive(Clone)]
 pub struct ValEffectStopperFail {
     #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
     pub items: Vec<ValEffectStopperItemInfo>,
 }
 
 /// Item and its running effects which should be stopped.
+#[derive(Clone)]
 pub struct ValEffectStopperItemInfo {
     pub item_id: ItemId,
     pub effect_ids: Vec<EffectId>,

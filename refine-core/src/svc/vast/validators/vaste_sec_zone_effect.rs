@@ -13,6 +13,7 @@ pub(in crate::svc::vast) struct EffectSecZoneInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValEffectSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
@@ -22,6 +23,7 @@ pub struct ValEffectSecZoneFail {
     pub items: Vec<ValEffectSecZoneItemInfo>,
 }
 
+#[derive(Clone)]
 pub struct ValEffectSecZoneItemInfo {
     /// Item which fails validation.
     pub item_id: ItemId,
@@ -29,6 +31,7 @@ pub struct ValEffectSecZoneItemInfo {
     pub effects: Vec<ValEffectSecZoneEffectInfo>,
 }
 
+#[derive(Clone)]
 pub struct ValEffectSecZoneEffectInfo {
     /// Effect which cannot be used in current security zone.
     pub effect_id: EffectId,

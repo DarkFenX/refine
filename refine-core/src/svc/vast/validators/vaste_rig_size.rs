@@ -6,6 +6,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValRigSizeFail {
     /// Rig size compatible with the ship.
     pub allowed_size: Value,
@@ -13,6 +14,7 @@ pub struct ValRigSizeFail {
     pub rig_sizes: Vec<ValRigSizeItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValRigSizeItemInfo {
     /// Rig which failed the validation.
     pub rig_id: ItemId,

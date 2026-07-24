@@ -15,6 +15,7 @@ pub(in crate::svc::vast) struct ValSrqSkillStored {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[derive(Clone)]
 pub struct ValSrqFail {
     /// Items and their unsatisfied skill requirements, which are defined as another list of skills
     /// and info about levels.
@@ -22,6 +23,7 @@ pub struct ValSrqFail {
     pub items: Vec<ValSrqItemInfo>,
 }
 
+#[derive(Clone)]
 pub struct ValSrqItemInfo {
     /// Item with unsatisfied skill requirements
     pub item_id: ItemId,
@@ -30,6 +32,7 @@ pub struct ValSrqItemInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct ValSrqSkillInfo {
     pub skill_type_id: ItemTypeId,
     /// Current skill level, None if skill is absent on the fit.

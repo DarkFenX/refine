@@ -12,13 +12,14 @@ use crate::{
     derive(serde::Serialize),
     serde(transparent)
 )]
+#[derive(Clone)]
 pub struct ValMaxTypeFail {
-    /// Items and details about failures.
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
     pub item_types: Vec<ValMaxTypeTypeInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValMaxTypeTypeInfo {
     /// Type ID of an item this fit has too many.
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
@@ -30,6 +31,7 @@ pub struct ValMaxTypeTypeInfo {
     pub items: Vec<ValMaxTypeItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValMaxTypeItemInfo {
     /// Item which failed validation.
     pub item_id: ItemId,

@@ -9,6 +9,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValOverloadSkillFail {
     /// Current level of the Thermodynamics skill.
     pub td_lvl: Option<SkillLevel>,
@@ -17,6 +18,7 @@ pub struct ValOverloadSkillFail {
     pub module_reqs: Vec<ValOverloadSkillItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValOverloadSkillItemInfo {
     /// Overloaded item which fails the validation.
     pub item_id: ItemId,

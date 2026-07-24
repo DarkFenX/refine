@@ -8,12 +8,14 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[derive(Clone)]
 pub struct ValProjFilterFail {
     /// Projecting items and targets they can't be projected to.
     #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
     pub items: Vec<ValProjFilterItemInfo>,
 }
 
+#[derive(Clone)]
 pub struct ValProjFilterItemInfo {
     /// Item-projector which fails the validation.
     pub item_id: ItemId,

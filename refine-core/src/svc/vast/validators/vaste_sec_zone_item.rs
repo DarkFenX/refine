@@ -12,6 +12,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValItemSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
@@ -19,6 +20,7 @@ pub struct ValItemSecZoneFail {
     pub items: Vec<ValItemSecZoneItemInfo>,
 }
 
+#[derive(Clone)]
 pub struct ValItemSecZoneItemInfo {
     /// Item which cannot be used in current security zone.
     pub item_id: ItemId,

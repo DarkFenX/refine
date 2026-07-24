@@ -14,6 +14,7 @@ use crate::{
 ///
 /// Contains per-fit failures, and failures for items not belonging to any fit.
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ValResultSol {
     #[cfg_attr(
         feature = "serde",
@@ -39,6 +40,7 @@ impl ValResultSol {
 
 /// Validation result for a fit.
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ValResultFit {
     // Generic
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]

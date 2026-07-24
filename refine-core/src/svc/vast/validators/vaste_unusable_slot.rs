@@ -10,6 +10,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValUnusableSlotFail {
     /// How many slots available (when this validation fails, it's either None or 0).
     pub max: Option<Count>,

@@ -8,6 +8,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct ValItemVsShipKindFail {
     /// Kind of current ship.
     pub ship_kind: ValShipKind,
@@ -16,6 +17,7 @@ pub struct ValItemVsShipKindFail {
     pub items: Vec<ValItemVsShipKindItemInfo>,
 }
 
+#[derive(Copy, Clone)]
 pub struct ValItemVsShipKindItemInfo {
     /// Items which need other ship kind.
     pub item_id: ItemId,
