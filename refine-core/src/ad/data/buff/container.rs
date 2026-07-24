@@ -17,6 +17,9 @@ impl ABuffs {
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &ABuff> {
         self.data.values()
     }
+    pub fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
 }
 impl FromIterator<ABuff> for ABuffs {
     fn from_iter<I>(iter: I) -> Self

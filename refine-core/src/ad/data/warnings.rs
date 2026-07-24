@@ -12,7 +12,7 @@ pub struct ADataWarnings {
     pub conversion_aux: Vec<String>,
 }
 impl ADataWarnings {
-    pub(in crate::ad::data) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             data_fetch: Vec::new(),
             pk_duplicates: Vec::new(),
@@ -22,5 +22,14 @@ impl ADataWarnings {
             customization: Vec::new(),
             conversion_aux: Vec::new(),
         }
+    }
+    pub fn is_empty(&self) -> bool {
+        self.data_fetch.is_empty()
+            && self.pk_duplicates.is_empty()
+            && self.cleanup.is_empty()
+            && self.validation.is_empty()
+            && self.conversion_main.is_empty()
+            && self.customization.is_empty()
+            && self.conversion_aux.is_empty()
     }
 }

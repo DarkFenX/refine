@@ -17,6 +17,9 @@ impl AEffects {
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AEffect> {
         self.data.values()
     }
+    pub fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
 }
 impl FromIterator<AEffect> for AEffects {
     fn from_iter<I>(iter: I) -> Self

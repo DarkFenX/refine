@@ -17,6 +17,9 @@ impl AItemLists {
     pub fn iter(&self) -> impl ExactSizeIterator<Item = &AItemList> {
         self.data.values()
     }
+    pub fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
 }
 impl FromIterator<AItemList> for AItemLists {
     fn from_iter<I>(iter: I) -> Self
