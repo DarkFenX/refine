@@ -16,14 +16,15 @@ pub use validators::{
     ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupChargeInfo, ValChargeParentGroupFail, ValChargeSizeChargeInfo, ValChargeSizeFail,
     ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValDroneGroupInfo,
-    ValEffectSecZoneFail, ValEffectStopperFail, ValEffectStopperItemInfo, ValFighterSquadSizeFail,
-    ValFighterSquadSizeFighterInfo, ValItemKindFail, ValItemKindItemInfo, ValItemSecZoneFail, ValItemVsShipKindFail,
-    ValItemVsShipKindItemInfo, ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxGroupItemInfo, ValMaxTypeFail,
-    ValMaxTypeItemInfo, ValMaxTypeTypeInfo, ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail,
-    ValOverloadSkillFail, ValOverloadSkillItemInfo, ValProjFilterFail, ValProjFilterItemInfo, ValProjImmunityFail,
-    ValProjImmunityItemInfo, ValResourceFail, ValResourceItemInfo, ValRigSizeFail, ValShipKind, ValShipLimitFail,
-    ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo,
-    ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
+    ValEffectSecZoneEffectInfo, ValEffectSecZoneFail, ValEffectSecZoneItemInfo, ValEffectStopperFail,
+    ValEffectStopperItemInfo, ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail,
+    ValItemKindItemInfo, ValItemSecZoneFail, ValItemSecZoneItemInfo, ValItemVsShipKindFail, ValItemVsShipKindItemInfo,
+    ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxGroupItemInfo, ValMaxTypeFail, ValMaxTypeItemInfo, ValMaxTypeTypeInfo,
+    ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOverloadSkillFail, ValOverloadSkillItemInfo,
+    ValProjFilterFail, ValProjFilterItemInfo, ValProjImmunityFail, ValProjImmunityItemInfo, ValResourceFail,
+    ValResourceItemInfo, ValRigSizeFail, ValRigSizeItemInfo, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo,
+    ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo, ValUnusableCapFail,
+    ValUnusableResFail, ValUnusableSlotFail,
 };
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;

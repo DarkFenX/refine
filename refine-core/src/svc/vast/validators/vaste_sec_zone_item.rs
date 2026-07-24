@@ -1,31 +1,29 @@
 use itertools::Itertools;
 
 use crate::{
-    misc::{SecZone, SecZoneCorruption},
-    num::Value,
+    ItemId, SecZone, SecZoneCorruption, Value,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         funcs::{is_attr_flag_set, is_oattr_flag_set},
         vast::VastFitData,
     },
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::{RMap, RSet},
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValItemSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
-    /// Items which cannot be used in current security zone, and a list of security zones they can
-    /// be used in.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, Vec<SecZone>)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValItemSecZoneItemInfo>,
+}
+
+pub struct ValItemSecZoneItemInfo {
+    /// Item which cannot be used in current security zone.
+    pub item_id: ItemId,
+    /// Security zones the item can be used in.
+    pub allowed_zones: Vec<SecZone>,
 }
 
 impl VastFitData {
@@ -276,11 +274,9 @@ fn flags_check_verbose(
             zone: ctx.u_data.sec_zone,
             items: failed_item_uids
                 .iter()
-                .map(|&item_uid| {
-                    (
-                        ctx.u_data.items.ext_id_by_int_id(item_uid),
-                        get_allowed_sec_zones(ctx, calc, item_uid, items_wspace_banned),
-                    )
+                .map(|&item_uid| ValItemSecZoneItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    allowed_zones: get_allowed_sec_zones(ctx, calc, item_uid, items_wspace_banned),
                 })
                 .collect(),
         }),
@@ -354,10 +350,10 @@ fn class_check_verbose(
         .iter()
         .filter_map(
             |(item_uid, item_sec_class)| match *item_sec_class < current_class && !kfs.contains(item_uid) {
-                true => Some((
-                    ctx.u_data.items.ext_id_by_int_id(*item_uid),
-                    class_to_allowed_zones(*item_sec_class),
-                )),
+                true => Some(ValItemSecZoneItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                    allowed_zones: class_to_allowed_zones(*item_sec_class),
+                }),
                 false => None,
             },
         )
@@ -399,4 +395,25 @@ fn class_to_allowed_zones(class: Value) -> Vec<SecZone> {
         return vec![SecZone::NullSec, SecZone::WSpace, SecZone::Hazard];
     }
     Vec::new()
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValItemSecZoneItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.allowed_zones)?;
+        }
+        map.end()
+    }
 }
