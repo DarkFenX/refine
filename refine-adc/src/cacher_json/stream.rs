@@ -30,7 +30,7 @@ where
 
 fn write_array_to_object<'a, W, T>(
     name: &str,
-    c_entities: impl Iterator<Item = &'a T>,
+    entities: impl Iterator<Item = &'a T>,
     writer: &mut JsonStreamWriter<W>,
 ) -> Result<(), JsonZfileAdcWriteError>
 where
@@ -38,11 +38,11 @@ where
     T: serde::ser::Serialize + 'a,
 {
     writer.name(name)?;
-    write_array(c_entities, writer)
+    write_array(entities, writer)
 }
 
 fn write_array<'a, W, T>(
-    c_entities: impl Iterator<Item = &'a T>,
+    entities: impl Iterator<Item = &'a T>,
     writer: &mut JsonStreamWriter<W>,
 ) -> Result<(), JsonZfileAdcWriteError>
 where
@@ -50,8 +50,8 @@ where
     T: serde::ser::Serialize + 'a,
 {
     writer.begin_array()?;
-    for c_entity in c_entities {
-        writer.serialize_value(c_entity)?;
+    for entity in entities {
+        writer.serialize_value(entity)?;
     }
     writer.end_array()?;
     Ok(())
@@ -64,35 +64,36 @@ pub(super) fn try_deserialize<R>(reader: R) -> Result<rc::ad::AData, JsonZfileAd
 where
     R: std::io::Read,
 {
-    let mut c_data = CData::default();
+    let mut a_data = rc::ad::AData::new();
     let mut reader = JsonStreamReader::new(reader);
     reader.begin_object()?;
     while reader.has_next()? {
         match reader.next_name()? {
-            "items" => read_array(&mut c_data.items, &mut reader)?,
-            "attrs" => read_array(&mut c_data.attrs, &mut reader)?,
-            "mutas" => read_array(&mut c_data.mutas, &mut reader)?,
-            "effects" => read_array(&mut c_data.effects, &mut reader)?,
-            "buffs" => read_array(&mut c_data.buffs, &mut reader)?,
-            "abils" => read_array(&mut c_data.abils, &mut reader)?,
-            "item_lists" => read_array(&mut c_data.item_lists, &mut reader)?,
-            "warnings" => c_data.warnings = reader.deserialize_next()?,
+            "items" => read_array(|e| a_data.items.insert(e), &mut reader)?,
+            "attrs" => read_array(|e| a_data.attrs.insert(e), &mut reader)?,
+            "mutas" => read_array(|e| a_data.mutas.insert(e), &mut reader)?,
+            "effects" => read_array(|e| a_data.effects.insert(e), &mut reader)?,
+            "buffs" => read_array(|e| a_data.buffs.insert(e), &mut reader)?,
+            "abils" => read_array(|e| a_data.abils.insert(e), &mut reader)?,
+            "item_lists" => read_array(|e| a_data.item_lists.insert(e), &mut reader)?,
+            "warnings" => a_data.warnings = reader.deserialize_next()?,
             _ => reader.skip_value()?,
         }
     }
     reader.end_object()?;
-    Ok(c_data)
+    Ok(a_data)
 }
 
-fn read_array<R, C>(c_entities: &mut Vec<C>, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcDataReadError>
+fn read_array<F, T, R>(mut inserter: F, reader: &mut JsonStreamReader<R>) -> Result<(), JsonZfileAdcDataReadError>
 where
+    F: FnMut(T),
+    T: serde::de::DeserializeOwned,
     R: std::io::Read,
-    C: serde::de::DeserializeOwned,
 {
     reader.begin_array()?;
     while reader.has_next()? {
-        let entry = reader.deserialize_next::<C>()?;
-        c_entities.push(entry);
+        let entity = reader.deserialize_next::<T>()?;
+        inserter(entity);
     }
     reader.end_array()?;
     Ok(())

@@ -20,7 +20,7 @@ pub struct AData {
     pub warnings: ADataWarnings,
 }
 impl AData {
-    pub(in crate::ad) fn new() -> Self {
+    pub fn new() -> Self {
         Self {
             items: AItems::new(),
             attrs: AAttrs::new(),
