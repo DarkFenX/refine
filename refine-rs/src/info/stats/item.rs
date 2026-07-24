@@ -11,6 +11,7 @@ pub use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ItemStats {
     // Output
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]

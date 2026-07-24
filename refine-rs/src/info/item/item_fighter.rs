@@ -9,6 +9,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FighterInfo {
     pub id: ItemId,
     #[cfg_attr(
@@ -22,6 +23,7 @@ pub struct FighterInfo {
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FighterInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

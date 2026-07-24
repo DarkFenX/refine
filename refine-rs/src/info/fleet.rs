@@ -3,6 +3,7 @@ use rc::Lender;
 use crate::{FitId, FleetId, FleetInfoMode};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FleetInfo {
     pub id: FleetId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
@@ -10,6 +11,7 @@ pub struct FleetInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FleetInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fit_ids: Vec<FitId>,

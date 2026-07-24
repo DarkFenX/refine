@@ -6,6 +6,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct SolInfo {
     pub id: SolarSystemId,
     pub src_alias: SrcAlias,
@@ -14,6 +15,7 @@ pub struct SolInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct SolInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub fleets: Vec<FleetInfo>,

@@ -1,6 +1,7 @@
 use crate::{UnitInterval, Value};
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct SideEffectInfo {
     pub chance: UnitInterval,
     pub state: bool,
@@ -8,12 +9,14 @@ pub struct SideEffectInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct SideEffectMod {
     pub op: SideEffectOp,
     pub str: Value,
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
+#[derive(Copy, Clone)]
 pub enum SideEffectOp {
     Add,
     Perc,

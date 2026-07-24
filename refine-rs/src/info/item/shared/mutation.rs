@@ -6,6 +6,7 @@ use crate::{AttrId, ItemTypeId, UnitInterval, Value};
     serde_with::serde_as,
     derive(serde_tuple::Serialize_tuple)
 )]
+#[derive(Clone)]
 pub struct ItemMutationInfo {
     pub base_type_id: ItemTypeId,
     pub mutator_id: ItemTypeId,
@@ -14,6 +15,7 @@ pub struct ItemMutationInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct AttrMutationInfo {
     pub roll: Option<UnitInterval>,
     pub value: Value,

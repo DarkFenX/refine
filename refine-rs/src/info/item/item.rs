@@ -5,6 +5,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
+#[derive(Clone)]
 pub enum ItemInfo {
     Autocharge(AutochargeInfo),
     Booster(BoosterInfo),

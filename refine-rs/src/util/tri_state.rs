@@ -1,4 +1,4 @@
-#[derive(Default)]
+#[derive(Copy, Clone, Default)]
 pub enum TriStateField<T> {
     Value(T),
     None,

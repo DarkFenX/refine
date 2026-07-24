@@ -33,7 +33,7 @@ pub enum IterItemModifiersError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Stats errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Debug, thiserror::Error)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum ItemStatError<SS>
 where
     SS: std::error::Error,
@@ -59,7 +59,7 @@ where
     }
 }
 
-#[derive(Debug, thiserror::Error)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum ItemAppliedStatError<SS>
 where
     SS: std::error::Error,

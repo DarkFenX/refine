@@ -6,6 +6,7 @@ use crate::ItemKind;
 use crate::{AttrId, AttrVals, EffectId, EffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ProjEffectInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
@@ -13,6 +14,7 @@ pub struct ProjEffectInfo {
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ProjEffectInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

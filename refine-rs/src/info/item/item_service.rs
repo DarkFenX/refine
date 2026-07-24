@@ -8,6 +8,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ServiceInfo {
     pub id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
@@ -15,6 +16,7 @@ pub struct ServiceInfo {
 }
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ServiceInfoExt {
     #[cfg(feature = "serde")]
     kind: ItemKind,

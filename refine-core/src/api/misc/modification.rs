@@ -6,6 +6,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Clone)]
 pub struct Modification {
     pub op: Op,
     pub initial_str: Value,
@@ -17,6 +18,7 @@ pub struct Modification {
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct Affector {
     pub item_id: ItemId,
     pub attr_id: Option<AttrId>,

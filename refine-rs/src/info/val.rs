@@ -1,6 +1,7 @@
 use crate::val::{FitValInfoDetails, SolValInfoDetails};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FitValInfo {
     pub passed: bool,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "custom_serde::skip_details_fit"))]
@@ -8,6 +9,7 @@ pub struct FitValInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct SolValInfo {
     pub passed: bool,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "custom_serde::skip_details_sol"))]

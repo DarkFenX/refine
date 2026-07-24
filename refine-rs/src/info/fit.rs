@@ -7,6 +7,7 @@ use crate::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FitInfo {
     pub id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten, skip_serializing_if = "Option::is_none"))]
@@ -14,6 +15,7 @@ pub struct FitInfo {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct FitInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub fleet_id: Option<FleetId>,
@@ -49,6 +51,7 @@ pub struct FitInfoExt {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Clone)]
 pub struct ModuleRacks {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub high: Vec<Option<ModuleInfo>>,
