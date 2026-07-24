@@ -140,7 +140,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     pub enum EffectIdParseError {
         #[error(
             "invalid prefix, expected \"{d}\", \"{scsw}\", \"{scse}\", \"{scpe}\", \"{scpt}\", \"{scsl}\", or \"{c}\" prefix",

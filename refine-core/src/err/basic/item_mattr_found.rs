@@ -1,6 +1,6 @@
 use crate::{api::AttrId, ud::ItemId};
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("attribute {attr_id} on item {item_id} contains no mutation data")]
 pub struct ItemMAttrFoundError {
     pub item_id: ItemId,

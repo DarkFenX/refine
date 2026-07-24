@@ -23,7 +23,7 @@ impl<'s> FitMut<'s> {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum UnsetFitFleetError {
     #[error("{0}")]
     FitHasNoFleet(#[from] FitFleetAssignedError),

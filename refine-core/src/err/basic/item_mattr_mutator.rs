@@ -3,7 +3,7 @@ use crate::{
     ud::ItemId,
 };
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("attribute {attr_id} is not mutable according to mutator {mutator_type_id} on item {item_id}")]
 pub struct ItemMAttrMutatorError {
     pub item_id: ItemId,

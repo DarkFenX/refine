@@ -1,3 +1,4 @@
+#[derive(Clone)]
 pub enum StatResult<T, EO, EI> {
     NotRequested,
     Result(Vec<Result<T, EI>>),

@@ -1,6 +1,6 @@
 use crate::ud::FitId;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 #[error("fit {fit_id} has no ship")]
 pub struct FitHasShipError {
     pub fit_id: FitId,

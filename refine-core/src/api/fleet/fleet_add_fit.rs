@@ -20,7 +20,7 @@ impl<'s> FleetMut<'s> {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum FleetAddFitError {
     #[error("{0}")]
     FitNotFound(#[from] FitFoundError),

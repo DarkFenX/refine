@@ -114,7 +114,7 @@ fn get_raw_mattr_mut(
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetRawMAttrError {
     #[error("{0}")]
     MutationNotFound(#[from] ItemMAttrFoundError),

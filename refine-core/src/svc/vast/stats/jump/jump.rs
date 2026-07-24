@@ -89,7 +89,7 @@ impl Vast {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum JumpStatError {
     #[error("fuel type ID is not defined")]
     NoFuelTypeId,

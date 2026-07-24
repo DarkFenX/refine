@@ -3,7 +3,7 @@ use crate::{
     ud::{ItemId, UItems},
 };
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 #[error("item {item_id} does not support requested stat")]
 pub struct SupportedStatError {
     pub item_id: ItemId,

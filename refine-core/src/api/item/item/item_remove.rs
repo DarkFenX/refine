@@ -66,7 +66,7 @@ impl<'s> ItemMut<'s> {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum RemoveItemError {
     #[error("autocharge cannot be manually removed")]
     UnremovableAutocharge,

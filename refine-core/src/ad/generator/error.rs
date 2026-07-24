@@ -1,4 +1,4 @@
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub(crate) enum ADataGeneratorError {
     #[error("failed to fetch data: {0}")]
     DataFetchFailed(String),

@@ -18,7 +18,7 @@ impl LibIncrement for ItemId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 #[error("item {item_id} not found")]
 pub struct ItemFoundError {
     pub item_id: ItemId,
@@ -56,7 +56,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     #[error("{0}")]
     pub struct ParseItemIdError(#[from] std::num::ParseIntError);
 

@@ -18,7 +18,7 @@ impl SolarSystem {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetBoosterError {
     #[error("{0}")]
     ItemNotFound(#[from] ItemFoundError),

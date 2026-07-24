@@ -18,7 +18,7 @@ impl LibIncrement for FleetId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("fleet {fleet_id} not found")]
 pub struct FleetFoundError {
     pub fleet_id: FleetId,
@@ -56,7 +56,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     #[error("{0}")]
     pub struct ParseFleetIdError(#[from] std::num::ParseIntError);
 

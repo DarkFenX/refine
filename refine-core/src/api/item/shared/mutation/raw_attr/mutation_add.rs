@@ -68,7 +68,7 @@ fn mutate_raw(
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum AttrMutateRawError {
     #[error("{0}")]
     AlreadyMutated(#[from] ItemMAttrNotFoundError),

@@ -12,6 +12,7 @@ use crate::{
 const TIME_LIMIT: PValue = PValue::from_f64_clamped(4.0 * 60.0 * 60.0);
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
+#[derive(Copy, Clone)]
 pub enum StatCapSim {
     // Average stability value
     Stable(UnitInterval),

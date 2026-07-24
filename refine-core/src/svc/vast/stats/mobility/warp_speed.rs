@@ -26,7 +26,7 @@ impl Vast {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum WarpSpeedStatError {
     #[error("warp speed should be > 0, but is {0}")]
     WarpSpeedError(Value),

@@ -1,6 +1,6 @@
 use crate::ud::ItemId;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("projection {projector_item_id}->{projectee_item_id} not found")]
 pub struct ProjFoundError {
     pub projector_item_id: ItemId,

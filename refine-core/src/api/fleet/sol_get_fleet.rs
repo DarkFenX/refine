@@ -16,7 +16,7 @@ impl SolarSystem {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetFleetError {
     #[error("{0}")]
     FleetNotFound(#[from] FleetFoundError),

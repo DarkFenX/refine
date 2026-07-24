@@ -1,12 +1,14 @@
 use crate::PValue;
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct StatDmg {
     pub dps: StatDmgEntry,
     pub volley: StatDmgEntry,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct StatDmgEntry {
     pub em: PValue,
     pub thermal: PValue,
@@ -16,12 +18,14 @@ pub struct StatDmgEntry {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]
+#[derive(Copy, Clone)]
 pub enum StatDmgEntryBreacher {
     Raw(StatDmgEntryBreacherRaw),
     Applied(PValue),
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[derive(Copy, Clone)]
 pub struct StatDmgEntryBreacherRaw {
     pub absolute_max: PValue,
     pub relative_max: PValue,

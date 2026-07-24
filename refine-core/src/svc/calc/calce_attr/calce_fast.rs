@@ -341,11 +341,11 @@ impl Calc {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("no attribute in request")]
 struct NoAttrError;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 enum GetOAttrError {
     #[error("{0}")]
     ItemNotLoaded(#[from] UItemLoadedError),

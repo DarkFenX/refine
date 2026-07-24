@@ -36,7 +36,7 @@ fn check_ability(sol: &SolarSystem, fighter_uid: UItemId, ability_id: &AbilityId
     })
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetAbilityError {
     #[error("{0}")]
     AbilityNotFound(#[from] AbilityFoundError),

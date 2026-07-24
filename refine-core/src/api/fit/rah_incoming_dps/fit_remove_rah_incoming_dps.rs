@@ -28,7 +28,7 @@ impl<'s> FitMut<'s> {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum RemoveFitRahIncomingDpsError {
     #[error("{0}")]
     DpsProfileNotSet(#[from] FitDpsProfileFoundError),

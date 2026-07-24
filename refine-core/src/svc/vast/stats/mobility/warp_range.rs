@@ -41,7 +41,7 @@ impl Vast {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum MaxWarpRangeStatError {
     #[error("capacitor capacity should be > 0, but is {0}")]
     CapAmountError(PValue),

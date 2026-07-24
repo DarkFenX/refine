@@ -22,7 +22,7 @@ impl FitSecStatus {
         self.0
     }
 }
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("sec status {sec_status} is out of allowed range [-10, 5]")]
 pub struct FitSecStatusError {
     pub sec_status: f64,

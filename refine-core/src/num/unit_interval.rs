@@ -20,7 +20,7 @@ impl UnitInterval {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("value {value} is out of allowed unit interval range [0, 1]")]
 pub struct UnitIntervalError {
     pub value: f64,
@@ -110,7 +110,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     pub enum UnitIntervalParseError {
         #[error("{0}")]
         InvalidFloat(#[from] std::num::ParseFloatError),

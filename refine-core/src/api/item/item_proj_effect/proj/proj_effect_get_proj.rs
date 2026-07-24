@@ -46,7 +46,7 @@ fn get_projectee_uid(
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetProjError {
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),

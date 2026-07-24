@@ -57,7 +57,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
     Ok(())
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetFullMAttrError {
     #[error("{0}")]
     AttrNotFound(#[from] AttrFoundError),

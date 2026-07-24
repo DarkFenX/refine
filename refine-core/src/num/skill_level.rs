@@ -17,7 +17,7 @@ impl SkillLevel {
         self.0
     }
 }
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("skill level {level} is out of allowed range [0, 5]")]
 pub struct SkillLevelError {
     pub level: i32,
@@ -69,7 +69,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     pub enum SkillLevelParseError {
         #[error("{0}")]
         InvalidInt(#[from] std::num::ParseIntError),

@@ -29,7 +29,7 @@ impl Vast {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum ProbingSizeStatError {
     #[error("sensor strength should be > 0, but is {0}")]
     SensorStrError(PValue),

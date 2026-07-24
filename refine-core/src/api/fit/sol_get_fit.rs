@@ -16,7 +16,7 @@ impl SolarSystem {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetFitError {
     #[error("{0}")]
     FitNotFound(#[from] FitFoundError),

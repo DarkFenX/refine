@@ -21,7 +21,7 @@ impl CountNz {
         self.0.get()
     }
 }
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("non-zero count should be 1+, received {count}")]
 pub struct CountNzError {
     pub count: u32,

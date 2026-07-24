@@ -46,7 +46,7 @@ impl SolarSystem {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetRangedProjError {
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),

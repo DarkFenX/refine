@@ -92,7 +92,7 @@ mod custom_serde_ad {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     pub enum ABuffIdParseError {
         #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
         InvalidPrefix,

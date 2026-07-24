@@ -31,7 +31,7 @@ impl PValue {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("value {value} is not 0 or greater")]
 pub struct PValueError {
     pub value: f64,
@@ -250,7 +250,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     pub enum PValueParseError {
         #[error("{0}")]
         InvalidFloat(#[from] std::num::ParseFloatError),

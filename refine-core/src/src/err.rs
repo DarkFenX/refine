@@ -1,6 +1,6 @@
 use crate::ad::err::ADataGeneratorError;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum SrcInitError {
     #[error("failed to fetch EVE data: {0}")]
     EveDataFetchFailed(String),

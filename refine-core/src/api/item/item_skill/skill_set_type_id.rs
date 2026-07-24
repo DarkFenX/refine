@@ -54,7 +54,7 @@ impl<'s> SkillMut<'s> {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum SetSkillTypeIdError {
     #[error("{0}")]
     SkillIdCollision(#[from] SkillEveTypeError),

@@ -45,7 +45,7 @@ fn get_side_effect<'s>(
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetSideEffectError {
     #[error("{0}")]
     SideEffectNotFound(#[from] SideEffectFoundError),

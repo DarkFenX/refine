@@ -46,7 +46,7 @@ impl Vast {
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum AgilityStatError {
     #[error("agility should be > 0, but is {0}")]
     AgilityError(Value),

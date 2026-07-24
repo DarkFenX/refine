@@ -18,7 +18,7 @@ impl LibIncrement for FitId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("fit {fit_id} not found")]
 pub struct FitFoundError {
     pub fit_id: FitId,
@@ -56,7 +56,7 @@ mod custom_serde {
         }
     }
 
-    #[derive(thiserror::Error, Debug)]
+    #[derive(Debug, thiserror::Error)]
     #[error("{0}")]
     pub struct ParseFitIdError(#[from] std::num::ParseIntError);
 

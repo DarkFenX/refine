@@ -1,6 +1,6 @@
 use crate::ud::ItemId;
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Clone, Debug, thiserror::Error)]
 #[error("{item_kind} {item_id} can't receive projections")]
 pub struct ItemReceiveProjError {
     pub item_id: ItemId,

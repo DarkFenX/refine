@@ -4,7 +4,7 @@ use crate::{
     ud::{ProjecteeUidError, UItems},
 };
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum GetItemAttrError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
@@ -12,19 +12,19 @@ pub enum GetItemAttrError {
     AttrNotFound(#[from] AttrFoundError),
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum IterItemAttrsError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum IterItemEffectsError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum IterItemModifiersError {
     #[error("{0}")]
     ItemNotLoaded(#[from] ItemLoadedError),
@@ -33,7 +33,7 @@ pub enum IterItemModifiersError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Stats errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ItemStatError<SS>
 where
     SS: std::error::Error,
@@ -59,7 +59,7 @@ where
     }
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub enum ItemAppliedStatError<SS>
 where
     SS: std::error::Error,

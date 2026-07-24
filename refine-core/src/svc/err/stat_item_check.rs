@@ -1,12 +1,12 @@
 use crate::{svc::err::UItemLoadedError, ud::UItemId};
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 #[error("item with UID {item_uid:?} does not support requested stat")]
 pub(crate) struct UItemKindVsStatError {
     pub(crate) item_uid: UItemId,
 }
 
-#[derive(thiserror::Error, Debug)]
+#[derive(Debug, thiserror::Error)]
 pub(crate) enum IntItemStatError<SS>
 where
     SS: std::error::Error,
