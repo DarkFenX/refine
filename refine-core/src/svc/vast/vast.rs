@@ -8,9 +8,10 @@ use crate::{
     num::{Count, PValue, SkillLevel, SlotIndex, Value},
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
-        ValShipKind, ValSrqSkillInfo,
+        ValShipKind,
         validators::{
             EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
+            ValSrqSkillStored,
         },
     },
     ud::{UFitId, UItemId},
@@ -122,7 +123,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) stopped_effects: RMapRSet<EffectSpec, EffectSpec>,
     // Validation-related - skills
     pub(in crate::svc::vast) srqs_skill_item_map: RMapRSet<AItemId, UItemId>,
-    pub(in crate::svc::vast) srqs_missing: RMap<UItemId, RMap<AItemId, ValSrqSkillInfo>>,
+    pub(in crate::svc::vast) srqs_missing: RMap<UItemId, RMap<AItemId, ValSrqSkillStored>>,
     pub(in crate::svc::vast) overload_td_lvl: RMap<UItemId, SkillLevel>,
     // Validation-related - security zone
     pub(in crate::svc::vast) sec_zone_fitted: RSet<UItemId>,

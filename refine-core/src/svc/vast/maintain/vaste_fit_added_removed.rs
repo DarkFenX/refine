@@ -1,5 +1,5 @@
 use crate::{
-    svc::vast::{Vast, VastFitData},
+    svc::{Vast, vast::VastFitData},
     ud::UFitId,
 };
 

@@ -1,8 +1,8 @@
 use crate::{
-    api::{ItemGrpId, ItemTypeId},
+    ItemGrpId, ItemId, ItemTypeId,
     rd::RItemShipLimit,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId, UShip},
+    ud::{UItemId, UShip},
     util::RSet,
 };
 
@@ -17,21 +17,24 @@ pub struct ValShipLimitFail {
     pub ship_type_id: Option<ItemTypeId>,
     /// Group ID of current ship.
     pub ship_group_id: Option<ItemGrpId>,
-    /// Items which cannot be fit to current ship with their requirements.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, ValShipLimitItemInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::KeyValueMap<_>"))]
+    pub items: Vec<ValShipLimitItemInfo>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValShipLimitItemInfo {
+    /// Item which cannot be fit to current ship.
+    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
+    pub item_id: ItemId,
     /// Ship type IDs item can be fit to.
     pub allowed_type_ids: Vec<ItemTypeId>,
     /// Ship group IDs item can be fit to.
     pub allowed_group_ids: Vec<ItemGrpId>,
 }
 impl ValShipLimitItemInfo {
-    fn from_r_item_ship_limit(item_ship_limit: &RItemShipLimit) -> Self {
+    fn from_id_and_r_limit(item_id: ItemId, item_ship_limit: &RItemShipLimit) -> Self {
         Self {
+            item_id,
             allowed_type_ids: item_ship_limit
                 .type_aids
                 .iter()
@@ -102,9 +105,9 @@ impl VastFitData {
             if kfs.contains(limited_item_uid) {
                 continue;
             }
-            mismatches.push((
+            mismatches.push(ValShipLimitItemInfo::from_id_and_r_limit(
                 ctx.u_data.items.ext_id_by_int_id(*limited_item_uid),
-                ValShipLimitItemInfo::from_r_item_ship_limit(ship_limit),
+                ship_limit,
             ));
         }
         match mismatches.is_empty() {

@@ -47,8 +47,10 @@ fn validate_fast(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>) -> bool {
 fn validate_verbose(kfs: &RSet<UItemId>, not_loaded: &RSet<UItemId>, ctx: SvcCtx) -> Option<ValNotLoadedItemFail> {
     let item_ids: Vec<_> = not_loaded
         .iter()
-        .filter(|item_uid| !kfs.contains(item_uid))
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(*item_uid))
+        .filter_map(|item_uid| match kfs.contains(item_uid) {
+            true => None,
+            false => Some(ctx.u_data.items.ext_id_by_int_id(*item_uid)),
+        })
         .collect();
     match item_ids.is_empty() {
         true => None,

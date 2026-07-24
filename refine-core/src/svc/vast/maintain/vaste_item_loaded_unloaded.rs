@@ -1,13 +1,16 @@
 use itertools::chain;
 
 use crate::{
+    Count,
     ad::{AItemCatId, AItemGrpId},
     misc::{DetectedItemKind, ModRack},
-    num::Count,
     rd::{RItemAXt, RShipKind},
-    svc::vast::{
-        ValShipKind, ValSrqSkillInfo, Vast, VastFitData,
-        validators::{ValFighterSquadSizeFighterStored, ValItemKindItemStored},
+    svc::{
+        Vast,
+        vast::{
+            ValShipKind, VastFitData,
+            validators::{ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored},
+        },
     },
     ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},
     util::RMap,
@@ -34,7 +37,7 @@ impl Vast {
                 } {
                     missing_skills.insert(
                         skill_item_aid,
-                        ValSrqSkillInfo {
+                        ValSrqSkillStored {
                             current_lvl,
                             required_lvl,
                         },

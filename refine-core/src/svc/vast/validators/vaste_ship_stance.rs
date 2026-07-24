@@ -1,7 +1,8 @@
 use crate::{
+    ItemId,
     ad::AItemId,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UFit, UItemId, UShip},
+    ud::{UFit, UItemId, UShip},
     util::RSet,
 };
 

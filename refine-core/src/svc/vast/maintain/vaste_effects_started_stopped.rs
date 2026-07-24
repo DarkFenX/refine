@@ -1,7 +1,7 @@
 use crate::{
     misc::EffectSpec,
     rd::{RAttrConsts, REffect, RcEffect},
-    svc::vast::{Vast, validators::EffectSecZoneInfo},
+    svc::{Vast, vast::validators::EffectSecZoneInfo},
     ud::{UFitId, UItem, UItemId},
 };
 

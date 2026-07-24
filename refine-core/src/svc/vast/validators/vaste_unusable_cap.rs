@@ -1,24 +1,25 @@
 use crate::{
+    ItemId, PValue, UnitInterval, Value,
     nd::NEffectOutputGetter,
-    num::{PValue, UnitInterval, Value},
     rd::RItemCapConsumer,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{ItemId, UItem, UItemId},
+    svc::{Calc, SvcCtx, vast::VastFitData},
+    ud::{UItem, UItemId},
     util::RSet,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: PValue,
-    /// List of items breaking validation, and their cap uses.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub items: Vec<(ItemId, PValue)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub items: Vec<ValUnusableCapItemInfo>,
+}
+
+pub struct ValUnusableCapItemInfo {
+    /// Item which fails the validation.
+    pub item_id: ItemId,
+    /// Cap amount this item takes per cycle.
+    pub cap_use: PValue,
 }
 
 impl VastFitData {
@@ -82,7 +83,10 @@ impl VastFitData {
                 continue;
             };
             if max_item_use > max_cap && !kfs.contains(&item_uid) {
-                items.push((ctx.u_data.items.ext_id_by_int_id(item_uid), max_item_use));
+                items.push(ValUnusableCapItemInfo {
+                    item_id: ctx.u_data.items.ext_id_by_int_id(item_uid),
+                    cap_use: max_item_use,
+                });
             }
         }
         match items.is_empty() {
@@ -114,4 +118,25 @@ fn get_cap_consumption_instance(
         cap_consumed *= charge_mult;
     }
     Some(cap_consumed)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValUnusableCapItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.cap_use)?;
+        }
+        map.end()
+    }
 }

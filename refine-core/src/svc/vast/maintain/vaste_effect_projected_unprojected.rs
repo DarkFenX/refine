@@ -2,7 +2,7 @@ use crate::{
     ad::AEffectCatId,
     misc::{AttrSpec, EffectSpec},
     rd::REffect,
-    svc::vast::Vast,
+    svc::Vast,
     ud::{UData, UItem, UItemId},
 };
 

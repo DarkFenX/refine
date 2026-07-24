@@ -2,24 +2,25 @@ use itertools::Itertools;
 
 use super::shared::get_max_resource;
 use crate::{
-    num::Value,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
-    ud::{ItemId, UFit, UItemId},
+    ItemId, Value,
+    svc::{Calc, SvcCtx, vast::VastFitData},
+    ud::{UFit, UItemId},
     util::RSet,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde_tuple::Serialize_tuple)
-)]
+#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 pub struct ValUnusableResFail {
-    /// Max available resource (e.g. amount of CPU produced by ship).
+    /// Max available resource.
     pub max: Option<Value>,
-    /// Consumers and amount they consume.
-    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
-    pub users: Vec<(ItemId, Value)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub users: Vec<ValUnusableResItemInfo>,
+}
+
+pub struct ValUnusableResItemInfo {
+    /// Item which consumes the resource.
+    pub item_id: ItemId,
+    /// How much resource is used by the item.
+    pub used: Value,
 }
 
 impl VastFitData {
@@ -60,7 +61,10 @@ impl VastFitData {
             .iter()
             .filter_map(
                 |(item_uid, &item_use)| match item_use > effective_max && !kfs.contains(item_uid) {
-                    true => Some((ctx.u_data.items.ext_id_by_int_id(*item_uid), item_use)),
+                    true => Some(ValUnusableResItemInfo {
+                        item_id: ctx.u_data.items.ext_id_by_int_id(*item_uid),
+                        used: item_use,
+                    }),
                     false => None,
                 },
             )
@@ -69,5 +73,26 @@ impl VastFitData {
             true => None,
             false => Some(ValUnusableResFail { max, users }),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValUnusableResItemInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.item_id, &item.used)?;
+        }
+        map.end()
     }
 }

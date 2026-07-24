@@ -1,7 +1,10 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    svc::vast::{ValSrqSkillInfo, Vast, validators::ValFighterSquadSizeFighterStored},
+    svc::{
+        Vast,
+        vast::validators::{ValFighterSquadSizeFighterStored, ValSrqSkillStored},
+    },
     ud::{UData, UFighter, UItemId, USkill},
     util::RMap,
 };
@@ -36,7 +39,7 @@ impl Vast {
                                 .get(&skill.get_type_aid())
                                 .unwrap();
                             if skill.get_level() < required_lvl {
-                                missing_skill_entry.insert(ValSrqSkillInfo {
+                                missing_skill_entry.insert(ValSrqSkillStored {
                                     current_lvl: Some(skill.get_level()),
                                     required_lvl,
                                 });
@@ -56,7 +59,7 @@ impl Vast {
                         let mut missing_skills = RMap::new();
                         missing_skills.insert(
                             skill.get_type_aid(),
-                            ValSrqSkillInfo {
+                            ValSrqSkillStored {
                                 current_lvl: Some(skill.get_level()),
                                 required_lvl,
                             },

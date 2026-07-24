@@ -1,12 +1,11 @@
 use crate::{
-    num::Count,
+    Count, ItemId,
     rd::RAttrId,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         vast::{VastFitData, shared::get_attr_as_count},
     },
-    ud::{ItemId, UFit, UItemId, UItemVec},
+    ud::{UFit, UItemId, UItemVec},
     util::{RMap, RSet},
 };
 
@@ -16,8 +15,8 @@ pub struct ValSlotCountFail {
     pub used: Count,
     /// How many slots available.
     pub max: Option<Count>,
-    /// IDs of items which break the validation limits. For unordered containers - all items, for
-    /// ordered containers - only those which go past limit.
+    /// Items which fail the validation. For unordered containers - all items, for ordered
+    /// containers - only those which go past the slot limit.
     pub users: Vec<ItemId>,
 }
 
@@ -529,8 +528,10 @@ fn validate_verbose_ordered(
     }
     let users: Vec<_> = users
         .iter_uids_from_pos(effective_max.into_index())
-        .filter(|item_uid| !kfs.contains(item_uid))
-        .map(|item_uid| ctx.u_data.items.ext_id_by_int_id(item_uid))
+        .filter_map(|item_uid| match kfs.contains(&item_uid) {
+            true => None,
+            false => Some(ctx.u_data.items.ext_id_by_int_id(item_uid)),
+        })
         .collect();
     match users.is_empty() {
         true => None,

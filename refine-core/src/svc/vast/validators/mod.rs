@@ -27,11 +27,12 @@ pub use vaste_sec_zone_effect::{ValEffectSecZoneEffectInfo, ValEffectSecZoneFail
 pub use vaste_sec_zone_item::{ValItemSecZoneFail, ValItemSecZoneItemInfo};
 pub use vaste_ship_limit::{ValShipLimitFail, ValShipLimitItemInfo};
 pub use vaste_ship_stance::ValShipStanceFail;
-pub use vaste_skill_reqs::{ValSrqFail, ValSrqSkillInfo};
+pub(in crate::svc::vast) use vaste_skill_reqs::ValSrqSkillStored;
+pub use vaste_skill_reqs::{ValSrqFail, ValSrqItemInfo, ValSrqSkillInfo};
 pub use vaste_slot_count::ValSlotCountFail;
-pub use vaste_slot_index::ValSlotIndexFail;
-pub use vaste_unusable_cap::ValUnusableCapFail;
-pub use vaste_unusable_resource::ValUnusableResFail;
+pub use vaste_slot_index::{ValSlotIndexFail, ValSlotIndexSlotInfo};
+pub use vaste_unusable_cap::{ValUnusableCapFail, ValUnusableCapItemInfo};
+pub use vaste_unusable_resource::{ValUnusableResFail, ValUnusableResItemInfo};
 pub use vaste_unusable_slot::ValUnusableSlotFail;
 
 mod shared;

@@ -1,23 +1,24 @@
 use itertools::Itertools;
 
 use crate::{
-    num::SlotIndex,
+    ItemId, SlotIndex,
     svc::{SvcCtx, vast::VastFitData},
-    ud::{ItemId, UItemId},
+    ud::UItemId,
     util::{RMapRSet, RSet},
 };
 
-#[cfg_attr(
-    feature = "serde",
-    cfg_eval,
-    serde_with::serde_as,
-    derive(serde::Serialize),
-    serde(transparent)
-)]
+#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct ValSlotIndexFail {
     /// Slot number and items trying to take it.
-    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
-    pub slot_users: Vec<(SlotIndex, Vec<ItemId>)>,
+    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    pub slot_users: Vec<ValSlotIndexSlotInfo>,
+}
+
+pub struct ValSlotIndexSlotInfo {
+    /// Slot number.
+    pub slot: SlotIndex,
+    /// Multiple items attempting to use one slot.
+    pub item_ids: Vec<ItemId>,
 }
 
 impl VastFitData {
@@ -74,12 +75,36 @@ fn validate_slot_index_verbose(
                 })
                 .collect_vec();
             if !users.is_empty() {
-                slot_users.push((*slot_index, users));
+                slot_users.push(ValSlotIndexSlotInfo {
+                    slot: *slot_index,
+                    item_ids: users,
+                });
             }
         }
     }
     match slot_users.is_empty() {
         true => None,
         false => Some(ValSlotIndexFail { slot_users }),
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::ser::{SerializeMap, Serializer};
+
+    use super::*;
+
+    pub(super) fn as_map<S>(items: &[ValSlotIndexSlotInfo], serializer: S) -> Result<S::Ok, S::Error>
+    where
+        S: Serializer,
+    {
+        let mut map = serializer.serialize_map(Some(items.len()))?;
+        for item in items {
+            map.serialize_entry(&item.slot, &item.item_ids)?;
+        }
+        map.end()
     }
 }

@@ -13,7 +13,8 @@ pub use crate::{
         ValOptions, ValOptionsSol, ValOverloadSkillFail, ValOverloadSkillItemInfo, ValProjFilterFail,
         ValProjFilterItemInfo, ValProjImmunityFail, ValProjImmunityItemInfo, ValResourceFail, ValResourceItemInfo,
         ValResultFit, ValResultSol, ValRigSizeFail, ValRigSizeItemInfo, ValShipKind, ValShipLimitFail,
-        ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSrqFail, ValSrqSkillInfo,
-        ValUnusableCapFail, ValUnusableResFail, ValUnusableSlotFail,
+        ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSlotIndexSlotInfo, ValSrqFail,
+        ValSrqItemInfo, ValSrqSkillInfo, ValUnusableCapFail, ValUnusableCapItemInfo, ValUnusableResFail,
+        ValUnusableResItemInfo, ValUnusableSlotFail,
     },
 };
