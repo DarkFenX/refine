@@ -1,3 +1,6 @@
+//! This module implements custom de/serialization for topmost adapted data entities in a streaming
+//! manner, mostly to minimize memory footprint.
+
 use struson::{
     reader::{JsonReader, JsonStreamReader},
     writer::{JsonStreamWriter, JsonWriter},
