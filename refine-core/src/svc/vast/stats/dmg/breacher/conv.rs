@@ -3,8 +3,8 @@ use super::{
     ticks::{AbtCycleComplex, AbtCycleSimple, AbtInfinite, AggrBreacherTicks},
 };
 use crate::{
+    Count,
     nd::NEffectBreacherAmount,
-    num::Count,
     svc::{
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
         output::Output,

@@ -17,14 +17,13 @@ use super::{
     ticks::{AggrBreacherTicks, TickRange},
 };
 use crate::{
+    Count, PValue, UnitInterval, Value,
     def::SERVER_TICK_HZ,
     misc::EffectSpec,
     nd::{NEffectBreacherOutputGetter, NEffectOutputGetter},
-    num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
         vast::StatDmgEntryBreacher,
     },
@@ -32,7 +31,9 @@ use crate::{
     util::RMap,
 };
 
-const DAY_TICKS: Count = Count::from_u32(SERVER_TICK_HZ as u32 * 24 * 60 * 60);
+const DAY: Count = Count::from_u32(24 * 60 * 60);
+const TICKS_LIMIT: Count = DAY * Count::from_u32(SERVER_TICK_HZ as u32);
+const TIME_LIMIT: PValue = DAY.into_pvalue();
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular accumulator
@@ -108,14 +109,13 @@ impl BreacherAccum {
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
         // then calculate average. Total count of ticks we consider is limited by 1 day to avoid
         // excessively cpu-heavy configurations
-        let loop_tick_count = Count::from_u32(
-            self.data
-                .values()
-                .map(|v| v.into_u32())
-                .reduce(num_integer::lcm)
-                .unwrap(),
-        )
-        .min(DAY_TICKS);
+        let loop_tick_count = self
+            .data
+            .values()
+            .copied()
+            .reduce(Count::lcm_saturating)
+            .unwrap()
+            .min(TICKS_LIMIT);
         let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         let (loop_dmg_abs, loop_dmg_rel) = self.get_dmg_for_tick_range(TickRange {
             start: max_delay_tick,
@@ -134,16 +134,11 @@ impl BreacherAccum {
         if self.data.is_empty() {
             return dmg;
         };
+        let time = time.min(TIME_LIMIT);
         // The tick after the last tick which should be included in stats
         let stop_tick = duration_to_ticks_floor(time) + Count::ONE;
         // How many ticks does a loop take
-        let loop_tick_count = Count::from_u32(
-            self.data
-                .values()
-                .map(|v| v.into_u32())
-                .reduce(num_integer::lcm)
-                .unwrap(),
-        );
+        let loop_tick_count = self.data.values().copied().reduce(Count::lcm_saturating).unwrap();
         let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         // Loops start only after longest starting delay is done
         let full_loops = match stop_tick > max_delay_tick {
@@ -340,14 +335,13 @@ impl AppliedBreacherAccum {
         // General solution is go tick-to-tick until items are looped, pick max for each tick, and
         // then calculate average. Total count of ticks we consider is limited by 1 day to avoid
         // excessively cpu-heavy configurations
-        let loop_tick_count = Count::from_u32(
-            self.data
-                .values()
-                .map(|v| v.into_u32())
-                .reduce(num_integer::lcm)
-                .unwrap(),
-        )
-        .min(DAY_TICKS);
+        let loop_tick_count = self
+            .data
+            .values()
+            .copied()
+            .reduce(Count::lcm_saturating)
+            .unwrap()
+            .min(TICKS_LIMIT);
         let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         let loop_dmg = self.get_dmg_for_tick_range(TickRange {
             start: max_delay_tick,
@@ -360,16 +354,11 @@ impl AppliedBreacherAccum {
         if self.data.is_empty() {
             return total_dmg;
         };
+        let time = time.min(TIME_LIMIT);
         // The tick after the last tick which should be included in stats
         let stop_tick = duration_to_ticks_floor(time) + Count::ONE;
         // How many ticks does a loop take
-        let loop_tick_count = Count::from_u32(
-            self.data
-                .values()
-                .map(|v| v.into_u32())
-                .reduce(num_integer::lcm)
-                .unwrap(),
-        );
+        let loop_tick_count = self.data.values().copied().reduce(Count::lcm_saturating).unwrap();
         let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
         // Loops start only after longest starting delay is done
         let full_loops = match stop_tick > max_delay_tick {
@@ -436,7 +425,7 @@ impl AppliedBreacherAccum {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shared logic
+// Shared logic - ranges
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct BoundaryEvent {
     tick: Count,

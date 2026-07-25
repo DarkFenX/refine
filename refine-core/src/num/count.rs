@@ -27,6 +27,7 @@ impl Count {
     pub(crate) const ZERO: Self = Self(0);
     pub(crate) const ONE: Self = Self(1);
     pub(crate) const TWO: Self = Self(2);
+    pub(crate) const MAX: Self = Self(u32::MAX);
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,7 +58,7 @@ impl Count {
     pub(crate) fn into_value(self) -> Value {
         Value::from_f64(self.0 as f64)
     }
-    pub(crate) fn into_pvalue(self) -> PValue {
+    pub(crate) const fn into_pvalue(self) -> PValue {
         PValue::from_f64_unchecked(self.0 as f64)
     }
     pub(crate) fn into_index(self) -> Index {
@@ -96,6 +97,19 @@ impl std::iter::Step for Count {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Mathematics
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Count {
+    pub(crate) fn lcm_saturating(self, other: Self) -> Self {
+        if self == Self::ZERO || other == Self::ZERO {
+            return Self::ZERO;
+        }
+        let gcd = num_integer::gcd(self.0, other.0);
+        match (self.0 / gcd).checked_mul(other.0) {
+            Some(lcm) => Self(lcm),
+            None => Self::MAX,
+        }
+    }
+}
+
 // Addition
 impl std::ops::Add<Count> for Count {
     type Output = Count;
@@ -121,7 +135,7 @@ impl std::ops::SubAssign<Count> for Count {
     }
 }
 // Multiplication
-impl std::ops::Mul<Count> for Count {
+const impl std::ops::Mul<Count> for Count {
     type Output = Count;
     fn mul(self, rhs: Count) -> Self::Output {
         Count(self.0 * rhs.0)

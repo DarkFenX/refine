@@ -1,4 +1,4 @@
-use crate::num::Count;
+use crate::Count;
 
 // Has [start, end) meaning in context of breacher calculations
 #[derive(Copy, Clone)]
