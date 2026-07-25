@@ -48,9 +48,6 @@ impl Value {
     pub(crate) fn from_pvalue(pvalue: PValue) -> Self {
         Self(pvalue.into_f64())
     }
-    pub(crate) fn from_usize(val: usize) -> Self {
-        Self(val as f64)
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

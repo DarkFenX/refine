@@ -1,3 +1,5 @@
+use std::collections::hash_map::Entry;
+
 use itertools::Itertools;
 use lender::Lender;
 
@@ -377,7 +379,10 @@ fn get_next_resonances(
     for index in sorted_indices.iter().rev() {
         let current_value = resonances[*index];
         // Can't give more than set threshold, more than we have, and more than target res can take
-        let to_take = [take_limit, current_value.dogma, to_distribute].into_iter().min().unwrap();
+        let to_take = [take_limit, current_value.dogma, to_distribute]
+            .into_iter()
+            .min()
+            .unwrap();
         to_distribute -= to_take;
         let new_value = (current_value.dogma - to_take).sig_rounded(SIG_ROUND_DIGITS);
         resonances[*index] = CalcAttrVals {
@@ -396,37 +401,47 @@ fn get_average_resonances<'a, H>(tick_history: H) -> RMap<UItemId, DmgKinds<Valu
 where
     H: IntoIterator<Item = &'a ItemDataVec<ItemHistoryEntry>>,
 {
-    let mut resos_used = RMap::new();
+    let mut summed_resos = RMap::new();
     for tick_history_entry in tick_history {
         for item_history_entry in tick_history_entry.iter() {
-            // Add resonances to container only when RAH cycle is just starting
+            // Add resonances only when RAH cycle is just starting
             if item_history_entry.cycle_time_rounded == PValue::ZERO {
-                resos_used
-                    .entry(item_history_entry.item_uid)
-                    .or_insert_with(Vec::new)
-                    .push(item_history_entry.resonances);
+                match summed_resos.entry(item_history_entry.item_uid) {
+                    Entry::Vacant(entry) => {
+                        entry.insert((
+                            DmgKinds {
+                                em: item_history_entry.resonances.em,
+                                thermal: item_history_entry.resonances.thermal,
+                                kinetic: item_history_entry.resonances.kinetic,
+                                explosive: item_history_entry.resonances.explosive,
+                            },
+                            Count::ONE,
+                        ));
+                    }
+                    Entry::Occupied(mut entry) => {
+                        let (sum, count) = entry.get_mut();
+                        sum.em += item_history_entry.resonances.em;
+                        sum.thermal += item_history_entry.resonances.thermal;
+                        sum.kinetic += item_history_entry.resonances.kinetic;
+                        sum.explosive += item_history_entry.resonances.explosive;
+                        *count += Count::ONE;
+                    }
+                }
             }
         }
     }
-    let mut avg_resos = RMap::with_capacity(resos_used.len());
-    for (item_uid, resos) in resos_used.into_iter() {
-        let reso_len = Value::from_usize(resos.len());
-        let item_avg_resos = match resos.into_iter().reduce(|a, v| DmgKinds {
-            em: a.em + v.em,
-            thermal: a.thermal + v.thermal,
-            kinetic: a.kinetic + v.kinetic,
-            explosive: a.explosive + v.explosive,
-        }) {
-            Some(sum) => DmgKinds {
-                em: sum.em / reso_len,
-                thermal: sum.thermal / reso_len,
-                kinetic: sum.kinetic / reso_len,
-                explosive: sum.explosive / reso_len,
+    let mut avg_resos = RMap::with_capacity(summed_resos.len());
+    for (item_uid, (sum, count)) in summed_resos.into_iter() {
+        let count = count.into_value();
+        avg_resos.insert(
+            item_uid,
+            DmgKinds {
+                em: sum.em / count,
+                thermal: sum.thermal / count,
+                kinetic: sum.kinetic / count,
+                explosive: sum.explosive / count,
             },
-            // Should happen when resonance container is empty
-            None => continue,
-        };
-        avg_resos.insert(item_uid, item_avg_resos);
+        );
     }
     avg_resos
 }
