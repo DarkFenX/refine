@@ -14,7 +14,7 @@ use std::collections::hash_map::Entry;
 use super::{
     conv::cseq_to_ticks,
     shared::{duration_to_ticks_floor, ticks_to_duration},
-    ticks::AggrBreacherTicks,
+    ticks::{AggrBreacherTicks, TickRange},
 };
 use crate::{
     def::SERVER_TICK_HZ,
@@ -117,8 +117,10 @@ impl BreacherAccum {
         )
         .min(DAY_TICKS);
         let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
-        let (loop_dmg_abs, loop_dmg_rel) =
-            self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
+        let (loop_dmg_abs, loop_dmg_rel) = self.get_dmg_for_tick_range(TickRange {
+            start: max_delay_tick,
+            end: max_delay_tick + loop_tick_count,
+        });
         StatDmgEntryBreacher {
             absolute_max: loop_dmg_abs / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ,
             relative_max: loop_dmg_rel / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ,
@@ -149,20 +151,28 @@ impl BreacherAccum {
             false => Count::ZERO,
         };
         // Record damage done before loops start
-        let (early_dmg_abs, early_dmg_rel) = self.get_dmg_for_tick_range(Count::ZERO, max_delay_tick.min(stop_tick));
+        let (early_dmg_abs, early_dmg_rel) = self.get_dmg_for_tick_range(TickRange {
+            start: Count::ZERO,
+            end: max_delay_tick.min(stop_tick),
+        });
         dmg.absolute_max += early_dmg_abs;
         dmg.relative_max += early_dmg_rel;
         // Record damage done during loops
         if full_loops > Count::ZERO {
-            let (loop_dmg_abs, loop_dmg_rel) =
-                self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
+            let (loop_dmg_abs, loop_dmg_rel) = self.get_dmg_for_tick_range(TickRange {
+                start: max_delay_tick,
+                end: max_delay_tick + loop_tick_count,
+            });
             dmg.absolute_max += loop_dmg_abs * full_loops.into_pvalue();
             dmg.relative_max += loop_dmg_rel * full_loops.into_pvalue();
         }
         // Record damage done after loops
         let loops_done_tick = max_delay_tick + loop_tick_count * full_loops;
         if stop_tick > loops_done_tick {
-            let (late_dmg_abs, late_dmg_rel) = self.get_dmg_for_tick_range(loops_done_tick, stop_tick);
+            let (late_dmg_abs, late_dmg_rel) = self.get_dmg_for_tick_range(TickRange {
+                start: loops_done_tick,
+                end: stop_tick,
+            });
             dmg.absolute_max += late_dmg_abs;
             dmg.relative_max += late_dmg_rel;
         }
@@ -171,20 +181,29 @@ impl BreacherAccum {
             relative_max: dmg.relative_max / time * PValue::SERVER_TICK_HZ,
         }
     }
-    fn get_dmg_for_tick_range(&self, start_tick: Count, end_tick: Count) -> (PValue, PValue) {
+    fn get_dmg_for_tick_range(&self, tick_range: TickRange) -> (PValue, PValue) {
         let mut dmg_abs = PValue::ZERO;
         let mut dmg_rel = PValue::ZERO;
-        for tick in start_tick..end_tick {
-            let mut tick_max_abs = PValue::ZERO;
-            let mut tick_max_rel = UnitInterval::ZERO;
-            for breacher in self.data.keys() {
-                if breacher.ticks.is_applied_on_tick(tick) {
-                    tick_max_abs = tick_max_abs.max(breacher.absolute_max);
-                    tick_max_rel = tick_max_rel.max(breacher.relative_max);
+        let breachers: Vec<&BreacherData> = self.data.keys().collect();
+        let events = collect_boundary_events(breachers.iter().map(|v| &v.ticks), tick_range);
+        let mut active = ActiveBreachers::new(breachers.len());
+        let mut segment_start_tick = tick_range.start;
+        let mut event_index = 0;
+        while event_index < events.len() {
+            let event_tick = events[event_index].tick;
+            if active.any() {
+                let mut segment_max_abs = PValue::ZERO;
+                let mut segment_max_rel = UnitInterval::ZERO;
+                for breacher in active.iter(&breachers) {
+                    segment_max_abs = segment_max_abs.max(breacher.absolute_max);
+                    segment_max_rel = segment_max_rel.max(breacher.relative_max);
                 }
+                let segment_ticks = (event_tick - segment_start_tick).into_pvalue();
+                dmg_abs += segment_max_abs * segment_ticks;
+                dmg_rel += segment_max_rel.into_pvalue() * segment_ticks;
             }
-            dmg_abs += tick_max_abs;
-            dmg_rel += tick_max_rel.into_pvalue();
+            event_index = active.apply_events(&events, event_index);
+            segment_start_tick = event_tick;
         }
         (dmg_abs, dmg_rel)
     }
@@ -330,7 +349,10 @@ impl AppliedBreacherAccum {
         )
         .min(DAY_TICKS);
         let max_delay_tick = self.data.keys().map(|v| v.ticks.get_initial_delay()).max().unwrap();
-        let loop_dmg = self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
+        let loop_dmg = self.get_dmg_for_tick_range(TickRange {
+            start: max_delay_tick,
+            end: max_delay_tick + loop_tick_count,
+        });
         loop_dmg / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ
     }
     pub(in crate::svc::vast) fn get_dps_by_time(&self, time: PValue) -> PValue {
@@ -355,29 +377,46 @@ impl AppliedBreacherAccum {
             false => Count::ZERO,
         };
         // Record damage done before loops start
-        total_dmg += self.get_dmg_for_tick_range(Count::ZERO, max_delay_tick.min(stop_tick));
+        total_dmg += self.get_dmg_for_tick_range(TickRange {
+            start: Count::ZERO,
+            end: max_delay_tick.min(stop_tick),
+        });
         // Record damage done during loops
         if full_loops > Count::ZERO {
-            let loop_dmg = self.get_dmg_for_tick_range(max_delay_tick, max_delay_tick + loop_tick_count);
+            let loop_dmg = self.get_dmg_for_tick_range(TickRange {
+                start: max_delay_tick,
+                end: max_delay_tick + loop_tick_count,
+            });
             total_dmg += loop_dmg * full_loops.into_pvalue();
         }
         // Record damage done after loops
         let loops_done_tick = max_delay_tick + loop_tick_count * full_loops;
         if stop_tick > loops_done_tick {
-            total_dmg += self.get_dmg_for_tick_range(loops_done_tick, stop_tick);
+            total_dmg += self.get_dmg_for_tick_range(TickRange {
+                start: loops_done_tick,
+                end: stop_tick,
+            });
         }
         total_dmg / time
     }
-    fn get_dmg_for_tick_range(&self, start_tick: Count, end_tick: Count) -> PValue {
+    fn get_dmg_for_tick_range(&self, tick_range: TickRange) -> PValue {
         let mut total_dmg = PValue::ZERO;
-        for tick in start_tick..end_tick {
-            let mut tick_max_dmg = PValue::ZERO;
-            for breacher in self.data.keys() {
-                if breacher.ticks.is_applied_on_tick(tick) {
-                    tick_max_dmg = tick_max_dmg.max(breacher.dmg);
+        let breachers: Vec<&AppliedBreacherData> = self.data.keys().collect();
+        let events = collect_boundary_events(breachers.iter().map(|v| &v.ticks), tick_range);
+        let mut active = ActiveBreachers::new(breachers.len());
+        let mut segment_start_tick = tick_range.start;
+        let mut event_index = 0;
+        while event_index < events.len() {
+            let event_tick = events[event_index].tick;
+            if active.any() {
+                let mut segment_max_dmg = PValue::ZERO;
+                for breacher in active.iter(&breachers) {
+                    segment_max_dmg = segment_max_dmg.max(breacher.dmg);
                 }
+                total_dmg += segment_max_dmg * (event_tick - segment_start_tick).into_pvalue();
             }
-            total_dmg += tick_max_dmg;
+            event_index = active.apply_events(&events, event_index);
+            segment_start_tick = event_tick;
         }
         total_dmg
     }
@@ -393,5 +432,90 @@ impl AppliedBreacherAccum {
             })
             .max()
             .unwrap_or(PValue::ZERO)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared logic
+////////////////////////////////////////////////////////////////////////////////////////////////////
+struct BoundaryEvent {
+    tick: Count,
+    breacher_index: usize,
+    is_start: bool,
+}
+
+// Aggregate damaging range starts/ends of all breachers into a single container
+fn collect_boundary_events<'a>(
+    breacher_ticks: impl Iterator<Item = &'a AggrBreacherTicks>,
+    tick_range: TickRange,
+) -> Vec<BoundaryEvent> {
+    let mut events = Vec::new();
+    for (breacher_index, ticks) in breacher_ticks.enumerate() {
+        ticks.call_for_dmg_ranges(tick_range, &mut |range| {
+            events.push(BoundaryEvent {
+                tick: range.start,
+                breacher_index,
+                is_start: true,
+            });
+            events.push(BoundaryEvent {
+                tick: range.end,
+                breacher_index,
+                is_start: false,
+            });
+        });
+    }
+    events.sort_unstable_by_key(|v| v.tick);
+    events
+}
+
+// Using count instead of bool because the same breacher can have end+start events on the same tick,
+// and sorting of events is unstable
+struct ActiveBreachers {
+    counters: Vec<Count>,
+    active_count: Count,
+}
+impl ActiveBreachers {
+    fn new(breacher_count: usize) -> Self {
+        Self {
+            counters: vec![Count::ZERO; breacher_count],
+            active_count: Count::ZERO,
+        }
+    }
+    fn any(&self) -> bool {
+        self.active_count > Count::ZERO
+    }
+    fn iter<'a, T>(&'a self, breachers: &'a [&'a T]) -> impl Iterator<Item = &'a T> {
+        breachers
+            .iter()
+            .zip(self.counters.iter())
+            .filter_map(|(breacher, &counter)| match counter > Count::ZERO {
+                true => Some(*breacher),
+                false => None,
+            })
+    }
+    // Apply changes from all the events which happen on the same tick as the event with the passed
+    // index, and return index of the first event which happens after
+    fn apply_events(&mut self, events: &[BoundaryEvent], mut event_index: usize) -> usize {
+        let requested_tick = events[event_index].tick;
+        while event_index < events.len() && events[event_index].tick == requested_tick {
+            let current_event = &events[event_index];
+            let counter = &mut self.counters[current_event.breacher_index];
+            match current_event.is_start {
+                true => {
+                    if *counter == Count::ZERO {
+                        self.active_count += Count::ONE
+                    }
+                    *counter += Count::ONE;
+                }
+                false => {
+                    *counter -= Count::ONE;
+                    if *counter == Count::ZERO {
+                        self.active_count -= Count::ONE;
+                    }
+                }
+            }
+            event_index += 1;
+        }
+        event_index
     }
 }
