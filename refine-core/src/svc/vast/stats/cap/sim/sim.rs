@@ -26,7 +26,7 @@ pub(super) struct CapSim {
     tau: Option<PValue>,
     events: BinaryHeap<CapSimEvent>,
     // Injectors available for immediate use
-    injectors: Vec<CapSimEventInjector>,
+    injectors: Vec<Box<CapSimEventInjector>>,
     // Current sim state
     time: PValue,
     cap: Value,
@@ -80,13 +80,10 @@ impl CapSim {
                                 cycle_iter_item.output_duration_limit,
                                 event.direction,
                             );
-                            // Schedule next cycle check
-                            let next_event = CapSimEvent::CycleCheck(CapSimEventCycleCheck {
-                                time: event.time + cycle_iter_item.cycle_duration,
-                                cycle_iter: event.cycle_iter,
-                                direction: event.direction,
-                            });
-                            self.events.push(next_event);
+                            // Schedule next cycle check, reusing allocation of the current event.
+                            // Cycle iter and direction stay the same, only time needs updating
+                            event.time = event.time + cycle_iter_item.cycle_duration;
+                            self.events.push(CapSimEvent::CycleCheck(event));
                         }
                         // When some module is done with cycling (non-repeating modules like CEHE),
                         // check if there are any events left, and if there are some, reset extra
@@ -236,7 +233,7 @@ impl CapSim {
             self.events.push(new_event);
         }
     }
-    fn use_injector(&mut self, mut injector_event: CapSimEventInjector) {
+    fn use_injector(&mut self, mut injector_event: Box<CapSimEventInjector>) {
         // Check if injector can cycle
         if let Some(cycle_iter_item) = injector_event.cycle_iter.next() {
             // If injector has immediate effect, update cap and advance output instance iterator

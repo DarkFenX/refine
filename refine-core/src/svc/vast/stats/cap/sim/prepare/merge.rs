@@ -75,11 +75,11 @@ impl Merger {
     }
     fn convert(merge_group: Vec<MergeEntry>, direction: Direction, events: &mut BinaryHeap<CapSimEvent>) {
         for entry in merge_group {
-            events.push(CapSimEvent::CycleCheck(CapSimEventCycleCheck {
+            events.push(CapSimEvent::CycleCheck(Box::new(CapSimEventCycleCheck {
                 time: entry.start_delay,
                 cycle_iter: entry.iter_data.iter(),
                 direction,
-            }))
+            })))
         }
     }
 }

@@ -6,9 +6,10 @@ use crate::{
     util::PrefetchPeekable,
 };
 
+// Boxes to minimize type size, to allow binary heap move it faster
 pub(super) enum CapSimEvent {
-    CycleCheck(CapSimEventCycleCheck),
-    InjectorReady(CapSimEventInjector),
+    CycleCheck(Box<CapSimEventCycleCheck>),
+    InjectorReady(Box<CapSimEventInjector>),
     CapChange(CapSimEventCapChange),
 }
 impl CapSimEvent {

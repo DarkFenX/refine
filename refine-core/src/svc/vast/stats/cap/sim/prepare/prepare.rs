@@ -250,10 +250,10 @@ fn fill_injectors(
             let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
                 continue;
             };
-            events.push(CapSimEvent::InjectorReady(CapSimEventInjector {
+            events.push(CapSimEvent::InjectorReady(Box::new(CapSimEventInjector {
                 time: PValue::ZERO,
                 cycle_iter: PrefetchPeekable::new(iter_data.iter()),
-            }));
+            })));
         }
     }
 }
