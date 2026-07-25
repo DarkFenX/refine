@@ -372,18 +372,12 @@ fn get_next_resonances(
         };
     }
     // Distribute
+    let take_limit = (total_transferred / recipients).sig_rounded(SIG_ROUND_DIGITS);
     let mut to_distribute = total_transferred;
     for index in sorted_indices.iter().rev() {
         let current_value = resonances[*index];
         // Can't give more than set threshold, more than we have, and more than target res can take
-        let to_take = [
-            (total_transferred / recipients).sig_rounded(SIG_ROUND_DIGITS),
-            current_value.dogma,
-            to_distribute,
-        ]
-        .into_iter()
-        .min()
-        .unwrap();
+        let to_take = [take_limit, current_value.dogma, to_distribute].into_iter().min().unwrap();
         to_distribute -= to_take;
         let new_value = (current_value.dogma - to_take).sig_rounded(SIG_ROUND_DIGITS);
         resonances[*index] = CalcAttrVals {
