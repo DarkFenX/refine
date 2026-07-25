@@ -97,44 +97,44 @@ impl StandardRegister {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for (item_uid, cmods) in self.cmods.direct.iter() {
+        for ((item_uid, _), cmods) in self.cmods.direct.iter() {
             // Sometimes direct modifications can target non-loaded items (e.g. drones)
             item_uid.consistency_check(u_data, false)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for (item_uid, cmods) in self.cmods.other.iter() {
+        for ((item_uid, _), cmods) in self.cmods.other.iter() {
             item_uid.consistency_check(u_data, true)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for ((fit_uid, _), cmods) in self.cmods.root.iter() {
+        for ((fit_uid, _, _), cmods) in self.cmods.root.iter() {
             fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for ((fit_uid, _), cmods) in self.cmods.loc.iter() {
+        for ((fit_uid, _, _), cmods) in self.cmods.loc.iter() {
             fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for ((fit_uid, _, _), cmods) in self.cmods.loc_grp.iter() {
+        for ((fit_uid, _, _, _), cmods) in self.cmods.loc_grp.iter() {
             fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for ((fit_uid, _, _), cmods) in self.cmods.loc_srq.iter() {
+        for ((fit_uid, _, _, _), cmods) in self.cmods.loc_srq.iter() {
             fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;
             }
         }
-        for ((fit_uid, _), cmods) in self.cmods.own_srq.iter() {
+        for ((fit_uid, _, _), cmods) in self.cmods.own_srq.iter() {
             fit_uid.consistency_check(u_data)?;
             for cmod in cmods {
                 cmod.consistency_check(u_data)?;

@@ -3,9 +3,9 @@ use std::hash::Hash;
 use crate::{misc::AttrSpec, svc::calc::CtxModifier, util::RMapRSet};
 
 pub(super) fn add_cmod<K>(
-    main_storage: &mut RMapRSet<K, CtxModifier>,
     key: K,
     cmod: CtxModifier,
+    main_storage: &mut RMapRSet<K, CtxModifier>,
     aspec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
     K: Eq + Hash,
@@ -28,9 +28,9 @@ pub(super) fn add_cmod<K>(
 }
 
 pub(super) fn remove_cmod<K>(
-    main_storage: &mut RMapRSet<K, CtxModifier>,
     key: K,
     cmod: &CtxModifier,
+    main_storage: &mut RMapRSet<K, CtxModifier>,
     aspec_storage: &mut RMapRSet<AttrSpec, CtxModifier>,
 ) where
     K: Eq + Hash,

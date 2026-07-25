@@ -137,13 +137,17 @@ impl StandardRegister {
     }
     fn get_mods_for_changed_ship(&self, item: &UItem, cmods: &mut Vec<CtxModifier>) {
         if let (Some(item_fit_uid), Some(loc_kind)) = (item.get_fit_uid(), item.get_ship_loc_kind()) {
-            cmods.extend(self.cmods.loc.get(&(item_fit_uid, loc_kind)));
-            for ((stored_fit_uid, stored_loc_kind, _), stored_cmods) in self.cmods.loc_grp.iter() {
+            for ((stored_fit_uid, stored_loc_kind, _), stored_cmods) in self.cmods.loc.iter() {
                 if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {
                     cmods.extend(stored_cmods);
                 }
             }
-            for ((stored_fit_uid, stored_loc_kind, _), stored_cmods) in self.cmods.loc_srq.iter() {
+            for ((stored_fit_uid, stored_loc_kind, _, _), stored_cmods) in self.cmods.loc_grp.iter() {
+                if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {
+                    cmods.extend(stored_cmods);
+                }
+            }
+            for ((stored_fit_uid, stored_loc_kind, _, _), stored_cmods) in self.cmods.loc_srq.iter() {
                 if item_fit_uid == *stored_fit_uid && loc_kind == *stored_loc_kind {
                     cmods.extend(stored_cmods);
                 }
