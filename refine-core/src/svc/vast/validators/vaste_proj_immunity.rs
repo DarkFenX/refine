@@ -105,10 +105,10 @@ impl VastFitData {
                         continue;
                     }
                     let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_uid);
-                    let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
-                    if !projectee_item_ids.contains(&projectee_item_id) {
-                        projectee_item_ids.push(projectee_item_id)
-                    }
+                    items
+                        .entry(projector_item_id)
+                        .or_insert_with(RSet::new)
+                        .insert(projectee_item_id);
                 }
             }
         }
@@ -119,7 +119,7 @@ impl VastFitData {
                     .into_iter()
                     .map(|(projector_item_id, projectee_item_ids)| ValProjImmunityItemInfo {
                         item_id: projector_item_id,
-                        projectee_item_ids,
+                        projectee_item_ids: projectee_item_ids.into_iter().collect(),
                     })
                     .collect(),
             }),
@@ -169,10 +169,10 @@ fn validate_verbose(
                     continue;
                 }
                 let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_uid);
-                let projectee_item_ids = items.entry(projector_item_id).or_insert_with(Vec::new);
-                if !projectee_item_ids.contains(&projectee_item_id) {
-                    projectee_item_ids.push(projectee_item_id)
-                }
+                items
+                    .entry(projector_item_id)
+                    .or_insert_with(RSet::new)
+                    .insert(projectee_item_id);
             }
         }
     }
@@ -183,7 +183,7 @@ fn validate_verbose(
                 .into_iter()
                 .map(|(projector_item_id, projectee_item_ids)| ValProjImmunityItemInfo {
                     item_id: projector_item_id,
-                    projectee_item_ids,
+                    projectee_item_ids: projectee_item_ids.into_iter().collect(),
                 })
                 .collect(),
         }),
