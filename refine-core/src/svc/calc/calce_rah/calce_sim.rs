@@ -238,12 +238,12 @@ impl Calc {
         Some(ItemData::new(rah_info))
     }
     // Set resonances to unadapted values in sim storage for all RAHs of requested fit
-    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: UFitId, notify: bool) {
+    fn set_fit_rahs_unadapted(&mut self, ctx: SvcCtx, fit_uid: UFitId, trigger_recalc: bool) {
         for item_uid in self.rah.by_fit.get(fit_uid).copied().collect_vec() {
-            self.set_rah_unadapted(ctx, item_uid, notify);
+            self.set_rah_unadapted(ctx, item_uid, trigger_recalc);
         }
     }
-    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_uid: UItemId, notify: bool) {
+    fn set_rah_unadapted(&mut self, ctx: SvcCtx, item_uid: UItemId, trigger_recalc: bool) {
         let attr_consts = ctx.ac();
         let em = self
             .get_item_oattr_ofull_nopp(ctx, item_uid, attr_consts.armor_em_dmg_resonance)
@@ -263,17 +263,31 @@ impl Calc {
             kinetic: kin,
             explosive: expl,
         };
-        self.set_rah_result(ctx, item_uid, rah_resos, notify);
+        self.set_rah_result(ctx, item_uid, rah_resos, trigger_recalc);
     }
     // Result application methods
-    fn set_rah_result(&mut self, ctx: SvcCtx, item_uid: UItemId, resos: DmgKinds<CalcAttrVals>, notify: bool) {
-        self.rah.resonances.get_mut(&item_uid).unwrap().replace(resos);
-        if notify {
-            let attr_consts = ctx.ac();
-            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_em_dmg_resonance);
-            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_therm_dmg_resonance);
-            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_kin_dmg_resonance);
-            self.force_oattr_postproc_recalc(ctx, item_uid, attr_consts.armor_expl_dmg_resonance);
+    fn set_rah_result(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        new_resos: DmgKinds<CalcAttrVals>,
+        trigger_recalc: bool,
+    ) {
+        let old_resos = self.rah.resonances.get_mut(&item_uid).unwrap().replace(new_resos);
+        if trigger_recalc {
+            // Do not force for attributes whose values did not change
+            if old_resos.is_none_or(|o| o.em.dogma != new_resos.em.dogma) {
+                self.force_oattr_postproc_recalc(ctx, item_uid, ctx.ac().armor_em_dmg_resonance);
+            }
+            if old_resos.is_none_or(|o| o.thermal.dogma != new_resos.thermal.dogma) {
+                self.force_oattr_postproc_recalc(ctx, item_uid, ctx.ac().armor_therm_dmg_resonance);
+            }
+            if old_resos.is_none_or(|o| o.kinetic.dogma != new_resos.kinetic.dogma) {
+                self.force_oattr_postproc_recalc(ctx, item_uid, ctx.ac().armor_kin_dmg_resonance);
+            }
+            if old_resos.is_none_or(|o| o.explosive.dogma != new_resos.explosive.dogma) {
+                self.force_oattr_postproc_recalc(ctx, item_uid, ctx.ac().armor_expl_dmg_resonance);
+            }
         }
     }
     fn set_partial_fit_rahs_result(
@@ -285,7 +299,7 @@ impl Calc {
         for item_data in item_datas.iter() {
             // Average resonance is what passed as resonances for this method; average resonance
             // getter might not return resonances for all RAHs, and it's hard to trace when/why this
-            // might happen. For safety, just use unadapted values if that happens
+            // might happen. For safety, just use unadapted values in that case
             let item_resos = match resos.get(&item_data.info.uid) {
                 Some(item_avg_resos) => DmgKinds {
                     em: CalcAttrVals {
