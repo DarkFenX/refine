@@ -198,6 +198,9 @@ def test_time(client, consts):
 
 
 def test_range(client, consts):
+    # Tested on Singularity on 2027-07-27, side-effect neuting hits targets within model of a
+    # titan/lancer, and uses surface-to-surface distance when deciding if shit at a distance should
+    # be affected or not
     eve_neut_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_energy_neut_amount)
     eve_neut_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_energy_neut_radius)
     eve_neut_sig_res_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_energy_neut_sig_radius)

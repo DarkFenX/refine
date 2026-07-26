@@ -4,13 +4,17 @@ from tests.stats.dmg import make_eve_bomb, make_eve_drone, make_eve_launcher, ma
 
 
 def test_range_tick_aligned(client, consts):
+    # Bomb of radius is relatively large, but it is ignored. Tested on Singularity on 2026-07-27 by
+    # bombing a Sin in a Purifier - bombs were hitting it at ~44980 overview distance, and stopped
+    # at ~44990 overview distance
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_launcher(
         client=client, basic_info=eve_basic_info, capacity=300,
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7250, 0, 0, 0), volume=75,
-        speed=2500, flight_time=12000, mass=1000, agility=0.0275, exp_range=15000, exp_radius=400)
+        speed=2500, flight_time=12000, mass=1000, agility=0.0275,
+        exp_range=15000, exp_radius=400, radius=300)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=20.5)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
     client.create_sources()
@@ -108,7 +112,8 @@ def test_range_tick_misaligned(client, consts):
         cycle_time=10000, disallow_repeating_activation=1, reactivation_delay=67500, reload_time=10000)
     eve_charge_id = make_eve_bomb(
         client=client, basic_info=eve_basic_info, dmgs=(7, 7, 7, 7), volume=75,
-        speed=4000, flight_time=7500, mass=1000, agility=0.0000251, exp_range=15000, exp_radius=400)
+        speed=4000, flight_time=7500, mass=1000, agility=0.0000251,
+        exp_range=15000, exp_radius=400, radius=300)
     eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=20.5)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=3000, speed=1000, sig_radius=1000)
     client.create_sources()

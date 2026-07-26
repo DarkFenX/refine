@@ -860,6 +860,7 @@ def make_eve_bomb(
         agility: float | type[Absent] = Absent,
         exp_range: float | type[Absent] = Absent,
         exp_radius: float | type[Absent] = Absent,
+        radius: float | type[Absent] = Absent,
         neut_resist_attr: bool = False,
 ) -> int:
     attrs = {}
@@ -871,6 +872,7 @@ def make_eve_bomb(
     conditional_insert(container=attrs, path=[basic_info.agility_attr_id], value=agility)
     conditional_insert(container=attrs, path=[basic_info.emp_field_range_attr_id], value=exp_range)
     conditional_insert(container=attrs, path=[basic_info.aoe_cloud_size_attr_id], value=exp_radius)
+    conditional_insert(container=attrs, path=[basic_info.radius_attr_id], value=radius)
     if neut_resist_attr:
         attrs[basic_info.resist_ref_attr_id] = basic_info.neut_resist_attr_id
     return client.mk_eve_item(
