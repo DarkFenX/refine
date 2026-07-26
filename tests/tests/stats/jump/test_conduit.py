@@ -28,7 +28,7 @@ def test_ranges(client, consts):
         StatsOptionJump(range=2),
         StatsOptionJump(range=0.1),
         StatsOptionJump(range=0),
-        StatsOptionJump(range=1.00001)]
+        StatsOptionJump(range=1.0003)]
     (api_fit_jump_default,
      api_fit_jump_excessive,
      api_fit_jump_max_num,
@@ -45,7 +45,7 @@ def test_ranges(client, consts):
     assert api_fit_jump_med.conduit.fuel_use_self == 6000
     assert api_fit_jump_low.conduit.fuel_use_self == 300
     assert api_fit_jump_zero.conduit.fuel_use_self == 0
-    assert api_fit_jump_rounding.conduit.fuel_use_self == 3001
+    assert api_fit_jump_rounding.conduit.fuel_use_self == 3000
     (api_ship_jump_default,
      api_ship_jump_excessive,
      api_ship_jump_max_num,
@@ -62,7 +62,7 @@ def test_ranges(client, consts):
     assert api_ship_jump_med.conduit.fuel_use_self == 6000
     assert api_ship_jump_low.conduit.fuel_use_self == 300
     assert api_ship_jump_zero.conduit.fuel_use_self == 0
-    assert api_ship_jump_rounding.conduit.fuel_use_self == 3001
+    assert api_ship_jump_rounding.conduit.fuel_use_self == 3000
 
 
 def test_passenger_status(client, consts):

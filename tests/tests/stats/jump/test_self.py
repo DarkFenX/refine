@@ -22,7 +22,7 @@ def test_ship_ranges(client, consts):
         StatsOptionJump(range=2),
         StatsOptionJump(range=0.1),
         StatsOptionJump(range=0),
-        StatsOptionJump(range=1.00001)]
+        StatsOptionJump(range=1.0003)]
     (api_fit_jump_default,
      api_fit_jump_excessive,
      api_fit_jump_max_num,
@@ -39,7 +39,7 @@ def test_ship_ranges(client, consts):
     assert api_fit_jump_med.self.fuel_use == approx(6000)
     assert api_fit_jump_low.self.fuel_use == approx(300)
     assert api_fit_jump_zero.self.fuel_use == approx(0)
-    assert api_fit_jump_rounding.self.fuel_use == approx(3001)
+    assert api_fit_jump_rounding.self.fuel_use == approx(3000)
     (api_ship_jump_default,
      api_ship_jump_excessive,
      api_ship_jump_max_num,
@@ -56,7 +56,7 @@ def test_ship_ranges(client, consts):
     assert api_ship_jump_med.self.fuel_use == approx(6000)
     assert api_ship_jump_low.self.fuel_use == approx(300)
     assert api_ship_jump_zero.self.fuel_use == approx(0)
-    assert api_ship_jump_rounding.self.fuel_use == approx(3001)
+    assert api_ship_jump_rounding.self.fuel_use == approx(3000)
 
 
 def test_struct(client, consts):

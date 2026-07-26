@@ -102,7 +102,7 @@ fn get_stat_jump_self(ctx: SvcCtx, calc: &mut Calc, ship_uid: UItemId, range: PV
     let self_fuel_need =
         calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_consumption_amount, Value::ZERO);
     StatJumpSelf {
-        fuel_use: Count::from_value_ceiled(self_fuel_need * range),
+        fuel_use: Count::from_value_trunced(self_fuel_need * range),
     }
 }
 fn get_stat_jump_conduit(
@@ -138,7 +138,7 @@ fn get_stat_jump_conduit(
     }
     StatJumpConduit {
         max_passengers: max_psgs,
-        fuel_use_self: Count::from_value_ceiled(conduit_fuel_need * range),
+        fuel_use_self: Count::from_value_trunced(conduit_fuel_need * range),
         fuel_use_passengers: psgs,
     }
 }
@@ -188,7 +188,9 @@ fn get_stat_jump_portal(
                     let psg_mass = Vast::internal_get_stat_item_mass_unchecked(ctx, calc, psg_ship_uid);
                     match mass_limit {
                         Some(mass_limit) if psg_mass > mass_limit => None,
-                        _ => Some(Count::from_pvalue_ceiled(fuel_use_base.mul_add(psg_mass, fuel_use_add))),
+                        _ => Some(Count::from_pvalue_trunced(
+                            fuel_use_base.mul_add(psg_mass, fuel_use_add),
+                        )),
                     }
                 }
                 None => None,

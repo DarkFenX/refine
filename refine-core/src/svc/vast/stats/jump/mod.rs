@@ -1,7 +1,7 @@
-pub use jump::JumpStatError;
+pub use getter::JumpStatError;
 pub use option::StatJumpRange;
 pub use stat::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpSelf};
 
-mod jump;
+mod getter;
 mod option;
 mod stat;
