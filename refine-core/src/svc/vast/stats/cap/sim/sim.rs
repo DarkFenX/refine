@@ -1,6 +1,6 @@
 use std::collections::BinaryHeap;
 
-use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventCycleCheck, CapSimEventInjector};
+use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEventInjector};
 use crate::{
     num::{PValue, UnitInterval, Value},
     svc::{
@@ -68,22 +68,25 @@ impl CapSim {
             return result;
         }
         while let Some(event) = self.events.pop() {
-            match event {
-                CapSimEvent::CycleCheck(mut event) => {
+            let event_time = event.time;
+            match event.data {
+                CapSimEventData::CycleCheck(mut event_data) => {
                     // Check if it can cycle altogether
-                    match event.cycle_iter.next() {
+                    match event_data.cycle_iter.next() {
                         Some(cycle_iter_item) => {
                             // Add outputs for this cycle
                             self.schedule_cycle_output(
-                                event.time,
+                                event_time,
                                 cycle_iter_item.output.into_instance_iter(),
                                 cycle_iter_item.output_duration_limit,
-                                event.direction,
+                                event_data.direction,
                             );
                             // Schedule next cycle check, reusing allocation of the current event.
                             // Cycle iter and direction stay the same, only time needs updating
-                            event.time = event.time + cycle_iter_item.cycle_duration;
-                            self.events.push(CapSimEvent::CycleCheck(event));
+                            self.events.push(CapSimEvent {
+                                time: event_time + cycle_iter_item.cycle_duration,
+                                data: CapSimEventData::CycleCheck(event_data),
+                            });
                         }
                         // When some module is done with cycling (non-repeating modules like CEHE),
                         // check if there are any events left, and if there are some, reset extra
@@ -93,44 +96,45 @@ impl CapSim {
                                 return result;
                             }
                             self.only_gains = true;
-                            self.wm_high_time = event.time;
+                            self.wm_high_time = event_time;
                             self.wm_high_cap = self.cap;
-                            self.wm_low_time = event.time;
+                            self.wm_low_time = event_time;
                             self.wm_low_cap = self.cap;
                             self.wm_aux_high = self.cap;
                             self.wm_aux_low = self.cap;
                         }
                     }
                 }
-                CapSimEvent::InjectorReady(event) => {
+                CapSimEventData::InjectorReady(event_data) => {
                     // Update basic sim state according to time progression
-                    if event.time > TIME_LIMIT {
+                    if event_time > TIME_LIMIT {
                         self.advance_time(TIME_LIMIT);
                         break;
                     }
-                    self.advance_time(event.time);
+                    self.advance_time(event_time);
                     // Use injector right away if it does not overshoot cap, or postpone if it does
-                    match self.cap + event.get_immediate_instance().unwrap_or(PValue::ZERO).into_value() > self.max_cap
+                    match self.cap + event_data.get_immediate_instance().unwrap_or(PValue::ZERO).into_value()
+                        > self.max_cap
                     {
-                        true => self.injectors.push(event),
-                        false => self.use_injector(event),
+                        true => self.injectors.push(event_data),
+                        false => self.use_injector(event_data),
                     }
                 }
-                CapSimEvent::CapChange(event) => {
+                CapSimEventData::CapChange(event_data) => {
                     // Update basic sim state according to time progression
-                    if event.time > TIME_LIMIT {
+                    if event_time > TIME_LIMIT {
                         self.advance_time(TIME_LIMIT);
                         break;
                     }
-                    self.advance_time(event.time);
+                    self.advance_time(event_time);
                     // Process cap change from event
-                    match event.direction {
-                        Direction::Gain if event.amount > PValue::ZERO => self.increase_cap(event.amount),
-                        Direction::Loss if event.amount > PValue::ZERO => {
-                            if event.amount.into_value() > self.cap {
-                                self.inject_emergency(event.amount);
+                    match event_data.direction {
+                        Direction::Gain if event_data.amount > PValue::ZERO => self.increase_cap(event_data.amount),
+                        Direction::Loss if event_data.amount > PValue::ZERO => {
+                            if event_data.amount.into_value() > self.cap {
+                                self.inject_emergency(event_data.amount);
                             }
-                            self.decrease_cap(event.amount);
+                            self.decrease_cap(event_data.amount);
                             if self.cap < Value::ZERO {
                                 return StatCapSim::Time(self.time);
                             }
@@ -225,17 +229,18 @@ impl CapSim {
             {
                 return;
             }
-            let new_event = CapSimEvent::CapChange(CapSimEventCapChange {
+            self.events.push(CapSimEvent {
                 time: base_time + extra_delay,
-                amount: output_event.instance,
-                direction,
+                data: CapSimEventData::CapChange(CapSimEventCapChange {
+                    amount: output_event.instance,
+                    direction,
+                }),
             });
-            self.events.push(new_event);
         }
     }
-    fn use_injector(&mut self, mut injector_event: Box<CapSimEventInjector>) {
+    fn use_injector(&mut self, mut injector_data: Box<CapSimEventInjector>) {
         // Check if injector can cycle
-        if let Some(cycle_iter_item) = injector_event.cycle_iter.next() {
+        if let Some(cycle_iter_item) = injector_data.cycle_iter.next() {
             // If injector has immediate effect, update cap and advance output instance iterator
             let immediate_amount = cycle_iter_item.output.get_immediate_instance();
             let mut instance_iter = cycle_iter_item.output.into_instance_iter();
@@ -252,8 +257,10 @@ impl CapSim {
                 Direction::Gain,
             );
             // Schedule next cycle
-            injector_event.time = self.time + cycle_iter_item.cycle_duration;
-            self.events.push(CapSimEvent::InjectorReady(injector_event));
+            self.events.push(CapSimEvent {
+                time: self.time + cycle_iter_item.cycle_duration,
+                data: CapSimEventData::InjectorReady(injector_data),
+            });
         }
     }
     fn inject_emergency(&mut self, needed_cap_total: PValue) {

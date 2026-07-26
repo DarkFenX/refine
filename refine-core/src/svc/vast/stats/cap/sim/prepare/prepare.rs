@@ -15,7 +15,7 @@ use crate::{
             Vast, VastFitData,
             aggr::{aggr_local_iter, aggr_proj_iter},
             stats::cap::sim::{
-                event::{CapSimEvent, CapSimEventInjector},
+                event::{CapSimEvent, CapSimEventData, CapSimEventInjector},
                 shared::Direction,
             },
         },
@@ -250,10 +250,12 @@ fn fill_injectors(
             let Some(iter_data) = aggr_local_iter(ctx, calc, item_uid, effect, cseq, ospec, ()) else {
                 continue;
             };
-            events.push(CapSimEvent::InjectorReady(Box::new(CapSimEventInjector {
+            events.push(CapSimEvent {
                 time: PValue::ZERO,
-                cycle_iter: PrefetchPeekable::new(iter_data.iter()),
-            })));
+                data: CapSimEventData::InjectorReady(Box::new(CapSimEventInjector {
+                    cycle_iter: PrefetchPeekable::new(iter_data.iter()),
+                })),
+            });
         }
     }
 }
