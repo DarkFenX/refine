@@ -18,7 +18,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             // Unlike other AoE doomsdays, reapers hit every ship only once, despite having damage
             // ticks spread over time. We also assume target is hit by first damage tick.
             base: NEffectDmgOutputGetter::Delay2,
-            proj_mult_str: Some(NEffectProjGetter::AoeDd),
+            proj_mult_str: Some(NEffectProjGetter::AoeDdRound),
             ..
         }),
         neut: Some(get_aoe_dd_warmup_neut()),

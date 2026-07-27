@@ -294,6 +294,7 @@ impl AAttrId {
     pub(crate) const DOOMSDAY_ENERGY_NEUT_AMOUNT: Self = Self::from_eid(EAttrId::DOOMSDAY_ENERGY_NEUT_AMOUNT);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_SIG_RADIUS: Self = Self::from_eid(EAttrId::DOOMSDAY_ENERGY_NEUT_SIG_RADIUS);
     pub(crate) const DOOMSDAY_WARNING_DURATION: Self = Self::from_eid(EAttrId::DOOMSDAY_WARNING_DURATION);
+    pub(crate) const DOOMSDAY_DMG_RADIUS: Self = Self::from_eid(EAttrId::DOOMSDAY_DMG_RADIUS);
     pub(crate) const DOOMSDAY_DMG_DURATION: Self = Self::from_eid(EAttrId::DOOMSDAY_DMG_DURATION);
     pub(crate) const DOOMSDAY_DMG_CYCLE_TIME: Self = Self::from_eid(EAttrId::DOOMSDAY_DMG_CYCLE_TIME);
     pub(crate) const DOOMSDAY_AOE_RANGE: Self = Self::from_eid(EAttrId::DOOMSDAY_AOE_RANGE);

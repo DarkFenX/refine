@@ -1,6 +1,7 @@
 import typing
 from dataclasses import dataclass
 
+from fw.consts import EveAttr
 from fw.util import Absent, Default, conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -24,6 +25,7 @@ class DmgBasicInfo:
     dd_delay2_attr_id: int
     dd_dmg_interval_attr_id: int
     dd_dmg_duration_attr_id: int
+    dd_dmg_radius_attr_id: int
     capacity_attr_id: int
     volume_attr_id: int
     charge_rate_attr_id: int
@@ -156,6 +158,7 @@ def setup_dmg_basics(
     dd_delay2_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_warning_duration)
     dd_dmg_interval_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_cycle_time)
     dd_dmg_duration_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_duration)
+    dd_dmg_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_radius)
     capacity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacity)
     volume_attr_id = client.mk_eve_attr(id_=consts.EveAttr.volume)
     charge_rate_attr_id = client.mk_eve_attr(id_=consts.EveAttr.charge_rate)
@@ -394,6 +397,7 @@ def setup_dmg_basics(
         dd_delay2_attr_id=dd_delay2_attr_id,
         dd_dmg_interval_attr_id=dd_dmg_interval_attr_id,
         dd_dmg_duration_attr_id=dd_dmg_duration_attr_id,
+        dd_dmg_radius_attr_id=dd_dmg_radius_attr_id,
         cycle_time_attr_id=cycle_time_attr_id,
         disallow_repeating_activation_attr_id=disallow_repeating_activation_attr_id,
         reactivation_delay_attr_id=reactivation_delay_attr_id,
@@ -1265,6 +1269,7 @@ def make_eve_dd_lance(
         dmg_interval: float | type[Absent] = Absent,
         dmg_duration: float | type[Absent] = Absent,
         range_optimal: float | type[Absent] = Absent,
+        range_radius: float | type[Absent] = Absent,
         dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
@@ -1274,6 +1279,7 @@ def make_eve_dd_lance(
     conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
     conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
     conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_radius_attr_id], value=range_radius)
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
@@ -1291,6 +1297,7 @@ def make_eve_dd_lance_debuff(
         dmg_interval: float | type[Absent] = Absent,
         dmg_duration: float | type[Absent] = Absent,
         range_optimal: float | type[Absent] = Absent,
+        range_radius: float | type[Absent] = Absent,
         dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
@@ -1300,6 +1307,7 @@ def make_eve_dd_lance_debuff(
     conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
     conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
     conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_radius_attr_id], value=range_radius)
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,
@@ -1317,6 +1325,7 @@ def make_eve_dd_reaper(
         dmg_interval: float | type[Absent] = Absent,
         dmg_duration: float | type[Absent] = Absent,
         range_optimal: float | type[Absent] = Absent,
+        range_radius: float | type[Absent] = Absent,
         dmg_radius: float | type[Absent] = Absent,
 ) -> int:
     attrs = {}
@@ -1326,6 +1335,7 @@ def make_eve_dd_reaper(
     conditional_insert(container=attrs, path=[basic_info.dd_dmg_interval_attr_id], value=dmg_interval)
     conditional_insert(container=attrs, path=[basic_info.dd_dmg_duration_attr_id], value=dmg_duration)
     conditional_insert(container=attrs, path=[basic_info.max_range_attr_id], value=range_optimal)
+    conditional_insert(container=attrs, path=[basic_info.dd_dmg_radius_attr_id], value=range_radius)
     conditional_insert(container=attrs, path=[basic_info.sig_radius_attr_id], value=dmg_radius)
     return client.mk_eve_item(
         attrs=attrs,

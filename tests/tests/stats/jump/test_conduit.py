@@ -3,7 +3,7 @@ from fw.api import FitStatsOptions, ItemStatsOptions, StatsOptionJump
 
 
 def test_ranges(client, consts):
-    # Fuel use by conduit jumping is rounded down; tested on Singularity on 2026-07-27
+    # Fuel use by conduit jumping is rounded down; tested on Singularity on 2026-07-26
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
     eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)

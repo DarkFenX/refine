@@ -4,7 +4,7 @@ from tests.stats.dmg import make_eve_bomb, make_eve_drone, make_eve_launcher, ma
 
 
 def test_range_tick_aligned(client, consts):
-    # Bomb of radius is relatively large, but it is ignored. Tested on Singularity on 2026-07-27 by
+    # Bomb of radius is relatively large, but it is ignored. Tested on Singularity on 2026-07-26 by
     # bombing a Sin in a Purifier - bombs were hitting it at ~44980 overview distance, and stopped
     # at ~44990 overview distance
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)

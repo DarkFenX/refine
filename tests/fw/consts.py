@@ -494,6 +494,7 @@ class EveAttr(IntEnum):
     doomsday_energy_neut_amount = 2260
     doomsday_energy_neut_sig_radius = 2261
     doomsday_warning_duration = 2262
+    doomsday_dmg_radius = 2263
     doomsday_dmg_duration = 2264
     doomsday_dmg_cycle_time = 2265
     doomsday_aoe_range = 2279

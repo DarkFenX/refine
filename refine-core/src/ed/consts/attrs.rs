@@ -263,6 +263,7 @@ impl EAttrId {
     pub(crate) const DOOMSDAY_ENERGY_NEUT_AMOUNT: Self = Self::from_i32(2260);
     pub(crate) const DOOMSDAY_ENERGY_NEUT_SIG_RADIUS: Self = Self::from_i32(2261);
     pub(crate) const DOOMSDAY_WARNING_DURATION: Self = Self::from_i32(2262);
+    pub(crate) const DOOMSDAY_DMG_RADIUS: Self = Self::from_i32(2263);
     pub(crate) const DOOMSDAY_DMG_DURATION: Self = Self::from_i32(2264);
     pub(crate) const DOOMSDAY_DMG_CYCLE_TIME: Self = Self::from_i32(2265);
     pub(crate) const DOOMSDAY_AOE_RANGE: Self = Self::from_i32(2279);

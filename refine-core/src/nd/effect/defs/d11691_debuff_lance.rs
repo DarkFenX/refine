@@ -53,13 +53,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::AoeDdRange),
+            proj_mult: Some(NEffectProjGetter::AoeDdRoundRange),
             ..
         }),
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::DotDelay,
-            proj_mult_str: Some(NEffectProjGetter::AoeDd),
+            proj_mult_str: Some(NEffectProjGetter::AoeDdRound),
             ..
         }),
         neut: Some(get_aoe_dd_warmup_neut()),

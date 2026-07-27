@@ -4,8 +4,9 @@ use super::{
         get_turret_application_mult,
     },
     range::{
-        get_aoe_burst_range_mult, get_aoe_dd_range_mult, get_dd_neut_range_mult, get_simple_s2s_range_mult,
-        get_std_full_restricted_range_mult, get_std_full_unrestricted_range_mult, get_std_simple_s2s_range_mult,
+        get_aoe_burst_range_mult, get_aoe_dd_round_range_mult, get_aoe_dd_sharp_range_mult, get_dd_neut_range_mult,
+        get_simple_s2s_range_mult, get_std_full_restricted_range_mult, get_std_full_unrestricted_range_mult,
+        get_std_simple_s2s_range_mult,
     },
 };
 use crate::{
@@ -88,14 +89,28 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_proj_mult(
     )
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_proj_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_sharp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     projectee_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
-    let mult = get_aoe_dd_range_mult(ctx, calc, projector_uid, proj_data);
+    let mult = get_aoe_dd_sharp_range_mult(ctx, calc, projector_uid, proj_data);
+    if mult == PValue::ZERO {
+        return PValue::ZERO;
+    }
+    mult * get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().sig_radius)
+}
+
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_round_proj_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    projectee_uid: UItemId,
+    proj_data: UProjData,
+) -> PValue {
+    let mult = get_aoe_dd_round_range_mult(ctx, calc, projector_uid, proj_data);
     if mult == PValue::ZERO {
         return PValue::ZERO;
     }

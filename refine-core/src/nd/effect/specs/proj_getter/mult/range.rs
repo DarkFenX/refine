@@ -260,22 +260,32 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_range_mult(
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_sharp_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     proj_data: UProjData,
 ) -> PValue {
-    // AoE doomsdays' effects do not specify range attribute ID, so it is hardcoded here. Their
-    // effect starts at the edge of attacker, and goes up to specified range
+    // AoE doomsdays' effects do not specify range attribute ID, so it is hardcoded here
     let affector_optimal = get_effect_range(ctx, calc, projector_uid, ctx.ac().max_range);
-    if proj_data.get_range_s2s() > affector_optimal {
-        return PValue::ZERO;
+    match proj_data.get_range_s2s() <= affector_optimal {
+        true => PValue::ONE,
+        false => PValue::ZERO,
     }
-    // Targets which are completely in attacker's model receive no damage
-    match proj_data.get_range_c2c() + proj_data.get_tgt_radius() < proj_data.get_src_radius() {
-        true => PValue::ZERO,
-        false => PValue::ONE,
+}
+
+pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_round_range_mult(
+    ctx: SvcCtx,
+    calc: &mut Calc,
+    projector_uid: UItemId,
+    proj_data: UProjData,
+) -> PValue {
+    // AoE doomsdays' effects do not specify range attribute IDs, so they are hardcoded here
+    let affector_optimal = get_effect_range(ctx, calc, projector_uid, ctx.ac().max_range);
+    let affector_dmg_radius = get_effect_range(ctx, calc, projector_uid, ctx.ac().doomsday_dmg_radius);
+    match proj_data.get_range_s2s() <= affector_optimal + affector_dmg_radius {
+        true => PValue::ONE,
+        false => PValue::ZERO,
     }
 }
 

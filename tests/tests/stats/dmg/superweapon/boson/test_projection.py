@@ -25,27 +25,9 @@ def test_range(client, consts):
     api_src_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 3799, 0), movement=(0, 0, 0))
-    # Verification - within attacking ship radius
-    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
-    api_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
-    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_module_proj_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_module_proj_dmg_stats.volley == [0, 0, 0, 0]
-    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_module_nonproj_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_module_nonproj_dmg_stats.volley == [0, 0, 0, 0]
-    # Action
-    api_tgt_ship.change_ship(coordinates=(0, 3801, 0))
-    # Verification - slightly goes out of attacking ship radius
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    # Verification - within attacking ship radius still affected by the cone. Tested on Singularity
+    # on 2026-07-26 by relative-warping Leviathan onto bookmark in the center of a frig and DD'ing
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(3437.5), approx(3437.5), approx(3437.5), approx(3437.5)]
@@ -245,18 +227,7 @@ def test_dd_attr_range_absent(client, consts):
     api_src_module_proj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_src_module_nonproj = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6549, 0), movement=(0, 0, 0))
-    # Verification
-    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_module_proj_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_module_proj_dmg_stats.volley == [0, 0, 0, 0]
-    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
-    assert api_module_nonproj_dmg_stats.dps == [0, 0, 0, 0]
-    assert api_module_nonproj_dmg_stats.volley == [0, 0, 0, 0]
-    # Action
-    api_tgt_ship.change_ship(coordinates=(0, 6551, 0))
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
     # Verification
     api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
