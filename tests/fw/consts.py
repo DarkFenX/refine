@@ -158,6 +158,7 @@ class EveEffect(IntEnum):
     doomsday_aoe_ecm = 6513
     ftr_abil_kamikaze = 6554
     mod_bonus_networked_sensor_array = 6567
+    mod_bonus_siege = 6582
     ship_mod_ancillary_remote_armor_repairer = 6651
     ship_mod_ancillary_remote_shield_booster = 6652
     struct_mod_effect_ecm = 6685
@@ -181,6 +182,7 @@ class EveEffect(IntEnum):
     debuff_lance = 11691
     micro_jump_portal_drive_capital = 12126
     dot_missile_launching = 12174
+    mod_bonus_integrated_sensor_array = 12597
 
 
 @unique
