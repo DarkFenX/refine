@@ -417,7 +417,10 @@ def test_attr_portal_flag_values_portal(client, consts):
         api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
     # Action
     api_portal = api_fit_main.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.online)
-    # Verification - no bridge without active portal
+    # Verification - no bridge without active portal. Portals are exposed as passive modules, but it
+    # seems they are actually not. When player chooses destination, they are activated for the
+    # duration defined by their default effect. On top of that, portal does not open with portal
+    # module offline, as tested on Singularity on 2026-07-26 with Rorqual and Panther.
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
         jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
     api_fit_jump_stats = api_fit_stats.jump.one()
