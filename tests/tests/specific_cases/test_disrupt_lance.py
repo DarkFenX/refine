@@ -278,45 +278,68 @@ def test_drone(client, consts):
     assert api_mod.affectors.one().attr_id is None
 
 
-def test_range(client, consts):
+def test_range_modified(client, consts):
     eve_affectee_attr_id = client.mk_eve_attr(stackable=True)
-    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
-    eve_dmg_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_radius)
+    eve_range_optimal_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_range)
+    eve_range_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.doomsday_dmg_radius)
     eve_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.radius)
+    eve_mod_attr_id = client.mk_eve_attr()
     client.mk_eve_buff(
         id_=consts.EveBuff.remote_repair_impedance,
         aggr_mode=consts.EveBuffAggrMode.min,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.debuff_lance, cat_id=consts.EveEffCat.active)
-    eve_affector_module_id = client.mk_eve_item(
-        attrs={eve_range_attr_id: 100000, eve_dmg_radius_attr_id: 2500},
-        eff_ids=[eve_effect_id],
-        defeff_id=eve_effect_id)
-    eve_affector_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 15000})
-    eve_affectee_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1, eve_radius_attr_id: 8000})
+    eve_lance_effect_id = client.mk_eve_effect(id_=consts.EveEffect.debuff_lance, cat_id=consts.EveEffCat.active)
+    eve_lance_id = client.mk_eve_item(
+        attrs={eve_range_optimal_attr_id: 100000, eve_range_radius_attr_id: 2500},
+        eff_ids=[eve_lance_effect_id],
+        defeff_id=eve_lance_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_radius_attr_id: 15000})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_affectee_attr_id: 1, eve_radius_attr_id: 8000})
+    eve_optimal_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_range_optimal_attr_id)
+    eve_optimal_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_optimal_mod])
+    eve_optimal_rig = client.mk_eve_item(attrs={eve_mod_attr_id: -50}, eff_ids=[eve_optimal_effect_id])
+    eve_radius_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.loc,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_attr_id,
+        affectee_attr_id=eve_range_radius_attr_id)
+    eve_radius_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.passive, mod_info=[eve_radius_mod])
+    eve_radius_rig = client.mk_eve_item(attrs={eve_mod_attr_id: 100}, eff_ids=[eve_radius_effect_id])
     client.create_sources()
     api_sol = client.create_sol()
-    api_affector_fit = api_sol.create_fit()
-    api_affector_fit.set_ship(type_id=eve_affector_ship_id, coordinates=(0, 0, 0))
-    api_affector_module = api_affector_fit.add_module(
-        type_id=eve_affector_module_id,
-        state=consts.ApiModuleState.active)
-    api_affectee_fit = api_sol.create_fit()
-    api_affectee_ship = api_affectee_fit.set_ship(type_id=eve_affectee_ship_id, coordinates=(0, 0, 0))
-    api_affector_module.change_module(add_proj_item_ids=[api_affectee_ship.id])
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
+    api_lance = api_src_fit.add_module(type_id=eve_lance_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 0, 0))
+    api_lance.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - target within attacking ship radius still affected by the beam. Tested on
     # Singularity on 2026-07-26 by relative-warping Karura onto bookmark in the center of a frig and
     # DD'ing
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
+    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
     # Action
-    api_affectee_ship.change_ship(coordinates=(0, 125499, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 125499, 0))
     # Verification - within surface-to-surface range of optimal + damage radius. Damage radius is
     # added to beam range, most likely like a semi-sphere. Tested on Singularity on 2026-07-26 by
     # putting target at ~102400 meters surface-to-surface range, and then moving target out of
     # damage range while DD is still firing
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
+    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
     # Action
-    api_affectee_ship.change_ship(coordinates=(0, 125501, 0))
+    api_tgt_ship.change_ship(coordinates=(0, 125501, 0))
     # Verification - slightly out range
-    assert api_affectee_ship.update().attrs[eve_affectee_attr_id].modified == approx(1)
+    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(1)
+    # Action
+    api_src_fit.add_rig(type_id=eve_radius_rig)
+    # Verification - now in range thanks to increased beam radius
+    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(0.5)
+    # Action
+    api_src_fit.add_rig(type_id=eve_optimal_rig)
+    # Verification - out of range due to decreased main/optimal range
+    assert api_tgt_ship.update().attrs[eve_affectee_attr_id].modified == approx(1)
