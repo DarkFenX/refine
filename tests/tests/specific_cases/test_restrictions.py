@@ -11,6 +11,39 @@ def make_cloak(*, client, consts):
     return client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
 
 
+def make_assistive_module(*, client, consts):
+    eve_range_attr_id = client.mk_eve_attr()
+    eve_assist_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        is_assistance=True,
+        range_attr_id=eve_range_attr_id)
+    return client.mk_eve_item(
+        attrs={eve_range_attr_id: 10000},
+        eff_ids=[eve_assist_effect_id],
+        defeff_id=eve_assist_effect_id)
+
+
+def make_offensive_module(*, client, consts):
+    eve_mod_src_attr_id = client.mk_eve_attr()
+    eve_mod_tgt_attr_id = client.mk_eve_attr()
+    eve_range_attr_id = client.mk_eve_attr()
+    eve_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.tgt,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_mod_src_attr_id,
+        affectee_attr_id=eve_mod_tgt_attr_id)
+    eve_offense_effect_id = client.mk_eve_effect(
+        cat_id=consts.EveEffCat.target,
+        is_offensive=True,
+        range_attr_id=eve_range_attr_id,
+        mod_info=[eve_mod])
+    return client.mk_eve_item(
+        attrs={eve_mod_src_attr_id: -50, eve_range_attr_id: 10000},
+        eff_ids=[eve_offense_effect_id],
+        defeff_id=eve_offense_effect_id)
+
+
 def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False):
     eve_warp_scram_attr_id = client.mk_eve_attr(id_=consts.EveAttr.siege_mod_warp_status)
     eve_warp_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
@@ -18,6 +51,8 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
     eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
     eve_docking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
     eve_drive_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     client.mk_eve_buff(
         id_=consts.EveBuff.warp_penalty,
         aggr_mode=consts.EveBuffAggrMode.max,
@@ -50,6 +85,8 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
         attrs={eve_warp_scram_attr_id: 100, eve_tether_attr_id: 1, eve_docking_attr_id: 1})
     eve_ship_id = client.mk_eve_ship()
     eve_cloak_id = make_cloak(client=client, consts=consts)
+    eve_assist_id = make_assistive_module(client=client, consts=consts)
+    eve_offense_id = make_offensive_module(client=client, consts=consts)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -76,6 +113,12 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(type_id=eve_assist_id, state=consts.ApiModuleState.active, proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(type_id=eve_offense_id, state=consts.ApiModuleState.active, proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True, offense_immunity=True)).passed is True
 
 
 def test_dd_direct_amarr(client, consts):
