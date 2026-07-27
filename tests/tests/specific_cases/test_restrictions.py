@@ -14,6 +14,7 @@ from fw.api import ItemStatsOptions, ValOptions
 @dataclass(kw_only=True)
 class EveBasics:
     # Attrs
+    warp_status_attr_id: int
     warp_scram_attr_id: int
     tether_attr_id: int
     docking_attr_id: int
@@ -98,6 +99,7 @@ def setup_basics(*, client, consts) -> EveBasics:
         eve_buff1_attr_id: eve_warp_buff_id, eve_buff2_attr_id: eve_dock_jump_buff_id,
         eve_buff3_attr_id: eve_tether_buff_id, eve_buff4_attr_id: eve_cloak_buff_id})
     return EveBasics(
+        warp_status_attr_id=eve_warp_status_attr_id,
         warp_scram_attr_id=eve_warp_scram_attr_id,
         tether_attr_id=eve_tether_attr_id,
         docking_attr_id=eve_docking_attr_id,
@@ -154,7 +156,8 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_ship.id])
     # Verification
-    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True, offense_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
 
 
 def test_dd_direct(client, consts):
@@ -385,7 +388,8 @@ def test_phenom(client, consts):
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_ship.id])
     # Verification
-    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True, offense_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
 
 
 def test_burst_projector(client, consts):
@@ -454,4 +458,92 @@ def test_burst_projector(client, consts):
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_ship.id])
     # Verification
-    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True, offense_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_nsa(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Hel.
+
+    Prevented actions/interactions:
+    + warp (external factors)
+    - jump gate
+    ? jump wormhole (ship size message is shown regardless)
+    + jump drive (external factors)
+    + dock station (message is changed to external factors)
+    + dock citadel (external factors)
+    + tether
+    + cloak (special)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    # NSA has multiple modifiers, but only 3 of those are relevant
+    eve_warp_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.warp_scram_attr_id,
+        affectee_attr_id=eve_basics.warp_status_attr_id)
+    eve_dock_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.docking_attr_id,
+        affectee_attr_id=eve_basics.docking_attr_id)
+    eve_tether_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.tether_attr_id,
+        affectee_attr_id=eve_basics.tether_attr_id)
+    eve_nsa_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_networked_sensor_array,
+        cat_id=consts.EveEffCat.active,
+        mod_info=[eve_warp_mod, eve_dock_mod, eve_tether_mod])
+    eve_nsa_id = client.mk_eve_item(
+        attrs={eve_basics.warp_scram_attr_id: 100, eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+        eff_ids=[eve_nsa_effect_id],
+        defeff_id=eve_nsa_effect_id)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_nsa_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True

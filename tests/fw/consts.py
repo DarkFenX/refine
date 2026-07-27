@@ -157,6 +157,7 @@ class EveEffect(IntEnum):
     ftr_abil_launch_bomb = 6485
     doomsday_aoe_ecm = 6513
     ftr_abil_kamikaze = 6554
+    mod_bonus_networked_sensor_array = 6567
     ship_mod_ancillary_remote_armor_repairer = 6651
     ship_mod_ancillary_remote_shield_booster = 6652
     struct_mod_effect_ecm = 6685
