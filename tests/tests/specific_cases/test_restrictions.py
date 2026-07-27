@@ -1,6 +1,9 @@
 """
 This module contains tests for various mobility restrictions imposed by various item (either when
 used by a fit, or applied onto certain items).
+
+Results of testing are put as comments into specific tests. Most results mention type of error
+message received, since it can be useful to figure out what's going on under the hood.
 """
 
 from dataclasses import dataclass
@@ -154,43 +157,187 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True, offense_immunity=True)).passed is True
 
 
-def test_dd_direct_amarr(client, consts):
+def test_dd_direct(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Leviathan and kinetic direct DD. Rapid firing was
+    trained, so cycle time was 240 and 252 (different for different tests). The target was a
+    freighter released by the same pilot, so using DD did not yield any aggro timers, but
+    restrictions were applied regardless.
+
+    Using DD applies following self-(de)buffs:
+    - Warp Disabled/Warp penalty, 30s
+    - Cloak Disruption/Disallow Cloak, 5m
+    - Unable to Tether/Tether blocked, 5m
+
+    Prevented actions/interactions:
+    + warp (external factors, 30s)
+    + jump gate (special, 5m)
+    ? jump wormhole (ship size message is shown regardless)
+    + jump drive (external factors, 30s; special, 5m)
+    + dock station (external factors, 5m)
+    + dock citadel (external factors, 5m)
+    + tether (5m)
+    + cloak (special, 5m)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_amarr, is_targeted=True)
 
 
-def test_dd_direct_caldari(client, consts):
-    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_caldari, is_targeted=True)
-
-
-def test_dd_direct_gallente(client, consts):
-    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_gallente, is_targeted=True)
-
-
-def test_dd_direct_minmatar(client, consts):
-    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_minmatar, is_targeted=True)
-
-
 def test_dd_lance(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Leviathan and kinetic lance DD. Using lance refreshes
+    1m aggro over whole duration of DD cycle duration. Rapid firing was trained, so cycle time was
+    240 and 252 (different for different tests).
+
+    Using DD applies following self-(de)buffs:
+    - Warp Disabled/Warp penalty, 30s
+    - Cloak Disruption/Disallow Cloak, 5m
+    - Unable to Tether/Tether blocked, 5m
+
+    Prevented actions/interactions:
+    + warp (external factors, 30s)
+    + jump gate (special, 5m; aggro for duration + 1m)
+    ? jump wormhole (ship size message is shown regardless)
+    + jump drive (external factors, 30s; special, 5m)
+    + dock station (external factors, 5m)
+    + dock citadel (external factors, 5m)
+    + tether (5m)
+    + cloak (special, 5m)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_beam_dot)
 
 
 def test_dd_reaper(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Leviathan and kinetic reaper DD. Using reaper
+    refreshes 1m aggro over whole duration of DD cycle duration. Rapid firing was trained, so cycle
+    time was 240 and 252 (different for different tests).
+
+    Using DD applies following self-(de)buffs:
+    - Warp Disabled/Warp penalty, 30s
+    - Cloak Disruption/Disallow Cloak, 5m
+    - Unable to Tether/Tether blocked, 5m
+
+    Prevented actions/interactions:
+    + warp (external factors, 30s)
+    + jump gate (special, 5m; aggro for duration + 1m)
+    ? jump wormhole (ship size message is shown regardless)
+    + jump drive (external factors, 30s; special, 5m)
+    + dock station (external factors, 5m)
+    + dock citadel (external factors, 5m)
+    + tether (5m)
+    + cloak (special, 5m)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_slash)
 
 
 def test_dd_bosonic(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Leviathan and bosonic DD. Using bosonic refreshes
+    1m aggro over whole duration of DD cycle duration. Rapid firing was trained, so cycle time was
+    240 and 252 (different for different tests).
+
+    Using DD applies following self-(de)buffs:
+    - Warp Disabled/Warp penalty, 30s
+    - Cloak Disruption/Disallow Cloak, 5m
+    - Unable to Tether/Tether blocked, 5m
+
+    Prevented actions/interactions:
+    + warp (external factors, 30s)
+    + jump gate (special, 5m; aggro for duration + 1m)
+    ? jump wormhole (ship size message is shown regardless)
+    + jump drive (external factors, 30s; special, 5m)
+    + dock station (external factors, 5m)
+    + dock citadel (external factors, 5m)
+    + tether (5m)
+    + cloak (special, 5m)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_cone_dot)
 
 
 def test_dd_gtfo(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Leviathan and GTFO DD. No aggro notes recorded for
+    this specific test.
+
+    Using DD applies following self-(de)buffs:
+    - Warp Disabled/Warp penalty, 30s
+    - Cloak Disruption/Disallow Cloak, 5m
+    - Unable to Tether/Tether blocked, 5m
+
+    Prevented actions/interactions:
+    + warp (external factors, 30s)
+    + jump gate (special, 5m; aggro for duration + 1m)
+    ? jump wormhole (ship size message is shown regardless)
+    + jump drive (external factors, 30s; special, 5m)
+    + dock station (external factors, 5m)
+    + dock citadel (external factors, 5m)
+    + tether (5m)
+    + cloak (special, 5m)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_hog)
 
 
 def test_dd_debuff_lance(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Karura and kinetic debuff-lance DD. Using lance
+    refreshes 1m aggro over whole duration of DD cycle duration. To separate effects of debuff lance
+    from effects of siege, lance was used when siege cycle was about to end.
+
+    Using DD applies following self-(de)buffs:
+    - Warp Disabled/Warp penalty, 30s
+    - Cloak Disruption/Disallow Cloak, 2m
+    - Unable to Tether/Tether blocked, 2m
+
+    Prevented actions/interactions:
+    + warp (external factors)
+    + jump gate (special, 2m; aggro for duration + 1m)
+    - jump wormhole
+    + jump drive (external factors 30s, custom "you can't jump now" until 2m)
+    + dock station (external factors 2m, then aggro msg)
+    + dock citadel (external factors 2m, then aggro msg)
+    + tether (at least because it's aggro over whole duration + 1m)
+    + cloak (special, for full cycle duration) - standard for cloak
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.debuff_lance)
 
 
 def test_phenom(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Leviathan and caldari phenom. Using phenom applies 1m
+    aggro timer upon use, but then does not refresh it. It seems like a special mechanic, the effect
+    itself is not marked as offensive. All the restrictions seem to be applied by the aggro.
+
+    Prevented actions/interactions:
+    - warp
+    + jump gate (aggro, 1m)
+    ? jump wormhole (ship size message is shown regardless)
+    - jump drive
+    + dock station (aggro, 1m)
+    + dock citadel (aggro, 1m)
+    + tether (aggro, 1m)
+    - cloak
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
     eve_basics = setup_basics(client=client, consts=consts)
     eve_phenom_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_titan_effect_generator,
@@ -206,9 +353,7 @@ def test_phenom(client, consts):
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
     api_fit.add_module(type_id=eve_phenom_id, state=consts.ApiModuleState.active)
-    # Verification - despite being set as non-offensive effect, phenoms give 1 minute long aggro
-    # timer upon activation. Unlike with other modules, aggro is not refreshed over duration of the
-    # module cycle.
+    # Verification
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         can_warp=True,
         can_jump_gate=True,
@@ -227,8 +372,77 @@ def test_phenom(client, consts):
     assert api_ship_stats.can_tether.one() is False
     # Action
     api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
-    # Verification - cloak is not blocked
+    # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True, offense_immunity=True)).passed is True
+
+
+def test_burst_projector(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Hel and various burst projectors: ECM and non-ECM
+    went through full set of checks (ECM is special because it has canCloak=0); for some simpler
+    tests (warp/cloak/jump drive), all of them were tested.
+
+    Prevented actions/interactions:
+    - warp
+    + jump gate (aggro, duration + 1m)
+    ? jump wormhole (ship size message is shown regardless)
+    - jump drive
+    + dock station (aggro would prevent, but ship size message is shown first)
+    + dock citadel (aggro, duration + 1m)
+    + tether
+    + cloak (special)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_phenom_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.doomsday_aoe_neut,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
+    eve_phenom_id = client.mk_eve_item(
+        attrs={eve_basics.docking_attr_id: 1},
+        eff_ids=[eve_phenom_effect_id],
+        defeff_id=eve_phenom_effect_id)
+    eve_ship_id = client.mk_eve_ship()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_phenom_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is True
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
