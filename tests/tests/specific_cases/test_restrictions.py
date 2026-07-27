@@ -3,19 +3,15 @@ This module contains tests for various mobility restrictions imposed by various 
 used by a fit, or applied onto certain items).
 """
 
-from dataclasses import dataclass
-
 from fw.api import ItemStatsOptions, ValOptions
 
 
-@dataclass(kw_only=True)
-class DdDebuffInfo:
-    warp_scram_attr_id: int
-    tether_attr_id: int
-    docking_attr_id: int
+def make_cloak(*, client, consts):
+    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    return client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
 
 
-def make_dd_self_debuffs(*, client, consts) -> DdDebuffInfo:
+def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False):
     eve_warp_scram_attr_id = client.mk_eve_attr(id_=consts.EveAttr.siege_mod_warp_status)
     eve_warp_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
@@ -44,30 +40,16 @@ def make_dd_self_debuffs(*, client, consts) -> DdDebuffInfo:
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_cloak_attr_id)])
-    return DdDebuffInfo(
-        warp_scram_attr_id=eve_warp_scram_attr_id,
-        tether_attr_id=eve_tether_attr_id,
-        docking_attr_id=eve_docking_attr_id)
-
-
-def make_cloak(*, client, consts):
-    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
-    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
-    return eve_cloak_id
-
-
-def test_dd_direct_amarr(client, consts):
-    eve_debuffs = make_dd_self_debuffs(client=client, consts=consts)
-    eve_cloak_id = make_cloak(client=client, consts=consts)
     eve_dd_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.super_weapon_amarr,
-        cat_id=consts.EveEffCat.target,
+        id_=dd_effect_id,
+        cat_id=consts.EveEffCat.target if is_targeted else consts.EveEffCat.active,
         is_offensive=True)
     eve_dd_id = client.mk_eve_item(
         eff_ids=[eve_dd_effect_id],
         defeff_id=eve_dd_effect_id,
-        attrs={eve_debuffs.warp_scram_attr_id: 100, eve_debuffs.tether_attr_id: 1, eve_debuffs.docking_attr_id: 1})
+        attrs={eve_warp_scram_attr_id: 100, eve_tether_attr_id: 1, eve_docking_attr_id: 1})
     eve_ship_id = client.mk_eve_ship()
+    eve_cloak_id = make_cloak(client=client, consts=consts)
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -94,3 +76,39 @@ def test_dd_direct_amarr(client, consts):
     api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+
+
+def test_dd_direct_amarr(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_amarr, is_targeted=True)
+
+
+def test_dd_direct_caldari(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_caldari, is_targeted=True)
+
+
+def test_dd_direct_gallente(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_gallente, is_targeted=True)
+
+
+def test_dd_direct_minmatar(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.super_weapon_minmatar, is_targeted=True)
+
+
+def test_dd_lance(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_beam_dot)
+
+
+def test_dd_reaper(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_slash)
+
+
+def test_dd_bosonic(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_cone_dot)
+
+
+def test_dd_gtfo(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.doomsday_hog)
+
+
+def test_dd_debuff_lance(client, consts):
+    run_dd_test(client=client, consts=consts, dd_effect_id=consts.EveEffect.debuff_lance)

@@ -149,6 +149,7 @@ class EveEffect(IntEnum):
     remote_ecm_falloff = 6470
     doomsday_beam_dot = 6472
     doomsday_cone_dot = 6473
+    doomsday_hog = 6474
     doomsday_aoe_web = 6476
     doomsday_aoe_neut = 6477
     doomsday_aoe_bubble = 6482
