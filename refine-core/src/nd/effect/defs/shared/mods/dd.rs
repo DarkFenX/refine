@@ -33,7 +33,7 @@ pub(in crate::nd::effect::defs) fn make_dd_self_debuffs() -> impl ExactSizeItera
         // debuff which blocks all of that.
         AEffectBuffFull {
             buff_id: ABuffId::DISALLOW_DOCK_JUMP,
-            strength: AEffectModStrength::Hardcoded(AValue::from_f64(1.0)),
+            strength: AEffectModStrength::Attr(AAttrId::DISALLOW_DOCKING),
             duration: AEffectBuffDuration::AttrMs(AAttrId::DOOMSDAY_NO_JUMP_OR_CLOAK_DURATION),
             scope: AEffectBuffScope::Carrier,
         },

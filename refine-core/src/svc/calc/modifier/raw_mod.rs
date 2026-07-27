@@ -155,7 +155,7 @@ impl RawModifier {
         buff_type_attr_rid: Option<RAttrId>,
         buff_str: ModStrength,
     ) -> Option<Self> {
-        if effect.category != AEffectCatId::ACTIVE {
+        if !matches!(effect.category, AEffectCatId::ACTIVE | AEffectCatId::TARGET) {
             return None;
         }
         Some(match buff_scope {

@@ -231,6 +231,7 @@ class EveModOp(IntEnum):
 @unique
 class EveBuff(IntEnum):
     warp_penalty = 4
+    disallow_cloak = 5
     disallow_dock_jump = 6
     panic_shield_recharge_time = 9
     stasis_webification_burst = 27
@@ -380,6 +381,7 @@ class EveAttr(IntEnum):
     crystal_volatility_damage = 784
     crystals_get_damaged = 786
     mass_addition = 796
+    siege_mod_warp_status = 852
     disallow_assistance = 854
     jump_drive_consumption_type = 866
     jump_drive_range = 867
