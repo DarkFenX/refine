@@ -124,6 +124,51 @@ def test_ranges(client, consts):
     assert api_ship_jump_rounding.portals[api_main_portal.id].fuel_use_passengers[api_psg_fit.id] == 93
 
 
+def test_portal_module_state(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_amount)
+    eve_portal_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_open_jump_portal)
+    eve_fuel_id = client.mk_eve_item()
+    eve_portal_id = client.mk_eve_item(attrs={eve_portal_flag_attr_id: 1})
+    eve_main_ship_id = client.mk_eve_ship(
+        attrs={eve_range_attr_id: 5, eve_fuel_type_attr_id: eve_fuel_id, eve_fuel_use_attr_id: 1500})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_main_ship_id)
+    # Verification - no bridge without portal
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    api_fit_jump_stats = api_fit_stats.jump.one()
+    with check_no_field():
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    api_ship_jump_stats = api_ship_stats.jump.one()
+    with check_no_field():
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
+    # Action
+    api_portal = api_fit.add_module(type_id=eve_portal_id, state=consts.ApiModuleState.online)
+    # Verification - no bridge without active portal. Portals are exposed as passive modules, but it
+    # seems they are actually not. When player chooses destination, they are activated for the
+    # duration defined by their default effect. On top of that, portal does not open with portal
+    # module offline, as tested on Singularity on 2026-07-26 with Rorqual and Panther.
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    api_fit_jump_stats = api_fit_stats.jump.one()
+    with check_no_field():
+        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    api_ship_jump_stats = api_ship_stats.jump.one()
+    with check_no_field():
+        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
+    # Action
+    api_portal.change_module(state=consts.ApiModuleState.active)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    assert api_fit_stats.jump.one().portals[api_portal.id] is not None
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    assert api_ship_stats.jump.one().portals[api_portal.id] is not None
+
+
 def test_passenger_status(client, consts):
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
@@ -402,37 +447,9 @@ def test_attr_portal_flag_values_portal(client, consts):
     api_sol = client.create_sol()
     api_fit_main = api_sol.create_fit()
     api_ship = api_fit_main.set_ship(type_id=eve_main_ship_id)
+    api_portal = api_fit_main.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.active)
     api_fit_psg = api_sol.create_fit()
     api_fit_psg.set_ship(type_id=eve_psg_ship_id)
-    # Verification - no bridge without portal
-    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
-    api_fit_jump_stats = api_fit_stats.jump.one()
-    with check_no_field():
-        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
-    api_ship_jump_stats = api_ship_stats.jump.one()
-    with check_no_field():
-        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
-    # Action
-    api_portal = api_fit_main.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.online)
-    # Verification - no bridge without active portal. Portals are exposed as passive modules, but it
-    # seems they are actually not. When player chooses destination, they are activated for the
-    # duration defined by their default effect. On top of that, portal does not open with portal
-    # module offline, as tested on Singularity on 2026-07-26 with Rorqual and Panther.
-    api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
-        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
-    api_fit_jump_stats = api_fit_stats.jump.one()
-    with check_no_field():
-        api_fit_jump_stats.portals  # ruff:ignore[useless-expression]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
-        jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))
-    api_ship_jump_stats = api_ship_stats.jump.one()
-    with check_no_field():
-        api_ship_jump_stats.portals  # ruff:ignore[useless-expression]
-    # Action
-    api_portal.change_module(state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit_main.get_stats(options=FitStatsOptions(
         jump=[StatsOptionJump(passenger_fit_ids=[api_fit_psg.id])]))

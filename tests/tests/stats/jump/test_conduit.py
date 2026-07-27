@@ -66,6 +66,55 @@ def test_ranges(client, consts):
     assert api_ship_jump_rounding.conduit.fuel_use_self == 3000
 
 
+def test_portal_module_state(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_conduit_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_perform_conduit_jump)
+    eve_conduit_count_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_passenger_count)
+    eve_conduit_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.conduit_jump_drive_consumption_amount)
+    eve_fuel_id = client.mk_eve_item()
+    eve_portal_id = client.mk_eve_item(attrs={eve_conduit_flag_attr_id: 1})
+    eve_ship_id = client.mk_eve_ship(attrs={
+        eve_range_attr_id: 5,
+        eve_fuel_type_attr_id: eve_fuel_id,
+        eve_conduit_fuel_use_attr_id: 3000,
+        eve_conduit_count_attr_id: 30})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    # Verification - no conduit without portal
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    api_fit_jump_stats = api_fit_stats.jump.one()
+    with check_no_field():
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    api_ship_jump_stats = api_ship_stats.jump.one()
+    with check_no_field():
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
+    # Action
+    api_portal = api_fit.add_module(type_id=eve_portal_id, state=consts.ApiModuleState.offline)
+    # Verification - portal needs to be at least online to make conduit work. Tested on Singularity
+    # on 2026-07-26 with Rorqual and Panther
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    api_fit_jump_stats = api_fit_stats.jump.one()
+    with check_no_field():
+        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    api_ship_jump_stats = api_ship_stats.jump.one()
+    with check_no_field():
+        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
+    # Action
+    api_portal.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
+    assert api_fit_stats.jump.one().conduit.max_passengers == 30
+    assert api_fit_stats.jump.one().conduit.fuel_use_self == 15000
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
+    assert api_ship_stats.jump.one().conduit.max_passengers == 30
+    assert api_ship_stats.jump.one().conduit.fuel_use_self == 15000
+
+
 def test_passenger_status(client, consts):
     eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
     eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
@@ -285,28 +334,7 @@ def test_attr_conduit_flag_values_portal(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    # Verification - no conduit without portal
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
-    api_fit_jump_stats = api_fit_stats.jump.one()
-    with check_no_field():
-        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
-    api_ship_jump_stats = api_ship_stats.jump.one()
-    with check_no_field():
-        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
-    # Action
-    api_portal = api_fit.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.offline)
-    # Verification - portal needs to be at least online to make conduit work
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
-    api_fit_jump_stats = api_fit_stats.jump.one()
-    with check_no_field():
-        api_fit_jump_stats.conduit  # ruff:ignore[useless-expression]
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(jump=True))
-    api_ship_jump_stats = api_ship_stats.jump.one()
-    with check_no_field():
-        api_ship_jump_stats.conduit  # ruff:ignore[useless-expression]
-    # Action
-    api_portal.change_module(state=consts.ApiModuleState.online)
+    api_portal = api_fit.add_module(type_id=eve_portal1_id, state=consts.ApiModuleState.online)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(jump=True))
     assert api_fit_stats.jump.one().conduit.max_passengers == 30
