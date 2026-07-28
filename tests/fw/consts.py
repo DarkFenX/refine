@@ -119,6 +119,7 @@ class EveEffect(IntEnum):
     super_weapon_caldari = 4490
     super_weapon_gallente = 4491
     super_weapon_minmatar = 4492
+    industrial_core_effect2 = 4575
     max_range_hidden_preass_warp_scramble_range = 4894
     micro_jump_drive = 4921
     adaptive_armor_hardener = 4928
@@ -179,6 +180,7 @@ class EveEffect(IntEnum):
     weather_darkness = 7060
     ship_mod_remote_armor_mutadaptive_repairer = 7166
     chain_lightning = 8037
+    industrial_compact_core_effect2 = 8119
     debuff_lance = 11691
     micro_jump_portal_drive_capital = 12126
     dot_missile_launching = 12174
