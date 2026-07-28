@@ -671,6 +671,96 @@ def test_isa(client, consts):
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
 
 
+def test_clone_bay(client, consts):
+    """
+    Tested on Singularity on 2026-06-15 and 2026-07-26, using Rorqual and clone vat bay.
+
+    Prevented actions/interactions:
+    + warp (external factors, full duration)
+    - jump gate
+    - jump wormhole
+    + jump drive (external factors, full duration)
+    - dock station
+    + dock citadel (external factors, full duration)
+    - tether
+    + cloak (special but generic - one or more module is making this ship unable to cloak)
+    + regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_speed_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_basics.speed_factor_attr_id,
+        affectee_attr_id=eve_basics.speed_attr_id)
+    eve_warp_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.warp_scram_attr_id,
+        affectee_attr_id=eve_basics.warp_status_attr_id)
+    eve_cloak_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_basics.can_cloak_attr_id,
+        affectee_attr_id=eve_basics.can_cloak_attr_id)
+    eve_clone_bay_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.clone_jump_accepting,
+        cat_id=consts.EveEffCat.active,
+        mod_info=[eve_speed_mod, eve_warp_mod, eve_cloak_mod])
+    eve_clone_bay_id = client.mk_eve_item(
+        attrs={
+            eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
+            eve_basics.can_cloak_attr_id: 0},
+        eff_ids=[eve_clone_bay_effect_id],
+        defeff_id=eve_clone_bay_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_clone_bay_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(0)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is True
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
 def test_siege_dread(client, consts):
     """
     Tested on Singularity on 2026-06-15 and 2026-07-26, using Revelation with t2 siege module.

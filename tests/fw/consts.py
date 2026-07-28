@@ -110,6 +110,7 @@ class EveEffect(IntEnum):
     rig_slot = 2663
     mining_clouds = 2726
     cynosural_generation = 2857
+    clone_jump_accepting = 2858
     bomb_launching = 2971
     overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380
