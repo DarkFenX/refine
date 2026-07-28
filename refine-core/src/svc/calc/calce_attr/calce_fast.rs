@@ -69,7 +69,7 @@ impl Calc {
             Ok(full) => Some(full.extra),
             Err(error) => match error {
                 GetOAttrError::ItemNotLoaded(_) => None,
-                GetOAttrError::NoAttr(_) => Some(fallback),
+                GetOAttrError::NoAttr => Some(fallback),
             },
         }
     }
@@ -118,8 +118,28 @@ impl Calc {
             Ok(full) => Some(full.extra),
             Err(error) => match error {
                 GetOAttrError::ItemNotLoaded(_) => None,
-                GetOAttrError::NoAttr(_) => Some(fallback),
+                GetOAttrError::NoAttr => Some(fallback),
             },
+        }
+    }
+    // - Modifiers are filtered
+    // - Optional attribute
+    // - Fallback for all cases
+    // - Extra value
+    pub(crate) fn get_item_oattr_ffb_extra_filtered<F>(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        mod_filter: F,
+        fallback: Value,
+    ) -> Value
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
+        match self.get_item_oattr_rfull_filtered(ctx, item_uid, attr_rid, mod_filter) {
+            Ok(full) => full.extra,
+            Err(_) => fallback,
         }
     }
 }
@@ -129,26 +149,6 @@ impl Calc {
 ////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
     // TODO: make code below less duplicated
-    // Gets value with custom filter, but does not use cache (has to recalculate on every request)
-    pub(crate) fn get_item_oattr_ofull_filtered<F>(
-        &mut self,
-        ctx: SvcCtx,
-        item_uid: UItemId,
-        attr_rid: Option<RAttrId>,
-        mod_filter: F,
-    ) -> Option<CalcAttrVals>
-    where
-        F: Fn(&EffectSpec) -> bool,
-    {
-        let attr_rid = attr_rid?;
-        // Fetching item data also ensures item is loaded
-        let postproc = self.attrs.get_item_attr_data(item_uid)?.get_postproc(attr_rid);
-        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, mod_filter);
-        if let Some(postproc) = postproc {
-            cval = postproc.fast(self, ctx, item_uid, cval);
-        }
-        Some(cval)
-    }
     pub(crate) fn get_item_attr_rfull(
         &mut self,
         ctx: SvcCtx,
@@ -183,7 +183,7 @@ impl Calc {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
         let Some(attr_rid) = attr_rid else {
-            return Err(NoAttrError.into());
+            return Err(GetOAttrError::NoAttr);
         };
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
@@ -221,6 +221,28 @@ impl Calc {
             .unwrap()
             .set_value_and_get_postproc(attr_rid, cval);
         Some(cval)
+    }
+    // Gets value with custom filter, but does not use cache (has to recalculate on every request)
+    fn get_item_oattr_rfull_filtered<F>(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        mod_filter: F,
+    ) -> Result<CalcAttrVals, GetOAttrError>
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
+        let Some(attr_rid) = attr_rid else {
+            return Err(GetOAttrError::NoAttr);
+        };
+        // Fetching item data also ensures item is loaded
+        let postproc = self.get_item_data_with_err(item_uid)?.get_postproc(attr_rid);
+        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, mod_filter);
+        if let Some(postproc) = postproc {
+            cval = postproc.fast(self, ctx, item_uid, cval);
+        }
+        Ok(cval)
     }
     pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
@@ -265,15 +287,11 @@ impl Calc {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("no attribute in request")]
-struct NoAttrError;
-
-#[derive(Debug, thiserror::Error)]
 enum GetOAttrError {
     #[error("{0}")]
     ItemNotLoaded(#[from] UItemLoadedError),
-    #[error("{0}")]
-    NoAttr(#[from] NoAttrError),
+    #[error("no attribute in request")]
+    NoAttr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

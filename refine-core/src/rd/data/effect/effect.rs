@@ -35,6 +35,7 @@ pub(crate) struct REffect {
     pub(crate) banned_in_hisec: bool,
     pub(crate) banned_in_lowsec: bool,
     pub(crate) ignore_offmod_immunity: bool,
+    pub(crate) do_not_prevent_tether: bool,
     pub(crate) cloaks_carrier: bool,
     pub(crate) disallows_cloak: bool,
     pub(crate) disallows_warp: bool,
@@ -127,6 +128,7 @@ impl REffect {
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
             ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
+            do_not_prevent_tether: n_effect.map(|n| n.do_not_prevent_tether).unwrap_or(false),
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             disallows_cloak: n_effect
                 .map(|n| n.disallows_cloak.is_some() && state == RState::Active)

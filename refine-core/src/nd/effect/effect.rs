@@ -26,6 +26,7 @@ pub(crate) struct NEffect {
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
+    pub(crate) do_not_prevent_tether: bool = false,
     pub(crate) cloaks_carrier: bool = false,
     pub(crate) disallows_cloak: Option<NEffectDuration> = None,
     pub(crate) disallows_warp: Option<NEffectDuration> = None,

@@ -28,6 +28,7 @@ pub(in crate::nd::effect) mod d26_structure_repair;
 pub(in crate::nd::effect) mod d2726_mining_clouds;
 pub(in crate::nd::effect) mod d27_armor_repair;
 pub(in crate::nd::effect) mod d2857_cynosural_generation;
+pub(in crate::nd::effect) mod d2858_clone_jump_accepting;
 pub(in crate::nd::effect) mod d2971_bomb_launching;
 pub(in crate::nd::effect) mod d3380_warp_disrupt_sphere;
 pub(in crate::nd::effect) mod d34_projectile_fired;
