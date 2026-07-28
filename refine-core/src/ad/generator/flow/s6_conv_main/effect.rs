@@ -1,8 +1,8 @@
 use crate::{
     ad::{
-        AAttrId, ADataGenerator, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectCatId, AEffectId,
-        AEffectLocation, AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects, AItemGrpId,
-        AItemId, AModifierSrq, AOp, AState, generator::get_abil_effect,
+        AAttrId, ADataGenerator, AEffect, AEffectAffecteeFilter, AEffectCatId, AEffectId, AEffectLocation,
+        AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffectWeaponsTimerApplication,
+        AEffects, AItemGrpId, AItemId, AModifierSrq, AOp, AState, generator::get_abil_effect,
     },
     ed::{EAbil, EAttrId, EData, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EItemGrpId, EItemId, EPrimitive},
     util::{RMap, RSet},
@@ -32,8 +32,8 @@ impl ADataGenerator {
                 modifiers: AEffectModifiers::new(),
                 stopped_effect_ids: AEffectStopIds::new(),
                 buff: self.support.eff_buff_map.get(&e_effect.id).cloned(),
-                aggro: match e_effect.is_offensive {
-                    true => Some(AEffectAggroDuration::Effect),
+                weapons_timer: match e_effect.is_offensive {
+                    true => Some(AEffectWeaponsTimerApplication::Effect),
                     false => None,
                 },
                 is_assist: e_effect.is_assistance,

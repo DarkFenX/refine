@@ -547,7 +547,7 @@ impl VastFitData {
         ////////////////////////////////////////////////////////////////////////////////////////////
         // Stats-related - effect-based restrictions
         ////////////////////////////////////////////////////////////////////////////////////////////
-        for espec in self.effects_aggro.iter() {
+        for espec in self.effects_weapons_timer.iter() {
             espec.consistency_check(u_data, true)?;
         }
         for espec in self.mod_effects_disallow_cloak.iter() {

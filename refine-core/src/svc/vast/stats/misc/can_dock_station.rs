@@ -13,11 +13,11 @@ impl Vast {
     ) -> Result<bool, IntItemStatError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Station docking is blocked by either of:
-        // - having any aggro effects active
+        // - having any running effects which give weapons timer
         // - standard dock status attribute (scripted HIC ray)
         // - having any modules with effects which disable docking (cloaks, MJDs)
         let fit_data = self.get_fit_data(ship.get_fit_uid());
-        if !fit_data.effects_aggro.is_empty() {
+        if !fit_data.effects_weapons_timer.is_empty() {
             return Ok(false);
         }
         if !fit_data.mod_effects_disallow_dock.is_empty() {

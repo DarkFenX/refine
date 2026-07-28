@@ -1,7 +1,7 @@
 use crate::{
     ad::{
-        AAttrId, AEffect, AEffectAggroDuration, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration,
-        AEffectBuffScope, AEffectId, AItemListId,
+        AAttrId, AEffect, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId,
+        AEffectWeaponsTimerApplication, AItemListId,
     },
     nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
 };
@@ -28,8 +28,8 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
 }
 
 fn update_effect(a_effect: &mut AEffect, _a_warnings: &mut Vec<String>) {
-    // Phenoms do not keep aggression though whole duration, but apply aggression only on initial
-    // burst. Probably because of that, effect is not marked as offensive, even if aggression is
-    // applied.
-    a_effect.aggro = Some(AEffectAggroDuration::Instant);
+    // Phenoms do not keep refreshing weapons timer though whole cycle duration, but apply it only
+    // on initial burst. Probably because of that, effect is not marked as offensive, even if
+    // weapons timer is applied.
+    a_effect.weapons_timer = Some(AEffectWeaponsTimerApplication::Instant);
 }

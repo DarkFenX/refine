@@ -16,7 +16,7 @@ impl Vast {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
-                    self.handle_aggro_start(effect, item_uid, autocharge.get_fit_uid());
+                    self.handle_weapons_timer_start(effect, item_uid, autocharge.get_fit_uid());
                     if effect.is_active() {
                         self.handle_dmg_start(effect, item_uid, autocharge.get_fit_uid());
                     }
@@ -24,7 +24,7 @@ impl Vast {
             }
             UItem::Charge(charge) => {
                 for effect in effects {
-                    self.handle_aggro_start(effect, item_uid, charge.get_fit_uid());
+                    self.handle_weapons_timer_start(effect, item_uid, charge.get_fit_uid());
                     if effect.is_active() {
                         self.handle_dmg_start(effect, item_uid, charge.get_fit_uid());
                         self.handle_neut_start(attr_consts, effect, item_uid, item, charge.get_fit_uid());
@@ -33,7 +33,7 @@ impl Vast {
             }
             UItem::Drone(drone) => {
                 for effect in effects {
-                    self.handle_aggro_start(effect, item_uid, drone.get_fit_uid());
+                    self.handle_weapons_timer_start(effect, item_uid, drone.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_uid, drone.get_fit_uid());
                         self.handle_mining_start(effect, item_uid, item, drone.get_fit_uid());
@@ -44,7 +44,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
-                    self.handle_aggro_start(effect, item_uid, fighter.get_fit_uid());
+                    self.handle_weapons_timer_start(effect, item_uid, fighter.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_uid, fighter.get_fit_uid());
                         self.handle_orrs_start(effect, item_uid, fighter.get_fit_uid());
@@ -65,7 +65,7 @@ impl Vast {
             }
             UItem::Module(module) => {
                 for effect in effects {
-                    self.handle_aggro_start(effect, item_uid, module.get_fit_uid());
+                    self.handle_weapons_timer_start(effect, item_uid, module.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_start(effect, item_uid, module.get_fit_uid());
                         self.handle_mining_start(effect, item_uid, item, module.get_fit_uid());
@@ -168,7 +168,7 @@ impl Vast {
         match item {
             UItem::Autocharge(autocharge) => {
                 for effect in effects {
-                    self.handle_aggro_stop(effect, item_uid, autocharge.get_fit_uid());
+                    self.handle_weapons_timer_stop(effect, item_uid, autocharge.get_fit_uid());
                     if effect.is_active() {
                         self.handle_dmg_stop(effect, item_uid, autocharge.get_fit_uid());
                     }
@@ -176,7 +176,7 @@ impl Vast {
             }
             UItem::Charge(charge) => {
                 for effect in effects {
-                    self.handle_aggro_stop(effect, item_uid, charge.get_fit_uid());
+                    self.handle_weapons_timer_stop(effect, item_uid, charge.get_fit_uid());
                     if effect.is_active() {
                         self.handle_dmg_stop(effect, item_uid, charge.get_fit_uid());
                         self.handle_neut_stop(attr_consts, effect, item_uid, item, charge.get_fit_uid());
@@ -185,7 +185,7 @@ impl Vast {
             }
             UItem::Drone(drone) => {
                 for effect in effects {
-                    self.handle_aggro_stop(effect, item_uid, drone.get_fit_uid());
+                    self.handle_weapons_timer_stop(effect, item_uid, drone.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_uid, drone.get_fit_uid());
                         self.handle_mining_stop(effect, item_uid, item, drone.get_fit_uid());
@@ -196,7 +196,7 @@ impl Vast {
             }
             UItem::Fighter(fighter) => {
                 for effect in effects {
-                    self.handle_aggro_stop(effect, item_uid, fighter.get_fit_uid());
+                    self.handle_weapons_timer_stop(effect, item_uid, fighter.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_uid, fighter.get_fit_uid());
                         self.handle_orrs_stop(effect, item_uid, fighter.get_fit_uid());
@@ -212,7 +212,7 @@ impl Vast {
             }
             UItem::Module(module) => {
                 for effect in effects {
-                    self.handle_aggro_stop(effect, item_uid, module.get_fit_uid());
+                    self.handle_weapons_timer_stop(effect, item_uid, module.get_fit_uid());
                     if effect.is_active_with_duration {
                         self.handle_dmg_stop(effect, item_uid, module.get_fit_uid());
                         self.handle_mining_stop(effect, item_uid, item, module.get_fit_uid());
@@ -305,16 +305,20 @@ impl Vast {
             _ => (),
         }
     }
-    fn handle_aggro_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: UFitId) {
-        if effect.aggro {
+    fn handle_weapons_timer_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: UFitId) {
+        if effect.weapons_timer {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.effects_aggro.insert(EffectSpec::new(item_uid, effect.rid));
+            fit_data
+                .effects_weapons_timer
+                .insert(EffectSpec::new(item_uid, effect.rid));
         }
     }
-    fn handle_aggro_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: UFitId) {
-        if effect.aggro {
+    fn handle_weapons_timer_stop(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: UFitId) {
+        if effect.weapons_timer {
             let fit_data = self.get_fit_data_mut(fit_uid);
-            fit_data.effects_aggro.remove(&EffectSpec::new(item_uid, effect.rid));
+            fit_data
+                .effects_weapons_timer
+                .remove(&EffectSpec::new(item_uid, effect.rid));
         }
     }
     fn handle_dmg_start(&mut self, effect: &REffect, item_uid: UItemId, fit_uid: UFitId) {

@@ -2,7 +2,7 @@ pub use affectee_filter::AEffectAffecteeFilter;
 pub use buff::{AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope};
 pub use cat_id::AEffectCatId;
 pub use container::AEffects;
-pub use duration::AEffectAggroDuration;
+pub use duration::AEffectWeaponsTimerApplication;
 pub use effect::AEffect;
 pub use id::{ACustomEffectId, ADogmaEffectId, AEffectId};
 pub use location::AEffectLocation;

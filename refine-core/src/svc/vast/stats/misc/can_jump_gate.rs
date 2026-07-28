@@ -13,13 +13,13 @@ impl Vast {
     ) -> Result<bool, IntItemStatError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Gating is blocked by either of:
-        // - having aggro modules active
+        // - having any running effects which give weapons timer
         // - standard gate scram status attribute (scripted HIC ray)
         // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
         //   jumps)
         // - having any modules with effects which disable gate jumping
         let fit_data = self.get_fit_data(ship.get_fit_uid());
-        if !fit_data.effects_aggro.is_empty() {
+        if !fit_data.effects_weapons_timer.is_empty() {
             return Ok(false);
         }
         if !fit_data.mod_effects_disallow_jump_gate.is_empty() {

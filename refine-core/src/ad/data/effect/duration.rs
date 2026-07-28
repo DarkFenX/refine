@@ -4,7 +4,9 @@
 )]
 #[repr(u8)]
 #[derive(Copy, Clone)]
-pub enum AEffectAggroDuration {
+pub enum AEffectWeaponsTimerApplication {
+    /// Weapons timer is applied once upon use.
     Instant,
+    /// Weapons timer is refreshed over whole duration of effect cycle.
     Effect,
 }

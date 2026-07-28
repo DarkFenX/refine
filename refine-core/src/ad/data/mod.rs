@@ -6,9 +6,9 @@ pub use buff::{
 };
 pub use data::AData;
 pub use effect::{
-    ACustomEffectId, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectAggroDuration, AEffectBuff,
-    AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId,
-    AEffectLocation, AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffects,
+    ACustomEffectId, ADogmaEffectId, AEffect, AEffectAffecteeFilter, AEffectBuff, AEffectBuffAttrMerge,
+    AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId, AEffectId, AEffectLocation,
+    AEffectModStrength, AEffectModifier, AEffectModifiers, AEffectStopIds, AEffectWeaponsTimerApplication, AEffects,
 };
 pub use item::{
     AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId, AItemEffect, AItemEffectData,

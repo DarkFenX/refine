@@ -13,13 +13,13 @@ impl Vast {
     ) -> Result<bool, IntItemStatError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Tether is blocked by either of:
-        // - having any aggro effects active
+        // - having any running effects which give weapons timer
         // - any released fighters
         // - standard warp scram status attribute
         // - standard tether status attribute
         // - having any modules with effects which disable tethering (cloaks)
         let fit_data = self.get_fit_data(ship.get_fit_uid());
-        if !fit_data.effects_aggro.is_empty() {
+        if !fit_data.effects_weapons_timer.is_empty() {
             return Ok(false);
         }
         if !fit_data.mod_effects_disallow_tether.is_empty() {

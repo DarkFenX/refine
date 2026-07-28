@@ -171,7 +171,7 @@ pub(in crate::svc) struct VastFitData {
     pub(in crate::svc::vast) cap_nosfs: RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
     pub(in crate::svc::vast) cap_injects: RMapRMap<UItemId, REffectId, REffectLocalOpcSpec<NEffectGeneralOutputGetter>>,
     // Stats-related - effect-based restrictions
-    pub(in crate::svc::vast) effects_aggro: RSet<EffectSpec>,
+    pub(in crate::svc::vast) effects_weapons_timer: RSet<EffectSpec>,
     pub(in crate::svc::vast) mod_effects_disallow_cloak: RSet<EffectSpec>,
     pub(in crate::svc::vast) mod_effects_disallow_warp: RSet<EffectSpec>,
     pub(in crate::svc::vast) mod_effects_disallow_jump_gate: RSet<EffectSpec>,
@@ -285,7 +285,7 @@ impl VastFitData {
             cap_consumers: RMapRMap::new(),
             cap_injects: RMapRMap::new(),
             // Stats-related - effect-based restrictions
-            effects_aggro: RSet::new(),
+            effects_weapons_timer: RSet::new(),
             mod_effects_disallow_cloak: RSet::new(),
             mod_effects_disallow_warp: RSet::new(),
             mod_effects_disallow_jump_gate: RSet::new(),

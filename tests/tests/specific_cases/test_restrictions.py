@@ -185,7 +185,7 @@ def test_dd_direct(client, consts):
     """
     Tested on Singularity on 2026-06-15 and 2026-07-26, using Leviathan and kinetic direct DD. Rapid
     firing was trained, so cycle time was 240 and 252 (different for different tests). The target
-    was a freighter released by the same pilot, so using DD did not yield any aggro timers, but
+    was a freighter released by the same pilot, so using DD did not yield any timers, but
     restrictions were applied regardless.
 
     Using DD applies following self-(de)buffs:
@@ -212,7 +212,7 @@ def test_dd_direct(client, consts):
 def test_dd_lance(client, consts):
     """
     Tested on Singularity on 2026-06-15 and 2026-07-26, using Leviathan and kinetic lance DD. Using
-    lance refreshes 1m aggro over whole duration of DD cycle duration. Rapid firing was trained, so
+    lance refreshes 1m weapons timer over whole duration of DD cycle. Rapid firing was trained, so
     cycle time was 240 and 252 (different for different tests).
 
     Using DD applies following self-(de)buffs:
@@ -222,7 +222,7 @@ def test_dd_lance(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors, 30s)
-    + jump gate (special, 5m; aggro for duration + 1m)
+    + jump gate (special, 5m; weapons timer for effect duration + 1m)
     ? jump wormhole (ship size message is shown regardless)
     + jump drive (external factors, 30s; special, 5m)
     + dock station (external factors, 5m)
@@ -239,7 +239,7 @@ def test_dd_lance(client, consts):
 def test_dd_reaper(client, consts):
     """
     Tested on Singularity on 2026-06-15 and 2026-07-26, using Leviathan and kinetic reaper DD. Using
-    reaper refreshes 1m aggro over whole duration of DD cycle duration. Rapid firing was trained, so
+    reaper refreshes 1m weapons timer over whole duration of DD cycle. Rapid firing was trained, so
     cycle time was 240 and 252 (different for different tests).
 
     Using DD applies following self-(de)buffs:
@@ -249,7 +249,7 @@ def test_dd_reaper(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors, 30s)
-    + jump gate (special, 5m; aggro for duration + 1m)
+    + jump gate (special, 5m; weapons timer for effect duration + 1m)
     ? jump wormhole (ship size message is shown regardless)
     + jump drive (external factors, 30s; special, 5m)
     + dock station (external factors, 5m)
@@ -266,8 +266,8 @@ def test_dd_reaper(client, consts):
 def test_dd_bosonic(client, consts):
     """
     Tested on Singularity on 2026-06-15 and 2026-07-26, using Leviathan and bosonic DD. Using
-    bosonic refreshes 1m aggro over whole duration of DD cycle duration. Rapid firing was trained,
-    so cycle time was 240 and 252 (different for different tests).
+    bosonic refreshes 1m weapons timer over whole duration of DD cycle. Rapid firing was trained, so
+    cycle time was 240 and 252 (different for different tests).
 
     Using DD applies following self-(de)buffs:
     - Warp Disabled/Warp penalty, 30s
@@ -276,7 +276,7 @@ def test_dd_bosonic(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors, 30s)
-    + jump gate (special, 5m; aggro for duration + 1m)
+    + jump gate (special, 5m; weapons timer for effect duration + 1m)
     ? jump wormhole (ship size message is shown regardless)
     + jump drive (external factors, 30s; special, 5m)
     + dock station (external factors, 5m)
@@ -292,8 +292,8 @@ def test_dd_bosonic(client, consts):
 
 def test_dd_gtfo(client, consts):
     """
-    Tested on Singularity on 2026-06-15, using Leviathan and GTFO DD. No aggro notes recorded for
-    this specific test.
+    Tested on Singularity on 2026-06-15, using Leviathan and GTFO DD. No weapons timer notes
+    recorded for this specific test.
 
     Using DD applies following self-(de)buffs:
     - Warp Disabled/Warp penalty, 30s
@@ -302,7 +302,7 @@ def test_dd_gtfo(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors, 30s)
-    + jump gate (special, 5m; aggro for duration + 1m)
+    + jump gate (special, 5m; weapons timer for effect duration + 1m)
     ? jump wormhole (ship size message is shown regardless)
     + jump drive (external factors, 30s; special, 5m)
     + dock station (external factors, 5m)
@@ -319,7 +319,7 @@ def test_dd_gtfo(client, consts):
 def test_dd_debuff_lance(client, consts):
     """
     Tested on Singularity on 2026-07-26, using Karura and kinetic debuff-lance DD. Using lance
-    refreshes 1m aggro over whole duration of DD cycle duration. To separate effects of debuff lance
+    refreshes 1m weapons timer over whole duration of DD cycle. To separate effects of debuff lance
     from effects of siege, lance was used when siege cycle was about to end.
 
     Using DD applies following self-(de)buffs:
@@ -329,12 +329,12 @@ def test_dd_debuff_lance(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors)
-    + jump gate (special, 2m; aggro for duration + 1m)
+    + jump gate (special, 2m; weapons timer for effect duration + 1m)
     - jump wormhole
     + jump drive (external factors 30s, custom "you can't jump now" until 2m)
-    + dock station (external factors 2m, then aggro msg)
-    + dock citadel (external factors 2m, then aggro msg)
-    + tether (at least because it's aggro over whole duration + 1m)
+    + dock station (external factors 2m, then weapons timer msg)
+    + dock citadel (external factors 2m, then weapons timer msg)
+    + tether (at least because it's weapons timer over whole effect duration + 1m)
     + cloak (special, for full cycle duration) - standard for cloak
     - regular movement
     - incoming assistance
@@ -346,18 +346,18 @@ def test_dd_debuff_lance(client, consts):
 def test_phenom(client, consts):
     """
     Tested on Singularity on 2026-06-15 and 2026-07-26, using Leviathan and caldari phenom. Using
-    phenom applies 1m aggro timer upon use, but then does not refresh it. It seems like a special
+    phenom applies 1m weapons timer upon use, but then does not refresh it. It seems like a special
     mechanic, the effect itself is not marked as offensive. All the restrictions seem to be applied
-    by the aggro.
+    by the weapons timer.
 
     Prevented actions/interactions:
     - warp
-    + jump gate (aggro, 1m)
+    + jump gate (weapons timer, 1m)
     ? jump wormhole (ship size message is shown regardless)
     - jump drive
-    + dock station (aggro, 1m)
-    + dock citadel (aggro, 1m)
-    + tether (aggro, 1m)
+    + dock station (weapons timer, 1m)
+    + dock citadel (weapons timer, 1m)
+    + tether (weapons timer, 1m)
     - cloak
     - regular movement
     - incoming assistance
@@ -423,11 +423,11 @@ def test_burst_projector(client, consts):
 
     Prevented actions/interactions:
     - warp
-    + jump gate (aggro, duration + 1m)
+    + jump gate (weapons timer, effect duration + 1m)
     ? jump wormhole (ship size message is shown regardless)
     - jump drive
-    + dock station (aggro would prevent, but ship size message is shown first)
-    + dock citadel (aggro, duration + 1m)
+    + dock station (weapons timer would prevent, but ship size message is shown first)
+    + dock citadel (weapons timer, effect duration + 1m)
     + tether
     + cloak (special)
     - regular movement
@@ -1185,7 +1185,7 @@ def test_siege_bastion(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors)
-    + jump gate (aggro, duration + 1m)
+    + jump gate (weapons timer, duration + 1m)
     - jump wormhole
     ? jump drive (no ships with bastion + jump drive, but warp scramble status would disallow it)
     + dock station (external factors)
