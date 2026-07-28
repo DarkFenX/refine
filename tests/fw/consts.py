@@ -109,6 +109,7 @@ class EveEffect(IntEnum):
     self_rof = 1851
     rig_slot = 2663
     mining_clouds = 2726
+    cynosural_generation = 2857
     bomb_launching = 2971
     overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380

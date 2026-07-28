@@ -22,8 +22,9 @@ class EveBasics:
     warp_scram_attr_id: int
     gate_status_attr_id: int
     gate_scram_attr_id: int
-    tether_attr_id: int
-    docking_attr_id: int
+    disallow_tether_attr_id: int
+    disallow_dock_attr_id: int
+    can_cloak_attr_id: int
     # Items
     cloak_t2_id: int
     assist_id: int
@@ -40,12 +41,13 @@ def setup_basics(*, client, consts) -> EveBasics:
     eve_warp_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_gate_scram_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
     eve_gate_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=-1000)
-    eve_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
-    eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
-    eve_docking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    eve_disallow_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
+    eve_disallow_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
+    eve_disallow_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
     eve_drive_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
     client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
+    eve_can_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
     eve_range_attr_id = client.mk_eve_attr()
     # Buffs
     eve_warp_buff_id = client.mk_eve_buff(
@@ -58,18 +60,18 @@ def setup_basics(*, client, consts) -> EveBasics:
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
         item_mods=[
-            client.mk_eve_buff_mod(attr_id=eve_docking_attr_id),
+            client.mk_eve_buff_mod(attr_id=eve_disallow_dock_attr_id),
             client.mk_eve_buff_mod(attr_id=eve_drive_jump_attr_id)])
     eve_tether_buff_id = client.mk_eve_buff(
         id_=consts.EveBuff.disallow_tether,
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_tether_attr_id)])
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_disallow_tether_attr_id)])
     eve_cloak_buff_id = client.mk_eve_buff(
         id_=consts.EveBuff.disallow_cloak,
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.mod_add,
-        item_mods=[client.mk_eve_buff_mod(attr_id=eve_cloak_attr_id)])
+        item_mods=[client.mk_eve_buff_mod(attr_id=eve_disallow_cloak_attr_id)])
     # Cloak
     eve_cloak_t2_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
     eve_cloak_t2_id = client.mk_eve_item(eff_ids=[eve_cloak_t2_effect_id], defeff_id=eve_cloak_t2_effect_id)
@@ -115,8 +117,9 @@ def setup_basics(*, client, consts) -> EveBasics:
         warp_scram_attr_id=eve_warp_scram_attr_id,
         gate_status_attr_id=eve_gate_status_attr_id,
         gate_scram_attr_id=eve_gate_scram_attr_id,
-        tether_attr_id=eve_tether_attr_id,
-        docking_attr_id=eve_docking_attr_id,
+        disallow_tether_attr_id=eve_disallow_tether_attr_id,
+        disallow_dock_attr_id=eve_disallow_dock_attr_id,
+        can_cloak_attr_id=eve_can_cloak_attr_id,
         cloak_t2_id=eve_cloak_t2_id,
         assist_id=eve_assist_id,
         offense_id=eve_offense_id)
@@ -129,7 +132,9 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
         cat_id=consts.EveEffCat.target if is_targeted else consts.EveEffCat.active,
         is_offensive=True)
     eve_dd_id = client.mk_eve_item(
-        attrs={eve_basics.warp_scram_attr_id: 100, eve_basics.tether_attr_id: 1, eve_basics.docking_attr_id: 1},
+        attrs={
+            eve_basics.warp_scram_attr_id: 100,
+            eve_basics.disallow_tether_attr_id: 1, eve_basics.disallow_dock_attr_id: 1},
         eff_ids=[eve_dd_effect_id],
         defeff_id=eve_dd_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -361,10 +366,9 @@ def test_phenom(client, consts):
     eve_basics = setup_basics(client=client, consts=consts)
     eve_phenom_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_titan_effect_generator,
-        cat_id=consts.EveEffCat.active,
-        is_offensive=False)
+        cat_id=consts.EveEffCat.active)
     eve_phenom_id = client.mk_eve_item(
-        attrs={eve_basics.tether_attr_id: 1, eve_basics.docking_attr_id: 1},
+        attrs={eve_basics.disallow_tether_attr_id: 1, eve_basics.disallow_dock_attr_id: 1},
         eff_ids=[eve_phenom_effect_id],
         defeff_id=eve_phenom_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -436,7 +440,7 @@ def test_burst_projector(client, consts):
         cat_id=consts.EveEffCat.active,
         is_offensive=True)
     eve_phenom_id = client.mk_eve_item(
-        attrs={eve_basics.docking_attr_id: 1},
+        attrs={eve_basics.disallow_dock_attr_id: 1},
         eff_ids=[eve_phenom_effect_id],
         defeff_id=eve_phenom_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -512,20 +516,22 @@ def test_nsa(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_nsa_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_networked_sensor_array,
         cat_id=consts.EveEffCat.active,
         mod_info=[eve_warp_mod, eve_dock_mod, eve_tether_mod])
     eve_nsa_id = client.mk_eve_item(
-        attrs={eve_basics.warp_scram_attr_id: 100, eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+        attrs={
+            eve_basics.warp_scram_attr_id: 100,
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_nsa_effect_id],
         defeff_id=eve_nsa_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -603,20 +609,22 @@ def test_isa(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_nsa_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_integrated_sensor_array,
         cat_id=consts.EveEffCat.active,
         mod_info=[eve_warp_mod, eve_dock_mod, eve_tether_mod])
     eve_nsa_id = client.mk_eve_item(
-        attrs={eve_basics.warp_scram_attr_id: 100, eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+        attrs={
+            eve_basics.warp_scram_attr_id: 100,
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_nsa_effect_id],
         defeff_id=eve_nsa_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -679,7 +687,7 @@ def test_siege_dread(client, consts):
     +- regular movement (via dogma modifier, sarathiel reduces penalty to -90%)
     +- incoming assistance (stops reps/cap transfers due to resistances, lets RSBs/RTCs run)
     - incoming offensive mods
-    - MJD (sarathiel, not tested here)
+    - MJD (Sarathiel, not tested here)
     """
     eve_basics = setup_basics(client=client, consts=consts)
     # Siege has many modifiers, but only 5 of those are relevant
@@ -705,14 +713,14 @@ def test_siege_dread(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_siege_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_siege,
         cat_id=consts.EveEffCat.active,
@@ -720,7 +728,7 @@ def test_siege_dread(client, consts):
     eve_siege_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_siege_effect_id],
         defeff_id=eve_siege_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -809,14 +817,14 @@ def test_siege_fax(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_triage_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_triage_mod,
         cat_id=consts.EveEffCat.active,
@@ -824,7 +832,7 @@ def test_siege_fax(client, consts):
     eve_triage_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_triage_effect_id],
         defeff_id=eve_triage_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -913,14 +921,14 @@ def test_siege_industrial_cap(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_industrial_core_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.industrial_core_effect2,
         cat_id=consts.EveEffCat.active,
@@ -928,7 +936,7 @@ def test_siege_industrial_cap(client, consts):
     eve_industrial_core_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_industrial_core_effect_id],
         defeff_id=eve_industrial_core_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
@@ -1018,14 +1026,14 @@ def test_siege_industrial_subcap(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_industrial_core_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.industrial_compact_core_effect2,
         cat_id=consts.EveEffCat.active,
@@ -1033,7 +1041,7 @@ def test_siege_industrial_subcap(client, consts):
     eve_industrial_core_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_industrial_core_effect_id],
         defeff_id=eve_industrial_core_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
@@ -1116,14 +1124,14 @@ def test_siege_bastion(client, consts):
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.docking_attr_id,
-        affectee_attr_id=eve_basics.docking_attr_id)
+        affector_attr_id=eve_basics.disallow_dock_attr_id,
+        affectee_attr_id=eve_basics.disallow_dock_attr_id)
     eve_tether_mod = client.mk_eve_effect_mod(
         func=consts.EveModFunc.item,
         loc=consts.EveModLoc.ship,
         op=consts.EveModOp.mod_add,
-        affector_attr_id=eve_basics.tether_attr_id,
-        affectee_attr_id=eve_basics.tether_attr_id)
+        affector_attr_id=eve_basics.disallow_tether_attr_id,
+        affectee_attr_id=eve_basics.disallow_tether_attr_id)
     eve_bastion_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.mod_bonus_siege,
         cat_id=consts.EveEffCat.active,
@@ -1132,7 +1140,7 @@ def test_siege_bastion(client, consts):
     eve_bastion_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_bastion_effect_id],
         defeff_id=eve_bastion_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
@@ -1328,6 +1336,297 @@ def test_cloak_covops(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_cyno(client, consts):
+    """
+    Tested on Singularity on 2026-06-15 and 2026-07-26, using Panther and covops cyno.
+
+    Prevented actions/interactions:
+    + warp (external factors)
+    + jump gate (special, about jump drive)
+    + jump wormhole (special)
+    + jump drive (external factors)
+    + dock station (special)
+    + dock citadel (special)
+    + tether
+    + cloak (special but generic - one or more module is making this ship unable to cloak)
+    + regular movement
+    - incoming assistance
+    - incoming offensive mods
+    + MJD (not tested here, likely blocked by 0 max speed)
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_speed_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_basics.speed_factor_attr_id,
+        affectee_attr_id=eve_basics.speed_attr_id)
+    eve_warp_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.warp_scram_attr_id,
+        affectee_attr_id=eve_basics.warp_status_attr_id)
+    eve_cloak_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_assign,
+        affector_attr_id=eve_basics.can_cloak_attr_id,
+        affectee_attr_id=eve_basics.can_cloak_attr_id)
+    eve_cyno_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.cynosural_generation,
+        cat_id=consts.EveEffCat.active,
+        mod_info=[eve_speed_mod, eve_warp_mod, eve_cloak_mod])
+    eve_cyno_id = client.mk_eve_item(
+        attrs={
+            eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
+            eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1,
+            eve_basics.can_cloak_attr_id: 0},
+        eff_ids=[eve_cyno_effect_id],
+        defeff_id=eve_cyno_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_cyno_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(0)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_mjd(client, consts):
+    """
+    Tested on Tranquility sometime in May 2026, using Occator and t1 medium MJD, and on Singularity
+    on 2026-06-15 using Nidhoggur and t1 capital MJD.
+
+    Prevented actions/interactions:
+    + warp
+    + jump gate
+    + jump wormhole
+    + jump drive
+    + dock station
+    + dock citadel
+    - tether
+    + cloak
+    + regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_mjd_effect_id = client.mk_eve_effect(id_=consts.EveEffect.micro_jump_drive, cat_id=consts.EveEffCat.active)
+    eve_mjd_id = client.mk_eve_item(eff_ids=[eve_mjd_effect_id], defeff_id=eve_mjd_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_mjd_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is True
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_mjfg_cap(client, consts):
+    """
+    Tested on Singularity on 2026-06-15 using Nidhoggur and t1 capital MJFG.
+
+    Prevented actions/interactions:
+    + warp
+    + jump gate
+    + jump wormhole
+    + jump drive
+    + dock station
+    + dock citadel
+    + tether
+    + cloak
+    + regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_mjfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.micro_jump_portal_drive_capital,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
+    eve_mjfg_id = client.mk_eve_item(eff_ids=[eve_mjfg_effect_id], defeff_id=eve_mjfg_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_mjfg_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_mjfg_subcap(client, consts):
+    """
+    Tested on Singularity on 2026-06-15 using Bifrost and t1 subcap MJFG.
+
+    Prevented actions/interactions:
+    + warp
+    + jump gate
+    + jump wormhole
+    + jump drive
+    + dock station
+    + dock citadel
+    + tether
+    + cloak
+    + regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_mjfg_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.micro_jump_portal_drive,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True)
+    eve_mjfg_id = client.mk_eve_item(eff_ids=[eve_mjfg_effect_id], defeff_id=eve_mjfg_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_mjfg_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
