@@ -25,7 +25,7 @@ class EveBasics:
     tether_attr_id: int
     docking_attr_id: int
     # Items
-    cloak_id: int
+    cloak_t2_id: int
     assist_id: int
     offense_id: int
 
@@ -38,8 +38,8 @@ def setup_basics(*, client, consts) -> EveBasics:
     eve_speed_factor_attr_id = client.mk_eve_attr(id_=consts.EveAttr.speed_factor)
     eve_warp_scram_attr_id = client.mk_eve_attr(id_=consts.EveAttr.siege_mod_warp_status)
     eve_warp_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
-    eve_gate_scram_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength)
-    eve_gate_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status)
+    eve_gate_scram_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_strength, def_val=1)
+    eve_gate_status_attr_id = client.mk_eve_attr(id_=consts.EveAttr.gate_scramble_status, def_val=-1000)
     eve_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
     eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
     eve_docking_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
@@ -71,8 +71,8 @@ def setup_basics(*, client, consts) -> EveBasics:
         op=consts.EveBuffOp.mod_add,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_cloak_attr_id)])
     # Cloak
-    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
-    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
+    eve_cloak_t2_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_t2_id = client.mk_eve_item(eff_ids=[eve_cloak_t2_effect_id], defeff_id=eve_cloak_t2_effect_id)
     # Assistive module
     eve_assist_effect_id = client.mk_eve_effect(
         cat_id=consts.EveEffCat.target,
@@ -117,7 +117,7 @@ def setup_basics(*, client, consts) -> EveBasics:
         gate_scram_attr_id=eve_gate_scram_attr_id,
         tether_attr_id=eve_tether_attr_id,
         docking_attr_id=eve_docking_attr_id,
-        cloak_id=eve_cloak_id,
+        cloak_t2_id=eve_cloak_t2_id,
         assist_id=eve_assist_id,
         offense_id=eve_offense_id)
 
@@ -158,7 +158,7 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -393,7 +393,7 @@ def test_phenom(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     # Action
@@ -465,7 +465,7 @@ def test_burst_projector(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -554,7 +554,7 @@ def test_nsa(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -645,7 +645,7 @@ def test_isa(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -720,7 +720,6 @@ def test_siege_dread(client, consts):
     eve_siege_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.gate_scram_attr_id: 100,
             eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
         eff_ids=[eve_siege_effect_id],
         defeff_id=eve_siege_effect_id)
@@ -750,7 +749,7 @@ def test_siege_dread(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -818,23 +817,22 @@ def test_siege_fax(client, consts):
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_basics.tether_attr_id,
         affectee_attr_id=eve_basics.tether_attr_id)
-    eve_siege_effect_id = client.mk_eve_effect(
-        id_=consts.EveEffect.mod_bonus_siege,
+    eve_triage_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_triage_mod,
         cat_id=consts.EveEffCat.active,
         mod_info=[eve_speed_mod, eve_warp_mod, eve_gate_mod, eve_dock_mod, eve_tether_mod])
-    eve_siege_id = client.mk_eve_item(
+    eve_triage_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.gate_scram_attr_id: 100,
             eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
-        eff_ids=[eve_siege_effect_id],
-        defeff_id=eve_siege_effect_id)
+        eff_ids=[eve_triage_effect_id],
+        defeff_id=eve_triage_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_siege_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_triage_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         speed=True,
@@ -855,7 +853,7 @@ def test_siege_fax(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -923,23 +921,22 @@ def test_siege_industrial_cap(client, consts):
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_basics.tether_attr_id,
         affectee_attr_id=eve_basics.tether_attr_id)
-    eve_siege_effect_id = client.mk_eve_effect(
+    eve_industrial_core_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.industrial_core_effect2,
         cat_id=consts.EveEffCat.active,
         mod_info=[eve_speed_mod, eve_warp_mod, eve_gate_mod, eve_dock_mod, eve_tether_mod])
-    eve_siege_id = client.mk_eve_item(
+    eve_industrial_core_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.gate_scram_attr_id: 100,
             eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
-        eff_ids=[eve_siege_effect_id],
-        defeff_id=eve_siege_effect_id)
+        eff_ids=[eve_industrial_core_effect_id],
+        defeff_id=eve_industrial_core_effect_id)
     eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_siege_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_industrial_core_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         speed=True,
@@ -960,7 +957,7 @@ def test_siege_industrial_cap(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -986,7 +983,7 @@ def test_siege_industrial_subcap(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors)
-    + jump gate (custom - gate scramble does not work because of lower gate status on subcaps)
+    + jump gate (custom - gate scramble does not work because of lower gate scram status on subcaps)
     + jump wormhole (special)
     + jump drive (external factors)
     + dock station (did not record which message)
@@ -1029,23 +1026,22 @@ def test_siege_industrial_subcap(client, consts):
         op=consts.EveModOp.mod_add,
         affector_attr_id=eve_basics.tether_attr_id,
         affectee_attr_id=eve_basics.tether_attr_id)
-    eve_siege_effect_id = client.mk_eve_effect(
+    eve_industrial_core_effect_id = client.mk_eve_effect(
         id_=consts.EveEffect.industrial_compact_core_effect2,
         cat_id=consts.EveEffCat.active,
         mod_info=[eve_speed_mod, eve_warp_mod, eve_gate_mod, eve_dock_mod, eve_tether_mod])
-    eve_siege_id = client.mk_eve_item(
+    eve_industrial_core_id = client.mk_eve_item(
         attrs={
             eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
-            eve_basics.gate_scram_attr_id: 100,
             eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
-        eff_ids=[eve_siege_effect_id],
-        defeff_id=eve_siege_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: -1000})
+        eff_ids=[eve_industrial_core_effect_id],
+        defeff_id=eve_industrial_core_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_fit.add_module(type_id=eve_siege_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_industrial_core_id, state=consts.ApiModuleState.active)
     # Verification
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
         speed=True,
@@ -1066,7 +1062,7 @@ def test_siege_industrial_subcap(client, consts):
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
     # Action
-    api_fit.add_module(type_id=eve_basics.cloak_id, state=consts.ApiModuleState.active)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
     # Verification
     assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
@@ -1081,5 +1077,267 @@ def test_siege_industrial_subcap(client, consts):
         proj_item_ids=[api_ship.id])
     # Verification - assistance and some offense is prevented via specific resistances, which is not
     # tested here
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_siege_bastion(client, consts):
+    """
+    Tested on Singularity on 2026-06-15 and 2026-07-26, using Paladin with t1 bastion module.
+
+    Prevented actions/interactions:
+    + warp (external factors)
+    + jump gate (aggro, duration + 1m)
+    - jump wormhole
+    ? jump drive (no ships with bastion + jump drive, but warp scramble status would disallow it)
+    + dock station (external factors)
+    + dock citadel (external factors)
+    + tether
+    + cloak (special)
+    + regular movement  +- incoming assistance (stops reps/cap transfers due to resistances, lets RSBs/RTCs run)
+    - incoming offensive mods
+    + MJD (not tested here, likely blocked by 0 max speed)
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    # Siege has many modifiers, but only 4 of those are relevant
+    eve_speed_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_basics.speed_factor_attr_id,
+        affectee_attr_id=eve_basics.speed_attr_id)
+    eve_warp_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.warp_scram_attr_id,
+        affectee_attr_id=eve_basics.warp_status_attr_id)
+    eve_dock_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.docking_attr_id,
+        affectee_attr_id=eve_basics.docking_attr_id)
+    eve_tether_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.tether_attr_id,
+        affectee_attr_id=eve_basics.tether_attr_id)
+    eve_bastion_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_siege,
+        cat_id=consts.EveEffCat.active,
+        is_offensive=True,
+        mod_info=[eve_speed_mod, eve_warp_mod, eve_dock_mod, eve_tether_mod])
+    eve_bastion_id = client.mk_eve_item(
+        attrs={
+            eve_basics.speed_factor_attr_id: -100, eve_basics.warp_scram_attr_id: 100,
+            eve_basics.docking_attr_id: 1, eve_basics.tether_attr_id: 1},
+        eff_ids=[eve_bastion_effect_id],
+        defeff_id=eve_bastion_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_bastion_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(0)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification - assistance and some offense is prevented via specific resistances, which is not
+    # tested here
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_cloak_t1(client, consts):
+    """
+    Not tested, assumed to be the same as t2.
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking_prototype, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_cloak_t2(client, consts):
+    """
+    Tested on Singularity on 2026-06-15, using Panther with t2 non-covops cloak.
+
+    Prevented actions/interactions:
+    + warp
+    + jump gate
+    + jump wormhole
+    + jump drive
+    + dock station
+    + dock citadel
+    + tether
+    - regular movement
+    ? disallow assistance (can't target)
+    ? disallow offensive mods (can't target)
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_cloak_covops(client, consts):
+    """
+    Tested on Singularity on 2026-06-15, using Purifier with t2 covops cloak.
+
+    Prevented actions/interactions:
+    + warp
+    + jump gate
+    + jump wormhole
+    ? jump drive (no covops-capable ships with jump drive, but likely blocked like on non-covops)
+    + dock station
+    + dock citadel
+    + tether
+    - regular movement
+    ? disallow assistance (can't target)
+    ? disallow offensive mods (can't target)
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking_warp_safe, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_cloak_effect_id], defeff_id=eve_cloak_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is True
+    assert api_ship_stats.can_jump_gate.one() is False
+    assert api_ship_stats.can_jump_wormhole.one() is False
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is False
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
