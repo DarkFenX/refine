@@ -24,7 +24,10 @@ impl ItemAttrData {
     pub(in crate::svc::calc) fn len(&self) -> usize {
         self.data.len()
     }
-    pub(in crate::svc::calc) fn set_value_and_get_pp(
+    pub(in crate::svc::calc) fn get_postproc(&self, attr_rid: RAttrId) -> Option<ItemAttrPostproc> {
+        self.data.get(&attr_rid)?.postproc
+    }
+    pub(in crate::svc::calc) fn set_value_and_get_postproc(
         &mut self,
         attr_rid: RAttrId,
         value: CalcAttrVals,

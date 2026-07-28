@@ -2,22 +2,22 @@ use std::collections::hash_map::Entry;
 
 use super::calce_shared::get_base_attr_value;
 use crate::{
-    misc::SecZone,
-    num::Value,
+    SecZone, Value,
+    misc::EffectSpec,
     rd::{RAttr, RAttrId},
     svc::{
-        SvcCtx,
-        calc::{Calc, CalcAttrVals, CalcModification, CalcModificationKey, ModAccumFast},
+        Calc, SvcCtx,
+        calc::{CalcAttrVals, CalcModification, CalcModificationKey, ModAccumFast},
         err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
     util::RMap,
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Thin wrappers around core query methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Thin wrappers around core query methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
     // - Extra value as an option
     pub(in crate::svc) fn get_item_attr_odogma(
         &mut self,
@@ -122,10 +122,33 @@ impl Calc {
             },
         }
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Core query methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////
+// Core query methods
+////////////////////////////////////////////////////////////////////////////////////////////////
+impl Calc {
     // TODO: make code below less duplicated
+    // Gets value with custom filter, but does not use cache (has to recalculate on every request)
+    pub(crate) fn get_item_oattr_ofull_filtered<F>(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: Option<RAttrId>,
+        mod_filter: F,
+    ) -> Option<CalcAttrVals>
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
+        let attr_rid = attr_rid?;
+        // Fetching item data also ensures item is loaded
+        let postproc = self.attrs.get_item_attr_data(item_uid)?.get_postproc(attr_rid);
+        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, mod_filter);
+        if let Some(postproc) = postproc {
+            cval = postproc.fast(self, ctx, item_uid, cval);
+        }
+        Some(cval)
+    }
     pub(crate) fn get_item_attr_rfull(
         &mut self,
         ctx: SvcCtx,
@@ -144,9 +167,9 @@ impl Calc {
             return Ok(cval);
         }
         // If it is not cached, calculate and cache it
-        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
+        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
         let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
-        if let Some(postproc) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
+        if let Some(postproc) = item_attr_data.set_value_and_get_postproc(attr_rid, cval) {
             cval = postproc.fast(self, ctx, item_uid, cval);
         }
         Ok(cval)
@@ -160,7 +183,7 @@ impl Calc {
         // Try accessing cached value
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
         let Some(attr_rid) = attr_rid else {
-            return Err(NoAttrError {}.into());
+            return Err(NoAttrError.into());
         };
         if let Some(attr_entry) = item_attr_data.get(&attr_rid)
             && let Some(cval) = attr_entry.value
@@ -172,9 +195,9 @@ impl Calc {
             return Ok(cval);
         }
         // If it is not cached, calculate and cache it
-        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
+        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
         let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
-        if let Some(postproc) = item_attr_data.set_value_and_get_pp(attr_rid, cval) {
+        if let Some(postproc) = item_attr_data.set_value_and_get_postproc(attr_rid, cval) {
             cval = postproc.fast(self, ctx, item_uid, cval);
         }
         Ok(cval)
@@ -192,11 +215,11 @@ impl Calc {
         {
             return Some(cval);
         }
-        let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid);
+        let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
         self.attrs
             .get_item_attr_data_mut(item_uid)
             .unwrap()
-            .set_value_and_get_pp(attr_rid, cval);
+            .set_value_and_get_postproc(attr_rid, cval);
         Some(cval)
     }
     pub(in crate::svc) fn iter_item_attrs_rfull(
@@ -239,22 +262,44 @@ impl Calc {
         }
         Ok(cval_map.into_iter())
     }
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    // Private methods
-    ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn iter_modifications(
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error("no attribute in request")]
+struct NoAttrError;
+
+#[derive(Debug, thiserror::Error)]
+enum GetOAttrError {
+    #[error("{0}")]
+    ItemNotLoaded(#[from] UItemLoadedError),
+    #[error("{0}")]
+    NoAttr(#[from] NoAttrError),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Calc {
+    fn iter_modifications<F>(
         &mut self,
         ctx: SvcCtx,
         item_uid: &UItemId,
         item: &UItem,
         attr_rid: RAttrId,
-    ) -> impl Iterator<Item = CalcModification> {
+        filter: F,
+    ) -> impl Iterator<Item = CalcModification>
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
         let mut mods = RMap::new();
         for cmod in self
             .std
             .get_mods_for_affectee(item_uid, item, attr_rid, &ctx.u_data.fits)
             .iter()
         {
+            if !filter(&cmod.raw.affector_espec) {
+                continue;
+            }
             let Some(val) = cmod.raw.get_mod_val(self, ctx) else {
                 continue;
             };
@@ -273,12 +318,21 @@ impl Calc {
         }
         mods.into_values()
     }
-    fn calc_item_attr_val(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> CalcAttrVals {
+    fn calc_item_attr_val<F>(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+        mod_filter: F,
+    ) -> CalcAttrVals
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
         let item = ctx.u_data.items.get(item_uid);
         let attr = ctx.u_data.r_data.get_attr_by_rid(attr_rid);
         let base_val = self.calc_item_base_attr_value(ctx, item_uid, item, attr);
         let mut accumulator = ModAccumFast::new();
-        for modification in self.iter_modifications(ctx, &item_uid, item, attr_rid) {
+        for modification in self.iter_modifications(ctx, &item_uid, item, attr_rid, mod_filter) {
             accumulator.add_val(
                 modification.val,
                 modification.op,
@@ -339,16 +393,4 @@ impl Calc {
         }
         get_base_attr_value(item, attr)
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-#[error("no attribute in request")]
-struct NoAttrError;
-
-#[derive(Debug, thiserror::Error)]
-enum GetOAttrError {
-    #[error("{0}")]
-    ItemNotLoaded(#[from] UItemLoadedError),
-    #[error("{0}")]
-    NoAttr(#[from] NoAttrError),
 }
