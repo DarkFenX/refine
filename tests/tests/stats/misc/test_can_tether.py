@@ -110,31 +110,32 @@ def test_ship_aggro(client, consts):
     assert api_ship_stats.can_tether.one() is True
 
 
-def test_ship_released_minion(client, consts):
+def test_ship_released_drone(client, consts):
     eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
     eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_drone_id = client.mk_eve_drone()
+    eve_ship_id = client.mk_eve_ship(attrs={eve_tether_attr_id: 0, eve_warp_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_space)
+    # Verification - released drones are not breaking tether
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
+    assert api_fit_stats.can_tether.one() is True
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
+    assert api_ship_stats.can_tether.one() is True
+
+
+def test_ship_released_fighter(client, consts):
+    eve_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
+    eve_warp_attr_id = client.mk_eve_attr(id_=consts.EveAttr.warp_scramble_status)
     eve_fighter_id = client.mk_eve_fighter()
     eve_ship_id = client.mk_eve_ship(attrs={eve_tether_attr_id: 0, eve_warp_attr_id: 0})
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.in_bay)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether.one() is True
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether.one() is True
-    # Action
-    api_drone.change_drone(state=consts.ApiMinionState.in_space)
-    # Verification
-    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
-    assert api_fit_stats.can_tether.one() is False
-    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))
-    assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_drone.remove()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.in_bay)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
@@ -143,7 +144,7 @@ def test_ship_released_minion(client, consts):
     assert api_ship_stats.can_tether.one() is True
     # Action
     api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
-    # Verification
+    # Verification - released fighters are breaking tether
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(can_tether=True))
     assert api_fit_stats.can_tether.one() is False
     api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(can_tether=True))

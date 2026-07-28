@@ -200,7 +200,7 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Tether is blocked by either of:
         // - having any aggro effects active
-        // - any drones or fighters being outside
+        // - any released fighters
         // - standard warp scram status attribute
         // - standard tether status attribute
         // - having any modules with effects which disable tethering (cloaks)
@@ -211,7 +211,7 @@ impl Vast {
         if !fit_data.mod_effects_disallow_tether.is_empty() {
             return Ok(false);
         }
-        if fit_data.get_launched_drone_count() > Count::ZERO || fit_data.get_launched_fighter_count() > Count::ZERO {
+        if fit_data.get_launched_fighter_count() > Count::ZERO {
             return Ok(false);
         }
         let warp_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_scramble_status, Value::ZERO);
