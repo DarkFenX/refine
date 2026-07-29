@@ -1,8 +1,8 @@
 use crate::{
     ItemId, PValue,
-    misc::EffectSpec,
-    rd::{RAttrId, REffectResist},
-    svc::{Calc, SvcCtx, funcs::is_attr_flag_set, vast::VastFitData},
+    misc::{AttrSpec, EffectSpec},
+    rd::REffectResist,
+    svc::{Calc, SvcCtx, funcs::is_oattr_flag_set, vast::VastFitData},
     ud::UItemId,
     util::{RMap, RMapRSet, RSet},
 };
@@ -31,7 +31,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(kfs, ctx, calc, &self.blockable_assistance, ctx.ac().disallow_assistance)
+        validate_fast(kfs, ctx, calc, &self.blockable_assistance, is_assist_blocked)
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_fast(
         &self,
@@ -39,13 +39,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(
-            kfs,
-            ctx,
-            calc,
-            &self.blockable_offense,
-            ctx.ac().disallow_offensive_modifiers,
-        )
+        validate_fast(kfs, ctx, calc, &self.blockable_offense, is_offense_blocked)
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_fast(
         &self,
@@ -53,19 +47,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        for (projectee_aspec, mut projector_especs) in self.resist_immunity.iter() {
-            if REffectResist::get_mult_by_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO) {
-                match kfs.is_empty() {
-                    true => return false,
-                    false => {
-                        if !projector_especs.all(|v| kfs.contains(&v.item_uid)) {
-                            return false;
-                        }
-                    }
-                }
-            }
-        }
-        true
+        validate_fast(kfs, ctx, calc, &self.resist_immunity, is_resist_blocked)
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_assist_immunity_verbose(
@@ -74,7 +56,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        validate_verbose(kfs, ctx, calc, &self.blockable_assistance, ctx.ac().disallow_assistance)
+        validate_verbose(kfs, ctx, calc, &self.blockable_assistance, is_assist_blocked)
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
         &self,
@@ -82,13 +64,7 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        validate_verbose(
-            kfs,
-            ctx,
-            calc,
-            &self.blockable_offense,
-            ctx.ac().disallow_offensive_modifiers,
-        )
+        validate_verbose(kfs, ctx, calc, &self.blockable_offense, is_offense_blocked)
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
         &self,
@@ -96,49 +72,23 @@ impl VastFitData {
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        let mut items = RMap::new();
-        for (projectee_aspec, projector_especs) in self.resist_immunity.iter() {
-            if REffectResist::get_mult_by_aspec(ctx, calc, projectee_aspec) == Some(PValue::ZERO) {
-                let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_aspec.item_uid);
-                for projector_espec in projector_especs {
-                    if kfs.contains(&projector_espec.item_uid) {
-                        continue;
-                    }
-                    let projector_item_id = ctx.u_data.items.ext_id_by_int_id(projector_espec.item_uid);
-                    items
-                        .entry(projector_item_id)
-                        .or_insert_with(RSet::new)
-                        .insert(projectee_item_id);
-                }
-            }
-        }
-        match items.is_empty() {
-            true => None,
-            false => Some(ValProjImmunityFail {
-                items: items
-                    .into_iter()
-                    .map(|(projector_item_id, projectee_item_ids)| ValProjImmunityItemInfo {
-                        item_id: projector_item_id,
-                        projectee_item_ids: projectee_item_ids.into_iter().collect(),
-                    })
-                    .collect(),
-            }),
-        }
+        validate_verbose(kfs, ctx, calc, &self.resist_immunity, is_resist_blocked)
     }
 }
 
-fn validate_fast(
+fn validate_fast<F, P>(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    blockable: &RMapRSet<UItemId, EffectSpec>,
-    attr_rid: Option<RAttrId>,
-) -> bool {
-    let Some(attr_rid) = attr_rid else {
-        return true;
-    };
-    for (&projectee_uid, mut projector_especs) in blockable.iter() {
-        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) {
+    blockable: &RMapRSet<P, EffectSpec>,
+    is_blocked: F,
+) -> bool
+where
+    P: Copy + Eq + std::hash::Hash,
+    F: Fn(SvcCtx, &mut Calc, P) -> bool,
+{
+    for (&projectee_data, mut projector_especs) in blockable.iter() {
+        if is_blocked(ctx, calc, projectee_data) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -152,18 +102,21 @@ fn validate_fast(
     true
 }
 
-fn validate_verbose(
+fn validate_verbose<F, P>(
     kfs: &RSet<UItemId>,
     ctx: SvcCtx,
     calc: &mut Calc,
-    blockable: &RMapRSet<UItemId, EffectSpec>,
-    attr_rid: Option<RAttrId>,
-) -> Option<ValProjImmunityFail> {
-    let attr_rid = attr_rid?;
+    blockable: &RMapRSet<P, EffectSpec>,
+    is_blocked: F,
+) -> Option<ValProjImmunityFail>
+where
+    P: Copy + Eq + std::hash::Hash + GetItemUid,
+    F: Fn(SvcCtx, &mut Calc, P) -> bool,
+{
     let mut items = RMap::new();
-    for (&projectee_uid, projector_especs) in blockable.iter() {
-        if is_attr_flag_set(ctx, calc, projectee_uid, attr_rid).unwrap_or(false) && projector_especs.len() > 0 {
-            let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_uid);
+    for (&projectee_data, projector_especs) in blockable.iter() {
+        if is_blocked(ctx, calc, projectee_data) {
+            let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_data.get_item_uid());
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_uid) {
                     continue;
@@ -187,6 +140,32 @@ fn validate_verbose(
                 })
                 .collect(),
         }),
+    }
+}
+
+fn is_assist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId) -> bool {
+    is_oattr_flag_set(ctx, calc, projectee_uid, ctx.ac().disallow_assistance).unwrap_or(false)
+}
+
+fn is_offense_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId) -> bool {
+    is_oattr_flag_set(ctx, calc, projectee_uid, ctx.ac().disallow_offensive_modifiers).unwrap_or(false)
+}
+
+fn is_resist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_aspec: AttrSpec) -> bool {
+    REffectResist::get_mult_by_aspec(ctx, calc, &projectee_aspec) == Some(PValue::ZERO)
+}
+
+trait GetItemUid {
+    fn get_item_uid(&self) -> UItemId;
+}
+impl GetItemUid for UItemId {
+    fn get_item_uid(&self) -> UItemId {
+        *self
+    }
+}
+impl GetItemUid for AttrSpec {
+    fn get_item_uid(&self) -> UItemId {
+        self.item_uid
     }
 }
 
