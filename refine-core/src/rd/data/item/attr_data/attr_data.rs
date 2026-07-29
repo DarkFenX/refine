@@ -59,7 +59,7 @@ pub(crate) struct RItemAttrData {
     pub(crate) entity_mwd: bool, // Used to differentiate between single/dual-prop drones
     pub(crate) jump_fuel_type_id: Option<AItemId>,
     pub(crate) enables_conduit: bool,
-    pub(crate) enables_portal: bool,
+    pub(crate) enables_portal: bool, // Used by bridge modules
     // Derived data - module cycle flags
     pub(crate) specs_reactivation_delay: bool,
     pub(crate) specs_disallow_repeats: bool,

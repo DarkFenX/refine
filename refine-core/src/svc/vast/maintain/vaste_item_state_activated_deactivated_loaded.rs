@@ -205,7 +205,9 @@ impl Vast {
                         fit_data
                             .mods_svcs_max_group_online_all
                             .remove_entry(item_grp_aid, item_uid);
-                        fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
+                        if module_riad.max_group_online_limited {
+                            fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
+                        }
                     }
                     if module_riad.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
@@ -226,7 +228,9 @@ impl Vast {
                         fit_data
                             .mods_svcs_max_group_online_all
                             .remove_entry(item_grp_aid, item_uid);
-                        fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
+                        if service_riad.max_group_online_limited {
+                            fit_data.mods_svcs_max_group_online_limited.remove(item_uid);
+                        }
                     }
                     if service_riad.online_max_sec_class.is_some() {
                         fit_data.sec_zone_online_class.remove(item_uid);
