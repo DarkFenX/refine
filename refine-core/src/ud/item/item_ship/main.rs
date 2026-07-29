@@ -6,7 +6,7 @@ use crate::{
         UFitId,
         item::{UEffectUpdates, UItemBase, UPhysics, UShipKind, bool_to_state_offline, state_to_bool},
     },
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -36,22 +36,6 @@ impl UShip {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::Ship
-    }
-}
-impl LibNamed for UShip {
-    fn lib_get_name() -> &'static str {
-        "UShip"
-    }
-}
-impl std::fmt::Display for UShip {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

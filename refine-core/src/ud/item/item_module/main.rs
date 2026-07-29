@@ -8,7 +8,7 @@ use crate::{
         err::ItemMutatedError,
         item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UProjs},
     },
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -48,22 +48,6 @@ impl UModule {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::Module
-    }
-}
-impl LibNamed for UModule {
-    fn lib_get_name() -> &'static str {
-        "UModule"
-    }
-}
-impl std::fmt::Display for UModule {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

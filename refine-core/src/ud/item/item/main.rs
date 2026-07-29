@@ -54,27 +54,6 @@ impl UItem {
             Self::SwEffect(_) => USwEffect::get_item_kind(),
         }
     }
-    pub(crate) fn lib_get_name(&self) -> &'static str {
-        match self {
-            Self::Autocharge(_) => UAutocharge::lib_get_name(),
-            Self::Booster(_) => UBooster::lib_get_name(),
-            Self::Character(_) => UCharacter::lib_get_name(),
-            Self::Charge(_) => UCharge::lib_get_name(),
-            Self::Drone(_) => UDrone::lib_get_name(),
-            Self::Fighter(_) => UFighter::lib_get_name(),
-            Self::FwEffect(_) => UFwEffect::lib_get_name(),
-            Self::Implant(_) => UImplant::lib_get_name(),
-            Self::Module(_) => UModule::lib_get_name(),
-            Self::ProjEffect(_) => UProjEffect::lib_get_name(),
-            Self::Rig(_) => URig::lib_get_name(),
-            Self::Service(_) => UService::lib_get_name(),
-            Self::Ship(_) => UShip::lib_get_name(),
-            Self::Skill(_) => USkill::lib_get_name(),
-            Self::Stance(_) => UStance::lib_get_name(),
-            Self::Subsystem(_) => USubsystem::lib_get_name(),
-            Self::SwEffect(_) => USwEffect::lib_get_name(),
-        }
-    }
 }
 impl LibNamed for UItem {
     fn lib_get_name() -> &'static str {

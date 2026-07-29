@@ -6,7 +6,7 @@ use crate::{
         UFitId,
         item::{UEffectUpdates, UItemBase},
     },
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -29,22 +29,6 @@ impl UService {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::Service
-    }
-}
-impl LibNamed for UService {
-    fn lib_get_name() -> &'static str {
-        "UService"
-    }
-}
-impl std::fmt::Display for UService {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

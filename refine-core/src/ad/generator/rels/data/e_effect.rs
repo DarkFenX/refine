@@ -64,7 +64,7 @@ impl Fk for EEffect {
     }
 }
 impl EEffect {
-    fn get_fks_from_mod_args(&self, field: &'static str) -> Vec<KeyPart> {
+    fn get_fks_from_mod_args(&self, field: &str) -> Vec<KeyPart> {
         let mut fks = Vec::new();
         for e_modifier in self.mods.iter() {
             for e_mod_arg in e_modifier.args.iter() {

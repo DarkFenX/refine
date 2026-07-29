@@ -6,7 +6,7 @@ use crate::{
         UFitId, UItemId,
         item::{UEffectUpdates, UItemBase, UProjs},
     },
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -39,22 +39,6 @@ impl UCharge {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::Charge
-    }
-}
-impl LibNamed for UCharge {
-    fn lib_get_name() -> &'static str {
-        "UCharge"
-    }
-}
-impl std::fmt::Display for UCharge {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

@@ -9,7 +9,7 @@ use crate::{
         err::ItemMutatedError,
         item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UPhysics, UProjs},
     },
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -40,22 +40,6 @@ impl UDrone {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::Drone
-    }
-}
-impl LibNamed for UDrone {
-    fn lib_get_name() -> &'static str {
-        "UDrone"
-    }
-}
-impl std::fmt::Display for UDrone {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

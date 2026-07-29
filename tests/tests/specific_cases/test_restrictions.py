@@ -1351,7 +1351,7 @@ def test_siege_bastion(client, consts):
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
 
 
-def test_bridge_titan_rorqual(client, consts):
+def test_bridge_regular(client, consts):
     """
     Titan and rorqual bridges share the same effect, so they are unified into a single test.
 

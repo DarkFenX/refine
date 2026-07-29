@@ -6,7 +6,7 @@ use crate::{
         UFitId,
         item::{UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
     },
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -23,22 +23,6 @@ impl UStance {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::Stance
-    }
-}
-impl LibNamed for UStance {
-    fn lib_get_name() -> &'static str {
-        "UStance"
-    }
-}
-impl std::fmt::Display for UStance {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 

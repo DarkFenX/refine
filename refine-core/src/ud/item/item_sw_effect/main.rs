@@ -3,7 +3,7 @@ use crate::{
     ad::{AEffectId, AItemId},
     rd::{RData, REffectId, RItemAttrData, RItemBase, RState},
     ud::item::{UEffectUpdates, UItemBase, bool_to_state_active, state_to_bool},
-    util::{LibNamed, RSet},
+    util::RSet,
 };
 
 #[derive(Clone)]
@@ -18,22 +18,6 @@ impl USwEffect {
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
         ItemKind::SwEffect
-    }
-}
-impl LibNamed for USwEffect {
-    fn lib_get_name() -> &'static str {
-        "USwEffect"
-    }
-}
-impl std::fmt::Display for USwEffect {
-    fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(
-            f,
-            "{}(item_id={}, type_id={})",
-            Self::lib_get_name(),
-            self.get_item_id(),
-            self.get_type_aid(),
-        )
     }
 }
 
