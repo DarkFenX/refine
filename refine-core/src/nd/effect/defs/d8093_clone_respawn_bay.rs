@@ -2,7 +2,7 @@ use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
     },
-    nd::{NEffect, NEffectDuration},
+    nd::NEffect,
 };
 
 const EFFECT_AID: AEffectId = AEffectId::CLONE_RESPAWN_BAY;
@@ -11,7 +11,6 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
-        disallows_cloak: Some(NEffectDuration::Effect),
         ..
     }
 }
@@ -22,8 +21,6 @@ fn update_effect(a_effect: &mut AEffect, a_warnings: &mut Vec<String>) {
         a_warnings.push(warning);
         a_effect.modifiers.clear();
     }
-    // Not tested; just assume tactical recloner has same modifiers as clone vat bay, minus mobility
-    // modifier, for which module does not have the attribute
     a_effect.modifiers.insert(AEffectModifier {
         strength: AEffectModStrength::Attr(AAttrId::SIEGE_MODE_WARP_STATUS),
         op: AOp::Add,

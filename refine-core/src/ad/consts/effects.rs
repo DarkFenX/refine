@@ -102,8 +102,6 @@ impl AEffectId {
     pub(crate) const FTR_ABIL_LAUNCH_BOMB: Self = Self::from_eid(EEffectId::FTR_ABIL_LAUNCH_BOMB);
     pub(crate) const DOOMSDAY_AOE_ECM: Self = Self::from_eid(EEffectId::DOOMSDAY_AOE_ECM);
     pub(crate) const FTR_ABIL_KAMIKAZE: Self = Self::from_eid(EEffectId::FTR_ABIL_KAMIKAZE);
-    pub(crate) const MOD_BONUS_NETWORKED_SENSOR_ARRAY: Self =
-        Self::from_eid(EEffectId::MOD_BONUS_NETWORKED_SENSOR_ARRAY);
     pub(crate) const MOD_BONUS_TRIAGE: Self = Self::from_eid(EEffectId::MOD_BONUS_TRIAGE);
     pub(crate) const MOD_BONUS_SIEGE: Self = Self::from_eid(EEffectId::MOD_BONUS_SIEGE);
     pub(crate) const SHIP_MOD_ANCILLARY_REMOTE_ARMOR_REPAIRER: Self =
@@ -165,8 +163,6 @@ impl AEffectId {
     pub(crate) const DEBUFF_LANCE: Self = Self::from_eid(EEffectId::DEBUFF_LANCE);
     pub(crate) const MICRO_JUMP_PORTAL_DRIVE_CAPITAL: Self = Self::from_eid(EEffectId::MICRO_JUMP_PORTAL_DRIVE_CAPITAL);
     pub(crate) const DOT_MISSILE_LAUNCHING: Self = Self::from_eid(EEffectId::DOT_MISSILE_LAUNCHING);
-    pub(crate) const MOD_BONUS_INTEGRATED_SENSOR_ARRAY: Self =
-        Self::from_eid(EEffectId::MOD_BONUS_INTEGRATED_SENSOR_ARRAY);
     pub(crate) const MOD_BONUS_BREACHER_POD_DAMAGE_CONTROL: Self =
         Self::from_eid(EEffectId::MOD_BONUS_BREACHER_POD_DAMAGE_CONTROL);
     // Library-specific effects
