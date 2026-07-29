@@ -115,8 +115,10 @@ impl RItemAttrData {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemAttrData {
     pub(crate) fn from_attrs(attrs: RMap<RAttrId, Value>, r_base: &RItemBase, r_data: &RData) -> Self {
-        let mut data = Self::default();
-        data.attrs = attrs;
+        let mut data = Self {
+            attrs,
+            ..Self::default()
+        };
         data.fill_derived(
             r_base,
             &r_data.item_list_aid_rid_map,
