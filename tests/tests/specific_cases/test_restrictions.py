@@ -24,6 +24,7 @@ class EveBasics:
     gate_scram_attr_id: int
     disallow_tether_attr_id: int
     disallow_dock_attr_id: int
+    disallow_assist_attr_id: int
     can_cloak_attr_id: int
     # Items
     cloak_t2_id: int
@@ -44,8 +45,8 @@ def setup_basics(*, client, consts) -> EveBasics:
     eve_disallow_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
     eve_disallow_tether_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_tethering)
     eve_disallow_dock_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_docking)
+    eve_disallow_assist_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_drive_jump_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_drive_jumping)
-    client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     client.mk_eve_attr(id_=consts.EveAttr.disallow_offensive_modifiers)
     eve_can_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak, def_val=1)
     eve_range_attr_id = client.mk_eve_attr()
@@ -119,6 +120,7 @@ def setup_basics(*, client, consts) -> EveBasics:
         gate_scram_attr_id=eve_gate_scram_attr_id,
         disallow_tether_attr_id=eve_disallow_tether_attr_id,
         disallow_dock_attr_id=eve_disallow_dock_attr_id,
+        disallow_assist_attr_id=eve_disallow_assist_attr_id,
         can_cloak_attr_id=eve_can_cloak_attr_id,
         cloak_t2_id=eve_cloak_t2_id,
         assist_id=eve_assist_id,
@@ -1346,6 +1348,212 @@ def test_siege_bastion(client, consts):
     # Verification - assistance and some offense is prevented via specific resistances, which is not
     # tested here
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_bridge_titan_rorqual(client, consts):
+    """
+    Titan and rorqual bridges share the same effect, so they are unified into a single test.
+
+    Tested on Singularity on 2026-06-15 and 2026-07-26, using Leviathan with t1 jump portal
+    generator.
+
+    Prevented actions/interactions:
+    + warp (external factors, 60s)
+    + jump gate (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + jump wormhole (special, 10s, then ship size msg because titan) - "That wouldn't be safe in the
+      presence of a jump field. And you know how those jump fields are. Better wait x seconds."
+    + jump drive (special for 10s, external factors up to full 60s) - "Your ship sensors are still
+      tuning in on subspace frequencies. Estimated time left: x seconds."
+    + dock station (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + dock citadel (external factors, full duration 60s)
+    - tether
+    + cloak (special, full duration 60s) - standard for cloak
+    + regular movement
+    + incoming assistance (interference, full duration 60s, all including rsb/rtc)
+    - incoming offensive mods
+
+    Tested on Singularity on 2026-06-15 and 2026-07-26, using Rorqual with t1 industrial jump portal
+    generator.
+
+    Prevented actions/interactions:
+    + warp (external factors, 20s)
+    + jump gate (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + jump wormhole (special, 10s, then ship size msg because noncap wh) - "That wouldn't be safe in
+      the presence of a jump field. And you know how those jump fields are. Better wait x seconds."
+    + jump drive (special for 10s, external factors up to full 20s) - "Your ship sensors are still
+      tuning in on subspace frequencies. Estimated time left: x seconds."
+    + dock station (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + dock citadel (external factors, full duration 20s)
+    - tether
+    + cloak (special, full duration 20s) - standard for cloak "you can't cloak because x is active"
+    + regular movement
+    + incoming assistance (interference, full duration 20s, all including rsb/rtc)
+    - incoming offensive mods
+
+    The 10-second-long restrictions seem to be caused by something similar to session change timer.
+    Effect of this timer is ignored in the lib / in tests.
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_speed_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_basics.speed_factor_attr_id,
+        affectee_attr_id=eve_basics.speed_attr_id)
+    eve_warp_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.warp_scram_attr_id,
+        affectee_attr_id=eve_basics.warp_status_attr_id)
+    eve_bridge_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.jump_portal_generation,
+        cat_id=consts.EveEffCat.active,
+        mod_info=[eve_speed_mod, eve_warp_mod])
+    eve_bridge_id = client.mk_eve_item(
+        attrs={
+            eve_basics.warp_scram_attr_id: 100, eve_basics.speed_factor_attr_id: -100,
+            eve_basics.disallow_assist_attr_id: 1},
+        eff_ids=[eve_bridge_effect_id],
+        defeff_id=eve_bridge_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_bridge_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(0)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is True
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
+def test_bridge_blops(client, consts):
+    """
+    Tested on Singularity on 2026-06-15 and 2026-07-26, using Panther with t1 covops jump portal
+    generator.
+
+    Prevented actions/interactions:
+    + warp (external factors, 20s)
+    + jump gate (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + jump wormhole (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + jump drive (special for 10s, external factors up to full 20s) - "Your ship sensors are still
+      tuning in on subspace frequencies. Estimated time left: x seconds."
+    + dock station (special, 10s) - "That wouldn't be safe in the presence of a jump field. And you
+      know how those jump fields are. Better wait x seconds."
+    + dock citadel (external factors, full duration 20s)
+    - tether
+    + cloak (special, full duration 20s) - standard for cloak "you can't cloak because x is active"
+    + regular movement (special, full duration 20s)
+    + incoming assistance (interference, full duration 20s, all including rsb/rtc)
+    - incoming offensive mods
+
+    The 10-second-long restrictions seem to be caused by something similar to session change timer.
+    Effect of this timer is ignored in the lib / in tests.
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_speed_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.post_percent,
+        affector_attr_id=eve_basics.speed_factor_attr_id,
+        affectee_attr_id=eve_basics.speed_attr_id)
+    eve_warp_mod = client.mk_eve_effect_mod(
+        func=consts.EveModFunc.item,
+        loc=consts.EveModLoc.ship,
+        op=consts.EveModOp.mod_add,
+        affector_attr_id=eve_basics.warp_scram_attr_id,
+        affectee_attr_id=eve_basics.warp_status_attr_id)
+    eve_bridge_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.jump_portal_generation_bo,
+        cat_id=consts.EveEffCat.active,
+        mod_info=[eve_speed_mod, eve_warp_mod])
+    eve_bridge_id = client.mk_eve_item(
+        attrs={
+            eve_basics.warp_scram_attr_id: 100, eve_basics.speed_factor_attr_id: -100,
+            eve_basics.disallow_assist_attr_id: 1},
+        eff_ids=[eve_bridge_effect_id],
+        defeff_id=eve_bridge_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_bridge_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(0)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is True
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
 
 

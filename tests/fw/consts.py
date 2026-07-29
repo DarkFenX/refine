@@ -107,6 +107,7 @@ class EveEffect(IntEnum):
     cloaking_warp_safe = 980
     drone_dmg_bonus = 1730
     self_rof = 1851
+    jump_portal_generation = 2152
     rig_slot = 2663
     mining_clouds = 2726
     cynosural_generation = 2857
@@ -115,6 +116,7 @@ class EveEffect(IntEnum):
     overload_self_duration_bonus = 3002
     warp_disrupt_sphere = 3380
     script_warp_scramble_range_bonus = 3648
+    jump_portal_generation_bo = 3674
     hardpoint_modifier_effect = 3773
     slot_modifier = 3774
     super_weapon_amarr = 4489

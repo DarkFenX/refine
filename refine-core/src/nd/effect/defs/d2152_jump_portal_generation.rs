@@ -9,6 +9,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
     NEffect {
         aid: EFFECT_AID,
         disallows_cloak: Some(NEffectDuration::Effect),
+        do_not_prevent_tether: true,
         ..
     }
 }
