@@ -26,7 +26,7 @@ fn internal_cycle_count(item: &UItem, effect_rid: REffectId) -> InfCount {
         .effects
         .get(&effect_rid)
         .unwrap()
-        .charge_count
+        .ability_charge_count
     {
         Some(charge_count) => InfCount::Count(charge_count),
         None => InfCount::Infinite,

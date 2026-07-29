@@ -52,5 +52,5 @@ fn get_charge_count(sol: &SolarSystem, fighter_uid: UItemId, abil_aid: &AAbilId)
         .get_r_item_base()?
         .effects
         .get(&r_abil.effect_rid)?
-        .charge_count
+        .ability_charge_count
 }

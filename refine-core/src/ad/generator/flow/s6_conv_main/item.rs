@@ -83,9 +83,9 @@ impl ADataGenerator {
             let Some(a_item_eff_data) = a_item.effects.get_mut(&AEffectId::from_eid(effect_eid)) else {
                 continue;
             };
-            a_item_eff_data.data.cooldown = e_item_abil.cooldown.map(AValue::from_efloat);
-            a_item_eff_data.data.charge_count = e_item_abil.charge_count.map(ACount::from_eint_clamped);
-            a_item_eff_data.data.charge_reload_duration = e_item_abil.charge_rearm_duration.map(AValue::from_efloat);
+            a_item_eff_data.data.ability_cooldown = e_item_abil.cooldown.map(AValue::from_efloat);
+            a_item_eff_data.data.ability_charge_count = e_item_abil.charge_count.map(ACount::from_eint_clamped);
+            a_item_eff_data.data.ability_charge_reload_duration = e_item_abil.charge_rearm_duration.map(AValue::from_efloat);
         }
         // Item abilities
         for e_item_abil in self

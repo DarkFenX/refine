@@ -5,9 +5,9 @@ use crate::ad::{AAttrId, ACount, AValue};
     derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
 )]
 pub struct AItemEffectData {
-    pub cooldown: Option<AValue>,
-    pub charge_count: Option<ACount>,
-    pub charge_reload_duration: Option<AValue>,
+    pub ability_cooldown: Option<AValue>,
+    pub ability_charge_count: Option<ACount>,
+    pub ability_charge_reload_duration: Option<AValue>,
     pub autocharge_attr_id: Option<AAttrId>,
 }
 
@@ -17,9 +17,9 @@ pub struct AItemEffectData {
 impl AItemEffectData {
     pub(in crate::ad::data::item) const fn default() -> Self {
         AItemEffectData {
-            cooldown: None,
-            charge_count: None,
-            charge_reload_duration: None,
+            ability_cooldown: None,
+            ability_charge_count: None,
+            ability_charge_reload_duration: None,
             autocharge_attr_id: None,
         }
     }

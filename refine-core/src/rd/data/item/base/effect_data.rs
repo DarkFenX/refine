@@ -8,9 +8,9 @@ use crate::{
 // Item-specific attribute-independent effect data
 #[derive(Copy, Clone)]
 pub(crate) struct RItemEffectData {
-    pub(crate) cooldown_s: PValue,
-    pub(crate) charge_count: Option<Count>,
-    pub(crate) charge_reload_duration: PValue,
+    pub(crate) ability_cooldown: PValue,
+    pub(crate) ability_charge_count: Option<Count>,
+    pub(crate) ability_charge_reload_duration: PValue,
     pub(crate) autocharge_attr_rid: Option<RAttrId>,
 }
 
@@ -23,13 +23,13 @@ impl RItemEffectData {
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) -> Self {
         Self {
-            cooldown_s: a_effect_data
-                .cooldown
+            ability_cooldown: a_effect_data
+                .ability_cooldown
                 .map(PValue::from_a_value_clamped)
                 .unwrap_or(PValue::ZERO),
-            charge_count: a_effect_data.charge_count.map(Count::from_a_count),
-            charge_reload_duration: a_effect_data
-                .charge_reload_duration
+            ability_charge_count: a_effect_data.ability_charge_count.map(Count::from_a_count),
+            ability_charge_reload_duration: a_effect_data
+                .ability_charge_reload_duration
                 .map(PValue::from_a_value_clamped)
                 .unwrap_or(PValue::ZERO),
             autocharge_attr_rid: a_effect_data

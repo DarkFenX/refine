@@ -82,22 +82,22 @@ fn get_effect_info(
     let active_duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
     let effect_data = fighter.get_r_item_base().unwrap().effects.get(&effect_rid).unwrap();
     // Completely skip effects which can't cycle
-    if effect_data.charge_count == Some(Count::ZERO) {
+    if effect_data.ability_charge_count == Some(Count::ZERO) {
         return None;
     }
     // For fighter abilities, cooldown starts as soon as effect starts cycling. It typically is
     // longer than duration, but data format does not guarantee that
-    let cooldown_duration = PValue::from_value_clamped(effect_data.cooldown_s - active_duration);
+    let cooldown_duration = PValue::from_value_clamped(effect_data.ability_cooldown - active_duration);
     // Assume any cooldown interrupts cycling, even if it shorter than ability cycle, and that any
     // abilities which have limited charge count also do
-    let sdt_cd_nr = (effect_data.cooldown_s > PValue::ZERO) || effect_data.charge_count.is_some();
+    let sdt_cd_nr = (effect_data.ability_cooldown > PValue::ZERO) || effect_data.ability_charge_count.is_some();
     Some(EffectInfo {
         kills_item: effect.kills_item,
         active_duration,
         cooldown_duration,
         sdt_cd_nr,
-        charge_count: effect_data.charge_count,
-        charge_rearm_duration: effect_data.charge_reload_duration,
+        charge_count: effect_data.ability_charge_count,
+        charge_rearm_duration: effect_data.ability_charge_reload_duration,
     })
 }
 
