@@ -3,8 +3,7 @@ use crate::{
     misc::{AttrSpec, EffectSpec},
     rd::REffectResist,
     svc::{Calc, SvcCtx, Vast, funcs::is_oattr_flag_set, vast::VastFitData},
-    ud::UItemId,
-    ud::UItem,
+    ud::{UItem, UItemId},
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -160,7 +159,7 @@ fn is_assist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId, vast:
         return false;
     };
     let projectee_fit_data = vast.get_fit_data(ship.get_fit_uid());
-    !projectee_fit_data.blockable_assistance.is_empty()
+    !projectee_fit_data.mods_active_block_in_assist.is_empty()
 }
 
 fn is_offense_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId, _vast: &Vast) -> bool {
