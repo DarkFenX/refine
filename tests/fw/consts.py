@@ -183,6 +183,7 @@ class EveEffect(IntEnum):
     weather_darkness = 7060
     ship_mod_remote_armor_mutadaptive_repairer = 7166
     chain_lightning = 8037
+    clone_respawn_bay = 8093
     industrial_compact_core_effect2 = 8119
     debuff_lance = 11691
     micro_jump_portal_drive_capital = 12126
