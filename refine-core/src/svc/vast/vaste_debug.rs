@@ -393,7 +393,9 @@ impl VastFitData {
         // Check cloak count
         let mut cloak_count = Count::ZERO;
         for module_uid in u_data.fits.get(fit_uid).iter_module_uids() {
-            if u_data.items.get(module_uid).get_r_item_base().unwrap().is_cloak {
+            if let Some(module_rib) = u_data.items.get(module_uid).get_r_item_base()
+                && module_rib.is_cloak
+            {
                 cloak_count += Count::ONE;
             }
         }
