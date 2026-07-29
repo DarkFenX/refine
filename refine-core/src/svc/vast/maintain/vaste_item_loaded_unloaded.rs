@@ -66,13 +66,13 @@ impl Vast {
                 let cont_uid = charge.get_cont_item_uid();
                 let cont_item = u_data.items.get(cont_uid);
                 item_kind_add(fit_data, item_uid, charge_riad.kind, DetectedItemKind::Charge);
-                if let Some(cont_axt) = cont_item.get_r_item_attr_data() {
-                    handle_charge_group_add(fit_data, cont_uid, cont_axt, item_uid, &charge_rib.grp_id);
-                    handle_charge_size_add(fit_data, cont_uid, cont_axt, item_uid, charge_riad);
-                    handle_charge_volume_add(fit_data, cont_uid, cont_axt, item_uid, charge_riad);
-                }
-                if let Some(cont_rib) = cont_item.get_r_item_base() {
+                if let (Some(cont_rib), Some(cont_riad)) =
+                    (cont_item.get_r_item_base(), cont_item.get_r_item_attr_data())
+                {
+                    handle_charge_group_add(fit_data, cont_uid, cont_riad, item_uid, &charge_rib.grp_id);
                     handle_charge_cont_group_add(fit_data, cont_uid, &cont_rib.grp_id, item_uid, charge_riad);
+                    handle_charge_size_add(fit_data, cont_uid, cont_riad, item_uid, charge_riad);
+                    handle_charge_volume_add(fit_data, cont_uid, cont_riad, item_uid, charge_riad);
                 }
                 if charge_riad.sec_zone_limitable {
                     fit_data.sec_zone_unactivable.insert(item_uid);
@@ -166,7 +166,7 @@ impl Vast {
                         (charge_item.get_r_item_base(), charge_item.get_r_item_attr_data())
                     {
                         handle_charge_group_add(fit_data, item_uid, module_riad, charge_uid, &charge_rib.grp_id);
-                        handle_charge_cont_group_add(fit_data, item_uid, &charge_rib.grp_id, charge_uid, charge_riad);
+                        handle_charge_cont_group_add(fit_data, item_uid, &module_rib.grp_id, charge_uid, charge_riad);
                         handle_charge_size_add(fit_data, item_uid, module_riad, charge_uid, charge_riad);
                         handle_charge_volume_add(fit_data, item_uid, module_riad, charge_uid, charge_riad);
                     }
