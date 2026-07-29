@@ -2,7 +2,7 @@ from fw import check_no_field
 from fw.api import ValOptions
 
 
-def test_single_add_remove(client, consts):
+def test_single_on_ship_add_remove(client, consts):
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
     eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
@@ -34,7 +34,7 @@ def test_single_add_remove(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_single_state_switch(client, consts):
+def test_single_on_ship_state_switch(client, consts):
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
     eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
     eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
@@ -58,6 +58,69 @@ def test_single_state_switch(client, consts):
     assert api_val.details.cloaking_blocked == [api_cloak.id]
     # Action
     api_cloak.change_module(state=consts.ApiModuleState.online)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_single_on_module_add_remove(client, consts):
+    eve_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_blocker_id = client.mk_eve_item(attrs={eve_cloak_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cloak_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_blocker = api_fit.add_module(type_id=eve_blocker_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.cloaking_blocked == [api_cloak.id]
+    # Action
+    api_blocker.remove()
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_single_on_module_state_switch(client, consts):
+    eve_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_blocker_id = client.mk_eve_item(attrs={eve_cloak_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cloak_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_blocker = api_fit.add_module(type_id=eve_blocker_id, state=consts.ApiModuleState.online)
+    api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_blocker.change_module(state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.cloaking_blocked == [api_cloak.id]
+    # Action
+    api_blocker.change_module(state=consts.ApiModuleState.online)
     # Verification
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is True
@@ -205,7 +268,7 @@ def test_single_modified(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_single_values(client, consts):
+def test_single_on_ship_values(client, consts):
     eve_cloak_attr1_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
     eve_cloak_attr2_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_cloaking)
     eve_cloak_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
@@ -280,6 +343,56 @@ def test_single_values(client, consts):
     api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
     assert api_val.passed is False
     assert api_val.details.cloaking_blocked == [api_cloak.id]
+
+
+def test_single_on_module_values(client, consts):
+    eve_cloak_attr_id = client.mk_eve_attr(id_=consts.EveAttr.can_cloak)
+    eve_effect_id = client.mk_eve_effect(id_=consts.EveEffect.cloaking, cat_id=consts.EveEffCat.active)
+    eve_cloak_id = client.mk_eve_item(eff_ids=[eve_effect_id], defeff_id=eve_effect_id)
+    eve_blocker1_id = client.mk_eve_item(attrs={eve_cloak_attr_id: 1})
+    eve_blocker2_id = client.mk_eve_item(attrs={eve_cloak_attr_id: 100})
+    eve_blocker3_id = client.mk_eve_item(attrs={eve_cloak_attr_id: 0.1})
+    eve_blocker4_id = client.mk_eve_item(attrs={eve_cloak_attr_id: 0})
+    eve_blocker5_id = client.mk_eve_item(attrs={eve_cloak_attr_id: -0.1})
+    eve_ship_id = client.mk_eve_ship(attrs={eve_cloak_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_fit.set_ship(type_id=eve_ship_id)
+    api_cloak = api_fit.add_module(type_id=eve_cloak_id, state=consts.ApiModuleState.active)
+    api_blocker = api_fit.add_module(type_id=eve_blocker1_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_blocker.change_module(type_id=eve_blocker2_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_blocker.change_module(type_id=eve_blocker3_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_blocker.change_module(type_id=eve_blocker4_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is False
+    assert api_val.details.cloaking_blocked == [api_cloak.id]
+    # Action
+    api_blocker.change_module(type_id=eve_blocker5_id)
+    # Verification
+    api_val = api_fit.validate(options=ValOptions(cloaking_blocked=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_single_ship_absent(client, consts):

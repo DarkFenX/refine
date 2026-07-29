@@ -113,19 +113,72 @@ def test_tgt_drone_fighter(client, consts):
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
-    eve_tgt_item_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
+    eve_tgt_item1_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
+    eve_tgt_item2_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
+    eve_tgt_blocker_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
     api_tgt_fit = api_sol.create_fit()
-    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_item_id)
-    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_item_id)
+    api_tgt_fit.add_module(type_id=eve_tgt_blocker_id, state=consts.ApiModuleState.active)
+    api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_item1_id)
+    api_tgt_fighter = api_tgt_fit.add_fighter(type_id=eve_tgt_item1_id)
     api_src_item.change_module(add_proj_item_ids=[api_tgt_drone.id, api_tgt_fighter.id])
     # Verification
     api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: sorted([api_tgt_drone.id, api_tgt_fighter.id])}
+    # Action
+    api_tgt_drone.change_drone(type_id=eve_tgt_item2_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: sorted([api_tgt_fighter.id])}
+    # Action
+    api_tgt_fighter.change_fighter(type_id=eve_tgt_item2_id)
+    # Verification - check passes for minions despite fit having assist blocker module
+    api_val = api_sol.validate(fit_ids=[api_src_fit.id], options=ValOptions(assist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+
+
+def test_tgt_ship_blocker(client, consts):
+    # Also test that only validation of source fit is affected
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_blocker_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 1})
+    eve_tgt_item_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_item = api_tgt_fit.set_ship(type_id=eve_tgt_item_id)
+    api_tgt_blocker = api_tgt_fit.add_module(type_id=eve_blocker_id, state=consts.ApiModuleState.online)
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(
+        type_id=eve_src_item_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_tgt_item.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_tgt_blocker.change_module(state=consts.ApiModuleState.active)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item.id]}
+    # Action
+    api_tgt_blocker.remove()
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_multiple_src_effects(client, consts):
@@ -172,7 +225,7 @@ def test_multiple_src_effects(client, consts):
         api_val.details  # ruff:ignore[useless-expression]
 
 
-def test_flag_values(client, consts):
+def test_tgt_flag_values(client, consts):
     eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance)
     eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
     eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
@@ -197,6 +250,56 @@ def test_flag_values(client, consts):
     api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
     assert api_val.passed is False
     assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_item1.id, api_tgt_item3.id, api_tgt_item4.id]}
+
+
+def test_blocker_flag_values(client, consts):
+    eve_immunity_attr_id = client.mk_eve_attr(id_=consts.EveAttr.disallow_assistance, def_val=1)
+    eve_src_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
+    eve_src_item_id = client.mk_eve_item(eff_ids=[eve_src_effect_id], defeff_id=eve_src_effect_id)
+    eve_blocker1_id = client.mk_eve_item(attrs={eve_immunity_attr_id: -1})
+    eve_blocker2_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0})
+    eve_blocker3_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 0.1})
+    eve_blocker4_id = client.mk_eve_item(attrs={eve_immunity_attr_id: 50.3})
+    eve_blocker5_id = client.mk_eve_item()
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_immunity_attr_id: 0})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_item = api_src_fit.add_module(type_id=eve_src_item_id, state=consts.ApiModuleState.active)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
+    api_tgt_blocker = api_tgt_fit.add_module(type_id=eve_blocker1_id, state=consts.ApiModuleState.active)
+    api_src_item.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_ship.id]}
+    # Action
+    api_tgt_blocker.change_module(type_id=eve_blocker2_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
+    # Action
+    api_tgt_blocker.change_module(type_id=eve_blocker3_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_ship.id]}
+    # Action
+    api_tgt_blocker.change_module(type_id=eve_blocker4_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is False
+    assert api_val.details.assist_immunity == {api_src_item.id: [api_tgt_ship.id]}
+    # Action
+    api_tgt_blocker.change_module(type_id=eve_blocker5_id)
+    # Verification
+    api_val = api_src_fit.validate(options=ValOptions(assist_immunity=True))
+    assert api_val.passed is True
+    with check_no_field():
+        api_val.details  # ruff:ignore[useless-expression]
 
 
 def test_tgt_modified(client, consts):
