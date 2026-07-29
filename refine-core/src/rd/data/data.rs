@@ -41,18 +41,12 @@ impl RData {
     pub(crate) fn get_item_list_by_rid(&self, item_list_rid: RItemListId) -> &RItemList {
         self.item_lists.get(item_list_rid).unwrap()
     }
-    pub(crate) fn get_item_list_rid_by_aid(&self, item_list_aid: &AItemListId) -> Option<RItemListId> {
-        self.item_list_aid_rid_map.get(item_list_aid).copied()
-    }
     // Attr methods
     pub(crate) fn get_attr_by_rid(&self, attr_rid: RAttrId) -> &RAttr {
         self.attrs.get(attr_rid).unwrap()
     }
     pub(crate) fn get_attr_rid_by_aid(&self, attr_aid: &AAttrId) -> Option<RAttrId> {
         self.attr_aid_rid_map.get(attr_aid).copied()
-    }
-    pub(crate) fn get_attr_aid_rid_map(&self) -> &RMap<AAttrId, RAttrId> {
-        &self.attr_aid_rid_map
     }
     pub(crate) fn get_attr_consts(&self) -> &RAttrConsts {
         &self.attr_consts

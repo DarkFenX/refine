@@ -1,4 +1,4 @@
-use crate::ad::{AAttrId, ACount, AItemListId, AValue};
+use crate::ad::{AAttrId, ACount, AValue};
 
 #[cfg_attr(
     feature = "serde-ad",
@@ -9,7 +9,6 @@ pub struct AItemEffectData {
     pub charge_count: Option<ACount>,
     pub charge_reload_duration: Option<AValue>,
     pub autocharge_attr_id: Option<AAttrId>,
-    pub projectee_filter: Option<AItemListId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +21,6 @@ impl AItemEffectData {
             charge_count: None,
             charge_reload_duration: None,
             autocharge_attr_id: None,
-            projectee_filter: None,
         }
     }
 }

@@ -5,6 +5,7 @@ use crate::{
     util::{PSlab, RMap},
 };
 
+// Item-specific attribute-derived effect data
 #[derive(Copy, Clone)]
 pub(crate) struct RItemAttrEffectData {
     pub(crate) autocharge_aid: Option<AItemId>,

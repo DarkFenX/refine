@@ -1,7 +1,6 @@
 use crate::ad::ADataGenerator;
 
 mod effect_autocharges;
-mod effect_projectee_filters;
 mod item_buff_item_lists;
 mod item_cloak;
 mod item_disallowed_in_wspace;
@@ -19,6 +18,5 @@ impl ADataGenerator {
         self.fill_ice_harvesters();
         self.fill_disallowed_in_wspace();
         self.fill_effect_autocharges();
-        self.fill_effect_projectee_filters();
     }
 }

@@ -47,9 +47,6 @@ impl FromIterator<AItemAttr> for AItemAttrs {
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AItemAttrs {
-    pub(in crate::ad) fn get(&self, id: &AAttrId) -> Option<&AItemAttr> {
-        self.data.get(id)
-    }
     pub(in crate::ad) fn contains_id(&self, id: &AAttrId) -> bool {
         self.data.contains_key(id)
     }

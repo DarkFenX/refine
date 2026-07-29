@@ -369,7 +369,3 @@ impl REffect {
         true
     }
 }
-
-fn calc_is_blockable_offensive_modifier(a_effect: &AEffect, state: RState) -> bool {
-    a_effect.is_offense && state == RState::Active
-}
