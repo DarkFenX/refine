@@ -47,7 +47,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
         }
         .into());
     };
-    if !u_item.get_attrs().unwrap().contains_key(&attr_rid) {
+    if !u_item.get_r_item_attr_data().unwrap().attrs.contains_key(&attr_rid) {
         return Err(ItemMAttrValueError {
             item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
             attr_id: AttrId::from_aid(*attr_aid),

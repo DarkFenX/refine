@@ -1,7 +1,6 @@
 use crate::{
     ad::AItemId,
     api::{Coordinates, FitMut, ItemTypeId, Movement, ShipMut},
-    num::PValue,
     sol::SolarSystem,
     ud::{UEffectUpdates, UFitId, UItem, UItemId, UPhysics, UShip},
 };
@@ -23,7 +22,7 @@ impl SolarSystem {
         let item_id = self.u_data.items.alloc_id();
         let u_ship = UShip::new(item_id, type_aid, fit_uid, true, physics, &self.u_data.r_data);
         let ship_kind = u_ship.get_ship_kind();
-        let ship_radius = u_ship.get_axt().map(|v| v.radius).unwrap_or(PValue::ZERO);
+        let ship_radius = u_ship.get_radius();
         let u_item = UItem::Ship(u_ship);
         let ship_uid = self.u_data.items.add(u_item);
         let u_fit = self.u_data.fits.get_mut(fit_uid);

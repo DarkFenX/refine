@@ -31,11 +31,11 @@ impl SolarSystem {
             .into());
         };
         let drone_physics = *u_drone.get_physics();
-        let u_proj_data = Some(UProjData::from_physics_with_axt(
+        let u_proj_data = Some(UProjData::from_physics_with_riad(
             drone_physics,
             projectee_physics,
-            u_drone.get_axt(),
-            projectee_u_item.get_axt(),
+            u_drone.get_r_item_attr_data(),
+            projectee_u_item.get_r_item_attr_data(),
         ));
         // Update user data
         let u_drone = self.u_data.items.get_mut(drone_uid).dc_drone_mut().unwrap();

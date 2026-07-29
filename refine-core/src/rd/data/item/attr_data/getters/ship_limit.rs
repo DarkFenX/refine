@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    Value,
     ad::{AItemGrpId, AItemId},
-    num::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -13,7 +13,7 @@ pub(crate) struct RItemShipLimit {
     pub(crate) group_aids: Vec<AItemGrpId>,
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_item_ship_limit(
+pub(in crate::rd::data::item::attr_data) fn get_item_ship_limit(
     item_aid: AItemId,
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,

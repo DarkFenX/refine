@@ -25,7 +25,7 @@ fn get_state(sol: &SolarSystem, fighter_uid: UItemId, abil_id: &AAbilId) -> bool
     match u_fighter.get_effect_mode(&r_abil.effect_rid) {
         // Default disabled/active effects are ran if fighter becomes disabled+/active+, others are
         // not
-        EffectMode::FullCompliance => Some(r_abil.effect_rid) == u_fighter.get_defeff_rid().unwrap(),
+        EffectMode::FullCompliance => Some(r_abil.effect_rid) == u_fighter.get_r_item_base().unwrap().defeff_rid,
         EffectMode::StateCompliance => true,
         EffectMode::ForceRun => true,
         EffectMode::ForceStop => false,

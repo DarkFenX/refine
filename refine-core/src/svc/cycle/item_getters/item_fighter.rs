@@ -80,7 +80,7 @@ fn get_effect_info(
     }
     // No appropriate duration - effect does not cycle
     let active_duration = funcs::get_effect_duration_s(ctx, calc, item_uid, effect)?;
-    let effect_data = fighter.get_effects().unwrap().get(&effect_rid).unwrap();
+    let effect_data = fighter.get_r_item_base().unwrap().effects.get(&effect_rid).unwrap();
     // Completely skip effects which can't cycle
     if effect_data.charge_count == Some(Count::ZERO) {
         return None;
@@ -319,7 +319,7 @@ fn sim_rearm_process_refuel(cseq_map: &mut CseqMap, mut effect_infos: RMap<REffe
     // to rearm its charges. On top of that, fighters take extra second to land, some time to
     // refuel, and extra second to launch.
     let in_space_duration = trigger_rearm_info.in_space_duration;
-    let refuel_duration = fighter.get_axt().unwrap().fighter_refuel_duration;
+    let refuel_duration = fighter.get_r_item_attr_data().unwrap().fighter_refuel_duration;
     let hard_dt_duration = PValue::from_f64_unchecked(2.0) + refuel_duration + trigger_rearm_info.rearm_duration;
     // Fill data for triggering effect
     cseq_map.insert(

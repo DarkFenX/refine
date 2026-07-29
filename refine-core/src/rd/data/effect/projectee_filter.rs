@@ -9,14 +9,6 @@ pub(crate) enum REffectProjecteeFilter {
     ItemList(RItemListId),
     ItemListAttr(RAttrId),
 }
-impl REffectProjecteeFilter {
-    pub(crate) fn get_item_list_attr_rid(&self) -> Option<RAttrId> {
-        match self {
-            Self::ItemList(_) => None,
-            Self::ItemListAttr(attr_rid) => Some(*attr_rid),
-        }
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions

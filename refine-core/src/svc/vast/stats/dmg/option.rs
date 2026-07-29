@@ -30,13 +30,13 @@ impl StatDmgItemKinds {
     pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem, r_effect: &REffect) -> bool {
         match u_item {
             UItem::Drone(drone) => {
-                return match drone.get_axt().unwrap().is_mobile {
+                return match drone.get_r_item_attr_data().unwrap().is_mobile {
                     true => self.minion_mobile.is_enabled(self.default),
                     false => self.minion_static.is_enabled(self.default),
                 };
             }
             UItem::Fighter(fighter) => {
-                return match fighter.get_axt().unwrap().is_mobile {
+                return match fighter.get_r_item_attr_data().unwrap().is_mobile {
                     true => self.minion_mobile.is_enabled(self.default),
                     false => self.minion_static.is_enabled(self.default),
                 };

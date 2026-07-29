@@ -22,7 +22,7 @@ impl Svc {
         item_uid: UItemId,
     ) -> Option<InfCount> {
         let u_item = u_data.items.get(item_uid);
-        let defeff_rid = u_item.get_defeff_rid()??;
+        let defeff_rid = u_item.get_r_item_base()?.defeff_rid?;
         if !get_item_cseq_map(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
@@ -67,7 +67,7 @@ impl Svc {
     }
     pub(crate) fn get_effect_spool_cycle_count(&mut self, u_data: &UData, item_uid: UItemId) -> Option<ItemSpoolInfo> {
         let u_item = u_data.items.get(item_uid);
-        let defeff_rid = u_item.get_defeff_rid()??;
+        let defeff_rid = u_item.get_r_item_base()?.defeff_rid?;
         let defeff = u_data.r_data.get_effect_by_rid(defeff_rid);
         let spool_attrs = defeff.spool_attr_rids?;
         // TODO: limit by non-interrupted spool cycle count

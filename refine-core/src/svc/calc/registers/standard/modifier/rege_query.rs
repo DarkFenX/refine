@@ -19,8 +19,9 @@ impl StandardRegister {
     ) -> Vec<CtxModifier> {
         let fit_uid = item.get_fit_uid();
         let root_loc = item.get_root_loc_kind();
-        let item_grp_id = item.get_group_id().unwrap();
-        let srqs = item.get_skill_reqs().unwrap();
+        let item_rib = item.get_r_item_base().unwrap();
+        let item_grp_id = item_rib.grp_id;
+        let srqs = &item_rib.srqs;
         let mut cmods = Vec::new();
         extend_mods(&mut cmods, &self.cmods.direct, &(*item_uid, attr_rid));
         if let Some(other_item_uid) = item.get_other_uid() {

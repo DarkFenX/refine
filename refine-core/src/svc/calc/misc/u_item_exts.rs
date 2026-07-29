@@ -54,9 +54,9 @@ impl UItem {
     // Buff-related
     pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
         match self {
-            Self::Drone(drone) => drone.get_proj_buff_item_lists(),
-            Self::Fighter(fighter) => fighter.get_proj_buff_item_lists(),
-            Self::Ship(ship) => ship.get_proj_buff_item_lists(),
+            Self::Drone(drone) => drone.get_r_item_base().map(|v| &v.proj_buff_item_list_rids),
+            Self::Fighter(fighter) => fighter.get_r_item_base().map(|v| &v.proj_buff_item_list_rids),
+            Self::Ship(ship) => ship.get_r_item_base().map(|v| &v.proj_buff_item_list_rids),
             _ => None,
         }
     }

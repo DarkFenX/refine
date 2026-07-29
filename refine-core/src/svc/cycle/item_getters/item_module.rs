@@ -94,10 +94,12 @@ fn fill_module_effect_info(
             // - lasers: regular crystal cycle getter
             // - civilian guns: infinite cycles
             // Here, we rely on module capacity to differentiate between those
-            REffectChargeLoc::TargetAttack => match module.get_axt().unwrap().capacity > PValue::FLOAT_TOLERANCE {
-                true => get_eci_crystal(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
-                false => get_eci_undepletable(),
-            },
+            REffectChargeLoc::TargetAttack => {
+                match module.get_r_item_attr_data().unwrap().capacity > PValue::FLOAT_TOLERANCE {
+                    true => get_eci_crystal(ctx, calc, module, NEffectChargeDeplCrystal { .. }),
+                    false => get_eci_undepletable(),
+                }
+            }
         },
         None => get_eci_uncharged(),
     };
@@ -405,10 +407,10 @@ fn both_r(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CycleSoftDtFull {
     fn try_new_for_module_regular(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Option<Self> {
-        let axt = module.get_axt().unwrap();
+        let riad = module.get_r_item_attr_data().unwrap();
         // If auto-repeats are allowed - there should be no downtime for non-reload cycles (since
         // reactivation delay kicks in only when cycling stops, as seen on e.g. cynos/cloaks)
-        if !(axt.specs_disallow_repeats
+        if !(riad.specs_disallow_repeats
             && is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_repeating_activation).unwrap_or(false))
         {
             return None;
@@ -417,7 +419,7 @@ impl CycleSoftDtFull {
         // duration to one tick. Tested on Singularity on 2026-06-14 by using direct DD on random
         // capitals (DD cycle duration 252 seconds, damage intervals were 253 seconds)
         let mut total_duration = PValue::SERVER_TICK_S;
-        if !axt.specs_reactivation_delay {
+        if !riad.specs_reactivation_delay {
             return Some(Self {
                 duration: total_duration,
                 reasons: CycleSoftDtReasons { reload: false },
@@ -436,10 +438,10 @@ impl CycleSoftDtFull {
         })
     }
     fn new_for_module_reload(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
-        let axt = module.get_axt().unwrap();
+        let riad = module.get_r_item_attr_data().unwrap();
         let mut total_duration = get_reload_duration(ctx, calc, item_uid);
         // When item reloads, reactivation delay always kicks in, if set
-        if axt.specs_reactivation_delay {
+        if riad.specs_reactivation_delay {
             let reactivation_delay = PValue::from_value_clamped(
                 calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                     / Value::THOUSAND,
@@ -462,14 +464,14 @@ struct SoftDts {
 impl SoftDts {
     // Produce soft downtime for non-reload cycle and reload cycle at once
     fn new_for_module(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId, module: &UModule) -> Self {
-        let axt = module.get_axt().unwrap();
+        let riad = module.get_r_item_attr_data().unwrap();
         let mut soft_dt_regular = None;
         let mut soft_dt_reload = CycleSoftDtFull {
             duration: get_reload_duration(ctx, calc, item_uid),
             reasons: CycleSoftDtReasons { reload: true },
         };
         // Disallowed repeats affect only non-reload cycle soft downtime
-        if axt.specs_disallow_repeats
+        if riad.specs_disallow_repeats
             && is_oattr_flag_set(ctx, calc, item_uid, ctx.ac().disallow_repeating_activation).unwrap_or(false)
         {
             soft_dt_regular = Some(CycleSoftDtFull {
@@ -480,7 +482,7 @@ impl SoftDts {
         // Reactivation delay affects non-reload cycle soft downtime only if it exists (i.e.
         // auto-repeats are not allowed) and if it is longer than already set duration. If it is
         // longer than reload duration, it extends reload soft downtime as well.
-        if axt.specs_reactivation_delay {
+        if riad.specs_reactivation_delay {
             let reactivation_delay = PValue::from_value_clamped(
                 calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mod_reactivation_delay, Value::ZERO)
                     / Value::THOUSAND,

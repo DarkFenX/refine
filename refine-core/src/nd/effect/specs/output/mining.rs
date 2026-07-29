@@ -1,11 +1,9 @@
 use crate::{
+    PValue, UnitInterval, Value,
     nd::{NEffectOutputGetter, NEffectProjOpcSpec},
-    num::{PValue, UnitInterval, Value},
     rd::REffect,
     svc::{
-        SvcCtx,
-        calc::Calc,
-        funcs,
+        Calc, SvcCtx, funcs,
         output::{Output, OutputSimple},
     },
     ud::{UItem, UItemId},
@@ -26,9 +24,13 @@ pub(crate) enum NEffectMiningChecker {
 }
 impl NEffectMiningChecker {
     pub(crate) fn check(&self, u_item: &UItem) -> bool {
+        let is_ice_harvester = match u_item.get_r_item_base() {
+            Some(rib) => rib.is_ice_harvester,
+            None => false,
+        };
         match self {
-            Self::Ice => u_item.is_ice_harvester(),
-            Self::NonIce => !u_item.is_ice_harvester(),
+            Self::Ice => is_ice_harvester,
+            Self::NonIce => !is_ice_harvester,
         }
     }
 }

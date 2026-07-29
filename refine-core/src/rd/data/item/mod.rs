@@ -1,9 +1,11 @@
-pub(crate) use attr_extras::{RItemAXt, RItemChargeLimit, RItemContLimit, RItemShipLimit, RShipDroneLimit, RShipKind};
-pub(crate) use cap_consumer::RItemCapConsumer;
-pub(crate) use effect_data::RItemEffectData;
+pub(crate) use attr_data::{
+    RItemAttrData, RItemAttrEffectData, RItemChargeLimit, RItemContLimit, RItemShipLimit, RShipDroneLimit,
+};
+pub(crate) use base::{RItemBase, RItemCapConsumer, RItemEffectData};
 pub(crate) use item::RItem;
+pub(crate) use ship_kind::RShipKind;
 
-mod attr_extras;
-mod cap_consumer;
-mod effect_data;
+mod attr_data;
+mod base;
 mod item;
+mod ship_kind;

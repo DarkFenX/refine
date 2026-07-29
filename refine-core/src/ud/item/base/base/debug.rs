@@ -5,8 +5,14 @@ use crate::{
 
 impl UItemBase {
     pub(in crate::ud::item) fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        if let Some(attrs) = self.get_attrs() {
-            for attr_rid in attrs.keys() {
+        if let Some(rib) = self.get_r_item_base() {
+            for cap_consumer in rib.cap_consumers.iter() {
+                cap_consumer.consistency_check(u_data)?;
+            }
+        }
+        if let Some(riad) = self.get_r_item_attr_data() {
+            riad.consistency_check(u_data)?;
+            for attr_rid in riad.attrs.keys() {
                 attr_rid.consistency_check(u_data)?;
             }
         }
@@ -14,14 +20,6 @@ impl UItemBase {
             for effect_rid in reff_rids.iter() {
                 effect_rid.consistency_check(u_data)?;
             }
-        }
-        if let Some(cap_consumers) = self.get_cap_consumers() {
-            for cap_consumer in cap_consumers.iter() {
-                cap_consumer.consistency_check(u_data)?;
-            }
-        }
-        if let Some(axt) = self.get_axt() {
-            axt.consistency_check(u_data)?;
         }
         self.effect_modes.consistency_check(u_data)?;
         Ok(())

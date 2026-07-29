@@ -76,7 +76,7 @@ fn get_fit(sol: &SolarSystem, implant_uid: UItemId) -> Fit<'_> {
     Fit::new(sol, fit_uid)
 }
 fn get_slot(sol: &SolarSystem, implant_uid: UItemId) -> Option<SlotIndex> {
-    get_u_implant(sol, implant_uid).get_slot()
+    get_u_implant(sol, implant_uid).get_r_item_attr_data()?.implant_slot
 }
 fn get_state(sol: &SolarSystem, implant_uid: UItemId) -> bool {
     get_u_implant(sol, implant_uid).get_implant_state()

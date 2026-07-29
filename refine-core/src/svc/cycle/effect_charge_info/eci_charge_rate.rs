@@ -25,7 +25,7 @@ pub(in crate::svc::cycle) fn get_eci_charge_rate(
             can_run_uncharged: n_charge_rate.can_run_uncharged,
         };
     }
-    let charges_per_cycle = module.get_axt().unwrap().charge_rate;
+    let charges_per_cycle = module.get_r_item_attr_data().unwrap().charge_rate;
     if charges_per_cycle == Count::ZERO {
         return EffectChargeInfo {
             fully_charged: InfCount::Infinite,

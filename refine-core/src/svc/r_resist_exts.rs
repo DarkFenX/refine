@@ -22,14 +22,19 @@ impl REffectResist {
         match self {
             Self::Attr(resist_attr_rid) => Some(*resist_attr_rid),
             Self::AttrRef(ref_attr_rid) => {
-                let ref_value = u_data.items.get(projector_uid).get_attr(*ref_attr_rid)?;
+                let ref_value = *u_data
+                    .items
+                    .get(projector_uid)
+                    .get_r_item_attr_data()?
+                    .attrs
+                    .get(ref_attr_rid)?;
                 let resist_attr_aid = AAttrId::try_eve_from_f64_rounded(ref_value.into_f64())?;
                 u_data.r_data.get_attr_rid_by_aid(&resist_attr_aid)
             }
             Self::RemoteResistance => u_data
                 .items
                 .get(projector_uid)
-                .get_axt()
+                .get_r_item_attr_data()
                 .and_then(|v| v.remote_resist_attr_rid),
         }
     }

@@ -18,7 +18,7 @@ pub use item::{
     SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
     Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
-use item::{ItemMutSealed, ItemSealed, get_ship_axt, iter_projectee_uids, iter_ranged_projs};
+use item::{ItemMutSealed, ItemSealed, get_ship_riad, iter_projectee_uids, iter_ranged_projs};
 pub use misc::{
     AbilityId, AddMode, Affector, AttrId, AttrVals, Coordinates, CustomEffectId, Direction, DogmaEffectId, EffectId,
     EffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, ModuleState, MoveMode, Movement, Op, ProjRange,

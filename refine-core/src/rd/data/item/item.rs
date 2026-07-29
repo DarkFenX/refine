@@ -1,11 +1,7 @@
 use crate::{
-    ad::{AAbilId, AAttrId, AEffectId, AItem, AItemCatId, AItemGrpId, AItemId, AItemListId},
-    num::{SkillLevel, Value},
-    rd::{
-        RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId,
-        RShipKind, RState, RcEffect,
-    },
-    util::{LibGetId, PSlab, RMap},
+    ad::{AAttrId, AEffectId, AItem, AItemId, AItemListId},
+    rd::{RAttrConsts, RAttrId, REffectConsts, REffectId, RItemAttrData, RItemBase, RItemListId, RcEffect},
+    util::{PSlab, RMap},
 };
 
 // Represents an item (or item type, according to EVE terminology).
@@ -13,38 +9,8 @@ use crate::{
 // An item carries alot of info needed to calculate fit attributes, for example base attribute
 // values.
 pub(crate) struct RItem {
-    pub(crate) aid: AItemId,
-    pub(crate) grp_id: AItemGrpId,
-    pub(crate) cat_id: AItemCatId,
-    pub(crate) attrs: RMap<RAttrId, Value>,
-    pub(crate) effects: RMap<REffectId, RItemEffectData>,
-    pub(crate) defeff_rid: Option<REffectId>,
-    pub(crate) abil_ids: Vec<AAbilId>,
-    pub(crate) srqs: RMap<AItemId, SkillLevel>,
-    pub(crate) max_state: RState,
-    pub(crate) ship_kind: Option<RShipKind>,
-    // Buff item list IDs are intentionally vectors: they are used for iteration, and for membership
-    // checks. For cases where it matters (e.g. non-ship items) those do not have more than a couple
-    // of entries, so are faster than sets.
-    pub(crate) proj_buff_item_list_rids: Vec<RItemListId>,
-    pub(crate) fleet_buff_item_list_rids: Vec<RItemListId>,
-    pub(crate) val_fitted_group_id: Option<AItemGrpId>,
-    pub(crate) val_online_group_id: Option<AItemGrpId>,
-    pub(crate) val_active_group_id: Option<AItemGrpId>,
-    pub(crate) cap_consumers: Vec<RItemCapConsumer>,
-    pub(crate) has_online_effect: bool,
-    pub(crate) takes_turret_hardpoint: bool,
-    pub(crate) takes_launcher_hardpoint: bool,
-    pub(crate) is_cloak: bool,
-    pub(crate) is_ice_harvester: bool,
-    pub(crate) disallowed_in_wspace: bool,
-    pub(crate) enables_portal: bool,
-    pub(crate) axt: RItemAXt,
-}
-impl LibGetId<AItemId> for RItem {
-    fn lib_get_id(&self) -> AItemId {
-        self.aid
-    }
+    pub(crate) base: RItemBase,
+    pub(crate) attr_data: RItemAttrData,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -53,35 +19,8 @@ impl LibGetId<AItemId> for RItem {
 impl RItem {
     pub(in crate::rd) fn from_a_item(a_item: &AItem) -> Self {
         Self {
-            aid: a_item.id,
-            grp_id: a_item.grp_id,
-            cat_id: a_item.cat_id,
-            abil_ids: a_item.abil_ids.iter().copied().collect(),
-            srqs: a_item
-                .srqs
-                .iter()
-                .map(|a_skill_req| (a_skill_req.id, SkillLevel::from_a_skill_level(a_skill_req.level)))
-                .collect(),
-            max_state: RState::from_a_state(&a_item.max_state),
-            val_fitted_group_id: a_item.val_fitted_group_id,
-            val_online_group_id: a_item.val_online_group_id,
-            val_active_group_id: a_item.val_active_group_id,
-            is_cloak: a_item.is_cloak,
-            is_ice_harvester: a_item.is_ice_harvester,
-            disallowed_in_wspace: a_item.disallowed_in_wspace,
-            enables_portal: a_item.enables_portal,
-            // Fields which depend on data not available during instantiation
-            attrs: Default::default(),
-            effects: Default::default(),
-            defeff_rid: Default::default(),
-            proj_buff_item_list_rids: Default::default(),
-            fleet_buff_item_list_rids: Default::default(),
-            cap_consumers: Default::default(),
-            ship_kind: Default::default(),
-            has_online_effect: Default::default(),
-            takes_turret_hardpoint: Default::default(),
-            takes_launcher_hardpoint: Default::default(),
-            axt: Default::default(),
+            base: RItemBase::from_a_item(a_item),
+            attr_data: RItemAttrData::default(),
         }
     }
     pub(in crate::rd) fn fill_runtime(
@@ -94,92 +33,21 @@ impl RItem {
         effect_consts: &REffectConsts,
         r_effects: &PSlab<REffectId, RcEffect>,
     ) {
-        let a_item = a_items.get(&self.aid).unwrap();
-        for a_item_attr in a_item.attrs.iter() {
-            if let Some(&attr_rid) = attr_aid_rid_map.get(&a_item_attr.id) {
-                self.attrs.insert(attr_rid, Value::from_a_value(a_item_attr.value));
-            }
-        }
-        for a_item_effect in a_item.effects.iter() {
-            if let Some(&effect_rid) = effect_aid_rid_map.get(&a_item_effect.id) {
-                let r_effect_data = RItemEffectData::from_a_effect_data(&a_item_effect.data, item_list_aid_rid_map);
-                self.effects.insert(effect_rid, r_effect_data);
-            }
-        }
-        self.defeff_rid = a_item
-            .defeff_id
-            .and_then(|defeff_aid| effect_aid_rid_map.get(&defeff_aid).copied());
-        self.proj_buff_item_list_rids.extend(
-            a_item
-                .proj_buff_item_list_ids
-                .iter()
-                .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
+        self.base.fill_runtime(
+            a_items,
+            item_list_aid_rid_map,
+            attr_aid_rid_map,
+            effect_aid_rid_map,
+            r_effects,
         );
-        self.fleet_buff_item_list_rids.extend(
-            a_item
-                .fleet_buff_item_list_ids
-                .iter()
-                .filter_map(|item_list_aid| item_list_aid_rid_map.get(item_list_aid).copied()),
-        );
-        for &effect_rid in self.effects.keys() {
-            let r_effect = r_effects.get(effect_rid).unwrap();
-            if let Some(opc_spec) = r_effect.cap_consume {
-                self.cap_consumers.push(RItemCapConsumer { effect_rid, opc_spec })
-            }
-        }
-        self.ship_kind = get_ship_kind(self.cat_id, &self.srqs);
-        self.has_online_effect = has_online_effect(&self.effects, effect_aid_rid_map);
-        self.takes_turret_hardpoint = has_turret_effect(&self.effects, effect_aid_rid_map);
-        self.takes_launcher_hardpoint = has_launcher_effect(&self.effects, effect_aid_rid_map);
-        self.axt.fill(
-            self.aid,
-            self.grp_id,
-            self.cat_id,
-            &self.attrs,
-            &self.effects,
+        self.attr_data.fill_runtime(
+            &self.base,
+            a_items,
+            item_list_aid_rid_map,
             attr_aid_rid_map,
             attr_consts,
             effect_consts,
+            r_effects,
         );
-    }
-}
-
-fn has_online_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
-    effect_aid_rid_map: &RMap<AEffectId, REffectId>,
-) -> bool {
-    has_effect(item_effects, effect_aid_rid_map, &AEffectId::ONLINE)
-}
-fn has_turret_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
-    effect_aid_rid_map: &RMap<AEffectId, REffectId>,
-) -> bool {
-    has_effect(item_effects, effect_aid_rid_map, &AEffectId::TURRET_FITTED)
-}
-fn has_launcher_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
-    effect_aid_rid_map: &RMap<AEffectId, REffectId>,
-) -> bool {
-    has_effect(item_effects, effect_aid_rid_map, &AEffectId::LAUNCHER_FITTED)
-}
-fn has_effect(
-    item_effects: &RMap<REffectId, RItemEffectData>,
-    effect_aid_rid_map: &RMap<AEffectId, REffectId>,
-    effect_id: &AEffectId,
-) -> bool {
-    let Some(effect_rid) = effect_aid_rid_map.get(effect_id) else {
-        return false;
-    };
-    item_effects.contains_key(effect_rid)
-}
-
-fn get_ship_kind(item_cat_aid: AItemCatId, item_srqs: &RMap<AItemId, SkillLevel>) -> Option<RShipKind> {
-    match item_cat_aid {
-        AItemCatId::SHIP => match item_srqs.contains_key(&AItemId::CAPITAL_SHIPS) {
-            true => Some(RShipKind::CapitalShip),
-            false => Some(RShipKind::Ship),
-        },
-        AItemCatId::STRUCTURE => Some(RShipKind::Structure),
-        _ => None,
     }
 }

@@ -63,8 +63,15 @@ fn iter_abils(sol: &SolarSystem, fighter_uid: UItemId) -> impl Iterator<Item = A
 }
 
 fn get_abil_aids(sol: &SolarSystem, fighter_uid: UItemId) -> Vec<AAbilId> {
-    match sol.u_data.items.get(fighter_uid).dc_fighter().unwrap().get_abils() {
-        Some(abil_aids) => abil_aids.clone(),
+    match sol
+        .u_data
+        .items
+        .get(fighter_uid)
+        .dc_fighter()
+        .unwrap()
+        .get_r_item_base()
+    {
+        Some(rib) => rib.abil_ids.clone(),
         None => Vec::new(),
     }
 }

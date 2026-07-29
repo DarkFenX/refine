@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, ADataGenerator, AItemId},
+    ad::{AAttrId, ADataGenerator},
     nd::{N_EFFECT_MAP, NEffectChargeLoc},
 };
 
@@ -10,10 +10,8 @@ impl ADataGenerator {
                 if let Some(n_effect) = N_EFFECT_MAP.get(&a_item_effect.id)
                     && let Some(n_charge) = &n_effect.charge
                     && let Some(ac_attr_aid) = n_charge.location.get_autocharge_attr_aid()
-                    && let Some(ac_a_item_attr) = a_item.attrs.get(&ac_attr_aid)
-                    && let Some(ac_item_aid) = AItemId::try_from_f64_rounded(ac_a_item_attr.value.into_f64())
                 {
-                    a_item_effect.data.autocharge = Some(ac_item_aid)
+                    a_item_effect.data.autocharge_attr_id = Some(ac_attr_aid)
                 }
             }
         }

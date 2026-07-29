@@ -1,13 +1,12 @@
 use crate::{
-    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, ItemKind},
-    num::{PValue, SkillLevel, Value},
-    rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RItemListId, RShipKind, RState},
+    EffectMode, ItemId, ItemKind, PValue,
+    ad::{AEffectId, AItemCatId, AItemId},
+    rd::{RData, REffectId, RItemAttrData, RItemBase, RState},
     ud::{
-        ItemId, UFitId,
+        UFitId,
         item::{UEffectUpdates, UItemBase, UPhysics, UShipKind, bool_to_state_offline, state_to_bool},
     },
-    util::{LibNamed, RMap, RSet},
+    util::{LibNamed, RSet},
 };
 
 #[derive(Clone)]
@@ -60,6 +59,7 @@ impl std::fmt::Display for UShip {
 // Item base methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UShip {
+    // User data
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -70,38 +70,8 @@ impl UShip {
         self.base.set_type_aid(type_aid, r_data);
         self.update_ship_kind();
     }
-    pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
-        self.base.get_group_id()
-    }
-    pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
-        self.base.get_category_id()
-    }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
-        self.base.get_attrs()
-    }
-    pub(crate) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        self.base.get_effects()
-    }
-    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
-        self.base.get_defeff_rid()
-    }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
-        self.base.get_skill_reqs()
-    }
-    pub(crate) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
-        self.base.get_proj_buff_item_lists()
-    }
-    pub(crate) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
-        self.base.get_fleet_buff_item_lists()
-    }
-    pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
-        self.base.get_axt()
-    }
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
-    }
-    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
-        self.base.is_ice_harvester()
     }
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
@@ -129,6 +99,13 @@ impl UShip {
         r_data: &RData,
     ) {
         self.base.set_effect_modes(effect_modes, r_data)
+    }
+    // Runtime data
+    pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
+        self.base.get_r_item_base()
+    }
+    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+        self.base.get_r_item_attr_data()
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
@@ -158,23 +135,17 @@ impl UShip {
     pub(crate) fn get_physics(&self) -> &UPhysics {
         &self.physics
     }
-    pub(in crate::ud::item) fn get_radius(&self) -> PValue {
-        match self.get_axt() {
-            Some(axt) => axt.radius,
+    pub(crate) fn get_radius(&self) -> PValue {
+        match self.get_r_item_attr_data() {
+            Some(riad) => riad.radius,
             None => PValue::ZERO,
         }
     }
     pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
         &mut self.physics
     }
-    pub(crate) fn get_disallowed_in_wspace(&self) -> Option<bool> {
-        self.base.get_disallowed_in_wspace()
-    }
-    pub(crate) fn get_r_kind(&self) -> Option<RShipKind> {
-        self.base.get_r_ship_kind()
-    }
     fn update_ship_kind(&mut self) {
-        self.kind = match self.get_category_id() {
+        self.kind = match self.get_r_item_base().map(|v| v.cat_id) {
             Some(AItemCatId::SHIP) => UShipKind::Ship,
             Some(AItemCatId::STRUCTURE) => UShipKind::Structure,
             _ => UShipKind::Unknown,

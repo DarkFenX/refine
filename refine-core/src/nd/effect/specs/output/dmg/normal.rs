@@ -124,7 +124,7 @@ fn get_mult_charge(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Ou
 
 fn get_target_attack(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<Output<DmgKinds<PValue>>> {
     let item = ctx.u_data.items.get(item_uid);
-    let dmg_dealer_uid = match item.get_axt().unwrap().capacity > PValue::ZERO {
+    let dmg_dealer_uid = match item.get_r_item_attr_data().unwrap().capacity > PValue::ZERO {
         // If item has capacity but no charge - it is not dealing damage
         true => item.get_charge_uid()?,
         false => item_uid,

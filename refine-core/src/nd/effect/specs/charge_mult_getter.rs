@@ -30,7 +30,8 @@ impl NEffectChargeMultGetter {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_asb_cap(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Option<PValue> {
     if let Some(charge_uid) = ctx.u_data.items.get(item_uid).get_charge_uid()
-        && ctx.u_data.items.get(charge_uid).get_group_id() == Some(AItemGrpId::CAPACITOR_BOOSTER_CHARGE)
+        && let Some(charge_rib) = ctx.u_data.items.get(charge_uid).get_r_item_base()
+        && charge_rib.grp_id == AItemGrpId::CAPACITOR_BOOSTER_CHARGE
         && let Some(cap_bonus_perc) = calc.get_item_oattr_oextra(ctx, charge_uid, ctx.ac().cap_need_bonus)
     {
         return Some(PValue::from_value_clamped(cap_bonus_perc.perc_change_to_mult()));

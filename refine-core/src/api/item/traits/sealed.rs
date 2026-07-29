@@ -120,7 +120,7 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
                 let saved_module_state = prepare_module(
                     item_uid,
                     module.get_module_state(),
-                    module.get_max_state(),
+                    module.get_r_item_base().map(|v| v.max_state),
                     self.get_sol_mut(),
                     reuse_eupdates,
                 );
@@ -271,7 +271,7 @@ fn prepare_charge_parent(
         UItem::Module(module) => prepare_module(
             parent_uid,
             module.get_module_state(),
-            module.get_max_state(),
+            module.get_r_item_base().map(|v| v.max_state),
             sol,
             reuse_eupdates,
         )

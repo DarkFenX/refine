@@ -1,10 +1,10 @@
 use crate::{
-    num::Value,
+    Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
-pub(in crate::rd::data::item::attr_extras) fn specifies_reactivation_delay(
+pub(in crate::rd::data::item::attr_data) fn specifies_reactivation_delay(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {
@@ -14,7 +14,7 @@ pub(in crate::rd::data::item::attr_extras) fn specifies_reactivation_delay(
     }
 }
 
-pub(in crate::rd::data::item::attr_extras) fn specifies_disallow_repeats(
+pub(in crate::rd::data::item::attr_data) fn specifies_disallow_repeats(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

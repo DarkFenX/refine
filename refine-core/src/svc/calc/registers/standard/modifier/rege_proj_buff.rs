@@ -204,8 +204,8 @@ pub(super) fn load_affectee_for_proj_buff(
         }
         AffecteeFilter::Loc(Location::ItemList(item_list_rid))
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && proj_buff_item_lists.contains(&item_list_rid)
+                && let Some(projectee_rib) = projectee_ship.get_r_item_base()
+                && projectee_rib.proj_buff_item_list_rids.contains(&item_list_rid)
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
@@ -216,8 +216,8 @@ pub(super) fn load_affectee_for_proj_buff(
         }
         AffecteeFilter::LocGrp(Location::ItemList(item_list_rid), item_grp_id)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && proj_buff_item_lists.contains(&item_list_rid)
+                && let Some(projectee_rib) = projectee_ship.get_r_item_base()
+                && projectee_rib.proj_buff_item_list_rids.contains(&item_list_rid)
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
@@ -228,8 +228,8 @@ pub(super) fn load_affectee_for_proj_buff(
         }
         AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && proj_buff_item_lists.contains(&item_list_rid)
+                && let Some(projectee_rib) = projectee_ship.get_r_item_base()
+                && projectee_rib.proj_buff_item_list_rids.contains(&item_list_rid)
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
@@ -259,8 +259,8 @@ pub(super) fn unload_affectee_for_proj_buff(
         }
         AffecteeFilter::Loc(Location::ItemList(item_list_rid))
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && proj_buff_item_lists.contains(&item_list_rid)
+                && let Some(projectee_rib) = projectee_ship.get_r_item_base()
+                && projectee_rib.proj_buff_item_list_rids.contains(&item_list_rid)
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
@@ -271,8 +271,8 @@ pub(super) fn unload_affectee_for_proj_buff(
         }
         AffecteeFilter::LocGrp(Location::ItemList(item_list_rid), item_grp_id)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && proj_buff_item_lists.contains(&item_list_rid)
+                && let Some(projectee_rib) = projectee_ship.get_r_item_base()
+                && projectee_rib.proj_buff_item_list_rids.contains(&item_list_rid)
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
@@ -283,8 +283,8 @@ pub(super) fn unload_affectee_for_proj_buff(
         }
         AffecteeFilter::LocSrq(Location::ItemList(item_list_rid), srq_type_aid)
             if let UItem::Ship(projectee_ship) = projectee_item
-                && let Some(proj_buff_item_lists) = projectee_ship.get_proj_buff_item_lists()
-                && proj_buff_item_lists.contains(&item_list_rid)
+                && let Some(projectee_rib) = projectee_ship.get_r_item_base()
+                && projectee_rib.proj_buff_item_list_rids.contains(&item_list_rid)
                 && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into() =>
         {
             let fit_uid = projectee_ship.get_fit_uid();
@@ -306,8 +306,8 @@ fn is_item_buffable_by_proj_item_list(u_item: &UItem, item_list_rid: &RItemListI
 
 fn is_ship_buffable_by_proj_item_list<'a>(u_item: &'a UItem, item_list_rid: &RItemListId) -> Option<&'a UShip> {
     match u_item {
-        UItem::Ship(ship) => match ship.get_proj_buff_item_lists() {
-            Some(buff_item_lists) => match buff_item_lists.contains(item_list_rid) {
+        UItem::Ship(ship) => match ship.get_r_item_base() {
+            Some(ship_rib) => match ship_rib.proj_buff_item_list_rids.contains(item_list_rid) {
                 true => Some(ship),
                 false => None,
             },

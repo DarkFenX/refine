@@ -6,7 +6,7 @@ pub use mutation::{
 };
 pub(in crate::api) use ranged_proj::iter_ranged_projs;
 pub use ranged_proj::{AddProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
-pub(in crate::api) use ship_axt::get_ship_axt;
+pub(in crate::api) use ship_axt::get_ship_riad;
 
 mod iter_proj;
 mod mutation;

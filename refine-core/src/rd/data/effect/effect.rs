@@ -93,7 +93,7 @@ impl REffect {
             return false;
         }
         // Only default effects can activate regular charge
-        let Some(defeff_rid) = item.defeff_rid else {
+        let Some(defeff_rid) = item.base.defeff_rid else {
             return false;
         };
         defeff_rid == self.rid

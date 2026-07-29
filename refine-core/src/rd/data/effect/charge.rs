@@ -12,17 +12,9 @@ pub(crate) struct REffectCharge {
 
 pub(crate) enum REffectChargeLoc {
     Loaded(NEffectChargeDepl),
+    // TODO: after autocharge support was changed, look into getting rid of argument
     Autocharge(RAttrId),
     TargetAttack,
-}
-impl REffectChargeLoc {
-    pub(crate) fn get_autocharge_attr_rid(&self) -> Option<RAttrId> {
-        match self {
-            Self::Loaded(_) => None,
-            Self::Autocharge(attr_rid) => Some(*attr_rid),
-            Self::TargetAttack => None,
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    Value,
     ad::AItemGrpId,
-    num::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
@@ -12,7 +12,7 @@ pub(crate) struct RItemContLimit {
     pub(crate) group_ids: Vec<AItemGrpId>,
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_item_container_limit(
+pub(in crate::rd::data::item::attr_data) fn get_item_container_limit(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> Option<RItemContLimit> {

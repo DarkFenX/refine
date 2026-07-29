@@ -52,8 +52,8 @@ impl SolarSystem {
             None => {
                 let module_u_item = self.u_data.items.get(module_uid);
                 let u_module = module_u_item.dc_module().unwrap();
-                match u_module.get_defeff_rid() {
-                    Some(Some(defeff_rid)) => {
+                match u_module.get_r_item_base() {
+                    Some(rib) if let Some(defeff_rid) = rib.defeff_rid => {
                         self.u_data.r_data.get_effect_by_rid(defeff_rid).activates_charge()
                             && u_module.get_reffs().is_some_and(|v| v.contains(&defeff_rid))
                     }

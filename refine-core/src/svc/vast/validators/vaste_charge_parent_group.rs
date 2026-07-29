@@ -51,12 +51,12 @@ impl VastFitData {
             charges.push(ValChargeParentGroupChargeInfo {
                 charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
                 parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
-                parent_group_id: ItemGrpId::from_aid(ctx.u_data.items.get(cont_uid).get_group_id().unwrap()),
+                parent_group_id: ItemGrpId::from_aid(ctx.u_data.items.get(cont_uid).get_r_item_base().unwrap().grp_id),
                 allowed_group_ids: ctx
                     .u_data
                     .items
                     .get(charge_uid)
-                    .get_axt()
+                    .get_r_item_attr_data()
                     .unwrap()
                     .cont_limit
                     .as_ref()

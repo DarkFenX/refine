@@ -1,11 +1,11 @@
 use crate::{
+    Value,
     ad::AItemId,
-    num::Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
-pub(in crate::rd::data::item::attr_extras) fn get_is_mobile(
+pub(in crate::rd::data::item::attr_data) fn get_is_mobile(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {
@@ -15,7 +15,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_is_mobile(
     }
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_entity_has_mwd(
+pub(in crate::rd::data::item::attr_data) fn get_entity_has_mwd(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {
@@ -28,7 +28,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_entity_has_mwd(
     }
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_jump_fuel_type_id(
+pub(in crate::rd::data::item::attr_data) fn get_jump_fuel_type_id(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> Option<AItemId> {
@@ -38,7 +38,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_jump_fuel_type_id(
         .and_then(|value| AItemId::try_from_f64_rounded(value.into_f64()))
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_enables_conduit(
+pub(in crate::rd::data::item::attr_data) fn get_enables_conduit(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {
@@ -48,7 +48,7 @@ pub(in crate::rd::data::item::attr_extras) fn get_enables_conduit(
     }
 }
 
-pub(in crate::rd::data::item::attr_extras) fn get_enables_portal(
+pub(in crate::rd::data::item::attr_data) fn get_enables_portal(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

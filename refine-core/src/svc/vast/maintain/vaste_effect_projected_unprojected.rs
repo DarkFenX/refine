@@ -20,8 +20,8 @@ impl Vast {
             let projector_fit_data = self.get_fit_data_mut(projector_fit_uid);
             let projector_espec = EffectSpec::new(projector_uid, effect.rid);
             if effect.projectee_filter.is_some()
-                && let Some(effect_data) = projector_item.get_effects().unwrap().get(&effect.rid)
-                && let Some(item_list_rid) = effect_data.projectee_filter
+                && let Some(effect_data) = projector_item.get_r_item_attr_data().unwrap().effects.get(&effect.rid)
+                && let Some(item_list_rid) = effect_data.projectee_filter_rid
             {
                 projector_fit_data
                     .projectee_filter
@@ -197,5 +197,5 @@ fn is_offense_blockable(projector_item: &UItem, r_effect: &REffect) -> bool {
         return true;
     };
     // Assistance with extra flag can be blocked by the disallow offensive modifiers flag too
-    r_effect.is_assist && projector_item.get_axt().unwrap().disallow_vs_ew_immune_tgt
+    r_effect.is_assist && projector_item.get_r_item_attr_data().unwrap().disallow_vs_ew_immune_tgt
 }

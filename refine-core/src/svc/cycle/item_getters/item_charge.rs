@@ -17,8 +17,8 @@ pub(super) fn get_charge_cseq_map(
     };
     // Default effect of parent item is assumed to control the charge. If there is none, charge is
     // not cycling
-    let cont_effect_rid = match ctx.u_data.items.get(charge.get_cont_item_uid()).get_defeff_rid() {
-        Some(Some(cont_effect_rid)) => cont_effect_rid,
+    let cont_effect_rid = match ctx.u_data.items.get(charge.get_cont_item_uid()).get_r_item_base() {
+        Some(cont_rib) if let Some(cont_effect_rid) = cont_rib.defeff_rid => cont_effect_rid,
         _ => return false,
     };
     // If cycle info for parent item is not available, charge is not cycling

@@ -109,7 +109,7 @@ fn update_running_effects(
             .to_start
             .push(r_data.get_online_effect().unwrap().clone());
     }
-    for &effect_rid in item.effects.keys() {
+    for &effect_rid in item.base.effects.keys() {
         // Online effect has already been handled
         if Some(effect_rid) == r_data.get_effect_consts().online {
             continue;
@@ -117,7 +117,7 @@ fn update_running_effects(
         let effect = r_data.get_effect_by_rid(effect_rid);
         let should_run = resolve_regular_effect_status(
             item_effect_modes,
-            item.defeff_rid,
+            item.base.defeff_rid,
             item_state,
             effect,
             require_disabled_defeff,
@@ -156,7 +156,7 @@ fn update_running_effects(
 }
 
 fn resolve_online_effect_status(item: &RItem, item_effect_modes: &UEffectModes, item_state: RState) -> bool {
-    if !item.has_online_effect {
+    if !item.base.has_online_effect {
         return false;
     }
     match item_effect_modes.get_by_aid(&AEffectId::ONLINE) {

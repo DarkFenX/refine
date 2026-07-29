@@ -76,7 +76,7 @@ fn get_fit(sol: &SolarSystem, booster_uid: UItemId) -> Fit<'_> {
     Fit::new(sol, fit_uid)
 }
 fn get_slot(sol: &SolarSystem, booster_uid: UItemId) -> Option<SlotIndex> {
-    get_u_booster(sol, booster_uid).get_slot()
+    get_u_booster(sol, booster_uid).get_r_item_attr_data()?.booster_slot
 }
 fn get_state(sol: &SolarSystem, booster_uid: UItemId) -> bool {
     get_u_booster(sol, booster_uid).get_booster_state()

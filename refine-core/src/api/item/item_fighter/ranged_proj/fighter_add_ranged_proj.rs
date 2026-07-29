@@ -33,11 +33,11 @@ impl SolarSystem {
             .into());
         };
         let fighter_physics = *u_fighter.get_physics();
-        let u_proj_data = Some(UProjData::from_physics_with_axt(
+        let u_proj_data = Some(UProjData::from_physics_with_riad(
             fighter_physics,
             projectee_physics,
-            u_fighter.get_axt(),
-            projectee_u_item.get_axt(),
+            u_fighter.get_r_item_attr_data(),
+            projectee_u_item.get_r_item_attr_data(),
         ));
         let autocharge_uids = u_fighter.get_autocharges().values().collect_vec();
         // Update user data for fighter

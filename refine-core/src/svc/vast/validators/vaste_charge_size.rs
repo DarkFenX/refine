@@ -51,8 +51,21 @@ impl VastFitData {
             charges.push(ValChargeSizeChargeInfo {
                 charge_item_id: ctx.u_data.items.ext_id_by_int_id(charge_uid),
                 parent_item_id: ctx.u_data.items.ext_id_by_int_id(cont_uid),
-                charge_size: ctx.u_data.items.get(charge_uid).get_axt().unwrap().charge_size,
-                allowed_size: ctx.u_data.items.get(cont_uid).get_axt().unwrap().charge_size.unwrap(),
+                charge_size: ctx
+                    .u_data
+                    .items
+                    .get(charge_uid)
+                    .get_r_item_attr_data()
+                    .unwrap()
+                    .charge_size,
+                allowed_size: ctx
+                    .u_data
+                    .items
+                    .get(cont_uid)
+                    .get_r_item_attr_data()
+                    .unwrap()
+                    .charge_size
+                    .unwrap(),
             });
         }
         match charges.is_empty() {

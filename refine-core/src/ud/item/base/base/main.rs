@@ -1,10 +1,7 @@
 use crate::{
-    ad::{AAbilId, AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::EffectMode,
-    num::{SkillLevel, Value},
-    rd::{
-        RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RItemListId, RShipKind, RState, RcItem,
-    },
+    EffectMode,
+    ad::{AEffectId, AItemId},
+    rd::{RData, REffectId, RItemAttrData, RItemBase, RState, RcItem},
     ud::{
         ItemId,
         item::{
@@ -12,7 +9,7 @@ use crate::{
             misc::UEffectModes,
         },
     },
-    util::{RMap, RSet},
+    util::RSet,
 };
 
 // Item base stores all the data every item should have
@@ -26,8 +23,18 @@ pub(in crate::ud::item) struct UItemBase {
     // Source-dependent data
     cache: Option<ItemBaseCache>,
 }
+
+#[derive(Clone)]
+struct ItemBaseCache {
+    r_item: RcItem,
+    // Running effects, are available only when adapted item is set
+    reffs: RSet<REffectId>,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Constructors
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UItemBase {
-    // Constructors
     pub(in crate::ud::item) fn new(item_id: ItemId, type_aid: AItemId, state: RState, r_data: &RData) -> Self {
         Self {
             item_id,
@@ -56,7 +63,7 @@ impl UItemBase {
     pub(in crate::ud::item::base) fn base_with_r_item(item_id: ItemId, r_item: RcItem, state: RState) -> Self {
         Self {
             item_id,
-            type_aid: r_item.aid,
+            type_aid: r_item.base.aid,
             state,
             effect_modes: UEffectModes::new(),
             cache: Some(ItemBaseCache {
@@ -65,7 +72,24 @@ impl UItemBase {
             }),
         }
     }
-    // Basic data access methods
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Runtime data methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemBase {
+    pub(in crate::ud::item) fn get_r_item_base(&self) -> Option<&RItemBase> {
+        self.base_get_r_item().map(|v| &v.base)
+    }
+    pub(in crate::ud::item) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+        self.base_get_r_item().map(|v| &v.attr_data)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// User data methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemBase {
     pub(in crate::ud::item) fn get_item_id(&self) -> ItemId {
         self.item_id
     }
@@ -76,89 +100,6 @@ impl UItemBase {
         self.type_aid = type_aid;
         self.base_update_r_data(r_data);
     }
-    pub(in crate::ud::item) fn get_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().map(|v| v.grp_id)
-    }
-    pub(in crate::ud::item) fn get_category_id(&self) -> Option<AItemCatId> {
-        self.base_get_r_item().map(|v| v.cat_id)
-    }
-    pub(in crate::ud::item) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
-        self.base_get_r_item().map(|v| &v.attrs)
-    }
-    pub(in crate::ud::item) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        self.base_get_r_item().map(|v| &v.effects)
-    }
-    pub(in crate::ud::item) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
-        self.base_get_r_item().map(|v| v.defeff_rid)
-    }
-    pub(in crate::ud::item) fn get_abils(&self) -> Option<&Vec<AAbilId>> {
-        self.base_get_r_item().map(|v| &v.abil_ids)
-    }
-    pub(in crate::ud::item) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
-        self.base_get_r_item().map(|v| &v.srqs)
-    }
-    pub(in crate::ud::item) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
-        self.base_get_r_item().map(|v| &v.proj_buff_item_list_rids)
-    }
-    pub(in crate::ud::item) fn get_fleet_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
-        self.base_get_r_item().map(|v| &v.fleet_buff_item_list_rids)
-    }
-    // Extra data access methods
-    pub(in crate::ud::item) fn get_axt(&self) -> Option<&RItemAXt> {
-        self.base_get_r_item().map(|v| &v.axt)
-    }
-    pub(in crate::ud::item) fn get_max_state(&self) -> Option<RState> {
-        self.base_get_r_item().map(|v| v.max_state)
-    }
-    pub(in crate::ud::item) fn get_disallowed_in_wspace(&self) -> Option<bool> {
-        self.base_get_r_item().map(|v| v.disallowed_in_wspace)
-    }
-    pub(in crate::ud::item) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().and_then(|v| v.val_fitted_group_id)
-    }
-    pub(in crate::ud::item) fn get_val_online_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().and_then(|v| v.val_online_group_id)
-    }
-    pub(in crate::ud::item) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
-        self.base_get_r_item().and_then(|v| v.val_active_group_id)
-    }
-    pub(in crate::ud::item) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
-        self.base_get_r_item().map(|v| &v.cap_consumers)
-    }
-    pub(in crate::ud::item) fn get_r_ship_kind(&self) -> Option<RShipKind> {
-        self.base_get_r_item().and_then(|v| v.ship_kind)
-    }
-    pub(in crate::ud::item) fn takes_turret_hardpoint(&self) -> bool {
-        match self.base_get_r_item() {
-            Some(r_item) => r_item.takes_turret_hardpoint,
-            None => false,
-        }
-    }
-    pub(in crate::ud::item) fn takes_launcher_hardpoint(&self) -> bool {
-        match self.base_get_r_item() {
-            Some(r_item) => r_item.takes_launcher_hardpoint,
-            None => false,
-        }
-    }
-    pub(in crate::ud::item) fn is_cloak(&self) -> bool {
-        match self.base_get_r_item() {
-            Some(r_item) => r_item.is_cloak,
-            None => false,
-        }
-    }
-    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
-        match self.base_get_r_item() {
-            Some(r_item) => r_item.is_ice_harvester,
-            None => false,
-        }
-    }
-    pub(in crate::ud::item) fn enables_portal(&self) -> bool {
-        match self.base_get_r_item() {
-            Some(r_item) => r_item.enables_portal,
-            None => false,
-        }
-    }
-    // Misc methods
     pub(in crate::ud::item) fn get_state(&self) -> RState {
         self.state
     }
@@ -204,32 +145,12 @@ impl UItemBase {
             None => self.cache = None,
         }
     }
-    // Non-public methods
-    pub(in crate::ud::item::base) fn base_set_type_aid_primitive(&mut self, type_aid: AItemId) {
-        self.type_aid = type_aid;
-    }
-    pub(in crate::ud::item::base) fn base_set_type_aid_not_loaded(&mut self, type_aid: AItemId) {
-        self.type_aid = type_aid;
-        self.cache = None;
-    }
-    pub(in crate::ud::item::base) fn base_set_r_item(&mut self, r_item: RcItem) {
-        self.type_aid = r_item.aid;
-        match &mut self.cache {
-            Some(cache) => {
-                cache.r_item = r_item;
-            }
-            None => {
-                self.cache = Some(ItemBaseCache {
-                    r_item,
-                    reffs: RSet::new(),
-                })
-            }
-        }
-    }
-    pub(in crate::ud::item::base) fn base_get_r_item(&self) -> Option<&RcItem> {
-        self.cache.as_ref().map(|v| &v.r_item)
-    }
-    // Running effects-specific
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Running effect-specific methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemBase {
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.cache.as_ref().map(|v| &v.reffs)
     }
@@ -278,9 +199,32 @@ impl UItemBase {
     }
 }
 
-#[derive(Clone)]
-struct ItemBaseCache {
-    r_item: RcItem,
-    // Running effects, are available only when adapted item is set
-    reffs: RSet<REffectId>,
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers for uitem bases
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl UItemBase {
+    pub(in crate::ud::item::base) fn base_set_type_aid_primitive(&mut self, type_aid: AItemId) {
+        self.type_aid = type_aid;
+    }
+    pub(in crate::ud::item::base) fn base_set_type_aid_not_loaded(&mut self, type_aid: AItemId) {
+        self.type_aid = type_aid;
+        self.cache = None;
+    }
+    pub(in crate::ud::item::base) fn base_set_r_item(&mut self, r_item: RcItem) {
+        self.type_aid = r_item.base.aid;
+        match &mut self.cache {
+            Some(cache) => {
+                cache.r_item = r_item;
+            }
+            None => {
+                self.cache = Some(ItemBaseCache {
+                    r_item,
+                    reffs: RSet::new(),
+                })
+            }
+        }
+    }
+    pub(in crate::ud::item::base) fn base_get_r_item(&self) -> Option<&RcItem> {
+        self.cache.as_ref().map(|v| &v.r_item)
+    }
 }

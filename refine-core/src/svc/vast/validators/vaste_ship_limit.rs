@@ -61,7 +61,7 @@ impl VastFitData {
             };
         };
         let ship_type_aid = ship.get_type_aid();
-        let ship_group_aid = ship.get_group_id();
+        let ship_group_aid = ship.get_r_item_base().map(|v| v.grp_id);
         for (limited_item_uid, ship_limit) in self.ship_limited_items.iter() {
             if ship_limit.type_aids.contains(&ship_type_aid) {
                 continue;
@@ -89,7 +89,7 @@ impl VastFitData {
             return None;
         }
         let (ship_type_aid, ship_group_aid) = match ship {
-            Some(ship) => (Some(ship.get_type_aid()), ship.get_group_id()),
+            Some(ship) => (Some(ship.get_type_aid()), ship.get_r_item_base().map(|v| v.grp_id)),
             None => (None, None),
         };
         let mut mismatches = Vec::new();

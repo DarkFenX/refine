@@ -13,7 +13,7 @@ impl Vast {
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)
         // - having any modules with effects which disable WH jumping (cloaks, MJDs, sieges)
-        if ship.get_disallowed_in_wspace() == Some(true) {
+        if ship.get_r_item_base().unwrap().disallowed_in_wspace {
             return Ok(false);
         }
         let fit_data = self.get_fit_data(ship.get_fit_uid());

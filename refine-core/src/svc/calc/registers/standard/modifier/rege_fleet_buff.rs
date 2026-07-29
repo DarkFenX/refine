@@ -183,8 +183,8 @@ fn is_fit_ship_on_fleet_item_list<'u>(
     }
 }
 fn is_ship_on_fleet_item_list(ship: &UShip, item_list_rid: &RItemListId) -> bool {
-    match ship.get_fleet_buff_item_lists() {
-        Some(item_list_rids) => item_list_rids.contains(item_list_rid),
+    match ship.get_r_item_base() {
+        Some(ship_rib) => ship_rib.fleet_buff_item_list_rids.contains(item_list_rid),
         None => false,
     }
 }

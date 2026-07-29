@@ -15,19 +15,19 @@ pub(crate) type RcEffect = Arc<REffect>;
 pub(crate) type RcMuta = Arc<RMuta>;
 
 pub(crate) struct RData {
-    items: RMap<AItemId, RcItem>,
-    item_lists: PSlab<RItemListId, RItemList>,
-    item_list_aid_rid_map: RMap<AItemListId, RItemListId>,
-    attrs: PSlab<RAttrId, RAttr>,
-    attr_aid_rid_map: RMap<AAttrId, RAttrId>,
-    attr_consts: RAttrConsts,
-    effects: PSlab<REffectId, RcEffect>,
-    effect_aid_rid_map: RMap<AEffectId, REffectId>,
-    effect_consts: REffectConsts,
-    buffs: PSlab<RBuffId, RBuff>,
-    buff_aid_rid_map: RMap<ABuffId, RBuffId>,
-    mutas: RMap<AItemId, RcMuta>,
-    abils: RMap<AAbilId, RAbil>,
+    pub(super) items: RMap<AItemId, RcItem>,
+    pub(super) item_lists: PSlab<RItemListId, RItemList>,
+    pub(super) item_list_aid_rid_map: RMap<AItemListId, RItemListId>,
+    pub(super) attrs: PSlab<RAttrId, RAttr>,
+    pub(super) attr_aid_rid_map: RMap<AAttrId, RAttrId>,
+    pub(super) attr_consts: RAttrConsts,
+    pub(super) effects: PSlab<REffectId, RcEffect>,
+    pub(super) effect_aid_rid_map: RMap<AEffectId, REffectId>,
+    pub(super) effect_consts: REffectConsts,
+    pub(super) buffs: PSlab<RBuffId, RBuff>,
+    pub(super) buff_aid_rid_map: RMap<ABuffId, RBuffId>,
+    pub(super) mutas: RMap<AItemId, RcMuta>,
+    pub(super) abils: RMap<AAbilId, RAbil>,
     // Extra data stored directly on RData for ease of access / optimization purposes
     online_effect: Option<RcEffect>,
     rah_duration_attr_rid: Option<RAttrId>,
@@ -168,7 +168,7 @@ impl RData {
                 &buff_aid_rid_map,
             );
         }
-        // Item data depends on effect data being filled, so do it after effects
+        // Item data depends on having effect data already filled, so do it after effects
         for r_item in items.values_mut() {
             Arc::get_mut(r_item).unwrap().fill_runtime(
                 &a_data.items.data,

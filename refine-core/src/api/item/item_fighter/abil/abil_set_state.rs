@@ -7,7 +7,7 @@ impl<'s> AbilityMut<'s> {
         let r_abil = self.sol.u_data.r_data.get_ability_by_aid(&self.abil_aid).unwrap();
         let effect_aid = r_abil.effect_aid;
         let u_fighter = self.sol.u_data.items.get(self.fighter_uid).dc_fighter().unwrap();
-        let is_defeff = u_fighter.get_defeff_rid().unwrap() == Some(r_abil.effect_rid);
+        let is_defeff = u_fighter.get_r_item_base().unwrap().defeff_rid == Some(r_abil.effect_rid);
         let effect_mode = match (state, is_defeff) {
             (true, true) => EffectMode::FullCompliance,
             (true, false) => EffectMode::StateCompliance,

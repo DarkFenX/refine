@@ -36,10 +36,10 @@ pub(in crate::api::item::shared::mutation) fn resolve_absolutes_into_rolls_with_
             resolve_absolutes_into_rolls_with_attrs(r_data, &combined_attrs, r_mutator, values)
         }
         (Some(base_r_item), None) => {
-            resolve_absolutes_into_rolls_with_attrs(r_data, &base_r_item.attrs, r_mutator, values)
+            resolve_absolutes_into_rolls_with_attrs(r_data, &base_r_item.attr_data.attrs, r_mutator, values)
         }
         (None, Some(mutated_r_item)) => {
-            resolve_absolutes_into_rolls_with_attrs(r_data, &mutated_r_item.attrs, r_mutator, values)
+            resolve_absolutes_into_rolls_with_attrs(r_data, &mutated_r_item.attr_data.attrs, r_mutator, values)
         }
         (None, None) => Vec::new(),
     }

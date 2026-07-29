@@ -22,15 +22,7 @@ impl ItemMutationData {
 
 impl ItemMutationDataCache {
     fn consistency_check(&self, u_data: &UData) -> DebugResult {
-        for attr_rid in self.merged_attrs.keys() {
-            attr_rid.consistency_check(u_data)?;
-        }
-        if let Some(effects) = &self.merged_effects {
-            for effect_rid in effects.keys() {
-                effect_rid.consistency_check(u_data)?;
-            }
-        }
-        self.axt.consistency_check(u_data)?;
+        self.merged_attr_data.consistency_check(u_data)?;
         Ok(())
     }
 }

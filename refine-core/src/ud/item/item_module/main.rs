@@ -1,16 +1,14 @@
 use crate::{
-    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    api::ModuleState,
+    Count, EffectMode, Index, ItemId, ItemKind, ModRack, ModuleState, OptionalReload, PValue, Spool,
+    ad::{AEffectId, AItemId},
     err::basic::ItemNotMutatedError,
-    misc::{EffectMode, ItemKind, ModRack, OptionalReload, Spool},
-    num::{Count, Index, PValue, SkillLevel, Value},
-    rd::{RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState},
+    rd::{RAttrId, RData, REffectId, RItemAttrData, RItemBase, RState},
     ud::{
-        ItemId, UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
+        UAttrMutationRequest, UData, UFitId, UItemId, UItemMutationRequest,
         err::ItemMutatedError,
         item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UProjs},
     },
-    util::{LibNamed, RMap, RSet},
+    util::{LibNamed, RSet},
 };
 
 #[derive(Clone)]
@@ -73,6 +71,7 @@ impl std::fmt::Display for UModule {
 // Item base methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl UModule {
+    // User data
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -82,56 +81,8 @@ impl UModule {
     pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
         self.base.set_type_aid(type_aid, r_data);
     }
-    pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
-        self.base.get_group_id()
-    }
-    pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
-        self.base.get_category_id()
-    }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
-        self.base.get_attrs()
-    }
-    pub(crate) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        self.base.get_effects()
-    }
-    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
-        self.base.get_defeff_rid()
-    }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
-        self.base.get_skill_reqs()
-    }
-    pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
-        self.base.get_axt()
-    }
-    pub(crate) fn get_max_state(&self) -> Option<RState> {
-        self.base.get_max_state()
-    }
-    pub(crate) fn get_val_fitted_group_id(&self) -> Option<AItemGrpId> {
-        self.base.get_val_fitted_group_id()
-    }
-    pub(crate) fn get_val_online_group_id(&self) -> Option<AItemGrpId> {
-        self.base.get_val_online_group_id()
-    }
-    pub(crate) fn get_val_active_group_id(&self) -> Option<AItemGrpId> {
-        self.base.get_val_active_group_id()
-    }
-    pub(crate) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
-        self.base.get_cap_consumers()
-    }
-    pub(crate) fn takes_turret_hardpoint(&self) -> bool {
-        self.base.takes_turret_hardpoint()
-    }
-    pub(crate) fn takes_launcher_hardpoint(&self) -> bool {
-        self.base.takes_launcher_hardpoint()
-    }
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
-    }
-    pub(crate) fn is_cloak(&self) -> bool {
-        self.base.is_cloak()
-    }
-    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
-        self.base.is_ice_harvester()
     }
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
@@ -159,6 +110,13 @@ impl UModule {
         r_data: &RData,
     ) {
         self.base.set_effect_modes(effect_modes, r_data)
+    }
+    // Runtime data
+    pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
+        self.base.get_r_item_base()
+    }
+    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+        self.base.get_r_item_attr_data()
     }
     pub(crate) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
@@ -229,15 +187,15 @@ impl UModule {
         // No charge - no info
         let charge_uid = self.get_charge_uid()?;
         let charge_item = u_data.items.get(charge_uid);
-        let module_capacity = match self.get_axt() {
-            Some(axt) => axt.capacity,
+        let module_capacity = match self.get_r_item_attr_data() {
+            Some(riad) => riad.capacity,
             // Module not loaded - no info
             _ => {
                 return None;
             }
         };
-        let charge_volume = match charge_item.get_axt() {
-            Some(axt) if axt.volume != PValue::ZERO => axt.volume,
+        let charge_volume = match charge_item.get_r_item_attr_data() {
+            Some(riad) if riad.volume != PValue::ZERO => riad.volume,
             // Charge not loaded or has 0 volume - no info
             _ => {
                 return None;

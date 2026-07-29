@@ -32,10 +32,13 @@ impl NEffectEcmChecker {
 }
 
 fn check_bomb(u_item: &UItem, attr_consts: &RAttrConsts) -> bool {
-    u_item.get_oattr_ffb(attr_consts.scan_radar_strength_bonus, Value::ZERO) > Value::ZERO
-        || u_item.get_oattr_ffb(attr_consts.scan_magnetometric_strength_bonus, Value::ZERO) > Value::ZERO
-        || u_item.get_oattr_ffb(attr_consts.scan_gravimetric_strength_bonus, Value::ZERO) > Value::ZERO
-        || u_item.get_oattr_ffb(attr_consts.scan_ladar_strength_bonus, Value::ZERO) > Value::ZERO
+    let Some(riad) = u_item.get_r_item_attr_data() else {
+        return false;
+    };
+    riad.get_oattr_ffb(attr_consts.scan_radar_strength_bonus, Value::ZERO) > Value::ZERO
+        || riad.get_oattr_ffb(attr_consts.scan_magnetometric_strength_bonus, Value::ZERO) > Value::ZERO
+        || riad.get_oattr_ffb(attr_consts.scan_gravimetric_strength_bonus, Value::ZERO) > Value::ZERO
+        || riad.get_oattr_ffb(attr_consts.scan_ladar_strength_bonus, Value::ZERO) > Value::ZERO
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -30,11 +30,12 @@ impl SolarSystem {
             return;
         };
         let effects_with_ac_type_aids = u_item
-            .get_effects()
+            .get_r_item_attr_data()
             .unwrap()
+            .effects
             .iter()
             .filter_map(|(effect_rid, effect_data)| {
-                effect_data.autocharge.map(|ac_type_aid| (*effect_rid, ac_type_aid))
+                effect_data.autocharge_aid.map(|ac_type_aid| (*effect_rid, ac_type_aid))
             })
             .collect_vec();
         if effects_with_ac_type_aids.is_empty() {

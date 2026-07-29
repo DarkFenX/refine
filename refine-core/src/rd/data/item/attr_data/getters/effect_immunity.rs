@@ -1,10 +1,10 @@
 use crate::{
-    num::Value,
+    Value,
     rd::{RAttrConsts, RAttrId},
     util::RMap,
 };
 
-pub(in crate::rd::data::item::attr_extras) fn get_disallow_vs_ew_immune_tgt(
+pub(in crate::rd::data::item::attr_data) fn get_disallow_vs_ew_immune_tgt(
     item_attrs: &RMap<RAttrId, Value>,
     attr_consts: &RAttrConsts,
 ) -> bool {

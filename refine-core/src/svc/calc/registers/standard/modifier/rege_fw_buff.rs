@@ -251,7 +251,7 @@ fn is_fit_ship_on_proj_item_list<'a>(
     let fit = u_data.fits.get(fit_uid);
     let ship_uid = fit.ship?;
     let ship = u_data.items.get(ship_uid).dc_ship().unwrap();
-    match ship.get_proj_buff_item_lists()?.contains(item_list_rid) {
+    match ship.get_r_item_base()?.proj_buff_item_list_rids.contains(item_list_rid) {
         true => Some((ship_uid, ship)),
         false => None,
     }

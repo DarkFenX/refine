@@ -1,13 +1,12 @@
 use either::Either;
 
 use crate::{
-    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, ItemKind, NpcProp, OptionalReload, RearmMinion, Spool},
-    num::{PValue, SkillLevel, Value},
-    rd::{RAttrId, RData, REffectId, RItemAXt, RItemCapConsumer, RItemEffectData, RState},
+    EffectMode, ItemId, ItemKind, NpcProp, OptionalReload, PValue, RearmMinion, SkillLevel, Spool,
+    ad::{AEffectId, AItemId},
+    rd::{RData, REffectId, RItemAttrData, RItemBase, RItemCapConsumer, RState},
     ud::{
-        ItemId, UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant,
-        UItemId, UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
+        UAutocharge, UBooster, UCharacter, UCharge, UData, UDrone, UFighter, UFitId, UFwEffect, UImplant, UItemId,
+        UModule, UPhysics, UProjEffect, URig, UService, UShip, USkill, UStance, USubsystem, USwEffect,
         item::{ItemMutationData, UAutocharges, UEffectUpdates, UProjData, UProjs},
     },
     util::{LibGetId, LibNamed, RMap, RSet},
@@ -132,174 +131,6 @@ impl UItem {
             Self::Stance(stance) => stance.get_type_aid(),
             Self::Subsystem(subsystem) => subsystem.get_type_aid(),
             Self::SwEffect(sw_effect) => sw_effect.get_type_aid(),
-        }
-    }
-    pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_group_id(),
-            Self::Booster(booster) => booster.get_group_id(),
-            Self::Character(character) => character.get_group_id(),
-            Self::Charge(charge) => charge.get_group_id(),
-            Self::Drone(drone) => drone.get_group_id(),
-            Self::Fighter(fighter) => fighter.get_group_id(),
-            Self::FwEffect(fw_effect) => fw_effect.get_group_id(),
-            Self::Implant(implant) => implant.get_group_id(),
-            Self::Module(module) => module.get_group_id(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_group_id(),
-            Self::Rig(rig) => rig.get_group_id(),
-            Self::Service(service) => service.get_group_id(),
-            Self::Ship(ship) => ship.get_group_id(),
-            Self::Skill(skill) => skill.get_group_id(),
-            Self::Stance(stance) => stance.get_group_id(),
-            Self::Subsystem(subsystem) => subsystem.get_group_id(),
-            Self::SwEffect(sw_effect) => sw_effect.get_group_id(),
-        }
-    }
-    pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_category_id(),
-            Self::Booster(booster) => booster.get_category_id(),
-            Self::Character(character) => character.get_category_id(),
-            Self::Charge(charge) => charge.get_category_id(),
-            Self::Drone(drone) => drone.get_category_id(),
-            Self::Fighter(fighter) => fighter.get_category_id(),
-            Self::FwEffect(fw_effect) => fw_effect.get_category_id(),
-            Self::Implant(implant) => implant.get_category_id(),
-            Self::Module(module) => module.get_category_id(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_category_id(),
-            Self::Rig(rig) => rig.get_category_id(),
-            Self::Service(service) => service.get_category_id(),
-            Self::Ship(ship) => ship.get_category_id(),
-            Self::Skill(skill) => skill.get_category_id(),
-            Self::Stance(stance) => stance.get_category_id(),
-            Self::Subsystem(subsystem) => subsystem.get_category_id(),
-            Self::SwEffect(sw_effect) => sw_effect.get_category_id(),
-        }
-    }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_attrs(),
-            Self::Booster(booster) => booster.get_attrs(),
-            Self::Character(character) => character.get_attrs(),
-            Self::Charge(charge) => charge.get_attrs(),
-            Self::Drone(drone) => drone.get_attrs(),
-            Self::Fighter(fighter) => fighter.get_attrs(),
-            Self::FwEffect(fw_effect) => fw_effect.get_attrs(),
-            Self::Implant(implant) => implant.get_attrs(),
-            Self::Module(module) => module.get_attrs(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_attrs(),
-            Self::Rig(rig) => rig.get_attrs(),
-            Self::Service(service) => service.get_attrs(),
-            Self::Ship(ship) => ship.get_attrs(),
-            Self::Skill(skill) => skill.get_attrs(),
-            Self::Stance(stance) => stance.get_attrs(),
-            Self::Subsystem(subsystem) => subsystem.get_attrs(),
-            Self::SwEffect(sw_effect) => sw_effect.get_attrs(),
-        }
-    }
-    pub(crate) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_effects(),
-            Self::Booster(booster) => booster.get_effects(),
-            Self::Character(character) => character.get_effects(),
-            Self::Charge(charge) => charge.get_effects(),
-            Self::Drone(drone) => drone.get_effects(),
-            Self::Fighter(fighter) => fighter.get_effects(),
-            Self::FwEffect(fw_effect) => fw_effect.get_effects(),
-            Self::Implant(implant) => implant.get_effects(),
-            Self::Module(module) => module.get_effects(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_effects(),
-            Self::Rig(rig) => rig.get_effects(),
-            Self::Service(service) => service.get_effects(),
-            Self::Ship(ship) => ship.get_effects(),
-            Self::Skill(skill) => skill.get_effects(),
-            Self::Stance(stance) => stance.get_effects(),
-            Self::Subsystem(subsystem) => subsystem.get_effects(),
-            Self::SwEffect(sw_effect) => sw_effect.get_effects(),
-        }
-    }
-    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_defeff_rid(),
-            Self::Booster(booster) => booster.get_defeff_rid(),
-            Self::Character(character) => character.get_defeff_rid(),
-            Self::Charge(charge) => charge.get_defeff_rid(),
-            Self::Drone(drone) => drone.get_defeff_rid(),
-            Self::Fighter(fighter) => fighter.get_defeff_rid(),
-            Self::FwEffect(fw_effect) => fw_effect.get_defeff_rid(),
-            Self::Implant(implant) => implant.get_defeff_rid(),
-            Self::Module(module) => module.get_defeff_rid(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_defeff_rid(),
-            Self::Rig(rig) => rig.get_defeff_rid(),
-            Self::Service(service) => service.get_defeff_rid(),
-            Self::Ship(ship) => ship.get_defeff_rid(),
-            Self::Skill(skill) => skill.get_defeff_rid(),
-            Self::Stance(stance) => stance.get_defeff_rid(),
-            Self::Subsystem(subsystem) => subsystem.get_defeff_rid(),
-            Self::SwEffect(sw_effect) => sw_effect.get_defeff_rid(),
-        }
-    }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_skill_reqs(),
-            Self::Booster(booster) => booster.get_skill_reqs(),
-            Self::Character(character) => character.get_skill_reqs(),
-            Self::Charge(charge) => charge.get_skill_reqs(),
-            Self::Drone(drone) => drone.get_skill_reqs(),
-            Self::Fighter(fighter) => fighter.get_skill_reqs(),
-            Self::FwEffect(fw_effect) => fw_effect.get_skill_reqs(),
-            Self::Implant(implant) => implant.get_skill_reqs(),
-            Self::Module(module) => module.get_skill_reqs(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_skill_reqs(),
-            Self::Rig(rig) => rig.get_skill_reqs(),
-            Self::Service(service) => service.get_skill_reqs(),
-            Self::Ship(ship) => ship.get_skill_reqs(),
-            Self::Skill(skill) => skill.get_skill_reqs(),
-            Self::Stance(stance) => stance.get_skill_reqs(),
-            Self::Subsystem(subsystem) => subsystem.get_skill_reqs(),
-            Self::SwEffect(sw_effect) => sw_effect.get_skill_reqs(),
-        }
-    }
-    pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.get_axt(),
-            Self::Booster(booster) => booster.get_axt(),
-            Self::Character(character) => character.get_axt(),
-            Self::Charge(charge) => charge.get_axt(),
-            Self::Drone(drone) => drone.get_axt(),
-            Self::Fighter(fighter) => fighter.get_axt(),
-            Self::FwEffect(fw_effect) => fw_effect.get_axt(),
-            Self::Implant(implant) => implant.get_axt(),
-            Self::Module(module) => module.get_axt(),
-            Self::ProjEffect(proj_effect) => proj_effect.get_axt(),
-            Self::Rig(rig) => rig.get_axt(),
-            Self::Service(service) => service.get_axt(),
-            Self::Ship(ship) => ship.get_axt(),
-            Self::Skill(skill) => skill.get_axt(),
-            Self::Stance(stance) => stance.get_axt(),
-            Self::Subsystem(subsystem) => subsystem.get_axt(),
-            Self::SwEffect(sw_effect) => sw_effect.get_axt(),
-        }
-    }
-    pub(crate) fn is_ice_harvester(&self) -> bool {
-        match self {
-            Self::Autocharge(autocharge) => autocharge.is_ice_harvester(),
-            Self::Booster(booster) => booster.is_ice_harvester(),
-            Self::Character(character) => character.is_ice_harvester(),
-            Self::Charge(charge) => charge.is_ice_harvester(),
-            Self::Drone(drone) => drone.is_ice_harvester(),
-            Self::Fighter(fighter) => fighter.is_ice_harvester(),
-            Self::FwEffect(fw_effect) => fw_effect.is_ice_harvester(),
-            Self::Implant(implant) => implant.is_ice_harvester(),
-            Self::Module(module) => module.is_ice_harvester(),
-            Self::ProjEffect(proj_effect) => proj_effect.is_ice_harvester(),
-            Self::Rig(rig) => rig.is_ice_harvester(),
-            Self::Service(service) => service.is_ice_harvester(),
-            Self::Ship(ship) => ship.is_ice_harvester(),
-            Self::Skill(skill) => skill.is_ice_harvester(),
-            Self::Stance(stance) => stance.is_ice_harvester(),
-            Self::Subsystem(subsystem) => subsystem.is_ice_harvester(),
-            Self::SwEffect(sw_effect) => sw_effect.is_ice_harvester(),
         }
     }
     pub(crate) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
@@ -453,25 +284,46 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.get_state(),
         }
     }
-    pub(crate) fn r_data_changed(&mut self, r_data: &RData) {
+    pub(crate) fn get_r_item_base(&self) -> Option<&RItemBase> {
         match self {
-            Self::Autocharge(autocharge) => autocharge.r_data_changed(r_data),
-            Self::Booster(booster) => booster.r_data_changed(r_data),
-            Self::Character(character) => character.r_data_changed(r_data),
-            Self::Charge(charge) => charge.r_data_changed(r_data),
-            Self::Drone(drone) => drone.r_data_changed(r_data),
-            Self::Fighter(fighter) => fighter.r_data_changed(r_data),
-            Self::FwEffect(fw_effect) => fw_effect.r_data_changed(r_data),
-            Self::Implant(implant) => implant.r_data_changed(r_data),
-            Self::Module(module) => module.r_data_changed(r_data),
-            Self::ProjEffect(proj_effect) => proj_effect.r_data_changed(r_data),
-            Self::Rig(rig) => rig.r_data_changed(r_data),
-            Self::Service(service) => service.r_data_changed(r_data),
-            Self::Ship(ship) => ship.r_data_changed(r_data),
-            Self::Skill(skill) => skill.r_data_changed(r_data),
-            Self::Stance(stance) => stance.r_data_changed(r_data),
-            Self::Subsystem(subsystem) => subsystem.update_a_data(r_data),
-            Self::SwEffect(sw_effect) => sw_effect.r_data_changed(r_data),
+            Self::Autocharge(autocharge) => autocharge.get_r_item_base(),
+            Self::Booster(booster) => booster.get_r_item_base(),
+            Self::Character(character) => character.get_r_item_base(),
+            Self::Charge(charge) => charge.get_r_item_base(),
+            Self::Drone(drone) => drone.get_r_item_base(),
+            Self::Fighter(fighter) => fighter.get_r_item_base(),
+            Self::FwEffect(fw_effect) => fw_effect.get_r_item_base(),
+            Self::Implant(implant) => implant.get_r_item_base(),
+            Self::Module(module) => module.get_r_item_base(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_r_item_base(),
+            Self::Rig(rig) => rig.get_r_item_base(),
+            Self::Service(service) => service.get_r_item_base(),
+            Self::Ship(ship) => ship.get_r_item_base(),
+            Self::Skill(skill) => skill.get_r_item_base(),
+            Self::Stance(stance) => stance.get_r_item_base(),
+            Self::Subsystem(subsystem) => subsystem.get_r_item_base(),
+            Self::SwEffect(sw_effect) => sw_effect.get_r_item_base(),
+        }
+    }
+    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.get_r_item_attr_data(),
+            Self::Booster(booster) => booster.get_r_item_attr_data(),
+            Self::Character(character) => character.get_r_item_attr_data(),
+            Self::Charge(charge) => charge.get_r_item_attr_data(),
+            Self::Drone(drone) => drone.get_r_item_attr_data(),
+            Self::Fighter(fighter) => fighter.get_r_item_attr_data(),
+            Self::FwEffect(fw_effect) => fw_effect.get_r_item_attr_data(),
+            Self::Implant(implant) => implant.get_r_item_attr_data(),
+            Self::Module(module) => module.get_r_item_attr_data(),
+            Self::ProjEffect(proj_effect) => proj_effect.get_r_item_attr_data(),
+            Self::Rig(rig) => rig.get_r_item_attr_data(),
+            Self::Service(service) => service.get_r_item_attr_data(),
+            Self::Ship(ship) => ship.get_r_item_attr_data(),
+            Self::Skill(skill) => skill.get_r_item_attr_data(),
+            Self::Stance(stance) => stance.get_r_item_attr_data(),
+            Self::Subsystem(subsystem) => subsystem.get_r_item_attr_data(),
+            Self::SwEffect(sw_effect) => sw_effect.get_r_item_attr_data(),
         }
     }
     pub(crate) fn is_loaded(&self) -> bool {
@@ -493,6 +345,27 @@ impl UItem {
             Self::Stance(stance) => stance.is_loaded(),
             Self::Subsystem(subsystem) => subsystem.is_loaded(),
             Self::SwEffect(sw_effect) => sw_effect.is_loaded(),
+        }
+    }
+    pub(crate) fn r_data_changed(&mut self, r_data: &RData) {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.r_data_changed(r_data),
+            Self::Booster(booster) => booster.r_data_changed(r_data),
+            Self::Character(character) => character.r_data_changed(r_data),
+            Self::Charge(charge) => charge.r_data_changed(r_data),
+            Self::Drone(drone) => drone.r_data_changed(r_data),
+            Self::Fighter(fighter) => fighter.r_data_changed(r_data),
+            Self::FwEffect(fw_effect) => fw_effect.r_data_changed(r_data),
+            Self::Implant(implant) => implant.r_data_changed(r_data),
+            Self::Module(module) => module.r_data_changed(r_data),
+            Self::ProjEffect(proj_effect) => proj_effect.r_data_changed(r_data),
+            Self::Rig(rig) => rig.r_data_changed(r_data),
+            Self::Service(service) => service.r_data_changed(r_data),
+            Self::Ship(ship) => ship.r_data_changed(r_data),
+            Self::Skill(skill) => skill.r_data_changed(r_data),
+            Self::Stance(stance) => stance.r_data_changed(r_data),
+            Self::Subsystem(subsystem) => subsystem.update_a_data(r_data),
+            Self::SwEffect(sw_effect) => sw_effect.r_data_changed(r_data),
         }
     }
 }
@@ -659,41 +532,29 @@ impl UItem {
     }
     pub(crate) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
         match self {
-            Self::Module(module) => module.get_cap_consumers(),
+            Self::Module(module) => module.get_r_item_base().map(|v| &v.cap_consumers),
             _ => None,
         }
     }
     // Methods specific to generic item enum
-    pub(crate) fn get_attr(&self, attr_rid: RAttrId) -> Option<Value> {
-        match self.get_attrs() {
-            Some(attrs) => attrs.get(&attr_rid).copied(),
-            None => None,
-        }
-    }
-    pub(crate) fn get_oattr_ffb(&self, attr_rid: Option<RAttrId>, fallback: Value) -> Value {
-        let Some(attr_rid) = attr_rid else {
-            return fallback;
-        };
-        self.get_attr(attr_rid).unwrap_or(fallback)
-    }
     pub(crate) fn get_effective_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         match self {
             Self::Autocharge(_) => None,
-            Self::Booster(booster) => booster.get_skill_reqs(),
+            Self::Booster(booster) => booster.get_r_item_base().map(|v| &v.srqs),
             Self::Character(_) => None,
-            Self::Charge(charge) => charge.get_skill_reqs(),
-            Self::Drone(drone) => drone.get_skill_reqs(),
-            Self::Fighter(fighter) => fighter.get_skill_reqs(),
+            Self::Charge(charge) => charge.get_r_item_base().map(|v| &v.srqs),
+            Self::Drone(drone) => drone.get_r_item_base().map(|v| &v.srqs),
+            Self::Fighter(fighter) => fighter.get_r_item_base().map(|v| &v.srqs),
             Self::FwEffect(_) => None,
-            Self::Implant(implant) => implant.get_skill_reqs(),
-            Self::Module(module) => module.get_skill_reqs(),
+            Self::Implant(implant) => implant.get_r_item_base().map(|v| &v.srqs),
+            Self::Module(module) => module.get_r_item_base().map(|v| &v.srqs),
             Self::ProjEffect(_) => None,
             Self::Rig(_) => None,
             Self::Service(_) => None,
-            Self::Ship(ship) => ship.get_skill_reqs(),
-            Self::Skill(skill) => skill.get_skill_reqs(),
+            Self::Ship(ship) => ship.get_r_item_base().map(|v| &v.srqs),
+            Self::Skill(skill) => skill.get_r_item_base().map(|v| &v.srqs),
             Self::Stance(_) => None,
-            Self::Subsystem(subsystem) => subsystem.get_skill_reqs(),
+            Self::Subsystem(subsystem) => subsystem.get_r_item_base().map(|v| &v.srqs),
             Self::SwEffect(_) => None,
         }
     }

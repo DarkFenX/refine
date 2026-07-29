@@ -26,7 +26,7 @@ impl SolarSystem {
             let Some(r_item) = self.u_data.r_data.get_item_by_aid(type_aid) else {
                 continue;
             };
-            let Some(item_kind) = r_item.axt.kind else {
+            let Some(item_kind) = r_item.attr_data.kind else {
                 continue;
             };
             match item_kind {
@@ -72,7 +72,7 @@ impl SolarSystem {
                         ModRack::High,
                         AddMode::Equip,
                         *type_aid,
-                        conv_state(r_item.max_state),
+                        conv_state(r_item.base.max_state),
                         None,
                         None,
                         reuse_eupdates,
@@ -88,7 +88,7 @@ impl SolarSystem {
                         ModRack::Mid,
                         AddMode::Equip,
                         *type_aid,
-                        conv_state(r_item.max_state),
+                        conv_state(r_item.base.max_state),
                         None,
                         None,
                         reuse_eupdates,
@@ -104,7 +104,7 @@ impl SolarSystem {
                         ModRack::Low,
                         AddMode::Equip,
                         *type_aid,
-                        conv_state(r_item.max_state),
+                        conv_state(r_item.base.max_state),
                         None,
                         None,
                         reuse_eupdates,
@@ -179,10 +179,10 @@ fn get_chargeable_modules(u_data: &UData, fit_uid: UFitId) -> Vec<UItemId> {
             continue;
         }
         seen_type_aids.push(type_aid);
-        let Some(item_axt) = u_item.get_axt() else {
+        let Some(item_riad) = u_item.get_r_item_attr_data() else {
             continue;
         };
-        if item_axt.capacity > PValue::ZERO {
+        if item_riad.capacity > PValue::ZERO {
             module_uids.push(module_uid);
         }
     }

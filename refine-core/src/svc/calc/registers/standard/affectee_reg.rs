@@ -24,9 +24,10 @@ impl StandardRegister {
         let Some(fit_uid) = item.get_fit_uid() else {
             return cmods;
         };
+        let item_rib = item.get_r_item_base().unwrap();
+        let item_grp_id = item_rib.grp_id;
+        let srqs = &item_rib.srqs;
         let root_loc_kind = item.get_root_loc_kind();
-        let item_grp_id = item.get_group_id().unwrap();
-        let srqs = item.get_skill_reqs().unwrap();
         if let Some(root_loc_kind) = root_loc_kind {
             self.affectee_root.add_entry((fit_uid, root_loc_kind), item_uid);
         }
@@ -93,9 +94,10 @@ impl StandardRegister {
         let Some(fit_uid) = item.get_fit_uid() else {
             return cmods;
         };
+        let item_rib = item.get_r_item_base().unwrap();
+        let item_grp_id = item_rib.grp_id;
+        let srqs = &item_rib.srqs;
         let root_loc_kind = item.get_root_loc_kind();
-        let item_grp_id = item.get_group_id().unwrap();
-        let srqs = item.get_skill_reqs().unwrap();
         if let Some(root_loc_kind) = root_loc_kind {
             self.affectee_root.remove_entry((fit_uid, root_loc_kind), &item_uid);
         }

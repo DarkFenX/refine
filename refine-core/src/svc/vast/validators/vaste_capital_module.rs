@@ -71,7 +71,10 @@ fn is_ship_subcap(ship: Option<&UShip>) -> bool {
     let Some(ship) = ship else {
         return false;
     };
-    matches!(ship.get_r_kind(), Some(RShipKind::Ship))
+    let Some(ship_rib) = ship.get_r_item_base() else {
+        return false;
+    };
+    matches!(ship_rib.ship_kind, Some(RShipKind::Ship))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -28,34 +28,34 @@ fn internal_cycle_count(ctx: SvcCtx, calc: &mut Calc, module: &UModule) -> InfCo
     }
     let charge_uid = module.get_charge_uid().unwrap();
     let charge_item = ctx.u_data.items.get(charge_uid);
-    let Some(charge_attrs) = charge_item.get_attrs() else {
+    let charge_attrs = match charge_item.get_r_item_attr_data() {
+        Some(riad) => &riad.attrs,
         // Charge is not loaded - can't use it
-        return InfCount::Count(Count::ZERO);
+        None => return InfCount::Count(Count::ZERO),
     };
-    let attr_consts = ctx.ac();
     if charge_attrs
-        .get_opt(attr_consts.crystals_get_damaged)
+        .get_opt(ctx.ac().crystals_get_damaged)
         .map(|v| !v.is_flag_set())
         .unwrap_or(true)
     {
         return InfCount::Infinite;
     }
     // Damage or chance of 0 or not defined - can cycle infinitely
-    let dmg = match calc.get_item_oattr_oextra(ctx, charge_uid, attr_consts.crystal_volatility_dmg) {
+    let dmg = match calc.get_item_oattr_oextra(ctx, charge_uid, ctx.ac().crystal_volatility_dmg) {
         Some(dmg) => match dmg < Value::FLOAT_TOLERANCE {
             true => return InfCount::Infinite,
             false => PValue::from_value_unchecked(dmg),
         },
         None => return InfCount::Infinite,
     };
-    let chance = match calc.get_item_oattr_oextra(ctx, charge_uid, attr_consts.crystal_volatility_chance) {
+    let chance = match calc.get_item_oattr_oextra(ctx, charge_uid, ctx.ac().crystal_volatility_chance) {
         Some(chance) => match chance < Value::FLOAT_TOLERANCE {
             true => return InfCount::Infinite,
             false => UnitInterval::from_value_clamped(chance),
         },
         None => return InfCount::Infinite,
     };
-    let hp = match charge_attrs.get_opt(attr_consts.hp) {
+    let hp = match charge_attrs.get_opt(ctx.ac().hp) {
         Some(&hp) => PValue::from_value_clamped(hp),
         None => PValue::ZERO,
     };

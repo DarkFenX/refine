@@ -63,7 +63,7 @@ impl VastFitData {
 }
 
 fn get_allowed_size(ship: Option<&UShip>) -> Option<Value> {
-    ship?.get_axt()?.rig_size
+    ship?.get_r_item_attr_data()?.rig_size
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

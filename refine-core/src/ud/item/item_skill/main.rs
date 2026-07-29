@@ -1,13 +1,12 @@
 use crate::{
-    ad::{AEffectId, AItemCatId, AItemGrpId, AItemId},
-    misc::{EffectMode, ItemKind},
-    num::{SkillLevel, Value},
-    rd::{RAttrId, RData, REffectId, RItemAXt, RItemEffectData, RState},
+    EffectMode, ItemId, ItemKind, SkillLevel,
+    ad::{AEffectId, AItemId},
+    rd::{RData, REffectId, RItemAttrData, RItemBase, RState},
     ud::{
-        ItemId, UFitId,
+        UFitId,
         item::{UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
     },
-    util::{LibNamed, RMap, RSet},
+    util::{LibNamed, RSet},
 };
 
 #[derive(Clone)]
@@ -56,6 +55,7 @@ impl std::fmt::Display for USkill {
 // Item base methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl USkill {
+    // User data
     pub(crate) fn get_item_id(&self) -> ItemId {
         self.base.get_item_id()
     }
@@ -65,32 +65,8 @@ impl USkill {
     pub(crate) fn set_type_aid(&mut self, type_aid: AItemId, r_data: &RData) {
         self.base.set_type_aid(type_aid, r_data);
     }
-    pub(crate) fn get_group_id(&self) -> Option<AItemGrpId> {
-        self.base.get_group_id()
-    }
-    pub(crate) fn get_category_id(&self) -> Option<AItemCatId> {
-        self.base.get_category_id()
-    }
-    pub(crate) fn get_attrs(&self) -> Option<&RMap<RAttrId, Value>> {
-        self.base.get_attrs()
-    }
-    pub(crate) fn get_effects(&self) -> Option<&RMap<REffectId, RItemEffectData>> {
-        self.base.get_effects()
-    }
-    pub(crate) fn get_defeff_rid(&self) -> Option<Option<REffectId>> {
-        self.base.get_defeff_rid()
-    }
-    pub(crate) fn get_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
-        self.base.get_skill_reqs()
-    }
-    pub(crate) fn get_axt(&self) -> Option<&RItemAXt> {
-        self.base.get_axt()
-    }
     pub(crate) fn get_state(&self) -> RState {
         self.base.get_state()
-    }
-    pub(in crate::ud::item) fn is_ice_harvester(&self) -> bool {
-        self.base.is_ice_harvester()
     }
     pub(in crate::ud::item) fn get_reffs(&self) -> Option<&RSet<REffectId>> {
         self.base.get_reffs()
@@ -119,7 +95,14 @@ impl USkill {
     ) {
         self.base.set_effect_modes(effect_modes, r_data)
     }
-    pub(crate) fn is_loaded(&self) -> bool {
+    // Runtime data
+    pub(in crate::ud::item) fn get_r_item_base(&self) -> Option<&RItemBase> {
+        self.base.get_r_item_base()
+    }
+    pub(crate) fn get_r_item_attr_data(&self) -> Option<&RItemAttrData> {
+        self.base.get_r_item_attr_data()
+    }
+    pub(in crate::ud::item) fn is_loaded(&self) -> bool {
         self.base.is_loaded()
     }
     pub(in crate::ud::item) fn r_data_changed(&mut self, r_data: &RData) {
