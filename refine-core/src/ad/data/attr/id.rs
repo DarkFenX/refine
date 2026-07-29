@@ -6,7 +6,6 @@ pub enum AAttrId {
     Custom(ACustomAttrId),
 }
 
-#[cfg_attr(feature = "serde-ad", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEveAttrId(i32);
 impl AEveAttrId {
@@ -18,7 +17,6 @@ impl AEveAttrId {
     }
 }
 
-#[cfg_attr(feature = "serde-ad", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomAttrId(i32);
 impl ACustomAttrId {
@@ -111,15 +109,16 @@ mod custom_serde_ad {
                     E: Error,
                 {
                     if let Some(id_str) = v.strip_prefix(EVE_PREFIX) {
-                        return Ok(Self::Value::Eve(AEveAttrId::from_str(id_str).map_err(Error::custom)?));
+                        let id = i32::from_str(id_str).map_err(Error::custom)?;
+                        return Ok(Self::Value::Eve(AEveAttrId::from_i32(id)));
                     }
                     if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
-                        return Ok(Self::Value::Custom(
-                            ACustomAttrId::from_str(id_str).map_err(Error::custom)?,
-                        ));
+                        let id = i32::from_str(id_str).map_err(Error::custom)?;
+                        return Ok(Self::Value::Custom(ACustomAttrId::from_i32(id)));
                     }
-                    let msg =
-                        format!("expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", got \"{v}\"");
+                    let msg = format!(
+                        "expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", received \"{v}\""
+                    );
                     Err(Error::custom(msg))
                 }
             }

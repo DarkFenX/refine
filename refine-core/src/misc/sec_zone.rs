@@ -79,7 +79,7 @@ mod custom_serde {
                         HAZARD => Ok(Self::Value::Hazard),
                         _ => {
                             let msg = format!(
-                                "expected one of: \"{HISEC}\", \"{HISEC_CORRUPTED}\", \"{LOWSEC}\", \"{LOWSEC_CORRUPTED}\", \"{NULLSEC}\", \"{WSPACE}\", or \"{HAZARD}\", got \"{v}\""
+                                "expected one of: \"{HISEC}\", \"{HISEC_CORRUPTED}\", \"{LOWSEC}\", \"{LOWSEC_CORRUPTED}\", \"{NULLSEC}\", \"{WSPACE}\", or \"{HAZARD}\", received \"{v}\""
                             );
                             Err(Error::custom(msg))
                         }

@@ -2,7 +2,7 @@ use crate::{ed::EItemId, util::round_f64_to_i32};
 
 #[cfg_attr(
     feature = "serde-ad",
-    derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),
+    derive(serde::Serialize, serde::Deserialize),
     serde(transparent)
 )]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]

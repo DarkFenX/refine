@@ -6,7 +6,6 @@ pub enum AItemListId {
     Custom(ACustomItemListId),
 }
 
-#[cfg_attr(feature = "serde-ad", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEveItemListId(i32);
 impl AEveItemListId {
@@ -18,7 +17,6 @@ impl AEveItemListId {
     }
 }
 
-#[cfg_attr(feature = "serde-ad", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomItemListId(i32);
 impl ACustomItemListId {
@@ -111,17 +109,16 @@ mod custom_serde_ad {
                     E: Error,
                 {
                     if let Some(id_str) = v.strip_prefix(EVE_PREFIX) {
-                        return Ok(Self::Value::Eve(
-                            AEveItemListId::from_str(id_str).map_err(Error::custom)?,
-                        ));
+                        let id = i32::from_str(id_str).map_err(Error::custom)?;
+                        return Ok(Self::Value::Eve(AEveItemListId::from_i32(id)));
                     }
                     if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
-                        return Ok(Self::Value::Custom(
-                            ACustomItemListId::from_str(id_str).map_err(Error::custom)?,
-                        ));
+                        let id = i32::from_str(id_str).map_err(Error::custom)?;
+                        return Ok(Self::Value::Custom(ACustomItemListId::from_i32(id)));
                     }
-                    let msg =
-                        format!("expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", got \"{v}\"");
+                    let msg = format!(
+                        "expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", received \"{v}\""
+                    );
                     Err(Error::custom(msg))
                 }
             }
