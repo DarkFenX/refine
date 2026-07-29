@@ -70,7 +70,7 @@ impl<'s> BoosterMut<'s> {
 
 fn iter_side_effects(sol: &SolarSystem, booster_uid: UItemId) -> impl Iterator<Item = SideEffect<'_>> {
     let u_booster = sol.u_data.items.get(booster_uid).dc_booster().unwrap();
-    u_booster.get_r_item_attr_data().into_iter().flat_map(move |riad| {
+    u_booster.get_r_item_base().into_iter().flat_map(move |riad| {
         riad.effects.keys().filter_map(move |&effect_rid| {
             get_se_chance_attr_aid_by_effect_rid(&sol.u_data.r_data, effect_rid).map(|chance_attr_id| {
                 SideEffect::new(

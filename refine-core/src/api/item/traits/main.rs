@@ -39,8 +39,8 @@ pub trait ItemCommon: ItemSealed {
         let sol = self.get_sol();
         let item_uid = self.get_uid();
         let item = sol.u_data.items.get(item_uid);
-        let (effect_rids, reffs) = match (item.get_r_item_attr_data(), item.get_reffs()) {
-            (Some(riad), Some(reffs)) => (riad.effects.keys(), reffs),
+        let (effect_rids, reffs) = match (item.get_r_item_base(), item.get_reffs()) {
+            (Some(item_rib), Some(reffs)) => (item_rib.effects.keys(), reffs),
             _ => {
                 return Err(ItemLoadedError {
                     item_id: sol.u_data.items.ext_id_by_int_id(item_uid),

@@ -39,8 +39,8 @@ use crate::{
 pub(crate) struct RItemAttrData {
     // Raw data
     pub(crate) attrs: RMap<RAttrId, Value>,
-    // Derived data - per-effect data
-    pub(crate) effects: RMap<REffectId, RItemAttrEffectData>,
+    // Derived data - per-effect attribute-dependent data
+    pub(crate) effect_adds: RMap<REffectId, RItemAttrEffectData>,
     // Derived data - unmutated and unmodified (by dogma modifiers) attribute values, cast to
     // necessary type
     pub(crate) volume: PValue,
@@ -168,7 +168,7 @@ impl RItemAttrData {
             ) else {
                 continue;
             };
-            self.effects.insert(effect_rid, r_item_attr_effect);
+            self.effect_adds.insert(effect_rid, r_item_attr_effect);
         }
         // Unmutated and unmodified attribute values
         self.volume = get_volume(&self.attrs, attr_consts);
@@ -237,7 +237,7 @@ impl RItemAttrData {
         for attr_rid in self.attrs.keys() {
             attr_rid.consistency_check(u_data)?;
         }
-        for effect_rid in self.effects.keys() {
+        for effect_rid in self.effect_adds.keys() {
             effect_rid.consistency_check(u_data)?;
         }
         if let Some(attr_rid) = self.remote_resist_attr_rid {

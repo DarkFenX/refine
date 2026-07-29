@@ -32,7 +32,7 @@ impl SolarSystem {
         let effects_with_ac_type_aids = u_item
             .get_r_item_attr_data()
             .unwrap()
-            .effects
+            .effect_adds
             .iter()
             .filter_map(|(effect_rid, effect_data)| {
                 effect_data.autocharge_aid.map(|ac_type_aid| (*effect_rid, ac_type_aid))
