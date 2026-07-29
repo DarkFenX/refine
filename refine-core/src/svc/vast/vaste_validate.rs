@@ -399,17 +399,17 @@ impl Vast {
             return false;
         }
         if let ValOptionInt::Enabled(opts) = &options.assist_immunity
-            && !fit_data.validate_assist_immunity_fast(&opts.kfs, ctx, calc)
+            && !self.validate_assist_immunity_fast(fit_data, &opts.kfs, ctx, calc)
         {
             return false;
         }
         if let ValOptionInt::Enabled(opts) = &options.offense_immunity
-            && !fit_data.validate_offense_immunity_fast(&opts.kfs, ctx, calc)
+            && !self.validate_offense_immunity_fast(fit_data, &opts.kfs, ctx, calc)
         {
             return false;
         }
         if let ValOptionInt::Enabled(opts) = &options.resist_immunity
-            && !fit_data.validate_resist_immunity_fast(&opts.kfs, ctx, calc)
+            && !self.validate_resist_immunity_fast(fit_data, &opts.kfs, ctx, calc)
         {
             return false;
         }
@@ -698,13 +698,13 @@ impl Vast {
             result.projectee_filter = fit_data.validate_projectee_filter_verbose(&opts.kfs, ctx);
         }
         if let ValOptionInt::Enabled(opts) = &options.assist_immunity {
-            result.assist_immunity = fit_data.validate_assist_immunity_verbose(&opts.kfs, ctx, calc);
+            result.assist_immunity = self.validate_assist_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = &options.offense_immunity {
-            result.offense_immunity = fit_data.validate_offense_immunity_verbose(&opts.kfs, ctx, calc);
+            result.offense_immunity = self.validate_offense_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
         }
         if let ValOptionInt::Enabled(opts) = &options.resist_immunity {
-            result.resist_immunity = fit_data.validate_resist_immunity_verbose(&opts.kfs, ctx, calc);
+            result.resist_immunity = self.validate_resist_immunity_verbose(fit_data, &opts.kfs, ctx, calc);
         }
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////
         // Sec zone

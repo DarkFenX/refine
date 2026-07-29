@@ -840,18 +840,25 @@ def test_assist_bubble_local(client, consts):
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship()
+    eve_assist_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
+    eve_assist_module_id = client.mk_eve_item(eff_ids=[eve_assist_effect_id], defeff_id=eve_assist_effect_id)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_hic_fit = api_sol.create_fit()
+    api_hic_ship = api_hic_fit.set_ship(type_id=eve_ship_id)
+    api_hic_module = api_hic_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_assist_fit = api_sol.create_fit()
+    api_assist_fit.add_module(
+        type_id=eve_assist_module_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_hic_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(1)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     # Action
-    api_module.change_module(state=consts.ApiModuleState.online)
+    api_hic_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
 
 def test_assist_bubble_projected(client, consts):
@@ -862,16 +869,22 @@ def test_assist_bubble_projected(client, consts):
         attrs={eve_assist_attr_id: 1},
         eff_ids=[eve_wdfg_effect_id],
         defeff_id=eve_wdfg_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship()
+    eve_assist_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
+    eve_assist_module_id = client.mk_eve_item(eff_ids=[eve_assist_effect_id], defeff_id=eve_assist_effect_id)
     client.create_sources()
     api_sol = client.create_sol()
-    api_src_fit = api_sol.create_fit()
     api_tgt_fit = api_sol.create_fit()
-    api_wdfg = api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     api_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
-    api_wdfg.change_module(add_proj_item_ids=[api_ship.id])
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active, proj_item_ids=[api_ship.id])
+    api_assist_fit = api_sol.create_fit()
+    api_assist_fit.add_module(
+        type_id=eve_assist_module_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
 
 def test_assist_dscript(client, consts):
@@ -886,21 +899,28 @@ def test_assist_dscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_disruption_script,
         cat_id=consts.EveEffCat.target)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship()
+    eve_assist_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
+    eve_assist_module_id = client.mk_eve_item(eff_ids=[eve_assist_effect_id], defeff_id=eve_assist_effect_id)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
+    api_hic_fit = api_sol.create_fit()
+    api_hic_ship = api_hic_fit.set_ship(type_id=eve_ship_id)
+    api_hic_module = api_hic_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
+    api_assist_fit = api_sol.create_fit()
+    api_assist_fit.add_module(
+        type_id=eve_assist_module_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_hic_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(1)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     # Action
-    api_module.change_module(state=consts.ApiModuleState.online)
+    api_hic_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
 
 def test_assist_sscript(client, consts):
@@ -915,21 +935,28 @@ def test_assist_sscript(client, consts):
         id_=consts.EveEffect.ship_mod_focused_warp_scrambling_script,
         cat_id=consts.EveEffCat.target)
     eve_script_id = client.mk_eve_item(eff_ids=[eve_script_effect_id], defeff_id=eve_script_effect_id)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_assist_attr_id: 0})
+    eve_ship_id = client.mk_eve_ship()
+    eve_assist_effect_id = client.mk_eve_effect(cat_id=consts.EveEffCat.target, is_assistance=True)
+    eve_assist_module_id = client.mk_eve_item(eff_ids=[eve_assist_effect_id], defeff_id=eve_assist_effect_id)
     client.create_sources()
     api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    api_ship = api_fit.set_ship(type_id=eve_ship_id)
-    api_module = api_fit.add_module(
+    api_hic_fit = api_sol.create_fit()
+    api_hic_ship = api_hic_fit.set_ship(type_id=eve_ship_id)
+    api_hic_module = api_hic_fit.add_module(
         type_id=eve_wdfg_id,
         state=consts.ApiModuleState.active,
         charge_type_id=eve_script_id)
+    api_assist_fit = api_sol.create_fit()
+    api_assist_fit.add_module(
+        type_id=eve_assist_module_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_hic_ship.id])
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(1)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     # Action
-    api_module.change_module(state=consts.ApiModuleState.online)
+    api_hic_module.change_module(state=consts.ApiModuleState.online)
     # Verification
-    assert api_ship.update().attrs[eve_assist_attr_id].modified == approx(0)
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
 
 def test_cycling(client, consts):

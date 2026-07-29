@@ -2,8 +2,9 @@ use crate::{
     ItemId, PValue,
     misc::{AttrSpec, EffectSpec},
     rd::REffectResist,
-    svc::{Calc, SvcCtx, funcs::is_oattr_flag_set, vast::VastFitData},
+    svc::{Calc, SvcCtx, Vast, funcs::is_oattr_flag_set, vast::VastFitData},
     ud::UItemId,
+    ud::UItem,
     util::{RMap, RMapRSet, RSet},
 };
 
@@ -23,56 +24,62 @@ pub struct ValProjImmunityItemInfo {
     pub projectee_item_ids: Vec<ItemId>,
 }
 
-impl VastFitData {
+impl Vast {
     // Fast validations
     pub(in crate::svc::vast) fn validate_assist_immunity_fast(
         &self,
+        fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(kfs, ctx, calc, &self.blockable_assistance, is_assist_blocked)
+        validate_fast(kfs, ctx, calc, &fit_data.blockable_assistance, is_assist_blocked, self)
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_fast(
         &self,
+        fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(kfs, ctx, calc, &self.blockable_offense, is_offense_blocked)
+        validate_fast(kfs, ctx, calc, &fit_data.blockable_offense, is_offense_blocked, self)
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_fast(
         &self,
+        fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> bool {
-        validate_fast(kfs, ctx, calc, &self.resist_immunity, is_resist_blocked)
+        validate_fast(kfs, ctx, calc, &fit_data.resist_immunity, is_resist_blocked, self)
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_assist_immunity_verbose(
         &self,
+        fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        validate_verbose(kfs, ctx, calc, &self.blockable_assistance, is_assist_blocked)
+        validate_verbose(kfs, ctx, calc, &fit_data.blockable_assistance, is_assist_blocked, self)
     }
     pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
         &self,
+        fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        validate_verbose(kfs, ctx, calc, &self.blockable_offense, is_offense_blocked)
+        validate_verbose(kfs, ctx, calc, &fit_data.blockable_offense, is_offense_blocked, self)
     }
     pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
         &self,
+        fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
         calc: &mut Calc,
     ) -> Option<ValProjImmunityFail> {
-        validate_verbose(kfs, ctx, calc, &self.resist_immunity, is_resist_blocked)
+        validate_verbose(kfs, ctx, calc, &fit_data.resist_immunity, is_resist_blocked, self)
     }
 }
 
@@ -82,13 +89,14 @@ fn validate_fast<F, P>(
     calc: &mut Calc,
     blockable: &RMapRSet<P, EffectSpec>,
     is_blocked: F,
+    vast: &Vast,
 ) -> bool
 where
     P: Copy + Eq + std::hash::Hash,
-    F: Fn(SvcCtx, &mut Calc, P) -> bool,
+    F: Fn(SvcCtx, &mut Calc, P, &Vast) -> bool,
 {
     for (&projectee_data, mut projector_especs) in blockable.iter() {
-        if is_blocked(ctx, calc, projectee_data) {
+        if is_blocked(ctx, calc, projectee_data, vast) {
             match kfs.is_empty() {
                 true => return false,
                 false => {
@@ -108,14 +116,15 @@ fn validate_verbose<F, P>(
     calc: &mut Calc,
     blockable: &RMapRSet<P, EffectSpec>,
     is_blocked: F,
+    vast: &Vast,
 ) -> Option<ValProjImmunityFail>
 where
     P: Copy + Eq + std::hash::Hash + GetItemUid,
-    F: Fn(SvcCtx, &mut Calc, P) -> bool,
+    F: Fn(SvcCtx, &mut Calc, P, &Vast) -> bool,
 {
     let mut items = RMap::new();
     for (&projectee_data, projector_especs) in blockable.iter() {
-        if is_blocked(ctx, calc, projectee_data) {
+        if is_blocked(ctx, calc, projectee_data, vast) {
             let projectee_item_id = ctx.u_data.items.ext_id_by_int_id(projectee_data.get_item_uid());
             for projector_espec in projector_especs {
                 if kfs.contains(&projector_espec.item_uid) {
@@ -143,15 +152,22 @@ where
     }
 }
 
-fn is_assist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId) -> bool {
-    is_oattr_flag_set(ctx, calc, projectee_uid, ctx.ac().disallow_assistance).unwrap_or(false)
+fn is_assist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId, vast: &Vast) -> bool {
+    if is_oattr_flag_set(ctx, calc, projectee_uid, ctx.ac().disallow_assistance).unwrap_or(false) {
+        return true;
+    };
+    let UItem::Ship(ship) = ctx.u_data.items.get(projectee_uid) else {
+        return false;
+    };
+    let projectee_fit_data = vast.get_fit_data(ship.get_fit_uid());
+    !projectee_fit_data.blockable_assistance.is_empty()
 }
 
-fn is_offense_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId) -> bool {
+fn is_offense_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId, _vast: &Vast) -> bool {
     is_oattr_flag_set(ctx, calc, projectee_uid, ctx.ac().disallow_offensive_modifiers).unwrap_or(false)
 }
 
-fn is_resist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_aspec: AttrSpec) -> bool {
+fn is_resist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_aspec: AttrSpec, _vast: &Vast) -> bool {
     REffectResist::get_mult_by_aspec(ctx, calc, &projectee_aspec) == Some(PValue::ZERO)
 }
 
