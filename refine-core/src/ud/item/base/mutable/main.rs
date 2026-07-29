@@ -15,10 +15,20 @@ use crate::{
 // Mutated item can have 3 states:
 // - Non-mutated - mutation is not set, only base item info is used
 // - Mutated, mutation is loaded - source had all the needed mutation data, which was processed and
-// stored on cache. In this case, item base stores mutated item type, and base aitem ID is stored on
-// mutation cache;
+//   stored on cache. In this case, item base stores mutated item type, and base aitem ID is stored
+//   on mutation cache;
 // - Mutated, mutation not loaded - item base stores base item type, mutation stores mutator ID and
-// attribute mutations, and mutation cache isn't set.
+//   attribute mutations, and mutation cache isn't set.
+//
+// Mutated items expose RItemBase of mutated item, and RItemAttrData which contains "hybrid" data:
+// - Attribute values - merged attributes (base item attrs + mutated item attrs) with all the
+//   mutations applied;
+// - Everything else (per-effect attr-derived data, on-item attr-derived data) is built using
+//   merged attributes, but not modified by mutations (it also means mutating attributes does not
+//   change this part). Those properties are stored here for performance reasons, and are supposed
+//   to be "immutable". Them being unchangeable by mutations is intentional. If there was need to
+//   use mutated/modified value, those properties could be recalculated by request using attribute
+//   values fetched from calc.
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBaseMutable {
     pub(super) base: UItemBase,
