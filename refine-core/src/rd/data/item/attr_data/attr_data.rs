@@ -1,4 +1,5 @@
 use super::getters::{
+    activation_blocks::{get_activation_blocks_cloak, get_activation_blocks_in_assist},
     attr_val::{
         get_bandwidth_use, get_calibration_use, get_capacity, get_charge_rate, get_charge_size,
         get_fighter_refuel_duration, get_max_fighter_count, get_max_type_fitted_count, get_online_max_sec_class,
@@ -57,7 +58,7 @@ pub(crate) struct RItemAttrData {
     // Derived data - mobility
     pub(crate) is_mobile: bool,  // Used to differentiate between mobile and sentry drones
     pub(crate) entity_mwd: bool, // Used to differentiate between single/dual-prop drones
-    pub(crate) jump_fuel_type_id: Option<AItemId>,
+    pub(crate) jump_fuel_item_aid: Option<AItemId>,
     pub(crate) enables_conduit: bool,
     pub(crate) enables_portal: bool, // Used by bridge modules
     // Derived data - module cycle flags
@@ -84,14 +85,18 @@ pub(crate) struct RItemAttrData {
     pub(crate) max_group_fitted_limited: bool,
     pub(crate) max_group_online_limited: bool,
     pub(crate) max_group_active_limited: bool,
+    // Derived data - self-limits
+    pub(crate) max_type_fitted: Option<Count>, // Max amount of fit items of this type ID
+    pub(crate) sec_zone_limitable: bool,       // If item can be sec zone limited altogether
+    pub(crate) online_max_sec_class: Option<Value>, // 2 hisec, 1 lowsec, 0 the rest
+    pub(crate) disallow_vs_ew_immune_tgt: bool,
+    // Derived data - ship limits
+    pub(crate) activation_blocks_cloak: bool,
+    pub(crate) activation_blocks_in_assist: bool,
     // Derived data - misc
     pub(crate) kind: Option<DetectedItemKind>,
     pub(crate) item_ship_kind: Option<RShipKind>, // Which ship type this item fits to
-    pub(crate) max_type_fitted: Option<Count>,    // Max amount of fit items of this type ID
     pub(crate) overload_td_lvl: Option<SkillLevel>, // Required thermodynamics level for overheat
-    pub(crate) sec_zone_limitable: bool,          // If item can be sec zone limited altogether
-    pub(crate) online_max_sec_class: Option<Value>, // 2 hisec, 1 lowsec, 0 the rest
-    pub(crate) disallow_vs_ew_immune_tgt: bool,
 }
 impl RItemAttrData {
     pub(crate) fn get_oattr_ffb(&self, attr_rid: Option<RAttrId>, fallback: Value) -> Value {
@@ -185,7 +190,7 @@ impl RItemAttrData {
         // Mobility
         self.is_mobile = get_is_mobile(&self.attrs, attr_consts);
         self.entity_mwd = get_entity_has_mwd(&self.attrs, attr_consts);
-        self.jump_fuel_type_id = get_jump_fuel_type_id(&self.attrs, attr_consts);
+        self.jump_fuel_item_aid = get_jump_fuel_type_id(&self.attrs, attr_consts);
         self.enables_conduit = get_enables_conduit(&self.attrs, attr_consts);
         self.enables_portal = get_enables_portal(&self.attrs, attr_consts);
         // Module cycle flags
@@ -211,6 +216,14 @@ impl RItemAttrData {
         self.max_group_fitted_limited = get_max_group_fitted_limited(&self.attrs, attr_consts);
         self.max_group_online_limited = get_max_group_online_limited(&self.attrs, attr_consts);
         self.max_group_active_limited = get_max_group_active_limited(&self.attrs, attr_consts);
+        // Self-limits
+        self.max_type_fitted = get_max_type_fitted_count(&self.attrs, attr_consts);
+        self.sec_zone_limitable = is_sec_zone_limitable(&self.attrs, attr_consts);
+        self.online_max_sec_class = get_online_max_sec_class(&self.attrs, attr_consts);
+        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(&self.attrs, attr_consts);
+        // Ship limits
+        self.activation_blocks_cloak = get_activation_blocks_cloak(&self.attrs, attr_consts);
+        self.activation_blocks_in_assist = get_activation_blocks_in_assist(&self.attrs, attr_consts);
         // Misc
         self.kind = detect_item_kind(
             r_base.grp_id,
@@ -221,11 +234,7 @@ impl RItemAttrData {
             effect_consts,
         );
         self.item_ship_kind = get_item_ship_kind(r_base.cat_id, &self.attrs, attr_consts);
-        self.max_type_fitted = get_max_type_fitted_count(&self.attrs, attr_consts);
         self.overload_td_lvl = get_overload_td_lvl(&self.attrs, attr_consts);
-        self.sec_zone_limitable = is_sec_zone_limitable(&self.attrs, attr_consts);
-        self.online_max_sec_class = get_online_max_sec_class(&self.attrs, attr_consts);
-        self.disallow_vs_ew_immune_tgt = get_disallow_vs_ew_immune_tgt(&self.attrs, attr_consts);
     }
 }
 

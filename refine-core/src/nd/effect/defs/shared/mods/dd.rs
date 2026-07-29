@@ -2,8 +2,7 @@ use crate::ad::{AAttrId, ABuffId, AEffectBuffDuration, AEffectBuffFull, AEffectB
 
 pub(in crate::nd::effect::defs) fn make_dd_self_debuffs() -> impl ExactSizeIterator<Item = AEffectBuffFull> {
     [
-        // Short debuffs - as of 2026-06-13, includes only warp status debuff, and does not include
-        // max velocity on doomsdays (tested on Singularity)
+        // Short debuffs
         AEffectBuffFull {
             buff_id: ABuffId::WARP_PENALTY,
             strength: AEffectModStrength::Attr(AAttrId::SIEGE_MODE_WARP_STATUS),

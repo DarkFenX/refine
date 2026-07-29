@@ -26,8 +26,10 @@ pub(crate) struct NEffect {
     pub(crate) charge: Option<NEffectCharge> = None,
     pub(crate) projectee_filter: Option<NEffectProjecteeFilter> = None,
     pub(crate) ignore_offmod_immunity: bool = false,
-    pub(crate) do_not_prevent_tether: bool = false,
     pub(crate) cloaks_carrier: bool = false,
+    pub(crate) kills_item: Option<NEffectTime> = None,
+    pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
+    // Flags which control availability of certain ship actions
     pub(crate) disallows_cloak: Option<NEffectDuration> = None,
     pub(crate) disallows_warp: Option<NEffectDuration> = None,
     pub(crate) disallows_jump_gate: Option<NEffectDuration> = None,
@@ -35,8 +37,7 @@ pub(crate) struct NEffect {
     pub(crate) disallows_jump_drive: Option<NEffectDuration> = None,
     pub(crate) disallows_dock: Option<NEffectDuration> = None,
     pub(crate) disallows_tether: Option<NEffectDuration> = None,
-    pub(crate) kills_item: Option<NEffectTime> = None,
-    pub(crate) spool_attrs: Option<NEffectSpoolAttrs> = None,
+    pub(crate) do_not_prevent_tether: bool = false,  // Ignore scram status change if true
     // Effect modifier customization ran during runtime in calculator service
     pub(crate) calc_custom_mod: Option<CalcCustomModifier> = None,
     // Specs - modifier

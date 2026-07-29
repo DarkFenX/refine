@@ -29,7 +29,7 @@ impl Vast {
         range: StatJumpRange,
         psg_fit_uids: &[UFitId],
     ) -> Result<StatJump, JumpStatError> {
-        let fuel_type_id = match ship.get_r_item_attr_data().unwrap().jump_fuel_type_id {
+        let fuel_type_id = match ship.get_r_item_attr_data().unwrap().jump_fuel_item_aid {
             Some(type_aid) => ItemTypeId::from_aid(type_aid),
             None => return Err(JumpStatError::NoFuelTypeId),
         };

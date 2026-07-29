@@ -29,13 +29,15 @@ pub(crate) struct REffect {
     pub(crate) calc_custom_mod: Option<CalcCustomModifier>,
     pub(crate) projectee_filter: Option<REffectProjecteeFilter>,
     pub(crate) stopped_effect_rids: Vec<REffectId>,
+    pub(crate) cloaks_carrier: bool,
+    pub(crate) kills_item: bool,
+    pub(crate) is_active_with_duration: bool,
+    // Flags which control availability of certain ship actions
     pub(crate) weapons_timer: bool,
     pub(crate) is_assist: bool,
     pub(crate) is_blockable_offensive_modifier: bool,
     pub(crate) banned_in_hisec: bool,
     pub(crate) banned_in_lowsec: bool,
-    pub(crate) do_not_prevent_tether: bool,
-    pub(crate) cloaks_carrier: bool,
     pub(crate) disallows_cloak: bool,
     pub(crate) disallows_warp: bool,
     pub(crate) disallows_jump_gate: bool,
@@ -43,8 +45,7 @@ pub(crate) struct REffect {
     pub(crate) disallows_jump_drive: bool,
     pub(crate) disallows_dock: bool,
     pub(crate) disallows_tether: bool,
-    pub(crate) kills_item: bool,
-    pub(crate) is_active_with_duration: bool,
+    pub(crate) do_not_prevent_tether: bool,
     // References to attributes which are used to describe some effect properties
     pub(crate) discharge_attr_rid: Option<RAttrId>,
     pub(crate) duration_attr_rid: Option<RAttrId>,
@@ -121,12 +122,13 @@ impl REffect {
             category: a_effect.category,
             state,
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
+            cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
+            kills_item: n_effect.map(|n| n.kills_item.is_some()).unwrap_or(false),
+            dmg_kind: n_effect.and_then(|n| n.dmg_kind),
             weapons_timer: a_effect.weapons_timer.is_some() && state == RState::Active,
             is_assist: a_effect.is_assist && state == RState::Active,
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
-            do_not_prevent_tether: n_effect.map(|n| n.do_not_prevent_tether).unwrap_or(false),
-            cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             disallows_cloak: n_effect
                 .map(|n| n.disallows_cloak.is_some() && state == RState::Active)
                 .unwrap_or(false),
@@ -148,8 +150,7 @@ impl REffect {
             disallows_tether: n_effect
                 .map(|n| n.disallows_tether.is_some() && state == RState::Active)
                 .unwrap_or(false),
-            kills_item: n_effect.map(|n| n.kills_item.is_some()).unwrap_or(false),
-            dmg_kind: n_effect.and_then(|n| n.dmg_kind),
+            do_not_prevent_tether: n_effect.map(|n| n.do_not_prevent_tether).unwrap_or(false),
             // Fields which depend on data not available during instantiation
             charge: Default::default(),
             buff: Default::default(),

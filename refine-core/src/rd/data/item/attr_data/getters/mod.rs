@@ -3,6 +3,7 @@ pub(crate) use container_limit::RItemContLimit;
 pub(crate) use drone_limit::RShipDroneLimit;
 pub(crate) use ship_limit::RItemShipLimit;
 
+pub(super) mod activation_blocks;
 pub(super) mod attr_val;
 pub(super) mod charge_limit;
 pub(super) mod container_limit;
