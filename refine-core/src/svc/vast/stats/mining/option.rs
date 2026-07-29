@@ -1,4 +1,4 @@
-use crate::{misc::DefOption, ud::UItem};
+use crate::{DefOption, ud::UItem};
 
 /// Items which will be included in mining stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

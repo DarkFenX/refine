@@ -1,91 +1,87 @@
 use crate::{
+    PValue,
     nd::NEffectGeneralOutputGetter,
-    num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
+    stats::{StatOutRepItemKinds, StatTimeOptions},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        vast::{
-            StatNeutItemKinds, StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
-        },
+        vast::aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
     },
     ud::{UFitId, UItemId},
     util::RMapRMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_fits_outgoing_nps(
+    pub(in crate::svc) fn get_stat_fits_outgoing_cps(
         &self,
         reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
-        item_kinds: StatNeutItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> PValue {
         fit_uids
             .map(|fit_uid| {
-                get_nps(
+                get_ocps(
                     reuse_cseq_map,
                     ctx,
                     calc,
-                    item_kinds,
+                    StatOutRepItemKinds { default: true, .. },
                     time_options,
                     projectee_uid,
-                    &self.get_fit_data(fit_uid).out_neuts,
+                    &self.get_fit_data(fit_uid).out_cap,
                 )
             })
             .sum()
     }
-    pub(in crate::svc) fn get_stat_fit_outgoing_nps(
+    pub(in crate::svc) fn get_stat_fit_outgoing_cps(
         &self,
         reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
-        item_kinds: StatNeutItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
     ) -> PValue {
         let fit_data = self.get_fit_data(fit_uid);
-        get_nps(
+        get_ocps(
             reuse_cseq_map,
             ctx,
             calc,
-            item_kinds,
+            StatOutRepItemKinds { default: true, .. },
             time_options,
             projectee_uid,
-            &fit_data.out_neuts,
+            &fit_data.out_cap,
         )
     }
 }
 
-fn get_nps(
+fn get_ocps(
     reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,
-    item_kinds: StatNeutItemKinds,
+    item_kinds: StatOutRepItemKinds,
     time_options: StatTimeOptions,
-    projectee_item_uid: Option<UItemId>,
+    projectee_uid: Option<UItemId>,
     fit_data: &RMapRMap<UItemId, REffectId, REffectProjOpcSpec<NEffectGeneralOutputGetter>>,
 ) -> PValue {
-    let mut nps = PValue::ZERO;
+    let mut orps = PValue::ZERO;
     let cycling_options = CyclingOptions::from_time_options(time_options);
     for (&item_uid, item_data) in fit_data.iter() {
         if !get_item_cseq_map(reuse_cseq_map, ctx, calc, item_uid, cycling_options) {
             continue;
         }
+        let u_item = ctx.u_data.items.get(item_uid);
+        if !item_kinds.resolve(u_item) {
+            continue;
+        }
         for (&effect_rid, ospec) in item_data.iter() {
-            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
-            if !item_kinds.resolve(effect) {
-                continue;
-            }
             let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                 continue;
             };
+            let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = match time_options {
                 StatTimeOptions::Burst(burst_opts) => aggr_proj_burst(
                     ctx,
@@ -95,7 +91,7 @@ fn get_nps(
                     cseq,
                     ospec,
                     (),
-                    projectee_item_uid,
+                    projectee_uid,
                     burst_opts.spool,
                     SeqAccum::new_stack(),
                 ),
@@ -108,7 +104,7 @@ fn get_nps(
                         cseq,
                         ospec,
                         (),
-                        projectee_item_uid,
+                        projectee_uid,
                         SeqAccum::new_stack(),
                         time,
                     ),
@@ -120,14 +116,14 @@ fn get_nps(
                         cseq,
                         ospec,
                         (),
-                        projectee_item_uid,
+                        projectee_uid,
                         SeqAccum::new_stack(),
                     ),
                 },
             } {
-                nps += accum.get_per_second();
+                orps += accum.get_per_second();
             }
         }
     }
-    nps
+    orps
 }

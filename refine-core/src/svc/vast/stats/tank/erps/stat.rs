@@ -1,4 +1,4 @@
-use crate::num::PValue;
+use crate::PValue;
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]

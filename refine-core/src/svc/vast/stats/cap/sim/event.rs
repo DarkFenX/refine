@@ -1,7 +1,7 @@
 use std::cmp::Ordering;
 
 use crate::{
-    num::PValue,
+    PValue,
     svc::vast::{aggr::AggrIter, stats::cap::sim::shared::Direction},
     util::PrefetchPeekable,
 };

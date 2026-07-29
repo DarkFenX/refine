@@ -1,4 +1,4 @@
 pub use stat::StatResource;
 
+mod getter;
 mod stat;
-mod vaste_fit;

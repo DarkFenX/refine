@@ -1,15 +1,13 @@
-use super::stat::StatOutReps;
 use crate::{
+    PValue,
     nd::NEffectGeneralOutputGetter,
-    num::PValue,
     rd::{REffect, REffectProjOpcSpec},
+    stats::{StatOutReps, StatTimeOptions},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
         err::IntItemStatError,
         vast::{
-            StatTimeOptions, Vast,
             aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
             stats::item_checks::check_drone_fighter_module,
         },

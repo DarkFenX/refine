@@ -1,4 +1,4 @@
-use crate::num::UnitInterval;
+use crate::UnitInterval;
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]

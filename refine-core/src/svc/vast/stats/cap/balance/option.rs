@@ -1,7 +1,6 @@
 use crate::{
-    misc::{DefOption, DefOptionExt},
-    num::UnitInterval,
-    ud::{ItemId, ProjecteeUidError, UData, UItemId},
+    DefOption, DefOptionExt, ItemId, UnitInterval,
+    ud::{ProjecteeUidError, UData, UItemId},
 };
 
 /// Capacitor change sources which will be considered for cap balance stats.

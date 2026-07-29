@@ -1,67 +1,107 @@
 use crate::{
+    PValue,
     nd::NEffectGeneralOutputGetter,
-    num::PValue,
     rd::{REffectId, REffectProjOpcSpec},
+    stats::{StatOutRepItemKinds, StatOutReps, StatTimeOptions},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        vast::{
-            StatOutRepItemKinds, StatTimeOptions, Vast,
-            aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
-        },
+        vast::aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
     },
     ud::{UFitId, UItemId},
     util::RMapRMap,
 };
 
 impl Vast {
-    pub(in crate::svc) fn get_stat_fits_outgoing_cps(
+    pub(in crate::svc) fn get_stat_fits_outgoing_rps(
         &self,
         reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
+        item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> PValue {
-        fit_uids
-            .map(|fit_uid| {
-                get_ocps(
-                    reuse_cseq_map,
-                    ctx,
-                    calc,
-                    StatOutRepItemKinds { default: true, .. },
-                    time_options,
-                    projectee_uid,
-                    &self.get_fit_data(fit_uid).out_cap,
-                )
-            })
-            .sum()
+    ) -> StatOutReps {
+        let mut shield = PValue::ZERO;
+        let mut armor = PValue::ZERO;
+        let mut hull = PValue::ZERO;
+        for fit_uid in fit_uids {
+            let fit_data = self.get_fit_data(fit_uid);
+            shield += get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_shield,
+            );
+            armor += get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_armor,
+            );
+            hull += get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_hull,
+            );
+        }
+        StatOutReps { shield, armor, hull }
     }
-    pub(in crate::svc) fn get_stat_fit_outgoing_cps(
+    pub(in crate::svc) fn get_stat_fit_outgoing_rps(
         &self,
         reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
+        item_kinds: StatOutRepItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
-    ) -> PValue {
+    ) -> StatOutReps {
         let fit_data = self.get_fit_data(fit_uid);
-        get_ocps(
-            reuse_cseq_map,
-            ctx,
-            calc,
-            StatOutRepItemKinds { default: true, .. },
-            time_options,
-            projectee_uid,
-            &fit_data.out_cap,
-        )
+        StatOutReps {
+            shield: get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_shield,
+            ),
+            armor: get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_armor,
+            ),
+            hull: get_orps(
+                reuse_cseq_map,
+                ctx,
+                calc,
+                item_kinds,
+                time_options,
+                projectee_uid,
+                &fit_data.orr_hull,
+            ),
+        }
     }
 }
 
-fn get_ocps(
+fn get_orps(
     reuse_cseq_map: &mut CseqMap,
     ctx: SvcCtx,
     calc: &mut Calc,

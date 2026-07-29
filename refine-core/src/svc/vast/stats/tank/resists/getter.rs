@@ -1,15 +1,11 @@
-use super::stat::{StatResists, StatResistsLayer};
 use crate::{
-    num::{UnitInterval, Value},
+    UnitInterval, Value,
     rd::RAttrId,
+    stats::{StatResists, StatResistsLayer},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         err::IntItemStatError,
-        vast::{
-            Vast,
-            stats::item_checks::{check_drone_fighter_ship, check_ship},
-        },
+        vast::stats::item_checks::{check_drone_fighter_ship, check_ship},
     },
     ud::UItemId,
 };

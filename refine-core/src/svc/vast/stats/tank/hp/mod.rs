@@ -1,4 +1,4 @@
 pub use stat::{StatHp, StatHpLayer};
 
+mod getter;
 mod stat;
-mod vaste_item;

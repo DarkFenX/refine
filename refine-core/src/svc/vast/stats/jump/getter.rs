@@ -1,19 +1,9 @@
-use super::{
-    option::StatJumpRange,
-    stat::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpSelf},
-};
 use crate::{
+    Count, ItemTypeId, PValue, Value,
     ad::AAttrId,
-    api::ItemTypeId,
-    num::{Count, PValue, Value},
     rd::RAttrId,
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        err::IntItemStatError,
-        funcs,
-        vast::{Vast, stats::item_checks::check_ship},
-    },
+    stats::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf},
+    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, funcs, vast::stats::item_checks::check_ship},
     ud::{UFit, UFitId, UItemId, UShip, UShipKind},
 };
 

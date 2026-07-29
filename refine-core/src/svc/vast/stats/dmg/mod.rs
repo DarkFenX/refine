@@ -4,5 +4,5 @@ pub use stat::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatD
 mod breacher;
 mod option;
 mod stat;
-mod vaste_fit;
+mod getter_fit;
 mod vaste_item;

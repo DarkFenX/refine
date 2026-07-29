@@ -1,4 +1,4 @@
-use crate::{misc::DefOption, nd::NEffectNeutKind, rd::REffect};
+use crate::{DefOption, nd::NEffectNeutKind, rd::REffect};
 
 /// Items which will be included in neut stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

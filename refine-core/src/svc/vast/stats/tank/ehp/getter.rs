@@ -1,16 +1,11 @@
-use super::stat::{StatEhp, StatEhpLayer};
 use crate::{
-    misc::DpsProfile,
-    num::{PValue, Value},
+    DpsProfile, PValue, Value,
+    stats::{StatEhp, StatEhpLayer, StatHp, StatResistsLayer},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         cycle::CseqMap,
         err::IntItemStatError,
-        vast::{
-            StatHp, StatResistsLayer, Vast,
-            stats::{item_checks::check_drone_fighter_ship, tank::shared::get_tanking_efficiency},
-        },
+        vast::stats::{item_checks::check_drone_fighter_ship, tank::shared::get_tanking_efficiency},
     },
     ud::UItemId,
 };

@@ -1,10 +1,8 @@
 use crate::{
+    Count, PValue, UnitInterval,
     nd::NEffectEcmAmount,
-    num::{Count, PValue, UnitInterval},
-    svc::vast::{
-        StatSensors, StatSensorsKind,
-        aggr::{SeqAccum, SeqInstanceAccum},
-    },
+    stats::{StatSensors, StatSensorsKind},
+    svc::vast::aggr::{SeqAccum, SeqInstanceAccum},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,4 +1,4 @@
-use crate::{misc::DpsProfile, num::PValue, svc::vast::StatResistsLayer};
+use crate::{DpsProfile, PValue, stats::StatResistsLayer};
 
 pub(super) fn get_tanking_efficiency(resists: StatResistsLayer, incoming_dps: DpsProfile) -> Option<PValue> {
     let dealt = incoming_dps.get_sum_regular();

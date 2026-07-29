@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use super::timing_key::{CSeqHardDtTimingKey, CSeqPartTimingKey, TIME_ROUND_DIGITS};
 use crate::{
-    num::PValue,
+    PValue,
     svc::{
         cycle::{CSeqLim, CSeqLimInf, CSeqLimSinInf, CSeqLoopLimSin, CSeqLoopSin, CycleSeq},
         output::{Output, OutputComplex, OutputSimple},

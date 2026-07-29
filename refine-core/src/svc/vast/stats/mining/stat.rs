@@ -1,4 +1,4 @@
-use crate::{nd::NEffectMiningAmount, num::PValue};
+use crate::{PValue, nd::NEffectMiningAmount};
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone, Default)]

@@ -1,4 +1,4 @@
-use crate::num::Count;
+use crate::Count;
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]

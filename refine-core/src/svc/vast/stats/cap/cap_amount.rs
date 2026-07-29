@@ -1,11 +1,6 @@
 use crate::{
-    num::{PValue, UnitInterval, Value},
-    svc::{
-        SvcCtx,
-        calc::Calc,
-        err::IntItemStatError,
-        vast::{Vast, stats::item_checks::check_ship},
-    },
+    PValue, Value,
+    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_ship},
     ud::UItemId,
 };
 
@@ -25,15 +20,5 @@ impl Vast {
     ) -> PValue {
         let cap_amount = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().capacitor_capacity, Value::ZERO);
         PValue::from_value_clamped(cap_amount)
-    }
-    pub(in crate::svc) fn get_stat_item_neut_resist(
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        item_uid: UItemId,
-    ) -> Result<UnitInterval, IntItemStatError<!>> {
-        check_ship(ctx.u_data, item_uid)?;
-        let neut_resist =
-            Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().energy_warfare_resist, Value::ZERO);
-        Ok(UnitInterval::from_value_clamped(neut_resist))
     }
 }

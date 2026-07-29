@@ -1,4 +1,4 @@
-use crate::num::{Count, PValue};
+use crate::{Count, PValue};
 
 pub(super) fn duration_to_ticks_floor(duration: PValue) -> Count {
     Count::from_pvalue_trunced(duration * PValue::SERVER_TICK_HZ)

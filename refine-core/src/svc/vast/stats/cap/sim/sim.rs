@@ -2,7 +2,7 @@ use std::collections::BinaryHeap;
 
 use super::event::{CapSimEvent, CapSimEventCapChange, CapSimEventData, CapSimEventInjector};
 use crate::{
-    num::{PValue, UnitInterval, Value},
+    PValue, UnitInterval, Value,
     svc::{
         output::OutputInstanceIter,
         vast::stats::{cap::sim::shared::Direction, shared::regenerate},

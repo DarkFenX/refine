@@ -1,9 +1,8 @@
-use super::stat::StatSlot;
 use crate::{
-    num::Count,
+    Count,
+    stats::StatSlot,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         vast::{VastFitData, shared::get_attr_as_count},
     },
     ud::UFit,

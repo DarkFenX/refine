@@ -1,8 +1,8 @@
-use super::stat::StatResource;
 use crate::{
-    num::Value,
+    Value,
     rd::RAttrId,
-    svc::{SvcCtx, calc::Calc, vast::VastFitData},
+    stats::StatResource,
+    svc::{Calc, SvcCtx, vast::VastFitData},
     ud::{UFit, UItemId},
 };
 

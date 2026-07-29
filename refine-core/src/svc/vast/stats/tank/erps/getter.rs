@@ -1,16 +1,11 @@
-use super::stat::{StatErps, StatErpsLayer, StatErpsLayerRegen};
 use crate::{
-    misc::DpsProfile,
-    num::UnitInterval,
+    DpsProfile, UnitInterval,
+    stats::{StatErps, StatErpsLayer, StatErpsLayerRegen, StatTimeOptions},
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         cycle::CseqMap,
         err::IntItemStatError,
-        vast::{
-            StatTimeOptions, Vast,
-            stats::{item_checks::check_drone_fighter_ship, tank::shared::get_tanking_efficiency},
-        },
+        vast::stats::{item_checks::check_drone_fighter_ship, tank::shared::get_tanking_efficiency},
     },
     ud::UItemId,
 };

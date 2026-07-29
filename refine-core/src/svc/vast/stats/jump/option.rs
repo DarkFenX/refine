@@ -1,4 +1,4 @@
-use crate::num::PValue;
+use crate::PValue;
 
 /// Range for jump stats used for fuel use calculations.
 #[derive(Copy, Clone, Default)]

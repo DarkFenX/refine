@@ -1,20 +1,15 @@
 use crate::{
-    misc::OptionalReload,
-    num::{PValue, UnitInterval, Value},
+    OptionalReload, PValue, UnitInterval, Value,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx, Vast,
         cycle::CseqMap,
         err::IntItemStatError,
-        vast::{
-            Vast,
-            stats::{
-                cap::sim::{
-                    prepare::{StatCapSimStaggerInt, prepare_events},
-                    sim::{CapSim, StatCapSim},
-                },
-                item_checks::check_ship,
+        vast::stats::{
+            cap::sim::{
+                prepare::{StatCapSimStaggerInt, prepare_events},
+                sim::{CapSim, StatCapSim},
             },
+            item_checks::check_ship,
         },
     },
     ud::UItemId,

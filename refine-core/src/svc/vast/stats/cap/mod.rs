@@ -4,5 +4,6 @@ pub(crate) use sim::StatCapSimStaggerInt;
 pub use sim::{StatCapSim, StatCapSimStagger};
 
 mod balance;
-mod misc;
+mod cap_amount;
+mod neut_resist;
 mod sim;

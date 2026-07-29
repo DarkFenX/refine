@@ -1,4 +1,4 @@
-use crate::{misc::DmgKinds, num::PValue};
+use crate::{PValue, misc::DmgKinds};
 
 pub struct StatDmg {
     pub dps: StatDmgEntry,
