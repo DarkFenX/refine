@@ -31,10 +31,9 @@ pub(crate) struct REffect {
     pub(crate) stopped_effect_rids: Vec<REffectId>,
     pub(crate) weapons_timer: bool,
     pub(crate) is_assist: bool,
-    pub(crate) is_offense: bool,
+    pub(crate) is_blockable_offensive_modifier: bool,
     pub(crate) banned_in_hisec: bool,
     pub(crate) banned_in_lowsec: bool,
-    pub(crate) ignore_offmod_immunity: bool,
     pub(crate) do_not_prevent_tether: bool,
     pub(crate) cloaks_carrier: bool,
     pub(crate) disallows_cloak: bool,
@@ -124,10 +123,8 @@ impl REffect {
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
             weapons_timer: a_effect.weapons_timer.is_some() && state == RState::Active,
             is_assist: a_effect.is_assist && state == RState::Active,
-            is_offense: a_effect.is_offense && state == RState::Active,
             banned_in_hisec: a_effect.banned_in_hisec && state == RState::Active,
             banned_in_lowsec: a_effect.banned_in_lowsec && state == RState::Active,
-            ignore_offmod_immunity: n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false),
             do_not_prevent_tether: n_effect.map(|n| n.do_not_prevent_tether).unwrap_or(false),
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             disallows_cloak: n_effect
@@ -159,6 +156,7 @@ impl REffect {
             modifiers: Default::default(),
             projectee_filter: Default::default(),
             stopped_effect_rids: Default::default(),
+            is_blockable_offensive_modifier: Default::default(),
             is_active_with_duration: Default::default(),
             discharge_attr_rid: Default::default(),
             duration_attr_rid: Default::default(),
@@ -233,7 +231,14 @@ impl REffect {
             .chance_attr_id
             .and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid))
             .copied();
-        if let Some(n_effect) = N_EFFECT_MAP.get(&a_effect.id) {
+        let n_effect = N_EFFECT_MAP.get(&a_effect.id);
+        self.is_blockable_offensive_modifier = {
+            let is_offense = a_effect.is_offense && self.state == RState::Active;
+            let has_modifiers = !self.modifiers.is_empty() || self.calc_custom_mod.is_some();
+            let ignore_offmod_immunity = n_effect.map(|n| n.ignore_offmod_immunity).unwrap_or(false);
+            is_offense && has_modifiers && !ignore_offmod_immunity
+        };
+        if let Some(n_effect) = n_effect {
             self.charge = n_effect
                 .charge
                 .as_ref()
@@ -363,4 +368,8 @@ impl REffect {
         }
         true
     }
+}
+
+fn calc_is_blockable_offensive_modifier(a_effect: &AEffect, state: RState) -> bool {
+    a_effect.is_offense && state == RState::Active
 }

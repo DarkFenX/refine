@@ -23,11 +23,11 @@ use crate::{
 // Mutated items expose RItemBase of mutated item, and RItemAttrData which contains "hybrid" data:
 // - Attribute values - merged attributes (base item attrs + mutated item attrs) with all the
 //   mutations applied;
-// - Everything else (per-effect attr-derived data, on-item attr-derived data) is built using
-//   merged attributes, but not modified by mutations (it also means mutating attributes does not
-//   change this part). Those properties are stored here for performance reasons, and are supposed
-//   to be "immutable". Them being unchangeable by mutations is intentional. If there was need to
-//   use mutated/modified value, those properties could be recalculated by request using attribute
+// - Everything else (per-effect attr-derived data, on-item attr-derived data) is built using merged
+//   attributes, but not modified by mutations (it also means mutating attributes does not change
+//   this part). Those properties are stored here for performance reasons, and are supposed to be
+//   "immutable". Them being unchangeable by mutations is intentional. If there was need to use
+//   mutated/modified value, those properties could be recalculated by request using attribute
 //   values fetched from calc.
 #[derive(Clone)]
 pub(in crate::ud::item) struct UItemBaseMutable {

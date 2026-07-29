@@ -197,7 +197,7 @@ impl Vast {
 }
 
 fn is_offense_blockable(projector_item: &UItem, r_effect: &REffect) -> bool {
-    if r_effect.is_offense && !r_effect.modifiers.is_empty() && !r_effect.ignore_offmod_immunity {
+    if r_effect.is_blockable_offensive_modifier {
         return true;
     };
     // Assistance with extra flag can be blocked by the disallow offensive modifiers flag too
