@@ -115,7 +115,7 @@ impl RData {
         for a_item_list in a_data.item_lists.iter() {
             let entry = item_lists.vacant_entry();
             let item_list_rid = entry.id();
-            let r_item_list = RItemList::from_a_item_list(item_list_rid, a_item_list);
+            let r_item_list = RItemList::from_a_item_list(a_item_list);
             entry.insert(r_item_list);
             item_list_aid_rid_map.insert(a_item_list.id, item_list_rid);
         }
