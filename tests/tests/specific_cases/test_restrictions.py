@@ -530,7 +530,7 @@ def test_nsa(client, consts):
         mod_info=[eve_warp_mod, eve_dock_mod, eve_tether_mod])
     eve_nsa_id = client.mk_eve_item(
         attrs={
-            eve_basics.warp_scram_attr_id: 100,
+            eve_basics.warp_scram_attr_id: 100, eve_basics.can_cloak_attr_id: 0,
             eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_nsa_effect_id],
         defeff_id=eve_nsa_effect_id)
@@ -623,7 +623,7 @@ def test_isa(client, consts):
         mod_info=[eve_warp_mod, eve_dock_mod, eve_tether_mod])
     eve_nsa_id = client.mk_eve_item(
         attrs={
-            eve_basics.warp_scram_attr_id: 100,
+            eve_basics.warp_scram_attr_id: 100, eve_basics.can_cloak_attr_id: 0,
             eve_basics.disallow_dock_attr_id: 1, eve_basics.disallow_tether_attr_id: 1},
         eff_ids=[eve_nsa_effect_id],
         defeff_id=eve_nsa_effect_id)

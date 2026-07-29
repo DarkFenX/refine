@@ -847,16 +847,20 @@ def test_assist_bubble_local(client, consts):
     api_sol = client.create_sol()
     api_hic_fit = api_sol.create_fit()
     api_hic_ship = api_hic_fit.set_ship(type_id=eve_ship_id)
-    api_hic_module = api_hic_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
+    api_hic_module = api_hic_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.online)
     api_assist_fit = api_sol.create_fit()
     api_assist_fit.add_module(
         type_id=eve_assist_module_id,
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_hic_ship.id])
     # Verification
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    # Action
+    api_hic_module.change_module(state=consts.ApiModuleState.active)
+    # Verification
     assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     # Action
-    api_hic_module.change_module(state=consts.ApiModuleState.online)
+    api_hic_module.remove()
     # Verification
     assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
@@ -908,7 +912,7 @@ def test_assist_dscript(client, consts):
     api_hic_ship = api_hic_fit.set_ship(type_id=eve_ship_id)
     api_hic_module = api_hic_fit.add_module(
         type_id=eve_wdfg_id,
-        state=consts.ApiModuleState.active,
+        state=consts.ApiModuleState.online,
         charge_type_id=eve_script_id)
     api_assist_fit = api_sol.create_fit()
     api_assist_fit.add_module(
@@ -916,9 +920,13 @@ def test_assist_dscript(client, consts):
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_hic_ship.id])
     # Verification
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    # Action
+    api_hic_module.change_module(state=consts.ApiModuleState.active)
+    # Verification
     assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     # Action
-    api_hic_module.change_module(state=consts.ApiModuleState.online)
+    api_hic_module.change_module(state=consts.ApiModuleState.offline)
     # Verification
     assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
@@ -944,7 +952,7 @@ def test_assist_sscript(client, consts):
     api_hic_ship = api_hic_fit.set_ship(type_id=eve_ship_id)
     api_hic_module = api_hic_fit.add_module(
         type_id=eve_wdfg_id,
-        state=consts.ApiModuleState.active,
+        state=consts.ApiModuleState.online,
         charge_type_id=eve_script_id)
     api_assist_fit = api_sol.create_fit()
     api_assist_fit.add_module(
@@ -952,9 +960,13 @@ def test_assist_sscript(client, consts):
         state=consts.ApiModuleState.active,
         proj_item_ids=[api_hic_ship.id])
     # Verification
+    assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    # Action
+    api_hic_module.change_module(state=consts.ApiModuleState.active)
+    # Verification
     assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     # Action
-    api_hic_module.change_module(state=consts.ApiModuleState.online)
+    api_hic_module.remove()
     # Verification
     assert api_assist_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
 
