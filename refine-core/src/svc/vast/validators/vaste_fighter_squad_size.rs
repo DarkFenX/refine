@@ -41,7 +41,7 @@ pub struct ValFighterSquadSizeFighterInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_fighter_squad_size_fast(&mut self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast) fn validate_fighter_squad_size_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.fighter_squad_size.is_empty(),
             false => self.fighter_squad_size.difference(kfs).next().is_none(),
@@ -49,7 +49,7 @@ impl VastFitData {
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_fighter_squad_size_verbose(
-        &mut self,
+        &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValFighterSquadSizeFail> {

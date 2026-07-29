@@ -34,7 +34,7 @@ pub struct ValChargeParentGroupChargeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_cont_group_fast(&mut self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast) fn validate_charge_cont_group_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.charge_cont_group.is_empty(),
             false => self.charge_cont_group.difference(kfs).next().is_none(),
@@ -42,7 +42,7 @@ impl VastFitData {
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_charge_cont_group_verbose(
-        &mut self,
+        &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValChargeParentGroupFail> {

@@ -8,12 +8,7 @@ use crate::{
 };
 
 impl Vast {
-    pub(in crate::svc) fn validate_sol_fast(
-        &mut self,
-        ctx: SvcCtx,
-        calc: &mut Calc,
-        options: &ValOptionsSolInt,
-    ) -> bool {
+    pub(in crate::svc) fn validate_sol_fast(&self, ctx: SvcCtx, calc: &mut Calc, options: &ValOptionsSolInt) -> bool {
         for &fit_uid in options.fit_uids.iter() {
             if !self.validate_fit_fast(ctx, calc, fit_uid, &options.options) {
                 return false;
@@ -46,14 +41,14 @@ impl Vast {
         sol_result
     }
     pub(in crate::svc) fn validate_fit_fast(
-        &mut self,
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         options: &ValOptionsInt,
     ) -> bool {
         let fit = ctx.u_data.fits.get(fit_uid);
-        let fit_data = self.get_fit_data_mut(fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         // Order of validations matters here; the faster validation and the more likely it is to
         // fail, the closer to top it should be. This order was chosen to optimize for market
@@ -465,14 +460,14 @@ impl Vast {
         true
     }
     pub(in crate::svc) fn validate_fit_verbose(
-        &mut self,
+        &self,
         ctx: SvcCtx,
         calc: &mut Calc,
         fit_uid: UFitId,
         options: &ValOptionsInt,
     ) -> ValResultFit {
         let fit = ctx.u_data.fits.get(fit_uid);
-        let fit_data = self.get_fit_data_mut(fit_uid);
+        let fit_data = self.get_fit_data(fit_uid);
         let ship = fit.ship.map(|v| ctx.u_data.items.get(v).dc_ship().unwrap());
         let mut result = ValResultFit { .. };
         ////////////////////////////////////////////////////////////////////////////////////////////////////////////////

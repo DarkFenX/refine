@@ -26,7 +26,7 @@ pub struct ValDroneGroupInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_drone_group_fast(&mut self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast) fn validate_drone_group_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.drone_groups.is_empty(),
             false => self.drone_groups.difference(kfs).next().is_none(),
@@ -34,7 +34,7 @@ impl VastFitData {
     }
     // Verbose validations
     pub(in crate::svc::vast) fn validate_drone_group_verbose(
-        &mut self,
+        &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValDroneGroupFail> {
