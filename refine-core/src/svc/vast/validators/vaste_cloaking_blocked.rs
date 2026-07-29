@@ -61,6 +61,9 @@ impl VastFitData {
         if !self.mod_effects_disallow_cloak.is_empty() {
             return false;
         }
+        if !self.mods_active_block_cloak.is_empty() {
+            return false;
+        }
         if let Some(ship_uid) = ship_uid
             && !can_ship_cloak(ctx, calc, ship_uid)
         {
