@@ -1812,6 +1812,72 @@ def test_cyno(client, consts):
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
 
 
+def test_entosis(client, consts):
+    """
+    Tested on Singularity on 2026-07-26, using Bifrost/Panther and t2 entosis. Lots of interactions
+    are not testable, or require some niche knowledge. The tests covered only things doable while
+    linking to an infrastructure hub,
+
+    Prevented actions/interactions:
+    + warp (external factors)
+    + jump drive (external factors)
+    + cloak (special but generic - one or more module is making this ship unable to cloak)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    - MJFG (not tested here)
+    - MJD (not tested here)
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_entosis_effect_id = client.mk_eve_effect(id_=consts.EveEffect.entosis_link, cat_id=consts.EveEffCat.target)
+    eve_entosis_id = client.mk_eve_item(
+        attrs={eve_basics.warp_scram_attr_id: 100, eve_basics.can_cloak_attr_id: 0},
+        eff_ids=[eve_entosis_effect_id],
+        defeff_id=eve_entosis_effect_id)
+    eve_ship_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_ship = api_fit.set_ship(type_id=eve_ship_id)
+    api_fit.add_module(type_id=eve_entosis_id, state=consts.ApiModuleState.active)
+    # Verification
+    api_ship_stats = api_ship.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    api_ship.update()
+    assert api_ship_stats.speed.one() == approx(100)
+    assert api_ship_stats.can_warp.one() is False
+    assert api_ship_stats.can_jump_gate.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_drive.one() is False
+    assert api_ship_stats.can_dock_station.one() is True
+    assert api_ship_stats.can_dock_citadel.one() is False
+    assert api_ship_stats.can_tether.one() is False
+    # Action
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_ship.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+
+
 def test_mjd(client, consts):
     """
     Tested on Tranquility sometime in May 2026, using Occator and t1 medium MJD, and on Singularity

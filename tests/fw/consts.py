@@ -130,6 +130,7 @@ class EveEffect(IntEnum):
     fueled_shield_boosting = 4936
     fueled_armor_repair = 5275
     cloaking_prototype = 5945
+    entosis_link = 6063
     ship_mod_remote_capacitor_transmitter = 6184
     ship_mod_remote_hull_repairer = 6185
     ship_mod_remote_shield_booster = 6186
