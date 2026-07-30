@@ -15,6 +15,7 @@ impl Settings {
 #[derive(Debug, Deserialize)]
 pub(crate) struct SettingsServer {
     pub(crate) port: u16,
+    pub(crate) max_request_size: u32,
     pub(crate) sol_lifetime: u64,
     pub(crate) sol_cleanup_interval: u64,
     pub(crate) standard_threads: usize,
@@ -38,20 +39,20 @@ pub(crate) struct SettingsLog {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Settings {
     fn new_internal(conf_path_opt: Option<String>) -> Result<Self, config::ConfigError> {
-        // Set defaults - in quite a cumbersome way, mostly because config crate does not expose
-        // a good way to set defaults for values residing on a level deeper first one
+        // Set defaults
         let mut server_defaults = config::Map::new();
-        server_defaults.insert("port".to_string(), config::ValueKind::U64(8000));
-        server_defaults.insert("solsys_lifetime".to_string(), config::ValueKind::U64(900));
-        server_defaults.insert("solsys_cleanup_interval".to_string(), config::ValueKind::U64(30));
-        server_defaults.insert("standard_threads".to_string(), config::ValueKind::U64(2));
-        server_defaults.insert("heavy_threads".to_string(), config::ValueKind::U64(4));
+        server_defaults.insert("port".into(), config::ValueKind::U64(8000));
+        server_defaults.insert("max_request_size".into(), config::ValueKind::U64(10 * 1024 * 1024));
+        server_defaults.insert("solsys_lifetime".into(), config::ValueKind::U64(900));
+        server_defaults.insert("solsys_cleanup_interval".into(), config::ValueKind::U64(30));
+        server_defaults.insert("standard_threads".into(), config::ValueKind::U64(2));
+        server_defaults.insert("heavy_threads".into(), config::ValueKind::U64(4));
         let mut cache_defaults = config::Map::new();
-        cache_defaults.insert("folder".to_string(), config::ValueKind::Nil);
+        cache_defaults.insert("folder".into(), config::ValueKind::Nil);
         let mut log_defaults = config::Map::new();
-        log_defaults.insert("folder".to_string(), config::ValueKind::Nil);
-        log_defaults.insert("level".to_string(), config::ValueKind::String("off".to_string()));
-        log_defaults.insert("rotate".to_string(), config::ValueKind::Boolean(false));
+        log_defaults.insert("folder".into(), config::ValueKind::Nil);
+        log_defaults.insert("level".into(), config::ValueKind::String("off".into()));
+        log_defaults.insert("rotate".into(), config::ValueKind::Boolean(false));
         let builder = config::Config::builder()
             .set_default("server", server_defaults)?
             .set_default("cache", cache_defaults)?
