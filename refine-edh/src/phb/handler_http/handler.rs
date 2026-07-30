@@ -1,4 +1,4 @@
-use std::fmt;
+use std::{fmt, io::BufReader};
 
 use reqwest::{IntoUrl, Url, blocking::Client};
 
@@ -72,7 +72,7 @@ impl PhbHttpEdh {
             .map_err(|e| PhbHttpEdhError::from_reqwest(e, suffix))?
             .error_for_status()
             .map_err(|e| PhbHttpEdhError::from_reqwest(e, suffix))?;
-        Ok(response)
+        Ok(BufReader::with_capacity(64 * 1024, response))
     }
     // Entity-specific processing methods
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
