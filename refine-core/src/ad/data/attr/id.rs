@@ -6,6 +6,11 @@ pub enum AAttrId {
     Custom(ACustomAttrId),
 }
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct AEveAttrId(i32);
 impl AEveAttrId {
@@ -17,6 +22,11 @@ impl AEveAttrId {
     }
 }
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomAttrId(i32);
 impl ACustomAttrId {
@@ -81,49 +91,61 @@ mod custom_serde_ad {
 
     use super::*;
 
+    // Human-readable representation
+    struct StrVisitor;
+    impl Visitor<'_> for StrVisitor {
+        type Value = AAttrId;
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("string with attribute type-prefixed integer")
+        }
+        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+        where
+            E: Error,
+        {
+            if let Some(id_str) = v.strip_prefix(EVE_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::Eve(AEveAttrId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::Custom(ACustomAttrId::from_i32(id)));
+            }
+            let msg = format!("expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", received \"{v}\"");
+            Err(Error::custom(msg))
+        }
+    }
+
+    // Binary representation
+    #[derive(serde::Serialize, serde::Deserialize)]
+    #[serde(remote = "AAttrId")]
+    enum AAttrIdDef {
+        Eve(AEveAttrId),
+        Custom(ACustomAttrId),
+    }
+
+    // Serialization
     impl Serialize for AAttrId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            serializer.serialize_str(&self.to_string())
+            match serializer.is_human_readable() {
+                true => serializer.serialize_str(&self.to_string()),
+                false => AAttrIdDef::serialize(self, serializer),
+            }
         }
     }
 
+    // Deserialization
     impl<'de> Deserialize<'de> for AAttrId {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            struct VisitorImpl;
-
-            impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = AAttrId;
-
-                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("string with attribute type-prefixed integer")
-                }
-
-                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    if let Some(id_str) = v.strip_prefix(EVE_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::Eve(AEveAttrId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::Custom(ACustomAttrId::from_i32(id)));
-                    }
-                    let msg = format!(
-                        "expected an int prefixed by \"{EVE_PREFIX}\" or \"{CUSTOM_PREFIX}\", received \"{v}\""
-                    );
-                    Err(Error::custom(msg))
-                }
+            match deserializer.is_human_readable() {
+                true => deserializer.deserialize_string(StrVisitor),
+                false => AAttrIdDef::deserialize(deserializer),
             }
-
-            deserializer.deserialize_string(VisitorImpl)
         }
     }
 }

@@ -86,7 +86,9 @@ impl rc::ad::AdaptedDataCacher for PostcardZfileAdc {
             .map_err(|e| PostcardZfileAdcDataReadError::ReadFailed(e.to_string()))?;
         let reader =
             zstd::stream::Decoder::new(file).map_err(|e| PostcardZfileAdcDataReadError::ReadFailed(e.to_string()))?;
-        // Scratch buffer needs to be bigger than longest string in cache
+        // Scratch buffer needs to be bigger than the longest string in cache. As of 2026-07-30,
+        // the only stored strings are ADG warnings, and all of them are capped, so 64k is more than
+        // enough.
         let mut scratch = vec![0; 64 * 1024];
         let (a_data, _) = postcard::from_io((BufReader::new(reader), scratch.as_mut_slice()))?;
         Ok(a_data)

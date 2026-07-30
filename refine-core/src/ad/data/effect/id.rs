@@ -21,6 +21,11 @@ pub enum AEffectId {
     Custom(ACustomEffectId),
 }
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ADogmaEffectId(i32);
 impl ADogmaEffectId {
@@ -32,6 +37,11 @@ impl ADogmaEffectId {
     }
 }
 
+#[cfg_attr(
+    feature = "serde-ad",
+    derive(serde::Serialize, serde::Deserialize),
+    serde(transparent)
+)]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ACustomEffectId(i32);
 impl ACustomEffectId {
@@ -109,70 +119,89 @@ mod custom_serde_ad {
 
     use super::*;
 
+    // Human-readable representation
+    struct StrVisitor;
+    impl<'de> Visitor<'de> for StrVisitor {
+        type Value = AEffectId;
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("string with effect type-prefixed integer")
+        }
+        fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
+        where
+            E: Error,
+        {
+            // Process longer prefixes first in case of conflicting starting letters
+            if let Some(id_str) = v.strip_prefix(SC_SYSWIDE_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::ScSystemWide(AItemId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(SC_SYSEMIT_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::ScSystemEmitter(AItemId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(SC_PROXYEFF_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::ScProxyEffect(AItemId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(SC_PROXYTRAP_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::ScProxyTrap(AItemId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(SC_SHIPLINK_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::ScShipLink(AItemId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(DOGMA_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::Dogma(ADogmaEffectId::from_i32(id)));
+            }
+            if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
+                let id = i32::from_str(id_str).map_err(Error::custom)?;
+                return Ok(Self::Value::Custom(ACustomEffectId::from_i32(id)));
+            }
+            let msg = format!(
+                "expected an int prefixed by \"{DOGMA_PREFIX}\", \"{SC_SYSWIDE_PREFIX}\", \"{SC_SYSEMIT_PREFIX}\", \"{SC_PROXYEFF_PREFIX}\", \"{SC_PROXYTRAP_PREFIX}\", \"{SC_SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\", received \"{v}\""
+            );
+            Err(Error::custom(msg))
+        }
+    }
+
+    // Binary representation
+    #[derive(serde::Serialize, serde::Deserialize)]
+    #[serde(remote = "AEffectId")]
+    enum AEffectIdDef {
+        Dogma(ADogmaEffectId),
+        ScSystemWide(AItemId),
+        ScSystemEmitter(AItemId),
+        ScProxyEffect(AItemId),
+        ScProxyTrap(AItemId),
+        ScShipLink(AItemId),
+        Custom(ACustomEffectId),
+    }
+
+    // Serialization
     impl Serialize for AEffectId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            serializer.serialize_str(&self.to_string())
+            match serializer.is_human_readable() {
+                true => serializer.serialize_str(&self.to_string()),
+                false => AEffectIdDef::serialize(self, serializer),
+            }
         }
     }
 
+    // Deserialization
     impl<'de> Deserialize<'de> for AEffectId {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            struct VisitorImpl;
-
-            impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = AEffectId;
-
-                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("string with effect type-prefixed integer")
-                }
-
-                fn visit_str<E>(self, v: &str) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    // Process longer prefixes first in case of conflicting starting letters
-                    if let Some(id_str) = v.strip_prefix(SC_SYSWIDE_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::ScSystemWide(AItemId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(SC_SYSEMIT_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::ScSystemEmitter(AItemId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(SC_PROXYEFF_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::ScProxyEffect(AItemId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(SC_PROXYTRAP_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::ScProxyTrap(AItemId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(SC_SHIPLINK_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::ScShipLink(AItemId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(DOGMA_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::Dogma(ADogmaEffectId::from_i32(id)));
-                    }
-                    if let Some(id_str) = v.strip_prefix(CUSTOM_PREFIX) {
-                        let id = i32::from_str(id_str).map_err(Error::custom)?;
-                        return Ok(Self::Value::Custom(ACustomEffectId::from_i32(id)));
-                    }
-                    let msg = format!(
-                        "expected an int prefixed by \"{DOGMA_PREFIX}\", \"{SC_SYSWIDE_PREFIX}\", \"{SC_SYSEMIT_PREFIX}\", \"{SC_PROXYEFF_PREFIX}\", \"{SC_PROXYTRAP_PREFIX}\", \"{SC_SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\", received \"{v}\""
-                    );
-                    Err(Error::custom(msg))
-                }
+            match deserializer.is_human_readable() {
+                true => deserializer.deserialize_string(StrVisitor),
+                false => AEffectIdDef::deserialize(deserializer),
             }
-
-            deserializer.deserialize_string(VisitorImpl)
         }
     }
 }

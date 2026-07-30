@@ -132,13 +132,23 @@ fn fk_check_referee<T, F>(
     referer_cont.data.iter().for_each(|v| fks.extend(func(v, adg_supp)));
     let missing = fks.difference(referee_pks).copied().collect_vec();
     if !missing.is_empty() {
-        let warning = format!(
+        let entry_limit = 5;
+        let entry_count = missing.len();
+        let mut warning = format!(
             "{} refers to {} missing {}: {}",
             T::lib_get_name(),
-            missing.len(),
+            entry_count,
             referee_name,
-            missing.into_iter().map(|v| v.into_i32()).sorted_unstable().join(", ")
+            missing
+                .into_iter()
+                .map(|v| v.into_i32())
+                .sorted_unstable()
+                .take(entry_limit)
+                .join(", ")
         );
+        if entry_count > entry_limit {
+            warning = format!("{}, <{} more entries hidden>", warning, entry_count - entry_limit);
+        }
         a_warnings.validation.push(warning);
     }
 }
@@ -288,7 +298,7 @@ impl ADataGenerator {
             let entry_count = invalids.len();
             let mut warning = format!(
                 "removed {} {} with references to missing on-item effects: {}",
-                invalids.len(),
+                entry_count,
                 EItemAbil::lib_get_name(),
                 invalids
                     .into_iter()
