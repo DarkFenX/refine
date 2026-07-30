@@ -59,7 +59,7 @@ mod custom_serde {
                     Ok(Self::Value::Id(fleet_id))
                 }
             }
-            deserializer.deserialize_str(VisitorImpl)
+            deserializer.deserialize_string(VisitorImpl)
         }
     }
 
@@ -89,7 +89,7 @@ mod custom_serde {
                     Ok(Self::Value::Id(fit_id))
                 }
             }
-            deserializer.deserialize_str(VisitorImpl)
+            deserializer.deserialize_string(VisitorImpl)
         }
     }
 
@@ -123,7 +123,7 @@ mod custom_serde {
                     Ok(Self::Value::Id(item_id))
                 }
             }
-            deserializer.deserialize_str(VisitorImpl)
+            deserializer.deserialize_string(VisitorImpl)
         }
     }
 }

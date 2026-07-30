@@ -130,7 +130,7 @@ mod custom_serde {
                 }
             }
 
-            deserializer.deserialize_str(VisitorImpl)
+            deserializer.deserialize_string(VisitorImpl)
         }
     }
 }
