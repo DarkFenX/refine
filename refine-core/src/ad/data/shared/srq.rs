@@ -12,7 +12,7 @@ pub enum AModifierSrq {
 #[cfg(feature = "serde-ad")]
 mod custom_serde {
     use serde::{
-        de::{Deserialize, Deserializer, Error, Visitor},
+        de::{Deserialize, Deserializer},
         ser::{Serialize, Serializer},
     };
 
@@ -25,7 +25,7 @@ mod custom_serde {
         {
             match self {
                 Self::SelfRef => serializer.serialize_none(),
-                Self::ItemId(id) => id.serialize(serializer),
+                Self::ItemId(id) => serializer.serialize_some(id),
             }
         }
     }
@@ -35,53 +35,10 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            struct VisitorImpl;
-
-            impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = AModifierSrq;
-
-                fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("null or integer")
-                }
-
-                fn visit_unit<E>(self) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::SelfRef)
-                }
-                fn visit_none<E>(self) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::SelfRef)
-                }
-
-                fn visit_i64<E>(self, v: i64) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::ItemId(AItemId::from_i32(
-                        v.try_into().map_err(Error::custom)?,
-                    )))
-                }
-                fn visit_u64<E>(self, v: u64) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::ItemId(AItemId::from_i32(
-                        v.try_into().map_err(Error::custom)?,
-                    )))
-                }
-                fn visit_f64<E>(self, v: f64) -> Result<Self::Value, E>
-                where
-                    E: Error,
-                {
-                    Ok(Self::Value::ItemId(AItemId::from_i32(v as i32)))
-                }
+            match Option::deserialize(deserializer)? {
+                Some(item_aid) => Ok(Self::ItemId(item_aid)),
+                None => Ok(Self::SelfRef),
             }
-
-            deserializer.deserialize_any(VisitorImpl)
         }
     }
 }
