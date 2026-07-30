@@ -7,7 +7,7 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
-angle-sc = ">=1.1.5"
+angle-sc = ">=2.0.0"
 cranelift-entity = ">=0.134.2"
 derive_more = { version = ">=2.1.1", features = ["display"] }
 either = ">=0.17.0"
