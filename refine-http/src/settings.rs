@@ -43,14 +43,14 @@ impl Settings {
         let mut server_defaults = config::Map::new();
         server_defaults.insert("port".into(), config::ValueKind::U64(8000));
         server_defaults.insert("max_request_size".into(), config::ValueKind::U64(10 * 1024 * 1024));
-        server_defaults.insert("solsys_lifetime".into(), config::ValueKind::U64(900));
-        server_defaults.insert("solsys_cleanup_interval".into(), config::ValueKind::U64(30));
+        server_defaults.insert("sol_lifetime".into(), config::ValueKind::U64(900));
+        server_defaults.insert("sol_cleanup_interval".into(), config::ValueKind::U64(30));
         server_defaults.insert("standard_threads".into(), config::ValueKind::U64(2));
         server_defaults.insert("heavy_threads".into(), config::ValueKind::U64(4));
         let mut cache_defaults = config::Map::new();
-        cache_defaults.insert("folder".into(), config::ValueKind::Nil);
+        cache_defaults.insert("dir".into(), config::ValueKind::Nil);
         let mut log_defaults = config::Map::new();
-        log_defaults.insert("folder".into(), config::ValueKind::Nil);
+        log_defaults.insert("dir".into(), config::ValueKind::Nil);
         log_defaults.insert("level".into(), config::ValueKind::String("off".into()));
         log_defaults.insert("rotate".into(), config::ValueKind::Boolean(false));
         let builder = config::Config::builder()
