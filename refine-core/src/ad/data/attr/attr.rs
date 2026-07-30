@@ -21,12 +21,14 @@ mod custom_serde_ad {
 
     use super::*;
 
+    const FIELDS: usize = 6;
+
     impl Serialize for AAttr {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            let mut tuple = serializer.serialize_tuple(6)?;
+            let mut tuple = serializer.serialize_tuple(FIELDS)?;
             tuple.serialize_element(&self.id)?;
             tuple.serialize_element(&self.penalizable)?;
             tuple.serialize_element(&self.hig)?;
@@ -48,7 +50,7 @@ mod custom_serde_ad {
                 type Value = AAttr;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("sequence with 6 elements")
+                    formatter.write_str("tuple with 6 elements")
                 }
 
                 fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
@@ -66,7 +68,7 @@ mod custom_serde_ad {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorImpl)
+            deserializer.deserialize_tuple(FIELDS, VisitorImpl)
         }
     }
 }

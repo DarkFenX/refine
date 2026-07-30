@@ -36,12 +36,14 @@ mod custom_serde_ad {
 
     use super::*;
 
+    const FIELDS: usize = 18;
+
     impl Serialize for AEffect {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            let mut tuple = serializer.serialize_tuple(18)?;
+            let mut tuple = serializer.serialize_tuple(FIELDS)?;
             tuple.serialize_element(&self.id)?;
             tuple.serialize_element(&self.category)?;
             tuple.serialize_element(&self.state)?;
@@ -105,7 +107,7 @@ mod custom_serde_ad {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorImpl)
+            deserializer.deserialize_tuple(FIELDS, VisitorImpl)
         }
     }
 }

@@ -72,12 +72,14 @@ mod custom_serde_ad_entry {
 
     use super::*;
 
+    const FIELDS: usize = 2;
+
     impl Serialize for AItemEffect {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            let mut tuple = serializer.serialize_tuple(2)?;
+            let mut tuple = serializer.serialize_tuple(FIELDS)?;
             tuple.serialize_element(&self.id)?;
             tuple.serialize_element(&self.data)?;
             tuple.end()
@@ -95,7 +97,7 @@ mod custom_serde_ad_entry {
                 type Value = AItemEffect;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("sequence with 2 elements")
+                    formatter.write_str("tuple with 2 elements")
                 }
 
                 fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
@@ -109,7 +111,7 @@ mod custom_serde_ad_entry {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorImpl)
+            deserializer.deserialize_tuple(FIELDS, VisitorImpl)
         }
     }
 }

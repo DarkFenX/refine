@@ -80,12 +80,14 @@ mod custom_serde {
 
     use super::*;
 
+    const FIELDS: usize = 3;
+
     impl Serialize for Movement {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            let mut tuple = serializer.serialize_tuple(3)?;
+            let mut tuple = serializer.serialize_tuple(FIELDS)?;
             tuple.serialize_element(&self.direction.azimuth)?;
             tuple.serialize_element(&self.direction.elevation)?;
             tuple.serialize_element(&self.speed)?;
@@ -104,7 +106,7 @@ mod custom_serde {
                 type Value = Movement;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-                    formatter.write_str("sequence with 3 elements")
+                    formatter.write_str("tuple with 3 elements")
                 }
 
                 fn visit_seq<S>(self, mut seq: S) -> Result<Self::Value, S::Error>
@@ -121,7 +123,7 @@ mod custom_serde {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorImpl)
+            deserializer.deserialize_tuple(FIELDS, VisitorImpl)
         }
     }
 }

@@ -18,12 +18,14 @@ mod custom_serde_ad {
 
     use super::*;
 
+    const FIELDS: usize = 3;
+
     impl Serialize for AMuta {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            let mut tuple = serializer.serialize_tuple(3)?;
+            let mut tuple = serializer.serialize_tuple(FIELDS)?;
             tuple.serialize_element(&self.id)?;
             tuple.serialize_element(&self.item_map)?;
             tuple.serialize_element(&self.attr_mods)?;
@@ -57,7 +59,7 @@ mod custom_serde_ad {
                 }
             }
 
-            deserializer.deserialize_seq(VisitorImpl)
+            deserializer.deserialize_tuple(FIELDS, VisitorImpl)
         }
     }
 }
