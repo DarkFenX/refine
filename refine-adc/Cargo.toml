@@ -9,14 +9,14 @@ edition = "2024"
 [dependencies]
 rc = { package = "refine-core", path = "../refine-core" }
 serde = { version = ">=1.0.229", features = ["derive"], optional = true }
-struson = { version = ">=0.7.2", features = ["serde"], optional = true }
+serde_json = { version = ">=1.0.151", features = ["float_roundtrip"], optional = true }
 thiserror = { version = ">=2.0.19", optional = true }
 zstd = { version = ">=0.13.3", optional = true }
 
 [features]
 json-zfile = [
     "dep:serde",
-    "dep:struson",
+    "dep:serde_json",
     "dep:thiserror",
     "dep:zstd",
     "rc/serde-ad",

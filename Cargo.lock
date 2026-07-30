@@ -1610,7 +1610,7 @@ version = "0.1.0"
 dependencies = [
  "refine-core",
  "serde",
- "struson",
+ "serde_json",
  "thiserror",
  "zstd",
 ]

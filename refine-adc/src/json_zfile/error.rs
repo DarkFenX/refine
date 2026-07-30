@@ -5,19 +5,11 @@ pub(super) enum JsonZfileAdcDataReadError {
     #[error("parsing failed: {0}")]
     ParseFailed(String),
 }
-impl From<struson::reader::ReaderError> for JsonZfileAdcDataReadError {
-    fn from(error: struson::reader::ReaderError) -> Self {
-        match error {
-            struson::reader::ReaderError::IoError { .. } => Self::ReadFailed(error.to_string()),
-            _ => Self::ParseFailed(error.to_string()),
-        }
-    }
-}
-impl From<struson::serde::DeserializerError> for JsonZfileAdcDataReadError {
-    fn from(error: struson::serde::DeserializerError) -> Self {
-        match error {
-            struson::serde::DeserializerError::ReaderError(reader_error) => reader_error.into(),
-            _ => Self::ParseFailed(error.to_string()),
+impl From<serde_json::Error> for JsonZfileAdcDataReadError {
+    fn from(error: serde_json::Error) -> Self {
+        match error.is_io() {
+            true => Self::ReadFailed(error.to_string()),
+            false => Self::ParseFailed(error.to_string()),
         }
     }
 }
@@ -45,8 +37,11 @@ impl From<std::io::Error> for JsonZfileAdcWriteError {
         Self::DataWriteFailed(error.to_string())
     }
 }
-impl From<struson::serde::SerializerError> for JsonZfileAdcWriteError {
-    fn from(error: struson::serde::SerializerError) -> Self {
-        Self::DataSerializeFailed(error.to_string())
+impl From<serde_json::Error> for JsonZfileAdcWriteError {
+    fn from(error: serde_json::Error) -> Self {
+        match error.is_io() {
+            true => Self::DataWriteFailed(error.to_string()),
+            false => Self::DataSerializeFailed(error.to_string()),
+        }
     }
 }

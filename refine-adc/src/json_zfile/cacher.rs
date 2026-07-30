@@ -1,14 +1,11 @@
 use std::{
     fmt,
     fs::{OpenOptions, create_dir_all},
-    io::{self, Write},
+    io::{self, BufReader, BufWriter, Write},
     path::PathBuf,
 };
 
-use super::{
-    error::{JsonZfileAdcDataReadError, JsonZfileAdcFpReadError, JsonZfileAdcWriteError},
-    stream::{try_deserialize, try_serialize},
-};
+use super::error::{JsonZfileAdcDataReadError, JsonZfileAdcFpReadError, JsonZfileAdcWriteError};
 use crate::VERSION;
 
 /// JSON adapted data cacher implementation.
@@ -48,8 +45,10 @@ impl JsonZfileAdc {
             .write(true)
             .truncate(true)
             .open(cache_path)?;
-        let writer = zstd::stream::Encoder::new(file, 7)?.auto_finish();
-        try_serialize(a_data, writer)?;
+        // zstd has internal input buffer, but it uses FFI which makes it moderately expensive;
+        // serde-json writes very few bytes at a time, so native write buffer actually helps
+        let writer = BufWriter::new(zstd::stream::Encoder::new(file, 7)?.auto_finish());
+        serde_json::to_writer(writer, a_data)?;
         Ok(())
     }
     fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), JsonZfileAdcWriteError> {
@@ -87,7 +86,7 @@ impl rc::ad::AdaptedDataCacher for JsonZfileAdc {
             .map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
         let reader =
             zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
-        let a_data = try_deserialize(reader)?;
+        let a_data = serde_json::from_reader(BufReader::new(reader))?;
         Ok(a_data)
     }
     fn write_cache(
