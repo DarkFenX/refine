@@ -1,4 +1,4 @@
-use std::{hash::Hash, marker::PhantomData};
+use std::hash::Hash;
 
 use crate::util::{LibDefault, LibGetId, LibIncrement, LibNamed, PSlab, RMap, SlabId};
 
@@ -6,7 +6,7 @@ pub(crate) struct UEntityContainer<T, ExtId, IntId, Err> {
     counter: ExtId,
     pub(super) data: PSlab<IntId, T>,
     pub(super) ext_id_to_int_id: RMap<ExtId, IntId>,
-    phantom: PhantomData<Err>,
+    phantom: std::marker::PhantomData<Err>,
 }
 impl<T, ExtId, IntId, Err> UEntityContainer<T, ExtId, IntId, Err>
 where
@@ -20,7 +20,7 @@ where
             counter: ExtId::lib_default(),
             data: PSlab::with_capacity(capacity),
             ext_id_to_int_id: RMap::with_capacity(capacity),
-            phantom: PhantomData,
+            phantom: std::marker::PhantomData,
         }
     }
     pub(crate) fn alloc_id(&mut self) -> ExtId {
@@ -101,7 +101,7 @@ where
             counter: self.counter,
             data: self.data.clone(),
             ext_id_to_int_id: self.ext_id_to_int_id.clone(),
-            phantom: PhantomData,
+            phantom: std::marker::PhantomData,
         }
     }
 }

@@ -8,7 +8,7 @@ use crate::phb::{
         PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
         PItemSkillMap, PItemSpaceComp, PMuta,
     },
-    parsing::{handle_keymap_one, handle_keymap_two},
+    parsing::{extract_from_keymap_one, extract_from_keymap_two},
 };
 
 /// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP
@@ -78,28 +78,28 @@ impl PhbHttpEdh {
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/types.json";
         let reader = self.get_reader(suffix)?;
-        e_data.items = handle_keymap_one::<PItem, rc::ed::EItem>(reader)
+        e_data.items = extract_from_keymap_one::<PItem, rc::ed::EItem>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/groups.json";
         let reader = self.get_reader(suffix)?;
-        e_data.groups = handle_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader)
+        e_data.groups = extract_from_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/typelist.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_lists = handle_keymap_one::<PItemList, rc::ed::EItemList>(reader)
+        e_data.item_lists = extract_from_keymap_one::<PItemList, rc::ed::EItemList>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/dogmaattributes.json";
         let reader = self.get_reader(suffix)?;
-        e_data.attrs = handle_keymap_one::<PAttr, rc::ed::EAttr>(reader)
+        e_data.attrs = extract_from_keymap_one::<PAttr, rc::ed::EAttr>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
@@ -107,49 +107,49 @@ impl PhbHttpEdh {
         let suffix = "fsd_built/typedogma.json";
         let reader = self.get_reader(suffix)?;
         (e_data.item_attrs, e_data.item_effects) =
-            handle_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader)
+            extract_from_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader)
                 .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/dogmaeffects.json";
         let reader = self.get_reader(suffix)?;
-        e_data.effects = handle_keymap_one::<PEffect, rc::ed::EEffect>(reader)
+        e_data.effects = extract_from_keymap_one::<PEffect, rc::ed::EEffect>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_lite/fighterabilities.json";
         let reader = self.get_reader(suffix)?;
-        e_data.abils = handle_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader)
+        e_data.abils = extract_from_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_lite/fighterabilitiesbytype.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_abils = handle_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader)
+        e_data.item_abils = extract_from_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_lite/dbuffcollections.json";
         let reader = self.get_reader(suffix)?;
-        e_data.buffs = handle_keymap_one::<PBuff, rc::ed::EBuff>(reader)
+        e_data.buffs = extract_from_keymap_one::<PBuff, rc::ed::EBuff>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/spacecomponentsbytype.json";
         let reader = self.get_reader(suffix)?;
-        e_data.space_comps = handle_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader)
+        e_data.space_comps = extract_from_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
     fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         let suffix = "fsd_built/requiredskillsfortypes.json";
         let reader = self.get_reader(suffix)?;
-        e_data.item_srqs = handle_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader)
+        e_data.item_srqs = extract_from_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader)
             .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }
@@ -157,7 +157,7 @@ impl PhbHttpEdh {
         let suffix = "fsd_built/dynamicitemattributes.json";
         let reader = self.get_reader(suffix)?;
         (e_data.muta_items, e_data.muta_attrs) =
-            handle_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader)
+            extract_from_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader)
                 .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
         Ok(())
     }

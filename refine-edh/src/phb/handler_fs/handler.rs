@@ -6,7 +6,7 @@ use crate::phb::{
         PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
         PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
     },
-    parsing::{ArrayIter, handle_keymap_one, handle_keymap_two},
+    parsing::{extract_from_keymap_one, extract_from_keymap_two, find_in_array},
 };
 
 /// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
@@ -45,28 +45,28 @@ impl PhbFilesystemEdh {
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "types");
         let reader = self.get_reader(&addr)?;
-        e_data.items = handle_keymap_one::<PItem, rc::ed::EItem>(reader)
+        e_data.items = extract_from_keymap_one::<PItem, rc::ed::EItem>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "groups");
         let reader = self.get_reader(&addr)?;
-        e_data.groups = handle_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader)
+        e_data.groups = extract_from_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "typelist");
         let reader = self.get_reader(&addr)?;
-        e_data.item_lists = handle_keymap_one::<PItemList, rc::ed::EItemList>(reader)
+        e_data.item_lists = extract_from_keymap_one::<PItemList, rc::ed::EItemList>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "dogmaattributes");
         let reader = self.get_reader(&addr)?;
-        e_data.attrs = handle_keymap_one::<PAttr, rc::ed::EAttr>(reader)
+        e_data.attrs = extract_from_keymap_one::<PAttr, rc::ed::EAttr>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
@@ -74,49 +74,49 @@ impl PhbFilesystemEdh {
         let addr = Address::new("fsd_built", "typedogma");
         let reader = self.get_reader(&addr)?;
         (e_data.item_attrs, e_data.item_effects) =
-            handle_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader)
+            extract_from_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader)
                 .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "dogmaeffects");
         let reader = self.get_reader(&addr)?;
-        e_data.effects = handle_keymap_one::<PEffect, rc::ed::EEffect>(reader)
+        e_data.effects = extract_from_keymap_one::<PEffect, rc::ed::EEffect>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_lite", "fighterabilities");
         let reader = self.get_reader(&addr)?;
-        e_data.abils = handle_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader)
+        e_data.abils = extract_from_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_lite", "fighterabilitiesbytype");
         let reader = self.get_reader(&addr)?;
-        e_data.item_abils = handle_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader)
+        e_data.item_abils = extract_from_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_lite", "dbuffcollections");
         let reader = self.get_reader(&addr)?;
-        e_data.buffs = handle_keymap_one::<PBuff, rc::ed::EBuff>(reader)
+        e_data.buffs = extract_from_keymap_one::<PBuff, rc::ed::EBuff>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "spacecomponentsbytype");
         let reader = self.get_reader(&addr)?;
-        e_data.space_comps = handle_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader)
+        e_data.space_comps = extract_from_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
     fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         let addr = Address::new("fsd_built", "requiredskillsfortypes");
         let reader = self.get_reader(&addr)?;
-        e_data.item_srqs = handle_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader)
+        e_data.item_srqs = extract_from_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
@@ -124,7 +124,7 @@ impl PhbFilesystemEdh {
         let addr = Address::new("fsd_built", "dynamicitemattributes");
         let reader = self.get_reader(&addr)?;
         (e_data.muta_items, e_data.muta_attrs) =
-            handle_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader)
+            extract_from_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader)
                 .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         Ok(())
     }
@@ -149,13 +149,11 @@ impl rc::ed::EveDataHandler for PhbFilesystemEdh {
     fn get_data_version(&self) -> Result<String, Box<dyn std::error::Error>> {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
-        for metadata_result in ArrayIter::new(reader) {
-            let metadata: PMetadata =
-                metadata_result.map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
-            if metadata.field_name == "client_build" {
-                return Ok(metadata.field_value.to_string());
-            }
+        let metadata = find_in_array::<PMetadata>(reader, |metadata| metadata.field_name == "client_build")
+            .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
+        match metadata {
+            Some(metadata) => Ok(metadata.field_value.to_string()),
+            None => Err(PhbFsEdhError::NoClientBuild.into()),
         }
-        Err(PhbFsEdhError::NoClientBuild.into())
     }
 }
