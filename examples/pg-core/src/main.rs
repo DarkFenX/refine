@@ -1,4 +1,5 @@
 #![allow(warnings, unused)]
+#![feature(default_field_values)]
 #![feature(core_intrinsics)]
 
 use std::{
@@ -276,7 +277,7 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
         fit.add_drone(ItemTypeId::from_i32(2446), MinionState::InBay, None, None); // T2 ogre
     }
 
-    let val_options = ValOptions::all_enabled();
+    let val_options = ValOptions { default: true, .. };
     // Generated from pyfa
     let items = vec![
         178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199,
