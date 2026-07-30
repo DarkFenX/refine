@@ -11,3 +11,4 @@ mod error;
 mod parse_array;
 mod parse_keymap;
 mod traits;
+mod warning;

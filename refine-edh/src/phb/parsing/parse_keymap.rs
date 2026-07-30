@@ -7,7 +7,11 @@ use super::{
     aliases::Key,
     error::ReadParseFailReason,
     traits::{KeyMergeOne, KeyMergeTwo},
+    warning::cap_len,
 };
+
+const KEY_LEN_LIMIT: usize = 20;
+const WARNING_LEN_LIMIT: usize = 200;
 
 pub(in crate::phb) fn extract_from_keymap_one<PHB, EVE>(
     reader: impl std::io::Read,
@@ -53,7 +57,7 @@ where
             let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
             let Ok(key) = raw_key.parse::<Key>() else {
-                let warning = format!("failed to cast key \"{raw_key}\" to integer");
+                let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
                 e_cont.warnings.push(warning);
                 continue;
             };
@@ -61,7 +65,10 @@ where
             let value = match serde_json::from_str::<PHB>(raw_value.get()) {
                 Ok(value) => value,
                 Err(error) => {
-                    let warning = format!("failed to parse value with key \"{key}\": {error}");
+                    let warning = cap_len(
+                        format!("failed to parse value with key \"{key}\": {error}"),
+                        WARNING_LEN_LIMIT,
+                    );
                     e_cont.warnings.push(warning);
                     continue;
                 }
@@ -93,7 +100,7 @@ where
             let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
             let Ok(key) = raw_key.parse::<Key>() else {
-                let warning = format!("failed to cast key \"{raw_key}\" to integer");
+                let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
                 e_cont1.warnings.push(warning.clone());
                 e_cont2.warnings.push(warning);
                 continue;
@@ -102,7 +109,10 @@ where
             let value = match serde_json::from_str::<PHB>(raw_value.get()) {
                 Ok(value) => value,
                 Err(error) => {
-                    let warning = format!("failed to parse value with key \"{key}\": {error}");
+                    let warning = cap_len(
+                        format!("failed to parse value with key \"{key}\": {error}"),
+                        WARNING_LEN_LIMIT,
+                    );
                     e_cont1.warnings.push(warning.clone());
                     e_cont2.warnings.push(warning);
                     continue;
