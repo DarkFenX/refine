@@ -41,6 +41,7 @@ def build_config(*, config_path: Path, port: int, log_dir: Path) -> ConfigInfo:
         '[log]',
         f'dir = "{log_dir}"',
         'level = "debug"',
+        'bodies = true',
         'rotate = false']
     with config_path.open(mode='w', encoding='utf-8') as f:
         f.write('\n'.join(contents))

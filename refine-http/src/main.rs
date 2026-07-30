@@ -11,7 +11,7 @@ use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 use tower_request_id::{RequestId, RequestIdLayer};
 use tracing::Span;
 
-use crate::{settings::Settings, state::AppState};
+use crate::{logging::LogBodies, settings::Settings, state::AppState};
 
 mod err;
 mod handlers;
@@ -26,7 +26,7 @@ async fn main() {
     let config_path = env::args().nth(1);
     let settings = Settings::new(config_path);
     // Logging
-    let _log_guard = logging::setup(settings.log.dir, &settings.log.level, settings.log.rotate);
+    let (_log_guard, log_bodies) = logging::setup(settings.log);
     // Shared state
     let state = AppState::new(
         settings.server.standard_threads,
@@ -100,7 +100,11 @@ async fn main() {
                     tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
                 }),
         )
-        .layer(middleware::from_fn(util::ml_trace_reqresp::print_request_response));
+        // Logging bodies is not free, use it only if it is enabled
+        .option_layer(match log_bodies {
+            LogBodies::Enabled => Some(middleware::from_fn(util::ml_trace_reqresp::print_request_response)),
+            LogBodies::Disabled => None,
+        });
     // App
     let app = url_mid.layer(router.layer(general_mid));
 

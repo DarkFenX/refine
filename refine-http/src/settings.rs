@@ -31,6 +31,7 @@ pub(crate) struct SettingsCache {
 pub(crate) struct SettingsLog {
     pub(crate) dir: Option<std::path::PathBuf>,
     pub(crate) level: String,
+    pub(crate) bodies: bool,
     pub(crate) rotate: bool,
 }
 
@@ -52,6 +53,7 @@ impl Settings {
         let mut log_defaults = config::Map::new();
         log_defaults.insert("dir".into(), config::ValueKind::Nil);
         log_defaults.insert("level".into(), config::ValueKind::String("off".into()));
+        log_defaults.insert("bodies".into(), config::ValueKind::Boolean(false));
         log_defaults.insert("rotate".into(), config::ValueKind::Boolean(false));
         let builder = config::Config::builder()
             .set_default("server", server_defaults)?

@@ -9,6 +9,8 @@ use tracing_subscriber::{
     prelude::*,
 };
 
+use crate::settings::SettingsLog;
+
 const TIME_FORMAT_FULL: FormatDescriptionV3<'_> = format_description!(
     version = 3,
     r"\[[year]-[month]-[day] [hour]:[minute]:[second].[subsecond digits:3]\]"
@@ -16,7 +18,12 @@ const TIME_FORMAT_FULL: FormatDescriptionV3<'_> = format_description!(
 const TIME_FORMAT_SHORT: FormatDescriptionV3<'_> =
     format_description!(version = 3, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]");
 
-pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) -> Option<WorkerGuard> {
+pub(crate) enum LogBodies {
+    Enabled,
+    Disabled,
+}
+
+pub(crate) fn setup(settings: SettingsLog) -> (Option<WorkerGuard>, LogBodies) {
     // We always log warnings and higher to stdout
     let stdout_log = layer()
         .with_writer(std::io::stdout.with_max_level(Level::WARN))
@@ -25,10 +32,9 @@ pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) 
         .with_target(false)
         .pretty();
     // We log into file only if we've been given path and appropriate log level
-    let file_max_level_res = Level::from_str(level);
-    let (file_log, file_guard) = match (dir, file_max_level_res) {
+    let (file_log, file_guard, effective_max_level) = match (settings.dir, Level::from_str(&settings.level)) {
         (Some(dir), Ok(max_level)) => {
-            let (rotation, time_format) = match rotate {
+            let (rotation, time_format) = match settings.rotate {
                 true => (tracing_appender::rolling::Rotation::DAILY, TIME_FORMAT_SHORT),
                 false => (tracing_appender::rolling::Rotation::NEVER, TIME_FORMAT_FULL),
             };
@@ -39,9 +45,9 @@ pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) 
                 .with_ansi(false)
                 .with_timer(UtcTime::new(time_format))
                 .with_target(false);
-            (Some(file_log), Some(file_guard))
+            (Some(file_log), Some(file_guard), Some(max_level))
         }
-        _ => (None, None),
+        _ => (None, None, None),
     };
     tracing_subscriber::registry()
         .with(stdout_log)
@@ -53,5 +59,10 @@ pub(crate) fn setup(dir: Option<std::path::PathBuf>, level: &str, rotate: bool) 
                 .with_target("refine_http", Level::TRACE),
         )
         .init();
-    file_guard
+    // Log bodies only if both conditions (flag which enables it & log level) are met
+    let bodies = match (settings.bodies, effective_max_level) {
+        (true, Some(effective_max_level)) if effective_max_level >= Level::INFO => LogBodies::Enabled,
+        _ => LogBodies::Disabled,
+    };
+    (file_guard, bodies)
 }
