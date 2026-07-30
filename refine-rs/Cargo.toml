@@ -46,5 +46,5 @@ edh-phb-http = [
 ]
 adc-fs = [
     "dep:radc",
-    "radc/json-zfile",
+    "radc/postcard-zfile",
 ]

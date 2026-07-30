@@ -125,7 +125,7 @@ fn create_core_src(
     let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match ad_caching {
         AdCaching::Disabled => None,
         #[cfg(feature = "adc-fs")]
-        AdCaching::Filesystem { dir } => Some(Box::new(radc::JsonZfileAdc::new(dir, alias.into()))),
+        AdCaching::Filesystem { dir } => Some(Box::new(radc::PostcardZfileAdc::new(dir, alias.into()))),
     };
     tracing::info!(
         "initializing new source with {:?} and {}",

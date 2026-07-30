@@ -123,7 +123,7 @@ mod custom_serde_ad {
                 }
             }
 
-            deserializer.deserialize_str(VisitorImpl)
+            deserializer.deserialize_string(VisitorImpl)
         }
     }
 }
