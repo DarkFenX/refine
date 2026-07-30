@@ -33,12 +33,12 @@ async fn buffer_and_print(arrows: &str, direction: &str, body: Body) -> Result<B
             return Err((StatusCode::BAD_REQUEST, format!("{arrows} failed to read body: {err}")));
         }
     };
-    if let Ok(body) = std::str::from_utf8(&bytes) {
-        if body.is_empty() {
-            tracing::info!("{arrows} {direction} body is empty");
-        } else {
-            tracing::info!("{arrows} {direction} body: {body}");
-        }
+    match std::str::from_utf8(&bytes) {
+        Ok(body) => match body.is_empty() {
+            true => tracing::info!("{arrows} {direction} body is empty"),
+            false => tracing::info!("{arrows} {direction} body: {body}"),
+        },
+        Err(_) => tracing::info!("{arrows} {direction} body: <invalid UTF-8, {} bytes>", bytes.len()),
     }
     Ok(bytes)
 }
