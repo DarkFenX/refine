@@ -40,6 +40,7 @@ where
         e_cont
             .warnings
             .drain(..)
+            .take(warning_limit)
             .map(|v| format!("failed to fetch {}: {}", T::lib_get_name(), v)),
     );
     if warning_count > warning_limit {
