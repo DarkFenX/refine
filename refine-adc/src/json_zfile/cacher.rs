@@ -24,7 +24,7 @@ impl JsonZfileAdc {
         self.dir.join(format!("{}.json.zst", self.name))
     }
     fn get_fingerprint_path(&self) -> PathBuf {
-        self.dir.join(format!("{}_fp.txt", self.name))
+        self.dir.join(format!("{}.json.zst.fp", self.name))
     }
     fn create_cache_dir(&self) -> Result<(), JsonZfileAdcWriteError> {
         match create_dir_all(&self.dir) {
