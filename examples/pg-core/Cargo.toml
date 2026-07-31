@@ -1,8 +1,10 @@
 [package]
 name = "refine-example-playground-core"
+license = "Unlicense"
 version = "0.1.0"
 authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
+publish = false
 
 [dependencies]
 rc = { package = "refine-core", path = "../../refine-core" }
