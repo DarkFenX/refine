@@ -38,7 +38,7 @@ pub struct ValSrqItemInfo {
     /// List of missing skills.
     #[cfg_attr(
         feature = "serde",
-        vec_map(value, serialize_as = serde_with::KeyValueMap<serde_with::Same>)
+        vec_map(value, serialize_as = serde_with::KeyValueMap<_>)
     )]
     pub missing_skills: Vec<ValSrqSkillInfo>,
 }

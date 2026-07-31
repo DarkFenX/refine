@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Data, DeriveInput, Fields, Ident, Type, parse_macro_input, spanned::Spanned};
+use syn::{Data, DeriveInput, Fields, Ident, Type, parse_macro_input, spanned::Spanned, visit_mut::VisitMut};
 
 pub fn vec_as_map_entry_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -18,7 +18,8 @@ fn expand(input: &DeriveInput) -> syn::Result<proc_macro2::TokenStream> {
         ));
     }
     let ((key_name, key_type), (value_name, value_type), value_as) = get_key_value_fields(input)?;
-    let value_as = value_as.unwrap_or_else(|| syn::parse_quote!(::serde_with::Same));
+    let mut value_as = value_as.unwrap_or_else(|| syn::parse_quote!(_));
+    InferAsSame.visit_type_mut(&mut value_as);
     let item_type = &input.ident;
     Ok(quote! {
         impl ::refine_serde::AsMapEntry for #item_type {
@@ -96,4 +97,16 @@ fn get_key_value_fields(input: &DeriveInput) -> syn::Result<(FieldInfo, FieldInf
     let key = key.ok_or_else(|| syn::Error::new(input.span(), "no field marked with #[vec_map(key)]"))?;
     let value = value.ok_or_else(|| syn::Error::new(input.span(), "no field marked with #[vec_map(value)]"))?;
     Ok((key, value, value_as))
+}
+
+/// Replaces `_` placeholders with `serde_with::Same`, which is what they stand for.
+struct InferAsSame;
+
+impl VisitMut for InferAsSame {
+    fn visit_type_mut(&mut self, node: &mut Type) {
+        match node {
+            Type::Infer(_) => *node = syn::parse_quote!(::serde_with::Same),
+            _ => syn::visit_mut::visit_type_mut(self, node),
+        }
+    }
 }
