@@ -27,7 +27,7 @@ pub(crate) enum LogBodies {
     Disabled,
 }
 
-pub(crate) fn setup(settings: SettingsLog) -> (Option<WorkerGuard>, LogBodies) {
+pub(crate) fn setup_logging(settings: SettingsLog) -> (Option<WorkerGuard>, LogBodies) {
     // We always log warnings and higher to stdout
     let stdout_log = layer()
         .with_writer(std::io::stdout.with_max_level(Level::WARN))

@@ -1,5 +1,4 @@
 // Taken from https://github.com/tokio-rs/axum/blob/main/examples/print-request-response/src/main.rs
-// Might need updates from time to time, due to axum changes
 
 use axum::{
     body::{Body, Bytes, to_bytes},
@@ -13,21 +12,21 @@ use crate::{
     logging::{RX_PREFIX, TX_PREFIX},
 };
 
-pub(crate) async fn print_request_response(req: Request, next: Next) -> Result<impl IntoResponse, ApiError> {
+pub(crate) async fn log_request_response(req: Request, next: Next) -> Result<impl IntoResponse, ApiError> {
     let (parts, body) = req.into_parts();
-    let bytes = buffer_and_print(RX_PREFIX, body).await?;
+    let bytes = buffer_and_log(RX_PREFIX, body).await?;
     let req = Request::from_parts(parts, Body::from(bytes));
 
     let res = next.run(req).await;
 
     let (parts, body) = res.into_parts();
-    let bytes = buffer_and_print(TX_PREFIX, body).await?;
+    let bytes = buffer_and_log(TX_PREFIX, body).await?;
     let res = Response::from_parts(parts, Body::from(bytes));
 
     Ok(res)
 }
 
-async fn buffer_and_print(prefix: &str, body: Body) -> Result<Bytes, ApiError> {
+async fn buffer_and_log(prefix: &str, body: Body) -> Result<Bytes, ApiError> {
     // Body limit is applied by different middleware which is supposed to run before this
     let bytes = match to_bytes(body, usize::MAX).await {
         Ok(bytes) => bytes,
