@@ -15,7 +15,7 @@ impl Settings {
 #[derive(Debug, Deserialize)]
 pub(crate) struct SettingsServer {
     pub(crate) port: u16,
-    pub(crate) max_request_size: u64,
+    pub(crate) max_request_body_size: u64,
     pub(crate) sol_lifetime: u64,
     pub(crate) sol_cleanup_interval: u64,
     pub(crate) standard_threads: usize,
@@ -43,7 +43,7 @@ impl Settings {
         // Set defaults
         let mut server_defaults = config::Map::new();
         server_defaults.insert("port".into(), config::ValueKind::U64(8000));
-        server_defaults.insert("max_request_size".into(), config::ValueKind::U64(10 * 1024 * 1024));
+        server_defaults.insert("max_request_body_size".into(), config::ValueKind::U64(10 * 1024 * 1024));
         server_defaults.insert("sol_lifetime".into(), config::ValueKind::U64(900));
         server_defaults.insert("sol_cleanup_interval".into(), config::ValueKind::U64(30));
         server_defaults.insert("standard_threads".into(), config::ValueKind::U64(2));

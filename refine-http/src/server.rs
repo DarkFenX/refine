@@ -14,7 +14,7 @@ use tracing::Span;
 use crate::{
     handlers,
     logging::{LogBodies, RX_PREFIX, TX_PREFIX, setup_logging},
-    middleware::{BodyLimit, limit_request_size, log_request_response},
+    middleware::{BodyLimit, limit_request_body_size, log_request_response},
     settings::Settings,
     state::AppState,
 };
@@ -82,7 +82,7 @@ pub(crate) async fn setup_server() {
 
     // Middleware
     let body_limit = BodyLimit {
-        max_request_size: settings.server.max_request_size,
+        max_request_body_size: settings.server.max_request_body_size,
         log_bodies,
     };
     let url_mid = NormalizePathLayer::trim_trailing_slash();
@@ -108,7 +108,10 @@ pub(crate) async fn setup_server() {
         // Default limit of 2 MB is used if it's not overridden or disabled
         .layer(extract::DefaultBodyLimit::disable())
         // Run limit before logging, it replicates logging if limit is broken
-        .layer(axum::middleware::from_fn_with_state(body_limit, limit_request_size))
+        .layer(axum::middleware::from_fn_with_state(
+            body_limit,
+            limit_request_body_size,
+        ))
         // Logging bodies is not free, use it only if it is enabled
         .option_layer(match log_bodies {
             LogBodies::Enabled => Some(axum::middleware::from_fn(log_request_response)),

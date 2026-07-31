@@ -14,21 +14,21 @@ use crate::{
 
 #[derive(Copy, Clone)]
 pub(crate) struct BodyLimit {
-    pub(crate) max_request_size: u64,
+    pub(crate) max_request_body_size: u64,
     pub(crate) log_bodies: LogBodies,
 }
 
 // Built-in body limit does not allow customizing behavior; this custom middle-ware exists because
 // of that
-pub(crate) async fn limit_request_size(State(limit): State<BodyLimit>, req: Request, next: Next) -> Response {
+pub(crate) async fn limit_request_body_size(State(limit): State<BodyLimit>, req: Request, next: Next) -> Response {
     match get_content_len(&req) {
-        Some(content_len) if content_len > limit.max_request_size => reject(Some(content_len), limit).await,
+        Some(content_len) if content_len > limit.max_request_body_size => reject(Some(content_len), limit).await,
         Some(_) => next.run(req).await,
         // Sometimes size might be not declared (e.g. chunked requests), separate handling for this
         // case
         None => {
             let (parts, body) = req.into_parts();
-            match to_bytes(body, limit.max_request_size as usize).await {
+            match to_bytes(body, limit.max_request_body_size as usize).await {
                 Ok(bytes) => next.run(Request::from_parts(parts, Body::from(bytes))).await,
                 // Errors might happen because the limit has been broken, and due to other reasons;
                 // figure out the cause and respond accordingly
@@ -58,7 +58,7 @@ async fn reject(size: Option<u64>, limit: BodyLimit) -> Response {
             Some(size) => size.to_string(),
             None => "<unknown>".to_string(),
         },
-        limit.max_request_size
+        limit.max_request_body_size
     );
     match limit.log_bodies {
         // Replicate body logging middleware format; have to do it here because rejected requests

@@ -13,6 +13,7 @@ if typing.TYPE_CHECKING:
 class ConfigInfo:
     config_path: Path
     port: int
+    max_request_body_size: int
 
 
 @dataclass(kw_only=True)
@@ -30,10 +31,17 @@ def build_server(*, proj_root: Path, optimized: bool) -> None:
         check=True)
 
 
-def build_config(*, config_path: Path, port: int, log_dir: Path) -> ConfigInfo:
+def build_config(
+        *,
+        config_path: Path,
+        port: int,
+        log_dir: Path,
+        max_request_body_size: int = 1024 * 1024,
+) -> ConfigInfo:
     contents = [
         '[server]',
         f'port = {port}',
+        f'max_request_body_size = {max_request_body_size}',
         'sol_lifetime = 30',
         'sol_cleanup_interval = 5',
         'standard_threads = 2',
@@ -45,7 +53,7 @@ def build_config(*, config_path: Path, port: int, log_dir: Path) -> ConfigInfo:
         'rotate = false']
     with config_path.open(mode='w', encoding='utf-8') as f:
         f.write('\n'.join(contents))
-    return ConfigInfo(config_path=config_path, port=port)
+    return ConfigInfo(config_path=config_path, port=port, max_request_body_size=max_request_body_size)
 
 
 def run_server(*, proj_root: Path, config_path: Path, optimized: bool, cpu_affinity: list[int]) -> ServerInfo:

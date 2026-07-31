@@ -1,5 +1,5 @@
-pub(crate) use body_limit::{BodyLimit, limit_request_size};
 pub(crate) use log_req_resp::log_request_response;
+pub(crate) use req_body_limit::{BodyLimit, limit_request_body_size};
 
-mod body_limit;
 mod log_req_resp;
+mod req_body_limit;
