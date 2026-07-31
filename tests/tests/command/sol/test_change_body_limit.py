@@ -18,6 +18,7 @@ def make_req_hook(*, body_size: int, chunk: bool = False) -> ReqHook:
         data = req.get_json()
         data['padding'] = ''
         req.set_json(data=data)
+        assert body_size >= req.get_body_size()
         data = req.get_json()
         data['padding'] = 'a' * (body_size - req.get_body_size())
         req.set_json(data=data, chunk=128 * 1024 if chunk else None)
@@ -27,7 +28,7 @@ def make_req_hook(*, body_size: int, chunk: bool = False) -> ReqHook:
 
 def test_max_normal(client, consts, run_config):
     req_body_size = run_config.max_request_body_size
-    eve_ship_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -39,7 +40,7 @@ def test_max_normal(client, consts, run_config):
 
 def test_max_chunked(client, consts, run_config):
     req_body_size = run_config.max_request_body_size
-    eve_ship_id = client.mk_eve_item()
+    eve_ship_id = client.mk_eve_ship()
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
