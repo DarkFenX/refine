@@ -23,8 +23,10 @@ pub(crate) async fn setup_server() {
     // Settings
     let config_path = env::args().nth(1);
     let settings = Settings::new(config_path);
+
     // Logging
     let (_log_guard, log_bodies) = setup_logging(settings.log);
+
     // Shared state
     let state = AppState::new(
         settings.server.standard_threads,
@@ -112,6 +114,7 @@ pub(crate) async fn setup_server() {
             LogBodies::Enabled => Some(axum::middleware::from_fn(log_request_response)),
             LogBodies::Disabled => None,
         });
+
     // App
     let app = url_mid.layer(router.layer(general_mid));
 
