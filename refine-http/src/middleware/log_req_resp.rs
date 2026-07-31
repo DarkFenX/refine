@@ -1,4 +1,5 @@
-// Taken from https://github.com/tokio-rs/axum/blob/main/examples/print-request-response/src/main.rs
+//! Initially code was taken from axum example:
+//! https://github.com/tokio-rs/axum/blob/main/examples/print-request-response/src/main.rs
 
 use axum::{
     body::{Body, Bytes, to_bytes},
@@ -34,6 +35,9 @@ async fn buffer_and_log(prefix: &str, body: Body) -> Result<Bytes, ApiError> {
         // in memory
         Err(error) => return Err(ApiError::RequestReadFailed(error.to_string())),
     };
+    // Before changing those logging levels, consider other places which rely on those:
+    // - body limit middleware attempts to replicate the same logging;
+    // - logging setup final decision to log bodies or not depends on knowing logging level in here.
     match std::str::from_utf8(&bytes) {
         Ok(body) => match body.is_empty() {
             true => tracing::info!("{prefix} body is empty"),
