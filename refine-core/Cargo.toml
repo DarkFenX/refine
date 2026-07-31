@@ -9,6 +9,7 @@ edition = "2024"
 [dependencies]
 angle-sc = ">=2.0.0"
 cranelift-entity = ">=0.134.2"
+refine-serde = { path = "../util/refine-serde", optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
 either = ">=0.17.0"
 indexmap = ">=2.14.0"
@@ -26,5 +27,5 @@ smallvec = ">=1.15.2"
 thiserror = ">=2.0.19"
 
 [features]
-serde = ["dep:serde", "dep:serde_tuple", "dep:serde_with", "derive_more/from_str"]
+serde = ["dep:refine-serde", "dep:serde", "dep:serde_tuple", "dep:serde_with", "derive_more/from_str"]
 serde-ad = ["dep:serde", "dep:serde_repr", "dep:serde_tuple", "derive_more/from_str"]

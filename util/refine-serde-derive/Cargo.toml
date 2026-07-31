@@ -1,0 +1,15 @@
+[package]
+name = "refine-serde-derive"
+description = "Derive macros for refine-serde crate"
+license = "AGPL-3.0-or-later"
+version = "0.1.0"
+authors = ["DarkPhoenix <phoenix@mail.ru>"]
+edition = "2024"
+
+[lib]
+proc-macro = true
+
+[dependencies]
+proc-macro2 = ">=1.0.104"
+quote = ">=1.0.47"
+syn = ">=3.0.3"

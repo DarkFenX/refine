@@ -1,0 +1,12 @@
+[package]
+name = "refine-serde"
+description = "Serialization helpers for refine-* entities"
+license = "AGPL-3.0-or-later"
+version = "0.1.0"
+authors = ["DarkPhoenix <phoenix@mail.ru>"]
+edition = "2024"
+
+[dependencies]
+refine-serde-derive = { path = "../refine-serde-derive" }
+serde = ">=1.0.229"
+serde_with = ">=3.21.0"

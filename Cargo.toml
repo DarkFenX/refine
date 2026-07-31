@@ -5,6 +5,8 @@ members = [
     "refine-edh",
     "refine-rs",
     "refine-http",
+    "util/refine-serde",
+    "util/refine-serde-derive",
     "examples/pg-core",
     "examples/pg-rs",
 ]

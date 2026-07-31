@@ -1680,6 +1680,7 @@ dependencies = [
  "lender",
  "num-integer",
  "ordered-float",
+ "refine-serde",
  "rustc-hash",
  "serde",
  "serde_repr",
@@ -1769,6 +1770,24 @@ dependencies = [
  "tokio-rayon",
  "tracing",
  "uuid",
+]
+
+[[package]]
+name = "refine-serde"
+version = "0.1.0"
+dependencies = [
+ "refine-serde-derive",
+ "serde",
+ "serde_with",
+]
+
+[[package]]
+name = "refine-serde-derive"
+version = "0.1.0"
+dependencies = [
+ "proc-macro2",
+ "quote",
+ "syn 3.0.3",
 ]
 
 [[package]]
