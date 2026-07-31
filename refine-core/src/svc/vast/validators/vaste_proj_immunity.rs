@@ -7,19 +7,28 @@ use crate::{
     util::{RMap, RMapRSet, RSet},
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 #[derive(Clone)]
 pub struct ValProjImmunityFail {
     /// Projecting items and targets they can't be projected to.
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValProjImmunityItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValProjImmunityItemInfo {
     /// Item-projector which fails the validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
     /// Projectee item IDs the projector can't be projected to.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub projectee_item_ids: Vec<ItemId>,
 }
 
@@ -181,26 +190,5 @@ impl GetItemUid for UItemId {
 impl GetItemUid for AttrSpec {
     fn get_item_uid(&self) -> UItemId {
         self.item_uid
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValProjImmunityItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.item_id, &item.projectee_item_ids)?;
-        }
-        map.end()
     }
 }

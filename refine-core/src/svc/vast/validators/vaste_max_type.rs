@@ -18,7 +18,12 @@ pub struct ValMaxTypeFail {
     pub item_types: Vec<ValMaxTypeTypeInfo>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValMaxTypeTypeInfo {
     /// Type ID of an item this fit has too many.
@@ -27,15 +32,18 @@ pub struct ValMaxTypeTypeInfo {
     /// How many items of this type is fit.
     pub item_type_count: Count,
     /// Items which break the limit, and what the limit is.
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValMaxTypeItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValMaxTypeItemInfo {
     /// Item which failed validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
     /// Max count of items of the same type ID this item allows to have.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub limit: Count,
 }
 
@@ -84,26 +92,5 @@ impl VastFitData {
                 item_types: item_types.into_values().collect(),
             }),
         }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValMaxTypeItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.item_id, &item.limit)?;
-        }
-        map.end()
     }
 }

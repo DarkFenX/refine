@@ -29,54 +29,37 @@ pub struct StatJumpSelf {
     pub fuel_use: Count,
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct StatJumpConduit {
     pub max_passengers: Count,
     pub fuel_use_self: Count,
     #[cfg_attr(
         feature = "serde",
-        serde(serialize_with = "custom_serde::as_map", skip_serializing_if = "Vec::is_empty")
+        serde_as(as = "refine_serde::VecAsMap"),
+        serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub fuel_use_passengers: Vec<StatJumpPassenger>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct StatJumpPortal {
     #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub item_id: ItemId,
     #[cfg_attr(
         feature = "serde",
-        serde(serialize_with = "custom_serde::as_map", skip_serializing_if = "Vec::is_empty")
+        serde_as(as = "refine_serde::VecAsMap"),
+        serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub fuel_use_passengers: Vec<StatJumpPassenger>,
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct StatJumpPassenger {
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub fit_id: FitId,
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub fuel_use: Option<Count>,
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[StatJumpPassenger], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.fit_id, &item.fuel_use)?;
-        }
-        map.end()
-    }
 }

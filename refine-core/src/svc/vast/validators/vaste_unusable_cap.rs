@@ -7,20 +7,28 @@ use crate::{
     util::RSet,
 };
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValUnusableCapFail {
     /// Cap use of any item can't exceed this value.
     pub max_cap: PValue,
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValUnusableCapItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValUnusableCapItemInfo {
     /// Item which fails the validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
     /// Cap amount this item takes per cycle.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub cap_use: PValue,
 }
 
@@ -120,25 +128,4 @@ fn get_cap_consumption_instance(
         cap_consumed *= charge_mult;
     }
     Some(cap_consumed)
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValUnusableCapItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.item_id, &item.cap_use)?;
-        }
-        map.end()
-    }
 }

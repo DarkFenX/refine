@@ -5,20 +5,28 @@ use crate::{
     util::RSet,
 };
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValRigSizeFail {
     /// Rig size compatible with the ship.
     pub allowed_size: Value,
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub rig_sizes: Vec<ValRigSizeItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValRigSizeItemInfo {
     /// Rig which failed the validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub rig_id: ItemId,
     /// Size of the rig.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub size: Option<Value>,
 }
 
@@ -64,25 +72,4 @@ impl VastFitData {
 
 fn get_allowed_size(ship: Option<&UShip>) -> Option<Value> {
     ship?.get_r_item_attr_data()?.rig_size
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValRigSizeItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.rig_id, &item.size)?;
-        }
-        map.end()
-    }
 }

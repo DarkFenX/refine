@@ -11,20 +11,28 @@ use crate::{
     util::{RMap, RSet},
 };
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValItemSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValItemSecZoneItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValItemSecZoneItemInfo {
     /// Item which cannot be used in current security zone.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
     /// Security zones the item can be used in.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub allowed_zones: Vec<SecZone>,
 }
 
@@ -397,25 +405,4 @@ fn class_to_allowed_zones(class: Value) -> Vec<SecZone> {
         return vec![SecZone::NullSec, SecZone::WSpace, SecZone::Hazard];
     }
     Vec::new()
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValItemSecZoneItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.item_id, &item.allowed_zones)?;
-        }
-        map.end()
-    }
 }

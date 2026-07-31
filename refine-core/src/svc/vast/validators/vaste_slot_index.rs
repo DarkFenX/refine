@@ -7,19 +7,28 @@ use crate::{
     util::{RMapRSet, RSet},
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 #[derive(Clone)]
 pub struct ValSlotIndexFail {
     /// Slot number and items trying to take it.
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub slot_users: Vec<ValSlotIndexSlotInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValSlotIndexSlotInfo {
     /// Slot number.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub slot: SlotIndex,
     /// Multiple items attempting to use one slot.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub item_ids: Vec<ItemId>,
 }
 
@@ -87,26 +96,5 @@ fn validate_slot_index_verbose(
     match slot_users.is_empty() {
         true => None,
         false => Some(ValSlotIndexFail { slot_users }),
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValSlotIndexSlotInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.slot, &item.item_ids)?;
-        }
-        map.end()
     }
 }

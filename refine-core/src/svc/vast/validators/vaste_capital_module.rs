@@ -9,19 +9,27 @@ use crate::{
     util::RSet,
 };
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValCapitalModFail {
     /// Modules up to and including this volume are not considered capital.
     pub max_subcap_volume: PValue,
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub module_volumes: Vec<ValCapitalModInfo>,
 }
 
 /// Module which breaks the validation and its volume.
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Copy, Clone)]
 pub struct ValCapitalModInfo {
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub module_id: ItemId,
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub volume: PValue,
 }
 
@@ -75,25 +83,4 @@ fn is_ship_subcap(ship: Option<&UShip>) -> bool {
         return false;
     };
     matches!(ship_rib.ship_kind, Some(RShipKind::Ship))
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_map<S>(items: &[ValCapitalModInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.module_id, &item.volume)?;
-        }
-        map.end()
-    }
 }
