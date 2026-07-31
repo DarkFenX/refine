@@ -11,7 +11,11 @@ use tower_http::{normalize_path::NormalizePathLayer, trace::TraceLayer};
 use tower_request_id::{RequestId, RequestIdLayer};
 use tracing::Span;
 
-use crate::{logging::LogBodies, settings::Settings, state::AppState};
+use crate::{
+    logging::{LogBodies, RX_PREFIX, TX_PREFIX},
+    settings::Settings,
+    state::AppState,
+};
 
 mod err;
 mod handlers;
@@ -79,7 +83,12 @@ async fn main() {
         .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
         .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
         .with_state(state);
+
     // Middleware
+    let body_limit = util::ml_body_limit::BodyLimit {
+        max_request_size: settings.server.max_request_size,
+        log_bodies,
+    };
     let url_mid = NormalizePathLayer::trim_trailing_slash();
     let general_mid = tower::ServiceBuilder::new()
         .layer(RequestIdLayer)
@@ -94,12 +103,19 @@ async fn main() {
                     tracing::trace_span!("http", id = %request_id)
                 })
                 .on_request(|request: &http::Request<Body>, _span: &Span| {
-                    tracing::info!(">>> rx {} {}", request.method(), request.uri())
+                    tracing::info!("{RX_PREFIX} {} {}", request.method(), request.uri())
                 })
                 .on_response(|response: &http::Response<Body>, latency: Duration, _span: &Span| {
-                    tracing::info!("<<< tx {} generated in {:?}", response.status(), latency)
+                    tracing::info!("{TX_PREFIX} {} generated in {:?}", response.status(), latency)
                 }),
         )
+        // Default limit of 2 MB is used if it's not overridden or disabled
+        .layer(extract::DefaultBodyLimit::disable())
+        // Run limit before logging, it replicates logging if limit is broken
+        .layer(middleware::from_fn_with_state(
+            body_limit,
+            util::ml_body_limit::limit_request_size,
+        ))
         // Logging bodies is not free, use it only if it is enabled
         .option_layer(match log_bodies {
             LogBodies::Enabled => Some(middleware::from_fn(util::ml_trace_reqresp::print_request_response)),

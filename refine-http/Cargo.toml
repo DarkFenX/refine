@@ -11,6 +11,7 @@ rs = { package = "refine-rs", path = "../refine-rs", features = ["edh-phb-http",
 axum = { version = ">=0.8.9", default-features = false, features = ["http1", "json", "query", "tokio"]}
 axum-extra = { version = "0.12.6", features = ["with-rejection"] }
 config = { version = ">=0.15.25", features = ["toml"] }
+http-body-util = ">=0.1.4"
 serde = { version = ">=1.0.229", features = ["derive"] }
 serde_json = { version = ">=1.0.151", features = ["float_roundtrip"] }
 thiserror = ">=2.0.19"

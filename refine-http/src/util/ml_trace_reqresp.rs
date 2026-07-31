@@ -4,41 +4,43 @@
 use axum::{
     body::{Body, Bytes, to_bytes},
     extract::Request,
-    http::StatusCode,
     middleware::Next,
     response::{IntoResponse, Response},
 };
 
-pub(crate) async fn print_request_response(
-    req: Request,
-    next: Next,
-) -> Result<impl IntoResponse, (StatusCode, String)> {
+use crate::{
+    err::ApiError,
+    logging::{RX_PREFIX, TX_PREFIX},
+};
+
+pub(crate) async fn print_request_response(req: Request, next: Next) -> Result<impl IntoResponse, ApiError> {
     let (parts, body) = req.into_parts();
-    let bytes = buffer_and_print(">>>", "rx", body).await?;
+    let bytes = buffer_and_print(RX_PREFIX, body).await?;
     let req = Request::from_parts(parts, Body::from(bytes));
 
     let res = next.run(req).await;
 
     let (parts, body) = res.into_parts();
-    let bytes = buffer_and_print("<<<", "tx", body).await?;
+    let bytes = buffer_and_print(TX_PREFIX, body).await?;
     let res = Response::from_parts(parts, Body::from(bytes));
 
     Ok(res)
 }
 
-async fn buffer_and_print(arrows: &str, direction: &str, body: Body) -> Result<Bytes, (StatusCode, String)> {
+async fn buffer_and_print(prefix: &str, body: Body) -> Result<Bytes, ApiError> {
+    // Body limit is applied by different middleware which is supposed to run before this
     let bytes = match to_bytes(body, usize::MAX).await {
         Ok(bytes) => bytes,
-        Err(err) => {
-            return Err((StatusCode::BAD_REQUEST, format!("{arrows} failed to read body: {err}")));
-        }
+        // Respond with request error, because only requests can fail, responses are already stored
+        // in memory
+        Err(error) => return Err(ApiError::RequestReadFailed(error.to_string())),
     };
     match std::str::from_utf8(&bytes) {
         Ok(body) => match body.is_empty() {
-            true => tracing::info!("{arrows} {direction} body is empty"),
-            false => tracing::info!("{arrows} {direction} body: {body}"),
+            true => tracing::info!("{prefix} body is empty"),
+            false => tracing::info!("{prefix} body: {body}"),
         },
-        Err(_) => tracing::info!("{arrows} {direction} body: <invalid UTF-8, {} bytes>", bytes.len()),
+        Err(_) => tracing::info!("{prefix} body: <invalid UTF-8, {} bytes>", bytes.len()),
     }
     Ok(bytes)
 }

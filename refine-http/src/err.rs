@@ -16,6 +16,10 @@ pub(crate) enum ApiError {
     BatchParseFailed(usize, String),
     #[error("{1}")]
     BackrefRenderFailed(usize, #[source] rs::err::BackrefRenderError),
+    #[error("failed to read request body: {0}")]
+    RequestReadFailed(String),
+    #[error("failed to process request body: {0}")]
+    RequestTooLarge(String),
     // Source-related
     #[error("\"{0}\" cannot be used as a source alias: {1}")]
     PathSrcParseFailedOnAdd(String, #[source] rs::src::err::SrcAliasPruneInitError),
@@ -88,9 +92,16 @@ impl ApiError {
     fn get_codes(&self) -> (StatusCode, &'static str) {
         match self {
             Self::Query(..) => (StatusCode::BAD_REQUEST, "PRM-001"),
-            Self::Json(..) => (StatusCode::BAD_REQUEST, "JSN-001"),
+            Self::Json(err) => match err {
+                // Failure to read body is not really a JSON error, so make it behave like the
+                // regular request read error
+                JsonRejection::BytesRejection(..) => (StatusCode::BAD_REQUEST, "REQ-001"),
+                _ => (StatusCode::BAD_REQUEST, "JSN-001"),
+            },
             Self::BatchParseFailed(..) => (StatusCode::BAD_REQUEST, "JSN-002"),
             Self::BackrefRenderFailed(..) => (StatusCode::BAD_REQUEST, "BRF-001"),
+            Self::RequestReadFailed(..) => (StatusCode::BAD_REQUEST, "REQ-001"),
+            Self::RequestTooLarge(..) => (StatusCode::PAYLOAD_TOO_LARGE, "REQ-002"),
             ////////////////////////////////////////////////////////////////////////////////////////
             // Source-related
             ////////////////////////////////////////////////////////////////////////////////////////

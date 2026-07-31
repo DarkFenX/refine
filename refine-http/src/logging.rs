@@ -18,6 +18,10 @@ const TIME_FORMAT_FULL: FormatDescriptionV3<'_> = format_description!(
 const TIME_FORMAT_SHORT: FormatDescriptionV3<'_> =
     format_description!(version = 3, r"\[[hour]:[minute]:[second].[subsecond digits:3]\]");
 
+pub(crate) const RX_PREFIX: &str = ">>> rx";
+pub(crate) const TX_PREFIX: &str = "<<< tx";
+
+#[derive(Copy, Clone)]
 pub(crate) enum LogBodies {
     Enabled,
     Disabled,
