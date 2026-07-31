@@ -20,9 +20,9 @@ use crate::{
 mod err;
 mod handlers;
 mod logging;
+mod middleware;
 mod settings;
 mod state;
-mod util;
 
 #[tokio::main(flavor = "multi_thread", worker_threads = 2)]
 async fn main() {
@@ -85,7 +85,7 @@ async fn main() {
         .with_state(state);
 
     // Middleware
-    let body_limit = util::ml_body_limit::BodyLimit {
+    let body_limit = middleware::ml_body_limit::BodyLimit {
         max_request_size: settings.server.max_request_size,
         log_bodies,
     };
@@ -114,11 +114,13 @@ async fn main() {
         // Run limit before logging, it replicates logging if limit is broken
         .layer(middleware::from_fn_with_state(
             body_limit,
-            util::ml_body_limit::limit_request_size,
+            middleware::ml_body_limit::limit_request_size,
         ))
         // Logging bodies is not free, use it only if it is enabled
         .option_layer(match log_bodies {
-            LogBodies::Enabled => Some(middleware::from_fn(util::ml_trace_reqresp::print_request_response)),
+            LogBodies::Enabled => Some(middleware::from_fn(
+                middleware::ml_trace_reqresp::print_request_response,
+            )),
             LogBodies::Disabled => None,
         });
     // App
