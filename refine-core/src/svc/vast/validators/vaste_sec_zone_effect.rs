@@ -35,7 +35,7 @@ pub struct ValEffectSecZoneItemInfo {
     #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
     /// Effects which fail validation with extra info.
-    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = refine_serde::VecAsMap))]
+    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = "refine_serde::VecAsMap"))]
     pub effects: Vec<ValEffectSecZoneEffectInfo>,
 }
 

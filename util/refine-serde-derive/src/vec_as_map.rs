@@ -1,6 +1,6 @@
 use proc_macro::TokenStream;
 use quote::quote;
-use syn::{Data, DeriveInput, Fields, Ident, Type, parse_macro_input, spanned::Spanned, visit_mut::VisitMut};
+use syn::{Data, DeriveInput, Fields, Ident, LitStr, Type, parse_macro_input, spanned::Spanned, visit_mut::VisitMut};
 
 pub fn vec_as_map_entry_impl(input: TokenStream) -> TokenStream {
     let input = parse_macro_input!(input as DeriveInput);
@@ -62,7 +62,9 @@ fn get_key_value_fields(input: &DeriveInput) -> syn::Result<(FieldInfo, FieldInf
                 match () {
                     _ if meta.path.is_ident("key") => is_key = true,
                     _ if meta.path.is_ident("value") => is_value = true,
-                    _ if meta.path.is_ident("serialize_as") => field_as = Some(meta.value()?.parse()?),
+                    _ if meta.path.is_ident("serialize_as") => {
+                        field_as = Some(meta.value()?.parse::<LitStr>()?.parse()?)
+                    }
                     _ => return Err(meta.error("expected `key`, `value` or `serialize_as`")),
                 }
                 Ok(())
@@ -99,9 +101,8 @@ fn get_key_value_fields(input: &DeriveInput) -> syn::Result<(FieldInfo, FieldInf
     Ok((key, value, value_as))
 }
 
-/// Replaces `_` placeholders with `serde_with::Same`, which is what they stand for.
+// Convert placeholder to "::serde_with::Same"
 struct InferAsSame;
-
 impl VisitMut for InferAsSame {
     fn visit_type_mut(&mut self, node: &mut Type) {
         match node {
