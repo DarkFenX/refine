@@ -80,7 +80,7 @@ def test_rollback_error_parsing(client):
     def hook_req(req: Request):
         data = req.get_json()
         del data['commands'][1]['item_id']
-        req.set_json(data)
+        req.set_json(data=data)
 
     eve_drone_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_item()
