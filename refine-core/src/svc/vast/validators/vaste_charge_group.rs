@@ -22,7 +22,6 @@ pub struct ValChargeGroupFail {
 #[derive(Clone)]
 pub struct ValChargeGroupChargeInfo {
     /// Charge item ID.
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub charge_item_id: ItemId,
     /// Parent module item ID.
     pub parent_item_id: ItemId,

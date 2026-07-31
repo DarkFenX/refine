@@ -27,7 +27,6 @@ pub struct ValMaxTypeFail {
 #[derive(Clone)]
 pub struct ValMaxTypeTypeInfo {
     /// Type ID of an item this fit has too many.
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub item_type_id: ItemTypeId,
     /// How many items of this type is fit.
     pub item_type_count: Count,

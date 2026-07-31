@@ -12,30 +12,41 @@ pub(in crate::svc::vast) struct EffectSecZoneInfo {
     pub(in crate::svc::vast) banned_in_lowsec: bool,
 }
 
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde_tuple::Serialize_tuple)
+)]
 #[derive(Clone)]
 pub struct ValEffectSecZoneFail {
     /// Solar system security zone.
     pub zone: SecZone,
     /// Map between IDs of items+effects which cannot be used in current security zone, and a list
     /// of security zones they can be used in.
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_nested_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValEffectSecZoneItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValEffectSecZoneItemInfo {
     /// Item which fails validation.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
     /// Effects which fail validation with extra info.
+    #[cfg_attr(feature = "serde", vec_map(value, serialize_as = refine_serde::VecAsMap))]
     pub effects: Vec<ValEffectSecZoneEffectInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValEffectSecZoneEffectInfo {
     /// Effect which cannot be used in current security zone.
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub effect_id: EffectId,
     /// Security zones the effect can be used in.
+    #[cfg_attr(feature = "serde", vec_map(value))]
     pub allowed_zones: Vec<SecZone>,
 }
 
@@ -151,39 +162,4 @@ fn add_failed_effect(
         effect_id,
         allowed_zones,
     });
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{Serialize, SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_nested_map<S>(items: &[ValEffectSecZoneItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.item_id, &EffectInfo(&item.effects))?;
-        }
-        map.end()
-    }
-
-    struct EffectInfo<'a>(&'a [ValEffectSecZoneEffectInfo]);
-    impl Serialize for EffectInfo<'_> {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-        {
-            let mut map = serializer.serialize_map(Some(self.0.len()))?;
-            for effect in self.0 {
-                map.serialize_entry(&effect.effect_id, &effect.allowed_zones)?;
-            }
-            map.end()
-        }
-    }
 }

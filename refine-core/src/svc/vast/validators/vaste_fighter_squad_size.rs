@@ -31,7 +31,6 @@ pub struct ValFighterSquadSizeFail {
 #[derive(Copy, Clone)]
 pub struct ValFighterSquadSizeFighterInfo {
     /// Current squad size.
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub fighter_id: ItemId,
     /// Current squad size.
     pub size: CountNz,

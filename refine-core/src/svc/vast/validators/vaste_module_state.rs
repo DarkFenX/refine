@@ -30,7 +30,6 @@ pub struct ValModuleStateFail {
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct ValModuleStateModuleInfo {
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub module_id: ItemId,
     /// Current module state.
     pub state: ModuleState,

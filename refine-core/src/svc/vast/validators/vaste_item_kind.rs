@@ -31,7 +31,6 @@ pub struct ValItemKindFail {
 #[derive(Copy, Clone)]
 pub struct ValItemKindItemInfo {
     /// Item which failed validation
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub item_id: ItemId,
     /// Detected item kind.
     pub kind: Option<DetectedItemKind>,

@@ -31,7 +31,6 @@ pub struct ValMaxGroupFail {
 #[derive(Clone)]
 pub struct ValMaxGroupGroupInfo {
     /// Group which has failed items.
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub group_id: ItemGrpId,
     /// How many items are in the group, in high enough state to count for validation purposes.
     pub group_item_count: Count,

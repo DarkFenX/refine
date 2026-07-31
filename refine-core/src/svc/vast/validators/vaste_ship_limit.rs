@@ -26,7 +26,6 @@ pub struct ValShipLimitFail {
 #[derive(Clone)]
 pub struct ValShipLimitItemInfo {
     /// Item which cannot be fit to current ship.
-    #[cfg_attr(feature = "serde", serde(rename = "$key$"))]
     pub item_id: ItemId,
     /// Ship type IDs item can be fit to.
     pub allowed_type_ids: Vec<ItemTypeId>,

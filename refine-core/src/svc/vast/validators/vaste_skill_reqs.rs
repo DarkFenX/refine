@@ -14,20 +14,32 @@ pub(in crate::svc::vast) struct ValSrqSkillStored {
     pub(in crate::svc::vast) required_lvl: SkillLevel,
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Serialize),
+    serde(transparent)
+)]
 #[derive(Clone)]
 pub struct ValSrqFail {
     /// Items and their unsatisfied skill requirements, which are defined as another list of skills
     /// and info about levels.
-    #[cfg_attr(feature = "serde", serde(serialize_with = "custom_serde::as_nested_map"))]
+    #[cfg_attr(feature = "serde", serde_as(as = "refine_serde::VecAsMap"))]
     pub items: Vec<ValSrqItemInfo>,
 }
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
 #[derive(Clone)]
 pub struct ValSrqItemInfo {
     /// Item with unsatisfied skill requirements
+    #[cfg_attr(feature = "serde", vec_map(key))]
     pub item_id: ItemId,
-    /// List of missing skills..
+    /// List of missing skills.
+    #[cfg_attr(
+        feature = "serde",
+        vec_map(value, serialize_as = serde_with::KeyValueMap<serde_with::Same>)
+    )]
     pub missing_skills: Vec<ValSrqSkillInfo>,
 }
 
@@ -76,41 +88,6 @@ impl VastFitData {
         match items.is_empty() {
             true => None,
             false => Some(ValSrqFail { items }),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    use serde::ser::{Serialize, SerializeMap, Serializer};
-
-    use super::*;
-
-    pub(super) fn as_nested_map<S>(items: &[ValSrqItemInfo], serializer: S) -> Result<S::Ok, S::Error>
-    where
-        S: Serializer,
-    {
-        let mut map = serializer.serialize_map(Some(items.len()))?;
-        for item in items {
-            map.serialize_entry(&item.item_id, &SkillInfo(&item.missing_skills))?;
-        }
-        map.end()
-    }
-
-    struct SkillInfo<'a>(&'a [ValSrqSkillInfo]);
-    impl Serialize for SkillInfo<'_> {
-        fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
-        where
-            S: Serializer,
-        {
-            let mut map = serializer.serialize_map(Some(self.0.len()))?;
-            for skill in self.0 {
-                map.serialize_entry(&skill.skill_type_id, &(skill.current_lvl, skill.required_lvl))?;
-            }
-            map.end()
         }
     }
 }

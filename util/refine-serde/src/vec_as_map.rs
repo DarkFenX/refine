@@ -1,10 +1,12 @@
 pub use refine_serde_derive::VecAsMapEntry;
 use serde::ser::{Serialize, SerializeMap, Serializer};
-use serde_with::SerializeAs;
+use serde_with::{SerializeAs, ser::SerializeAsWrap};
 
 pub trait AsMapEntry {
     type Key: Serialize;
-    type Value: Serialize;
+    type Value;
+    // serde_with/serde_as "at home"
+    type ValueAs: SerializeAs<Self::Value>;
 
     fn get_key(&self) -> &Self::Key;
     fn get_value(&self) -> &Self::Value;
@@ -24,7 +26,10 @@ where
     {
         let mut map = serializer.serialize_map(Some(source.len()))?;
         for item in source {
-            map.serialize_entry(item.get_key(), item.get_value())?;
+            map.serialize_entry(
+                item.get_key(),
+                &SerializeAsWrap::<T::Value, T::ValueAs>::new(item.get_value()),
+            )?;
         }
         map.end()
     }
