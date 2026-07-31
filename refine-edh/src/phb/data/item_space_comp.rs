@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use serde_with::{DisplayFromStr, Map, serde_as};
+use serde_with::{Map, serde_as};
 
 use crate::phb::parsing::{Key, KeyMergeOne};
 
@@ -92,7 +92,7 @@ pub(in crate::phb) struct PItemSpaceCompSw {
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSwGlobal {
-    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "dbuffs", default)]
     pub(in crate::phb) buffs: Vec<(i32, f64)>,
     #[serde(rename = "eligibleTypeListID", default)]
@@ -102,7 +102,7 @@ pub(in crate::phb) struct PItemSpaceCompSwGlobal {
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSe {
-    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "dbuffCollections", default)]
     pub(in crate::phb) buffs: Vec<(i32, f64)>,
 }
@@ -110,7 +110,7 @@ pub(in crate::phb) struct PItemSpaceCompSe {
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompPe {
-    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "effects", default)]
     pub(in crate::phb) buffs: Vec<(i32, f64)>,
 }
@@ -118,7 +118,7 @@ pub(in crate::phb) struct PItemSpaceCompPe {
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompPt {
-    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "dbuffs", default)]
     pub(in crate::phb) buffs: Vec<(i32, f64)>,
     #[serde(rename = "triggerFilterTypeListID", default)]
@@ -128,7 +128,7 @@ pub(in crate::phb) struct PItemSpaceCompPt {
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSl {
-    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "dbuffs", default)]
     pub(in crate::phb) buffs: Vec<(i32, f64)>,
     #[serde(rename = "linkableShipTypeListID", default)]

@@ -1,5 +1,5 @@
 use serde::Deserialize;
-use serde_with::{DisplayFromStr, Map, serde_as};
+use serde_with::{Map, serde_as};
 
 use crate::phb::parsing::{Key, KeyMergeTwo};
 
@@ -8,7 +8,7 @@ use crate::phb::parsing::{Key, KeyMergeTwo};
 pub(in crate::phb) struct PMuta {
     #[serde(rename = "inputOutputMapping")]
     pub(in crate::phb) item_maps: Vec<PMutaItemMap>,
-    #[serde_as(as = "Map<DisplayFromStr, _>")]
+    #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "attributeIDs")]
     pub(in crate::phb) attrs: Vec<(i32, PMutaAttrModRange)>,
 }
