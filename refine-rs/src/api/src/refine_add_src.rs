@@ -10,38 +10,32 @@ impl Refine {
     /// Add a data source, using Phobos-generated EVE data export stored on filesystem.
     #[cfg(feature = "edh-phb-fs")]
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src_with_phb_fs<A>(
+    pub async fn add_src_with_phb_fs(
         &self,
-        alias: A,
+        alias: SrcAlias,
         make_default: bool,
         ed_dir: std::path::PathBuf,
-    ) -> Result<Src<'_>, AddSrcError>
-    where
-        A: Into<SrcAlias>,
-    {
+    ) -> Result<Src<'_>, AddSrcError> {
         let ed_handler = Box::new(redh::PhbFilesystemEdh::new(ed_dir));
-        self.add_src(alias.into(), make_default, ed_handler).await
+        self.add_src(alias, make_default, ed_handler).await
     }
     /// Add a data source, using Phobos-generated EVE data export served via HTTP.
     ///
     /// You must have prior knowledge of EVE data version which is served to use this method.
     #[cfg(feature = "edh-phb-http")]
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src_with_phb_http<A>(
+    pub async fn add_src_with_phb_http(
         &self,
-        alias: A,
+        alias: SrcAlias,
         make_default: bool,
         ed_version: String,
         base_url: String,
-    ) -> Result<Src<'_>, AddSrcError>
-    where
-        A: Into<SrcAlias>,
-    {
+    ) -> Result<Src<'_>, AddSrcError> {
         let ed_handler = Box::new(
             redh::PhbHttpEdh::try_new(base_url, ed_version)
                 .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
         );
-        self.add_src(alias.into(), make_default, ed_handler).await
+        self.add_src(alias, make_default, ed_handler).await
     }
     async fn add_src(
         &self,
