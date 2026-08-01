@@ -3,7 +3,7 @@ use crate::{
     svc::{
         Calc, SvcCtx, Vast,
         cycle::CseqMap,
-        err::IntItemStatError,
+        err::IntStatItemError,
         vast::stats::{
             cap::sim::{
                 prepare::{StatCapSimStaggerInt, prepare_events},
@@ -26,7 +26,7 @@ impl Vast {
         optional_reloads: Option<OptionalReload>,
         stagger: &StatCapSimStaggerInt,
         nosf_projectee_item_uid: Option<UItemId>,
-    ) -> Result<StatCapSim, IntItemStatError<!>> {
+    ) -> Result<StatCapSim, IntStatItemError<!>> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         let max_cap = Self::get_stat_item_cap_amount(ctx, calc, item_uid).unwrap();
         let recharge_time_ms = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().recharge_rate, Value::ZERO);

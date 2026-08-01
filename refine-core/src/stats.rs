@@ -12,9 +12,9 @@ pub use crate::svc::vast::{
 pub mod err {
     pub use crate::{
         api::{
-            FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
-            FleetAppliedStatError, ItemAppliedStatError, ItemStatError,
+            StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
+            StatFleetAppliedError, StatItemAppliedError, StatItemError,
         },
-        svc::vast::{AgilityStatError, JumpStatError, MaxWarpRangeStatError, ProbingSizeStatError, WarpSpeedStatError},
+        svc::vast::{StatAgilityError, StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatWarpSpeedError},
     };
 }

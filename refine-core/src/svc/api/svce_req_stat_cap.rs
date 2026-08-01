@@ -4,7 +4,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,
-        err::IntItemStatError,
+        err::IntStatItemError,
         vast::{StatCapBlcSrcKindsInt, StatCapSim, StatCapSimStaggerInt, StatTimeOptions, Vast},
     },
     ud::{UData, UItemId},
@@ -15,7 +15,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_cap_amount(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_cap_balance(
@@ -25,7 +25,7 @@ impl Svc {
         item_uid: UItemId,
         src_kinds: StatCapBlcSrcKindsInt,
         time_options: StatTimeOptions,
-    ) -> Result<Value, IntItemStatError<!>> {
+    ) -> Result<Value, IntStatItemError<!>> {
         self.vast.get_stat_item_cap_balance(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
@@ -44,7 +44,7 @@ impl Svc {
         optional_reloads: Option<OptionalReload>,
         stagger: &StatCapSimStaggerInt,
         nosf_projectee_item_uid: Option<UItemId>,
-    ) -> Result<StatCapSim, IntItemStatError<!>> {
+    ) -> Result<StatCapSim, IntStatItemError<!>> {
         self.vast.get_stat_item_cap_sim(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
@@ -60,7 +60,7 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<UnitInterval, IntItemStatError<!>> {
+    ) -> Result<UnitInterval, IntStatItemError<!>> {
         Vast::get_stat_item_neut_resist(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
 }

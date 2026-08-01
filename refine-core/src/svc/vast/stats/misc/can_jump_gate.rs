@@ -1,6 +1,6 @@
 use crate::{
     Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_ship_no_struct},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_ship_no_struct},
     ud::UItemId,
 };
 
@@ -10,7 +10,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, IntItemStatError<!>> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Gating is blocked by either of:
         // - having any running effects which give weapons timer

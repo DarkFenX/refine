@@ -1,6 +1,6 @@
 use crate::{
     PValue, Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_drone_fighter_ship_no_struct},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_drone_fighter_ship_no_struct},
     ud::UItemId,
 };
 
@@ -12,25 +12,25 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<AgilityStatError>> {
+    ) -> Result<PValue, IntStatItemError<StatAgilityError>> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
-        Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid).map_err(IntItemStatError::StatSpecific)
+        Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid).map_err(IntStatItemError::StatSpecific)
     }
     fn internal_get_stat_item_agility_unchecked(
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, AgilityStatError> {
+    ) -> Result<PValue, StatAgilityError> {
         let attr_consts = ctx.ac();
         let agility = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.agility, Value::ZERO);
         let agility = match agility > Value::ZERO {
             true => PValue::from_value_unchecked(agility),
-            false => return Err(AgilityStatError::AgilityError(agility)),
+            false => return Err(StatAgilityError::AgilityError(agility)),
         };
         let mass = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.mass, Value::ZERO);
         let mass = match mass > Value::ZERO {
             true => PValue::from_value_unchecked(mass),
-            false => return Err(AgilityStatError::MassError(mass)),
+            false => return Err(StatAgilityError::MassError(mass)),
         };
         Ok(AGILITY_CONST * agility * mass)
     }
@@ -38,16 +38,16 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<AgilityStatError>> {
+    ) -> Result<PValue, IntStatItemError<StatAgilityError>> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         Self::internal_get_stat_item_agility_unchecked(ctx, calc, item_uid)
             .map(PValue::ceil_tick)
-            .map_err(IntItemStatError::StatSpecific)
+            .map_err(IntStatItemError::StatSpecific)
     }
 }
 
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum AgilityStatError {
+pub enum StatAgilityError {
     #[error("agility should be > 0, but is {0}")]
     AgilityError(Value),
     #[error("mass should be > 0, but is {0}")]

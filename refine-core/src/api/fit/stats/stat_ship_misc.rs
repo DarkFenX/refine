@@ -1,25 +1,25 @@
-use crate::api::{FitMut, FitShipStatError, ItemMutCommon};
+use crate::api::{FitMut, ItemMutCommon, StatFitShipError};
 
 impl<'s> FitMut<'s> {
-    pub fn get_stat_can_warp(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_warp(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_warp()?)
     }
-    pub fn get_stat_can_jump_gate(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_jump_gate(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_jump_gate()?)
     }
-    pub fn get_stat_can_jump_wormhole(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_jump_wormhole(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_jump_wormhole()?)
     }
-    pub fn get_stat_can_jump_drive(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_jump_drive(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_jump_drive()?)
     }
-    pub fn get_stat_can_dock_station(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_dock_station(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_dock_station()?)
     }
-    pub fn get_stat_can_dock_citadel(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_dock_citadel(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_dock_citadel()?)
     }
-    pub fn get_stat_can_tether(&mut self) -> Result<bool, FitShipStatError<!>> {
+    pub fn get_stat_can_tether(&mut self) -> Result<bool, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_can_tether()?)
     }
 }

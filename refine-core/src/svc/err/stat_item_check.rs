@@ -7,7 +7,7 @@ pub(crate) struct UItemKindVsStatError {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub(crate) enum IntItemStatError<SS>
+pub(crate) enum IntStatItemError<SS>
 where
     SS: std::error::Error,
 {

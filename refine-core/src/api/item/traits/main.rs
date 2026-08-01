@@ -14,8 +14,8 @@ use crate::{
         StatInJam, StatJump, StatJumpRange, StatMining, StatOutReps, StatResists, StatRps, StatSensors,
         StatTimeOptions,
         err::{
-            AgilityStatError, ItemAppliedStatError, ItemStatError, JumpStatError, MaxWarpRangeStatError,
-            ProbingSizeStatError, WarpSpeedStatError,
+            StatAgilityError, StatItemAppliedError, StatItemError, StatJumpError, StatMaxWarpRangeError,
+            StatProbingSizeError, StatWarpSpeedError,
         },
     },
     svc::{
@@ -141,7 +141,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<StatDmg, ItemStatError<!>> {
+    ) -> Result<StatDmg, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -155,7 +155,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 time_options,
                 include_charges,
             )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -165,7 +165,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatDmgApplied, ItemAppliedStatError<!>> {
+    ) -> Result<StatDmgApplied, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -181,7 +181,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 include_charges,
                 projectee_uid,
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -190,7 +190,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         time_options: StatTimeOptions,
         mission_ore: bool,
         ignore_state: bool,
-    ) -> Result<StatMining, ItemStatError<!>> {
+    ) -> Result<StatMining, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -198,7 +198,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let result = sol
             .svc
             .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, mission_ore)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -207,7 +207,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         time_options: StatTimeOptions,
         include_charges: bool,
         ignore_state: bool,
-    ) -> Result<PValue, ItemStatError<!>> {
+    ) -> Result<PValue, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -222,7 +222,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 include_charges,
                 None,
             )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -232,7 +232,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<PValue, ItemAppliedStatError<!>> {
+    ) -> Result<PValue, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(include_charges, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -248,7 +248,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 include_charges,
                 Some(projectee_uid),
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -256,7 +256,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         ignore_state: bool,
-    ) -> Result<StatOutReps, ItemStatError<!>> {
+    ) -> Result<StatOutReps, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -264,7 +264,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let result = sol
             .svc
             .get_stat_item_outgoing_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -273,7 +273,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         time_options: StatTimeOptions,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<StatOutReps, ItemAppliedStatError<!>> {
+    ) -> Result<StatOutReps, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -288,7 +288,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 time_options,
                 Some(projectee_uid),
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -296,7 +296,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         ignore_state: bool,
-    ) -> Result<PValue, ItemStatError<!>> {
+    ) -> Result<PValue, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -304,7 +304,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let result = sol
             .svc
             .get_stat_item_outgoing_cps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, None)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
@@ -313,7 +313,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         time_options: StatTimeOptions,
         ignore_state: bool,
         projectee_item_id: &ItemId,
-    ) -> Result<PValue, ItemAppliedStatError<!>> {
+    ) -> Result<PValue, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let saved_state = self.active_stat_prepare(false, ignore_state, &mut reuse_eupdates);
         let item_uid = self.get_uid();
@@ -328,58 +328,58 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 time_options,
                 Some(projectee_uid),
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - tank
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_resists(&mut self) -> Result<StatResists, ItemStatError<!>> {
+    fn get_stat_resists(&mut self) -> Result<StatResists, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_resists(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_hp(&mut self) -> Result<StatHp, ItemStatError<!>> {
+    fn get_stat_hp(&mut self) -> Result<StatHp, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_hp(&mut CseqMap::new(), &sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_ehp(&mut self, incoming_dps: Option<DpsProfile>) -> Result<StatEhp, ItemStatError<!>> {
+    fn get_stat_ehp(&mut self, incoming_dps: Option<DpsProfile>) -> Result<StatEhp, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_ehp(&mut CseqMap::new(), &sol.u_data, item_uid, incoming_dps)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_wc_ehp(&mut self) -> Result<StatEhp, ItemStatError<!>> {
+    fn get_stat_wc_ehp(&mut self) -> Result<StatEhp, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_wc_ehp(&mut CseqMap::new(), &sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     fn get_stat_rps(
         &mut self,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatRps, ItemStatError<!>> {
+    ) -> Result<StatRps, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_rps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, shield_perc)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     fn get_stat_erps(
         &mut self,
         incoming_dps: Option<DpsProfile>,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatErps, ItemStatError<!>> {
+    ) -> Result<StatErps, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
@@ -391,36 +391,36 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 time_options,
                 shield_perc,
             )
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_breach_resist(&mut self) -> Result<UnitInterval, ItemStatError<!>> {
+    fn get_stat_breach_resist(&mut self) -> Result<UnitInterval, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_breach_resist(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - cap
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_cap_amount(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_cap_amount(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_cap_amount(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     fn get_stat_cap_balance(
         &mut self,
         src_kinds: &StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
-    ) -> Result<Value, ItemAppliedStatError<!>> {
+    ) -> Result<Value, StatItemAppliedError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let src_kinds = StatCapBlcSrcKindsInt::from_pub(src_kinds, &sol.u_data)?;
         sol.svc
             .get_stat_item_cap_balance(&mut CseqMap::new(), &sol.u_data, item_uid, src_kinds, time_options)
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items))
     }
     fn get_stat_cap_sim(
         &mut self,
@@ -428,7 +428,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         optional_reloads: Option<OptionalReload>,
         stagger: StatCapSimStagger,
         nosf_projectee_item_id: Option<&ItemId>,
-    ) -> Result<StatCapSim, ItemAppliedStatError<!>> {
+    ) -> Result<StatCapSim, StatItemAppliedError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let nosf_projectee_item_uid = match nosf_projectee_item_id {
@@ -445,99 +445,99 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 &StatCapSimStaggerInt::from_pub(sol, &stagger),
                 nosf_projectee_item_uid,
             )
-            .map_err(|e| ItemAppliedStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_neut_resist(&mut self) -> Result<UnitInterval, ItemStatError<!>> {
+    fn get_stat_neut_resist(&mut self) -> Result<UnitInterval, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_neut_resist(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - sensors
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_locks(&mut self) -> Result<Count, ItemStatError<!>> {
+    fn get_stat_locks(&mut self) -> Result<Count, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_locks(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_lock_range(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_lock_range(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_lock_range(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_scan_res(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_scan_res(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_scan_res(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_sensors(&mut self) -> Result<StatSensors, ItemStatError<!>> {
+    fn get_stat_sensors(&mut self) -> Result<StatSensors, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_sensors(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_dscan_range(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_dscan_range(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_dscan_range(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_probing_size(&mut self) -> Result<PValue, ItemStatError<ProbingSizeStatError>> {
+    fn get_stat_probing_size(&mut self) -> Result<PValue, StatItemError<StatProbingSizeError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_probing_size(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_incoming_jam(&mut self, time_options: StatTimeOptions) -> Result<StatInJam, ItemStatError<!>> {
+    fn get_stat_incoming_jam(&mut self, time_options: StatTimeOptions) -> Result<StatInJam, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_incoming_jam(&mut CseqMap::new(), &sol.u_data, item_uid, time_options)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - mobility
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_speed(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_speed(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_speed(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_agility(&mut self) -> Result<PValue, ItemStatError<AgilityStatError>> {
+    fn get_stat_agility(&mut self) -> Result<PValue, StatItemError<StatAgilityError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_agility(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_align_time(&mut self) -> Result<PValue, ItemStatError<AgilityStatError>> {
+    fn get_stat_align_time(&mut self) -> Result<PValue, StatItemError<StatAgilityError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_align_time(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_sig_radius(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_sig_radius(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_sig_radius(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_mass(&mut self, affectors: CtlAffectors) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let mut saved_states = RMap::new();
         let mut reuse_eupdates = UEffectUpdates::new();
@@ -553,30 +553,30 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let result = sol
             .svc
             .get_stat_item_mass(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
         result
     }
-    fn get_stat_warp_speed(&mut self) -> Result<PValue, ItemStatError<WarpSpeedStatError>> {
+    fn get_stat_warp_speed(&mut self) -> Result<PValue, StatItemError<StatWarpSpeedError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_warp_speed(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_max_warp_range(&mut self) -> Result<PValue, ItemStatError<MaxWarpRangeStatError>> {
+    fn get_stat_max_warp_range(&mut self) -> Result<PValue, StatItemError<StatMaxWarpRangeError>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_max_warp_range(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
     fn get_stat_jump(
         &mut self,
         range: StatJumpRange,
         passenger_fit_ids: &[FitId],
         passenger_fuel_affectors: CtlAffectors,
-    ) -> Result<StatJump, ItemStatError<JumpStatError>> {
+    ) -> Result<StatJump, StatItemError<StatJumpError>> {
         let mut saved_states = RMap::new();
         let mut reuse_eupdates = UEffectUpdates::new();
         let item_uid = self.get_uid();
@@ -601,7 +601,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let result = sol
             .svc
             .get_stat_item_jump(&sol.u_data, item_uid, range, &passenger_fit_uids)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items));
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         // Revert item state changes
         sol.internal_ctl_affectors_restore(&mut saved_states, &mut reuse_eupdates);
         result
@@ -609,60 +609,60 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Stats - misc
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    fn get_stat_drone_control_range(&mut self) -> Result<PValue, ItemStatError<!>> {
+    fn get_stat_drone_control_range(&mut self) -> Result<PValue, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_drone_control_range(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_warp(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_warp(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_warp(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_jump_gate(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_jump_gate(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_jump_gate(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_jump_wormhole(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_jump_wormhole(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_jump_wormhole(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_jump_drive(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_jump_drive(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_jump_drive(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_dock_station(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_dock_station(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_dock_station(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_dock_citadel(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_dock_citadel(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_dock_citadel(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
-    fn get_stat_can_tether(&mut self) -> Result<bool, ItemStatError<!>> {
+    fn get_stat_can_tether(&mut self) -> Result<bool, StatItemError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         sol.svc
             .get_stat_item_can_tether(&sol.u_data, item_uid)
-            .map_err(|e| ItemStatError::from_svc_err(e, &sol.u_data.items))
+            .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items))
     }
 }

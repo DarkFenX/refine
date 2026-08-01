@@ -1,4 +1,4 @@
-pub use shared::{FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError};
+pub use shared::{StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError};
 
 mod shared;
 mod stat_char;

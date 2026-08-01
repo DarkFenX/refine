@@ -1,7 +1,7 @@
 use crate::{
     PValue,
     svc::{
-        Calc, SvcCtx, Vast, err::IntItemStatError, funcs, vast::stats::item_checks::check_drone_fighter_ship_no_struct,
+        Calc, SvcCtx, Vast, err::IntStatItemError, funcs, vast::stats::item_checks::check_drone_fighter_ship_no_struct,
     },
     ud::UItemId,
 };
@@ -11,7 +11,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_drone_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         Ok(funcs::get_speed(ctx, calc, item_uid))
     }

@@ -2,9 +2,9 @@ use crate::{
     PValue,
     stats::{
         StatJump, StatJumpRange,
-        err::{AgilityStatError, JumpStatError, MaxWarpRangeStatError, WarpSpeedStatError},
+        err::{StatAgilityError, StatJumpError, StatMaxWarpRangeError, StatWarpSpeedError},
     },
-    svc::{Svc, SvcCtx, Vast, err::IntItemStatError},
+    svc::{Svc, SvcCtx, Vast, err::IntStatItemError},
     ud::{UData, UFitId, UItemId},
 };
 
@@ -13,49 +13,49 @@ impl Svc {
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_speed(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_agility(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<AgilityStatError>> {
+    ) -> Result<PValue, IntStatItemError<StatAgilityError>> {
         Vast::get_stat_item_agility(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_align_time(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<AgilityStatError>> {
+    ) -> Result<PValue, IntStatItemError<StatAgilityError>> {
         Vast::get_stat_item_align_time(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_sig_radius(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_sig_radius(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_mass(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_mass(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_warp_speed(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<WarpSpeedStatError>> {
+    ) -> Result<PValue, IntStatItemError<StatWarpSpeedError>> {
         Vast::get_stat_item_warp_speed(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_max_warp_range(
         &mut self,
         u_data: &UData,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<MaxWarpRangeStatError>> {
+    ) -> Result<PValue, IntStatItemError<StatMaxWarpRangeError>> {
         Vast::get_stat_item_max_warp_range(SvcCtx::new(u_data, &self.eff_projs), &mut self.calc, item_uid)
     }
     pub(crate) fn get_stat_item_jump(
@@ -64,7 +64,7 @@ impl Svc {
         item_uid: UItemId,
         range: StatJumpRange,
         passenger_fit_uids: &[UFitId],
-    ) -> Result<StatJump, IntItemStatError<JumpStatError>> {
+    ) -> Result<StatJump, IntStatItemError<StatJumpError>> {
         self.vast.get_stat_item_jump(
             SvcCtx::new(u_data, &self.eff_projs),
             &mut self.calc,

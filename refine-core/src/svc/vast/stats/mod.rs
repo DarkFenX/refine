@@ -3,14 +3,14 @@ pub(crate) use cap::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSi
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
 pub use jump::{
-    JumpStatError, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf,
+    StatJump, StatJumpConduit, StatJumpError, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf,
 };
 pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
-pub use mobility::{AgilityStatError, MaxWarpRangeStatError, WarpSpeedStatError};
+pub use mobility::{StatAgilityError, StatMaxWarpRangeError, StatWarpSpeedError};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};
 pub use resource::StatResource;
-pub use sensors::{ProbingSizeStatError, StatSensors, StatSensorsKind};
+pub use sensors::{StatProbingSizeError, StatSensors, StatSensorsKind};
 pub use slot::StatSlot;
 pub use tank::{
     StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatResists,

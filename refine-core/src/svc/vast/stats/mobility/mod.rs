@@ -1,6 +1,6 @@
-pub use agility::AgilityStatError;
-pub use warp_range::MaxWarpRangeStatError;
-pub use warp_speed::WarpSpeedStatError;
+pub use agility::StatAgilityError;
+pub use warp_range::StatMaxWarpRangeError;
+pub use warp_speed::StatWarpSpeedError;
 
 mod agility;
 mod mass;

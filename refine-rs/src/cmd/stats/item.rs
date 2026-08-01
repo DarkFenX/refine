@@ -7,7 +7,7 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
         StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
-        err::{ItemAppliedStatError, ItemStatError, JumpStatError},
+        err::{StatItemAppliedError, StatItemError, StatJumpError},
     },
     svc::StatErrorFatality,
 };
@@ -254,7 +254,7 @@ impl GetItemStatsCmd {
 fn get_dmg_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionItemDmg>,
-) -> StatResult<StatDmg, ItemAppliedStatError<!>, ItemAppliedStatError<!>> {
+) -> StatResult<StatDmg, StatItemAppliedError<!>, StatItemAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -291,7 +291,7 @@ fn get_dmg_stats(
 fn get_mps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionItemMining>,
-) -> StatResult<StatMining, ItemStatError<!>, !> {
+) -> StatResult<StatMining, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_mps(option.time_options, option.mission, option.ignore_state) {
@@ -304,7 +304,7 @@ fn get_mps_stats(
 fn get_outgoing_nps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionItemOutNps>,
-) -> StatResult<PValue, ItemAppliedStatError<!>, ItemAppliedStatError<!>> {
+) -> StatResult<PValue, StatItemAppliedError<!>, StatItemAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -342,7 +342,7 @@ fn get_outgoing_nps_stats(
 fn get_outgoing_rps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionItemOutRps>,
-) -> StatResult<StatOutReps, ItemAppliedStatError<!>, ItemAppliedStatError<!>> {
+) -> StatResult<StatOutReps, StatItemAppliedError<!>, StatItemAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -376,7 +376,7 @@ fn get_outgoing_rps_stats(
 fn get_outgoing_cps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionItemOutCps>,
-) -> StatResult<PValue, ItemAppliedStatError<!>, ItemAppliedStatError<!>> {
+) -> StatResult<PValue, StatItemAppliedError<!>, StatItemAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -411,7 +411,7 @@ fn get_outgoing_cps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn get_ehp_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionEhp>) -> StatResult<StatEhp, ItemStatError<!>, !> {
+fn get_ehp_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionEhp>) -> StatResult<StatEhp, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_ehp(option.incoming_dps) {
@@ -421,7 +421,7 @@ fn get_ehp_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionEhp>) -> St
     }
     StatResult::Result(stats)
 }
-fn get_rps_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionRps>) -> StatResult<StatRps, ItemStatError<!>, !> {
+fn get_rps_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionRps>) -> StatResult<StatRps, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_rps(option.time_options, option.shield_perc) {
@@ -434,7 +434,7 @@ fn get_rps_stats(core_item: &mut rc::ItemMut, options: Vec<StatOptionRps>) -> St
 fn get_erps_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionErps>,
-) -> StatResult<StatErps, ItemStatError<!>, !> {
+) -> StatResult<StatErps, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_erps(option.incoming_dps, option.time_options, option.shield_perc) {
@@ -451,7 +451,7 @@ fn get_erps_stats(
 fn get_cap_balance_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionCapBlc>,
-) -> StatResult<Value, ItemAppliedStatError<!>, ItemAppliedStatError<!>> {
+) -> StatResult<Value, StatItemAppliedError<!>, StatItemAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_cap_balance(&option.src_kinds, option.time_options) {
@@ -467,7 +467,7 @@ fn get_cap_balance_stats(
 fn get_cap_sim_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionCapSim>,
-) -> StatResult<StatCapSim, ItemAppliedStatError<!>, ItemAppliedStatError<!>> {
+) -> StatResult<StatCapSim, StatItemAppliedError<!>, StatItemAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_cap_sim(
@@ -492,7 +492,7 @@ fn get_cap_sim_stats(
 fn get_incoming_jam_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionIncomingJam>,
-) -> StatResult<StatInJam, ItemStatError<!>, !> {
+) -> StatResult<StatInJam, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_incoming_jam(option.time_options) {
@@ -509,7 +509,7 @@ fn get_incoming_jam_stats(
 fn get_mass_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionMass>,
-) -> StatResult<PValue, ItemStatError<!>, !> {
+) -> StatResult<PValue, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_mass(option.affectors) {
@@ -522,7 +522,7 @@ fn get_mass_stats(
 fn get_jump_stats(
     core_item: &mut rc::ItemMut,
     options: Vec<StatOptionJump>,
-) -> StatResult<StatJump, ItemStatError<JumpStatError>, !> {
+) -> StatResult<StatJump, StatItemError<StatJumpError>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_item.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors) {
@@ -536,13 +536,13 @@ fn get_jump_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn conv_err_item<SS>(err: ItemStatError<SS>) -> ItemAppliedStatError<SS>
+fn conv_err_item<SS>(err: StatItemError<SS>) -> StatItemAppliedError<SS>
 where
     SS: std::error::Error,
 {
     match err {
-        ItemStatError::ItemNotLoaded(err) => ItemAppliedStatError::ItemNotLoaded(err),
-        ItemStatError::UnsupportedStat(err) => ItemAppliedStatError::UnsupportedStat(err),
-        ItemStatError::StatSpecific(err) => ItemAppliedStatError::StatSpecific(err),
+        StatItemError::ItemNotLoaded(err) => StatItemAppliedError::ItemNotLoaded(err),
+        StatItemError::UnsupportedStat(err) => StatItemAppliedError::UnsupportedStat(err),
+        StatItemError::StatSpecific(err) => StatItemAppliedError::StatSpecific(err),
     }
 }

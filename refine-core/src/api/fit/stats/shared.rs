@@ -1,5 +1,5 @@
 use crate::{
-    api::{CharacterMut, FitMut, ItemAppliedStatError, ItemStatError, ShipMut},
+    api::{CharacterMut, FitMut, ShipMut, StatItemAppliedError, StatItemError},
     err::basic::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
@@ -30,14 +30,14 @@ impl<'s> FitMut<'s> {
 // Fit errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum FitAppliedStatError {
+pub enum StatFitAppliedError {
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error("{0}")]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 // Conversions
-impl From<ProjecteeUidError> for FitAppliedStatError {
+impl From<ProjecteeUidError> for StatFitAppliedError {
     fn from(uid_err: ProjecteeUidError) -> Self {
         match uid_err {
             ProjecteeUidError::ProjecteeNotFound(e) => e.into(),
@@ -50,7 +50,7 @@ impl From<ProjecteeUidError> for FitAppliedStatError {
 // Fit ship errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum FitShipStatError<SS>
+pub enum StatFitShipError<SS>
 where
     SS: std::error::Error,
 {
@@ -64,21 +64,21 @@ where
     StatSpecific(#[source] SS),
 }
 // Conversions
-impl<SS> From<ItemStatError<SS>> for FitShipStatError<SS>
+impl<SS> From<StatItemError<SS>> for StatFitShipError<SS>
 where
     SS: std::error::Error,
 {
-    fn from(item_err: ItemStatError<SS>) -> Self {
+    fn from(item_err: StatItemError<SS>) -> Self {
         match item_err {
-            ItemStatError::ItemNotLoaded(err) => err.into(),
-            ItemStatError::UnsupportedStat(err) => err.into(),
-            ItemStatError::StatSpecific(err) => Self::StatSpecific(err),
+            StatItemError::ItemNotLoaded(err) => err.into(),
+            StatItemError::UnsupportedStat(err) => err.into(),
+            StatItemError::StatSpecific(err) => Self::StatSpecific(err),
         }
     }
 }
 
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum FitShipAppliedStatError<SS>
+pub enum StatFitShipAppliedError<SS>
 where
     SS: std::error::Error,
 {
@@ -96,17 +96,17 @@ where
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 // Conversions
-impl<SS> From<ItemAppliedStatError<SS>> for FitShipAppliedStatError<SS>
+impl<SS> From<StatItemAppliedError<SS>> for StatFitShipAppliedError<SS>
 where
     SS: std::error::Error,
 {
-    fn from(item_err: ItemAppliedStatError<SS>) -> Self {
+    fn from(item_err: StatItemAppliedError<SS>) -> Self {
         match item_err {
-            ItemAppliedStatError::ItemNotLoaded(err) => err.into(),
-            ItemAppliedStatError::UnsupportedStat(err) => err.into(),
-            ItemAppliedStatError::StatSpecific(err) => Self::StatSpecific(err),
-            ItemAppliedStatError::ProjecteeNotFound(err) => err.into(),
-            ItemAppliedStatError::ProjecteeCantTakeProjs(err) => err.into(),
+            StatItemAppliedError::ItemNotLoaded(err) => err.into(),
+            StatItemAppliedError::UnsupportedStat(err) => err.into(),
+            StatItemAppliedError::StatSpecific(err) => Self::StatSpecific(err),
+            StatItemAppliedError::ProjecteeNotFound(err) => err.into(),
+            StatItemAppliedError::ProjecteeCantTakeProjs(err) => err.into(),
         }
     }
 }
@@ -115,7 +115,7 @@ where
 // Fit character errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum FitCharacterStatError<SS>
+pub enum StatFitCharacterError<SS>
 where
     SS: std::error::Error,
 {
@@ -129,15 +129,15 @@ where
     StatSpecific(#[source] SS),
 }
 // Conversions
-impl<SS> From<ItemStatError<SS>> for FitCharacterStatError<SS>
+impl<SS> From<StatItemError<SS>> for StatFitCharacterError<SS>
 where
     SS: std::error::Error,
 {
-    fn from(item_err: ItemStatError<SS>) -> Self {
+    fn from(item_err: StatItemError<SS>) -> Self {
         match item_err {
-            ItemStatError::ItemNotLoaded(err) => err.into(),
-            ItemStatError::UnsupportedStat(err) => err.into(),
-            ItemStatError::StatSpecific(err) => Self::StatSpecific(err),
+            StatItemError::ItemNotLoaded(err) => err.into(),
+            StatItemError::UnsupportedStat(err) => err.into(),
+            StatItemError::StatSpecific(err) => Self::StatSpecific(err),
         }
     }
 }

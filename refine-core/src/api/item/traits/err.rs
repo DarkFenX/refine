@@ -1,6 +1,6 @@
 use crate::{
     err::basic::{AttrFoundError, ItemFoundError, ItemLoadedError, ItemReceiveProjError, SupportedStatError},
-    svc::err::IntItemStatError,
+    svc::err::IntStatItemError,
     ud::{ProjecteeUidError, UItems},
 };
 
@@ -34,7 +34,7 @@ pub enum IterItemModifiersError {
 // Stats errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum ItemStatError<SS>
+pub enum StatItemError<SS>
 where
     SS: std::error::Error,
 {
@@ -46,21 +46,21 @@ where
     StatSpecific(#[source] SS),
 }
 // Conversions
-impl<SS> ItemStatError<SS>
+impl<SS> StatItemError<SS>
 where
     SS: std::error::Error,
 {
-    pub(crate) fn from_svc_err(svc_err: IntItemStatError<SS>, u_items: &UItems) -> Self {
+    pub(crate) fn from_svc_err(svc_err: IntStatItemError<SS>, u_items: &UItems) -> Self {
         match svc_err {
-            IntItemStatError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
-            IntItemStatError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
-            IntItemStatError::StatSpecific(stat_err) => Self::StatSpecific(stat_err),
+            IntStatItemError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
+            IntStatItemError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
+            IntStatItemError::StatSpecific(stat_err) => Self::StatSpecific(stat_err),
         }
     }
 }
 
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum ItemAppliedStatError<SS>
+pub enum StatItemAppliedError<SS>
 where
     SS: std::error::Error,
 {
@@ -76,19 +76,19 @@ where
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 // Conversions
-impl<SS> ItemAppliedStatError<SS>
+impl<SS> StatItemAppliedError<SS>
 where
     SS: std::error::Error,
 {
-    pub(super) fn from_svc_err(svc_err: IntItemStatError<SS>, u_items: &UItems) -> Self {
+    pub(super) fn from_svc_err(svc_err: IntStatItemError<SS>, u_items: &UItems) -> Self {
         match svc_err {
-            IntItemStatError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
-            IntItemStatError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
-            IntItemStatError::StatSpecific(stat_err) => Self::StatSpecific(stat_err),
+            IntStatItemError::ItemNotLoaded(svc_err) => ItemLoadedError::from_svc_err(svc_err, u_items).into(),
+            IntStatItemError::UnsupportedStat(svc_err) => SupportedStatError::from_svc_err(svc_err, u_items).into(),
+            IntStatItemError::StatSpecific(stat_err) => Self::StatSpecific(stat_err),
         }
     }
 }
-impl<SS> From<ProjecteeUidError> for ItemAppliedStatError<SS>
+impl<SS> From<ProjecteeUidError> for StatItemAppliedError<SS>
 where
     SS: std::error::Error,
 {

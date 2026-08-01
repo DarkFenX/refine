@@ -4,7 +4,7 @@ use crate::{
     svc::{
         Calc, SvcCtx, Vast,
         cycle::CseqMap,
-        err::IntItemStatError,
+        err::IntStatItemError,
         vast::stats::{item_checks::check_drone_fighter_ship, tank::shared::get_tanking_efficiency},
     },
     ud::UItemId,
@@ -20,7 +20,7 @@ impl Vast {
         incoming_dps: Option<DpsProfile>,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatErps, IntItemStatError<!>> {
+    ) -> Result<StatErps, IntStatItemError<!>> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let rps =
             self.get_stat_item_rps_unchecked(reuse_cseq_map, ctx, calc, item_uid, item, time_options, shield_perc);

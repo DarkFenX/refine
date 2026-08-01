@@ -1,4 +1,4 @@
-pub use probing_size::ProbingSizeStatError;
+pub use probing_size::StatProbingSizeError;
 pub use sensors::{StatSensors, StatSensorsKind};
 
 mod dscan_range;

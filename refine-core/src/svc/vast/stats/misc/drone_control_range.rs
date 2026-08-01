@@ -1,6 +1,6 @@
 use crate::{
     PValue, Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_character},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_character},
     ud::UItemId,
 };
 
@@ -9,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_character(ctx.u_data, item_uid)?;
         let drone_control_range =
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().drone_control_distance, Value::ZERO);

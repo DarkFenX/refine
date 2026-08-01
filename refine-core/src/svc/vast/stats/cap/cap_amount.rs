@@ -1,6 +1,6 @@
 use crate::{
     PValue, Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_ship},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_ship},
     ud::UItemId,
 };
 
@@ -9,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<PValue, IntItemStatError<!>> {
+    ) -> Result<PValue, IntStatItemError<!>> {
         check_ship(ctx.u_data, item_uid)?;
         Ok(Self::internal_get_stat_item_cap_amount_unchecked(ctx, calc, item_uid))
     }

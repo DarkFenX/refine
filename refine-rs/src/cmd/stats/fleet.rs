@@ -2,7 +2,7 @@ use crate::{
     PValue,
     stats::{
         FleetStats, StatDmg, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::FleetAppliedStatError,
+        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
     },
 };
 
@@ -56,7 +56,7 @@ impl GetFleetStatsCmd {
 fn get_dmg_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<StatOptionFitDmg>,
-) -> StatResult<StatDmg, !, FleetAppliedStatError> {
+) -> StatResult<StatDmg, !, StatFleetAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -85,7 +85,7 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining
 fn get_outgoing_nps_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<StatOptionFitOutNps>,
-) -> StatResult<PValue, !, FleetAppliedStatError> {
+) -> StatResult<PValue, !, StatFleetAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -108,7 +108,7 @@ fn get_outgoing_nps_stats(
 fn get_outgoing_rps_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<StatOptionFitOutRps>,
-) -> StatResult<StatOutReps, !, FleetAppliedStatError> {
+) -> StatResult<StatOutReps, !, StatFleetAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -131,7 +131,7 @@ fn get_outgoing_rps_stats(
 fn get_outgoing_cps_stats(
     core_fleet: &mut rc::FleetMut,
     options: Vec<StatOptionFitOutCps>,
-) -> StatResult<PValue, !, FleetAppliedStatError> {
+) -> StatResult<PValue, !, StatFleetAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {

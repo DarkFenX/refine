@@ -8,7 +8,7 @@ impl<'s> FleetMut<'s> {
     pub(super) fn get_stat_applied_projectee_uid(
         &self,
         projectee_item_id: &ItemId,
-    ) -> Result<UItemId, FleetAppliedStatError> {
+    ) -> Result<UItemId, StatFleetAppliedError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         let projectee_u_item = self.sol.u_data.items.get(projectee_uid);
         if projectee_u_item.get_direct_physics().is_none() {
@@ -26,7 +26,7 @@ impl<'s> FleetMut<'s> {
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum FleetAppliedStatError {
+pub enum StatFleetAppliedError {
     #[error("{0}")]
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error("{0}")]

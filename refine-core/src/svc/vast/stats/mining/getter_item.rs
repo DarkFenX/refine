@@ -6,7 +6,7 @@ use crate::{
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
-        err::IntItemStatError,
+        err::IntStatItemError,
         vast::{
             aggr::{SeqAccum, aggr_proj_burst, aggr_proj_looped, aggr_proj_time},
             stats::item_checks::check_drone_module,
@@ -23,7 +23,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         mission_ore: bool,
-    ) -> Result<StatMining, IntItemStatError<!>> {
+    ) -> Result<StatMining, IntStatItemError<!>> {
         check_drone_module(ctx.u_data, item_uid)?;
         let base_xargs = NEffectMiningXargs { mission_ore };
         let mps = StatMining {

@@ -6,7 +6,7 @@ use crate::{
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
-        err::IntItemStatError,
+        err::IntStatItemError,
         vast::{
             aggr::{SeqAccum, aggr_local_clip, aggr_proj_clip},
             stats::item_checks::check_drone_fighter_ship,
@@ -23,7 +23,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<StatHp, IntItemStatError<!>> {
+    ) -> Result<StatHp, IntStatItemError<!>> {
         let item = check_drone_fighter_ship(ctx.u_data, item_uid)?;
         Ok(self.get_stat_item_hp_unchecked(reuse_cseq_map, ctx, calc, item_uid, item))
     }

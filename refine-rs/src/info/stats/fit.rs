@@ -4,8 +4,8 @@ use crate::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
         StatResource, StatResult, StatRps, StatSensors, StatSlot,
         err::{
-            AgilityStatError, FitAppliedStatError, FitCharacterStatError, FitShipAppliedStatError, FitShipStatError,
-            JumpStatError, MaxWarpRangeStatError, ProbingSizeStatError, WarpSpeedStatError,
+            StatAgilityError, StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
+            StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatWarpSpeedError,
         },
     },
 };
@@ -15,15 +15,15 @@ use crate::{
 pub struct FitStats {
     // Fit output stats
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub dmg: StatResult<StatDmg, !, FitAppliedStatError> = StatResult::NotRequested,
+    pub dmg: StatResult<StatDmg, !, StatFitAppliedError> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub mps: StatResult<StatMining, !, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub outgoing_nps: StatResult<PValue, !, FitAppliedStatError> = StatResult::NotRequested,
+    pub outgoing_nps: StatResult<PValue, !, StatFitAppliedError> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub outgoing_rps: StatResult<StatOutReps, !, FitAppliedStatError> = StatResult::NotRequested,
+    pub outgoing_rps: StatResult<StatOutReps, !, StatFitAppliedError> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub outgoing_cps: StatResult<PValue, !, FitAppliedStatError> = StatResult::NotRequested,
+    pub outgoing_cps: StatResult<PValue, !, StatFitAppliedError> = StatResult::NotRequested,
     // Fit resources
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub cpu: StatResult<StatResource, !, !> = StatResult::NotRequested,
@@ -72,75 +72,75 @@ pub struct FitStats {
     pub launched_st_support_fighters: StatResult<StatSlot, !, !> = StatResult::NotRequested,
     // Ship tank
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub resists: StatResult<StatResists, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub resists: StatResult<StatResists, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub hp: StatResult<StatHp, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub hp: StatResult<StatHp, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub ehp: StatResult<StatEhp, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub ehp: StatResult<StatEhp, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub wc_ehp: StatResult<StatEhp, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub wc_ehp: StatResult<StatEhp, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub rps: StatResult<StatRps, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub rps: StatResult<StatRps, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub erps: StatResult<StatErps, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub erps: StatResult<StatErps, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub breach_resist: StatResult<UnitInterval, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub breach_resist: StatResult<UnitInterval, StatFitShipError<!>, !> = StatResult::NotRequested,
     // Ship cap
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub cap_amount: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub cap_amount: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub cap_balance: StatResult<Value, FitShipAppliedStatError<!>, FitShipAppliedStatError<!>> = StatResult::NotRequested,
+    pub cap_balance: StatResult<Value, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub cap_sim: StatResult<StatCapSim, FitShipAppliedStatError<!>, FitShipAppliedStatError<!>> = StatResult::NotRequested,
+    pub cap_sim: StatResult<StatCapSim, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub neut_resist: StatResult<UnitInterval, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub neut_resist: StatResult<UnitInterval, StatFitShipError<!>, !> = StatResult::NotRequested,
     // Ship sensors
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub locks: StatResult<Count, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub locks: StatResult<Count, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub lock_range: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub lock_range: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub scan_res: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub scan_res: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub sensors: StatResult<StatSensors, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub sensors: StatResult<StatSensors, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub dscan_range: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub dscan_range: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub probing_size: StatResult<PValue, FitShipStatError<ProbingSizeStatError>, !> = StatResult::NotRequested,
+    pub probing_size: StatResult<PValue, StatFitShipError<StatProbingSizeError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub incoming_jam: StatResult<StatInJam, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub incoming_jam: StatResult<StatInJam, StatFitShipError<!>, !> = StatResult::NotRequested,
     // Ship mobility
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub speed: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub speed: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub agility: StatResult<PValue, FitShipStatError<AgilityStatError>, !> = StatResult::NotRequested,
+    pub agility: StatResult<PValue, StatFitShipError<StatAgilityError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub align_time: StatResult<PValue, FitShipStatError<AgilityStatError>, !> = StatResult::NotRequested,
+    pub align_time: StatResult<PValue, StatFitShipError<StatAgilityError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub sig_radius: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub sig_radius: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub mass: StatResult<PValue, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub mass: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub warp_speed: StatResult<PValue, FitShipStatError<WarpSpeedStatError>, !> = StatResult::NotRequested,
+    pub warp_speed: StatResult<PValue, StatFitShipError<StatWarpSpeedError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub max_warp_range: StatResult<PValue, FitShipStatError<MaxWarpRangeStatError>, !> = StatResult::NotRequested,
+    pub max_warp_range: StatResult<PValue, StatFitShipError<StatMaxWarpRangeError>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub jump: StatResult<StatJump, FitShipStatError<JumpStatError>, !> = StatResult::NotRequested,
+    pub jump: StatResult<StatJump, StatFitShipError<StatJumpError>, !> = StatResult::NotRequested,
     // Ship misc stats
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub drone_control_range: StatResult<PValue, FitCharacterStatError<!>, !> = StatResult::NotRequested,
+    pub drone_control_range: StatResult<PValue, StatFitCharacterError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_warp: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_warp: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_jump_gate: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_jump_gate: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_jump_wormhole: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_jump_wormhole: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_jump_drive: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_jump_drive: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_dock_station: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_dock_station: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_dock_citadel: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_dock_citadel: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub can_tether: StatResult<bool, FitShipStatError<!>, !> = StatResult::NotRequested,
+    pub can_tether: StatResult<bool, StatFitShipError<!>, !> = StatResult::NotRequested,
 }

@@ -1,11 +1,11 @@
 pub use stats::{
-    AgilityStatError, JumpStatError, MaxWarpRangeStatError, ProbingSizeStatError, StatCapBlcNosfs, StatCapBlcRegen,
-    StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied,
-    StatDmgEntryBreacher, StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp,
-    StatHpLayer, StatInJam, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf,
-    StatMining, StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists,
-    StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot,
-    StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, WarpSpeedStatError,
+    StatAgilityError, StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatDmg,
+    StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp, StatEhpLayer,
+    StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatJump, StatJumpConduit,
+    StatJumpError, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMaxWarpRangeError, StatMining,
+    StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatProbingSizeError,
+    StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors,
+    StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
 };
 pub(crate) use stats::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 use val_options::ValOptionInt;

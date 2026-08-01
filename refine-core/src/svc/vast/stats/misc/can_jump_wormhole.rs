@@ -1,5 +1,5 @@
 use crate::{
-    svc::{SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_ship_no_struct},
+    svc::{SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_ship_no_struct},
     ud::UItemId,
 };
 
@@ -8,7 +8,7 @@ impl Vast {
         &self,
         ctx: SvcCtx,
         item_uid: UItemId,
-    ) -> Result<bool, IntItemStatError<!>> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // WH jumping is blocked by:
         // - type ID being on type list 245 WH jump black list (supercapitals)

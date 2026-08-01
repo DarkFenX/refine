@@ -2,28 +2,28 @@ use crate::{
     api::{FitMut, ItemMutCommon},
     misc::DpsProfile,
     num::UnitInterval,
-    stats::err::FitShipStatError,
+    stats::err::StatFitShipError,
     svc::vast::{StatEhp, StatErps, StatHp, StatResists, StatRps, StatTimeOptions},
 };
 
 impl<'s> FitMut<'s> {
-    pub fn get_stat_resists(&mut self) -> Result<StatResists, FitShipStatError<!>> {
+    pub fn get_stat_resists(&mut self) -> Result<StatResists, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_resists()?)
     }
-    pub fn get_stat_hp(&mut self) -> Result<StatHp, FitShipStatError<!>> {
+    pub fn get_stat_hp(&mut self) -> Result<StatHp, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_hp()?)
     }
-    pub fn get_stat_ehp(&mut self, incoming_dps: Option<DpsProfile>) -> Result<StatEhp, FitShipStatError<!>> {
+    pub fn get_stat_ehp(&mut self, incoming_dps: Option<DpsProfile>) -> Result<StatEhp, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_ehp(incoming_dps)?)
     }
-    pub fn get_stat_wc_ehp(&mut self) -> Result<StatEhp, FitShipStatError<!>> {
+    pub fn get_stat_wc_ehp(&mut self) -> Result<StatEhp, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_wc_ehp()?)
     }
     pub fn get_stat_rps(
         &mut self,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatRps, FitShipStatError<!>> {
+    ) -> Result<StatRps, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_rps(time_options, shield_perc)?)
     }
     pub fn get_stat_erps(
@@ -31,12 +31,12 @@ impl<'s> FitMut<'s> {
         incoming_dps: Option<DpsProfile>,
         time_options: StatTimeOptions,
         shield_perc: UnitInterval,
-    ) -> Result<StatErps, FitShipStatError<!>> {
+    ) -> Result<StatErps, StatFitShipError<!>> {
         Ok(self
             .get_ship_for_stats()?
             .get_stat_erps(incoming_dps, time_options, shield_perc)?)
     }
-    pub fn get_stat_breach_resist(&mut self) -> Result<UnitInterval, FitShipStatError<!>> {
+    pub fn get_stat_breach_resist(&mut self) -> Result<UnitInterval, StatFitShipError<!>> {
         Ok(self.get_ship_for_stats()?.get_stat_breach_resist()?)
     }
 }

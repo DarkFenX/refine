@@ -5,7 +5,7 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
-        err::{FitAppliedStatError, FitShipAppliedStatError, FitShipStatError, JumpStatError},
+        err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
     },
     svc::StatErrorFatality,
 };
@@ -371,7 +371,7 @@ impl GetFitStatsCmd {
 fn get_dmg_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionFitDmg>,
-) -> StatResult<StatDmg, !, FitAppliedStatError> {
+) -> StatResult<StatDmg, !, StatFitAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -400,7 +400,7 @@ fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitMining>) -
 fn get_outgoing_nps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionFitOutNps>,
-) -> StatResult<PValue, !, FitAppliedStatError> {
+) -> StatResult<PValue, !, StatFitAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -420,7 +420,7 @@ fn get_outgoing_nps_stats(
 fn get_outgoing_rps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionFitOutRps>,
-) -> StatResult<StatOutReps, !, FitAppliedStatError> {
+) -> StatResult<StatOutReps, !, StatFitAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -440,7 +440,7 @@ fn get_outgoing_rps_stats(
 fn get_outgoing_cps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionFitOutCps>,
-) -> StatResult<PValue, !, FitAppliedStatError> {
+) -> StatResult<PValue, !, StatFitAppliedError> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match option.projectee_item_id {
@@ -463,7 +463,7 @@ fn get_outgoing_cps_stats(
 fn get_ehp_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionEhp>,
-) -> StatResult<StatEhp, FitShipStatError<!>, !> {
+) -> StatResult<StatEhp, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_ehp(option.incoming_dps) {
@@ -476,7 +476,7 @@ fn get_ehp_stats(
 fn get_rps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionRps>,
-) -> StatResult<StatRps, FitShipStatError<!>, !> {
+) -> StatResult<StatRps, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_rps(option.time_options, option.shield_perc) {
@@ -489,7 +489,7 @@ fn get_rps_stats(
 fn get_erps_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionErps>,
-) -> StatResult<StatErps, FitShipStatError<!>, !> {
+) -> StatResult<StatErps, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_erps(option.incoming_dps, option.time_options, option.shield_perc) {
@@ -506,7 +506,7 @@ fn get_erps_stats(
 fn get_cap_balance_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionCapBlc>,
-) -> StatResult<Value, FitShipAppliedStatError<!>, FitShipAppliedStatError<!>> {
+) -> StatResult<Value, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_cap_balance(&option.src_kinds, option.time_options) {
@@ -522,7 +522,7 @@ fn get_cap_balance_stats(
 fn get_cap_sim_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionCapSim>,
-) -> StatResult<StatCapSim, FitShipAppliedStatError<!>, FitShipAppliedStatError<!>> {
+) -> StatResult<StatCapSim, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_cap_sim(
@@ -547,7 +547,7 @@ fn get_cap_sim_stats(
 fn get_incoming_jam_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionIncomingJam>,
-) -> StatResult<StatInJam, FitShipStatError<!>, !> {
+) -> StatResult<StatInJam, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_incoming_jam(option.time_options) {
@@ -564,7 +564,7 @@ fn get_incoming_jam_stats(
 fn get_mass_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionMass>,
-) -> StatResult<PValue, FitShipStatError<!>, !> {
+) -> StatResult<PValue, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_mass(option.affectors) {
@@ -577,7 +577,7 @@ fn get_mass_stats(
 fn get_jump_stats(
     core_fit: &mut rc::FitMut,
     options: Vec<StatOptionJump>,
-) -> StatResult<StatJump, FitShipStatError<JumpStatError>, !> {
+) -> StatResult<StatJump, StatFitShipError<StatJumpError>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
         match core_fit.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors) {

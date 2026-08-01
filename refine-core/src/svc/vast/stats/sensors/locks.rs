@@ -1,6 +1,6 @@
 use crate::{
     Count, Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_drone_fighter_ship},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_drone_fighter_ship},
     ud::{UItem, UItemId, UShipKind},
 };
 
@@ -9,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<Count, IntItemStatError<!>> {
+    ) -> Result<Count, IntStatItemError<!>> {
         check_drone_fighter_ship(ctx.u_data, item_uid)?;
         let attr_consts = ctx.ac();
         let mut item_locks = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.max_locked_targets, Value::ZERO);

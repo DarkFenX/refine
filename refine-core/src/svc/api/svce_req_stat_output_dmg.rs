@@ -2,7 +2,7 @@ use crate::{
     svc::{
         Svc, SvcCtx,
         cycle::CseqMap,
-        err::IntItemStatError,
+        err::IntStatItemError,
         vast::{StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions, Vast},
     },
     ud::{UData, UFitId, UItemId},
@@ -88,7 +88,7 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         include_charges: bool,
-    ) -> Result<StatDmg, IntItemStatError<!>> {
+    ) -> Result<StatDmg, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_raw(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),
@@ -106,7 +106,7 @@ impl Svc {
         time_options: StatTimeOptions,
         include_charges: bool,
         projectee_uid: UItemId,
-    ) -> Result<StatDmgApplied, IntItemStatError<!>> {
+    ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_applied(
             reuse_cseq_map,
             SvcCtx::new(u_data, &self.eff_projs),

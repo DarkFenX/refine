@@ -1,4 +1,4 @@
-use crate::stats::err::{FitShipAppliedStatError, ItemAppliedStatError};
+use crate::stats::err::{StatFitShipAppliedError, StatItemAppliedError};
 
 pub(crate) trait StatErrorFatality {
     fn is_fatal(&self) -> bool;
@@ -7,7 +7,7 @@ pub(crate) trait StatErrorFatality {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatErrorFatality for FitShipAppliedStatError<!> {
+impl StatErrorFatality for StatFitShipAppliedError<!> {
     fn is_fatal(&self) -> bool {
         match self {
             Self::NoShip(_) => true,
@@ -23,7 +23,7 @@ impl StatErrorFatality for FitShipAppliedStatError<!> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Item errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatErrorFatality for ItemAppliedStatError<!> {
+impl StatErrorFatality for StatItemAppliedError<!> {
     fn is_fatal(&self) -> bool {
         match self {
             Self::ItemNotLoaded(_) => true,

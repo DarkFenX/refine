@@ -1,9 +1,9 @@
 use crate::{
-    svc::err::{IntItemStatError, UItemKindVsStatError, UItemLoadedError},
+    svc::err::{IntStatItemError, UItemKindVsStatError, UItemLoadedError},
     ud::{UData, UItem, UItemId, UShip, UShipKind},
 };
 
-pub(super) fn check_character(u_data: &UData, item_uid: UItemId) -> Result<(), IntItemStatError<!>> {
+pub(super) fn check_character(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Character(u_character) => u_character.is_loaded(),
@@ -15,7 +15,7 @@ pub(super) fn check_character(u_data: &UData, item_uid: UItemId) -> Result<(), I
     }
 }
 
-pub(super) fn check_ship<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntItemStatError<SS>>
+pub(super) fn check_ship<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntStatItemError<SS>>
 where
     SS: std::error::Error,
 {
@@ -29,7 +29,7 @@ where
     }
 }
 
-pub(super) fn check_ship_no_struct<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntItemStatError<SS>>
+pub(super) fn check_ship_no_struct<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UShip, IntStatItemError<SS>>
 where
     SS: std::error::Error,
 {
@@ -47,7 +47,7 @@ where
     }
 }
 
-pub(super) fn check_fighter_ship(u_data: &UData, item_uid: UItemId) -> Result<(), IntItemStatError<!>> {
+pub(super) fn check_fighter_ship(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Fighter(fighter) => fighter.is_loaded(),
@@ -63,7 +63,7 @@ pub(super) fn check_fighter_ship(u_data: &UData, item_uid: UItemId) -> Result<()
 pub(super) fn check_fighter_ship_no_struct<SS>(
     u_data: &UData,
     item_uid: UItemId,
-) -> Result<&UItem, IntItemStatError<SS>>
+) -> Result<&UItem, IntStatItemError<SS>>
 where
     SS: std::error::Error,
 {
@@ -82,7 +82,7 @@ where
     }
 }
 
-pub(super) fn check_drone_fighter_ship<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UItem, IntItemStatError<SS>>
+pub(super) fn check_drone_fighter_ship<SS>(u_data: &UData, item_uid: UItemId) -> Result<&UItem, IntStatItemError<SS>>
 where
     SS: std::error::Error,
 {
@@ -102,7 +102,7 @@ where
 pub(super) fn check_drone_fighter_ship_no_struct<SS>(
     u_data: &UData,
     item_uid: UItemId,
-) -> Result<(), IntItemStatError<SS>>
+) -> Result<(), IntStatItemError<SS>>
 where
     SS: std::error::Error,
 {
@@ -122,7 +122,7 @@ where
     }
 }
 
-pub(super) fn check_drone_fighter_module(u_data: &UData, item_uid: UItemId) -> Result<(), IntItemStatError<!>> {
+pub(super) fn check_drone_fighter_module(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Drone(drone) => drone.is_loaded(),
@@ -136,7 +136,7 @@ pub(super) fn check_drone_fighter_module(u_data: &UData, item_uid: UItemId) -> R
     }
 }
 
-pub(super) fn check_drone_module(u_data: &UData, item_uid: UItemId) -> Result<(), IntItemStatError<!>> {
+pub(super) fn check_drone_module(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Drone(drone) => drone.is_loaded(),
@@ -149,7 +149,7 @@ pub(super) fn check_drone_module(u_data: &UData, item_uid: UItemId) -> Result<()
     }
 }
 
-pub(super) fn check_charge_drone_fighter_module(u_data: &UData, item_uid: UItemId) -> Result<(), IntItemStatError<!>> {
+pub(super) fn check_charge_drone_fighter_module(u_data: &UData, item_uid: UItemId) -> Result<(), IntStatItemError<!>> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Charge(charge) => charge.is_loaded(),
@@ -167,7 +167,7 @@ pub(super) fn check_charge_drone_fighter_module(u_data: &UData, item_uid: UItemI
 pub(super) fn check_autocharge_charge_drone_fighter_module(
     u_data: &UData,
     item_uid: UItemId,
-) -> Result<(), IntItemStatError<!>> {
+) -> Result<(), IntStatItemError<!>> {
     let item = u_data.items.get(item_uid);
     let is_loaded = match item {
         UItem::Autocharge(autocharge) => autocharge.is_loaded(),

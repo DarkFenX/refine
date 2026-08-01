@@ -1,6 +1,6 @@
 use crate::{
     Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_fighter_ship_no_struct},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_fighter_ship_no_struct},
     ud::{UItem, UItemId},
 };
 
@@ -10,7 +10,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<bool, IntItemStatError<!>> {
+    ) -> Result<bool, IntStatItemError<!>> {
         let item = check_fighter_ship_no_struct(ctx.u_data, item_uid)?;
         // Warping is blocked by either of:
         // - standard warp scram status attribute (points, HIC scripted points)

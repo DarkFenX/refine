@@ -1,6 +1,6 @@
 use crate::{
     UnitInterval, Value,
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, vast::stats::item_checks::check_ship},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, vast::stats::item_checks::check_ship},
     ud::UItemId,
 };
 
@@ -9,7 +9,7 @@ impl Vast {
         ctx: SvcCtx,
         calc: &mut Calc,
         item_uid: UItemId,
-    ) -> Result<UnitInterval, IntItemStatError<!>> {
+    ) -> Result<UnitInterval, IntStatItemError<!>> {
         check_ship(ctx.u_data, item_uid)?;
         let neut_resist =
             Value::ONE - calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().energy_warfare_resist, Value::ZERO);

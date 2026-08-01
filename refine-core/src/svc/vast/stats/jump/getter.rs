@@ -3,7 +3,7 @@ use crate::{
     ad::AAttrId,
     rd::RAttrId,
     stats::{StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf},
-    svc::{Calc, SvcCtx, Vast, err::IntItemStatError, funcs, vast::stats::item_checks::check_ship},
+    svc::{Calc, SvcCtx, Vast, err::IntStatItemError, funcs, vast::stats::item_checks::check_ship},
     ud::{UFit, UFitId, UItemId, UShip, UShipKind},
 };
 
@@ -15,10 +15,10 @@ impl Vast {
         item_uid: UItemId,
         range: StatJumpRange,
         psg_fit_uids: &[UFitId],
-    ) -> Result<StatJump, IntItemStatError<JumpStatError>> {
+    ) -> Result<StatJump, IntStatItemError<StatJumpError>> {
         let ship = check_ship(ctx.u_data, item_uid)?;
         self.internal_get_stat_item_jump_unchecked(ctx, calc, item_uid, ship, range, psg_fit_uids)
-            .map_err(IntItemStatError::StatSpecific)
+            .map_err(IntStatItemError::StatSpecific)
     }
     fn internal_get_stat_item_jump_unchecked(
         &self,
@@ -28,15 +28,15 @@ impl Vast {
         ship: &UShip,
         range: StatJumpRange,
         psg_fit_uids: &[UFitId],
-    ) -> Result<StatJump, JumpStatError> {
+    ) -> Result<StatJump, StatJumpError> {
         let fuel_type_id = match ship.get_r_item_attr_data().unwrap().jump_fuel_item_aid {
             Some(type_aid) => ItemTypeId::from_aid(type_aid),
-            None => return Err(JumpStatError::NoFuelTypeId),
+            None => return Err(StatJumpError::NoFuelTypeId),
         };
         let max_range = calc.get_item_oattr_ffb_extra(ctx, ship_uid, ctx.ac().jump_drive_range, Value::ZERO);
         let max_range = match max_range > Value::FLOAT_TOLERANCE {
             true => PValue::from_value_unchecked(max_range),
-            false => return Err(JumpStatError::JumpRange(max_range)),
+            false => return Err(StatJumpError::JumpRange(max_range)),
         };
         let mut stat = StatJump {
             max_range,
@@ -80,7 +80,7 @@ impl Vast {
 }
 
 #[derive(Clone, Debug, thiserror::Error)]
-pub enum JumpStatError {
+pub enum StatJumpError {
     #[error("fuel type ID is not defined")]
     NoFuelTypeId,
     #[error("jump range should be > 0, but is {0}")]
