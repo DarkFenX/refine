@@ -28,7 +28,7 @@ impl Refine {
         &self,
         alias: SrcAlias,
         make_default: bool,
-        base_url: U,
+        ed_base_url: U,
         ed_version: D,
     ) -> Result<Src<'_>, AddSrcError>
     where
@@ -36,7 +36,7 @@ impl Refine {
         D: Into<String>,
     {
         let ed_handler = Box::new(
-            redh::PhbHttpEdh::try_new(base_url, ed_version)
+            redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
                 .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
         );
         self.add_src(alias, make_default, ed_handler).await
