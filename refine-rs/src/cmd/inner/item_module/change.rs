@@ -100,7 +100,7 @@ pub enum GetItemChangeModuleError {
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[source] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
-    ProjRemoveFailed(#[source] rc::err::GetRangedProjError),
+    ProjRemoveFailed(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeModuleError> for GetItemChangeModuleError {
     fn from(err: ItemChangeModuleError) -> Self {
@@ -197,5 +197,5 @@ pub enum ItemChangeModuleError {
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
-    ProjRemoveFailed(#[from] rc::err::GetRangedProjError),
+    ProjRemoveFailed(#[from] rc::err::GetProjError),
 }

@@ -1,7 +1,6 @@
 use crate::{
-    api::RangedProjMut,
+    SolarSystem,
     err::basic::ProjFoundError,
-    sol::SolarSystem,
     ud::{UItem, UItemId},
 };
 
@@ -21,13 +20,5 @@ impl SolarSystem {
             UItem::ProjEffect(_) => self.internal_remove_proj_effect_proj(projector_uid, projectee_uid),
             _ => unreachable!("unprojectable item kind is used in projection"),
         }
-    }
-}
-
-impl<'s> RangedProjMut<'s> {
-    pub fn remove(self) {
-        self.sol
-            .internal_remove_projection(self.projector_uid, self.projectee_uid)
-            .unwrap()
     }
 }

@@ -1,4 +1,4 @@
-use crate::api::{Drone, DroneMut, RangedProj, RangedProjIter, iter_ranged_projs};
+use crate::{Drone, DroneMut, RangedProj, RangedProjIter, api::iter_ranged_projs};
 
 impl<'s> Drone<'s> {
     /// Iterates over drone's projections.

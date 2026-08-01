@@ -1,7 +1,4 @@
-use crate::{
-    sol::SolarSystem,
-    ud::{ItemId, UItemId},
-};
+use crate::{ItemId, SolarSystem, ud::UItemId};
 
 /// Projection which does not allow to set range.
 pub struct Proj<'s> {

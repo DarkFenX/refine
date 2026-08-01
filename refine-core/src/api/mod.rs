@@ -9,16 +9,16 @@ pub use item::{
     EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut,
     GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError,
     GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
-    GetProjEffectError, GetProjError, GetRangedProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError,
-    GetSideEffectError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant, ImplantMut,
-    IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, IterItemAttrsError,
-    IterItemEffectsError, IterItemModifiersError, Module, ModuleIter, ModuleMut, Mutation, MutationMut, Proj,
-    ProjEffect, ProjEffectMut, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,
-    RawMAttrMut, RemoveItemError, Rig, RigMut, Service, ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect,
-    SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut,
-    StatItemAppliedError, StatItemError, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    GetProjEffectError, GetProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError, GetSideEffectError,
+    GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant, ImplantMut, IncompleteMutation,
+    IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, IterItemAttrsError, IterItemEffectsError,
+    IterItemModifiersError, Module, ModuleIter, ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut,
+    ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError,
+    Rig, RigMut, Service, ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut,
+    SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, StatItemAppliedError, StatItemError,
+    Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
-use item::{ItemMutSealed, ItemSealed, get_ship_riad, iter_projectee_uids, iter_ranged_projs};
+use item::{ItemMutSealed, ItemSealed, get_ship_riad, iter_projs, iter_ranged_projs};
 pub use misc::{
     AbilityId, AddMode, Affector, AttrId, AttrVals, Coordinates, CustomEffectId, Direction, DogmaEffectId, EffectId,
     EffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, ModuleState, MoveMode, Movement, Op, ProjRange,

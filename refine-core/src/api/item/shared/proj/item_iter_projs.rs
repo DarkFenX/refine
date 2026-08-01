@@ -1,6 +1,6 @@
 use crate::{sol::SolarSystem, ud::UItemId};
 
-pub(in crate::api) fn iter_projectee_uids(
+pub(super) fn iter_projectee_uids(
     sol: &SolarSystem,
     item_uid: UItemId,
 ) -> impl ExactSizeIterator<Item = UItemId> + use<'_> {

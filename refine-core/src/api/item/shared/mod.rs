@@ -1,14 +1,12 @@
-pub(in crate::api) use iter_proj::iter_projectee_uids;
 pub use mutation::{
     AddMutationError, AttrMutateRawError, EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrIter,
     FullMAttrMut, GetRawMAttrError, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut, RawMAttr,
     RawMAttrIter, RawMAttrMut,
 };
-pub(in crate::api) use ranged_proj::iter_ranged_projs;
-pub use ranged_proj::{AddProjError, GetRangedProjError, RangedProj, RangedProjIter, RangedProjMut};
-pub(in crate::api) use ship_axt::get_ship_riad;
+pub use proj::{AddProjError, GetProjError, Proj, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut};
+pub(in crate::api) use proj::{iter_projs, iter_ranged_projs};
+pub(in crate::api) use ship_riad::get_ship_riad;
 
-mod iter_proj;
 mod mutation;
-mod ranged_proj;
-mod ship_axt;
+mod proj;
+mod ship_riad;

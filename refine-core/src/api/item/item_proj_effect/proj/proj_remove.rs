@@ -1,4 +1,4 @@
-use crate::{api::ProjMut, err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
+use crate::{SolarSystem, err::basic::ProjFoundError, ud::UItemId};
 
 impl SolarSystem {
     pub(in crate::api) fn internal_remove_proj_effect_proj(
@@ -21,13 +21,5 @@ impl SolarSystem {
         let u_proj_effect = self.u_data.items.get_mut(proj_effect_uid).dc_proj_effect_mut().unwrap();
         u_proj_effect.get_projs_mut().remove(&projectee_uid);
         Ok(())
-    }
-}
-
-impl<'s> ProjMut<'s> {
-    pub fn remove(self) {
-        self.sol
-            .internal_remove_proj_effect_proj(self.projector_uid, self.projectee_uid)
-            .unwrap();
     }
 }

@@ -1,10 +1,6 @@
 use lender::{Lender, Lending, check_covariance};
 
-use crate::{
-    api::{RangedProj, RangedProjMut, iter_projectee_uids},
-    sol::SolarSystem,
-    ud::UItemId,
-};
+use crate::{RangedProj, RangedProjMut, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
 
 // Lending iterator for ranged projections
 pub struct RangedProjIter<'iter> {

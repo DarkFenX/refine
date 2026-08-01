@@ -96,7 +96,7 @@ pub enum GetItemChangeDroneError {
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[source] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
-    ProjRemoveFailed(#[source] rc::err::GetRangedProjError),
+    ProjRemoveFailed(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeDroneError> for GetItemChangeDroneError {
     fn from(err: ItemChangeDroneError) -> Self {
@@ -176,5 +176,5 @@ pub enum ItemChangeDroneError {
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
-    ProjRemoveFailed(#[from] rc::err::GetRangedProjError),
+    ProjRemoveFailed(#[from] rc::err::GetProjError),
 }

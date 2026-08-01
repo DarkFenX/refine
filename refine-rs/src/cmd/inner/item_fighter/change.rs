@@ -96,7 +96,7 @@ pub enum GetItemChangeFighterError {
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[source] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
-    ProjRemoveFailed(#[source] rc::err::GetRangedProjError),
+    ProjRemoveFailed(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeFighterError> for GetItemChangeFighterError {
     fn from(err: ItemChangeFighterError) -> Self {
@@ -155,5 +155,5 @@ pub enum ItemChangeFighterError {
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
-    ProjRemoveFailed(#[from] rc::err::GetRangedProjError),
+    ProjRemoveFailed(#[from] rc::err::GetProjError),
 }

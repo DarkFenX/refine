@@ -1,8 +1,4 @@
-use crate::{
-    api::ProjRange,
-    sol::SolarSystem,
-    ud::{ItemId, UItemId},
-};
+use crate::{ItemId, ProjRange, SolarSystem, ud::UItemId};
 
 /// Projection which allows to set range.
 pub struct RangedProj<'s> {

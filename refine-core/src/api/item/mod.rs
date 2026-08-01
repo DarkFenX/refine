@@ -11,7 +11,7 @@ pub use item_fighter::{Ability, AbilityIter, AbilityMut, Fighter, FighterMut, Ge
 pub use item_fw_effect::{FwEffect, FwEffectMut, GetFwEffectError};
 pub use item_implant::{GetImplantError, Implant, ImplantMut};
 pub use item_module::{GetModuleError, Module, ModuleIter, ModuleMut};
-pub use item_proj_effect::{GetProjEffectError, GetProjError, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut};
+pub use item_proj_effect::{GetProjEffectError, ProjEffect, ProjEffectMut};
 pub use item_rig::{GetRigError, Rig, RigMut};
 pub use item_service::{GetServiceError, Service, ServiceMut};
 pub use item_ship::{GetShipError, Ship, ShipMut};
@@ -21,10 +21,11 @@ pub use item_subsystem::{GetSubsystemError, Subsystem, SubsystemMut};
 pub use item_sw_effect::{GetSwEffectError, SwEffect, SwEffectMut};
 pub use shared::{
     AddMutationError, AddProjError, AttrMutateRawError, EffectiveMutation, EffectiveMutationMut, FullMAttr,
-    FullMAttrIter, FullMAttrMut, GetRangedProjError, GetRawMAttrError, IncompleteMutation, IncompleteMutationMut,
-    Mutation, MutationMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut,
+    FullMAttrIter, FullMAttrMut, GetProjError, GetRawMAttrError, IncompleteMutation, IncompleteMutationMut, Mutation,
+    MutationMut, Proj, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,
+    RawMAttrMut,
 };
-pub(in crate::api) use shared::{get_ship_riad, iter_projectee_uids, iter_ranged_projs};
+pub(in crate::api) use shared::{get_ship_riad, iter_projs, iter_ranged_projs};
 pub use traits::{
     GetItemAttrError, ItemCommon, ItemMutCommon, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
     StatItemAppliedError, StatItemError,
