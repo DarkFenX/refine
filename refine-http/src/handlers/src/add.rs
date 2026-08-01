@@ -36,12 +36,12 @@ async fn internal_add_source(
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
         rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseFailedOnAdd(src_alias, err))?;
-    let data_version = payload.data_version;
-    let data_base_url = payload.data_base_url;
+    let ed_base_url = payload.data_base_url;
+    let ed_version = payload.data_version;
     let make_default = payload.make_default.unwrap_or(false);
     let src = state
         .get_refine()
-        .add_src_with_phb_http(src_alias, make_default, data_version, data_base_url)
+        .add_src_with_phb_http(src_alias, make_default, ed_base_url, ed_version)
         .await?;
     let src_mode = params.src.unwrap_or_default();
     Ok(src.get_info(src_mode).await)

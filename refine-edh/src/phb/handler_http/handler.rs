@@ -1,6 +1,6 @@
 use std::{fmt, io::BufReader};
 
-use reqwest::{IntoUrl, Url, blocking::Client};
+use reqwest::{Url, blocking::Client};
 
 use super::error::{PhbHttpEdhError, PhbHttpEdhInitError};
 use crate::phb::{
@@ -24,29 +24,31 @@ impl PhbHttpEdh {
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_built/`.
     ///
     /// This data handler assumes that data version is known before its construction.
-    pub fn try_new<U>(base_url: U, data_version: String) -> Result<Self, PhbHttpEdhInitError>
+    pub fn try_new<U, D>(base_url: U, data_version: D) -> Result<Self, PhbHttpEdhInitError>
     where
-        U: Clone + IntoUrl + Into<String>,
+        U: AsRef<str>,
+        D: Into<String>,
     {
-        let base_url_conv = match base_url.clone().into_url() {
+        let base_url = base_url.as_ref();
+        let base_url_conv = match Url::parse(base_url) {
             Ok(base_url_conv) => base_url_conv,
             Err(error) => {
                 return Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
-                    base_url.into(),
+                    base_url.to_string(),
                     format!("failed to interpret: {error}"),
                 ));
             }
         };
-        match base_url_conv.cannot_be_a_base() {
-            true => Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
-                base_url.into(),
-                "cannot be used as base".to_string(),
-            )),
-            false => Ok(Self {
+        match base_url_conv.has_host() && !base_url_conv.cannot_be_a_base() {
+            true => Ok(Self {
                 base_url: base_url_conv,
-                data_version,
+                data_version: data_version.into(),
                 client: Client::new(),
             }),
+            false => Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
+                base_url.to_string(),
+                "cannot be used as base URL".to_string(),
+            )),
         }
     }
 }

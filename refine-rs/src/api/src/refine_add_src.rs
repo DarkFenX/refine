@@ -24,13 +24,17 @@ impl Refine {
     /// You must have prior knowledge of EVE data version which is served to use this method.
     #[cfg(feature = "edh-phb-http")]
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src_with_phb_http(
+    pub async fn add_src_with_phb_http<U, D>(
         &self,
         alias: SrcAlias,
         make_default: bool,
-        ed_version: String,
-        base_url: String,
-    ) -> Result<Src<'_>, AddSrcError> {
+        base_url: U,
+        ed_version: D,
+    ) -> Result<Src<'_>, AddSrcError>
+    where
+        U: AsRef<str>,
+        D: Into<String>,
+    {
         let ed_handler = Box::new(
             redh::PhbHttpEdh::try_new(base_url, ed_version)
                 .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
