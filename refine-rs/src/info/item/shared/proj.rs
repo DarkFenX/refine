@@ -10,7 +10,7 @@ pub struct ProjInfo {
 #[derive(Copy, Clone)]
 pub struct RangedProjInfo {
     pub projectee_item_id: ItemId,
-    pub range: Option<ProjRange>,
+    pub range: ProjRange,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

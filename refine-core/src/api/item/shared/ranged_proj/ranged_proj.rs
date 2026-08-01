@@ -21,7 +21,7 @@ impl<'s> RangedProj<'s> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.u_data.items.ext_id_by_int_id(self.projectee_uid)
     }
-    pub fn get_range(&self) -> Option<ProjRange> {
+    pub fn get_range(&self) -> ProjRange {
         get_range(self.sol, self.projector_uid, &self.projectee_uid)
     }
 }
@@ -43,18 +43,24 @@ impl<'s> RangedProjMut<'s> {
     pub fn get_projectee_item_id(&self) -> ItemId {
         self.sol.u_data.items.ext_id_by_int_id(self.projectee_uid)
     }
-    pub fn get_range(&self) -> Option<ProjRange> {
+    pub fn get_range(&self) -> ProjRange {
         get_range(self.sol, self.projector_uid, &self.projectee_uid)
     }
 }
 
-fn get_range(sol: &SolarSystem, projector_uid: UItemId, projectee_uid: &UItemId) -> Option<ProjRange> {
-    sol.u_data
+fn get_range(sol: &SolarSystem, projector_uid: UItemId, projectee_uid: &UItemId) -> ProjRange {
+    // - unwrap #1 - projection itself is fetchable only for item with projection data on them
+    // - unwrap #2 - projection itself is fetchable only for projections which exist
+    // - unwrap #3 - ranged projection should be exposed only for items which have ranged projection,
+    //   i.e. put some value into projection container
+    let u_proj = sol
+        .u_data
         .items
         .get(projector_uid)
         .get_projs()
         .unwrap()
         .get(projectee_uid)
         .unwrap()
-        .map(ProjRange::from_u_proj_data)
+        .unwrap();
+    ProjRange::from_u_proj_data(u_proj)
 }

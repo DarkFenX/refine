@@ -28,6 +28,8 @@ impl SolarSystem {
         projectee_item_id: &ItemId,
     ) -> Result<UItemId, GetRangedProjError> {
         let projectee_uid = self.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
+        // Unwrapping projections because this method is supposed to be used only with items which
+        // have projection container defined on them
         match self
             .u_data
             .items
