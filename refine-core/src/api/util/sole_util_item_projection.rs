@@ -15,7 +15,6 @@ impl SolarSystem {
     ) {
         let projector_u_item = u_data.items.get(projector_uid);
         let projectee_u_item = u_data.items.get(projectee_uid);
-        svc.notify_item_projected();
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_rid in reffs.iter() {
                 let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);
@@ -56,7 +55,6 @@ impl SolarSystem {
                 }
             }
         }
-        svc.notify_item_unprojected();
     }
     pub(in crate::api) fn util_change_item_proj_data(
         u_data: &UData,
@@ -67,7 +65,6 @@ impl SolarSystem {
     ) {
         let projector_u_item = u_data.items.get(projector_uid);
         let projectee_u_item = u_data.items.get(projectee_uid);
-        svc.notify_item_proj_data_changed();
         if let Some(reffs) = projector_u_item.get_reffs() {
             for &effect_rid in reffs.iter() {
                 let r_effect = u_data.r_data.get_effect_by_rid(effect_rid);

@@ -5,7 +5,6 @@ use crate::{
     ud::{UData, UFighter, UFitId, UFleet, UItem, UItemId, UProjData, USkill},
 };
 
-// TODO: cleanup unused methods
 impl Svc {
     pub(crate) fn notify_fit_added(&mut self, fit_uid: UFitId) {
         self.calc.fit_added(fit_uid);
@@ -88,9 +87,6 @@ impl Svc {
         self.vast
             .effects_stopped(u_data.r_data.get_attr_consts(), item_uid, item, effects);
     }
-    pub(crate) fn notify_item_projected(&mut self) {}
-    pub(crate) fn notify_item_unprojected(&mut self) {}
-    pub(crate) fn notify_item_proj_data_changed(&mut self) {}
     pub(crate) fn notify_effect_projected(
         &mut self,
         u_data: &UData,
