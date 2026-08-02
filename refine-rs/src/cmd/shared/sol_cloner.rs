@@ -18,7 +18,6 @@ impl<'a> SolCloner<'a> {
 
 pub(in crate::cmd) struct SolClonerInner<'a> {
     original: &'a rc::SolarSystem,
-    #[expect(clippy::vec_box)]
     allocated: Vec<Box<rc::SolarSystem>>,
 }
 impl<'a> SolClonerInner<'a> {
