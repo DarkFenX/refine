@@ -41,6 +41,9 @@ where
 
 // Local effects, puts data for non-looped part into one accumulator, and for looped part into
 // another
+// Not used anywhere for now, but at some point might be, so keeping it around & suppressing the
+// warning
+#[expect(dead_code)]
 pub(in crate::svc::vast) fn aggr_local_split<BG, BX, I, IAO, IAL>(
     ctx: SvcCtx,
     calc: &mut Calc,

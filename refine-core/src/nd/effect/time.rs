@@ -8,6 +8,8 @@ pub(crate) enum NEffectTime {
     /// Event is triggered at the end of effect cycle.
     CycleEnd,
     /// Event is triggered at hardcoded point of time (in seconds).
+    // Value is not used currently, but it's nice to have data at hand in case it's needed
+    #[expect(dead_code)]
     Hardcoded(PValue),
 }
 

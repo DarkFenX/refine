@@ -17,7 +17,7 @@ pub(super) enum PostcardZfileAdcFpReadError {
     ReadFailed(String),
 }
 
-#[allow(clippy::enum_variant_names)]
+#[expect(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PostcardZfileAdcWriteError {
     #[error("unable to create directory: {0}")]

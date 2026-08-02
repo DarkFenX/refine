@@ -83,6 +83,7 @@ where
     {
         self.data.extract_if(filter)
     }
+    #[expect(dead_code)]
     pub(crate) fn clear(&mut self) {
         self.data.clear()
     }

@@ -1,3 +1,5 @@
+#![expect(dead_code)]
+
 use std::{
     collections::hash_map::Entry,
     hash::{BuildHasher, Hash},

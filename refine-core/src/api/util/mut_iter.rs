@@ -18,6 +18,7 @@ use crate::{
     ud::{UFitId, UFleetId, UItemId},
 };
 
+#[expect(private_bounds)]
 pub struct MutIter<'this, T>
 where
     T: New,
@@ -27,6 +28,7 @@ where
     index: usize,
     phantom: std::marker::PhantomData<T>,
 }
+#[expect(private_bounds)]
 impl<'this, T> MutIter<'this, T>
 where
     T: New,

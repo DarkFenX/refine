@@ -123,7 +123,7 @@ impl REffect {
             state,
             charge: n_effect
                 .and_then(|n| n.charge.as_ref())
-                .map(|n_charge| REffectCharge::from_n_charge(n_charge)),
+                .map(REffectCharge::from_n_charge),
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item.is_some()).unwrap_or(false),

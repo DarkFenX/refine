@@ -215,7 +215,7 @@ impl ChangeFitEnumCmdRIds {
             // Item - character
             Self::SetCharacter(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeCharacter(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
-            #[allow(clippy::unit_arg)]
+            #[expect(clippy::unit_arg)]
             Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_fit).into()),
             // Item - charge
             Self::ChangeCharge(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
@@ -243,7 +243,7 @@ impl ChangeFitEnumCmdRIds {
             // Item - ship
             Self::SetShip(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeShip(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
-            #[allow(clippy::unit_arg)]
+            #[expect(clippy::unit_arg)]
             Self::UnsetShip(cmd) => Ok(cmd.execute(core_fit).into()),
             // Item - skill
             Self::AddSkill(cmd) => Ok(cmd.execute(core_fit)?.into()),
@@ -251,7 +251,7 @@ impl ChangeFitEnumCmdRIds {
             // Item - stance
             Self::SetStance(cmd) => Ok(cmd.execute(core_fit).into()),
             Self::ChangeStance(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
-            #[allow(clippy::unit_arg)]
+            #[expect(clippy::unit_arg)]
             Self::UnsetStance(cmd) => Ok(cmd.execute(core_fit).into()),
             // Item - subsystem
             Self::AddSubsystem(cmd) => Ok(cmd.execute(core_fit).into()),

@@ -45,6 +45,7 @@ where
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }
+    #[expect(dead_code)]
     pub(crate) fn keys(&self) -> impl ExactSizeIterator<Item = &K> {
         self.data.keys()
     }
@@ -54,12 +55,14 @@ where
     pub(crate) fn values_inner(&self) -> impl ExactSizeIterator<Item = &Set<V, H2>> {
         self.data.values()
     }
+    #[expect(dead_code)]
     pub(crate) fn contains_entry(&self, key: &K, value: &V) -> bool {
         match self.data.get(key) {
             Some(set) => set.contains(value),
             None => false,
         }
     }
+    #[expect(dead_code)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

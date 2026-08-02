@@ -26,7 +26,7 @@ use crate::{
     util::RMap,
 };
 
-#[allow(private_bounds)]
+#[expect(private_bounds)]
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
         self.get_sol().u_data.items.ext_id_by_int_id(self.get_uid())
@@ -58,7 +58,7 @@ pub trait ItemCommon: ItemSealed {
     }
 }
 
-#[allow(private_bounds)]
+#[expect(private_bounds)]
 pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_attr(&mut self, attr_id: &AttrId) -> Result<AttrVals, GetItemAttrError> {
         let item_uid = self.get_uid();

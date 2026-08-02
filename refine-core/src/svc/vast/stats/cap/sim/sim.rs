@@ -26,7 +26,7 @@ pub(super) struct CapSim {
     tau: Option<PValue>,
     events: BinaryHeap<CapSimEvent>,
     // Injectors available for immediate use
-    #[allow(clippy::vec_box)]
+    #[expect(clippy::vec_box)]
     injectors: Vec<Box<CapSimEventInjector>>,
     // Current sim state
     time: PValue,

@@ -6,6 +6,7 @@ pub(crate) type RMapVec<K, V> = MapVec<K, V, rustc_hash::FxBuildHasher>;
 
 pub(crate) struct MapVec<K, V, H> {
     data: Map<K, Vec<V>, H>,
+    #[expect(dead_code)]
     empty: Vec<V>,
 }
 impl<K, V, H> MapVec<K, V, H>
@@ -28,15 +29,18 @@ where
     K: Eq + Hash,
     H: BuildHasher,
 {
+    #[expect(dead_code)]
     pub(crate) fn get(&self, key: &K) -> impl ExactSizeIterator<Item = &V> {
         match self.data.get(key) {
             Some(v) => v.iter(),
             None => self.empty.iter(),
         }
     }
+    #[expect(dead_code)]
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }
+    #[expect(dead_code)]
     pub(crate) fn is_empty(&self) -> bool {
         self.data.is_empty()
     }

@@ -32,9 +32,11 @@ where
     H2: BuildHasher,
 {
     // Query methods
+    #[expect(dead_code)]
     pub(crate) fn get_l1(&self, key1: &K1) -> Option<&Map<K2, V, H2>> {
         self.data.get(key1)
     }
+    #[expect(dead_code)]
     pub(crate) fn get_value(&self, key1: &K1, key2: &K2) -> Option<&V> {
         self.get_l1(key1).and_then(|m1l| m1l.get(key2))
     }
@@ -48,6 +50,10 @@ where
         self.data.is_empty()
     }
     // Modification methods
+    #[expect(dead_code)]
+    pub(crate) fn remove_l1(&mut self, key: &K1) -> Option<Map<K2, V, H2>> {
+        self.data.remove(key)
+    }
     pub(crate) fn remove_l2(&mut self, key1: K1, key2: &K2) -> bool {
         if let Entry::Occupied(mut entry_l1) = self.data.entry(key1) {
             let map_l2 = entry_l1.get_mut();
@@ -57,9 +63,6 @@ where
             }
         }
         false
-    }
-    pub(crate) fn remove_l1(&mut self, key: &K1) -> Option<Map<K2, V, H2>> {
-        self.data.remove(key)
     }
 }
 impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
