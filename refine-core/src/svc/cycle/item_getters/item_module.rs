@@ -83,8 +83,8 @@ fn fill_module_effect_info(
     };
     // Charge count info
     let charge_info = match &effect.charge {
-        Some(n_charge) => match n_charge.location {
-            REffectChargeLoc::Autocharge(..) => get_eci_autocharge(item, effect.rid),
+        Some(r_charge) => match r_charge.location {
+            REffectChargeLoc::Autocharge => get_eci_autocharge(item, effect.rid),
             REffectChargeLoc::Loaded(n_charge_depletion) => match n_charge_depletion {
                 NEffectChargeDepl::ChargeRate(n_charge_rate) => get_eci_charge_rate(ctx, module, n_charge_rate),
                 NEffectChargeDepl::Crystal(n_charge_crystal) => get_eci_crystal(ctx, calc, module, n_charge_crystal),

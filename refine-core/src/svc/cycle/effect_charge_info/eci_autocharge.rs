@@ -19,7 +19,9 @@ fn internal_cycle_count(item: &UItem, effect_rid: REffectId) -> InfCount {
         // as well.
         return InfCount::Count(Count::ZERO);
     };
-    // Should always be available, since this method should never be requested for non-loaded items
+    // - unwrap #1: item base should always be available, since this method should never be requested
+    //   for non-loaded items
+    // - unwrap #2: this method should be called only for effects which are present on the item
     match item
         .get_r_item_base()
         .unwrap()

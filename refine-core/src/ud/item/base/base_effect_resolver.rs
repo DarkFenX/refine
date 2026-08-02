@@ -1,6 +1,6 @@
 use crate::{
+    EffectMode,
     ad::AEffectId,
-    misc::EffectMode,
     rd::{RData, REffect, REffectId, RItem, RState, RcEffect},
     ud::item::misc::UEffectModes,
     util::RSet,

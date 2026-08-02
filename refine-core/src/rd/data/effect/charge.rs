@@ -1,9 +1,4 @@
-use crate::{
-    ad::AAttrId,
-    nd::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc},
-    rd::RAttrId,
-    util::RMap,
-};
+use crate::nd::{NEffectCharge, NEffectChargeDepl, NEffectChargeLoc};
 
 pub(crate) struct REffectCharge {
     pub(crate) location: REffectChargeLoc,
@@ -12,8 +7,7 @@ pub(crate) struct REffectCharge {
 
 pub(crate) enum REffectChargeLoc {
     Loaded(NEffectChargeDepl),
-    // TODO: after autocharge support was changed, look into getting rid of argument
-    Autocharge(RAttrId),
+    Autocharge,
     TargetAttack,
 }
 
@@ -21,29 +15,20 @@ pub(crate) enum REffectChargeLoc {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffectCharge {
-    pub(in crate::rd::data::effect) fn try_from_n_charge(
-        n_charge: &NEffectCharge,
-        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
-    ) -> Option<Self> {
-        Some(Self {
-            location: REffectChargeLoc::try_from_n_charge_loc(&n_charge.location, attr_aid_rid_map)?,
+    pub(in crate::rd::data::effect) fn from_n_charge(n_charge: &NEffectCharge) -> Self {
+        Self {
+            location: REffectChargeLoc::from_n_charge_loc(&n_charge.location),
             activates_charge: n_charge.activates_charge,
-        })
+        }
     }
 }
 
 impl REffectChargeLoc {
-    pub(in crate::rd::data::effect) fn try_from_n_charge_loc(
-        n_charge_loc: &NEffectChargeLoc,
-        attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
-    ) -> Option<Self> {
+    fn from_n_charge_loc(n_charge_loc: &NEffectChargeLoc) -> Self {
         match n_charge_loc {
-            NEffectChargeLoc::Loaded(n_charge_depl) => Some(Self::Loaded(*n_charge_depl)),
-            NEffectChargeLoc::Autocharge(attr_aid) => {
-                let attr_rid = *attr_aid_rid_map.get(attr_aid)?;
-                Some(Self::Autocharge(attr_rid))
-            }
-            NEffectChargeLoc::TargetAttack(..) => Some(Self::TargetAttack),
+            NEffectChargeLoc::Loaded(n_charge_depl) => Self::Loaded(*n_charge_depl),
+            NEffectChargeLoc::Autocharge(..) => Self::Autocharge,
+            NEffectChargeLoc::TargetAttack(..) => Self::TargetAttack,
         }
     }
 }

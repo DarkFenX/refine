@@ -1,8 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::{FighterMut, MinionState},
-    sol::SolarSystem,
+    FighterMut, MinionState, SolarSystem,
     ud::{UEffectUpdates, UItemId},
 };
 
@@ -19,7 +18,8 @@ impl SolarSystem {
         u_fighter.set_fighter_state(state);
         let new_state = u_fighter.get_state();
         u_fighter.update_reffs(reuse_eupdates, &self.u_data.r_data);
-        // Filter out autocharges which couldn't be loaded, and fill autocharge key data
+        // Filter out autocharges which couldn't be added due to any reason (no attribute which
+        // defines them in the data, or couldn't be loaded), and fill autocharge key data
         let ac_activations = reuse_eupdates
             .autocharges
             .iter()

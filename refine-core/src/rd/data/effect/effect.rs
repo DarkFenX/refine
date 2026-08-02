@@ -105,7 +105,7 @@ impl REffect {
         if !charge_info.activates_charge {
             return false;
         }
-        matches!(charge_info.location, REffectChargeLoc::Autocharge(..))
+        matches!(charge_info.location, REffectChargeLoc::Autocharge)
     }
 }
 
@@ -121,6 +121,9 @@ impl REffect {
             rid: effect_rid,
             category: a_effect.category,
             state,
+            charge: n_effect
+                .and_then(|n| n.charge.as_ref())
+                .map(|n_charge| REffectCharge::from_n_charge(n_charge)),
             calc_custom_mod: n_effect.and_then(|n| n.calc_custom_mod),
             cloaks_carrier: n_effect.map(|n| n.cloaks_carrier).unwrap_or(false),
             kills_item: n_effect.map(|n| n.kills_item.is_some()).unwrap_or(false),
@@ -152,7 +155,6 @@ impl REffect {
                 .unwrap_or(false),
             do_not_prevent_tether: n_effect.map(|n| n.do_not_prevent_tether).unwrap_or(false),
             // Fields which depend on data not available during instantiation
-            charge: Default::default(),
             buff: Default::default(),
             modifiers: Default::default(),
             projectee_filter: Default::default(),
@@ -240,10 +242,6 @@ impl REffect {
             is_offense && has_modifiers && !ignore_offmod_immunity
         };
         if let Some(n_effect) = n_effect {
-            self.charge = n_effect
-                .charge
-                .as_ref()
-                .and_then(|n_charge| REffectCharge::try_from_n_charge(n_charge, attr_aid_rid_map));
             self.projectee_filter = n_effect.projectee_filter.as_ref().and_then(|n_projectee_filter| {
                 REffectProjecteeFilter::try_from_n_projectee_filter(
                     n_projectee_filter,

@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
+    EffectMode, SolarSystem,
     ad::AEffectId,
-    misc::EffectMode,
-    sol::SolarSystem,
     ud::{UEffectUpdates, UItemId},
 };
 
