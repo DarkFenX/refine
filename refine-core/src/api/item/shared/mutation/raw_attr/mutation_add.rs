@@ -1,10 +1,6 @@
 use crate::{
-    ad::AAttrId,
-    api::{AttrId, EffectiveMutationMut, IncompleteMutationMut, MutationMut, RawMAttrMut},
-    err::basic::ItemMAttrNotFoundError,
-    num::UnitInterval,
-    sol::SolarSystem,
-    ud::UItemId,
+    AttrId, EffectiveMutationMut, IncompleteMutationMut, ItemId, MutationMut, RawMAttrMut, SolarSystem, UnitInterval,
+    ad::AAttrId, ud::UItemId,
 };
 
 impl<'s> MutationMut<'s> {
@@ -55,11 +51,10 @@ fn mutate_raw(
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(..) => Err(ItemMAttrNotFoundError {
-            item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
-            attr_id: AttrId::from_aid(attr_aid),
-        }
-        .into()),
+        Some(..) => Err(AttrMutateRawError::AlreadyMutated(
+            sol.u_data.items.ext_id_by_int_id(item_uid),
+            AttrId::from_aid(attr_aid),
+        )),
         None => {
             let mut raw_mattr = RawMAttrMut::new(sol, item_uid, attr_aid);
             raw_mattr.set_roll(roll);
@@ -70,6 +65,6 @@ fn mutate_raw(
 
 #[derive(Debug, thiserror::Error)]
 pub enum AttrMutateRawError {
-    #[error("{0}")]
-    AlreadyMutated(#[from] ItemMAttrNotFoundError),
+    #[error("attribute {1} on item {0} already contains mutation data")]
+    AlreadyMutated(ItemId, AttrId),
 }
