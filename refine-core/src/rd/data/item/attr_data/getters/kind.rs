@@ -84,7 +84,7 @@ impl ItemKindStore {
     }
     fn push(&mut self, item_kind: DetectedItemKind) -> Option<()> {
         match self.data {
-            Some(_) => None,
+            Some(..) => None,
             None => {
                 self.data = Some(item_kind);
                 Some(())

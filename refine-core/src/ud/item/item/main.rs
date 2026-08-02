@@ -35,23 +35,23 @@ pub(crate) enum UItem {
 impl UItem {
     pub(crate) fn get_item_kind(&self) -> ItemKind {
         match self {
-            Self::Autocharge(_) => UAutocharge::get_item_kind(),
-            Self::Booster(_) => UBooster::get_item_kind(),
-            Self::Character(_) => UCharacter::get_item_kind(),
-            Self::Charge(_) => UCharge::get_item_kind(),
-            Self::Drone(_) => UDrone::get_item_kind(),
-            Self::Fighter(_) => UFighter::get_item_kind(),
-            Self::FwEffect(_) => UFwEffect::get_item_kind(),
-            Self::Implant(_) => UImplant::get_item_kind(),
-            Self::Module(_) => UModule::get_item_kind(),
-            Self::ProjEffect(_) => UProjEffect::get_item_kind(),
-            Self::Rig(_) => URig::get_item_kind(),
-            Self::Service(_) => UService::get_item_kind(),
-            Self::Ship(_) => UShip::get_item_kind(),
-            Self::Skill(_) => USkill::get_item_kind(),
-            Self::Stance(_) => UStance::get_item_kind(),
-            Self::Subsystem(_) => USubsystem::get_item_kind(),
-            Self::SwEffect(_) => USwEffect::get_item_kind(),
+            Self::Autocharge(..) => UAutocharge::get_item_kind(),
+            Self::Booster(..) => UBooster::get_item_kind(),
+            Self::Character(..) => UCharacter::get_item_kind(),
+            Self::Charge(..) => UCharge::get_item_kind(),
+            Self::Drone(..) => UDrone::get_item_kind(),
+            Self::Fighter(..) => UFighter::get_item_kind(),
+            Self::FwEffect(..) => UFwEffect::get_item_kind(),
+            Self::Implant(..) => UImplant::get_item_kind(),
+            Self::Module(..) => UModule::get_item_kind(),
+            Self::ProjEffect(..) => UProjEffect::get_item_kind(),
+            Self::Rig(..) => URig::get_item_kind(),
+            Self::Service(..) => UService::get_item_kind(),
+            Self::Ship(..) => UShip::get_item_kind(),
+            Self::Skill(..) => USkill::get_item_kind(),
+            Self::Stance(..) => UStance::get_item_kind(),
+            Self::Subsystem(..) => USubsystem::get_item_kind(),
+            Self::SwEffect(..) => USwEffect::get_item_kind(),
         }
     }
 }
@@ -364,14 +364,14 @@ impl UItem {
             Self::FwEffect(fw_effect) => Some(fw_effect.get_fit_uid()),
             Self::Implant(implant) => Some(implant.get_fit_uid()),
             Self::Module(module) => Some(module.get_fit_uid()),
-            Self::ProjEffect(_) => None,
+            Self::ProjEffect(..) => None,
             Self::Rig(rig) => Some(rig.get_fit_uid()),
             Self::Service(service) => Some(service.get_fit_uid()),
             Self::Ship(ship) => Some(ship.get_fit_uid()),
             Self::Skill(skill) => Some(skill.get_fit_uid()),
             Self::Stance(stance) => Some(stance.get_fit_uid()),
             Self::Subsystem(subsystem) => Some(subsystem.get_fit_uid()),
-            Self::SwEffect(_) => None,
+            Self::SwEffect(..) => None,
         }
     }
     pub(crate) fn get_direct_physics(&self) -> Option<&UPhysics> {
@@ -393,17 +393,17 @@ impl UItem {
             Self::Charge(charge) => u_data.items.get(charge.get_cont_item_uid()).get_carrier_physics(u_data),
             Self::Drone(drone) => *drone.get_physics(),
             Self::Fighter(fighter) => *fighter.get_physics(),
-            Self::FwEffect(_) => UPhysics::default(),
+            Self::FwEffect(..) => UPhysics::default(),
             Self::Implant(implant) => u_data.get_fit_ship_physics(implant.get_fit_uid()),
             Self::Module(module) => u_data.get_fit_ship_physics(module.get_fit_uid()),
-            Self::ProjEffect(_) => UPhysics::default(),
+            Self::ProjEffect(..) => UPhysics::default(),
             Self::Service(service) => u_data.get_fit_ship_physics(service.get_fit_uid()),
             Self::Rig(rig) => u_data.get_fit_ship_physics(rig.get_fit_uid()),
             Self::Ship(ship) => *ship.get_physics(),
             Self::Skill(skill) => u_data.get_fit_ship_physics(skill.get_fit_uid()),
             Self::Stance(stance) => u_data.get_fit_ship_physics(stance.get_fit_uid()),
             Self::Subsystem(subsystem) => u_data.get_fit_ship_physics(subsystem.get_fit_uid()),
-            Self::SwEffect(_) => UPhysics::default(),
+            Self::SwEffect(..) => UPhysics::default(),
         }
     }
     pub(crate) fn get_direct_radius(&self) -> PValue {
@@ -425,17 +425,17 @@ impl UItem {
             Self::Charge(charge) => u_data.items.get(charge.get_cont_item_uid()).get_carrier_radius(u_data),
             Self::Drone(drone) => drone.get_radius(),
             Self::Fighter(fighter) => fighter.get_radius(),
-            Self::FwEffect(_) => PValue::default(),
+            Self::FwEffect(..) => PValue::default(),
             Self::Implant(implant) => u_data.get_fit_ship_radius(implant.get_fit_uid()),
             Self::Module(module) => u_data.get_fit_ship_radius(module.get_fit_uid()),
-            Self::ProjEffect(_) => PValue::default(),
+            Self::ProjEffect(..) => PValue::default(),
             Self::Service(service) => u_data.get_fit_ship_radius(service.get_fit_uid()),
             Self::Rig(rig) => u_data.get_fit_ship_radius(rig.get_fit_uid()),
             Self::Ship(ship) => ship.get_radius(),
             Self::Skill(skill) => u_data.get_fit_ship_radius(skill.get_fit_uid()),
             Self::Stance(stance) => u_data.get_fit_ship_radius(stance.get_fit_uid()),
             Self::Subsystem(subsystem) => u_data.get_fit_ship_radius(subsystem.get_fit_uid()),
-            Self::SwEffect(_) => PValue::default(),
+            Self::SwEffect(..) => PValue::default(),
         }
     }
     pub(crate) fn get_projs(&self) -> Option<&UProjs> {
@@ -518,23 +518,23 @@ impl UItem {
     // Methods specific to generic item enum
     pub(crate) fn get_effective_skill_reqs(&self) -> Option<&RMap<AItemId, SkillLevel>> {
         match self {
-            Self::Autocharge(_) => None,
+            Self::Autocharge(..) => None,
             Self::Booster(booster) => booster.get_r_item_base().map(|v| &v.srqs),
-            Self::Character(_) => None,
+            Self::Character(..) => None,
             Self::Charge(charge) => charge.get_r_item_base().map(|v| &v.srqs),
             Self::Drone(drone) => drone.get_r_item_base().map(|v| &v.srqs),
             Self::Fighter(fighter) => fighter.get_r_item_base().map(|v| &v.srqs),
-            Self::FwEffect(_) => None,
+            Self::FwEffect(..) => None,
             Self::Implant(implant) => implant.get_r_item_base().map(|v| &v.srqs),
             Self::Module(module) => module.get_r_item_base().map(|v| &v.srqs),
-            Self::ProjEffect(_) => None,
-            Self::Rig(_) => None,
-            Self::Service(_) => None,
+            Self::ProjEffect(..) => None,
+            Self::Rig(..) => None,
+            Self::Service(..) => None,
             Self::Ship(ship) => ship.get_r_item_base().map(|v| &v.srqs),
             Self::Skill(skill) => skill.get_r_item_base().map(|v| &v.srqs),
-            Self::Stance(_) => None,
+            Self::Stance(..) => None,
             Self::Subsystem(subsystem) => subsystem.get_r_item_base().map(|v| &v.srqs),
-            Self::SwEffect(_) => None,
+            Self::SwEffect(..) => None,
         }
     }
     pub(crate) fn iter_projs(&self) -> Option<impl ExactSizeIterator<Item = (UItemId, Option<UProjData>)>> {

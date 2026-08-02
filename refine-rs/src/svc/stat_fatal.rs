@@ -10,12 +10,12 @@ pub(crate) trait StatErrorFatality {
 impl StatErrorFatality for StatFitShipAppliedError<!> {
     fn is_fatal(&self) -> bool {
         match self {
-            Self::NoShip(_) => true,
-            Self::ItemNotLoaded(_) => true,
-            Self::UnsupportedStat(_) => true,
-            Self::StatSpecific(_) => false,
-            Self::ProjecteeNotFound(_) => false,
-            Self::ProjecteeCantTakeProjs(_) => false,
+            Self::NoShip(..) => true,
+            Self::ItemNotLoaded(..) => true,
+            Self::UnsupportedStat(..) => true,
+            Self::StatSpecific(..) => false,
+            Self::ProjecteeNotFound(..) => false,
+            Self::ProjecteeCantTakeProjs(..) => false,
         }
     }
 }
@@ -26,11 +26,11 @@ impl StatErrorFatality for StatFitShipAppliedError<!> {
 impl StatErrorFatality for StatItemAppliedError<!> {
     fn is_fatal(&self) -> bool {
         match self {
-            Self::ItemNotLoaded(_) => true,
-            Self::UnsupportedStat(_) => true,
-            Self::StatSpecific(_) => false,
-            Self::ProjecteeNotFound(_) => false,
-            Self::ProjecteeCantTakeProjs(_) => false,
+            Self::ItemNotLoaded(..) => true,
+            Self::UnsupportedStat(..) => true,
+            Self::StatSpecific(..) => false,
+            Self::ProjecteeNotFound(..) => false,
+            Self::ProjecteeCantTakeProjs(..) => false,
         }
     }
 }

@@ -392,7 +392,7 @@ fn sim_rearm_other_info_to_cseq(
         ExtraCycle::None(in_space_duration_left)
     };
     match (full_cycle_count, extra_cycle) {
-        (Count::ZERO, ExtraCycle::None(_)) => None,
+        (Count::ZERO, ExtraCycle::None(..)) => None,
         (Count::ZERO, ExtraCycle::ActivePartial(active_duration)) => Some(CycleSeq::LoopSin(CSeqLoopSin {
             data: make_extra_cycle_active_partial_data(effect_info, active_duration),
             hard_dt: make_hard_dt(hard_dt_duration),

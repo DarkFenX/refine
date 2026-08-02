@@ -55,7 +55,7 @@ fn mutate_raw(
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(_) => Err(ItemMAttrNotFoundError {
+        Some(..) => Err(ItemMAttrNotFoundError {
             item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
             attr_id: AttrId::from_aid(attr_aid),
         }

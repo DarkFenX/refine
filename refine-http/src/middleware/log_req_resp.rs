@@ -43,7 +43,7 @@ async fn buffer_and_log(prefix: &str, body: Body) -> Result<Bytes, ApiError> {
             true => tracing::info!("{prefix} body is empty"),
             false => tracing::info!("{prefix} body: {body}"),
         },
-        Err(_) => tracing::info!("{prefix} body: <invalid UTF-8, {} bytes>", bytes.len()),
+        Err(..) => tracing::info!("{prefix} body: <invalid UTF-8, {} bytes>", bytes.len()),
     }
     Ok(bytes)
 }

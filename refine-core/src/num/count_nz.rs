@@ -11,7 +11,7 @@ impl CountNz {
     pub fn from_u32_checked(count: u32) -> Result<Self, CountNzError> {
         match NonZeroU32::try_from(count) {
             Ok(count) => Ok(Self(count)),
-            Err(_) => Err(CountNzError { count }),
+            Err(..) => Err(CountNzError { count }),
         }
     }
     pub const fn from_u32_clamped(count: u32) -> Self {

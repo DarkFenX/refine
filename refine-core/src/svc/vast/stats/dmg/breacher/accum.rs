@@ -75,7 +75,7 @@ impl BreacherAccum {
             ticks,
         };
         match self.data.entry(accum_entry) {
-            Entry::Occupied(_) => (),
+            Entry::Occupied(..) => (),
             Entry::Vacant(entry) => {
                 entry.insert(accum_entry.ticks.get_loop_len());
             }
@@ -95,11 +95,11 @@ impl BreacherAccum {
         if self
             .data
             .keys()
-            .any(|v| v.absolute_max >= max_dmg_abs && matches!(v.ticks, AggrBreacherTicks::Infinite(_)))
+            .any(|v| v.absolute_max >= max_dmg_abs && matches!(v.ticks, AggrBreacherTicks::Infinite(..)))
             && self
                 .data
                 .keys()
-                .any(|v| v.relative_max >= max_dmg_rel && matches!(v.ticks, AggrBreacherTicks::Infinite(_)))
+                .any(|v| v.relative_max >= max_dmg_rel && matches!(v.ticks, AggrBreacherTicks::Infinite(..)))
         {
             return StatDmgEntryBreacher {
                 absolute_max: max_dmg_abs * PValue::SERVER_TICK_HZ,
@@ -314,7 +314,7 @@ impl AppliedBreacherAccum {
         };
         let accum_entry = AppliedBreacherData { dmg: applied, ticks };
         match self.data.entry(accum_entry) {
-            Entry::Occupied(_) => (),
+            Entry::Occupied(..) => (),
             Entry::Vacant(entry) => {
                 entry.insert(accum_entry.ticks.get_loop_len());
             }
@@ -328,7 +328,7 @@ impl AppliedBreacherAccum {
         // Shortcut - if breacher with max damage is applying its damage without downtime, no
         // complex calcs needed
         for accum_entry in self.data.keys() {
-            if accum_entry.dmg >= max_dmg && matches!(accum_entry.ticks, AggrBreacherTicks::Infinite(_)) {
+            if accum_entry.dmg >= max_dmg && matches!(accum_entry.ticks, AggrBreacherTicks::Infinite(..)) {
                 return accum_entry.dmg * PValue::SERVER_TICK_HZ;
             }
         }

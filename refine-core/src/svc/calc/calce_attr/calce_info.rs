@@ -200,8 +200,8 @@ impl Calc {
             && attr.rid == sec_zone_attr_rid
         {
             let security_attr_rid = match ctx.u_data.sec_zone {
-                SecZone::HiSec(_) => attr_consts.hisec_modifier,
-                SecZone::LowSec(_) => attr_consts.lowsec_modifier,
+                SecZone::HiSec(..) => attr_consts.hisec_modifier,
+                SecZone::LowSec(..) => attr_consts.lowsec_modifier,
                 SecZone::NullSec | SecZone::WSpace | SecZone::Hazard => attr_consts.nullsec_modifier,
             };
             if let Some(security_attr_rid) = security_attr_rid

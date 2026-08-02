@@ -14,7 +14,7 @@ impl REffectModStrength {
     pub(crate) fn get_attr_rid(&self) -> Option<RAttrId> {
         match self {
             Self::Attr(attr_rid) => Some(*attr_rid),
-            Self::Hardcoded(_) => None,
+            Self::Hardcoded(..) => None,
         }
     }
 }

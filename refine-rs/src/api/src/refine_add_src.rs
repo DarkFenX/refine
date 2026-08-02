@@ -162,7 +162,7 @@ fn log_reason(core_src: &rc::Src) {
                 }
             }
         }
-        rc::src::SrcOrigin::Cached(_) => tracing::info!("source data was loaded from cache"),
+        rc::src::SrcOrigin::Cached(..) => tracing::info!("source data was loaded from cache"),
     }
 }
 

@@ -67,18 +67,18 @@ impl AEffectId {
             | Self::ScProxyEffect(item_aid)
             | Self::ScProxyTrap(item_aid)
             | Self::ScShipLink(item_aid) => Some(EItemId::from_i32(item_aid.into_i32())),
-            Self::Dogma(_) | Self::Custom(_) => None,
+            Self::Dogma(..) | Self::Custom(..) => None,
         }
     }
     pub(in crate::ad) fn dc_dogma_effect(&self) -> Option<EEffectId> {
         match self {
             Self::Dogma(dogma_effect_aid) => Some(EEffectId::from_i32(dogma_effect_aid.into_i32())),
-            Self::ScSystemWide(_)
-            | Self::ScSystemEmitter(_)
-            | Self::ScProxyEffect(_)
-            | Self::ScProxyTrap(_)
-            | Self::ScShipLink(_)
-            | Self::Custom(_) => None,
+            Self::ScSystemWide(..)
+            | Self::ScSystemEmitter(..)
+            | Self::ScProxyEffect(..)
+            | Self::ScProxyTrap(..)
+            | Self::ScShipLink(..)
+            | Self::Custom(..) => None,
         }
     }
 }

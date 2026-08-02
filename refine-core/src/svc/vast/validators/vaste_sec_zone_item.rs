@@ -378,8 +378,8 @@ fn class_check_verbose(
 }
 fn zone_to_class(zone: SecZone) -> Value {
     match zone {
-        SecZone::HiSec(_) => Value::TWO,
-        SecZone::LowSec(_) => Value::ONE,
+        SecZone::HiSec(..) => Value::TWO,
+        SecZone::LowSec(..) => Value::ONE,
         _ => Value::ZERO,
     }
 }

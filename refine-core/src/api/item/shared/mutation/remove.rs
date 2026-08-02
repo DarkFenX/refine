@@ -11,8 +11,8 @@ impl SolarSystem {
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Result<(), ItemMutatedError> {
         match self.u_data.items.get(item_uid) {
-            UItem::Drone(_) => self.internal_remove_drone_mutation(item_uid, reuse_eupdates),
-            UItem::Module(_) => self.internal_remove_module_mutation(item_uid, reuse_eupdates),
+            UItem::Drone(..) => self.internal_remove_drone_mutation(item_uid, reuse_eupdates),
+            UItem::Module(..) => self.internal_remove_module_mutation(item_uid, reuse_eupdates),
             _ => unreachable!("unmutable item kind is used in mutation"),
         }
     }

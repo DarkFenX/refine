@@ -14,7 +14,7 @@ impl UItem {
     }
     pub(in crate::svc::calc) fn get_root_loc_kind(&self) -> Option<LocationKind> {
         match self {
-            Self::Character(_) => Some(LocationKind::Character),
+            Self::Character(..) => Some(LocationKind::Character),
             Self::Ship(ship) => match ship.get_ship_kind() {
                 UShipKind::Ship => Some(LocationKind::Ship),
                 UShipKind::Structure => Some(LocationKind::Structure),
@@ -34,22 +34,32 @@ impl UItem {
         }
     }
     pub(in crate::svc::calc) fn is_on_char_root(&self) -> bool {
-        matches!(self, Self::Booster(_) | Self::Implant(_) | Self::Skill(_))
+        matches!(self, Self::Booster(..) | Self::Implant(..) | Self::Skill(..))
     }
     pub(in crate::svc::calc) fn is_on_ship_root(&self) -> bool {
         matches!(
             self,
-            Self::Charge(_) | Self::Module(_) | Self::Rig(_) | Self::Service(_) | Self::Stance(_) | Self::Subsystem(_)
+            Self::Charge(..)
+                | Self::Module(..)
+                | Self::Rig(..)
+                | Self::Service(..)
+                | Self::Stance(..)
+                | Self::Subsystem(..)
         )
     }
     pub(in crate::svc::calc) fn is_on_struct_root(&self) -> bool {
         matches!(
             self,
-            Self::Charge(_) | Self::Module(_) | Self::Rig(_) | Self::Service(_) | Self::Stance(_) | Self::Subsystem(_)
+            Self::Charge(..)
+                | Self::Module(..)
+                | Self::Rig(..)
+                | Self::Service(..)
+                | Self::Stance(..)
+                | Self::Subsystem(..)
         )
     }
     pub(in crate::svc::calc) fn is_owner_modifiable(&self) -> bool {
-        matches!(self, Self::Charge(_) | Self::Drone(_) | Self::Fighter(_))
+        matches!(self, Self::Charge(..) | Self::Drone(..) | Self::Fighter(..))
     }
     // Buff-related
     pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {

@@ -26,7 +26,7 @@ impl ModStrength {
     pub(super) fn get_affector_attr_rid(&self) -> Option<RAttrId> {
         match self {
             Self::Attr(attr_rid) => Some(*attr_rid),
-            Self::Hardcoded(_) => None,
+            Self::Hardcoded(..) => None,
             Self::Custom(custom_str) => custom_str.affector_attr_rid,
         }
     }
@@ -37,7 +37,7 @@ impl ModStrength {
                 item_uid,
                 attr_rid: Some(*attr_rid),
             }],
-            Self::Hardcoded(_) => smallvec![CalcModInfoAffector {
+            Self::Hardcoded(..) => smallvec![CalcModInfoAffector {
                 item_uid,
                 attr_rid: None
             }],
@@ -54,8 +54,8 @@ impl ModStrength {
     // Revision methods - define if modification value can change upon some action
     pub(super) fn get_item_add_remove_reviser(&self) -> Option<ItemAddRemoveReviser> {
         match self {
-            Self::Attr(_) => None,
-            Self::Hardcoded(_) => None,
+            Self::Attr(..) => None,
+            Self::Hardcoded(..) => None,
             Self::Custom(custom_str) => custom_str.get_item_add_remove_reviser(),
         }
     }
@@ -68,7 +68,7 @@ impl ModStrength {
     pub(in crate::svc::calc) fn consistency_check(&self, u_data: &UData) -> DebugResult {
         match self {
             Self::Attr(attr_rid) => attr_rid.consistency_check(u_data)?,
-            Self::Hardcoded(_) => (),
+            Self::Hardcoded(..) => (),
             Self::Custom(custom_str) => custom_str.consistency_check(u_data)?,
         }
         Ok(())

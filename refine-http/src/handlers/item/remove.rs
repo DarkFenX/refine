@@ -17,7 +17,7 @@ pub(crate) async fn remove_item(
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_remove_item(state, sol_id, item_id, payload).await {
-        Ok(_) => StatusCode::NO_CONTENT.into_response(),
+        Ok(..) => StatusCode::NO_CONTENT.into_response(),
         Err(err) => err.into_response(),
     }
 }

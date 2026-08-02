@@ -51,7 +51,7 @@ impl Vast {
             );
         }
         let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => (
                     breacher_accum.get_dps_by_time(time),
@@ -103,7 +103,7 @@ impl Vast {
             );
         }
         let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => (
                     breacher_accum.get_dps_by_time(time),
@@ -151,7 +151,7 @@ impl Vast {
             cycling_options,
         );
         let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => (
                     breacher_accum.get_dps_by_time(time),
@@ -201,7 +201,7 @@ impl Vast {
             projectee_uid,
         );
         let (dps_breacher, volley_breacher) = match time_options {
-            StatTimeOptions::Burst(_) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
+            StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
             StatTimeOptions::Sim(sim_options) => match sim_options.time {
                 Some(time) if time > PValue::ZERO => (
                     breacher_accum.get_dps_by_time(time),

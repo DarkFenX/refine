@@ -218,12 +218,12 @@ impl AccumAssign {
         // are no such modifiers in EVE, but the lib makes it to work this way.
         let proj_mult = match proj_mult {
             Some(PValue::ZERO) => return,
-            Some(_) => Some(PValue::ONE),
+            Some(..) => Some(PValue::ONE),
             None => None,
         };
         let res_mult = match res_mult {
             Some(PValue::ZERO) => return,
-            Some(_) => Some(PValue::ONE),
+            Some(..) => Some(PValue::ONE),
             None => None,
         };
         let info = AttrValInfo::from_effective_info(

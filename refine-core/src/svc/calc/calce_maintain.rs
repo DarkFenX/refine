@@ -324,7 +324,7 @@ impl Calc {
                 }
             }
             ModifierKind::System => match item {
-                UItem::SwEffect(_) => {
+                UItem::SwEffect(..) => {
                     self.std.reg_sw_system_mod(reuse_cmods, ctx, rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
@@ -335,12 +335,12 @@ impl Calc {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     }
                 }
-                UItem::ProjEffect(_) => self.std.reg_proj_mod(rmod),
+                UItem::ProjEffect(..) => self.std.reg_proj_mod(rmod),
                 _ => (),
             },
             ModifierKind::Buff => {
                 let registered = match item {
-                    UItem::SwEffect(_) => {
+                    UItem::SwEffect(..) => {
                         let registered = self.std.reg_sw_buff_mod(reuse_cmods, ctx, rmod);
                         for cmod in reuse_cmods.iter() {
                             self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
@@ -392,7 +392,7 @@ impl Calc {
                 self.unreg_raw_mod_for_buff(item_uid, rmod);
             }
             ModifierKind::System => match item {
-                UItem::SwEffect(_) => {
+                UItem::SwEffect(..) => {
                     self.std.unreg_sw_system_mod(reuse_cmods, ctx, *rmod);
                     for cmod in reuse_cmods.iter() {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);
@@ -403,12 +403,12 @@ impl Calc {
                         self.force_mod_affectee_attr_recalc(reuse_items, ctx, &cmod);
                     }
                 }
-                UItem::ProjEffect(_) => self.std.unreg_proj_mod(rmod),
+                UItem::ProjEffect(..) => self.std.unreg_proj_mod(rmod),
                 _ => (),
             },
             ModifierKind::Buff => {
                 match item {
-                    UItem::SwEffect(_) => {
+                    UItem::SwEffect(..) => {
                         self.std.unreg_sw_buff_mod(reuse_cmods, ctx, rmod);
                         for cmod in reuse_cmods.iter() {
                             self.force_mod_affectee_attr_recalc(reuse_items, ctx, cmod);

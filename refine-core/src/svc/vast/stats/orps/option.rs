@@ -14,8 +14,8 @@ pub struct StatOutRepItemKinds {
 impl StatOutRepItemKinds {
     pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem) -> bool {
         match u_item {
-            UItem::Drone(_) => self.minion.is_enabled(self.default),
-            UItem::Fighter(_) => self.minion.is_enabled(self.default),
+            UItem::Drone(..) => self.minion.is_enabled(self.default),
+            UItem::Fighter(..) => self.minion.is_enabled(self.default),
             // Just consider everything else as modules
             _ => self.module.is_enabled(self.default),
         }

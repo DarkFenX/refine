@@ -23,7 +23,7 @@ pub(crate) struct BodyLimit {
 pub(crate) async fn limit_request_body_size(State(limit): State<BodyLimit>, req: Request, next: Next) -> Response {
     match get_content_len(&req) {
         Some(content_len) if content_len > limit.max_request_body_size => reject(Some(content_len), limit).await,
-        Some(_) => next.run(req).await,
+        Some(..) => next.run(req).await,
         // Sometimes size might be not declared (e.g. chunked requests), separate handling for this
         // case
         None => {

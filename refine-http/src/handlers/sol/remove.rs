@@ -10,7 +10,7 @@ use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn remove_sol(State(state): State<AppState>, Path(sol_id): Path<String>) -> impl IntoResponse {
     match internal_remove_sol(state, sol_id).await {
-        Ok(_) => StatusCode::NO_CONTENT.into_response(),
+        Ok(..) => StatusCode::NO_CONTENT.into_response(),
         Err(err) => err.into_response(),
     }
 }

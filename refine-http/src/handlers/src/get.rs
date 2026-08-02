@@ -14,7 +14,7 @@ pub(crate) async fn get_source(
     WithRejection(Query(params), _): WithRejection<Query<SrcInfoParams>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_source(state, src_alias, params).await {
-        Ok(_) => StatusCode::OK.into_response(),
+        Ok(..) => StatusCode::OK.into_response(),
         Err(err) => err.into_response(),
     }
 }

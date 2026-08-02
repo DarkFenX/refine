@@ -57,7 +57,7 @@ impl VastFitData {
             return true;
         }
         match ctx.u_data.sec_zone {
-            SecZone::HiSec(_) => {
+            SecZone::HiSec(..) => {
                 'items: for (item_uid, item_data) in self.sec_zone_effect.iter() {
                     for sec_zone_info in item_data.values() {
                         if sec_zone_info.banned_in_hisec {
@@ -70,7 +70,7 @@ impl VastFitData {
                 }
                 true
             }
-            SecZone::LowSec(_) => {
+            SecZone::LowSec(..) => {
                 'items: for (item_uid, item_data) in self.sec_zone_effect.iter() {
                     for sec_zone_info in item_data.values() {
                         if sec_zone_info.banned_in_lowsec {
@@ -97,7 +97,7 @@ impl VastFitData {
         }
         let mut items = Vec::new();
         match ctx.u_data.sec_zone {
-            SecZone::HiSec(_) => {
+            SecZone::HiSec(..) => {
                 'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     let mut effects = Vec::new();
                     for (&effect_rid, sec_zone_info) in item_data.iter() {
@@ -114,7 +114,7 @@ impl VastFitData {
                     }
                 }
             }
-            SecZone::LowSec(_) => {
+            SecZone::LowSec(..) => {
                 'items: for (&item_uid, item_data) in self.sec_zone_effect.iter() {
                     let mut effects = Vec::new();
                     for (&effect_rid, sec_zone_info) in item_data.iter() {

@@ -526,7 +526,7 @@ impl<'s> FitMut<'s> {
             self.sol.svc.get_stat_item_sensors(&self.sol.u_data, ship_uid).unwrap();
             self.sol.svc.get_stat_dscan_range(&self.sol.u_data, ship_uid).unwrap();
             match self.sol.svc.get_stat_item_probing_size(&self.sol.u_data, ship_uid) {
-                Ok(_) | Err(IntStatItemError::StatSpecific(_)) => (),
+                Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             }
             self.sol
@@ -546,11 +546,11 @@ impl<'s> FitMut<'s> {
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             self.sol.svc.get_stat_item_speed(&self.sol.u_data, ship_uid).unwrap();
             match self.sol.svc.get_stat_item_agility(&self.sol.u_data, ship_uid) {
-                Ok(_) | Err(IntStatItemError::StatSpecific(_)) => (),
+                Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
             match self.sol.svc.get_stat_item_align_time(&self.sol.u_data, ship_uid) {
-                Ok(_) | Err(IntStatItemError::StatSpecific(_)) => (),
+                Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
             self.sol
@@ -559,11 +559,11 @@ impl<'s> FitMut<'s> {
                 .unwrap();
             self.sol.svc.get_stat_item_mass(&self.sol.u_data, ship_uid).unwrap();
             match self.sol.svc.get_stat_item_warp_speed(&self.sol.u_data, ship_uid) {
-                Ok(_) | Err(IntStatItemError::StatSpecific(_)) => (),
+                Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
             match self.sol.svc.get_stat_item_max_warp_range(&self.sol.u_data, ship_uid) {
-                Ok(_) | Err(IntStatItemError::StatSpecific(_)) => (),
+                Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
             match self
@@ -571,7 +571,7 @@ impl<'s> FitMut<'s> {
                 .svc
                 .get_stat_item_jump(&self.sol.u_data, ship_uid, jump_range, &jump_passengers)
             {
-                Ok(_) | Err(IntStatItemError::StatSpecific(_)) => (),
+                Ok(..) | Err(IntStatItemError::StatSpecific(..)) => (),
                 _ => panic!(),
             };
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////

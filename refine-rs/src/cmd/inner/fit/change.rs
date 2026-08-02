@@ -89,9 +89,9 @@ impl ICmdFitChangeICtxRIds {
         match self.fleet_id {
             TriStateField::Value(fleet_id) => core_fit.set_fleet(&fleet_id)?,
             TriStateField::None => match core_fit.unset_fleet() {
-                Ok(_) => (),
+                Ok(..) => (),
                 // We are fine if fleet was not set
-                Err(rc::err::UnsetFitFleetError::FitHasNoFleet(_)) => (),
+                Err(rc::err::UnsetFitFleetError::FitHasNoFleet(..)) => (),
             },
             TriStateField::Absent => (),
         }
@@ -101,9 +101,9 @@ impl ICmdFitChangeICtxRIds {
         match self.shared.rah_incoming_dps {
             TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps),
             TriStateField::None => match core_fit.remove_rah_incoming_dps() {
-                Ok(_) => (),
+                Ok(..) => (),
                 // We are fine if profile was not set
-                Err(rc::err::RemoveFitRahIncomingDpsError::DpsProfileNotSet(_)) => (),
+                Err(rc::err::RemoveFitRahIncomingDpsError::DpsProfileNotSet(..)) => (),
             },
             TriStateField::Absent => (),
         }

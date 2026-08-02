@@ -76,7 +76,7 @@ fn get_raw_mattr(sol: &SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Res
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(_) => Ok(RawMAttr::new(sol, item_uid, attr_aid)),
+        Some(..) => Ok(RawMAttr::new(sol, item_uid, attr_aid)),
         None => Err(GetRawMAttrError::MutationNotFound(
             sol.u_data.items.ext_id_by_int_id(item_uid),
             AttrId::from_aid(attr_aid),
@@ -98,7 +98,7 @@ fn get_raw_mattr_mut(
         .get_attr_rolls()
         .get(&attr_aid)
     {
-        Some(_) => Ok(RawMAttrMut::new(sol, item_uid, attr_aid)),
+        Some(..) => Ok(RawMAttrMut::new(sol, item_uid, attr_aid)),
         None => Err(GetRawMAttrError::MutationNotFound(
             sol.u_data.items.ext_id_by_int_id(item_uid),
             AttrId::from_aid(attr_aid),

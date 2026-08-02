@@ -12,7 +12,7 @@ impl NEffect {
 impl NEffectChargeLoc {
     fn get_attr_eid(&self) -> Option<EAttrId> {
         match self {
-            Self::Loaded(_) => None,
+            Self::Loaded(..) => None,
             Self::Autocharge(attr_aid) => attr_aid.dc_eve(),
             Self::TargetAttack(attr_aid) => attr_aid.dc_eve(),
         }

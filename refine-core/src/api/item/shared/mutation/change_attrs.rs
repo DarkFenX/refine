@@ -11,8 +11,8 @@ impl SolarSystem {
     ) -> Result<(), ItemMutatedError> {
         let u_item = self.u_data.items.get_mut(item_uid);
         match u_item {
-            UItem::Drone(_) => self.internal_change_drone_mutation_attrs(item_uid, attr_mutations),
-            UItem::Module(_) => self.internal_change_module_mutation_attrs(item_uid, attr_mutations),
+            UItem::Drone(..) => self.internal_change_drone_mutation_attrs(item_uid, attr_mutations),
+            UItem::Module(..) => self.internal_change_module_mutation_attrs(item_uid, attr_mutations),
             _ => unreachable!("unmutable item kind is used in mutation"),
         }
     }

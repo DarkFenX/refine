@@ -21,7 +21,7 @@ pub(super) fn cseq_to_ticks(
     // Breacher aggregator only supports simple output, and only simple output is used
     let output = match output {
         Output::Simple(output) => output,
-        Output::Complex(_) => return None,
+        Output::Complex(..) => return None,
     };
     let output_ticks = output.instance.tick_count;
     if output_ticks < Count::ONE {

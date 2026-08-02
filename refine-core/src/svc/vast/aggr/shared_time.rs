@@ -55,11 +55,11 @@ pub(super) fn atime_process_output_for_cseq_regular<I, IA>(
             process_output_for_part_infinite_regular(accum, &mut time, &inner.p3_data, chance_mult);
         }
         CycleSeq::LoopSin(inner) => match inner.hard_dt {
-            Some(_) => atime_process_output_for_ls_cseq_hard_dt(accum, ptime, inner, chance_mult),
+            Some(..) => atime_process_output_for_ls_cseq_hard_dt(accum, ptime, inner, chance_mult),
             None => process_output_for_part_infinite_regular(accum, &mut ptime.into_value(), &inner.data, chance_mult),
         },
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
-            Some(_) => atime_process_output_for_lls_cseq_hard_dt(accum, ptime, inner, chance_mult),
+            Some(..) => atime_process_output_for_lls_cseq_hard_dt(accum, ptime, inner, chance_mult),
             None => atime_process_output_for_lls_cseq_regular(accum, ptime, inner, chance_mult),
         },
     }

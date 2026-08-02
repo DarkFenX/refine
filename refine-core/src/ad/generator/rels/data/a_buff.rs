@@ -30,7 +30,7 @@ impl ABuffAffecteeFilter {
             Self::Direct => None,
             Self::Loc => None,
             Self::LocGrp(group_aid) => Some(EItemGrpId::from_i32(group_aid.into_i32())),
-            Self::LocSrq(_) => None,
+            Self::LocSrq(..) => None,
         }
     }
 }

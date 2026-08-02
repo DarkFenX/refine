@@ -14,8 +14,8 @@ use crate::{
 impl<D, HDT> CycleSeq<D, HDT> {
     pub(in crate::svc) fn get_parts(&self) -> CSeqParts<'_, D, HDT> {
         let loops = match self {
-            Self::Lim(_) | Self::LimInf(_) | Self::LimSinInf(_) => false,
-            Self::LoopSin(_) | Self::LoopLimSin(_) => true,
+            Self::Lim(..) | Self::LimInf(..) | Self::LimSinInf(..) => false,
+            Self::LoopSin(..) | Self::LoopLimSin(..) => true,
         };
         CSeqParts { cseq: self, loops }
     }

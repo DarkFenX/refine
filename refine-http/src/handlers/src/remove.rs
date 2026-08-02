@@ -8,7 +8,7 @@ use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn remove_source(State(state): State<AppState>, Path(src_alias): Path<String>) -> impl IntoResponse {
     match internal_remove_source(state, src_alias).await {
-        Ok(_) => StatusCode::NO_CONTENT.into_response(),
+        Ok(..) => StatusCode::NO_CONTENT.into_response(),
         Err(err) => err.into_response(),
     }
 }

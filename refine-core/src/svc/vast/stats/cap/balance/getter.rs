@@ -89,7 +89,7 @@ fn get_cap_injects(
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = match time_options {
-                StatTimeOptions::Burst(_) => {
+                StatTimeOptions::Burst(..) => {
                     aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack())
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {
@@ -133,7 +133,7 @@ fn get_cap_consumed(
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
             if let Some(accum) = match time_options {
-                StatTimeOptions::Burst(_) => {
+                StatTimeOptions::Burst(..) => {
                     aggr_local_burst(ctx, calc, item_uid, effect, cseq, ospec, (), SeqAccum::new_stack())
                 }
                 StatTimeOptions::Sim(sim_options) => match sim_options.time {

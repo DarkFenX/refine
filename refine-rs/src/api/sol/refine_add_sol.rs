@@ -60,7 +60,7 @@ impl Refine {
                     entry.insert(inner_sol.clone());
                     return inner_sol;
                 }
-                Entry::Occupied(_) => {
+                Entry::Occupied(..) => {
                     id = SolarSystemId::new();
                     continue;
                 }

@@ -81,7 +81,7 @@ impl SolarSystem {
             let affector_item = self.u_data.items.get(affector.item_uid);
             // Ignore non-module item kinds
             match affector_item {
-                UItem::Module(_) => (),
+                UItem::Module(..) => (),
                 _ => continue,
             }
             // Ignore modules from other fits

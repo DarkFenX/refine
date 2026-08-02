@@ -66,7 +66,7 @@ impl<'s> SideEffectMut<'s> {
         let strength = match partial.strength {
             REffectModStrength::Attr(attr_rid) => match self.sol.internal_get_item_attr(self.item_uid, attr_rid) {
                 Ok(calc_val) => calc_val.extra,
-                Err(_) => return None,
+                Err(..) => return None,
             },
             REffectModStrength::Hardcoded(strength) => strength,
         };

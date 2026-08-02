@@ -179,7 +179,7 @@ pub(super) fn query_target_mod(
                     _ => None,
                 }
             }
-            AffecteeFilter::OwnSrq(_) if let UItem::Ship(projectee_ship) = projectee_item => {
+            AffecteeFilter::OwnSrq(..) if let UItem::Ship(projectee_ship) = projectee_item => {
                 let fit_uid = projectee_ship.get_fit_uid();
                 let cmod = CtxModifier::with_fit_item(rmod, fit_uid, projectee_uid);
                 Some(cmod)

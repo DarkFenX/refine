@@ -24,7 +24,7 @@ impl ADataGenerator {
         if let Some(effect_maker) = n_effect.adg_make_effect_fn {
             let a_effect = effect_maker();
             match self.a_data.effects.data.entry(a_effect.id) {
-                Entry::Occupied(_) => {
+                Entry::Occupied(..) => {
                     let warning = format!("effect {}: already exists, not replacing", a_effect.id);
                     self.a_data.warnings.customization.push(warning);
                 }

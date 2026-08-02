@@ -43,7 +43,7 @@ impl REffectChargeLoc {
                 let attr_rid = *attr_aid_rid_map.get(attr_aid)?;
                 Some(Self::Autocharge(attr_rid))
             }
-            NEffectChargeLoc::TargetAttack(_) => Some(Self::TargetAttack),
+            NEffectChargeLoc::TargetAttack(..) => Some(Self::TargetAttack),
         }
     }
 }

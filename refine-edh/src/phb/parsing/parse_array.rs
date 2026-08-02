@@ -25,7 +25,7 @@ where
         }
         // Error happens in two cases: when entry is found, then we report success to caller, and
         // some legitimate error occurred during search, in which case it is propagated to caller
-        Err(_) if found.is_some() => Ok(found),
+        Err(..) if found.is_some() => Ok(found),
         Err(error) => Err(error.into()),
     }
 }

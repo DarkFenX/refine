@@ -50,7 +50,7 @@ impl ItemAttrData {
     pub(in crate::svc::calc) fn unset_value(&mut self, attr_rid: RAttrId) -> bool {
         match self.data.entry(attr_rid) {
             Entry::Occupied(mut entry) => entry.get_mut().value.take().is_some(),
-            Entry::Vacant(_) => false,
+            Entry::Vacant(..) => false,
         }
     }
     pub(in crate::svc::calc) fn has_value(&self, attr_rid: &RAttrId) -> bool {
@@ -73,7 +73,7 @@ impl ItemAttrData {
     pub(in crate::svc::calc) fn unreg_postproc(&mut self, attr_rid: RAttrId) -> bool {
         match self.data.entry(attr_rid) {
             Entry::Occupied(mut entry) => entry.get_mut().postproc.take().is_some(),
-            Entry::Vacant(_) => false,
+            Entry::Vacant(..) => false,
         }
     }
 }

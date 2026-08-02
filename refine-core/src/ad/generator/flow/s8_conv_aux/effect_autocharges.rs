@@ -21,7 +21,7 @@ impl ADataGenerator {
 impl NEffectChargeLoc {
     fn get_autocharge_attr_aid(&self) -> Option<AAttrId> {
         match self {
-            Self::Loaded(_) => None,
+            Self::Loaded(..) => None,
             Self::Autocharge(attr_aid) => Some(*attr_aid),
             Self::TargetAttack(attr_aid) => Some(*attr_aid),
         }

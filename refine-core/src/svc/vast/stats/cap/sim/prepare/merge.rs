@@ -97,11 +97,11 @@ struct MergeKey {
 impl MergeKey {
     fn try_new(start_delay: PValue, iter_data: &AggrIterData<PValue>) -> Option<Self> {
         match iter_data {
-            AggrIterData::Regular(_) => Some(Self {
+            AggrIterData::Regular(..) => Some(Self {
                 start_delay: start_delay.sig_rounded(TIME_ROUND_DIGITS),
                 cseq: iter_data.extract_cseq_timing_key(),
             }),
-            AggrIterData::Spool(_) => None,
+            AggrIterData::Spool(..) => None,
         }
     }
 }

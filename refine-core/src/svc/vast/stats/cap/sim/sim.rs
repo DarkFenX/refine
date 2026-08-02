@@ -316,7 +316,7 @@ impl CapSim {
             // When there are no events, return 100% if there is some cap regen, or initial cap
             // value if cap is not regenerating
             true => Some(match self.tau {
-                Some(_) => StatCapSim::Stable(UnitInterval::ONE),
+                Some(..) => StatCapSim::Stable(UnitInterval::ONE),
                 None => StatCapSim::Stable(UnitInterval::from_value_clamped(self.cap / self.max_cap)),
             }),
             false => None,

@@ -29,10 +29,10 @@ impl Ord for CapSimEvent {
         //   - cap gain events, from highest to lowest
         match other.time.cmp(&self.time) {
             Ordering::Equal => match (&self.data, &other.data) {
-                (CapSimEventData::CycleCheck(_), CapSimEventData::CycleCheck(_)) => Ordering::Equal,
-                (CapSimEventData::CycleCheck(_), _) => Ordering::Greater,
-                (CapSimEventData::InjectorReady(_), CapSimEventData::InjectorReady(_)) => Ordering::Equal,
-                (CapSimEventData::InjectorReady(_), _) => Ordering::Greater,
+                (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => Ordering::Equal,
+                (CapSimEventData::CycleCheck(..), _) => Ordering::Greater,
+                (CapSimEventData::InjectorReady(..), CapSimEventData::InjectorReady(..)) => Ordering::Equal,
+                (CapSimEventData::InjectorReady(..), _) => Ordering::Greater,
                 (CapSimEventData::CapChange(e1), CapSimEventData::CapChange(e2)) => {
                     match (e1.direction, e2.direction) {
                         (Direction::Gain, Direction::Gain) => e1.amount.cmp(&e2.amount),
@@ -41,7 +41,7 @@ impl Ord for CapSimEvent {
                         (Direction::Loss, Direction::Gain) => Ordering::Less,
                     }
                 }
-                (CapSimEventData::CapChange(_), _) => Ordering::Less,
+                (CapSimEventData::CapChange(..), _) => Ordering::Less,
             },
             result => result,
         }
@@ -53,8 +53,8 @@ impl PartialEq<Self> for CapSimEvent {
             return false;
         }
         match (&self.data, &other.data) {
-            (CapSimEventData::CycleCheck(_), CapSimEventData::CycleCheck(_)) => true,
-            (CapSimEventData::InjectorReady(_), CapSimEventData::InjectorReady(_)) => true,
+            (CapSimEventData::CycleCheck(..), CapSimEventData::CycleCheck(..)) => true,
+            (CapSimEventData::InjectorReady(..), CapSimEventData::InjectorReady(..)) => true,
             (CapSimEventData::CapChange(e1), CapSimEventData::CapChange(e2)) => e1.amount.eq(&e2.amount),
             _ => false,
         }

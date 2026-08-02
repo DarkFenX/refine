@@ -10,7 +10,7 @@ where
         ItemInfoMode::Id | ItemInfoMode::Partial => Vec::new(),
         ItemInfoMode::Full => match core_item.iter_effects() {
             Ok(effects_iter) => effects_iter.collect(),
-            Err(_) => Vec::new(),
+            Err(..) => Vec::new(),
         },
     }
 }

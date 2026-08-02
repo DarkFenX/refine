@@ -142,7 +142,7 @@ fn atime_process_output_for_cseq_spool<I, IA, C>(
         }
         CycleSeq::LoopSin(inner) => match inner.hard_dt {
             // Use non-spool processing in case of a single cycle with hard downtime
-            Some(_) => atime_process_output_for_ls_cseq_hard_dt(
+            Some(..) => atime_process_output_for_ls_cseq_hard_dt(
                 accum,
                 ptime,
                 inner.convert_with(converter),
@@ -162,7 +162,7 @@ fn atime_process_output_for_cseq_spool<I, IA, C>(
             }
         },
         CycleSeq::LoopLimSin(inner) => match inner.hard_dt {
-            Some(_) => atime_process_output_for_lls_cseq_spool_hard_dt(
+            Some(..) => atime_process_output_for_lls_cseq_spool_hard_dt(
                 &inner.convert_with(converter),
                 &inv_proj,
                 &inv_spool,

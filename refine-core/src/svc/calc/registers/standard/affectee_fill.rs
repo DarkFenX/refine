@@ -105,7 +105,7 @@ impl StandardRegister {
         projectee_uid: UItemId,
     ) {
         match rmod.affectee_filter {
-            AffecteeFilter::Loc(_) => {
+            AffecteeFilter::Loc(..) => {
                 let projectee_item = ctx.u_data.items.get(projectee_uid);
                 if let UItem::Ship(projectee_ship) = projectee_item
                     && let Ok(loc_kind) = projectee_ship.get_ship_kind().try_into()
@@ -141,7 +141,7 @@ impl StandardRegister {
     }
     fn fill_for_fit_item_buff(&self, affectees: &mut Vec<UItemId>, ctx: SvcCtx, rmod: &RawModifier, fit_uid: UFitId) {
         match rmod.affectee_filter {
-            AffecteeFilter::Loc(_) => {
+            AffecteeFilter::Loc(..) => {
                 let fit = ctx.u_data.fits.get(fit_uid);
                 if let Ok(loc_kind) = fit.ship_kind.try_into() {
                     let key = (fit_uid, loc_kind);
@@ -166,7 +166,7 @@ impl StandardRegister {
         }
     }
     fn fill_direct_only(&self, affectees: &mut Vec<UItemId>, rmod: &RawModifier, projectee_uid: UItemId) {
-        if let AffecteeFilter::Direct(_) = rmod.affectee_filter {
+        if let AffecteeFilter::Direct(..) = rmod.affectee_filter {
             affectees.push(projectee_uid);
         }
     }

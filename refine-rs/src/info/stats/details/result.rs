@@ -57,7 +57,7 @@ mod custom_serde {
                     }
                     seq.end()
                 }
-                Self::Error(_) => serializer.serialize_none(),
+                Self::Error(..) => serializer.serialize_none(),
             }
         }
     }

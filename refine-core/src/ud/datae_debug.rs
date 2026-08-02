@@ -21,7 +21,7 @@ impl UData {
             let Some(item) = self.items.try_get(sw_effect_uid) else {
                 return Err(Default::default());
             };
-            if !matches!(item, UItem::SwEffect(_)) {
+            if !matches!(item, UItem::SwEffect(..)) {
                 return Err(Default::default());
             }
             item.consistency_check(self)?;
@@ -33,7 +33,7 @@ impl UData {
                 Some(item) => item,
                 None => return Err(Default::default()),
             };
-            if !matches!(item, UItem::ProjEffect(_)) {
+            if !matches!(item, UItem::ProjEffect(..)) {
                 return Err(Default::default());
             }
             item.consistency_check(self)?;

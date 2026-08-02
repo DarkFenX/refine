@@ -144,11 +144,11 @@ where
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeq::LoopSin(_) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+        CycleSeq::LoopSin(..) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
         CycleSeq::LoopLimSin(inner) => match inner.p1_data.soft_dt {
             // Composite loop with soft downtimes in first part and hard downtime after second also
             // does not spool up
-            Some(_) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
+            Some(..) => aclip_process_both_for_cseq_hard_dt(cseq, inv_proj.chance_mult, accum, converter),
             None => {
                 // Case when all sequence cycles are allowed to run, possibly with reload after the
                 // last cycle

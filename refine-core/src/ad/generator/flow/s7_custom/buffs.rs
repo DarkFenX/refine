@@ -8,7 +8,7 @@ impl ADataGenerator {
             if let Some(buff_maker) = n_buff.adg_make_buff_fn {
                 let a_buff = buff_maker();
                 match self.a_data.buffs.data.entry(a_buff.id) {
-                    Entry::Occupied(_) => {
+                    Entry::Occupied(..) => {
                         let warning = format!("buff {}: already exists, not replacing", a_buff.id);
                         self.a_data.warnings.customization.push(warning);
                     }

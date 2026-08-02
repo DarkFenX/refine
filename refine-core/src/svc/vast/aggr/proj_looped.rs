@@ -154,7 +154,7 @@ fn alooped_route_for_looped_cseq<I, IA, C>(
 {
     match inv_spool {
         Some(inv_spool) => match cseq.get_hard_dt() {
-            Some(_) => alooped_process_both_for_looped_cseq_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
+            Some(..) => alooped_process_both_for_looped_cseq_spool_hard_dt(cseq, inv_proj, inv_spool, accum, converter),
             None => alooped_process_both_for_looped_cseq_spool(
                 cseq.convert_with_and_optimize(converter),
                 inv_proj,
@@ -254,7 +254,7 @@ fn alooped_process_both_for_looped_cseq_spool_hard_dt<I, IA, C>(
 {
     match cseq {
         // Infinite cycle with hard DT never spools up, process it the non-spool way
-        CycleSeqLooped::LoopSin(_) => alooped_process_both_for_looped_cseq_hard_dt(
+        CycleSeqLooped::LoopSin(..) => alooped_process_both_for_looped_cseq_hard_dt(
             cseq.convert_with_and_optimize(converter),
             inv_proj.chance_mult,
             accum,

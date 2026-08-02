@@ -86,7 +86,7 @@ impl REffect {
         if !charge_info.activates_charge {
             return false;
         }
-        matches!(charge_info.location, REffectChargeLoc::Loaded(_))
+        matches!(charge_info.location, REffectChargeLoc::Loaded(..))
     }
     pub(crate) fn activates_charge_for_item(&self, item: &RItem) -> bool {
         if !self.activates_charge() {
@@ -105,7 +105,7 @@ impl REffect {
         if !charge_info.activates_charge {
             return false;
         }
-        matches!(charge_info.location, REffectChargeLoc::Autocharge(_))
+        matches!(charge_info.location, REffectChargeLoc::Autocharge(..))
     }
 }
 
@@ -355,14 +355,14 @@ impl REffect {
             && let Some(buff) = self.buff.as_ref()
         {
             if let Some(merge_buff) = buff.attr_merge.as_ref()
-                && matches!(merge_buff.scope, REffectBuffScope::Projected(_))
+                && matches!(merge_buff.scope, REffectBuffScope::Projected(..))
             {
                 return true;
             }
             if buff
                 .full
                 .iter()
-                .any(|v| matches!(v.scope, REffectBuffScope::Projected(_)))
+                .any(|v| matches!(v.scope, REffectBuffScope::Projected(..)))
             {
                 return true;
             }

@@ -61,7 +61,7 @@ impl AEffectModStrength {
     fn get_attr_eid(&self) -> Option<EAttrId> {
         match self {
             Self::Attr(attr_aid) => attr_aid.dc_eve(),
-            Self::Hardcoded(_) => None,
+            Self::Hardcoded(..) => None,
         }
     }
 }

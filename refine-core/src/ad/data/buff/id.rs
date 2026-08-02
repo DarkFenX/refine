@@ -51,7 +51,7 @@ impl ABuffId {
     pub(in crate::ad) fn dc_eve(&self) -> Option<EBuffId> {
         match self {
             Self::Eve(eve_buff_aid) => Some(EBuffId::from_i32(eve_buff_aid.into_i32())),
-            Self::Custom(_) => None,
+            Self::Custom(..) => None,
         }
     }
 }
