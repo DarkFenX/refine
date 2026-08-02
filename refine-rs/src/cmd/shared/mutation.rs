@@ -87,7 +87,7 @@ fn apply_roll(core_mutation: &mut rc::MutationMut, attr_id: AttrId, roll: UnitIn
         Ok(mut core_raw_mattr) => {
             core_raw_mattr.set_roll(roll);
         }
-        Err(rc::err::GetRawMAttrError::MutationNotFound(_)) => {
+        Err(rc::err::GetRawMAttrError::MutationNotFound(..)) => {
             core_mutation.mutate_raw(attr_id, roll).unwrap();
         }
     };

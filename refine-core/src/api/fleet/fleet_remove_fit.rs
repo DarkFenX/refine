@@ -1,19 +1,14 @@
-use crate::{
-    api::FleetMut,
-    err::basic::{FitFoundError, FitInThisFleetError},
-    ud::FitId,
-};
+use crate::{FleetId, FleetMut, err::basic::FitFoundError, ud::FitId};
 
 impl<'s> FleetMut<'s> {
     pub fn remove_fit(&mut self, fit_id: &FitId) -> Result<(), FleetRemoveFitError> {
         let fit_uid = self.sol.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         let u_fit = self.sol.u_data.fits.get(fit_uid);
         if u_fit.fleet != Some(self.uid) {
-            return Err(FitInThisFleetError {
-                fit_id: u_fit.id,
-                fleet_id: self.sol.u_data.fleets.ext_id_by_int_id(self.uid),
-            }
-            .into());
+            return Err(FleetRemoveFitError::FitIsNotInThisFleet(
+                self.sol.u_data.fleets.ext_id_by_int_id(self.uid),
+                u_fit.id,
+            ));
         }
         self.sol.internal_unset_fit_fleet(fit_uid).unwrap();
         Ok(())
@@ -24,6 +19,6 @@ impl<'s> FleetMut<'s> {
 pub enum FleetRemoveFitError {
     #[error("{0}")]
     FitNotFound(#[from] FitFoundError),
-    #[error("{0}")]
-    FitIsNotInThisFleet(#[from] FitInThisFleetError),
+    #[error("fit {1} is not a member of fleet {0}")]
+    FitIsNotInThisFleet(FleetId, FitId),
 }

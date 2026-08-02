@@ -1,9 +1,10 @@
 use crate::{
-    api::{CharacterMut, FitMut, ShipMut, StatItemAppliedError, StatItemError},
+    CharacterMut, FitMut, ShipMut,
     err::basic::{
         FitHasCharacterError, FitHasShipError, ItemFoundError, ItemLoadedError, ItemReceiveProjError,
         SupportedStatError,
     },
+    stats::err::{StatItemAppliedError, StatItemError},
     ud::ProjecteeUidError,
 };
 

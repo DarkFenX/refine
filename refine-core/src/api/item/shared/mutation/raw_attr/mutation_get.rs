@@ -1,12 +1,6 @@
 use crate::{
-    ad::AAttrId,
-    api::{
-        AttrId, EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation,
-        MutationMut, RawMAttr, RawMAttrMut,
-    },
-    err::basic::ItemMAttrFoundError,
-    sol::SolarSystem,
-    ud::UItemId,
+    AttrId, EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, ItemId, Mutation,
+    MutationMut, RawMAttr, RawMAttrMut, SolarSystem, ad::AAttrId, ud::UItemId,
 };
 
 impl<'s> Mutation<'s> {
@@ -83,11 +77,10 @@ fn get_raw_mattr(sol: &SolarSystem, item_uid: UItemId, attr_aid: AAttrId) -> Res
         .get(&attr_aid)
     {
         Some(_) => Ok(RawMAttr::new(sol, item_uid, attr_aid)),
-        None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
-            attr_id: AttrId::from_aid(attr_aid),
-        }
-        .into()),
+        None => Err(GetRawMAttrError::MutationNotFound(
+            sol.u_data.items.ext_id_by_int_id(item_uid),
+            AttrId::from_aid(attr_aid),
+        )),
     }
 }
 
@@ -106,16 +99,15 @@ fn get_raw_mattr_mut(
         .get(&attr_aid)
     {
         Some(_) => Ok(RawMAttrMut::new(sol, item_uid, attr_aid)),
-        None => Err(ItemMAttrFoundError {
-            item_id: sol.u_data.items.ext_id_by_int_id(item_uid),
-            attr_id: AttrId::from_aid(attr_aid),
-        }
-        .into()),
+        None => Err(GetRawMAttrError::MutationNotFound(
+            sol.u_data.items.ext_id_by_int_id(item_uid),
+            AttrId::from_aid(attr_aid),
+        )),
     }
 }
 
 #[derive(Debug, thiserror::Error)]
 pub enum GetRawMAttrError {
-    #[error("{0}")]
-    MutationNotFound(#[from] ItemMAttrFoundError),
+    #[error("attribute {1} on item {0} contains no mutation data")]
+    MutationNotFound(ItemId, AttrId),
 }

@@ -1,10 +1,10 @@
-use crate::{api::FitMut, err::basic::FitFleetAssignedError, sol::SolarSystem, ud::UFitId};
+use crate::{FitId, FitMut, SolarSystem, ud::UFitId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_unset_fit_fleet(&mut self, fit_uid: UFitId) -> Result<(), FitFleetAssignedError> {
+    pub(in crate::api) fn internal_unset_fit_fleet(&mut self, fit_uid: UFitId) -> Result<(), UnsetFitFleetError> {
         let u_fit = self.u_data.fits.get(fit_uid);
         let Some(fleet_uid) = u_fit.fleet else {
-            return Err(FitFleetAssignedError { fit_id: u_fit.id });
+            return Err(UnsetFitFleetError::FitHasNoFleet(u_fit.id));
         };
         let u_fleet = self.u_data.fleets.get(fleet_uid);
         self.svc.notify_fit_removed_from_fleet(&self.u_data, u_fleet, fit_uid);
@@ -25,6 +25,6 @@ impl<'s> FitMut<'s> {
 
 #[derive(Debug, thiserror::Error)]
 pub enum UnsetFitFleetError {
-    #[error("{0}")]
-    FitHasNoFleet(#[from] FitFleetAssignedError),
+    #[error("fit {0} does not belong to any fleet")]
+    FitHasNoFleet(FitId),
 }
