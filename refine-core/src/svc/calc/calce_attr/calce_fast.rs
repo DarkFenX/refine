@@ -148,7 +148,6 @@ impl Calc {
 // Core query methods
 ////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
-    // TODO: make code below less duplicated
     pub(crate) fn get_item_attr_rfull(
         &mut self,
         ctx: SvcCtx,
@@ -166,13 +165,7 @@ impl Calc {
             };
             return Ok(cval);
         }
-        // If it is not cached, calculate and cache it
-        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
-        let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
-        if let Some(postproc) = item_attr_data.set_value_and_get_postproc(attr_rid, cval) {
-            cval = postproc.fast(self, ctx, item_uid, cval);
-        }
-        Ok(cval)
+        Ok(self.unchecked_calc_value_cache_and_postproc(ctx, item_uid, attr_rid))
     }
     fn get_item_oattr_rfull(
         &mut self,
@@ -180,7 +173,7 @@ impl Calc {
         item_uid: UItemId,
         attr_rid: Option<RAttrId>,
     ) -> Result<CalcAttrVals, GetOAttrError> {
-        // Try accessing cached value
+        // Check item load status first, attribute second. Error priority matters for some users
         let item_attr_data = self.get_item_data_with_err(item_uid)?;
         let Some(attr_rid) = attr_rid else {
             return Err(GetOAttrError::NoAttr);
@@ -194,13 +187,7 @@ impl Calc {
             };
             return Ok(cval);
         }
-        // If it is not cached, calculate and cache it
-        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
-        let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
-        if let Some(postproc) = item_attr_data.set_value_and_get_postproc(attr_rid, cval) {
-            cval = postproc.fast(self, ctx, item_uid, cval);
-        }
-        Ok(cval)
+        Ok(self.unchecked_calc_value_cache_and_postproc(ctx, item_uid, attr_rid))
     }
     pub(in crate::svc::calc) fn get_item_oattr_ofull_nopp(
         &mut self,
@@ -215,12 +202,7 @@ impl Calc {
         {
             return Some(cval);
         }
-        let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
-        self.attrs
-            .get_item_attr_data_mut(item_uid)
-            .unwrap()
-            .set_value_and_get_postproc(attr_rid, cval);
-        Some(cval)
+        Some(self.unchecked_calc_value_cache(ctx, item_uid, attr_rid))
     }
     // Gets value with custom filter, but does not use cache (has to recalculate on every request)
     fn get_item_oattr_rfull_filtered<F>(
@@ -236,13 +218,7 @@ impl Calc {
         let Some(attr_rid) = attr_rid else {
             return Err(GetOAttrError::NoAttr);
         };
-        // Fetching item data also ensures item is loaded
-        let postproc = self.get_item_data_with_err(item_uid)?.get_postproc(attr_rid);
-        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, mod_filter);
-        if let Some(postproc) = postproc {
-            cval = postproc.fast(self, ctx, item_uid, cval);
-        }
-        Ok(cval)
+        Ok(self.checked_calc_filtered_value_and_postproc(ctx, item_uid, attr_rid, mod_filter)?)
     }
     pub(in crate::svc) fn iter_item_attrs_rfull(
         &mut self,
@@ -295,7 +271,54 @@ enum GetOAttrError {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Private methods
+// Some common methods used in query methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl Calc {
+    fn unchecked_calc_value_cache_and_postproc(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+    ) -> CalcAttrVals {
+        // This method assumes that item is loaded (= has attr data)
+        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
+        let item_attr_data = self.attrs.get_item_attr_data_mut(item_uid).unwrap();
+        if let Some(postproc) = item_attr_data.set_value_and_get_postproc(attr_rid, cval) {
+            cval = postproc.fast(self, ctx, item_uid, cval);
+        }
+        cval
+    }
+    fn unchecked_calc_value_cache(&mut self, ctx: SvcCtx, item_uid: UItemId, attr_rid: RAttrId) -> CalcAttrVals {
+        // This method assumes that item is loaded (= has attr data)
+        let cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, |_| true);
+        self.attrs
+            .get_item_attr_data_mut(item_uid)
+            .unwrap()
+            .set_value_and_get_postproc(attr_rid, cval);
+        cval
+    }
+    fn checked_calc_filtered_value_and_postproc<F>(
+        &mut self,
+        ctx: SvcCtx,
+        item_uid: UItemId,
+        attr_rid: RAttrId,
+        mod_filter: F,
+    ) -> Result<CalcAttrVals, UItemLoadedError>
+    where
+        F: Fn(&EffectSpec) -> bool,
+    {
+        // Unlike neighboring methods, this does not assume item is loaded and checks it
+        let postproc = self.get_item_data_with_err(item_uid)?.get_postproc(attr_rid);
+        let mut cval = self.calc_item_attr_val(ctx, item_uid, attr_rid, mod_filter);
+        if let Some(postproc) = postproc {
+            cval = postproc.fast(self, ctx, item_uid, cval);
+        }
+        Ok(cval)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Low-level fetchers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Calc {
     fn iter_modifications<F>(

@@ -1,7 +1,7 @@
 use crate::{
     EffectId, ItemId, PValue,
     misc::EffectSpec,
-    svc::{Calc, SvcCtx, vast::VastFitData},
+    svc::{Calc, SvcCtx, funcs, vast::VastFitData},
     ud::UItemId,
     util::{RMap, RSet},
 };
@@ -92,30 +92,10 @@ fn is_any_in_effective_range(
     stopped_item_uid: UItemId,
 ) -> bool {
     for stopper_espec in stopper_especs {
-        match get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_uid) {
+        match funcs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_uid) {
             Some(PValue::ZERO) => (),
             _ => return true,
         }
     }
     false
-}
-
-// TODO: consider moving elsewhere
-fn get_espec_proj_mult(
-    ctx: SvcCtx,
-    calc: &mut Calc,
-    projector_espec: EffectSpec,
-    projectee_uid: UItemId,
-) -> Option<PValue> {
-    let projector_effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
-    let proj_mult_getter = projector_effect.proj_mod?.proj_mult?;
-    let proj_data = ctx.eff_projs.get_proj_data(projector_espec, projectee_uid)?;
-    Some(proj_mult_getter.get_mult(
-        ctx,
-        calc,
-        projector_espec.item_uid,
-        projector_effect,
-        projectee_uid,
-        proj_data,
-    ))
 }
