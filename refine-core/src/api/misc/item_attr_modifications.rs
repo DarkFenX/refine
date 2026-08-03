@@ -1,5 +1,5 @@
 use crate::{
-    AttrId, ItemId, Op, PValue, Value,
+    AttrId, ItemId, Op, PValue, UnitInterval, Value,
     svc::calc::{CalcModInfo, CalcModInfoAffector},
     ud::UData,
 };
@@ -11,8 +11,8 @@ pub struct Modification {
     pub op: Op,
     pub initial_str: Value,
     pub range_mult: Option<PValue>,
-    pub resist_mult: Option<PValue>,
-    pub stacking_mult: Option<PValue>,
+    pub resist_mult: Option<UnitInterval>,
+    pub stacking_mult: Option<UnitInterval>,
     pub applied_str: Value,
     pub affectors: Vec<Affector>,
 }

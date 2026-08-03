@@ -71,6 +71,7 @@ impl PartialEq for UnitInterval {
         OrderedFloat(self.0).eq(&OrderedFloat(other.0))
     }
 }
+impl std::marker::StructuralPartialEq for UnitInterval {}
 
 impl Ord for UnitInterval {
     fn cmp(&self, other: &Self) -> std::cmp::Ordering {

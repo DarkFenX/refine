@@ -1,5 +1,5 @@
 use crate::{
-    num::{PValue, Value},
+    PValue, UnitInterval, Value,
     rd::RAttr,
     svc::{
         SvcCtx,
@@ -16,7 +16,7 @@ impl Calc {
             .get_item_attr_data(item_uid)
             .ok_or(UItemLoadedError { item_uid })
     }
-    pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<PValue> {
+    pub(super) fn calc_resist_mult(&mut self, ctx: SvcCtx, cmod: &CtxModifier) -> Option<UnitInterval> {
         let r_resist = cmod.raw.proj_spec?.resist?;
         let projectee_uid = cmod.ctx.get_item_uid()?;
         let resist = r_resist.get_mult_by_projection(ctx, self, cmod.raw.affector_espec.item_uid, projectee_uid)?;

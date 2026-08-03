@@ -1,9 +1,9 @@
 use crate::{
+    UnitInterval, Value,
     ad::AAttrId,
     misc::AttrSpec,
-    num::{PValue, Value},
     rd::{RAttrId, REffectResist},
-    svc::{SvcCtx, calc::Calc},
+    svc::{Calc, SvcCtx},
     ud::{UData, UItemId},
 };
 
@@ -14,7 +14,7 @@ impl REffectResist {
         calc: &mut Calc,
         projector_uid: UItemId,
         projectee_uid: UItemId,
-    ) -> Option<PValue> {
+    ) -> Option<UnitInterval> {
         let resist_rid = self.get_attr_rid(ctx.u_data, projector_uid)?;
         Self::get_mult_by_aspec(ctx, calc, &AttrSpec::new(projectee_uid, resist_rid))
     }
@@ -42,11 +42,11 @@ impl REffectResist {
         ctx: SvcCtx,
         calc: &mut Calc,
         projectee_aspec: &AttrSpec,
-    ) -> Option<PValue> {
+    ) -> Option<UnitInterval> {
         let mult = calc.get_item_attr_odogma(ctx, projectee_aspec.item_uid, projectee_aspec.attr_rid)?;
         Some(match mult <= Value::from_f64(0.0001) {
-            true => PValue::ZERO,
-            false => PValue::from_f64_unchecked(mult.into_f64()),
+            true => UnitInterval::ZERO,
+            false => UnitInterval::from_f64_clamped(mult.into_f64()),
         })
     }
 }

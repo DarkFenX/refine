@@ -11,9 +11,8 @@ use super::shared::{
     AddMath, AddMathAdd, AddMathSub, MultMath, MultMathDiv, MultMathMul, MultMathPerc, PENALTY_MULTS, is_penal,
 };
 use crate::{
+    Op, PValue, UnitInterval, Value,
     ad::AItemCatId,
-    api::Op,
-    num::{PValue, Value},
     rd::REffectId,
     svc::calc::{AggrKey, AggrMode, CalcModInfo, CalcModInfoAffector, CalcOp},
     util::RMap,
@@ -87,7 +86,7 @@ impl ModAccumInfo {
         op: CalcOp,
         val: Value,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         attr_pen: bool,
         item_cat: AItemCatId,
         aggr_mode: AggrMode,
@@ -209,7 +208,7 @@ impl AccumAssign {
         op: CalcOp,
         added_raw: Value,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         aggr_mode: AggrMode,
         affectors: SmallVec<[CalcModInfoAffector; 1]>,
     ) {
@@ -222,8 +221,8 @@ impl AccumAssign {
             None => None,
         };
         let res_mult = match res_mult {
-            Some(PValue::ZERO) => return,
-            Some(..) => Some(PValue::ONE),
+            Some(UnitInterval::ZERO) => return,
+            Some(..) => Some(UnitInterval::ONE),
             None => None,
         };
         let info = AttrValInfo::from_effective_info(
@@ -305,7 +304,7 @@ where
         op: CalcOp,
         added_raw: Value,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         aggr_mode: AggrMode,
         affectors: SmallVec<[CalcModInfoAffector; 1]>,
     ) {
@@ -397,7 +396,7 @@ where
         op: CalcOp,
         added_raw: Value,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         aggr_mode: AggrMode,
         pen: bool,
         affectors: SmallVec<[CalcModInfoAffector; 1]>,
@@ -629,7 +628,7 @@ where
                 // Modifications past those which have penalty multiplier are insignificant
                 None => {
                     for other_info_mod in other_info_mult_change.effective_infos.iter_mut() {
-                        other_info_mod.stacking_mult = Some(PValue::ZERO);
+                        other_info_mod.stacking_mult = Some(UnitInterval::ZERO);
                         other_info_mod.applied_str = M::mult_to_raw(Value::ONE);
                     }
                     new_info_mult.merge_ineffective(other_info_mult_change);

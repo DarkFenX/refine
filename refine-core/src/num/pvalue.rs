@@ -1,10 +1,10 @@
 use ordered_float::OrderedFloat;
 
 use crate::{
+    Count, UnitInterval, Value,
     ad::AValue,
     dbg::DebugResult,
     def::{SERVER_TICK_HZ, SERVER_TICK_S},
-    num::{Count, Value},
     util::{FLOAT_TOLERANCE, ceil_tick, ceil_unerr, floor_tick, floor_unerr, sig_round, sum_pai_owned},
 };
 
@@ -203,6 +203,11 @@ impl std::ops::Mul<Value> for PValue {
 impl std::ops::MulAssign<PValue> for PValue {
     fn mul_assign(&mut self, rhs: Self) {
         self.0 *= rhs.0;
+    }
+}
+impl std::ops::MulAssign<UnitInterval> for PValue {
+    fn mul_assign(&mut self, rhs: UnitInterval) {
+        self.0 *= rhs.into_f64();
     }
 }
 // Division

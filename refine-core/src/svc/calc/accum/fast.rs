@@ -10,8 +10,8 @@ use super::shared::{
     AddMath, AddMathAdd, AddMathSub, MultMath, MultMathDiv, MultMathMul, MultMathPerc, PENALTY_MULTS, is_penal,
 };
 use crate::{
+    PValue, UnitInterval, Value,
     ad::AItemCatId,
-    num::{PValue, Value},
     svc::calc::{AggrKey, AggrMode, CalcOp},
     util::RMap,
 };
@@ -50,7 +50,7 @@ impl ModAccumFast {
         val: Value,
         op: CalcOp,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         attr_pen: bool,
         item_cat: AItemCatId,
         aggr_mode: AggrMode,
@@ -129,14 +129,14 @@ impl AccumAssign {
         &mut self,
         val: Value,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         aggr_mode: AggrMode,
         attr_hig: bool,
     ) {
         // Projection/resist multipliers affect assign operations differently: if any of multipliers
         // is zero, then modification is not applied altogether, otherwise it is applied fully.
         // There are no such modifiers in EVE, but the lib makes it to work this way.
-        if proj_mult == Some(PValue::ZERO) || res_mult == Some(PValue::ZERO) {
+        if proj_mult == Some(PValue::ZERO) || res_mult == Some(UnitInterval::ZERO) {
             return;
         };
         match aggr_mode {
@@ -202,7 +202,13 @@ where
             math: std::marker::PhantomData,
         }
     }
-    fn add_raw_val(&mut self, raw: Value, proj_mult: Option<PValue>, res_mult: Option<PValue>, aggr_mode: AggrMode) {
+    fn add_raw_val(
+        &mut self,
+        raw: Value,
+        proj_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
+        aggr_mode: AggrMode,
+    ) {
         let raw = M::diminish_raw(raw, proj_mult, res_mult);
         match aggr_mode {
             AggrMode::Stack => self.main += raw,
@@ -257,7 +263,7 @@ where
         &mut self,
         raw: Value,
         proj_mult: Option<PValue>,
-        res_mult: Option<PValue>,
+        res_mult: Option<UnitInterval>,
         aggr_mode: AggrMode,
         pen: bool,
     ) {

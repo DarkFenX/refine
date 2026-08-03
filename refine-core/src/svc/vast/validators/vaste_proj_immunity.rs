@@ -1,5 +1,5 @@
 use crate::{
-    ItemId, PValue,
+    ItemId, UnitInterval,
     misc::{AttrSpec, EffectSpec},
     rd::REffectResist,
     svc::{Calc, SvcCtx, Vast, funcs::is_oattr_flag_set, vast::VastFitData},
@@ -176,7 +176,7 @@ fn is_offense_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_uid: UItemId, _vas
 }
 
 fn is_resist_blocked(ctx: SvcCtx, calc: &mut Calc, projectee_aspec: AttrSpec, _vast: &Vast) -> bool {
-    REffectResist::get_mult_by_aspec(ctx, calc, &projectee_aspec) == Some(PValue::ZERO)
+    REffectResist::get_mult_by_aspec(ctx, calc, &projectee_aspec) == Some(UnitInterval::ZERO)
 }
 
 trait GetItemUid {
