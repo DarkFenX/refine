@@ -277,6 +277,25 @@ def test_application(client, consts):
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_nonproj_dmg_stats.dps == [0, 0, approx(12.928562), approx(47.376373)]
     assert api_module_nonproj_dmg_stats.volley == [0, 0, approx(39.819969), approx(145.91923)]
+    # Action
+    api_src_ship.change_ship(movement=(85, 0, 2))
+    # Verification - speed above 100% is valid, despite closer distance transmatching is improved
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_fleet_dmg_stats.dps == [0, 0, approx(80.396372), approx(294.610389)]
+    assert api_fleet_dmg_stats.volley == [0, 0, approx(247.620825), approx(907.399997)]
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_src_fit_dmg_stats.dps == [0, 0, approx(80.396372), approx(294.610389)]
+    assert api_src_fit_dmg_stats.volley == [0, 0, approx(247.620825), approx(907.399997)]
+    api_module_proj_dmg_stats = api_src_module_proj.get_stats(options=ItemStatsOptions(
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_module_proj_dmg_stats.dps == [0, 0, approx(40.198186), approx(147.305194)]
+    assert api_module_proj_dmg_stats.volley == [0, 0, approx(123.810412), approx(453.699998)]
+    api_module_nonproj_dmg_stats = api_src_module_nonproj.get_stats(options=ItemStatsOptions(
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_module_nonproj_dmg_stats.dps == [0, 0, approx(40.198186), approx(147.305194)]
+    assert api_module_nonproj_dmg_stats.volley == [0, 0, approx(123.810412), approx(453.699998)]
 
 
 def test_npc_prop_mode(client, consts):

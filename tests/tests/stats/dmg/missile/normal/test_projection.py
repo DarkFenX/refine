@@ -157,6 +157,25 @@ def test_application(client, consts):
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_charge_nonproj_dmg_stats.dps == [approx(25.963054), 0, 0, 0]
     assert api_charge_nonproj_dmg_stats.volley == [approx(205.108124), 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1.8))
+    # Verification - speed above 100% is accepted as valid
+    api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_fleet_dmg_stats.dps == [approx(29.41286), 0, 0, 0]
+    assert api_fleet_dmg_stats.volley == [approx(232.361593), 0, 0, 0]
+    api_src_fit_dmg_stats = api_src_fit.get_stats(options=FitStatsOptions(
+        dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_src_fit_dmg_stats.dps == [approx(29.41286), 0, 0, 0]
+    assert api_src_fit_dmg_stats.volley == [approx(232.361593), 0, 0, 0]
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_charge_proj_dmg_stats.dps == [approx(14.70643), 0, 0, 0]
+    assert api_charge_proj_dmg_stats.volley == [approx(116.180797), 0, 0, 0]
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps == [approx(14.70643), 0, 0, 0]
+    assert api_charge_nonproj_dmg_stats.volley == [approx(116.180797), 0, 0, 0]
 
 
 def test_npc_prop_mode(client, consts):
