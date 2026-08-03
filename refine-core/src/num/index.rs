@@ -1,3 +1,4 @@
+/// Zero-based position of an item within an ordered collection, e.g. of a module within its rack.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct Index(usize);

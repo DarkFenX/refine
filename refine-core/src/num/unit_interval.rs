@@ -2,6 +2,9 @@ use ordered_float::OrderedFloat;
 
 use crate::num::{PValue, Value};
 
+/// Float value within the unit interval `[0, 1]`.
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Debug, derive_more::Display)]
 pub struct UnitInterval(f64);

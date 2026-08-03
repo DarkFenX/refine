@@ -1,5 +1,8 @@
 use crate::{ad::ASkillLevel, num::Value};
 
+/// Level a skill is trained to, within `[0, 5]` range.
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Ord, PartialOrd, derive_more::Display)]
 pub struct SkillLevel(u8);

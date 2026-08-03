@@ -5,6 +5,9 @@ use crate::num::Value;
 const SS_MIN: f64 = -10.0;
 const SS_MAX: f64 = 5.0;
 
+/// Security status of a fit's pilot, within `[-10, 5]` range.
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct FitSecStatus(f64);

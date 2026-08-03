@@ -4,6 +4,9 @@ use crate::num::{PValue, Value};
 
 const DEFAULT: NonZeroU32 = NonZeroU32::MIN;
 
+/// Count of something which cannot be zero, e.g. of fighters in a squad.
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Debug, Eq, PartialEq, Ord, PartialOrd, derive_more::Display)]
 pub struct CountNz(NonZeroU32);
@@ -11,7 +14,7 @@ impl CountNz {
     pub fn from_u32_checked(count: u32) -> Result<Self, CountNzError> {
         match NonZeroU32::try_from(count) {
             Ok(count) => Ok(Self(count)),
-            Err(..) => Err(CountNzError { count }),
+            Err(..) => Err(CountNzError),
         }
     }
     pub const fn from_u32_clamped(count: u32) -> Self {
@@ -22,10 +25,8 @@ impl CountNz {
     }
 }
 #[derive(Debug, thiserror::Error)]
-#[error("non-zero count should be 1+, received {count}")]
-pub struct CountNzError {
-    pub count: u32,
-}
+#[error("non-zero count should be 1+, received 0")]
+pub struct CountNzError;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Constants

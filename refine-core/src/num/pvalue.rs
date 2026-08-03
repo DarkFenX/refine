@@ -9,6 +9,12 @@ use crate::{
 };
 
 /// Positive float value.
+///
+/// Restricted to zero and above - used where a negative result is meaningless, e.g. for durations,
+/// distances and damage amounts. Can contain -0.0 as a value, even if the library attempts to
+/// prevent it from happening.
+///
+/// Serialization notes: deserialization clamps out-of-range input instead of failing.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Default, Debug, derive_more::Display)]
 pub struct PValue(f64);

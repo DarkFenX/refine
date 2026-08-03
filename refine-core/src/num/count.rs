@@ -4,6 +4,7 @@ use crate::{
     util::{ceil_f64_to_u32, round_f64_to_u32, trunc_f64_to_u32},
 };
 
+/// Count of something, e.g. of max locked targets of a ship.
 #[cfg_attr(
     feature = "serde",
     derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),

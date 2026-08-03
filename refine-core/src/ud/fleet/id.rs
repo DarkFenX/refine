@@ -6,6 +6,8 @@ use crate::util::{LibDefault, LibIncrement};
 ///
 /// Allocated by the library when a fleet is created, and valid only for the solar system which
 /// issued it. After a fleet is removed, the same ID can potentially be reused by another fleet.
+///
+/// Serialization notes: serialized format is a string.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct FleetId(u32);
 impl LibDefault for FleetId {
@@ -22,11 +24,9 @@ impl LibIncrement for FleetId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-/// Returned when a fleet ID does not refer to any fleet of the solar system.
 #[derive(Debug, thiserror::Error)]
 #[error("fleet {fleet_id} not found")]
 pub struct FleetFoundError {
-    /// The ID which could not be resolved.
     pub fleet_id: FleetId,
 }
 // Conversion needed for unified user entity container to work

@@ -9,6 +9,8 @@ use crate::{
 };
 
 /// Float value.
+///
+/// Unlike regular float types, is totally ordered and hashable.
 #[cfg_attr(
     feature = "serde",
     derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),
