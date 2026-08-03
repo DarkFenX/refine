@@ -1,6 +1,8 @@
 use crate::ad::AAbilId;
 
 /// Fighter ability ID.
+///
+/// Comes from EVE data.
 #[cfg_attr(
     feature = "serde",
     derive(derive_more::FromStr, serde::Serialize, serde::Deserialize),

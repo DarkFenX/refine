@@ -22,6 +22,7 @@ pub enum EffectId {
     Custom(CustomEffectId),
 }
 
+/// ID of an effect defined by EVE data.
 #[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct DogmaEffectId(i32);
@@ -34,6 +35,7 @@ impl DogmaEffectId {
     }
 }
 
+/// ID of an effect defined by the library, with no EVE counterpart.
 #[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct CustomEffectId(i32);

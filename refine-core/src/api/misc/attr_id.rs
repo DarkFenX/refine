@@ -3,12 +3,11 @@ use crate::ad::{AAttrId, ACustomAttrId, AEveAttrId};
 /// ID of an attribute.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug)]
 pub enum AttrId {
-    /// ID of an EVE attribute.
     Eve(EveAttrId),
-    /// ID of an attribute created by the library.
     Custom(CustomAttrId),
 }
 
+/// ID of an attribute defined by EVE data.
 #[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct EveAttrId(i32);
@@ -21,6 +20,7 @@ impl EveAttrId {
     }
 }
 
+/// ID of an attribute defined by the library, with no EVE counterpart.
 #[cfg_attr(feature = "serde", derive(derive_more::FromStr))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct CustomAttrId(i32);
