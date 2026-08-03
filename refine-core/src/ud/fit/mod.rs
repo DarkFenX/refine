@@ -8,8 +8,8 @@ pub(crate) use skill::UFitSkill;
 pub(crate) use uid::UFitId;
 
 mod container;
+mod debug;
 mod fit;
-mod fite_debug;
 mod id;
 mod item_vec;
 mod skill;

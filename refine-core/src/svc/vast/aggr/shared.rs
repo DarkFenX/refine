@@ -39,14 +39,6 @@ impl<I> GetMainDuration for AggrPartData<I> {
     }
 }
 
-#[derive(Copy, Clone)]
-pub(super) struct AggrHardDtNull;
-impl From<CSeqHardDtFull> for AggrHardDtNull {
-    fn from(_hard_dt: CSeqHardDtFull) -> Self {
-        Self {}
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // CSeq data container - time-limited processing (time-limited aggregators, or hard downtime
 // processing)
@@ -88,39 +80,6 @@ impl From<CSeqHardDtFull> for AggrHardDtSimple {
 impl GetDuration for AggrHardDtSimple {
     fn get_duration(&self) -> PValue {
         self.duration
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// CSeq data container - spool
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartDataSpool {
-    // Active + soft downtime duration combined
-    pub(super) cycle_main_duration: PValue,
-    pub(super) soft_dt: bool,
-    // Includes both invariant str mult and part-specific str mult
-    pub(super) str_mult: PValue,
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// CSeq data container - spool + time-limited processing (time-limited aggregators, or hard downtime
-// processing
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[derive(Copy, Clone, Eq, PartialEq)]
-pub(super) struct AggrPartDataSpoolTail {
-    // Active + soft downtime duration combined
-    pub(super) cycle_main_duration: PValue,
-    // Active + soft downtime duration, or output completion duration, whichever is longer
-    pub(super) cycle_completion_duration: Value,
-    pub(super) cycle_tail_duration: Option<PValue>,
-    pub(super) soft_dt: bool,
-    // Includes both invariant str mult and part-specific str mult
-    pub(super) str_mult: PValue,
-}
-impl GetMainDuration for AggrPartDataSpoolTail {
-    fn get_main_duration(&self) -> PValue {
-        self.cycle_main_duration
     }
 }
 

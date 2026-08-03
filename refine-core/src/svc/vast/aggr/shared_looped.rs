@@ -1,7 +1,7 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum, SeqInstanceAccumMax, SeqInstanceAccumStackMax},
     shared::{
-        AggrHardDtNull, AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_for_cycle_hard_dt,
+        AggrHardDtSimple, AggrPartData, AggrPartDataTail, process_output_for_cycle_hard_dt,
         process_output_for_lls_cseq_hard_dt,
     },
     shared_time::{process_output_for_part_limited_regular, process_output_for_part_single_regular},
@@ -12,6 +12,14 @@ use crate::{
     svc::cycle::{CSeqHardDtFull, CycleDataFull, CycleSeqLimited, CycleSeqLooped},
     util::{LibConverter, LibMax},
 };
+
+#[derive(Copy, Clone)]
+pub(super) struct AggrHardDtNull;
+impl From<CSeqHardDtFull> for AggrHardDtNull {
+    fn from(_hard_dt: CSeqHardDtFull) -> Self {
+        Self {}
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Return value which contains both aggregators, and some methods to access it

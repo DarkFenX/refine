@@ -1,10 +1,10 @@
 use super::{
     accum::{SeqAccum, SeqInstanceAccum},
     proj_shared::{
-        AggrProjInvData, AggrSpoolInvData, ProjConverter, get_proj_spool_cycle_output,
-        process_output_for_lls_cseq_spool_hard_dt,
+        AggrPartDataSpool, AggrPartDataSpoolTail, AggrProjInvData, AggrSpoolInvData, ProjConverter,
+        get_proj_spool_cycle_output, process_output_for_lls_cseq_spool_hard_dt,
     },
-    shared::{AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail},
+    shared::{AggrPartData, AggrPartDataTail},
     shared_clip::{aclip_process_both_for_cseq_hard_dt, aclip_process_both_for_cseq_regular},
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };

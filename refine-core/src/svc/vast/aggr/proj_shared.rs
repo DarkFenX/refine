@@ -1,8 +1,8 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrHardDtSimple, AggrPartData, AggrPartDataSpool, AggrPartDataSpoolTail, AggrPartDataTail,
-        get_cycle_tail_duration, get_item_ship_limit, get_tailed_cycle_full_repeat_count,
+        AggrHardDtSimple, AggrPartData, AggrPartDataTail, get_cycle_tail_duration,
+        get_item_ship_limit, get_tailed_cycle_full_repeat_count,
     },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
@@ -144,6 +144,35 @@ impl AggrSpoolInvData {
     }
     pub(super) fn calc_cycle_spool(&self, uninterrupted_cycles: Count) -> Value {
         (self.step * uninterrupted_cycles.into_value()).min(self.max)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Projection-specific data containers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub(super) struct AggrPartDataSpool {
+    // Active + soft downtime duration combined
+    pub(super) cycle_main_duration: PValue,
+    pub(super) soft_dt: bool,
+    // Includes both invariant str mult and part-specific str mult
+    pub(super) str_mult: PValue,
+}
+
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub(super) struct AggrPartDataSpoolTail {
+    // Active + soft downtime duration combined
+    pub(super) cycle_main_duration: PValue,
+    // Active + soft downtime duration, or output completion duration, whichever is longer
+    pub(super) cycle_completion_duration: Value,
+    pub(super) cycle_tail_duration: Option<PValue>,
+    pub(super) soft_dt: bool,
+    // Includes both invariant str mult and part-specific str mult
+    pub(super) str_mult: PValue,
+}
+impl GetMainDuration for AggrPartDataSpoolTail {
+    fn get_main_duration(&self) -> PValue {
+        self.cycle_main_duration
     }
 }
 

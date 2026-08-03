@@ -1,11 +1,10 @@
 use itertools::chain;
 
 use crate::{
+    DpsProfile, FitId, FitSecStatus,
     ad::AItemId,
-    misc::DpsProfile,
-    num::FitSecStatus,
     ud::{
-        FitId, UFleetId, UItemId,
+        UFleetId, UItemId,
         fit::{UFitSkill, UItemVec},
         item::UShipKind,
     },

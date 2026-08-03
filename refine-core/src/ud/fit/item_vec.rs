@@ -2,7 +2,7 @@ use std::collections::BTreeMap;
 
 use itertools::Itertools;
 
-use crate::{num::Index, ud::UItemId};
+use crate::{Index, ud::UItemId};
 
 #[derive(Clone)]
 pub(crate) struct UItemVec {

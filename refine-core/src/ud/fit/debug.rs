@@ -1,6 +1,6 @@
 use crate::{
+    ModRack,
     dbg::DebugResult,
-    misc::ModRack,
     ud::{UData, UFighter, UFit, UFitId, UItem, UItemId, UModule},
 };
 
