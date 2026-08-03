@@ -43,11 +43,11 @@ pub use info::{
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, DefOption, DefOptionExt,
-    Direction, DpsProfile, EffectId, EffectMode, FighterCountInfo, FitId, FitSecStatus, FleetId, Index,
-    ItemAttrModifications, ItemAttrValues, ItemEffectInfo, ItemGrpId, ItemId, ItemKind, ItemNpcPropInfo,
-    ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ItemTypeId, MinionState, ModRack, Modification,
-    ModuleState, MoveMode, Movement, NpcProp, Op, OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone,
-    SecZoneCorruption, ServiceState, SkillLevel, SlotIndex, Spool, UnitInterval, Value,
+    Direction, DpsProfile, EffectId, EffectMode, FighterCountInfo, FitId, FitSecStatus, FleetId, Index, ItemAttrInfo,
+    ItemEffectInfo, ItemGrpId, ItemId, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo, ItemRearmMinionInfo,
+    ItemSpoolInfo, ItemTypeId, MinionState, ModRack, Modification, ModuleState, MoveMode, Movement, NpcProp, Op,
+    OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
+    SlotIndex, Spool, UnitInterval, Value,
 };
 pub use src::{Src, SrcAlias};
 pub use util::TriStateField;
