@@ -2,6 +2,10 @@ use std::num::Wrapping;
 
 use crate::util::{LibDefault, LibIncrement};
 
+/// Identifies an item within a solar system.
+///
+/// Allocated by the library when an item is created, and valid only for the solar system which
+/// issued it. After an item is removed, the same ID can potentially be reused by another item.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ItemId(u32);
 impl LibDefault for ItemId {
@@ -18,9 +22,11 @@ impl LibIncrement for ItemId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Returned when an item ID does not refer to any item of the solar system.
 #[derive(Clone, Debug, thiserror::Error)]
 #[error("item {item_id} not found")]
 pub struct ItemFoundError {
+    /// The ID which could not be resolved.
     pub item_id: ItemId,
 }
 // Conversion needed for unified user entity container to work

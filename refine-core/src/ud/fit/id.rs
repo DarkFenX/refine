@@ -2,6 +2,10 @@ use std::num::Wrapping;
 
 use crate::util::{LibDefault, LibIncrement};
 
+/// Identifies a fit within a solar system.
+///
+/// Allocated by the library when a fit is created, and valid only for the solar system which issued
+/// it. After a fit is removed, the same ID can potentially be reused by another fit.
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct FitId(u32);
 impl LibDefault for FitId {
@@ -18,9 +22,11 @@ impl LibIncrement for FitId {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Error
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+/// Returned when a fit ID does not refer to any fit of the solar system.
 #[derive(Debug, thiserror::Error)]
 #[error("fit {fit_id} not found")]
 pub struct FitFoundError {
+    /// The ID which could not be resolved.
     pub fit_id: FitId,
 }
 // Conversion needed for unified user entity container to work
