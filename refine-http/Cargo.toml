@@ -15,7 +15,7 @@ http-body-util = ">=0.1.4"
 serde = { version = ">=1.0.229", features = ["derive"] }
 serde_json = { version = ">=1.0.151", features = ["float_roundtrip"] }
 thiserror = ">=2.0.19"
-time = { version = ">=0.3.54", features = ["formatting", "macros"] }
+time = { version = ">=0.3.55", features = ["formatting", "macros"] }
 tokio = { version = ">=1.53.1", features = ["rt", "rt-multi-thread", "net", "macros"] }
 tower = { version = ">=0.5.3", features = ["util"] }
 tower-http = { version = ">=0.7.0", features = ["normalize-path", "trace"] }

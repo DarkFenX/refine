@@ -7,8 +7,8 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
-angle-sc = ">=2.0.0"
-cranelift-entity = ">=0.134.2"
+angle-sc = ">=2.0.1"
+cranelift-entity = ">=0.134.3"
 refine-serde = { path = "../util/refine-serde", optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
 either = ">=0.17.0"
