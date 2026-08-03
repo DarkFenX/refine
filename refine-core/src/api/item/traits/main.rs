@@ -35,7 +35,7 @@ pub trait ItemCommon: ItemSealed {
         let type_aid = self.get_sol().u_data.items.get(self.get_uid()).get_type_aid();
         ItemTypeId::from_aid(type_aid)
     }
-    fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = ItemEffectInfo>, IterItemEffectsError> {
+    fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, ItemEffectInfo)>, IterItemEffectsError> {
         let sol = self.get_sol();
         let item_uid = self.get_uid();
         let item = sol.u_data.items.get(item_uid);
@@ -52,11 +52,7 @@ pub trait ItemCommon: ItemSealed {
             let effect_aid = sol.u_data.r_data.get_effect_by_rid(effect_rid).aid;
             let running = reffs.contains(&effect_rid);
             let mode = item.get_effect_mode(&effect_rid);
-            ItemEffectInfo {
-                id: EffectId::from_aid(effect_aid),
-                running,
-                mode,
-            }
+            (EffectId::from_aid(effect_aid), ItemEffectInfo { running, mode })
         });
         Ok(effect_infos)
     }
@@ -72,21 +68,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             return Err(AttrFoundError { attr_id: *attr_id }.into());
         };
         match sol.internal_get_item_attr(item_uid, attr_rid) {
-            Ok(calc_vals) => Ok(ItemAttrInfo::from_calc_attr_vals(*attr_id, calc_vals)),
+            Ok(calc_vals) => Ok(ItemAttrInfo::from_calc_attr_vals(calc_vals)),
             Err(error) => Err(ItemLoadedError {
                 item_id: self.get_sol().u_data.items.ext_id_by_int_id(error.item_uid),
             }
             .into()),
         }
     }
-    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = ItemAttrInfo>, IterItemAttrsError> {
+    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, ItemAttrInfo)>, IterItemAttrsError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_uid) {
             Ok(attr_iter) => Ok(attr_iter.map(|(attr_rid, calc_vals)| {
-                ItemAttrInfo::from_calc_attr_vals(
+                (
                     AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
-                    calc_vals,
+                    ItemAttrInfo::from_calc_attr_vals(calc_vals),
                 )
             })),
             Err(error) => Err(ItemLoadedError {

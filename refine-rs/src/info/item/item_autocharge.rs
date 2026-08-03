@@ -25,16 +25,16 @@ pub struct AutochargeInfoExt {
     pub state: bool,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::KeyValueMap<_>"),
+        serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<ItemAttrInfo>,
+    pub attrs: Vec<(AttrId, ItemAttrInfo)>,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::KeyValueMap<_>"),
+        serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub effects: Vec<ItemEffectInfo>,
+    pub effects: Vec<(EffectId, ItemEffectInfo)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
