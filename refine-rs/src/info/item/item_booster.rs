@@ -34,16 +34,16 @@ pub struct BoosterInfoExt {
     pub side_effects: Vec<(EffectId, SideEffectInfo)>,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
+        serde_as(as = "serde_with::KeyValueMap<_>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<(AttrId, ItemAttrInfo)>,
+    pub attrs: Vec<ItemAttrInfo>,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
+        serde_as(as = "serde_with::KeyValueMap<_>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
+    pub effects: Vec<ItemEffectInfo>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),

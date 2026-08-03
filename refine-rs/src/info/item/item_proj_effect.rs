@@ -3,7 +3,7 @@ use rc::ItemCommon;
 use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
-use crate::{AttrId, EffectId, ItemAttrInfo, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo};
+use crate::{AttrId, ItemAttrInfo, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -27,16 +27,16 @@ pub struct ProjEffectInfoExt {
     pub projs: Vec<ProjInfo>,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
+        serde_as(as = "serde_with::KeyValueMap<_>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<(AttrId, ItemAttrInfo)>,
+    pub attrs: Vec<ItemAttrInfo>,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
+        serde_as(as = "serde_with::KeyValueMap<_>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub effects: Vec<(EffectId, ItemEffectInfo)>,
+    pub effects: Vec<ItemEffectInfo>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
