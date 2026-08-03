@@ -7,6 +7,7 @@ use crate::{
     rd::{RData, REffectModStrength},
 };
 
+/// Strength of a side effect, as an operator and the attribute holding the strength value.
 pub struct SideEffectPartialStr {
     op: Op,
     attr_id: Option<AttrId>,
@@ -22,6 +23,7 @@ impl SideEffectPartialStr {
     }
 }
 
+/// Strength of a side effect, as an operator and the resolved strength value.
 pub struct SideEffectStr {
     op: Op,
     attr_id: Option<AttrId>,

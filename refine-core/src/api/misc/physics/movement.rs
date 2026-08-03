@@ -2,14 +2,18 @@ use angle_sc::{Angle, Degrees, trig};
 
 use crate::{PValue, Value, misc::Xyz, ud::UPhysics};
 
+/// How an item is moving.
 #[derive(Copy, Clone)]
 pub struct Movement {
     /// Movement direction of an item.
     pub direction: Direction,
     /// Portion of speed item moves with, relatively its max speed.
+    ///
+    /// Uses positive float instead of unit interval to allow speeds faster than 100%.
     pub speed: PValue,
 }
 
+/// Direction in space, as a pair of angles.
 #[derive(Copy, Clone)]
 pub struct Direction {
     /// Degrees relatively X axis counter-clockwise.

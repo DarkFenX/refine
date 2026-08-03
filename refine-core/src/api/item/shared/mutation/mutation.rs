@@ -1,10 +1,12 @@
 use crate::{sol::SolarSystem, ud::UItemId};
 
+/// Mutation applied to an item.
 pub enum Mutation<'s> {
     Effective(EffectiveMutation<'s>),
     Incomplete(IncompleteMutation<'s>),
 }
 
+/// Mutation applied to an item.
 pub enum MutationMut<'s> {
     Effective(EffectiveMutationMut<'s>),
     Incomplete(IncompleteMutationMut<'s>),

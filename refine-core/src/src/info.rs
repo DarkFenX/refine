@@ -36,6 +36,7 @@ pub enum SrcOriginGeneratedReason {
     CacheLoadFailed(String),
 }
 
+/// Non-fatal problems encountered while building a data source.
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct SrcWarnings {

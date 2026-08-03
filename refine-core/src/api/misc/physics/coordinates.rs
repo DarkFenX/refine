@@ -1,5 +1,11 @@
 use crate::{Value, misc::Xyz};
 
+/// Position of an item in space, in meters.
+///
+/// Keep in mind that in EVE, ships are spheres with non-zero radius, and overview distance is a
+/// surface-to-surface distance. So, ships which are exactly 10 km apart center-to-center will have
+/// shorter surface-to-surface distance. This matters a lot, since most of EVE effects are using the
+/// surface-to-surface distance to calculate their strength.
 #[cfg_attr(
     feature = "serde",
     derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)

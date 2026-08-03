@@ -4,6 +4,7 @@ use crate::{
     ud::UData,
 };
 
+/// Single modification applied to an item attribute.
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Clone)]
 pub struct Modification {
@@ -16,6 +17,9 @@ pub struct Modification {
     pub affectors: Vec<Affector>,
 }
 
+/// Item and its attribute which contributed to a modification.
+///
+/// Not all affectors have attribute specified, some use hardcoded values.
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
 pub struct Affector {

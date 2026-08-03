@@ -26,6 +26,7 @@ use crate::{
     util::RMap,
 };
 
+/// Methods shared by every item kind.
 #[expect(private_bounds)]
 pub trait ItemCommon: ItemSealed {
     fn get_item_id(&self) -> ItemId {
@@ -58,6 +59,7 @@ pub trait ItemCommon: ItemSealed {
     }
 }
 
+/// Methods shared by every mutated item kind.
 #[expect(private_bounds)]
 pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrValues, GetItemAttrError> {
