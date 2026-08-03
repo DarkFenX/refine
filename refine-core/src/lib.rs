@@ -35,7 +35,7 @@ pub use api::{
     BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CtlAffectors, CustomEffectId, Direction,
     DogmaEffectId, Drone, DroneMut, EffectId, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit,
     FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut,
-    IncompleteMutation, IncompleteMutationMut, Item, ItemAttrInfo, ItemCommon, ItemEffectInfo, ItemGrpId, ItemMut,
+    IncompleteMutation, IncompleteMutationMut, Item, ItemAttrValues, ItemCommon, ItemEffectInfo, ItemGrpId, ItemMut,
     ItemMutCommon, ItemTypeId, MinionState, Modification, Module, ModuleIter, ModuleMut, ModuleState, MoveMode,
     Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, ProjRange,
     RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveMode, Rig, RigMut, Service,

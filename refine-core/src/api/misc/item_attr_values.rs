@@ -2,7 +2,7 @@ use crate::{Value, svc::calc::CalcAttrVals};
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Copy, Clone)]
-pub struct ItemAttrInfo {
+pub struct ItemAttrValues {
     pub base: Value,
     pub modified: Value,
 }
@@ -10,9 +10,9 @@ pub struct ItemAttrInfo {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAttrInfo {
+impl ItemAttrValues {
     pub(in crate::api) fn from_calc_attr_vals(calc_attr_vals: CalcAttrVals) -> Self {
-        ItemAttrInfo {
+        ItemAttrValues {
             base: calc_attr_vals.base,
             modified: calc_attr_vals.extra,
         }

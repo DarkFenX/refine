@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, FitId, ItemAttrInfo, ItemEffectInfo, ItemId, ItemInfoMode, ItemMutationInfo,
+    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemMutationInfo,
     ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
 };
 
@@ -36,7 +36,7 @@ pub struct DroneInfoExt {
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<(AttrId, ItemAttrInfo)>,
+    pub attrs: Vec<(AttrId, ItemAttrValues)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),

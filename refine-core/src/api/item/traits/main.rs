@@ -2,7 +2,7 @@ use itertools::Itertools;
 
 use super::sealed::{ItemMutSealed, ItemSealed};
 use crate::{
-    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, ItemAttrInfo, ItemEffectInfo, ItemTypeId,
+    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, ItemAttrValues, ItemEffectInfo, ItemTypeId,
     Modification, OptionalReload, PValue, UnitInterval, Value,
     api::AffectionDir,
     err::{
@@ -60,7 +60,7 @@ pub trait ItemCommon: ItemSealed {
 
 #[expect(private_bounds)]
 pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
-    fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrInfo, GetItemAttrError> {
+    fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrValues, GetItemAttrError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let attr_aid = attr_id.into_aid();
@@ -68,21 +68,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             return Err(AttrFoundError { attr_id: *attr_id }.into());
         };
         match sol.internal_get_item_attr(item_uid, attr_rid) {
-            Ok(calc_vals) => Ok(ItemAttrInfo::from_calc_attr_vals(calc_vals)),
+            Ok(calc_vals) => Ok(ItemAttrValues::from_calc_attr_vals(calc_vals)),
             Err(error) => Err(ItemLoadedError {
                 item_id: self.get_sol().u_data.items.ext_id_by_int_id(error.item_uid),
             }
             .into()),
         }
     }
-    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, ItemAttrInfo)>, IterItemAttrsError> {
+    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, ItemAttrValues)>, IterItemAttrsError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_uid) {
             Ok(attr_iter) => Ok(attr_iter.map(|(attr_rid, calc_vals)| {
                 (
                     AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
-                    ItemAttrInfo::from_calc_attr_vals(calc_vals),
+                    ItemAttrValues::from_calc_attr_vals(calc_vals),
                 )
             })),
             Err(error) => Err(ItemLoadedError {
