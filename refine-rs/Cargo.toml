@@ -10,6 +10,7 @@ edition = "2024"
 rc = { package = "refine-core", path = "../refine-core" }
 redh = { package = "refine-edh", path = "../refine-edh", optional = true }
 radc = { package = "refine-adc", path = "../refine-adc", optional = true }
+refine-serde = { path = "../util/refine-serde", optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
 fixedstr =  { version = ">=0.5.11", features = ["fstr"] }
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }
@@ -25,6 +26,7 @@ uuid = { version = ">=1.24.0", features = ["v4", "fast-rng"] }
 
 [features]
 serde = [
+    "dep:refine-serde",
     "dep:serde",
     "dep:serde_tuple",
     "dep:serde_with",

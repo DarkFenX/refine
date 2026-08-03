@@ -1761,6 +1761,7 @@ dependencies = [
  "refine-adc",
  "refine-core",
  "refine-edh",
+ "refine-serde",
  "serde",
  "serde_tuple",
  "serde_with",

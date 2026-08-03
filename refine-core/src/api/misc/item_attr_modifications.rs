@@ -4,6 +4,15 @@ use crate::{
     ud::UData,
 };
 
+#[cfg_attr(feature = "serde", derive(refine_serde::VecAsMapEntry))]
+#[derive(Clone)]
+pub struct ItemAttrModifications {
+    #[cfg_attr(feature = "serde", vec_map(key))]
+    pub id: AttrId,
+    #[cfg_attr(feature = "serde", vec_map(value))]
+    pub modifications: Vec<Modification>,
+}
+
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
 #[derive(Clone)]
 pub struct Modification {

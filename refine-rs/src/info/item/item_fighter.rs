@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, EffectId, FighterCountInfo, FitId, ItemAttrInfo,
-    ItemEffectInfo, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification, Movement,
+    AbilityId, AbilityInfo, AutochargeInfo, Coordinates, EffectId, FighterCountInfo, FitId, ItemAttrModifications,
+    ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Movement,
     RangedProjInfo,
 };
 
@@ -49,7 +49,7 @@ pub struct FighterInfoExt {
         serde_as(as = "serde_with::KeyValueMap<_>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<ItemAttrInfo>,
+    pub attrs: Vec<ItemAttrValues>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::KeyValueMap<_>"),
@@ -58,10 +58,10 @@ pub struct FighterInfoExt {
     pub effects: Vec<ItemEffectInfo>,
     #[cfg_attr(
         feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
+        serde_as(as = "refine_serde::VecAsMap"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub mods: Vec<(AttrId, Vec<Modification>)>,
+    pub mods: Vec<ItemAttrModifications>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
