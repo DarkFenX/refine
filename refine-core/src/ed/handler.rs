@@ -7,7 +7,7 @@ pub trait EveDataHandler: std::fmt::Debug {
     /// This method should return an error only when it is impossible to fetch the data altogether.
     /// In case of a less impactful error (such as inability to deserialize one specific item within
     /// a big array of data), the error should be recorded as a meaningful warning message and
-    /// stored in [`EDataCont::warns`](crate::ed::EDataCont::warns) for appropriate entity.
+    /// stored in [`EDataCont::warnings`](crate::ed::EDataCont::warnings) for appropriate entity.
     fn get_data(&self) -> Result<EData, Box<dyn std::error::Error>>;
     /// Get version of the data.
     fn get_data_version(&self) -> Result<String, Box<dyn std::error::Error>>;
