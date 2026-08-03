@@ -1,5 +1,5 @@
 //! Initially code was taken from axum example:
-//! https://github.com/tokio-rs/axum/blob/main/examples/print-request-response/src/main.rs
+//! <https://github.com/tokio-rs/axum/blob/main/examples/print-request-response/src/main.rs>
 
 use axum::{
     body::{Body, Bytes, to_bytes},

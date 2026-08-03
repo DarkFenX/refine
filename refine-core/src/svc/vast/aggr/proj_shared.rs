@@ -1,8 +1,8 @@
 use super::{
     accum::SeqInstanceAccum,
     shared::{
-        AggrHardDtSimple, AggrPartData, AggrPartDataTail, get_cycle_tail_duration,
-        get_item_ship_limit, get_tailed_cycle_full_repeat_count,
+        AggrHardDtSimple, AggrPartData, AggrPartDataTail, get_cycle_tail_duration, get_item_ship_limit,
+        get_tailed_cycle_full_repeat_count,
     },
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };

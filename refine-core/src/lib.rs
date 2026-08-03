@@ -18,17 +18,16 @@
 //! It exposes various endpoints to fetch aggregated stats and conduct fit optimizations. Initial
 //! setup consists of the following steps:
 //!
-//! - you feed an [`ed::EveDataHandler`](ed::EveDataHandler) implementation and an optional
-//!   [`ad::AdaptedDataCacher`](ad::AdaptedDataCacher) implementation to the [`Src`](Src)
-//!   constructor
-//! - during [`Src`](Src) initialization, the library attempts to use cached adapted data. If its
+//! - you feed an [`ed::EveDataHandler`] implementation and an optional [`ad::AdaptedDataCacher`]
+//!   implementation to the [`Src`] constructor
+//! - during [`Src`] initialization, the library attempts to use cached adapted data. If its
 //!   fingerprint (data version \+ library version at the time of cache generation) and current
 //!   fingerprint (version of currently provided data + current library version) matched, cached
 //!   data is attempted to be loaded. If cache couldn't be loaded or fingerprints mismatch, EVE data
 //!   is fetched and converted into adapted data (this process is relatively heavy on both IO and
 //!   CPU), which is then fed to adapted data cacher implementation.
-//! - you create [`SolarSystem`](SolarSystem), and manipulate it to create fits with ships and
-//!   items, and fetch data and stats
+//! - you create [`SolarSystem`], and manipulate it to create fits with ships and items, and fetch
+//!   data and stats
 
 pub use api::{
     Ability, AbilityId, AbilityIter, AbilityMut, AddMode, Affector, AttrId, Autocharge, AutochargeMut, Booster,

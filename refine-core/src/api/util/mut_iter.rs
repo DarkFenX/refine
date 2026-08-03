@@ -4,8 +4,8 @@
 //! types on traits break covariance checks, so they are pushed further closer to specific types,
 //! and lender itself just assumes covariance.
 //!
-//! tl;dr: a bunch of hacks to make it work. See https://github.com/WanderLanz/Lender/issues/37 for
-//! more info.
+//! tl;dr: a bunch of hacks to make it work. See <https://github.com/WanderLanz/Lender/issues/37>
+//! for more info.
 
 use lender::{Lender, Lending, unsafe_assume_covariance};
 
