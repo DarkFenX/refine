@@ -1,8 +1,8 @@
 pub use abil_id::AbilityId;
 pub use attr_id::AttrId;
-pub use attr_vals::AttrVals;
 pub use effect_id::{CustomEffectId, DogmaEffectId, EffectId};
-pub use effect_info::EffectInfo;
+pub use item_attr::ItemAttrInfo;
+pub use item_effect::ItemEffectInfo;
 pub use item_grp_id::ItemGrpId;
 pub use modification::{Affector, Modification};
 pub use op::Op;
@@ -14,9 +14,9 @@ pub use type_id::ItemTypeId;
 
 mod abil_id;
 mod attr_id;
-mod attr_vals;
 mod effect_id;
-mod effect_info;
+mod item_attr;
+mod item_effect;
 mod item_grp_id;
 mod modification;
 mod op;

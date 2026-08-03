@@ -4,9 +4,9 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, AttrVals, ChargeInfo, Count, EffectId, EffectInfo, FitId, Index, ItemId, ItemInfoMode, ItemMutationInfo,
-    ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState, RangedProjInfo,
-    TriStateField,
+    AttrId, ChargeInfo, Count, EffectId, FitId, Index, ItemAttrInfo, ItemEffectInfo, ItemId, ItemInfoMode,
+    ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState,
+    RangedProjInfo, TriStateField,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -45,13 +45,13 @@ pub struct ModuleInfoExt {
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub attrs: Vec<(AttrId, ItemAttrInfo)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub effects: Vec<(EffectId, ItemEffectInfo)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),

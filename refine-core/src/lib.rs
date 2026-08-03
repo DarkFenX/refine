@@ -31,16 +31,16 @@
 //!   items, and fetch data and stats
 
 pub use api::{
-    Ability, AbilityId, AbilityIter, AbilityMut, AddMode, Affector, AttrId, AttrVals, Autocharge, AutochargeMut,
-    Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CtlAffectors, CustomEffectId,
-    Direction, DogmaEffectId, Drone, DroneMut, EffectId, EffectInfo, EffectiveMutation, EffectiveMutationMut, Fighter,
-    FighterMut, Fit, FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant,
-    ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemCommon, ItemGrpId, ItemMut, ItemMutCommon,
-    ItemTypeId, MinionState, Modification, Module, ModuleIter, ModuleMut, ModuleState, MoveMode, Movement, MutIter,
-    Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, ProjRange, RangedProj,
-    RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveMode, Rig, RigMut, Service, ServiceMut,
-    ServiceState, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill,
-    SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    Ability, AbilityId, AbilityIter, AbilityMut, AddMode, Affector, AttrId, Autocharge, AutochargeMut, Booster,
+    BoosterMut, Character, CharacterMut, Charge, ChargeMut, Coordinates, CtlAffectors, CustomEffectId, Direction,
+    DogmaEffectId, Drone, DroneMut, EffectId, EffectiveMutation, EffectiveMutationMut, Fighter, FighterMut, Fit,
+    FitMut, Fleet, FleetMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut, Implant, ImplantMut,
+    IncompleteMutation, IncompleteMutationMut, Item, ItemAttrInfo, ItemCommon, ItemEffectInfo, ItemGrpId, ItemMut,
+    ItemMutCommon, ItemTypeId, MinionState, Modification, Module, ModuleIter, ModuleMut, ModuleState, MoveMode,
+    Movement, MutIter, Mutation, MutationMut, Op, Proj, ProjEffect, ProjEffectMut, ProjIter, ProjMut, ProjRange,
+    RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveMode, Rig, RigMut, Service,
+    ServiceMut, ServiceState, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr,
+    SideEffectStr, Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 pub use def::VERSION;
 pub use lender::Lender;

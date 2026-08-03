@@ -1,4 +1,4 @@
-use crate::num::Index;
+use crate::Index;
 
 /// Defines how module is added.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]

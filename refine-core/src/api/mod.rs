@@ -20,9 +20,9 @@ pub use item::{
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_riad, iter_projs, iter_ranged_projs};
 pub use misc::{
-    AbilityId, AddMode, Affector, AttrId, AttrVals, Coordinates, CustomEffectId, Direction, DogmaEffectId, EffectId,
-    EffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, ModuleState, MoveMode, Movement, Op, ProjRange,
-    RemoveMode, ServiceState,
+    AbilityId, AddMode, Affector, AttrId, Coordinates, CustomEffectId, Direction, DogmaEffectId, EffectId,
+    ItemAttrInfo, ItemEffectInfo, ItemGrpId, ItemTypeId, MinionState, Modification, ModuleState, MoveMode, Movement,
+    Op, ProjRange, RemoveMode, ServiceState,
 };
 use sol_ctl_affectors::AffectionDir;
 pub use sol_ctl_affectors::CtlAffectors;

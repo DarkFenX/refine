@@ -9,7 +9,7 @@ edition = "2024"
 [dependencies]
 rs = { package = "refine-rs", path = "../refine-rs", features = ["edh-phb-http", "adc-fs", "serde"] }
 axum = { version = ">=0.8.9", default-features = false, features = ["http1", "json", "query", "tokio"]}
-axum-extra = { version = "0.12.6", features = ["with-rejection"] }
+axum-extra = { version = ">=0.12.6", features = ["with-rejection"] }
 config = { version = ">=0.15.25", features = ["toml"] }
 http-body-util = ">=0.1.4"
 serde = { version = ">=1.0.229", features = ["derive"] }

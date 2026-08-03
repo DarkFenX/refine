@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, AttrVals, EffectId, EffectInfo, FitId, ItemId, ItemInfoMode, ItemTypeId, Modification, SideEffectInfo,
-    SlotIndex,
+    AttrId, EffectId, FitId, ItemAttrInfo, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
+    SideEffectInfo, SlotIndex,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -37,13 +37,13 @@ pub struct BoosterInfoExt {
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub attrs: Vec<(AttrId, AttrVals)>,
+    pub attrs: Vec<(AttrId, ItemAttrInfo)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
-    pub effects: Vec<(EffectId, EffectInfo)>,
+    pub effects: Vec<(EffectId, ItemEffectInfo)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),

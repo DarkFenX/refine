@@ -1,10 +1,6 @@
 use angle_sc::{Angle, Degrees, trig};
 
-use crate::{
-    misc::Xyz,
-    num::{PValue, Value},
-    ud::UPhysics,
-};
+use crate::{PValue, Value, misc::Xyz, ud::UPhysics};
 
 #[derive(Copy, Clone)]
 pub struct Movement {

@@ -1,9 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    misc::DefOptionExt,
-    sol::SolarSystem,
-    ud::{FitId, ItemId, UFitId, UItemId},
+    DefOptionExt, FitId, ItemId, SolarSystem,
+    ud::{UFitId, UItemId},
     util::RSet,
 };
 

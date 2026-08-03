@@ -1,4 +1,4 @@
-use crate::{num::PValue, ud::UProjData};
+use crate::{PValue, ud::UProjData};
 
 /// Range between projector and projectee.
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]

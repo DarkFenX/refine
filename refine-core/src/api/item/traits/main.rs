@@ -2,8 +2,8 @@ use itertools::Itertools;
 
 use super::sealed::{ItemMutSealed, ItemSealed};
 use crate::{
-    AttrId, AttrVals, Count, CtlAffectors, DpsProfile, EffectId, EffectInfo, EffectMode, ItemTypeId, Modification,
-    OptionalReload, PValue, UnitInterval, Value,
+    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, ItemAttrInfo, ItemEffectInfo, ItemTypeId,
+    Modification, OptionalReload, PValue, UnitInterval, Value,
     api::AffectionDir,
     err::{
         GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
@@ -35,7 +35,7 @@ pub trait ItemCommon: ItemSealed {
         let type_aid = self.get_sol().u_data.items.get(self.get_uid()).get_type_aid();
         ItemTypeId::from_aid(type_aid)
     }
-    fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, EffectInfo)>, IterItemEffectsError> {
+    fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, ItemEffectInfo)>, IterItemEffectsError> {
         let sol = self.get_sol();
         let item_uid = self.get_uid();
         let item = sol.u_data.items.get(item_uid);
@@ -52,7 +52,7 @@ pub trait ItemCommon: ItemSealed {
             let effect_aid = sol.u_data.r_data.get_effect_by_rid(effect_rid).aid;
             let running = reffs.contains(&effect_rid);
             let mode = item.get_effect_mode(&effect_rid);
-            (EffectId::from_aid(effect_aid), EffectInfo { running, mode })
+            (EffectId::from_aid(effect_aid), ItemEffectInfo { running, mode })
         });
         Ok(effect_infos)
     }
@@ -60,7 +60,7 @@ pub trait ItemCommon: ItemSealed {
 
 #[expect(private_bounds)]
 pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
-    fn get_attr(&mut self, attr_id: &AttrId) -> Result<AttrVals, GetItemAttrError> {
+    fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrInfo, GetItemAttrError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let attr_aid = attr_id.into_aid();
@@ -68,21 +68,21 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
             return Err(AttrFoundError { attr_id: *attr_id }.into());
         };
         match sol.internal_get_item_attr(item_uid, attr_rid) {
-            Ok(calc_vals) => Ok(AttrVals::from_calc_attr_vals(calc_vals)),
+            Ok(calc_vals) => Ok(ItemAttrInfo::from_calc_attr_vals(calc_vals)),
             Err(error) => Err(ItemLoadedError {
                 item_id: self.get_sol().u_data.items.ext_id_by_int_id(error.item_uid),
             }
             .into()),
         }
     }
-    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, AttrVals)>, IterItemAttrsError> {
+    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, ItemAttrInfo)>, IterItemAttrsError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_uid) {
             Ok(attr_iter) => Ok(attr_iter.map(|(attr_rid, calc_vals)| {
                 (
                     AttrId::from_aid(sol.u_data.r_data.get_attr_by_rid(attr_rid).aid),
-                    AttrVals::from_calc_attr_vals(calc_vals),
+                    ItemAttrInfo::from_calc_attr_vals(calc_vals),
                 )
             })),
             Err(error) => Err(ItemLoadedError {

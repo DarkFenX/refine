@@ -1,4 +1,4 @@
-use crate::{misc::Xyz, num::Value};
+use crate::{Value, misc::Xyz};
 
 #[cfg_attr(
     feature = "serde",

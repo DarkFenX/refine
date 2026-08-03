@@ -1,6 +1,6 @@
 use crate::{
+    ItemTypeId,
     ad::{ACustomEffectId, ADogmaEffectId, AEffectId},
-    api::ItemTypeId,
 };
 
 /// ID of an effect.

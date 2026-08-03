@@ -1,10 +1,10 @@
 use crate::{
     svc::{
-        SvcCtx,
-        calc::Calc,
-        vast::{ValOptionInt, ValOptionsInt, ValOptionsSolInt, ValResultFit, ValResultSol, Vast},
+        Calc, SvcCtx, Vast,
+        vast::{ValOptionInt, ValOptionsInt, ValOptionsSolInt},
     },
     ud::UFitId,
+    val::{ValResultFit, ValResultSol},
 };
 
 impl Vast {

@@ -1,4 +1,4 @@
-use crate::{misc::SecZone, sol::SolarSystem};
+use crate::{SecZone, SolarSystem};
 
 impl SolarSystem {
     pub fn set_sec_zone(&mut self, sec_zone: SecZone) {

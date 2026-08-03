@@ -1,7 +1,7 @@
 use super::{Vast, VastFitData};
 use crate::{
+    Count,
     dbg::DebugResult,
-    num::Count,
     ud::{UData, UFitId},
 };
 
