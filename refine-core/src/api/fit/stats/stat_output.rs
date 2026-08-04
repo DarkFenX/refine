@@ -12,19 +12,26 @@ use crate::{
 };
 
 impl<'s> FitMut<'s> {
-    pub fn get_stat_dmg(&mut self, item_kinds: StatDmgItemKinds, time_options: StatTimeOptions) -> StatDmg {
+    pub fn get_stat_dmg(
+        &mut self,
+        item_kinds: StatDmgItemKinds,
+        time_options: StatTimeOptions,
+        include_crits: bool,
+    ) -> StatDmg {
         self.sol.svc.get_stat_fit_dmg_raw(
             &mut CseqMap::new(),
             &self.sol.u_data,
             self.uid,
             item_kinds,
             time_options,
+            include_crits,
         )
     }
     pub fn get_stat_dmg_applied(
         &mut self,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatFitAppliedError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -34,6 +41,7 @@ impl<'s> FitMut<'s> {
             self.uid,
             item_kinds,
             time_options,
+            include_crits,
             projectee_uid,
         ))
     }

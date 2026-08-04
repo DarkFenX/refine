@@ -62,12 +62,21 @@ fn get_dmg_stats(
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 let stat = core_fleet
-                    .get_stat_dmg_applied(option.item_kinds, option.time_options, &projectee_item_id)
+                    .get_stat_dmg_applied(
+                        option.item_kinds,
+                        option.time_options,
+                        option.include_crits,
+                        &projectee_item_id,
+                    )
                     .map(StatDmg::from_core_applied);
                 stats.push(stat);
             }
             None => {
-                let stat = StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time_options));
+                let stat = StatDmg::from_core(core_fleet.get_stat_dmg(
+                    option.item_kinds,
+                    option.time_options,
+                    option.include_crits,
+                ));
                 stats.push(Ok(stat));
             }
         }

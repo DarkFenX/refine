@@ -23,6 +23,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
     ) -> StatDmg {
         let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut dps_normal = DmgKinds::default();
@@ -38,6 +39,7 @@ impl Vast {
                 &mut volley_normal,
                 item_kinds,
                 time_options,
+                include_crits,
                 cycling_options,
                 None,
             );
@@ -73,6 +75,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -89,6 +92,7 @@ impl Vast {
                 &mut volley_normal,
                 item_kinds,
                 time_options,
+                include_crits,
                 cycling_options,
                 Some(projectee_uid),
             );
@@ -125,6 +129,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
     ) -> StatDmg {
         let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut dps_normal = DmgKinds::default();
@@ -139,6 +144,7 @@ impl Vast {
             &mut volley_normal,
             item_kinds,
             time_options,
+            include_crits,
             cycling_options,
             None,
         );
@@ -173,6 +179,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -188,6 +195,7 @@ impl Vast {
             &mut volley_normal,
             item_kinds,
             time_options,
+            include_crits,
             cycling_options,
             Some(projectee_uid),
         );
@@ -227,6 +235,7 @@ impl VastFitData {
         volley_normal: &mut DmgKinds<PValue>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
         cycling_options: CyclingOptions,
         projectee_uid: Option<UItemId>,
     ) {

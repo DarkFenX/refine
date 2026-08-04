@@ -141,6 +141,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_dmg(
         &mut self,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
         ignore_state: bool,
     ) -> Result<StatDmg, StatItemError<!>> {
@@ -155,6 +156,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 &sol.u_data,
                 item_uid,
                 time_options,
+                include_crits,
                 include_charges,
             )
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
@@ -164,6 +166,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_dmg_applied(
         &mut self,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
         ignore_state: bool,
         projectee_item_id: &ItemId,
@@ -180,6 +183,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
                 &sol.u_data,
                 item_uid,
                 time_options,
+                include_crits,
                 include_charges,
                 projectee_uid,
             )

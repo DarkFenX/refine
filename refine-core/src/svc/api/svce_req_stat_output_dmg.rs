@@ -16,6 +16,7 @@ impl Svc {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
     ) -> StatDmg {
         self.vast.get_stat_fits_dmg_raw(
             reuse_cseq_map,
@@ -24,6 +25,7 @@ impl Svc {
             fit_uids,
             item_kinds,
             time_options,
+            include_crits,
         )
     }
     pub(crate) fn get_stat_fits_dmg_applied(
@@ -33,6 +35,7 @@ impl Svc {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fits_dmg_applied(
@@ -42,6 +45,7 @@ impl Svc {
             fit_uids,
             item_kinds,
             time_options,
+            include_crits,
             projectee_uid,
         )
     }
@@ -52,6 +56,7 @@ impl Svc {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
     ) -> StatDmg {
         self.vast.get_stat_fit_dmg_raw(
             reuse_cseq_map,
@@ -60,6 +65,7 @@ impl Svc {
             fit_uid,
             item_kinds,
             time_options,
+            include_crits,
         )
     }
     pub(crate) fn get_stat_fit_dmg_applied(
@@ -69,6 +75,7 @@ impl Svc {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
+        include_crits: bool,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         self.vast.get_stat_fit_dmg_applied(
@@ -78,6 +85,7 @@ impl Svc {
             fit_uid,
             item_kinds,
             time_options,
+            include_crits,
             projectee_uid,
         )
     }
@@ -87,6 +95,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
     ) -> Result<StatDmg, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_raw(
@@ -95,6 +104,7 @@ impl Svc {
             &mut self.calc,
             item_uid,
             time_options,
+            include_crits,
             include_charges,
         )
     }
@@ -104,6 +114,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
@@ -113,6 +124,7 @@ impl Svc {
             &mut self.calc,
             item_uid,
             time_options,
+            include_crits,
             include_charges,
             projectee_uid,
         )

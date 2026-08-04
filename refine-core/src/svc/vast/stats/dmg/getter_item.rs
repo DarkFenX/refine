@@ -22,6 +22,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
     ) -> Result<StatDmg, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
@@ -36,6 +37,7 @@ impl Vast {
             &mut breacher_accum,
             item_uid,
             time_options,
+            include_crits,
             include_charges,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
@@ -59,6 +61,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
@@ -75,6 +78,7 @@ impl Vast {
             item_uid,
             time_options,
             include_charges,
+            include_crits,
             projectee_uid,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
@@ -101,6 +105,7 @@ impl Vast {
         breacher_accum: &mut BreacherAccum,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
     ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
@@ -185,6 +190,7 @@ impl Vast {
                     breacher_accum,
                     charge_uid,
                     time_options,
+                    include_crits,
                     false,
                 );
             }
@@ -200,6 +206,7 @@ impl Vast {
         breacher_accum: &mut AppliedBreacherAccum,
         item_uid: UItemId,
         time_options: StatTimeOptions,
+        include_crits: bool,
         include_charges: bool,
         projectee_uid: UItemId,
     ) -> Result<(), IntStatItemError<!>> {
@@ -285,6 +292,7 @@ impl Vast {
                     breacher_accum,
                     charge_uid,
                     time_options,
+                    include_crits,
                     false,
                     projectee_uid,
                 );

@@ -261,6 +261,7 @@ fn get_dmg_stats(
             Some(projectee_item_id) => {
                 match core_item.get_stat_dmg_applied(
                     option.time_options,
+                    option.include_crits,
                     option.include_charges,
                     option.ignore_state,
                     &projectee_item_id,
@@ -273,7 +274,12 @@ fn get_dmg_stats(
                 };
             }
             None => {
-                match core_item.get_stat_dmg(option.time_options, option.include_charges, option.ignore_state) {
+                match core_item.get_stat_dmg(
+                    option.time_options,
+                    option.include_crits,
+                    option.include_charges,
+                    option.ignore_state,
+                ) {
                     Ok(stat) => stats.push(Ok(StatDmg::from_core(stat))),
                     Err(err) => {
                         let err = conv_err_item(err);

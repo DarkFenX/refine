@@ -85,6 +85,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_burst,
+                true,
             );
             self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
@@ -92,6 +93,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_inf,
+                true,
             );
             self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
@@ -99,6 +101,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_1200,
+                true,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
                 &mut reuse_cseq_map,
@@ -106,6 +109,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_burst,
+                true,
                 projectee_item_uid,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
@@ -114,6 +118,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_inf,
+                true,
                 projectee_item_uid,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
@@ -122,6 +127,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_1200,
+                true,
                 projectee_item_uid,
             );
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
