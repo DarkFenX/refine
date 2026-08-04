@@ -46,6 +46,7 @@ class EveItem(IntEnum):
 class EveItemGrp(IntEnum):
     character = 1
     capacitor_booster_charge = 87
+    mining_barge = 463
     freighter = 513
     jump_freighter = 902
     effect_beacon = 920
@@ -175,6 +176,7 @@ class EveEffect(IntEnum):
     entity_energy_neut_falloff = 6691
     entity_ecm_falloff = 6695
     ecm_burst_jammer = 6714
+    mod_bonus_industrial_invulnerability = 6719
     mod_bonus_microwarpdrive = 6730
     mod_bonus_afterburner = 6731
     mod_bonus_warfare_link_armor = 6732

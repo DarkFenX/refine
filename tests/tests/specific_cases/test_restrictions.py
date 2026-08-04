@@ -155,7 +155,6 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -164,10 +163,6 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -181,6 +176,11 @@ def run_dd_test(*, client, consts, dd_effect_id: int, is_targeted: bool = False)
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_dd_direct(client, consts):
@@ -389,7 +389,6 @@ def test_phenom(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is True
     assert api_ship_stats.can_jump_gate.one() is False
@@ -398,10 +397,6 @@ def test_phenom(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -415,6 +410,11 @@ def test_phenom(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is True
 
 
 def test_burst_projector(client, consts):
@@ -461,7 +461,6 @@ def test_burst_projector(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is True
     assert api_ship_stats.can_jump_gate.one() is False
@@ -470,10 +469,6 @@ def test_burst_projector(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -487,6 +482,11 @@ def test_burst_projector(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_nsa(client, consts):
@@ -552,7 +552,6 @@ def test_nsa(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -561,10 +560,6 @@ def test_nsa(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -578,6 +573,11 @@ def test_nsa(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_isa(client, consts):
@@ -645,7 +645,6 @@ def test_isa(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -654,10 +653,6 @@ def test_isa(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -671,6 +666,11 @@ def test_isa(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_tactical_recloner(client, consts):
@@ -716,7 +716,6 @@ def test_tactical_recloner(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -725,10 +724,6 @@ def test_tactical_recloner(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is True
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -742,6 +737,11 @@ def test_tactical_recloner(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_clone_bay(client, consts):
@@ -806,7 +806,6 @@ def test_clone_bay(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -815,10 +814,6 @@ def test_clone_bay(client, consts):
     assert api_ship_stats.can_dock_station.one() is True
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is True
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -832,6 +827,112 @@ def test_clone_bay(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+
+
+def test_panic(client, consts):
+    """
+    Tested on Thunderdome on 2026-08-04, using Rorqual, PANIC and Endurance as a fleetmate.
+
+    Using PANIC applies following (de)buffs to Rorqual and fleet members in mining ships (with PANIC
+    duration skill V):
+    - Warp Disabled/Warp penalty, 6m
+    - Cloak Disruption/Disallow Cloak, 6m
+    - Unable to Tether/Tether blocked, 6m
+    - PANIC-specific buffs, 6m
+
+    Prevented actions/interactions:
+    + warp (external factors)
+    ? jump gate
+    ? jump wormhole
+    + jump drive (external factors)
+    ? dock station (not checked since there are no asteroids next to station, but assumed to be
+      blocked because of disallowDocking = 1)
+    ? dock citadel (not checked, but is assumed to be blocked together with warm and jump drive via
+      warp scram status)
+    + tether (not checked, but there is a no-tether debuff)
+    + cloak (special, but standard for cloak on rorq; "you can't cloak now" for fleet members)
+    - regular movement
+    - incoming assistance
+    - incoming offensive mods
+    """
+    eve_basics = setup_basics(client=client, consts=consts)
+    eve_panic_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.mod_bonus_industrial_invulnerability,
+        cat_id=consts.EveEffCat.active)
+    eve_panic_id = client.mk_eve_item(
+        attrs={eve_basics.disallow_dock_attr_id: 1},
+        eff_ids=[eve_panic_effect_id],
+        defeff_id=eve_panic_effect_id)
+    eve_rorqual_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100, eve_basics.gate_status_attr_id: 0})
+    eve_barge_id = client.mk_eve_ship(attrs={eve_basics.speed_attr_id: 100}, grp_id=consts.EveItemGrp.mining_barge)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fleet = api_sol.create_fleet()
+    api_rorqual_fit = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_rorqual = api_rorqual_fit.set_ship(type_id=eve_rorqual_id)
+    api_rorqual_fit.add_module(type_id=eve_panic_id, state=consts.ApiModuleState.active)
+    api_barge_fit = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_barge = api_barge_fit.set_ship(type_id=eve_barge_id)
+    # Verification
+    api_rorqual_stats = api_rorqual.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    assert api_rorqual_stats.speed.one() == approx(100)
+    assert api_rorqual_stats.can_warp.one() is False
+    assert api_rorqual_stats.can_jump_gate.one() is False
+    assert api_rorqual_stats.can_jump_wormhole.one() is True
+    assert api_rorqual_stats.can_jump_drive.one() is False
+    assert api_rorqual_stats.can_dock_station.one() is False
+    assert api_rorqual_stats.can_dock_citadel.one() is False
+    assert api_rorqual_stats.can_tether.one() is False
+    api_barge_stats = api_barge.get_stats(options=ItemStatsOptions(
+        speed=True,
+        can_warp=True,
+        can_jump_gate=True,
+        can_jump_wormhole=True,
+        can_jump_drive=True,
+        can_dock_station=True,
+        can_dock_citadel=True,
+        can_tether=True))
+    assert api_barge_stats.speed.one() == approx(100)
+    assert api_barge_stats.can_warp.one() is False
+    assert api_barge_stats.can_jump_gate.one() is False
+    assert api_barge_stats.can_jump_wormhole.one() is True
+    assert api_barge_stats.can_jump_drive.one() is False
+    assert api_barge_stats.can_dock_station.one() is False
+    assert api_barge_stats.can_dock_citadel.one() is False
+    assert api_barge_stats.can_tether.one() is False
+    # Action
+    api_proj_fit = api_sol.create_fit()
+    api_proj_fit.add_module(
+        type_id=eve_basics.assist_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_rorqual.id, api_barge.id])
+    api_proj_fit.add_module(
+        type_id=eve_basics.offense_id,
+        state=consts.ApiModuleState.active,
+        proj_item_ids=[api_rorqual.id, api_barge.id])
+    # Verification
+    assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
+    assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_rorqual_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    api_barge_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_rorqual_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
+    assert api_barge_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_siege_dread(client, consts):
@@ -910,7 +1011,6 @@ def test_siege_dread(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -919,10 +1019,6 @@ def test_siege_dread(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -937,6 +1033,11 @@ def test_siege_dread(client, consts):
     # tested here
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_siege_fax(client, consts):
@@ -1014,7 +1115,6 @@ def test_siege_fax(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1023,10 +1123,6 @@ def test_siege_fax(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1041,6 +1137,11 @@ def test_siege_fax(client, consts):
     # tested here
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_siege_industrial_cap(client, consts):
@@ -1120,7 +1221,6 @@ def test_siege_industrial_cap(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1129,10 +1229,6 @@ def test_siege_industrial_cap(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1147,6 +1243,11 @@ def test_siege_industrial_cap(client, consts):
     # tested here
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_siege_industrial_subcap(client, consts):
@@ -1225,7 +1326,6 @@ def test_siege_industrial_subcap(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1234,10 +1334,6 @@ def test_siege_industrial_subcap(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1252,6 +1348,11 @@ def test_siege_industrial_subcap(client, consts):
     # tested here
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_siege_bastion(client, consts):
@@ -1324,7 +1425,6 @@ def test_siege_bastion(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1333,10 +1433,6 @@ def test_siege_bastion(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1351,6 +1447,11 @@ def test_siege_bastion(client, consts):
     # tested here
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_bridge_regular(client, consts):
@@ -1439,7 +1540,6 @@ def test_bridge_regular(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -1448,10 +1548,6 @@ def test_bridge_regular(client, consts):
     assert api_ship_stats.can_dock_station.one() is True
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is True
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1465,6 +1561,11 @@ def test_bridge_regular(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_bridge_blops(client, consts):
@@ -1531,7 +1632,6 @@ def test_bridge_blops(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -1540,10 +1640,6 @@ def test_bridge_blops(client, consts):
     assert api_ship_stats.can_dock_station.one() is True
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is True
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1557,6 +1653,11 @@ def test_bridge_blops(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is False
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_cloak_t1(client, consts):
@@ -1582,7 +1683,6 @@ def test_cloak_t1(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1639,7 +1739,6 @@ def test_cloak_t2(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1698,7 +1797,6 @@ def test_cloak_covops(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is True
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1786,7 +1884,6 @@ def test_cyno(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1795,10 +1892,6 @@ def test_cyno(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1812,6 +1905,11 @@ def test_cyno(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_entosis(client, consts):
@@ -1852,7 +1950,6 @@ def test_entosis(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is True
@@ -1861,10 +1958,6 @@ def test_entosis(client, consts):
     assert api_ship_stats.can_dock_station.one() is True
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1878,6 +1971,11 @@ def test_entosis(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_mjd(client, consts):
@@ -1917,7 +2015,6 @@ def test_mjd(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1926,10 +2023,6 @@ def test_mjd(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is True
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -1943,6 +2036,11 @@ def test_mjd(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_mjfg_cap(client, consts):
@@ -1984,7 +2082,6 @@ def test_mjfg_cap(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -1993,10 +2090,6 @@ def test_mjfg_cap(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -2010,6 +2103,11 @@ def test_mjfg_cap(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
 
 
 def test_mjfg_subcap(client, consts):
@@ -2051,7 +2149,6 @@ def test_mjfg_subcap(client, consts):
         can_dock_station=True,
         can_dock_citadel=True,
         can_tether=True))
-    api_ship.update()
     assert api_ship_stats.speed.one() == approx(100)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
@@ -2060,10 +2157,6 @@ def test_mjfg_subcap(client, consts):
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
     assert api_ship_stats.can_tether.one() is False
-    # Action
-    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
-    # Verification
-    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
     # Action
     api_proj_fit = api_sol.create_fit()
     api_proj_fit.add_module(
@@ -2077,3 +2170,8 @@ def test_mjfg_subcap(client, consts):
     # Verification
     assert api_proj_fit.validate(options=ValOptions(assist_immunity=True)).passed is True
     assert api_proj_fit.validate(options=ValOptions(offense_immunity=True)).passed is True
+    # Action
+    api_proj_fit.remove()
+    api_fit.add_module(type_id=eve_basics.cloak_t2_id, state=consts.ApiModuleState.active)
+    # Verification
+    assert api_fit.validate(options=ValOptions(cloaking_blocked=True)).passed is False
