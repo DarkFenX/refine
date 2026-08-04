@@ -45,6 +45,7 @@ impl ABuffId {
     pub(crate) const SOV_SMOD_WARP_SPEED_ADD: Self = Self::from_eid(EBuffId::SOV_SMOD_WARP_SPEED_ADD);
     pub(crate) const SOV_SMOD_SHIELD_BOOSTER_BONUS: Self = Self::from_eid(EBuffId::SOV_SMOD_SHIELD_BOOSTER_BONUS);
     pub(crate) const SOV_SMOD_ARMOR_REPAIRER_BONUS: Self = Self::from_eid(EBuffId::SOV_SMOD_ARMOR_REPAIRER_BONUS);
+    pub(crate) const BPDC_DMG_RECEIVED_PERC: Self = Self::from_eid(EBuffId::BPDC_DMG_RECEIVED_PERC);
     // Library-specific buffs
     pub(crate) const DISALLOW_WARP_JUMP: Self = Self::Custom(ACustomBuffId::from_i32(1));
 }

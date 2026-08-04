@@ -36,4 +36,5 @@ impl EBuffId {
     pub(crate) const SOV_SMOD_WARP_SPEED_ADD: Self = Self::from_i32(2440);
     pub(crate) const SOV_SMOD_SHIELD_BOOSTER_BONUS: Self = Self::from_i32(2441);
     pub(crate) const SOV_SMOD_ARMOR_REPAIRER_BONUS: Self = Self::from_i32(2442);
+    pub(crate) const BPDC_DMG_RECEIVED_PERC: Self = Self::from_i32(2600);
 }
