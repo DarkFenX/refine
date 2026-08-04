@@ -1049,8 +1049,10 @@ def test_siege_industrial_cap(client, consts):
 
     Prevented actions/interactions:
     + warp (external factors)
-    + jump gate (external factors)
-    ? jump wormhole (ship size message is shown regardless)
+    + jump gate (external factors, but it is assumed that it has extra restriction like the subcap
+      core effect)
+    ? jump wormhole (ship size message is shown regardless, but it is assumed there is the same
+      restriction as for the subcap core effect)
     + jump drive (external factors)
     + dock station (special rorq)
     + dock citadel (special rorq)
@@ -1122,7 +1124,7 @@ def test_siege_industrial_cap(client, consts):
     assert api_ship_stats.speed.one() == approx(0)
     assert api_ship_stats.can_warp.one() is False
     assert api_ship_stats.can_jump_gate.one() is False
-    assert api_ship_stats.can_jump_wormhole.one() is True
+    assert api_ship_stats.can_jump_wormhole.one() is False
     assert api_ship_stats.can_jump_drive.one() is False
     assert api_ship_stats.can_dock_station.one() is False
     assert api_ship_stats.can_dock_citadel.one() is False
@@ -1155,7 +1157,7 @@ def test_siege_industrial_subcap(client, consts):
     Prevented actions/interactions:
     + warp (external factors)
     + jump gate (custom - gate scramble does not work because of lower gate scram status on subcaps)
-    + jump wormhole (special)
+    + jump wormhole (special, but ship size message takes priority if it is too high)
     + jump drive (external factors)
     + dock station (did not record which message)
     + dock citadel (did not record which message)
