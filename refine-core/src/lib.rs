@@ -72,8 +72,9 @@
 //!   subsystem slot, and subsystems expose that (similar to booster/implant slots);
 //! - system-wide effect: environmental effect which is applied to all items in the solar system.
 //!
-//! Most of those items are assigned directly to a fit, except for (auto)charges and system-wide/
-//! fit-wide/projected effects. Modules are the only ones which are using ordered container.
+//! Most of those items are assigned directly to a fit, except for (auto)charges (which reside on
+//! parent item) and system-wide/projected effects (which reside directly on solar system). Modules
+//! are the only ones which are using ordered container.
 
 pub use api::{
     Ability, AbilityId, AbilityIter, AbilityMut, AddMode, Affector, AttrId, Autocharge, AutochargeMut, Booster,
