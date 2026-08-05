@@ -331,11 +331,17 @@ def test_crit(client, consts):
      api_module_stats_included_nonproj,
      api_module_stats_included_proj) = api_module_stats.dmg
     assert api_module_stats_default_nonproj.dps.kinetic == approx(api_module_stats_default_proj.dps.kinetic)
+    assert api_module_stats_default_nonproj.dps.explosive == approx(api_module_stats_default_proj.dps.explosive)
     assert api_module_stats_default_nonproj.volley.kinetic == approx(api_module_stats_default_proj.volley.kinetic)
+    assert api_module_stats_default_nonproj.volley.explosive == approx(api_module_stats_default_proj.volley.explosive)
     assert api_module_stats_excluded_nonproj.dps.kinetic == approx(api_module_stats_excluded_proj.dps.kinetic)
+    assert api_module_stats_excluded_nonproj.dps.explosive == approx(api_module_stats_excluded_proj.dps.explosive)
     assert api_module_stats_excluded_nonproj.volley.kinetic == approx(api_module_stats_excluded_proj.volley.kinetic)
+    assert api_module_stats_excluded_nonproj.volley.explosive == approx(api_module_stats_excluded_proj.volley.explosive)
     assert api_module_stats_included_nonproj.dps.kinetic == approx(api_module_stats_included_proj.dps.kinetic)
+    assert api_module_stats_included_nonproj.dps.explosive == approx(api_module_stats_included_proj.dps.explosive)
     assert api_module_stats_included_nonproj.volley.kinetic == approx(api_module_stats_included_proj.volley.kinetic)
+    assert api_module_stats_included_nonproj.volley.explosive == approx(api_module_stats_included_proj.volley.explosive)
     # Action
     api_tgt_ship.change_ship(coordinates=(0, 46623, 0))
     # Verification - non-perfect application at 1 falloff
