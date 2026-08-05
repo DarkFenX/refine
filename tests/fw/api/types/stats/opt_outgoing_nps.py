@@ -4,6 +4,7 @@ import typing
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
+    from fw.consts import ApiStatCharges
     from .opt_shared import StatTimeBurst, StatTimeSim
 
 
@@ -19,7 +20,7 @@ class StatsOptionFitOutNps:
 class StatsOptionItemOutNps:
 
     time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
-    include_charges: bool | type[Absent] = Absent
+    charges: ApiStatCharges | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 

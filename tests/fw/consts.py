@@ -793,6 +793,18 @@ class ApiCtlAffector(StrEnum):
 
 
 @unique
+class ApiStatCharges(StrEnum):
+    include = 'include'
+    exclude = 'exclude'
+
+
+@unique
+class ApiStatCrits(StrEnum):
+    include = 'include'
+    exclude = 'exclude'
+
+
+@unique
 class ApiSrcInfoMode(StrEnum):
     partial = 'partial'
     full = 'full'
@@ -831,7 +843,7 @@ class ApiValInfoMode(StrEnum):
 
 @unique
 class PenaltyStr(float, Enum):
-    p1 = 1
+    p1 = 1.0
     p2 = 0.8691199808003974
     p3 = 0.5705831435105602
     p4 = 0.28295515402326105
