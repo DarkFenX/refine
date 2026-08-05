@@ -7,7 +7,7 @@ use crate::{
         AEffectModStrength, AItemListId, AValue,
     },
     nd::{
-        NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjModSpec,
+        NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjModSpec, NEffectProjMultGetter,
         NEffectProjOpcSpec,
     },
 };
@@ -53,13 +53,13 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             ..
         }),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::AoeDdRoundRange),
+            proj_mult: Some(NEffectProjMultGetter::AoeDdRoundRange),
             ..
         }),
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::DotDelay,
-            proj_mult_str: Some(NEffectProjGetter::AoeDdRound),
+            proj_mult_str: Some(NEffectProjMultGetter::AoeDdRound),
             ..
         }),
         neut: Some(get_aoe_dd_warmup_neut()),

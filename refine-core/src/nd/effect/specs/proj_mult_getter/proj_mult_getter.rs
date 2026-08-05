@@ -13,15 +13,15 @@ use super::mult::{
     },
 };
 use crate::{
+    PValue,
     ad::{AAttrId, AEffect},
-    num::PValue,
     rd::REffect,
-    svc::{SvcCtx, calc::Calc},
+    svc::{Calc, SvcCtx},
     ud::{UItemId, UProjData},
 };
 
 #[derive(Copy, Clone)]
-pub(crate) enum NEffectProjGetter {
+pub(crate) enum NEffectProjMultGetter {
     Null,
     GenericRangeSimpleCts,
     GenericRangeSimpleSts,
@@ -47,8 +47,8 @@ pub(crate) enum NEffectProjGetter {
     FtrAbilMissiles,
     FtrAbilKamikaze,
 }
-impl NEffectProjGetter {
-    pub(crate) fn get_mult(
+impl NEffectProjMultGetter {
+    pub(crate) fn get_proj_mult(
         &self,
         ctx: SvcCtx,
         calc: &mut Calc,
@@ -56,6 +56,7 @@ impl NEffectProjGetter {
         effect: &REffect,
         projectee_uid: UItemId,
         proj_data: UProjData,
+        include_crits: bool,
     ) -> PValue {
         match self {
             Self::Null => PValue::ZERO,
@@ -64,10 +65,24 @@ impl NEffectProjGetter {
             Self::GenericRangeFullStsRestricted => {
                 get_std_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data)
             }
-            Self::Turret => get_turret_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
-            Self::Disintegrator => {
-                get_disintegrator_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data)
-            }
+            Self::Turret => get_turret_proj_mult(
+                ctx,
+                calc,
+                projector_uid,
+                effect,
+                projectee_uid,
+                proj_data,
+                include_crits,
+            ),
+            Self::Disintegrator => get_disintegrator_proj_mult(
+                ctx,
+                calc,
+                projector_uid,
+                effect,
+                projectee_uid,
+                proj_data,
+                include_crits,
+            ),
             Self::Vorton => get_vorton_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::MissileRange => get_missile_range_mult(ctx, calc, projector_uid, proj_data),
             Self::MissileRangeFof => get_fof_missile_range_mult(ctx, calc, projector_uid, proj_data),
@@ -102,8 +117,39 @@ impl NEffectProjGetter {
             }
         }
     }
+    pub(crate) fn get_non_proj_mult(&self, include_crits: bool) -> PValue {
+        match self {
+            Self::Null => PValue::ZERO,
+            Self::GenericRangeSimpleCts => PValue::ONE,
+            Self::GenericRangeSimpleSts => PValue::ONE,
+            Self::GenericRangeFullStsRestricted => PValue::ONE,
+            Self::Turret => match include_crits {
+                true => PValue::from_f64_unchecked(1.02),
+                false => PValue::ONE,
+            },
+            Self::Disintegrator => PValue::ONE,
+            Self::Vorton => PValue::ONE,
+            Self::MissileRange => PValue::ONE,
+            Self::MissileRangeFof => PValue::ONE,
+            Self::MissileApplication => PValue::ONE,
+            Self::BombRange => PValue::ONE,
+            Self::BombApplication => PValue::ONE,
+            Self::Neut => PValue::ONE,
+            Self::AoeDdSharp => PValue::ONE,
+            Self::AoeDdRound => PValue::ONE,
+            Self::AoeDdRoundRange => PValue::ONE,
+            Self::AoeDdWarmupNeut => PValue::ONE,
+            Self::AoeBurst => PValue::ONE,
+            Self::AoeBurstRange => PValue::ONE,
+            // Variants specific to a single effect
+            Self::MissileLaunchingApplication => PValue::ONE,
+            Self::FtrAbilAttackM => PValue::ONE,
+            Self::FtrAbilMissiles => PValue::ONE,
+            Self::FtrAbilKamikaze => PValue::ONE,
+        }
+    }
     // Returns attributes which can affect modifier application strength
-    pub(crate) fn get_modifier_attr_aids(&self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
+    pub(crate) fn get_proj_modifier_attr_aids(&self, a_effect: &AEffect) -> [Option<AAttrId>; 2] {
         // Only variants actually used to project modifiers are filled
         match self {
             Self::Null => [None, None],

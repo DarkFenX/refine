@@ -103,6 +103,7 @@ impl Vast {
                 &mut breacher_accum,
                 item_kinds,
                 cycling_options,
+                include_crits,
                 projectee_uid,
             );
         }
@@ -206,6 +207,7 @@ impl Vast {
             &mut breacher_accum,
             item_kinds,
             cycling_options,
+            include_crits,
             projectee_uid,
         );
         let (dps_breacher, volley_breacher) = match time_options {
@@ -262,6 +264,7 @@ impl VastFitData {
                             cseq,
                             ospec,
                             (),
+                            include_crits,
                             projectee_uid,
                             burst_opts.spool,
                             SeqAccum::new_stack_max(),
@@ -280,6 +283,7 @@ impl VastFitData {
                                 cseq,
                                 ospec,
                                 (),
+                                include_crits,
                                 projectee_uid,
                                 SeqAccum::new_stack_max(),
                                 time,
@@ -297,6 +301,7 @@ impl VastFitData {
                                 cseq,
                                 ospec,
                                 (),
+                                include_crits,
                                 projectee_uid,
                                 SeqAccum::new_stack_max(),
                                 SeqInstanceAccumMax::new(),
@@ -347,6 +352,7 @@ impl VastFitData {
         breacher_accum: &mut AppliedBreacherAccum,
         item_kinds: StatDmgItemKinds,
         cycling_options: CyclingOptions,
+        include_crits: bool,
         projectee_uid: UItemId,
     ) {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
@@ -362,7 +368,7 @@ impl VastFitData {
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                     continue;
                 };
-                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid);
+                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, include_crits, projectee_uid);
             }
         }
     }

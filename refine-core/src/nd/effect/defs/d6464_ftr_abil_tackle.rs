@@ -3,7 +3,7 @@ use crate::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
         AItemListId, AOp,
     },
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec, NEffectProjecteeFilter},
+    nd::{NEffect, NEffectProjModSpec, NEffectProjMultGetter, NEffectProjecteeFilter},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_TACKLE;
@@ -14,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_update_effect_fn: Some(update_effect),
         projectee_filter: Some(NEffectProjecteeFilter::ItemList(AItemListId::DRONES_FIGHTERS)),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
+            proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),
         ..

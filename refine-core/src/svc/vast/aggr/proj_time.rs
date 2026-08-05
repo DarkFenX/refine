@@ -34,6 +34,7 @@ pub(in crate::svc::vast) fn aggr_proj_time<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
+    include_crits: bool,
     projectee_uid: Option<UItemId>,
     mut accum: SeqAccum<IA>,
     time: PValue,
@@ -43,7 +44,16 @@ where
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
+    let inv_proj = AggrProjInvData::try_make(
+        ctx,
+        calc,
+        projector_uid,
+        effect,
+        ospec,
+        base_xargs,
+        include_crits,
+        projectee_uid,
+    )?;
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     match inv_spool {

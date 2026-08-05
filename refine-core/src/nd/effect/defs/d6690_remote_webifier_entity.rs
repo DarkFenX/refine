@@ -1,7 +1,7 @@
 use super::shared::add_web_mods;
 use crate::{
     ad::AEffectId,
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffect, NEffectProjModSpec, NEffectProjMultGetter},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::REMOTE_WEBIFIER_ENTITY;
@@ -11,7 +11,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(|a_effect, a_warnings| add_web_mods(EFFECT_AID, a_effect, a_warnings)),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
+            proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),
         ..

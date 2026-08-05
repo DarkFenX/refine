@@ -1,6 +1,6 @@
 use crate::{
     ad::AEffectId,
-    nd::{NEffect, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_ATTACK_M;
@@ -10,7 +10,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::FtrAbilAttackM,
-            proj_mult_str: Some(NEffectProjGetter::FtrAbilAttackM),
+            proj_mult_str: Some(NEffectProjMultGetter::FtrAbilAttackM),
             ..
         }),
         ..

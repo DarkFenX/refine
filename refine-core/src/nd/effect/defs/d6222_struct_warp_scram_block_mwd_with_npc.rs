@@ -3,7 +3,7 @@ use crate::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier,
         AItemId, AModifierSrq, AOp,
     },
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffect, NEffectProjModSpec, NEffectProjMultGetter},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::STRUCT_WARP_SCRAM_BLOCK_MWD_WITH_NPC;
@@ -13,7 +13,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         aid: EFFECT_AID,
         adg_update_effect_fn: Some(update_effect),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
+            proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),
         ..

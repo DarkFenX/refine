@@ -26,13 +26,23 @@ pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, I>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
+    include_crits: bool,
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrIterData<I>>
 where
     BG: NEffectOutputGetter<Instance = I, XArgs = BX>,
     I: Copy + Eq + std::ops::MulAssign<PValue> + HasImpact + InstanceDuration + InstanceLimit,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
+    let inv_proj = AggrProjInvData::try_make(
+        ctx,
+        calc,
+        projector_uid,
+        effect,
+        ospec,
+        base_xargs,
+        include_crits,
+        projectee_uid,
+    )?;
     let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {
         Some(inv_spool) => aggr_spool(ctx, calc, projector_uid, cseq, ospec, inv_proj, inv_spool),
         None => aggr_regular(ctx, calc, projector_uid, cseq, ospec, inv_proj),

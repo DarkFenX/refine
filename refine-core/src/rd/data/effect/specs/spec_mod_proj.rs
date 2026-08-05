@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffect},
     dbg::DebugResult,
-    nd::{NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffectProjModSpec, NEffectProjMultGetter},
     rd::{RAttrId, REffectResist},
     ud::UData,
     util::RMap,
@@ -9,7 +9,7 @@ use crate::{
 
 #[derive(Copy, Clone)]
 pub(crate) struct REffectProjModSpec {
-    pub(crate) proj_mult: Option<NEffectProjGetter>,
+    pub(crate) proj_mult: Option<NEffectProjMultGetter>,
     pub(crate) proj_attr_rids: [Option<RAttrId>; 2],
     pub(crate) resist: Option<REffectResist>,
 }
@@ -44,7 +44,7 @@ impl REffectProjModSpec {
             proj_mult: n_proj_mod_spec.proj_mult,
             proj_attr_rids: match n_proj_mod_spec.proj_mult {
                 Some(proj_getter) => proj_getter
-                    .get_modifier_attr_aids(a_effect)
+                    .get_proj_modifier_attr_aids(a_effect)
                     .map(|attr_aid| attr_aid.and_then(|attr_aid| attr_aid_rid_map.get(&attr_aid).copied())),
                 None => [None, None],
             },

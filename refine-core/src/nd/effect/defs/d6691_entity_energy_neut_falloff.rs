@@ -1,7 +1,7 @@
 use crate::{
     ad::{AAttrId, AEffectId},
     nd::{
-        NEffect, NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutKind, NEffectProjGetter, NEffectProjOpcSpec,
+        NEffect, NEffectGeneralOutputGetter, NEffectNeut, NEffectNeutKind, NEffectProjMultGetter, NEffectProjOpcSpec,
         NEffectResist,
     },
 };
@@ -16,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: None,
             ospec: NEffectProjOpcSpec {
                 base: NEffectGeneralOutputGetter::Neut,
-                proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
                 resist: Some(NEffectResist::Standard),
                 remote_limit_attr_id: Some(AAttrId::CAPACITOR_CAPACITY),
                 ..

@@ -6,7 +6,7 @@ pub(crate) use output::{
     NEffectMiningAmount, NEffectMiningChecker, NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut,
     NEffectNeutChecker, NEffectNeutKind,
 };
-pub(crate) use proj_getter::NEffectProjGetter;
+pub(crate) use proj_mult_getter::NEffectProjMultGetter;
 pub(crate) use resist::NEffectResist;
 pub(crate) use spec_mod_proj::NEffectProjModSpec;
 pub(crate) use spec_opc_local::NEffectLocalOpcSpec;
@@ -15,7 +15,7 @@ pub(crate) use spec_opc_proj::NEffectProjOpcSpec;
 mod base_getter;
 mod charge_mult_getter;
 mod output;
-mod proj_getter;
+mod proj_mult_getter;
 mod resist;
 mod spec_mod_proj;
 mod spec_opc_local;

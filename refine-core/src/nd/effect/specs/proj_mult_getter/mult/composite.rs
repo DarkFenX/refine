@@ -16,13 +16,14 @@ use crate::{
     ud::{UItemId, UProjData},
 };
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_turret_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
+    include_crits: bool,
 ) -> PValue {
     let mut cth = get_std_full_unrestricted_range_mult(ctx, calc, projector_uid, effect, proj_data);
     if cth == PValue::ZERO {
@@ -32,16 +33,17 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_turret_proj_mult(
     if cth == PValue::ZERO {
         return PValue::ZERO;
     }
-    calc_turret_mult(cth)
+    calc_turret_mult(cth, include_crits)
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_disintegrator_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
     effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
+    include_crits: bool,
 ) -> PValue {
     let mut cth = get_std_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data);
     if cth == PValue::ZERO {
@@ -51,10 +53,10 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_disintegrator_proj_mult(
     if cth == PValue::ZERO {
         return PValue::ZERO;
     }
-    calc_turret_mult(cth)
+    calc_turret_mult(cth, include_crits)
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_vorton_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_vorton_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -69,7 +71,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_vorton_proj_mult(
     mult * get_std_missile_application_mult(ctx, calc, projector_uid, projectee_uid, proj_data)
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -89,7 +91,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_proj_mult(
     )
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_sharp_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_dmg_sharp_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -103,7 +105,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_sharp_proj_mult(
     mult * get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().sig_radius)
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_round_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_dmg_round_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -117,7 +119,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_dmg_round_proj_mult(
     mult * get_radius_ratio_mult(ctx, calc, projector_uid, projectee_uid, ctx.ac().sig_radius)
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_side_neut_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_side_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -137,7 +139,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_side_neut_proj_mult(
     )
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_neut_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_neut_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -158,7 +160,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_neut_proj_mult(
     )
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_attack_m_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_attack_m_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -183,7 +185,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_attack_m_proj_mult
     )
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_missiles_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_missiles_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -208,7 +210,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_missiles_proj_mult
     )
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_kamikaze_proj_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_kamikaze_proj_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -229,9 +231,12 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_ftr_abil_kamikaze_proj_mult
 }
 
 // Utility
-fn calc_turret_mult(chance_to_hit: PValue) -> PValue {
+fn calc_turret_mult(chance_to_hit: PValue, include_crits: bool) -> PValue {
     // https://wiki.eveuniversity.org/Turret_mechanics#Damage
-    let wrecking_chance = chance_to_hit.into_f64().min(0.01);
+    let wrecking_chance = match include_crits {
+        true => chance_to_hit.into_f64().min(0.01),
+        false => 0.0,
+    };
     let wrecking_part = wrecking_chance * 3.0;
     let normal_chance = chance_to_hit.into_f64() - wrecking_chance;
     let normal_part = match normal_chance > 0.0 {

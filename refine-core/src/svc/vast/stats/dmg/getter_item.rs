@@ -126,6 +126,7 @@ impl Vast {
                             cseq,
                             ospec,
                             (),
+                            include_crits,
                             None,
                             burst_opts.spool,
                             SeqAccum::new_stack_max(),
@@ -144,6 +145,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
+                                include_crits,
                                 None,
                                 SeqAccum::new_stack_max(),
                                 time,
@@ -161,6 +163,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
+                                include_crits,
                                 None,
                                 SeqAccum::new_stack_max(),
                                 SeqInstanceAccumMax::new(),
@@ -228,6 +231,7 @@ impl Vast {
                             cseq,
                             ospec,
                             (),
+                            include_crits,
                             Some(projectee_uid),
                             burst_opts.spool,
                             SeqAccum::new_stack_max(),
@@ -246,6 +250,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
+                                include_crits,
                                 Some(projectee_uid),
                                 SeqAccum::new_stack_max(),
                                 time,
@@ -263,6 +268,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
+                                include_crits,
                                 Some(projectee_uid),
                                 SeqAccum::new_stack_max(),
                                 SeqInstanceAccumMax::new(),
@@ -278,7 +284,7 @@ impl Vast {
                 }
             }
             if let Some(ospec) = &effect.breacher_dmg {
-                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, projectee_uid);
+                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, include_crits, projectee_uid);
             }
         }
         if include_charges {

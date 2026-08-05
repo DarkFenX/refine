@@ -2,7 +2,7 @@ use crate::{
     ad::{AAttrId, AEffectId},
     nd::{
         NEffect, NEffectCharge, NEffectChargeDepl, NEffectChargeDeplChargeRate, NEffectChargeLoc, NEffectDmgKindGetter,
-        NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectSpoolAttrs,
+        NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectSpoolAttrs,
     },
 };
 
@@ -23,7 +23,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::MultCharge,
             spoolable: true,
-            proj_mult_str: Some(NEffectProjGetter::Disintegrator),
+            proj_mult_str: Some(NEffectProjMultGetter::Disintegrator),
             ..
         }),
         ..

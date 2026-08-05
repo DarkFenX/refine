@@ -196,6 +196,7 @@ fn get_irr_data(
                         cseq,
                         ospec,
                         (),
+                        true,
                         Some(projectee_item_uid),
                         burst_opts.spool,
                         SeqAccum::new_stack(),
@@ -216,6 +217,7 @@ fn get_irr_data(
                             cseq,
                             ospec,
                             (),
+                            true,
                             Some(projectee_item_uid),
                             SeqAccum::new_stack(),
                             time,
@@ -239,6 +241,7 @@ fn get_irr_data(
                             cseq,
                             ospec,
                             (),
+                            true,
                             Some(projectee_item_uid),
                             SeqAccum::new_stack(),
                         ) {

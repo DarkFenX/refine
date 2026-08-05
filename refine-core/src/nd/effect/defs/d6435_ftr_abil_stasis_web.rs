@@ -2,7 +2,7 @@ use crate::{
     ad::{
         AAttrId, AEffect, AEffectAffecteeFilter, AEffectId, AEffectLocation, AEffectModStrength, AEffectModifier, AOp,
     },
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec, NEffectResist},
+    nd::{NEffect, NEffectProjModSpec, NEffectProjMultGetter, NEffectResist},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::FTR_ABIL_STASIS_WEB;
@@ -14,7 +14,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         proj_mod: Some(NEffectProjModSpec {
             // Effect has both optimal and falloff defined, even if fighters themselves have 0
             // falloff
-            proj_mult: Some(NEffectProjGetter::GenericRangeFullStsRestricted),
+            proj_mult: Some(NEffectProjMultGetter::GenericRangeFullStsRestricted),
             resist: NEffectResist::AttrRef(AAttrId::FTR_ABIL_STASIS_WEB_RESIST_ID),
         }),
         ..

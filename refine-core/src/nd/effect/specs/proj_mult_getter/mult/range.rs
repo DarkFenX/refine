@@ -8,7 +8,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Regular optimal/falloff range calculation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::specs::proj_getter) fn get_std_simple_c2s_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_simple_c2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -21,7 +21,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_std_simple_c2s_range_mult(
         false => PValue::ZERO,
     }
 }
-pub(in crate::nd::effect::specs::proj_getter) fn get_std_simple_s2s_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_simple_s2s_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -44,7 +44,7 @@ pub(super) fn get_simple_s2s_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_std_full_restricted_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_full_restricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -53,7 +53,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_std_full_restricted_range_m
 ) -> PValue {
     get_std_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), true)
 }
-pub(in crate::nd::effect::specs::proj_getter) fn get_std_full_unrestricted_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_full_unrestricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -93,7 +93,7 @@ fn get_std_full_range_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Missile-alike effect range calculation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::specs::proj_getter) fn get_missile_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -145,7 +145,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_missile_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_fof_missile_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_fof_missile_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -160,7 +160,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_fof_missile_range_mult(
     get_missile_range_mult(ctx, calc, projector_uid, proj_data)
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_bomb_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -245,7 +245,7 @@ fn calc_flight_range(max_velocity: PValue, flight_duration: PValue, mass: PValue
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Misc effects
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -260,7 +260,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_burst_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_sharp_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_sharp_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -274,7 +274,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_sharp_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_round_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_round_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -289,7 +289,7 @@ pub(in crate::nd::effect::specs::proj_getter) fn get_aoe_dd_round_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_getter) fn get_dd_neut_range_mult(
+pub(in crate::nd::effect::specs::proj_mult_getter) fn get_dd_neut_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

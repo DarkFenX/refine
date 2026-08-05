@@ -9,7 +9,7 @@ pub(crate) use specs::{
     NEffectDmgOutputGetter, NEffectEcm, NEffectEcmAmount, NEffectEcmChecker, NEffectEcmOutputGetter,
     NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectMiningAmount, NEffectMiningChecker,
     NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut, NEffectNeutChecker, NEffectNeutKind,
-    NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec, NEffectResist,
+    NEffectOutputGetter, NEffectProjModSpec, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist,
 };
 pub(crate) use spool::NEffectSpoolAttrs;
 pub(crate) use time::{NEffectDuration, NEffectTime};

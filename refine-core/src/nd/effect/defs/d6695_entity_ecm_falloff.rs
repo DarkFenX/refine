@@ -1,6 +1,6 @@
 use crate::{
     ad::AEffectId,
-    nd::{NEffect, NEffectEcm, NEffectEcmOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist},
+    nd::{NEffect, NEffectEcm, NEffectEcmOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::ENTITY_ECM_FALLOFF;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: None,
             ospec: NEffectProjOpcSpec {
                 base: NEffectEcmOutputGetter::Entity,
-                proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
                 resist: Some(NEffectResist::Standard),
                 ..
             },

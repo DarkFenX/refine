@@ -8,7 +8,7 @@ use crate::{
         AAttrId, ABuffId, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectCatId,
         AEffectId, AEffectModStrength, AItemId, AItemListId, AState,
     },
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffect, NEffectProjModSpec, NEffectProjMultGetter},
 };
 
 const ITEM_AID: AItemId = AItemId::STASIS_WEBIFICATION_PROBE;
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         adg_make_effect_fn: Some(make_effect),
         adg_assign_effect_fn: Some(|a_items| assign_defeff_to_item(a_items, ITEM_AID, EFFECT_AID)),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleCts),
+            proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleCts),
             ..
         }),
         ..

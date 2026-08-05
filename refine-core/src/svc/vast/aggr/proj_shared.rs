@@ -39,6 +39,7 @@ impl<I> AggrProjInvData<I> {
         effect: &REffect,
         ospec: &REffectProjOpcSpec<BG>,
         base_xargs: BX,
+        include_crits: bool,
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
@@ -68,7 +69,15 @@ impl<I> AggrProjInvData<I> {
             }
             // Strength-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                let proj_mult = proj_mult_getter.get_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                let proj_mult = proj_mult_getter.get_proj_mult(
+                    ctx,
+                    calc,
+                    projector_uid,
+                    effect,
+                    projectee_uid,
+                    proj_data,
+                    include_crits,
+                );
                 if proj_mult == PValue::ZERO {
                     return None;
                 }
@@ -76,7 +85,15 @@ impl<I> AggrProjInvData<I> {
             }
             // Chance-modifying projection
             if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                let proj_mult = proj_mult_getter.get_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data);
+                let proj_mult = proj_mult_getter.get_proj_mult(
+                    ctx,
+                    calc,
+                    projector_uid,
+                    effect,
+                    projectee_uid,
+                    proj_data,
+                    include_crits,
+                );
                 if proj_mult == PValue::ZERO {
                     return None;
                 }

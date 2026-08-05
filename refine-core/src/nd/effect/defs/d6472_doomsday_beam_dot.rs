@@ -1,7 +1,7 @@
 use super::shared::{get_aoe_dd_warmup_neut, make_dd_self_debuffs};
 use crate::{
     ad::{AEffectBuff, AEffectId},
-    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_BEAM_DOT;
@@ -16,7 +16,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         dmg_kind: Some(NEffectDmgKindGetter::Superweapon),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::DotDelay,
-            proj_mult_str: Some(NEffectProjGetter::AoeDdRound),
+            proj_mult_str: Some(NEffectProjMultGetter::AoeDdRound),
             ..
         }),
         neut: Some(get_aoe_dd_warmup_neut()),

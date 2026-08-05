@@ -1,6 +1,6 @@
 use crate::{
     ad::AEffectId,
-    nd::{NEffect, NEffectMining, NEffectMiningOutputGetter, NEffectProjGetter, NEffectProjOpcSpec},
+    nd::{NEffect, NEffectMining, NEffectMiningOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::MINING_CLOUDS;
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
             checker: None,
             ospec: NEffectProjOpcSpec {
                 base: NEffectMiningOutputGetter::Regular,
-                proj_mult_str: Some(NEffectProjGetter::GenericRangeSimpleSts),
+                proj_mult_str: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
                 ..
             },
         }),

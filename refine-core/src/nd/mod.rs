@@ -12,7 +12,7 @@ pub(crate) use effect::{
     NEffectDmgKindGetter, NEffectDmgOutputGetter, NEffectDuration, NEffectEcm, NEffectEcmAmount, NEffectEcmChecker,
     NEffectEcmOutputGetter, NEffectGeneralOutputGetter, NEffectLocalOpcSpec, NEffectMining, NEffectMiningAmount,
     NEffectMiningChecker, NEffectMiningOutputGetter, NEffectMiningXargs, NEffectNeut, NEffectNeutChecker,
-    NEffectNeutKind, NEffectOutputGetter, NEffectProjGetter, NEffectProjModSpec, NEffectProjOpcSpec,
+    NEffectNeutKind, NEffectOutputGetter, NEffectProjModSpec, NEffectProjMultGetter, NEffectProjOpcSpec,
     NEffectProjecteeFilter, NEffectResist, NEffectSpoolAttrs, NEffectTime,
 };
 pub(crate) use item::{N_ITEM_MAP, NItem};

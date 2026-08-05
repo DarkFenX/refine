@@ -29,6 +29,7 @@ pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
+    include_crits: bool,
     projectee_uid: Option<UItemId>,
     spool: Option<Spool>,
     mut accum: SeqAccum<IA>,
@@ -38,7 +39,16 @@ where
     I: Copy + std::ops::MulAssign<PValue> + HasImpact + InstanceLimit,
     IA: SeqInstanceAccum<I>,
 {
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
+    let inv_proj = AggrProjInvData::try_make(
+        ctx,
+        calc,
+        projector_uid,
+        effect,
+        ospec,
+        base_xargs,
+        include_crits,
+        projectee_uid,
+    )?;
     let cycle_data = cseq.get_first_cycle();
     let cycle_output = if ospec.spoolable
         && let Some(spool_attrs) = effect.spool_attr_rids

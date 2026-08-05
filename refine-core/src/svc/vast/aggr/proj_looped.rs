@@ -35,6 +35,7 @@ pub(in crate::svc::vast) fn aggr_proj_looped<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
+    include_crits: bool,
     projectee_uid: Option<UItemId>,
     mut accum: SeqAccum<IA>,
 ) -> Option<SeqAccum<IA>>
@@ -44,7 +45,16 @@ where
     IA: SeqInstanceAccum<I>,
 {
     let cseq = cseq.split_lim_loop().looped?;
-    let inv_proj = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)?;
+    let inv_proj = AggrProjInvData::try_make(
+        ctx,
+        calc,
+        projector_uid,
+        effect,
+        ospec,
+        base_xargs,
+        include_crits,
+        projectee_uid,
+    )?;
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);
     let mut converter = ProjConverter::new(ctx, calc, projector_uid, ospec, &inv_proj);
     alooped_route_for_looped_cseq(cseq, inv_proj, inv_spool, &mut accum, &mut converter);
@@ -61,6 +71,7 @@ pub(in crate::svc::vast) fn aggr_proj_split<BG, BX, I, IAO, IAL>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
+    include_crits: bool,
     projectee_uid: Option<UItemId>,
     mut accum_loop: SeqAccum<IAO>,
     mut accum_lim: IAL,
@@ -72,8 +83,16 @@ where
     IAL: SeqInstanceAccum<I>,
 {
     let mut accums = SplitAccums::new();
-    let Some(inv_proj) = AggrProjInvData::try_make(ctx, calc, projector_uid, effect, ospec, base_xargs, projectee_uid)
-    else {
+    let Some(inv_proj) = AggrProjInvData::try_make(
+        ctx,
+        calc,
+        projector_uid,
+        effect,
+        ospec,
+        base_xargs,
+        include_crits,
+        projectee_uid,
+    ) else {
         return accums;
     };
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);

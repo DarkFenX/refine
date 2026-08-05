@@ -3,7 +3,7 @@ use crate::{
         AAttrId, ABuffId, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope, AEffectId,
         AEffectModStrength, AItemListId,
     },
-    nd::{NEffect, NEffectDuration, NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffect, NEffectDuration, NEffectProjModSpec, NEffectProjMultGetter},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::DOOMSDAY_AOE_TRACK;
@@ -60,7 +60,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         disallows_cloak: Some(NEffectDuration::Effect),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::AoeBurstRange),
+            proj_mult: Some(NEffectProjMultGetter::AoeBurstRange),
             ..
         }),
         ..

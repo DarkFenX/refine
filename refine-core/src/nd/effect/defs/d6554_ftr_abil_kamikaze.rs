@@ -1,6 +1,6 @@
 use crate::{
     ad::{AAttrId, AEffectId},
-    nd::{NEffect, NEffectDmgOutputGetter, NEffectProjGetter, NEffectProjOpcSpec, NEffectResist, NEffectTime},
+    nd::{NEffect, NEffectDmgOutputGetter, NEffectProjMultGetter, NEffectProjOpcSpec, NEffectResist, NEffectTime},
     num::PValue,
 };
 
@@ -12,7 +12,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         kills_item: Some(NEffectTime::Hardcoded(PValue::ZERO)),
         normal_dmg: Some(NEffectProjOpcSpec {
             base: NEffectDmgOutputGetter::FtrAbilKamikaze,
-            proj_mult_str: Some(NEffectProjGetter::FtrAbilKamikaze),
+            proj_mult_str: Some(NEffectProjMultGetter::FtrAbilKamikaze),
             resist: Some(NEffectResist::AttrRef(AAttrId::FTR_ABIL_KAMIKAZE_RESIST_ID)),
             ..
         }),

@@ -133,8 +133,17 @@ fn fill_nosfs(
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
-            let Some(iter_data) = aggr_proj_iter(ctx, calc, nosf_item_uid, effect, cseq, ospec, (), projectee_item_uid)
-            else {
+            let Some(iter_data) = aggr_proj_iter(
+                ctx,
+                calc,
+                nosf_item_uid,
+                effect,
+                cseq,
+                ospec,
+                (),
+                true,
+                projectee_item_uid,
+            ) else {
                 continue;
             };
             match stagger.is_staggered(nosf_item_uid) {
@@ -170,8 +179,17 @@ fn fill_incoming_neuts(
                 continue;
             };
             let effect = ctx.u_data.r_data.get_effect_by_rid(effect_rid);
-            let Some(iter_data) = aggr_proj_iter(ctx, calc, neut_item_uid, effect, cseq, ospec, (), Some(cap_item_uid))
-            else {
+            let Some(iter_data) = aggr_proj_iter(
+                ctx,
+                calc,
+                neut_item_uid,
+                effect,
+                cseq,
+                ospec,
+                (),
+                true,
+                Some(cap_item_uid),
+            ) else {
                 continue;
             };
             match stagger.is_staggered(neut_item_uid) {
@@ -215,6 +233,7 @@ fn fill_incoming_transfers(
                 cseq,
                 ospec,
                 (),
+                true,
                 Some(cap_item_uid),
             ) else {
                 continue;

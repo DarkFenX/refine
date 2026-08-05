@@ -92,7 +92,7 @@ fn is_any_in_effective_range(
     stopped_item_uid: UItemId,
 ) -> bool {
     for stopper_espec in stopper_especs {
-        match funcs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_uid) {
+        match funcs::get_espec_proj_mult(ctx, calc, stopper_espec, stopped_item_uid, true) {
             Some(PValue::ZERO) => (),
             _ => return true,
         }

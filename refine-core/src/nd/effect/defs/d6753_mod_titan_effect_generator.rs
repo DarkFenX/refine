@@ -3,7 +3,7 @@ use crate::{
         AAttrId, AEffect, AEffectBuff, AEffectBuffAttrMerge, AEffectBuffDuration, AEffectBuffScope, AEffectId,
         AEffectWeaponsTimerApplication, AItemListId,
     },
-    nd::{NEffect, NEffectProjGetter, NEffectProjModSpec},
+    nd::{NEffect, NEffectProjModSpec, NEffectProjMultGetter},
 };
 
 const EFFECT_AID: AEffectId = AEffectId::MOD_TITAN_EFFECT_GENERATOR;
@@ -20,7 +20,7 @@ pub(in crate::nd::effect) fn mk_n_effect() -> NEffect {
         }),
         adg_update_effect_fn: Some(update_effect),
         proj_mod: Some(NEffectProjModSpec {
-            proj_mult: Some(NEffectProjGetter::GenericRangeSimpleSts),
+            proj_mult: Some(NEffectProjMultGetter::GenericRangeSimpleSts),
             ..
         }),
         ..

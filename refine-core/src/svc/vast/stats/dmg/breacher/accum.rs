@@ -259,6 +259,7 @@ impl AppliedBreacherAccum {
         effect: &REffect,
         cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
         ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
+        include_crits: bool,
         projectee_uid: UItemId,
     ) {
         // Base output
@@ -294,7 +295,8 @@ impl AppliedBreacherAccum {
             let proj_data =
                 ctx.eff_projs
                     .get_or_make_proj_data(ctx.u_data, EffectSpec::new(item_uid, effect.rid), projectee_uid);
-            applied *= proj_mult_getter.get_mult(ctx, calc, item_uid, effect, projectee_uid, proj_data);
+            applied *=
+                proj_mult_getter.get_proj_mult(ctx, calc, item_uid, effect, projectee_uid, proj_data, include_crits);
             if applied == PValue::ZERO {
                 return;
             }

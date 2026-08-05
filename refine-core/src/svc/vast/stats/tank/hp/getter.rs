@@ -137,6 +137,7 @@ fn get_remote_ancil_hp(
                 cseq,
                 ospec,
                 (),
+                true,
                 Some(projectee_item_uid),
                 SeqAccum::new_stack(),
             ) {
