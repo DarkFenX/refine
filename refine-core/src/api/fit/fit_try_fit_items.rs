@@ -1,14 +1,12 @@
 use itertools::Itertools;
 
 use crate::{
+    AddMode, FitMut, ItemTypeId, MinionState, ModRack, ModuleState, PValue, RemoveMode, ServiceState, SolarSystem,
     ad::AItemId,
-    api::{AddMode, FitMut, ItemTypeId, MinionState, ModuleState, RemoveMode, ServiceState},
-    misc::{DetectedItemKind, ModRack},
-    num::PValue,
     rd::RState,
-    sol::SolarSystem,
-    svc::vast::{ValOptions, ValOptionsInt},
+    svc::vast::ValOptionsInt,
     ud::{UData, UEffectUpdates, UFitId, UItemId, UPhysics},
+    val::{DetectedItemKind, ValOptions},
 };
 
 impl SolarSystem {
