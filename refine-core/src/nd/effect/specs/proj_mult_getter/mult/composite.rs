@@ -231,7 +231,9 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_kamikaze_proj
     )
 }
 
-// Utility
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Turret cth-to-mult calculation
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::nd::effect::specs::proj_mult_getter) const TURRET_CTH_1_CRIT_MULT: PValue =
     PValue::from_f64_unchecked(calc_turret_mult(1.0, StatCritOptions::Include));
 const TURRET_CTH_1_NO_CRIT_MULT: PValue = PValue::from_f64_unchecked(calc_turret_mult(1.0, StatCritOptions::Exclude));
