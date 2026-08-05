@@ -2,7 +2,9 @@ use crate::{
     PValue,
     nd::{NEffectMiningAmount, NEffectMiningOutputGetter, NEffectMiningXargs},
     rd::{REffectId, REffectProjOpcSpec},
-    stats::{StatCritOptions, StatMining, StatMiningEntry, StatMiningItemKinds, StatTimeOptions},
+    stats::{
+        StatCritOptions, StatMining, StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions,
+    },
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -21,9 +23,9 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> StatMining {
-        let base_xargs = NEffectMiningXargs { mission_ore };
+        let base_xargs = NEffectMiningXargs { resource_kind };
         let mut ore = NEffectMiningAmount::new();
         let mut ice = NEffectMiningAmount::new();
         let mut gas = NEffectMiningAmount::new();
@@ -71,10 +73,10 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         let fit_data = self.get_fit_data(fit_uid);
-        let base_xargs = NEffectMiningXargs { mission_ore };
+        let base_xargs = NEffectMiningXargs { resource_kind };
         StatMining {
             ore: StatMiningEntry::from_effect_amount(get_mps(
                 reuse_cseq_map,

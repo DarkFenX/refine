@@ -2,7 +2,7 @@ use crate::{
     PValue,
     nd::{NEffectMiningAmount, NEffectMiningXargs},
     rd::{REffect, REffectMining},
-    stats::{StatCritOptions, StatMining, StatMiningEntry, StatTimeOptions},
+    stats::{StatCritOptions, StatMining, StatMiningEntry, StatMiningResourceKind, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -22,10 +22,10 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> Result<StatMining, IntStatItemError<!>> {
         check_drone_module(ctx.u_data, item_uid)?;
-        let base_xargs = NEffectMiningXargs { mission_ore };
+        let base_xargs = NEffectMiningXargs { resource_kind };
         let mps = StatMining {
             ore: get_mps_item_uid(
                 reuse_cseq_map,

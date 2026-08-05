@@ -2,6 +2,7 @@ use crate::{
     PValue, UnitInterval, Value,
     nd::{NEffectOutputGetter, NEffectProjOpcSpec},
     rd::REffect,
+    stats::StatMiningResourceKind,
     svc::{
         Calc, SvcCtx, funcs,
         output::{Output, OutputSimple},
@@ -53,7 +54,7 @@ impl NEffectMiningAmount {
 
 #[derive(Copy, Clone)]
 pub(crate) struct NEffectMiningXargs {
-    pub(crate) mission_ore: bool,
+    pub(crate) resource_kind: StatMiningResourceKind,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -106,9 +107,11 @@ fn get_crit(
 ) -> Option<Output<NEffectMiningAmount>> {
     let (delay, yield_, drain) = get_mining_values(ctx, calc, item_uid, effect, xargs)?;
     // Mission ore is immune to crits
-    let crit_chance = match xargs.mission_ore {
-        true => Value::ZERO,
-        false => calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_crit_chance, Value::ZERO),
+    let crit_chance = match xargs.resource_kind {
+        StatMiningResourceKind::Regular => {
+            calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_crit_chance, Value::ZERO)
+        }
+        StatMiningResourceKind::Mission => Value::ZERO,
     };
     let yield_ = match crit_chance > Value::FLOAT_TOLERANCE {
         true => {
@@ -136,9 +139,11 @@ fn get_mining_values(
     let yield_ =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_amount, Value::ZERO));
     // Mission ore is immune to waste
-    let waste_chance_perc = match xargs.mission_ore {
-        true => Value::ZERO,
-        false => calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_waste_probability, Value::ZERO),
+    let waste_chance_perc = match xargs.resource_kind {
+        StatMiningResourceKind::Regular => {
+            calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().mining_waste_probability, Value::ZERO)
+        }
+        StatMiningResourceKind::Mission => Value::ZERO,
     };
     let waste = match waste_chance_perc > Value::FLOAT_TOLERANCE {
         true => {

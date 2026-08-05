@@ -4,9 +4,9 @@ pub use stats::{
     StatDmgItemKinds, StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer,
     StatInJam, StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpError, StatJumpPassenger, StatJumpPortal,
     StatJumpRange, StatJumpSelf, StatMaxWarpRangeError, StatMining, StatMiningEntry, StatMiningItemKinds,
-    StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatProbingSizeError, StatResists, StatResistsLayer,
-    StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions,
-    StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
+    StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatProbingSizeError, StatResists,
+    StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot,
+    StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
 };
 pub(crate) use stats::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
 use val_options::ValOptionInt;

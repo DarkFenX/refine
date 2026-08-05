@@ -1,10 +1,6 @@
 use crate::{
-    svc::{
-        Svc, SvcCtx,
-        cycle::CseqMap,
-        err::IntStatItemError,
-        vast::{StatMining, StatMiningItemKinds, StatTimeOptions, Vast},
-    },
+    stats::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
+    svc::{Svc, SvcCtx, Vast, cycle::CseqMap, err::IntStatItemError},
     ud::{UData, UFitId, UItemId},
 };
 
@@ -16,7 +12,7 @@ impl Svc {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         self.vast.get_stat_fits_mps(
             reuse_cseq_map,
@@ -25,7 +21,7 @@ impl Svc {
             fit_uids,
             item_kinds,
             time_options,
-            mission_ore,
+            resource_kind,
         )
     }
     pub(crate) fn get_stat_fit_mps(
@@ -35,7 +31,7 @@ impl Svc {
         fit_uid: UFitId,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         self.vast.get_stat_fit_mps(
             reuse_cseq_map,
@@ -44,7 +40,7 @@ impl Svc {
             fit_uid,
             item_kinds,
             time_options,
-            mission_ore,
+            resource_kind,
         )
     }
     pub(crate) fn get_stat_item_mps(
@@ -53,7 +49,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> Result<StatMining, IntStatItemError<!>> {
         Vast::get_stat_item_mps(
             reuse_cseq_map,
@@ -61,7 +57,7 @@ impl Svc {
             &mut self.calc,
             item_uid,
             time_options,
-            mission_ore,
+            resource_kind,
         )
     }
 }

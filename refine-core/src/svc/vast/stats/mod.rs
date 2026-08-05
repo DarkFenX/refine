@@ -7,7 +7,7 @@ pub use in_jam::StatInJam;
 pub use jump::{
     StatJump, StatJumpConduit, StatJumpError, StatJumpPassenger, StatJumpPortal, StatJumpRange, StatJumpSelf,
 };
-pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds};
+pub use mining::{StatMining, StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind};
 pub use mobility::{StatAgilityError, StatMaxWarpRangeError, StatWarpSpeedError};
 pub use neut::StatNeutItemKinds;
 pub use orps::{StatOutRepItemKinds, StatOutReps};

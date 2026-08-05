@@ -12,7 +12,7 @@ use crate::{
     stats::{
         StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatDmg, StatDmgApplied, StatEhp, StatErps,
         StatHp, StatInJam, StatItemChargeOptions, StatItemStateOptions, StatJump, StatJumpRange, StatMining,
-        StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
+        StatMiningResourceKind, StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
         err::{
             StatAgilityError, StatItemAppliedError, StatItemError, StatJumpError, StatMaxWarpRangeError,
             StatProbingSizeError, StatWarpSpeedError,
@@ -194,7 +194,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_mps(
         &mut self,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
         state_options: StatItemStateOptions,
     ) -> Result<StatMining, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
@@ -203,7 +203,7 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         let sol = self.get_sol_mut();
         let result = sol
             .svc
-            .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, mission_ore)
+            .get_stat_item_mps(&mut CseqMap::new(), &sol.u_data, item_uid, time_options, resource_kind)
             .map_err(|e| StatItemError::from_svc_err(e, &sol.u_data.items));
         self.active_stat_rollback(saved_state, &mut reuse_eupdates);
         result

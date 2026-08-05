@@ -799,6 +799,12 @@ class ApiStatCrits(StrEnum):
 
 
 @unique
+class ApiStatMiningResourceKind(StrEnum):
+    regular = 'regular'
+    mission = 'mission'
+
+
+@unique
 class ApiStatItemCharges(StrEnum):
     include = 'include'
     exclude = 'exclude'

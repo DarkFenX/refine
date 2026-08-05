@@ -3,8 +3,8 @@ use crate::{
     misc::DpsProfile,
     num::{PValue, UnitInterval},
     stats::{
-        StatCapBlcRegen, StatCritOptions, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatNeutItemKinds,
-        StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatCapBlcRegen, StatCritOptions, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatMiningResourceKind,
+        StatNeutItemKinds, StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
     svc::{
         cycle::CseqMap,
@@ -139,7 +139,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 mining_item_kinds,
                 time_burst,
-                false,
+                StatMiningResourceKind::default(),
             );
             self.sol.svc.get_stat_fit_mps(
                 &mut reuse_cseq_map,
@@ -147,7 +147,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 mining_item_kinds,
                 time_sim_inf,
-                false,
+                StatMiningResourceKind::default(),
             );
             self.sol.svc.get_stat_fit_mps(
                 &mut reuse_cseq_map,
@@ -155,7 +155,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 mining_item_kinds,
                 time_sim_1200,
-                false,
+                StatMiningResourceKind::default(),
             );
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////
             // Neuts

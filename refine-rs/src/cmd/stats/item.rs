@@ -295,7 +295,7 @@ fn get_mps_stats(
 ) -> StatResult<StatMining, StatItemError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match core_item.get_stat_mps(option.time, option.mission, option.state) {
+        match core_item.get_stat_mps(option.time, option.resource_kind, option.state) {
             Ok(stat) => stats.push(Ok(stat)),
             Err(err) => return StatResult::Error(err),
         }

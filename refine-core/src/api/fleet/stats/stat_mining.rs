@@ -2,7 +2,7 @@ use crate::{
     api::FleetMut,
     svc::{
         cycle::CseqMap,
-        vast::{StatMining, StatMiningItemKinds, StatTimeOptions},
+        vast::{StatMining, StatMiningItemKinds, StatMiningResourceKind, StatTimeOptions},
     },
 };
 
@@ -11,7 +11,7 @@ impl<'s> FleetMut<'s> {
         &mut self,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         let u_fleet = self.sol.u_data.fleets.get(self.uid);
         self.sol.svc.get_stat_fits_mps(
@@ -20,7 +20,7 @@ impl<'s> FleetMut<'s> {
             u_fleet.iter_fits(),
             item_kinds,
             time_options,
-            mission_ore,
+            resource_kind,
         )
     }
 }

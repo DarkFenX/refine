@@ -1,8 +1,9 @@
 use crate::{
     FitMut, PValue,
     stats::{
-        StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-        StatOutRepItemKinds, StatOutReps, StatTimeOptions, err::StatFitAppliedError,
+        StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds,
+        StatMiningResourceKind, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatTimeOptions,
+        err::StatFitAppliedError,
     },
     svc::cycle::CseqMap,
     ud::ItemId,
@@ -46,7 +47,7 @@ impl<'s> FitMut<'s> {
         &mut self,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
-        mission_ore: bool,
+        resource_kind: StatMiningResourceKind,
     ) -> StatMining {
         self.sol.svc.get_stat_fit_mps(
             &mut CseqMap::new(),
@@ -54,7 +55,7 @@ impl<'s> FitMut<'s> {
             self.uid,
             item_kinds,
             time_options,
-            mission_ore,
+            resource_kind,
         )
     }
     pub fn get_stat_outgoing_rps(

@@ -77,7 +77,7 @@ fn get_dmg_stats(
 fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining>) -> StatResult<StatMining, !, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        let stat = core_fleet.get_stat_mps(option.item_kinds, option.time, option.mission);
+        let stat = core_fleet.get_stat_mps(option.item_kinds, option.time, option.resource_kind);
         stats.push(Ok(stat));
     }
     StatResult::Result(stats)

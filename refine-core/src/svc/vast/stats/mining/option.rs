@@ -11,6 +11,24 @@ pub struct StatMiningItemKinds {
     #[cfg_attr(feature = "serde", serde(default))]
     pub minion: DefOption = DefOption::Default,
 }
+
+/// Mining stats depend on what kind of resource is targeted. Regular resources are prone to mining
+/// residue and crits, while mission resources have neither.
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Copy, Clone, Eq, PartialEq)]
+pub enum StatMiningResourceKind {
+    Regular,
+    Mission,
+}
+const impl Default for StatMiningResourceKind {
+    fn default() -> Self {
+        Self::Regular
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Private
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatMiningItemKinds {
     pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem) -> bool {
         match u_item {

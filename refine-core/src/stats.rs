@@ -6,9 +6,10 @@ pub use crate::{
         StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds, StatEhp,
         StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam,
         StatItemChargeOptions, StatJump, StatJumpConduit, StatJumpPassenger, StatJumpPortal, StatJumpRange,
-        StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds,
-        StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen,
-        StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds, StatMiningResourceKind, StatNeutItemKinds,
+        StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps, StatRpsLayer,
+        StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst,
+        StatTimeOptionsSim,
     },
 };
 

@@ -139,19 +139,25 @@ def test_mission(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - default is non-mission ore, for mission ore crit and waste are disabled
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(mps=[
-        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)]))
+        StatsOptionFitMining(),
+        StatsOptionFitMining(resource_kind=consts.ApiStatMiningResourceKind.mission),
+        StatsOptionFitMining(resource_kind=consts.ApiStatMiningResourceKind.regular)]))
     assert api_fleet_stats.mps.map(lambda i: i.ice) == [
         [approx(15.37037), approx(19.851852)],
         [approx(14.814815), approx(14.814815)],
         [approx(15.37037), approx(19.851852)]]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=[
-        StatsOptionFitMining(), StatsOptionFitMining(mission=True), StatsOptionFitMining(mission=False)]))
+        StatsOptionFitMining(),
+        StatsOptionFitMining(resource_kind=consts.ApiStatMiningResourceKind.mission),
+        StatsOptionFitMining(resource_kind=consts.ApiStatMiningResourceKind.regular)]))
     assert api_fit_stats.mps.map(lambda i: i.ice) == [
         [approx(15.37037), approx(19.851852)],
         [approx(14.814815), approx(14.814815)],
         [approx(15.37037), approx(19.851852)]]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(mps=[
-        StatsOptionItemMining(), StatsOptionItemMining(mission=True), StatsOptionItemMining(mission=False)]))
+        StatsOptionItemMining(),
+        StatsOptionItemMining(resource_kind=consts.ApiStatMiningResourceKind.mission),
+        StatsOptionItemMining(resource_kind=consts.ApiStatMiningResourceKind.regular)]))
     assert api_module_stats.mps.map(lambda i: i.ice) == [
         [approx(15.37037), approx(19.851852)],
         [approx(14.814815), approx(14.814815)],
