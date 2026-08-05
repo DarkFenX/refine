@@ -1,4 +1,4 @@
-use crate::stats::StatTimeOptions;
+use crate::stats::{StatItemStateOptions, StatTimeOptions};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
@@ -14,6 +14,6 @@ pub struct StatOptionItemOutCps {
     #[cfg_attr(feature = "serde", serde(default))]
     pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ignore_state: bool = false,
+    pub state: StatItemStateOptions = StatItemStateOptions::default(),
     pub projectee_item_id: Option<rc::ItemId> = None,
 }

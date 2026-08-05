@@ -4,6 +4,7 @@ import typing
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
+    from fw.consts import ApiStatItemState
     from .opt_shared import StatTimeBurst, StatTimeSim
 
 
@@ -20,7 +21,7 @@ class StatsOptionItemMining:
 
     time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     mission: bool | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
+    state: ApiStatItemState | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)

@@ -1,6 +1,6 @@
 use crate::{
     PValue,
-    stats::{StatChargeOptions, StatNeutItemKinds, StatTimeOptions},
+    stats::{StatItemChargeOptions, StatNeutItemKinds, StatTimeOptions},
     svc::{Svc, SvcCtx, Vast, cycle::CseqMap, err::IntStatItemError},
     ud::{UData, UFitId, UItemId},
 };
@@ -50,7 +50,7 @@ impl Svc {
         u_data: &UData,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, IntStatItemError<!>> {
         Vast::get_stat_item_outgoing_nps(

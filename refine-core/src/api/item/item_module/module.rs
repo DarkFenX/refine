@@ -3,7 +3,7 @@ use crate::{
     ModRack, ModuleState, SolarSystem,
     api::{ItemMutSealed, ItemSealed},
     misc::InfCount,
-    stats::StatChargeOptions,
+    stats::{StatItemChargeOptions, StatItemStateOptions},
     svc::cycle::CseqMap,
     ud::{UEffectUpdates, UItemId, UModule},
 };
@@ -88,7 +88,11 @@ impl<'s> ModuleMut<'s> {
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, true, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(
+            StatItemChargeOptions::Exclude,
+            StatItemStateOptions::Switch,
+            &mut reuse_eupdates,
+        );
         let result = match self
             .sol
             .svc

@@ -67,8 +67,7 @@ fn get_dmg_stats(
                 stats.push(stat);
             }
             None => {
-                let stat =
-                    StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time, option.crits));
+                let stat = StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time, option.crits));
                 stats.push(Ok(stat));
             }
         }
@@ -91,11 +90,7 @@ fn get_outgoing_nps_stats(
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                let stat = core_fleet.get_stat_outgoing_nps_applied(
-                    option.item_kinds,
-                    option.time,
-                    &projectee_item_id,
-                );
+                let stat = core_fleet.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
                 stats.push(stat)
             }
             None => {
@@ -114,11 +109,7 @@ fn get_outgoing_rps_stats(
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                let stat = core_fleet.get_stat_outgoing_rps_applied(
-                    option.item_kinds,
-                    option.time,
-                    &projectee_item_id,
-                );
+                let stat = core_fleet.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
                 stats.push(stat);
             }
             None => {

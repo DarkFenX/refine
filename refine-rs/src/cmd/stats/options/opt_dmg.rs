@@ -1,6 +1,6 @@
 use crate::{
     ItemId,
-    stats::{StatChargeOptions, StatCritOptions, StatDmgItemKinds, StatTimeOptions},
+    stats::{StatCritOptions, StatDmgItemKinds, StatItemChargeOptions, StatItemStateOptions, StatTimeOptions},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -23,8 +23,8 @@ pub struct StatOptionItemDmg {
     #[cfg_attr(feature = "serde", serde(default))]
     pub crits: StatCritOptions = StatCritOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charges: StatChargeOptions = StatChargeOptions::default(),
+    pub charges: StatItemChargeOptions = StatItemChargeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ignore_state: bool = false,
+    pub state: StatItemStateOptions = StatItemStateOptions::default(),
     pub projectee_item_id: Option<ItemId> = None,
 }

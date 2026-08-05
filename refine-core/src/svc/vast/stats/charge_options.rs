@@ -3,24 +3,24 @@
 /// be included in item's stats or not.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Eq, PartialEq)]
-pub enum StatChargeOptions {
+pub enum StatItemChargeOptions {
     Include,
     Exclude,
 }
-const impl Default for StatChargeOptions {
+const impl Default for StatItemChargeOptions {
     fn default() -> Self {
-        StatChargeOptions::Exclude
+        Self::Exclude
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatChargeOptions {
+impl StatItemChargeOptions {
     pub(crate) fn is_enabled(&self) -> bool {
         match self {
-            StatChargeOptions::Include => true,
-            StatChargeOptions::Exclude => false,
+            Self::Include => true,
+            Self::Exclude => false,
         }
     }
 }

@@ -48,7 +48,7 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == approx(23.225806)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(charges=consts.ApiStatCharges.include)]))
+        outgoing_nps=[StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include)]))
     assert api_module_stats.outgoing_nps.one() == approx(23.225806)
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_charge_stats.outgoing_nps.one() == approx(23.225806)
@@ -61,12 +61,12 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     assert api_module_stats.outgoing_nps == [0, approx(23.225806)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     assert api_charge_stats.outgoing_nps == [0, approx(23.225806)]
     # Action
     api_module.charge.change_charge(state=False)
@@ -77,12 +77,12 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     assert api_module_stats.outgoing_nps == [0, approx(23.225806)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     assert api_charge_stats.outgoing_nps == [0, approx(23.225806)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)
@@ -93,12 +93,12 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     assert api_module_stats.outgoing_nps == [0, approx(23.225806)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     assert api_charge_stats.outgoing_nps == [0, approx(23.225806)]
     # Action
     api_module.charge.change_charge(state=True)
@@ -109,7 +109,7 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == approx(23.225806)
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(charges=consts.ApiStatCharges.include)]))
+        outgoing_nps=[StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include)]))
     assert api_module_stats.outgoing_nps.one() == approx(23.225806)
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_charge_stats.outgoing_nps.one() == approx(23.225806)
@@ -637,13 +637,13 @@ def test_include_charges(client, consts):
     # which deals neutralizes cap. For charges, this option doesn't do anything
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.exclude),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.exclude),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include)]))
     assert api_module_stats.outgoing_nps == [0, 0, approx(23.225806)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(outgoing_nps=[
         StatsOptionItemOutNps(),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.exclude),
-        StatsOptionItemOutNps(charges=consts.ApiStatCharges.include)]))
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.exclude),
+        StatsOptionItemOutNps(charges=consts.ApiStatItemCharges.include)]))
     assert api_charge_stats.outgoing_nps == [approx(23.225806), approx(23.225806), approx(23.225806)]
 
 

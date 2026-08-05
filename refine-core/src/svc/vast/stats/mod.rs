@@ -1,6 +1,6 @@
 pub use cap::{StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger};
 pub(crate) use cap::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
-pub use charge_options::StatChargeOptions;
+pub use charge_options::StatItemChargeOptions;
 pub use crit_options::StatCritOptions;
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;

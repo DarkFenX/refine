@@ -1,7 +1,7 @@
 use crate::{
     MinionState, ModuleState, SolarSystem,
     rd::RState,
-    stats::StatChargeOptions,
+    stats::{StatItemChargeOptions, StatItemStateOptions},
     ud::{UEffectUpdates, UItem, UItemId},
 };
 
@@ -16,11 +16,11 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
     // high enough, saves their old state and enables/activates them
     fn active_stat_prepare(
         &mut self,
-        charge_options: StatChargeOptions,
-        ignore_state: bool,
+        charge_options: StatItemChargeOptions,
+        state_options: StatItemStateOptions,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Option<SavedItemState> {
-        if !ignore_state {
+        if matches!(state_options, StatItemStateOptions::Retain) {
             return None;
         }
         let item_uid = self.get_uid();
@@ -125,7 +125,7 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
                     reuse_eupdates,
                 );
                 let saved_charge_state = match (charge_uid, charge_options) {
-                    (Some(charge_uid), StatChargeOptions::Include) => {
+                    (Some(charge_uid), StatItemChargeOptions::Include) => {
                         let charge = self.get_sol().u_data.items.get(charge_uid).dc_charge().unwrap();
                         match charge.get_force_disabled() {
                             true => {

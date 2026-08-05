@@ -1,12 +1,12 @@
 pub use rc::{
     CtlAffectors as StatAffectors,
     stats::{
-        StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatChargeOptions, StatCritOptions, StatDmgItemKinds,
-        StatEhp, StatEhpLayer, StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatJump,
-        StatJumpConduit, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining, StatMiningEntry, StatMiningItemKinds,
-        StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists, StatResistsLayer, StatResource, StatRps,
-        StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst,
-        StatTimeOptionsSim,
+        StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatDmgItemKinds, StatEhp, StatEhpLayer,
+        StatErps, StatErpsLayer, StatErpsLayerRegen, StatHp, StatHpLayer, StatInJam, StatItemChargeOptions,
+        StatItemStateOptions, StatJump, StatJumpConduit, StatJumpPortal, StatJumpRange, StatJumpSelf, StatMining,
+        StatMiningEntry, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds, StatOutReps, StatResists,
+        StatResistsLayer, StatResource, StatRps, StatRpsLayer, StatRpsLayerRegen, StatSensors, StatSensorsKind,
+        StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
 };
 

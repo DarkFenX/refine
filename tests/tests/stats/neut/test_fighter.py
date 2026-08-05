@@ -45,8 +45,8 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_fighter_stats.outgoing_nps == [0, 0]
     # Action
     api_fighter.change_fighter(state=consts.ApiMinionState.in_space)
@@ -56,8 +56,8 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_fighter_stats.outgoing_nps == [0, 0]
     # Action
     api_fighter.change_fighter(abilities={eve_abil_id: True})
@@ -68,8 +68,8 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_fighter_stats.outgoing_nps == [0, approx(49.5)]
     # Action
     api_fighter.change_fighter(state=consts.ApiMinionState.engaging)

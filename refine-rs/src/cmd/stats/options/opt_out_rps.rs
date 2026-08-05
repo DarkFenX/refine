@@ -1,6 +1,6 @@
 use crate::{
     ItemId,
-    stats::{StatOutRepItemKinds, StatTimeOptions},
+    stats::{StatItemStateOptions, StatOutRepItemKinds, StatTimeOptions},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -19,6 +19,6 @@ pub struct StatOptionItemOutRps {
     #[cfg_attr(feature = "serde", serde(default))]
     pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ignore_state: bool = false,
+    pub state: StatItemStateOptions = StatItemStateOptions::default(),
     pub projectee_item_id: Option<ItemId> = None,
 }

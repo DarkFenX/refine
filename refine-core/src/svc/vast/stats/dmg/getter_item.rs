@@ -3,7 +3,8 @@ use crate::{
     PValue,
     misc::DmgKinds,
     stats::{
-        StatChargeOptions, StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions,
+        StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatItemChargeOptions,
+        StatTimeOptions,
     },
     svc::{
         Calc, SvcCtx, Vast,
@@ -25,7 +26,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
     ) -> Result<StatDmg, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
@@ -64,7 +65,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
@@ -108,7 +109,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
     ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -196,7 +197,7 @@ impl Vast {
                     charge_uid,
                     time_options,
                     crit_options,
-                    StatChargeOptions::Exclude,
+                    StatItemChargeOptions::Exclude,
                 );
             }
         }
@@ -212,7 +213,7 @@ impl Vast {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
         projectee_uid: UItemId,
     ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
@@ -301,7 +302,7 @@ impl Vast {
                     charge_uid,
                     time_options,
                     crit_options,
-                    StatChargeOptions::Exclude,
+                    StatItemChargeOptions::Exclude,
                     projectee_uid,
                 );
             }

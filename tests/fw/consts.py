@@ -793,15 +793,21 @@ class ApiCtlAffector(StrEnum):
 
 
 @unique
-class ApiStatCharges(StrEnum):
+class ApiStatCrits(StrEnum):
     include = 'include'
     exclude = 'exclude'
 
 
 @unique
-class ApiStatCrits(StrEnum):
+class ApiStatItemCharges(StrEnum):
     include = 'include'
     exclude = 'exclude'
+
+
+@unique
+class ApiStatItemState(StrEnum):
+    retain = 'retain'
+    switch = 'switch'
 
 
 @unique

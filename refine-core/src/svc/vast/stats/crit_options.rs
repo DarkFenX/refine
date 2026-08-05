@@ -10,6 +10,6 @@ pub enum StatCritOptions {
 }
 const impl Default for StatCritOptions {
     fn default() -> Self {
-        StatCritOptions::Include
+        Self::Include
     }
 }

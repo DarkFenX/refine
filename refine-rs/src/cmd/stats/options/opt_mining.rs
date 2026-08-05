@@ -1,4 +1,4 @@
-use crate::stats::{StatMiningItemKinds, StatTimeOptions};
+use crate::stats::{StatItemStateOptions, StatMiningItemKinds, StatTimeOptions};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
@@ -19,5 +19,5 @@ pub struct StatOptionItemMining {
     #[cfg_attr(feature = "serde", serde(default))]
     pub mission: bool = false,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ignore_state: bool = false,
+    pub state: StatItemStateOptions = StatItemStateOptions::default(),
 }

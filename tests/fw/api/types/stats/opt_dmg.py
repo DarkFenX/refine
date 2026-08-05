@@ -4,7 +4,7 @@ import typing
 from fw.util import Absent
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiStatCharges, ApiStatCrits
+    from fw.consts import ApiStatCrits, ApiStatItemCharges, ApiStatItemState
     from .opt_shared import StatTimeBurst, StatTimeSim
 
 
@@ -22,8 +22,8 @@ class StatsOptionItemDmg:
 
     time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     crits: ApiStatCrits | type[Absent] = Absent
-    charges: ApiStatCharges | type[Absent] = Absent
-    ignore_state: bool | type[Absent] = Absent
+    charges: ApiStatItemCharges | type[Absent] = Absent
+    state: ApiStatItemState | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
 

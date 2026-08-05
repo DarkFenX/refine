@@ -37,7 +37,7 @@ def test_state(client, consts):
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(698.730469)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(5589.84375)]
     api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
     assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
@@ -53,15 +53,15 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include),
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
     assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
     assert api_fighter_dmg_ignored.dps == [0, 0, 0, approx(698.730469)]
     assert api_fighter_dmg_ignored.volley == [0, 0, 0, approx(5589.84375)]
     api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
     assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
@@ -77,7 +77,7 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(762.730469)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(9429.84375)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(762.730469)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(9429.84375)]
     api_autocharge_dmg_stats = api_autocharge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
@@ -93,15 +93,15 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include),
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
     assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
     assert api_fighter_dmg_ignored.dps == [0, 0, 0, approx(762.730469)]
     assert api_fighter_dmg_ignored.volley == [0, 0, 0, approx(9429.84375)]
     api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
     assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
@@ -117,7 +117,7 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(64)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(3840)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(64)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(3840)]
     api_autocharge_dmg_stats = api_autocharge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
@@ -133,15 +133,15 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include),
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     api_fighter_dmg_normal, api_fighter_dmg_ignored = api_fighter_stats.dmg
     assert api_fighter_dmg_normal.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_normal.volley == [0, 0, 0, 0]
     assert api_fighter_dmg_ignored.dps == [0, 0, 0, approx(64)]
     assert api_fighter_dmg_ignored.volley == [0, 0, 0, approx(3840)]
     api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_autocharge_dmg_normal, api_autocharge_dmg_ignored = api_autocharge_stats.dmg
     assert api_autocharge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_normal.volley == [0, 0, 0, 0]
@@ -156,12 +156,13 @@ def test_state(client, consts):
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
-    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)])).dmg.one()
+    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch),
+    ])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, 0]
     api_autocharge_dmg_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(ignore_state=True)])).dmg.one()
+        dmg=[StatsOptionItemDmg(state=consts.ApiStatItemState.switch)])).dmg.one()
     assert api_autocharge_dmg_stats.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_stats.volley == [0, 0, 0, 0]
     # Action
@@ -173,12 +174,13 @@ def test_state(client, consts):
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(dmg=True)).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
-    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)])).dmg.one()
+    api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch),
+    ])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, 0]
     api_autocharge_dmg_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(ignore_state=True)])).dmg.one()
+        dmg=[StatsOptionItemDmg(state=consts.ApiStatItemState.switch)])).dmg.one()
     assert api_autocharge_dmg_stats.dps == [0, 0, 0, 0]
     assert api_autocharge_dmg_stats.volley == [0, 0, 0, 0]
 
@@ -296,15 +298,17 @@ def test_include_charges(client, consts):
     api_autocharge = api_fighter.autocharges[eve_basic_info.ftr_abil_bomb_effect_id]
     # Verification - need to include charges for module to show dps, since it's on-charge effect
     # which deals damage. For charges, this option doesn't do anything
-    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.exclude), StatsOptionItemDmg(charges=consts.ApiStatCharges.include)]))
+    api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.exclude),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)]))
     api_fighter_dmg_without, api_fighter_dmg_with = api_fighter_stats.dmg
     assert api_fighter_dmg_without.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_with.dps == [0, 0, 0, approx(64)]
     assert api_fighter_dmg_without.volley == [0, 0, 0, 0]
     assert api_fighter_dmg_with.volley == [0, 0, 0, approx(3840)]
-    api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.exclude), StatsOptionItemDmg(charges=consts.ApiStatCharges.include)]))
+    api_autocharge_stats = api_autocharge.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.exclude),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)]))
     api_autocharge_dmg_without, api_autocharge_dmg_with = api_autocharge_stats.dmg
     assert api_autocharge_dmg_without.dps == [0, 0, 0, approx(64)]
     assert api_autocharge_dmg_with.dps == [0, 0, 0, approx(64)]
@@ -338,7 +342,7 @@ def test_time(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(762.730469)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(9429.84375)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeBurst(), charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeBurst(), charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(762.730469)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(9429.84375)]
     # Verification - sim without time. When rearm is disabled, secondary ability is ignored for DPS,
@@ -364,10 +368,10 @@ def test_time(client, consts):
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
         StatsOptionItemDmg(
             time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled),
-            charges=consts.ApiStatCharges.include),
+            charges=consts.ApiStatItemCharges.include),
         StatsOptionItemDmg(
             time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty),
-            charges=consts.ApiStatCharges.include)]))
+            charges=consts.ApiStatItemCharges.include)]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, approx(698.730469)]
     assert api_fighter_dmg_disabled.volley == [0, 0, 0, approx(9429.84375)]
@@ -383,7 +387,7 @@ def test_time(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(9429.84375)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(9429.84375)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=1), charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=1), charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(9429.84375)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(9429.84375)]
     # Verification - time when one fighter is being rearmed, but the other one still haven't made an
@@ -407,10 +411,10 @@ def test_time(client, consts):
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
         StatsOptionItemDmg(
             time=StatTimeSim(time=303, rearm_minions=consts.ApiRearmMinion.disabled),
-            charges=consts.ApiStatCharges.include),
+            charges=consts.ApiStatItemCharges.include),
         StatsOptionItemDmg(
             time=StatTimeSim(time=303, rearm_minions=consts.ApiRearmMinion.on_first_empty),
-            charges=consts.ApiStatCharges.include)]))
+            charges=consts.ApiStatItemCharges.include)]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, approx(764.402846)]
     assert api_fighter_dmg_disabled.volley == [0, 0, 0, approx(9429.84375)]
@@ -437,10 +441,10 @@ def test_time(client, consts):
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
         StatsOptionItemDmg(
             time=StatTimeSim(time=305, rearm_minions=consts.ApiRearmMinion.disabled),
-            charges=consts.ApiStatCharges.include),
+            charges=consts.ApiStatItemCharges.include),
         StatsOptionItemDmg(
             time=StatTimeSim(time=305, rearm_minions=consts.ApiRearmMinion.on_first_empty),
-            charges=consts.ApiStatCharges.include)]))
+            charges=consts.ApiStatItemCharges.include)]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, approx(777.717725)]
     assert api_fighter_dmg_disabled.volley == [0, 0, 0, approx(9429.84375)]
@@ -466,10 +470,10 @@ def test_time(client, consts):
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
         StatsOptionItemDmg(
             time=StatTimeSim(time=403, rearm_minions=consts.ApiRearmMinion.disabled),
-            charges=consts.ApiStatCharges.include),
+            charges=consts.ApiStatItemCharges.include),
         StatsOptionItemDmg(
             time=StatTimeSim(time=403, rearm_minions=consts.ApiRearmMinion.on_first_empty),
-            charges=consts.ApiStatCharges.include)]))
+            charges=consts.ApiStatItemCharges.include)]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, approx(755.042261)]
     assert api_fighter_dmg_disabled.volley == [0, 0, 0, approx(9429.84375)]
@@ -496,10 +500,10 @@ def test_time(client, consts):
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
         StatsOptionItemDmg(
             time=StatTimeSim(time=405, rearm_minions=consts.ApiRearmMinion.disabled),
-            charges=consts.ApiStatCharges.include),
+            charges=consts.ApiStatItemCharges.include),
         StatsOptionItemDmg(
             time=StatTimeSim(time=405, rearm_minions=consts.ApiRearmMinion.on_first_empty),
-            charges=consts.ApiStatCharges.include)]))
+            charges=consts.ApiStatItemCharges.include)]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, approx(751.313657)]
     assert api_fighter_dmg_disabled.volley == [0, 0, 0, approx(9429.84375)]
@@ -532,7 +536,7 @@ def test_count_override(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(508.486979)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(6286.5625)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(508.486979)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(6286.5625)]
     # Action
@@ -545,7 +549,7 @@ def test_count_override(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(1016.973958)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(12573.125)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_fighter_dmg_stats.dps == [0, 0, 0, approx(1016.973958)]
     assert api_fighter_dmg_stats.volley == [0, 0, 0, approx(12573.125)]
 

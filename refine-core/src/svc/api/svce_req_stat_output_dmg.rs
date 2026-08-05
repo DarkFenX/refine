@@ -1,5 +1,5 @@
 use crate::{
-    stats::{StatChargeOptions, StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatTimeOptions},
+    stats::{StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatItemChargeOptions, StatTimeOptions},
     svc::{Svc, SvcCtx, Vast, cycle::CseqMap, err::IntStatItemError},
     ud::{UData, UFitId, UItemId},
 };
@@ -92,7 +92,7 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
     ) -> Result<StatDmg, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_raw(
             reuse_cseq_map,
@@ -111,7 +111,7 @@ impl Svc {
         item_uid: UItemId,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         Vast::get_stat_item_dmg_applied(

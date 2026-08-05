@@ -42,8 +42,8 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_drone_stats.outgoing_nps == [0, approx(1.666667)]
     # Action
     api_drone.change_drone(state=consts.ApiMinionState.engaging)

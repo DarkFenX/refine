@@ -10,9 +10,9 @@ use crate::{
         basic::{AttrFoundError, ItemLoadedError},
     },
     stats::{
-        StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatChargeOptions, StatCritOptions, StatDmg, StatDmgApplied,
-        StatEhp, StatErps, StatHp, StatInJam, StatJump, StatJumpRange, StatMining, StatOutReps, StatResists, StatRps,
-        StatSensors, StatTimeOptions,
+        StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger, StatCritOptions, StatDmg, StatDmgApplied, StatEhp, StatErps,
+        StatHp, StatInJam, StatItemChargeOptions, StatItemStateOptions, StatJump, StatJumpRange, StatMining,
+        StatOutReps, StatResists, StatRps, StatSensors, StatTimeOptions,
         err::{
             StatAgilityError, StatItemAppliedError, StatItemError, StatJumpError, StatMaxWarpRangeError,
             StatProbingSizeError, StatWarpSpeedError,
@@ -142,11 +142,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
-        ignore_state: bool,
+        charge_options: StatItemChargeOptions,
+        state_options: StatItemStateOptions,
     ) -> Result<StatDmg, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(charge_options, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(charge_options, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -167,12 +167,12 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         crit_options: StatCritOptions,
-        charge_options: StatChargeOptions,
-        ignore_state: bool,
+        charge_options: StatItemChargeOptions,
+        state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(charge_options, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(charge_options, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -195,10 +195,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
         &mut self,
         time_options: StatTimeOptions,
         mission_ore: bool,
-        ignore_state: bool,
+        state_options: StatItemStateOptions,
     ) -> Result<StatMining, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -211,11 +211,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_outgoing_nps(
         &mut self,
         time_options: StatTimeOptions,
-        charge_options: StatChargeOptions,
-        ignore_state: bool,
+        charge_options: StatItemChargeOptions,
+        state_options: StatItemStateOptions,
     ) -> Result<PValue, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(charge_options, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(charge_options, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -235,12 +235,12 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_outgoing_nps_applied(
         &mut self,
         time_options: StatTimeOptions,
-        charge_options: StatChargeOptions,
-        ignore_state: bool,
+        charge_options: StatItemChargeOptions,
+        state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(charge_options, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(charge_options, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -261,10 +261,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_outgoing_rps(
         &mut self,
         time_options: StatTimeOptions,
-        ignore_state: bool,
+        state_options: StatItemStateOptions,
     ) -> Result<StatOutReps, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -277,11 +277,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_outgoing_rps_applied(
         &mut self,
         time_options: StatTimeOptions,
-        ignore_state: bool,
+        state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatOutReps, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -301,10 +301,10 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_outgoing_cps(
         &mut self,
         time_options: StatTimeOptions,
-        ignore_state: bool,
+        state_options: StatItemStateOptions,
     ) -> Result<PValue, StatItemError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let result = sol
@@ -317,11 +317,11 @@ pub trait ItemMutCommon: ItemCommon + ItemMutSealed {
     fn get_stat_outgoing_cps_applied(
         &mut self,
         time_options: StatTimeOptions,
-        ignore_state: bool,
+        state_options: StatItemStateOptions,
         projectee_item_id: &ItemId,
     ) -> Result<PValue, StatItemAppliedError<!>> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, ignore_state, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(StatItemChargeOptions::Exclude, state_options, &mut reuse_eupdates);
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let projectee_uid = sol.u_data.get_projectee_uid(projectee_item_id)?;

@@ -16,7 +16,7 @@ pub use item::{
     ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError,
     Rig, RigMut, Service, ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut,
     SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, StatItemAppliedError, StatItemError,
-    Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    StatItemStateOptions, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
 };
 use item::{ItemMutSealed, ItemSealed, get_ship_riad, iter_projs, iter_ranged_projs};
 pub use misc::{

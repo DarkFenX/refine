@@ -48,7 +48,7 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
     assert api_fit_stats.mps.one().ore == [0, 0]
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)]))
+        mps=[StatsOptionItemMining(), StatsOptionItemMining(state=consts.ApiStatItemState.switch)]))
     api_drone_mps_normal, api_drone_mps_ignored = api_drone_stats.mps
     assert api_drone_mps_normal.ore == [0, 0]
     assert api_drone_mps_ignored.ore == [approx(16.5), approx(26.4)]

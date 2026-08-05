@@ -42,8 +42,8 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_module_stats.outgoing_nps == [0, approx(63.492063)]
     # Action
     api_module.change_module(state=consts.ApiModuleState.active)

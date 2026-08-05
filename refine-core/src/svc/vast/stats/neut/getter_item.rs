@@ -1,6 +1,6 @@
 use crate::{
     PValue,
-    stats::{StatChargeOptions, StatCritOptions, StatTimeOptions},
+    stats::{StatCritOptions, StatItemChargeOptions, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -20,7 +20,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        charge_options: StatChargeOptions,
+        charge_options: StatItemChargeOptions,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, IntStatItemError<!>> {
         check_charge_drone_fighter_module(ctx.u_data, item_uid)?;
@@ -89,7 +89,7 @@ impl Vast {
                     calc,
                     charge_uid,
                     time_options,
-                    StatChargeOptions::Exclude,
+                    StatItemChargeOptions::Exclude,
                     projectee_uid,
                 ) {
                     nps += charge_nps;

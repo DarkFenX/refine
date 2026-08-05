@@ -88,20 +88,20 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_nps=True))
     assert api_fit_stats.outgoing_nps.one() == 0
     api_module_boson_stats = api_module_boson.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_module_boson_stats.outgoing_nps == [0, approx(125)]
     api_module_lance_stats = api_module_lance.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_module_lance_stats.outgoing_nps == [0, approx(135.416667)]
     api_module_lance_debuff_stats = api_module_lance_debuff.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_module_lance_debuff_stats.outgoing_nps == [0, approx(112.5)]
     api_module_reaper_stats = api_module_reaper.get_stats(options=ItemStatsOptions(outgoing_nps=[
-        StatsOptionItemOutNps(ignore_state=False),
-        StatsOptionItemOutNps(ignore_state=True)]))
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutNps(state=consts.ApiStatItemState.switch)]))
     assert api_module_reaper_stats.outgoing_nps == [0, approx(135.416667)]
     # Action
     api_module_boson.change_module(state=consts.ApiModuleState.active)

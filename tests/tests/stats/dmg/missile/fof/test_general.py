@@ -35,7 +35,7 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(332)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(830)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_module_dmg_stats.dps == [0, 0, 0, approx(332)]
     assert api_module_dmg_stats.volley == [0, 0, 0, approx(830)]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
@@ -52,15 +52,15 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include),
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
     assert api_module_dmg_normal.dps == [0, 0, 0, 0]
     assert api_module_dmg_normal.volley == [0, 0, 0, 0]
     assert api_module_dmg_ignored.dps == [0, 0, 0, approx(332)]
     assert api_module_dmg_ignored.volley == [0, 0, 0, approx(830)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
     assert api_charge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_charge_dmg_normal.volley == [0, 0, 0, 0]
@@ -77,15 +77,15 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include),
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
     assert api_module_dmg_normal.dps == [0, 0, 0, 0]
     assert api_module_dmg_normal.volley == [0, 0, 0, 0]
     assert api_module_dmg_ignored.dps == [0, 0, 0, approx(332)]
     assert api_module_dmg_ignored.volley == [0, 0, 0, approx(830)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
     assert api_charge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_charge_dmg_normal.volley == [0, 0, 0, 0]
@@ -102,15 +102,15 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include),
-        StatsOptionItemDmg(charges=consts.ApiStatCharges.include, ignore_state=True)]))
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include, state=consts.ApiStatItemState.switch)]))
     api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
     assert api_module_dmg_normal.dps == [0, 0, 0, 0]
     assert api_module_dmg_normal.volley == [0, 0, 0, 0]
     assert api_module_dmg_ignored.dps == [0, 0, 0, approx(332)]
     assert api_module_dmg_ignored.volley == [0, 0, 0, approx(830)]
     api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_charge_dmg_normal, api_charge_dmg_ignored = api_charge_stats.dmg
     assert api_charge_dmg_normal.dps == [0, 0, 0, 0]
     assert api_charge_dmg_normal.volley == [0, 0, 0, 0]
@@ -127,7 +127,7 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, approx(332)]
     assert api_fit_dmg_stats.volley == [0, 0, 0, approx(830)]
     api_module_dmg_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.include)])).dmg.one()
+        dmg=[StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)])).dmg.one()
     assert api_module_dmg_stats.dps == [0, 0, 0, approx(332)]
     assert api_module_dmg_stats.volley == [0, 0, 0, approx(830)]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=True)).dmg.one()
@@ -212,15 +212,17 @@ def test_include_charges(client, consts):
         charge_type_id=eve_charge_id)
     # Verification - need to include charges for module to show dps, since it's on-charge effect
     # which deals damage. For charges, this option doesn't do anything
-    api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.exclude), StatsOptionItemDmg(charges=consts.ApiStatCharges.include)]))
+    api_module_stats = api_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.exclude),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)]))
     api_module_dmg_without, api_module_dmg_with = api_module_stats.dmg
     assert api_module_dmg_without.dps == [0, 0, 0, 0]
     assert api_module_dmg_with.dps == [0, 0, 0, approx(332)]
     assert api_module_dmg_without.volley == [0, 0, 0, 0]
     assert api_module_dmg_with.volley == [0, 0, 0, approx(830)]
-    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(charges=consts.ApiStatCharges.exclude), StatsOptionItemDmg(charges=consts.ApiStatCharges.include)]))
+    api_charge_stats = api_module.charge.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.exclude),
+        StatsOptionItemDmg(charges=consts.ApiStatItemCharges.include)]))
     api_charge_dmg_without, api_charge_dmg_with = api_charge_stats.dmg
     assert api_charge_dmg_without.dps == [0, 0, 0, approx(332)]
     assert api_charge_dmg_with.dps == [0, 0, 0, approx(332)]

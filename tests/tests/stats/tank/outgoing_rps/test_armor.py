@@ -67,7 +67,9 @@ def test_state(client, consts):
     assert api_fleet_stats.outgoing_rps.one().armor == 0
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=True))
     assert api_fit_stats.outgoing_rps.one().armor == 0
-    api_stat_options = [StatsOptionItemOutRps(ignore_state=False), StatsOptionItemOutRps(ignore_state=True)]
+    api_stat_options = [
+        StatsOptionItemOutRps(state=consts.ApiStatItemState.retain),
+        StatsOptionItemOutRps(state=consts.ApiStatItemState.switch)]
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(
         outgoing_rps=api_stat_options))
     assert api_module_normal_stats.outgoing_rps.map(lambda i: i.armor) == [0, approx(62.666667)]

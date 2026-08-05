@@ -28,7 +28,7 @@ pub use shared::{
 pub(in crate::api) use shared::{get_ship_riad, iter_projs, iter_ranged_projs};
 pub use traits::{
     GetItemAttrError, ItemCommon, ItemMutCommon, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
-    StatItemAppliedError, StatItemError,
+    StatItemAppliedError, StatItemError, StatItemStateOptions,
 };
 pub(in crate::api) use traits::{ItemMutSealed, ItemSealed};
 

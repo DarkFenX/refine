@@ -54,7 +54,7 @@ def test_state(client, consts):
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(mps=True))
     assert api_fit_stats.mps.one().ice == [0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        mps=[StatsOptionItemMining(), StatsOptionItemMining(ignore_state=True)]))
+        mps=[StatsOptionItemMining(), StatsOptionItemMining(state=consts.ApiStatItemState.switch)]))
     api_module_mps_normal, api_module_mps_ignored = api_module_stats.mps
     assert api_module_mps_normal.ice == [0, 0]
     assert api_module_mps_ignored.ice == [approx(15.37037), approx(19.851852)]

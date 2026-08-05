@@ -47,7 +47,7 @@ def test_state(client, consts):
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_module_stats = api_module.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(ignore_state=True)]))
+        dmg=[StatsOptionItemDmg(), StatsOptionItemDmg(state=consts.ApiStatItemState.switch)]))
     api_module_dmg_normal, api_module_dmg_ignored = api_module_stats.dmg
     assert api_module_dmg_normal.dps == [0, 0, 0, 0]
     assert api_module_dmg_normal.volley == [0, 0, 0, 0]
