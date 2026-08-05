@@ -34,7 +34,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_proj_mult(
     if cth == PValue::ZERO {
         return PValue::ZERO;
     }
-    calc_turret_mult(cth, crit_options)
+    get_turret_mult(cth, crit_options)
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mult(
@@ -54,7 +54,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mul
     if cth == PValue::ZERO {
         return PValue::ZERO;
     }
-    calc_turret_mult(cth, crit_options)
+    get_turret_mult(cth, crit_options)
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_vorton_proj_mult(
@@ -232,20 +232,40 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_kamikaze_proj
 }
 
 // Utility
-fn calc_turret_mult(chance_to_hit: PValue, crit_options: StatCritOptions) -> PValue {
-    // https://wiki.eveuniversity.org/Turret_mechanics#Damage
-    let wrecking_chance = match crit_options {
-        StatCritOptions::Include => chance_to_hit.into_f64().min(0.01),
-        StatCritOptions::Exclude => 0.0,
-    };
-    let wrecking_part = wrecking_chance * 3.0;
-    let normal_chance = chance_to_hit.into_f64() - wrecking_chance;
-    let normal_part = match normal_chance > 0.0 {
-        true => {
-            let avg_dmg_mult = (0.01 + chance_to_hit.into_f64()) / 2.0 + 0.49;
-            normal_chance * avg_dmg_mult
+pub(in crate::nd::effect::specs::proj_mult_getter) const TURRET_CTH_1_CRIT_MULT: PValue =
+    PValue::from_f64_unchecked(calc_turret_mult(1.0, StatCritOptions::Include));
+const TURRET_CTH_1_NO_CRIT_MULT: PValue = PValue::from_f64_unchecked(calc_turret_mult(1.0, StatCritOptions::Exclude));
+
+fn get_turret_mult(chance_to_hit: PValue, crit_options: StatCritOptions) -> PValue {
+    let chance_to_hit = match chance_to_hit {
+        PValue::ONE => {
+            return match crit_options {
+                StatCritOptions::Include => TURRET_CTH_1_CRIT_MULT,
+                StatCritOptions::Exclude => TURRET_CTH_1_NO_CRIT_MULT,
+            };
         }
-        false => 0.0,
+        _ => chance_to_hit.into_f64(),
     };
-    PValue::from_f64_unchecked(normal_part + wrecking_part)
+    PValue::from_f64_unchecked(calc_turret_mult(chance_to_hit, crit_options))
+}
+
+const NO_CRIT_C1: f64 = 99.0 / 199.0;
+const NO_CRIT_C2: f64 = 100.0 / 199.0;
+
+const fn calc_turret_mult(chance_to_hit: f64, crit_options: StatCritOptions) -> f64 {
+    match crit_options {
+        // Optimized variant of formula from https://wiki.eveuniversity.org/Turret_mechanics#Damage
+        StatCritOptions::Include => f64::min(
+            f64::mul_add(
+                0.5 * chance_to_hit,
+                chance_to_hit,
+                f64::mul_add(0.49, chance_to_hit, 0.02505),
+            ),
+            3.0 * chance_to_hit,
+        ),
+        // Same formula as from the wiki, but crit part is taken out, and normal growth is stretched
+        // over range of [0, 1]. Stretching is necessary to get to 100% of paper damage in case of
+        // 100% chance to hit
+        StatCritOptions::Exclude => f64::mul_add(chance_to_hit * chance_to_hit, NO_CRIT_C1, chance_to_hit * NO_CRIT_C2),
+    }
 }

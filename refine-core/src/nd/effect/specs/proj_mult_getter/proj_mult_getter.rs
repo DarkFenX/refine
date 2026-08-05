@@ -1,10 +1,10 @@
 use super::mult::{
     application::{get_bomb_application_mult, get_std_missile_application_mult},
     composite::{
-        get_aoe_burst_proj_mult, get_aoe_dd_dmg_round_proj_mult, get_aoe_dd_dmg_sharp_proj_mult,
-        get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult, get_ftr_abil_attack_m_proj_mult,
-        get_ftr_abil_kamikaze_proj_mult, get_ftr_abil_missiles_proj_mult, get_neut_proj_mult, get_turret_proj_mult,
-        get_vorton_proj_mult,
+        TURRET_CTH_1_CRIT_MULT, get_aoe_burst_proj_mult, get_aoe_dd_dmg_round_proj_mult,
+        get_aoe_dd_dmg_sharp_proj_mult, get_aoe_dd_side_neut_proj_mult, get_disintegrator_proj_mult,
+        get_ftr_abil_attack_m_proj_mult, get_ftr_abil_kamikaze_proj_mult, get_ftr_abil_missiles_proj_mult,
+        get_neut_proj_mult, get_turret_proj_mult, get_vorton_proj_mult,
     },
     range::{
         get_aoe_burst_range_mult, get_aoe_dd_round_range_mult, get_bomb_range_mult, get_fof_missile_range_mult,
@@ -109,7 +109,7 @@ impl NEffectProjMultGetter {
     pub(crate) fn get_non_proj_mult(&self, crit_options: StatCritOptions) -> Option<PValue> {
         match self {
             Self::Turret | Self::Disintegrator => match crit_options {
-                StatCritOptions::Include => Some(PValue::from_f64_unchecked(1.02)),
+                StatCritOptions::Include => Some(TURRET_CTH_1_CRIT_MULT),
                 StatCritOptions::Exclude => None,
             },
             _ => None,
