@@ -298,6 +298,75 @@ def test_application(client, consts):
     assert api_module_nonproj_dmg_stats.volley == [0, 0, approx(123.810412), approx(453.699998)]
 
 
+def test_crit(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_turret_proj(
+        client=client, basic_info=eve_basic_info, dmg_mult=9.4, capacity=3, cycle_time=3080, reload_time=10000,
+        range_optimal=3000, range_falloff=43000, tracking=4.05, sig_resolution=40000)
+    eve_charge_id = make_eve_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 0, 15.2, 55.7), volume=0.025)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=2550)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=123, speed=6300, sig_radius=316)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 3623, 0), movement=(0, 0, 0))
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    # Verification - ensure perfectly applied damage equals to paper damage
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(),
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    (api_module_stats_default_nonproj,
+     api_module_stats_default_proj,
+     api_module_stats_excluded_nonproj,
+     api_module_stats_excluded_proj,
+     api_module_stats_included_nonproj,
+     api_module_stats_included_proj) = api_module_stats.dmg
+    assert api_module_stats_default_nonproj.dps.kinetic == approx(api_module_stats_default_proj.dps.kinetic)
+    assert api_module_stats_default_nonproj.volley.kinetic == approx(api_module_stats_default_proj.volley.kinetic)
+    assert api_module_stats_excluded_nonproj.dps.kinetic == approx(api_module_stats_excluded_proj.dps.kinetic)
+    assert api_module_stats_excluded_nonproj.volley.kinetic == approx(api_module_stats_excluded_proj.volley.kinetic)
+    assert api_module_stats_included_nonproj.dps.kinetic == approx(api_module_stats_included_proj.dps.kinetic)
+    assert api_module_stats_included_nonproj.volley.kinetic == approx(api_module_stats_included_proj.volley.kinetic)
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 46623, 0))
+    # Verification - non-perfect application at 1 falloff
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_module_stats_default, api_module_stats_excluded, api_module_stats_included = api_module_stats.dmg
+    assert api_module_stats_default.dps == [0, 0, approx(18.326216), approx(67.155935)]
+    assert api_module_stats_default.volley == [0, 0, approx(56.444744), approx(206.840279)]
+    assert api_module_stats_excluded.dps == [0, 0, approx(17.425243), approx(63.854345)]
+    assert api_module_stats_excluded.volley == [0, 0, approx(53.669749), approx(196.671382)]
+    assert api_module_stats_included.dps == [0, 0, approx(18.326216), approx(67.155935)]
+    assert api_module_stats_included.volley == [0, 0, approx(56.444744), approx(206.840279)]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 132623, 0))
+    # Verification - non-perfect application at 3 falloffs, difference is very stark between crit
+    # and non-crit
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_module_stats_default, api_module_stats_excluded, api_module_stats_included = api_module_stats.dmg
+    assert api_module_stats_default.dps == [0, 0, approx(0.2718141), approx(0.9960557)]
+    assert api_module_stats_default.volley == [0, 0, approx(0.8371875), approx(3.067852)]
+    assert api_module_stats_excluded.dps == [0, 0, approx(0.04561804), approx(0.1671661)]
+    assert api_module_stats_excluded.volley == [0, 0, approx(0.1405036), approx(0.5148716)]
+    assert api_module_stats_included.dps == [0, 0, approx(0.2718141), approx(0.9960557)]
+    assert api_module_stats_included.volley == [0, 0, approx(0.8371875), approx(3.067852)]
+
+
 def test_npc_prop_mode(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
     eve_module_id = make_eve_turret_proj(
