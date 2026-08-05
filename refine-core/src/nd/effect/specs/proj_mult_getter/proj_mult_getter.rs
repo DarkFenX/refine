@@ -106,35 +106,13 @@ impl NEffectProjMultGetter {
             }
         }
     }
-    pub(crate) fn get_non_proj_mult(&self, crit_options: StatCritOptions) -> PValue {
+    pub(crate) fn get_non_proj_mult(&self, crit_options: StatCritOptions) -> Option<PValue> {
         match self {
-            Self::Null => PValue::ZERO,
-            Self::GenericRangeSimpleCts => PValue::ONE,
-            Self::GenericRangeSimpleSts => PValue::ONE,
-            Self::GenericRangeFullStsRestricted => PValue::ONE,
-            Self::Turret => match crit_options {
-                StatCritOptions::Include => PValue::from_f64_unchecked(1.02),
-                StatCritOptions::Exclude => PValue::ONE,
+            Self::Turret | Self::Disintegrator => match crit_options {
+                StatCritOptions::Include => Some(PValue::from_f64_unchecked(1.02)),
+                StatCritOptions::Exclude => None,
             },
-            Self::Disintegrator => PValue::ONE,
-            Self::Vorton => PValue::ONE,
-            Self::MissileRange => PValue::ONE,
-            Self::MissileRangeFof => PValue::ONE,
-            Self::MissileApplication => PValue::ONE,
-            Self::BombRange => PValue::ONE,
-            Self::BombApplication => PValue::ONE,
-            Self::Neut => PValue::ONE,
-            Self::AoeDdSharp => PValue::ONE,
-            Self::AoeDdRound => PValue::ONE,
-            Self::AoeDdRoundRange => PValue::ONE,
-            Self::AoeDdWarmupNeut => PValue::ONE,
-            Self::AoeBurst => PValue::ONE,
-            Self::AoeBurstRange => PValue::ONE,
-            // Variants specific to a single effect
-            Self::MissileLaunchingApplication => PValue::ONE,
-            Self::FtrAbilAttackM => PValue::ONE,
-            Self::FtrAbilMissiles => PValue::ONE,
-            Self::FtrAbilKamikaze => PValue::ONE,
+            _ => None,
         }
     }
     // Returns attributes which can affect modifier application strength

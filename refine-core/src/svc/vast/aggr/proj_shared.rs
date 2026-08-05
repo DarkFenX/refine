@@ -54,58 +54,80 @@ impl<I> AggrProjInvData<I> {
         let mut str_mult = PValue::ONE;
         let mut chance_mult = PValue::ONE;
         let mut instance_limit = get_item_ship_limit(ctx, calc, projector_uid, ospec.local_limit_attr_id);
-        if let Some(projectee_uid) = projectee_uid {
-            let proj_data = ctx.eff_projs.get_or_make_proj_data(
-                ctx.u_data,
-                EffectSpec::new(projector_uid, effect.rid),
-                projectee_uid,
-            );
-            // Remote limit
-            if let Some(remote_limit) = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.remote_limit_attr_id) {
-                let remote_limit = PValue::from_value_clamped(remote_limit);
-                match instance_limit {
-                    Some(local_limit) => instance_limit = Some(local_limit.min(remote_limit)),
-                    None => instance_limit = Some(remote_limit),
-                }
-            }
-            // Strength-modifying projection
-            if let Some(proj_mult_getter) = ospec.proj_mult_str {
-                let proj_mult = proj_mult_getter.get_proj_mult(
-                    ctx,
-                    calc,
-                    projector_uid,
-                    effect,
+        match projectee_uid {
+            Some(projectee_uid) => {
+                let proj_data = ctx.eff_projs.get_or_make_proj_data(
+                    ctx.u_data,
+                    EffectSpec::new(projector_uid, effect.rid),
                     projectee_uid,
-                    proj_data,
-                    crit_options,
                 );
-                if proj_mult == PValue::ZERO {
-                    return None;
+                // Remote limit
+                if let Some(remote_limit) = calc.get_item_oattr_oextra(ctx, projectee_uid, ospec.remote_limit_attr_id) {
+                    let remote_limit = PValue::from_value_clamped(remote_limit);
+                    match instance_limit {
+                        Some(local_limit) => instance_limit = Some(local_limit.min(remote_limit)),
+                        None => instance_limit = Some(remote_limit),
+                    }
                 }
-                str_mult *= proj_mult;
-            }
-            // Chance-modifying projection
-            if let Some(proj_mult_getter) = ospec.proj_mult_chance {
-                let proj_mult = proj_mult_getter.get_proj_mult(
-                    ctx,
-                    calc,
-                    projector_uid,
-                    effect,
-                    projectee_uid,
-                    proj_data,
-                    crit_options,
-                );
-                if proj_mult == PValue::ZERO {
-                    return None;
+                // Strength-modifying projection
+                if let Some(proj_mult_getter) = ospec.proj_mult_str {
+                    let proj_mult = proj_mult_getter.get_proj_mult(
+                        ctx,
+                        calc,
+                        projector_uid,
+                        effect,
+                        projectee_uid,
+                        proj_data,
+                        crit_options,
+                    );
+                    if proj_mult == PValue::ZERO {
+                        return None;
+                    }
+                    str_mult *= proj_mult;
                 }
-                chance_mult *= proj_mult;
+                // Chance-modifying projection
+                if let Some(proj_mult_getter) = ospec.proj_mult_chance {
+                    let proj_mult = proj_mult_getter.get_proj_mult(
+                        ctx,
+                        calc,
+                        projector_uid,
+                        effect,
+                        projectee_uid,
+                        proj_data,
+                        crit_options,
+                    );
+                    if proj_mult == PValue::ZERO {
+                        return None;
+                    }
+                    chance_mult *= proj_mult;
+                }
+                // Resists
+                if let Some(resist) = ospec.resist {
+                    match resist.get_mult_by_projection(ctx, calc, projector_uid, projectee_uid) {
+                        Some(UnitInterval::ZERO) => return None,
+                        Some(resist_mult) => str_mult *= resist_mult,
+                        None => (),
+                    }
+                }
             }
-            // Resists
-            if let Some(resist) = ospec.resist {
-                match resist.get_mult_by_projection(ctx, calc, projector_uid, projectee_uid) {
-                    Some(UnitInterval::ZERO) => return None,
-                    Some(resist_mult) => str_mult *= resist_mult,
-                    None => (),
+            None => {
+                // Strength-modifying projection
+                if let Some(proj_mult_getter) = ospec.proj_mult_str
+                    && let Some(non_proj_mult) = proj_mult_getter.get_non_proj_mult(crit_options)
+                {
+                    if non_proj_mult == PValue::ZERO {
+                        return None;
+                    }
+                    str_mult *= non_proj_mult;
+                }
+                // Chance-modifying projection
+                if let Some(proj_mult_getter) = ospec.proj_mult_chance
+                    && let Some(non_proj_mult) = proj_mult_getter.get_non_proj_mult(crit_options)
+                {
+                    if non_proj_mult == PValue::ZERO {
+                        return None;
+                    }
+                    chance_mult *= non_proj_mult;
                 }
             }
         }
