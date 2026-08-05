@@ -50,6 +50,7 @@ impl PValue {
     pub(crate) const ZERO: Self = Self(0.0);
     pub(crate) const ONE: Self = Self(1.0);
     pub(crate) const TEN: Self = Self(10.0);
+    pub(crate) const MILLION: Self = Self(1000000.0);
     pub(crate) const FLOAT_TOLERANCE: Self = Self::from_f64_clamped(FLOAT_TOLERANCE);
     pub(crate) const SERVER_TICK_HZ: Self = Self::from_f64_clamped(SERVER_TICK_HZ as f64);
     pub(crate) const SERVER_TICK_S: Self = Self::from_f64_clamped(SERVER_TICK_S);

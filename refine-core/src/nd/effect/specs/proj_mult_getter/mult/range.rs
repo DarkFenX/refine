@@ -112,13 +112,14 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_missile_range_mult(
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().mass, Value::ZERO));
     let agility =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().agility, Value::ZERO));
+    let inertia_factor = calc_inertia_factor(mass, agility);
     let flight_duration_lower = flight_duration.floor_tick();
     // Missiles appear in center of attacking ship and explode on surface of target ship
     let proj_range = proj_data.get_range_c2s();
     match flight_duration_lower == flight_duration {
         // When flight duration is aligned to ticks, need to do fewer calculations
         true => {
-            let flight_range = calc_flight_range(max_velocity, flight_duration, mass, agility);
+            let flight_range = calc_flight_range(max_velocity, flight_duration, inertia_factor);
             match proj_range <= flight_range {
                 true => PValue::ONE,
                 false => PValue::ZERO,
@@ -129,12 +130,12 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_missile_range_mult(
         // and anything in-between receives partial effect corresponding to flight duration fraction
         // part
         false => {
-            let flight_range_lower = calc_flight_range(max_velocity, flight_duration_lower, mass, agility);
+            let flight_range_lower = calc_flight_range(max_velocity, flight_duration_lower, inertia_factor);
             match proj_range <= flight_range_lower {
                 true => PValue::ONE,
                 false => {
                     let flight_duration_higher = flight_duration.ceil_tick();
-                    let flight_range_higher = calc_flight_range(max_velocity, flight_duration_higher, mass, agility);
+                    let flight_range_higher = calc_flight_range(max_velocity, flight_duration_higher, inertia_factor);
                     match proj_range > flight_range_higher {
                         true => PValue::ZERO,
                         false => (flight_duration * PValue::SERVER_TICK_HZ).fract(),
@@ -180,6 +181,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().mass, Value::ZERO));
     let agility =
         PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(ctx, projector_uid, ctx.ac().agility, Value::ZERO));
+    let inertia_factor = calc_inertia_factor(mass, agility);
     let aoe_range = PValue::from_value_clamped(calc.get_item_oattr_ffb_extra(
         ctx,
         projector_uid,
@@ -192,7 +194,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
     match flight_duration_lower == flight_duration {
         // When flight duration is aligned to ticks, need to do fewer calculations
         true => {
-            let flight_range = calc_flight_range(max_velocity, flight_duration, mass, agility);
+            let flight_range = calc_flight_range(max_velocity, flight_duration, inertia_factor);
             let short_range = PValue::from_value_clamped(flight_range - aoe_range - proj_data.get_tgt_radius());
             let long_range = flight_range + aoe_range + proj_data.get_tgt_radius();
             match proj_range >= short_range && proj_range <= long_range {
@@ -204,8 +206,8 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
         // their results up
         false => {
             let flight_duration_higher = flight_duration.ceil_tick();
-            let flight_range_lower = calc_flight_range(max_velocity, flight_duration_lower, mass, agility);
-            let flight_range_higher = calc_flight_range(max_velocity, flight_duration_higher, mass, agility);
+            let flight_range_lower = calc_flight_range(max_velocity, flight_duration_lower, inertia_factor);
+            let flight_range_higher = calc_flight_range(max_velocity, flight_duration_higher, inertia_factor);
             let chance_higher = (flight_duration * PValue::SERVER_TICK_HZ).fract();
             let chance_lower = PValue::from_value_unchecked(PValue::ONE - chance_higher);
             let lower_short_range =
@@ -226,20 +228,24 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
     }
 }
 
-fn calc_flight_range(max_velocity: PValue, flight_duration: PValue, mass: PValue, agility: PValue) -> PValue {
+fn calc_flight_range(max_velocity: PValue, flight_duration: PValue, inertia_factor: PValue) -> PValue {
     // Missiles use the regular object acceleration formula:
     // https://wiki.eveuniversity.org/Acceleration#Mathematics_and_formulae
     // Here, a definite integral of this formula is calculated
     if flight_duration == PValue::ZERO {
         return PValue::ZERO;
     }
-    let inertia_factor = 1000000.0 / (mass.into_f64() * agility.into_f64());
     if !inertia_factor.is_finite() {
         return max_velocity * flight_duration;
     }
+    let inertia_factor = inertia_factor.into_f64();
     let flight_duration = flight_duration.into_f64();
     let range_units = flight_duration + (f64::exp(-inertia_factor * flight_duration) - 1.0) / inertia_factor;
     PValue::from_f64_unchecked(max_velocity.into_f64() * range_units)
+}
+
+fn calc_inertia_factor(mass: PValue, agility: PValue) -> PValue {
+    PValue::MILLION / (mass * agility)
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
