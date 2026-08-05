@@ -77,8 +77,8 @@ impl Vast {
             &mut breacher_accum,
             item_uid,
             time_options,
-            include_charges,
             include_crits,
+            include_charges,
             projectee_uid,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
