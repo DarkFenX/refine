@@ -332,6 +332,35 @@ def test_crit(client, consts):
     assert api_drone_stats_excluded_nonproj.volley.kinetic == approx(api_drone_stats_excluded_proj.volley.kinetic)
     assert api_drone_stats_included_nonproj.dps.kinetic == approx(api_drone_stats_included_proj.dps.kinetic)
     assert api_drone_stats_included_nonproj.volley.kinetic == approx(api_drone_stats_included_proj.volley.kinetic)
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 11250, 0))
+    # Verification - non-perfect application at 1 falloff
+    api_drone_stats = api_src_drone.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_drone_stats_default, api_drone_stats_excluded, api_drone_stats_included = api_drone_stats.dmg
+    assert api_drone_stats_default.dps == [0, 0, approx(54.35888), 0]
+    assert api_drone_stats_default.volley == [0, 0, approx(217.43552), 0]
+    assert api_drone_stats_excluded.dps == [0, 0, approx(51.686432), 0]
+    assert api_drone_stats_excluded.volley == [0, 0, approx(206.745729), 0]
+    assert api_drone_stats_included.dps == [0, 0, approx(54.35888), 0]
+    assert api_drone_stats_included.volley == [0, 0, approx(217.43552), 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 21250, 0))
+    # Verification - non-perfect application at 3 falloffs, difference is very stark between crit
+    # and non-crit
+    api_drone_stats = api_src_drone.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_drone_stats_default, api_drone_stats_excluded, api_drone_stats_included = api_drone_stats.dmg
+    assert api_drone_stats_default.dps == [0, 0, approx(0.80625), 0]
+    assert api_drone_stats_default.volley == [0, 0, approx(3.225), 0]
+    assert api_drone_stats_excluded.dps == [0, 0, approx(0.1353114), 0]
+    assert api_drone_stats_excluded.volley == [0, 0, approx(0.5412455), 0]
+    assert api_drone_stats_included.dps == [0, 0, approx(0.80625), 0]
+    assert api_drone_stats_included.volley == [0, 0, approx(3.225), 0]
 
 
 def test_tgt_npc_prop_mode(client, consts):
