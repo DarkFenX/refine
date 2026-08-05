@@ -9,7 +9,7 @@ pub struct StatOptionFitDmg {
     #[cfg_attr(feature = "serde", serde(default))]
     pub item_kinds: StatDmgItemKinds = StatDmgItemKinds { .. },
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub crits: StatCritOptions = StatCritOptions::default(),
     pub projectee_item_id: Option<ItemId> = None,
@@ -19,7 +19,7 @@ pub struct StatOptionFitDmg {
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionItemDmg {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub crits: StatCritOptions = StatCritOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]

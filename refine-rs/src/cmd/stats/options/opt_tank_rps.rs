@@ -4,7 +4,7 @@ use crate::{UnitInterval, stats::StatTimeOptions};
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionRps {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default = "shield_perc_default"))]
     pub shield_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }

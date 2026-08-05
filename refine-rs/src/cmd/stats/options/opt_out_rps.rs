@@ -9,7 +9,7 @@ pub struct StatOptionFitOutRps {
     #[cfg_attr(feature = "serde", serde(default))]
     pub item_kinds: StatOutRepItemKinds = StatOutRepItemKinds { .. },
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     pub projectee_item_id: Option<ItemId> = None,
 }
 
@@ -17,7 +17,7 @@ pub struct StatOptionFitOutRps {
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionItemOutRps {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub ignore_state: bool = false,
     pub projectee_item_id: Option<ItemId> = None,

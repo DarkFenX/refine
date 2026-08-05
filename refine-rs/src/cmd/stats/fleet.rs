@@ -62,13 +62,13 @@ fn get_dmg_stats(
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 let stat = core_fleet
-                    .get_stat_dmg_applied(option.item_kinds, option.time_options, option.crits, &projectee_item_id)
+                    .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
                     .map(StatDmg::from_core_applied);
                 stats.push(stat);
             }
             None => {
                 let stat =
-                    StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time_options, option.crits));
+                    StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time, option.crits));
                 stats.push(Ok(stat));
             }
         }
@@ -78,7 +78,7 @@ fn get_dmg_stats(
 fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: Vec<StatOptionFitMining>) -> StatResult<StatMining, !, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        let stat = core_fleet.get_stat_mps(option.item_kinds, option.time_options, option.mission);
+        let stat = core_fleet.get_stat_mps(option.item_kinds, option.time, option.mission);
         stats.push(Ok(stat));
     }
     StatResult::Result(stats)
@@ -93,13 +93,13 @@ fn get_outgoing_nps_stats(
             Some(projectee_item_id) => {
                 let stat = core_fleet.get_stat_outgoing_nps_applied(
                     option.item_kinds,
-                    option.time_options,
+                    option.time,
                     &projectee_item_id,
                 );
                 stats.push(stat)
             }
             None => {
-                let stat = core_fleet.get_stat_outgoing_nps(option.item_kinds, option.time_options);
+                let stat = core_fleet.get_stat_outgoing_nps(option.item_kinds, option.time);
                 stats.push(Ok(stat));
             }
         }
@@ -116,13 +116,13 @@ fn get_outgoing_rps_stats(
             Some(projectee_item_id) => {
                 let stat = core_fleet.get_stat_outgoing_rps_applied(
                     option.item_kinds,
-                    option.time_options,
+                    option.time,
                     &projectee_item_id,
                 );
                 stats.push(stat);
             }
             None => {
-                let stat = core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time_options);
+                let stat = core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time);
                 stats.push(Ok(stat));
             }
         }
@@ -137,11 +137,11 @@ fn get_outgoing_cps_stats(
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                let stat = core_fleet.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id);
+                let stat = core_fleet.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
                 stats.push(stat);
             }
             None => {
-                let stat = core_fleet.get_stat_outgoing_cps(option.time_options);
+                let stat = core_fleet.get_stat_outgoing_cps(option.time);
                 stats.push(Ok(stat));
             }
         }

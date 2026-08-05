@@ -74,53 +74,53 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats (first cycle)
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeBurst())]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeBurst())]))
     assert api_fleet_stats.outgoing_nps.one() == approx(1.666667)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeBurst())]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeBurst())]))
     assert api_fit_stats.outgoing_nps.one() == approx(1.666667)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeBurst())]))
+        outgoing_nps=[StatsOptionItemOutNps(time=StatTimeBurst())]))
     assert api_drone_stats.outgoing_nps.one() == approx(1.666667)
     # Sim stats without time - loop stats are exposed
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=None))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=None))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(1.666667)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=None))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=None))]))
     assert api_fit_stats.outgoing_nps.one() == approx(1.666667)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=None))]))
+        outgoing_nps=[StatsOptionItemOutNps(time=StatTimeSim(time=None))]))
     assert api_drone_stats.outgoing_nps.one() == approx(1.666667)
     # Sim with time 1 second after first cycle has started
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=1))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=1))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(10)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=1))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=1))]))
     assert api_fit_stats.outgoing_nps.one() == approx(10)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=1))]))
+        outgoing_nps=[StatsOptionItemOutNps(time=StatTimeSim(time=1))]))
     assert api_drone_stats.outgoing_nps.one() == approx(10)
     # Sim with time when 1st cycle is about to complete
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=5))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=5))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(2)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=5))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=5))]))
     assert api_fit_stats.outgoing_nps.one() == approx(2)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=5))]))
+        outgoing_nps=[StatsOptionItemOutNps(time=StatTimeSim(time=5))]))
     assert api_drone_stats.outgoing_nps.one() == approx(2)
     # Sim with time when 2nd cycle has just started
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=7))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=7))]))
     assert api_fleet_stats.outgoing_nps.one() == approx(2.8571429)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_nps=[StatsOptionFitOutNps(time_options=StatTimeSim(time=7))]))
+        outgoing_nps=[StatsOptionFitOutNps(time=StatTimeSim(time=7))]))
     assert api_fit_stats.outgoing_nps.one() == approx(2.8571429)
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(
-        outgoing_nps=[StatsOptionItemOutNps(time_options=StatTimeSim(time=7))]))
+        outgoing_nps=[StatsOptionItemOutNps(time=StatTimeSim(time=7))]))
     assert api_drone_stats.outgoing_nps.one() == approx(2.8571429)
 
 

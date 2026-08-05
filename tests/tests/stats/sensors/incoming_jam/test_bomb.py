@@ -191,38 +191,38 @@ def test_time(client, consts):
     api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - burst stats (first cycle)
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeBurst())]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeBurst())]))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.2035831), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeBurst())]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeBurst())]))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.2035831), 0]
     # Sim stats without time - loop stats are exposed, any chance higher than 0% is exposed as 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=None))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=None))]))
     assert api_tgt_fit_stats.incoming_jam.one() == [1, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=None))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=None))]))
     assert api_tgt_ship_stats.incoming_jam.one() == [1, 0]
     # Sim with time which covers first cycle almost completely, but does not reach the second one
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=77))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=77))]))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.2035831), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=77))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=77))]))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.2035831), 0]
     # Sim with time which covers first cycle completely, and 1 second of the second one
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=78))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=78))]))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.3657201), 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=78))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=78))]))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.3657201), 0]
     # Action
     api_tgt_ship.change_ship(type_id=eve_tgt_ship1_id)
     # Verification - when chance to jam is 0%, loop doesn't make it 100%
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=None))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=None))]))
     assert api_tgt_fit_stats.incoming_jam.one() == [0, 0]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(
-        incoming_jam=[StatsOptionInJam(time_options=StatTimeSim(time=None))]))
+        incoming_jam=[StatsOptionInJam(time=StatTimeSim(time=None))]))
     assert api_tgt_ship_stats.incoming_jam.one() == [0, 0]

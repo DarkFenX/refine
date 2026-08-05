@@ -11,14 +11,14 @@ if typing.TYPE_CHECKING:
 class StatsOptionFitMining:
 
     item_kinds: StatMiningItemKinds | type[Absent] = Absent
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     mission: bool | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemMining:
 
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     mission: bool | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent
 

@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 class StatsOptionCapBalance:
 
     src_kinds: StatCapSrcKinds | type[Absent] = Absent
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
 
 
 @dataclasses.dataclass(kw_only=True)

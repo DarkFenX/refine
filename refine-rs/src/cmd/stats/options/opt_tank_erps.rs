@@ -5,7 +5,7 @@ use crate::{DpsProfile, UnitInterval, stats::StatTimeOptions};
 pub struct StatOptionErps {
     pub incoming_dps: Option<DpsProfile> = None,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default = "shield_perc_default"))]
     pub shield_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }

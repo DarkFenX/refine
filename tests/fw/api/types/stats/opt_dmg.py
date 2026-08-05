@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 class StatsOptionFitDmg:
 
     item_kinds: StatDmgItemKinds | type[Absent] = Absent
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     crits: ApiStatCrits | type[Absent] = Absent
     projectee_item_id: str | type[Absent] = Absent
 
@@ -20,7 +20,7 @@ class StatsOptionFitDmg:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionItemDmg:
 
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     crits: ApiStatCrits | type[Absent] = Absent
     charges: ApiStatCharges | type[Absent] = Absent
     ignore_state: bool | type[Absent] = Absent

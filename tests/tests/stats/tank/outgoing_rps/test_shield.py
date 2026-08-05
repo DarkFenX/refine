@@ -196,83 +196,83 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeBurst())]))
+        outgoing_rps=[StatsOptionFitOutRps(time=StatTimeBurst())]))
     assert api_fleet_stats.outgoing_rps.one().shield == approx(182.25)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeBurst())]))
+        outgoing_rps=[StatsOptionFitOutRps(time=StatTimeBurst())]))
     assert api_fit_stats.outgoing_rps.one().shield == approx(182.25)
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(
-        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeBurst())]))
+        outgoing_rps=[StatsOptionItemOutRps(time=StatTimeBurst())]))
     assert api_module_normal_stats.outgoing_rps.one().shield == approx(63.5)
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(
-        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeBurst())]))
+        outgoing_rps=[StatsOptionItemOutRps(time=StatTimeBurst())]))
     assert api_module_ancil_stats.outgoing_rps.one().shield == approx(118.75)
     # Sim without specified time - looped stats
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=[
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_fleet_stats.outgoing_rps.map(lambda i: i.shield) == [approx(182.25), approx(128.272727)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=[
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_fit_stats.outgoing_rps.map(lambda i: i.shield) == [approx(182.25), approx(128.272727)]
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(outgoing_rps=[
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_module_normal_stats.outgoing_rps.map(lambda i: i.shield) == [approx(63.5), approx(63.5)]
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(outgoing_rps=[
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=None, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_module_ancil_stats.outgoing_rps.map(lambda i: i.shield) == [approx(118.75), approx(64.772727)]
     # Sim with time right after first cycle has started
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=1))]))
+        outgoing_rps=[StatsOptionFitOutRps(time=StatTimeSim(time=1))]))
     assert api_fleet_stats.outgoing_rps.one().shield == approx(1458)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=1))]))
+        outgoing_rps=[StatsOptionFitOutRps(time=StatTimeSim(time=1))]))
     assert api_fit_stats.outgoing_rps.one().shield == approx(1458)
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(
-        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=1))]))
+        outgoing_rps=[StatsOptionItemOutRps(time=StatTimeSim(time=1))]))
     assert api_module_normal_stats.outgoing_rps.one().shield == approx(508)
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(
-        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=1))]))
+        outgoing_rps=[StatsOptionItemOutRps(time=StatTimeSim(time=1))]))
     assert api_module_ancil_stats.outgoing_rps.one().shield == approx(950)
     # Sim with time right after second cycle has started
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=9))]))
+        outgoing_rps=[StatsOptionFitOutRps(time=StatTimeSim(time=9))]))
     assert api_fleet_stats.outgoing_rps.one().shield == approx(324)
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(
-        outgoing_rps=[StatsOptionFitOutRps(time_options=StatTimeSim(time=9))]))
+        outgoing_rps=[StatsOptionFitOutRps(time=StatTimeSim(time=9))]))
     assert api_fit_stats.outgoing_rps.one().shield == approx(324)
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(
-        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=9))]))
+        outgoing_rps=[StatsOptionItemOutRps(time=StatTimeSim(time=9))]))
     assert api_module_normal_stats.outgoing_rps.one().shield == approx(112.888889)
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(
-        outgoing_rps=[StatsOptionItemOutRps(time_options=StatTimeSim(time=9))]))
+        outgoing_rps=[StatsOptionItemOutRps(time=StatTimeSim(time=9))]))
     assert api_module_ancil_stats.outgoing_rps.one().shield == approx(211.111111)
     # Sim with time when ASB exhausted its clip
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_rps=[
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_fleet_stats.outgoing_rps.map(lambda i: i.shield) == [approx(185.823529), approx(148.568627)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(outgoing_rps=[
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionFitOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionFitOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_fit_stats.outgoing_rps.map(lambda i: i.shield) == [approx(185.823529), approx(148.568627)]
     api_module_normal_stats = api_module_normal.get_stats(options=ItemStatsOptions(outgoing_rps=[
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_module_normal_stats.outgoing_rps.map(lambda i: i.shield) == [approx(64.745098), approx(64.745098)]
     api_module_ancil_stats = api_module_ancil.get_stats(options=ItemStatsOptions(outgoing_rps=[
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
-        StatsOptionItemOutRps(time_options=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.disabled)),
+        StatsOptionItemOutRps(time=StatTimeSim(time=102, optional_reloads=consts.ApiOptionalReload.on_empty)),
     ]))
     assert api_module_ancil_stats.outgoing_rps.map(lambda i: i.shield) == [approx(121.078431), approx(83.823529)]
 

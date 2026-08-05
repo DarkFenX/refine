@@ -9,7 +9,7 @@ pub struct StatOptionFitOutNps {
     #[cfg_attr(feature = "serde", serde(default))]
     pub item_kinds: StatNeutItemKinds = StatNeutItemKinds { .. },
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     pub projectee_item_id: Option<ItemId> = None,
 }
 
@@ -17,7 +17,7 @@ pub struct StatOptionFitOutNps {
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionItemOutNps {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time_options: StatTimeOptions = StatTimeOptions::default(),
+    pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub charges: StatChargeOptions = StatChargeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]

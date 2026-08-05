@@ -1033,28 +1033,28 @@ def test_cycling(client, consts):
     api_module = api_fit.add_module(type_id=eve_wdfg_id, state=consts.ApiModuleState.active)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=[
-        StatsOptionCapBalance(time_options=StatTimeBurst()),
-        StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
+        StatsOptionCapBalance(time=StatTimeBurst()),
+        StatsOptionCapBalance(time=StatTimeSim(time=None))]))
     assert api_fit_stats.cap_balance == [approx(-3.75), approx(-3.75)]
     # Action
     api_module.change_module(charge_type_id=eve_sscript_id)
     # Verification - despite main script effect having its own duration and discharge attributes,
     # for cycling values from module effects are used
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=[
-        StatsOptionCapBalance(time_options=StatTimeBurst()),
-        StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
+        StatsOptionCapBalance(time=StatTimeBurst()),
+        StatsOptionCapBalance(time=StatTimeSim(time=None))]))
     assert api_fit_stats.cap_balance == [approx(-7.5), approx(-7.5)]
     # Action
     api_module.change_module(charge_type_id=eve_dscript_id)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=[
-        StatsOptionCapBalance(time_options=StatTimeBurst()),
-        StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
+        StatsOptionCapBalance(time=StatTimeBurst()),
+        StatsOptionCapBalance(time=StatTimeSim(time=None))]))
     assert api_fit_stats.cap_balance == [approx(-7.5), approx(-7.5)]
     # Action
     api_module.change_module(charge_type_id=None)
     # Verification
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(cap_balance=[
-        StatsOptionCapBalance(time_options=StatTimeBurst()),
-        StatsOptionCapBalance(time_options=StatTimeSim(time=None))]))
+        StatsOptionCapBalance(time=StatTimeBurst()),
+        StatsOptionCapBalance(time=StatTimeSim(time=None))]))
     assert api_fit_stats.cap_balance == [approx(-3.75), approx(-3.75)]

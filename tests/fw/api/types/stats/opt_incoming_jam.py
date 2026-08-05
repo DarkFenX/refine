@@ -10,4 +10,4 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionInJam:
 
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent

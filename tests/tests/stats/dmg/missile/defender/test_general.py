@@ -219,95 +219,95 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeBurst())])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(3.076923), approx(3.076923), approx(3.076923), approx(3.076923)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]
     # Verification - sim without time means stats with reload time are considered. Since defender
     # launchers have reactivation delay which is longer than reload time, burst and sustained DPS
     # are the same
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=None))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=None))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=None))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=None))])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=None))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=None))])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(3.076923), approx(3.076923), approx(3.076923), approx(3.076923)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]
     # Verification - just after first hit landed
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(200), approx(200), approx(200), approx(200)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]
     # Verification - just before second hit
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=64))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=64))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=64))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=64))])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=64))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=64))])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(3.125), approx(3.125), approx(3.125), approx(3.125)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]
     # Verification - just after second hit
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=66))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=66))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=66))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=66))])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=66))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=66))])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(6.060606), approx(6.060606), approx(6.060606), approx(6.060606)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]
     # Verification - before 11th hit
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=714))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=714))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=714))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=714))])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=714))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=714))])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(3.081232), approx(3.081232), approx(3.081232), approx(3.081232)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]
     # Verification - after 11th hit. Here we check that reload happens during reactivation, not on
     # top of it.
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=716))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=716))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_stats.volley == [0, 0, 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=716))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=716))])).dmg.one()
     assert api_fit_dmg_stats.dps == [0, 0, 0, 0]
     assert api_fit_dmg_stats.volley == [0, 0, 0, 0]
     api_charge_dmg_stats = api_module.charge.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=716))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=716))])).dmg.one()
     assert api_charge_dmg_stats.dps == [approx(3.351955), approx(3.351955), approx(3.351955), approx(3.351955)]
     assert api_charge_dmg_stats.volley == [approx(200), approx(200), approx(200), approx(200)]

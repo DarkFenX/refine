@@ -256,37 +256,37 @@ def test_time(client, consts):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification - burst stats
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fleet_dmg_stats.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fit_dmg_stats.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fighter_dmg_stats.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fighter_dmg_stats.volley == [approx(4218.75), approx(4218.75), 0, 0]
     # Verification - sim without time. Since shadow has no rearmable abilities, numbers match
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fleet_dmg_disabled, api_fleet_dmg_rearm = api_fleet_stats.dmg
     assert api_fleet_dmg_disabled.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fleet_dmg_disabled.volley == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fleet_dmg_rearm.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fleet_dmg_rearm.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fit_dmg_disabled, api_fit_dmg_rearm = api_fit_stats.dmg
     assert api_fit_dmg_disabled.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fit_dmg_disabled.volley == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fit_dmg_rearm.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fit_dmg_rearm.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionItemDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionItemDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionItemDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [approx(1205.357143), approx(1205.357143), 0, 0]
     assert api_fighter_dmg_disabled.volley == [approx(4218.75), approx(4218.75), 0, 0]
@@ -294,38 +294,38 @@ def test_time(client, consts):
     assert api_fighter_dmg_rearm.volley == [approx(4218.75), approx(4218.75), 0, 0]
     # Verification - time after first volley of primary ability landed
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fleet_dmg_stats.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fit_dmg_stats.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fighter_dmg_stats.dps == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fighter_dmg_stats.volley == [approx(4218.75), approx(4218.75), 0, 0]
     # Verification - random time deep in the future, numbers between different modes should still
     # match, and dps should be close to "infinite" one
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fleet_dmg_disabled, api_fleet_dmg_rearm = api_fleet_stats.dmg
     assert api_fleet_dmg_disabled.dps == [approx(1206.5625), approx(1206.5625), 0, 0]
     assert api_fleet_dmg_disabled.volley == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fleet_dmg_rearm.dps == [approx(1206.5625), approx(1206.5625), 0, 0]
     assert api_fleet_dmg_rearm.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fit_dmg_disabled, api_fit_dmg_rearm = api_fit_stats.dmg
     assert api_fit_dmg_disabled.dps == [approx(1206.5625), approx(1206.5625), 0, 0]
     assert api_fit_dmg_disabled.volley == [approx(4218.75), approx(4218.75), 0, 0]
     assert api_fit_dmg_rearm.dps == [approx(1206.5625), approx(1206.5625), 0, 0]
     assert api_fit_dmg_rearm.volley == [approx(4218.75), approx(4218.75), 0, 0]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionItemDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionItemDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionItemDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [approx(1206.5625), approx(1206.5625), 0, 0]
     assert api_fighter_dmg_disabled.volley == [approx(4218.75), approx(4218.75), 0, 0]
@@ -335,39 +335,39 @@ def test_time(client, consts):
     api_fighter.change_fighter(abilities={consts.EveAbil.true_sacrifice: True})
     # Verification - burst stats
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(30000), approx(30000), approx(30000), approx(30000)]
     assert api_fleet_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(30000), approx(30000), approx(30000), approx(30000)]
     assert api_fit_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeBurst())])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeBurst())])).dmg.one()
     assert api_fighter_dmg_stats.dps == [approx(30000), approx(30000), approx(30000), approx(30000)]
     assert api_fighter_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     # Verification - sim without time. Since kamikaze ability is an one-off, suppresses other
     # abilities and is not rearmable, 0 damage is returned for dps, and kamikaze volley as max seen
     # volley
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fleet_dmg_disabled, api_fleet_dmg_rearm = api_fleet_stats.dmg
     assert api_fleet_dmg_disabled.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fleet_dmg_rearm.dps == [0, 0, 0, 0]
     assert api_fleet_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fit_dmg_disabled, api_fit_dmg_rearm = api_fit_stats.dmg
     assert api_fit_dmg_disabled.dps == [0, 0, 0, 0]
     assert api_fit_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fit_dmg_rearm.dps == [0, 0, 0, 0]
     assert api_fit_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionItemDmg(time_options=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionItemDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionItemDmg(time=StatTimeSim(time=None, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [0, 0, 0, 0]
     assert api_fighter_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
@@ -376,38 +376,38 @@ def test_time(client, consts):
     # Verification - kamikaze ability seems to have 0 damage delay (when shadows do not bug out), so
     # check that damage is applied immediately
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fleet_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fit_dmg_stats = api_fit.get_stats(options=FitStatsOptions(
-        dmg=[StatsOptionFitDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionFitDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fit_dmg_stats.dps == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fit_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fighter_dmg_stats = api_fighter.get_stats(options=ItemStatsOptions(
-        dmg=[StatsOptionItemDmg(time_options=StatTimeSim(time=1))])).dmg.one()
+        dmg=[StatsOptionItemDmg(time=StatTimeSim(time=1))])).dmg.one()
     assert api_fighter_dmg_stats.dps == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fighter_dmg_stats.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     # Verification - random time deep in the future, numbers between different modes should still
     # match, and dps should be close to "infinite" one
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fleet_dmg_disabled, api_fleet_dmg_rearm = api_fleet_stats.dmg
     assert api_fleet_dmg_disabled.dps == [approx(200), approx(200), approx(200), approx(200)]
     assert api_fleet_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fleet_dmg_rearm.dps == [approx(200), approx(200), approx(200), approx(200)]
     assert api_fleet_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionFitDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionFitDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fit_dmg_disabled, api_fit_dmg_rearm = api_fit_stats.dmg
     assert api_fit_dmg_disabled.dps == [approx(200), approx(200), approx(200), approx(200)]
     assert api_fit_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     assert api_fit_dmg_rearm.dps == [approx(200), approx(200), approx(200), approx(200)]
     assert api_fit_dmg_rearm.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(dmg=[
-        StatsOptionItemDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
-        StatsOptionItemDmg(time_options=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
+        StatsOptionItemDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.disabled)),
+        StatsOptionItemDmg(time=StatTimeSim(time=1500, rearm_minions=consts.ApiRearmMinion.on_first_empty))]))
     api_fighter_dmg_disabled, api_fighter_dmg_rearm = api_fighter_stats.dmg
     assert api_fighter_dmg_disabled.dps == [approx(200), approx(200), approx(200), approx(200)]
     assert api_fighter_dmg_disabled.volley == [approx(300000), approx(300000), approx(300000), approx(300000)]

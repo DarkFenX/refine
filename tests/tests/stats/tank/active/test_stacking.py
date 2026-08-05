@@ -160,9 +160,9 @@ def test_spool(client, consts):
         api_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
     # Verification - as spool is increased, penalty is increased as well
     api_stat_options = [
-        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
-        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0.5))),
-        StatsOptionRps(time_options=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]
+        StatsOptionRps(time=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
+        StatsOptionRps(time=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0.5))),
+        StatsOptionRps(time=StatTimeBurst(spool=Spool.spool_scale_to_api(val=1)))]
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(rps=api_stat_options))
     api_tgt_fit_stats_prespool, api_tgt_fit_stats_midspool, api_tgt_fit_stats_spooled = api_tgt_fit_stats.rps
     assert api_tgt_fit_stats_prespool.armor == [0, approx(3413.333333), approx(3225.597)]

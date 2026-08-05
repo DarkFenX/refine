@@ -377,13 +377,13 @@ fn get_dmg_stats(
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 let stat = core_fit
-                    .get_stat_dmg_applied(option.item_kinds, option.time_options, option.crits, &projectee_item_id)
+                    .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
                     .map(StatDmg::from_core_applied);
                 stats.push(stat);
             }
             None => {
                 let stat =
-                    StatDmg::from_core(core_fit.get_stat_dmg(option.item_kinds, option.time_options, option.crits));
+                    StatDmg::from_core(core_fit.get_stat_dmg(option.item_kinds, option.time, option.crits));
                 stats.push(Ok(stat));
             }
         }
@@ -393,7 +393,7 @@ fn get_dmg_stats(
 fn get_mps_stats(core_fit: &mut rc::FitMut, options: Vec<StatOptionFitMining>) -> StatResult<StatMining, !, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        let stat = core_fit.get_stat_mps(option.item_kinds, option.time_options, option.mission);
+        let stat = core_fit.get_stat_mps(option.item_kinds, option.time, option.mission);
         stats.push(Ok(stat));
     }
     StatResult::Result(stats)
@@ -407,11 +407,11 @@ fn get_outgoing_nps_stats(
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 let stat =
-                    core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time_options, &projectee_item_id);
+                    core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
                 stats.push(stat);
             }
             None => {
-                let stat = core_fit.get_stat_outgoing_nps(option.item_kinds, option.time_options);
+                let stat = core_fit.get_stat_outgoing_nps(option.item_kinds, option.time);
                 stats.push(Ok(stat));
             }
         }
@@ -427,11 +427,11 @@ fn get_outgoing_rps_stats(
         match option.projectee_item_id {
             Some(projectee_item_id) => {
                 let stat =
-                    core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time_options, &projectee_item_id);
+                    core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
                 stats.push(stat);
             }
             None => {
-                let stat = core_fit.get_stat_outgoing_rps(option.item_kinds, option.time_options);
+                let stat = core_fit.get_stat_outgoing_rps(option.item_kinds, option.time);
                 stats.push(Ok(stat));
             }
         }
@@ -446,11 +446,11 @@ fn get_outgoing_cps_stats(
     for option in options.into_iter() {
         match option.projectee_item_id {
             Some(projectee_item_id) => {
-                let stat = core_fit.get_stat_outgoing_cps_applied(option.time_options, &projectee_item_id);
+                let stat = core_fit.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
                 stats.push(stat);
             }
             None => {
-                let stat = core_fit.get_stat_outgoing_cps(option.time_options);
+                let stat = core_fit.get_stat_outgoing_cps(option.time);
                 stats.push(Ok(stat));
             }
         }
@@ -480,7 +480,7 @@ fn get_rps_stats(
 ) -> StatResult<StatRps, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match core_fit.get_stat_rps(option.time_options, option.shield_perc) {
+        match core_fit.get_stat_rps(option.time, option.shield_perc) {
             Ok(stat) => stats.push(Ok(stat)),
             Err(err) => return StatResult::Error(err),
         }
@@ -493,7 +493,7 @@ fn get_erps_stats(
 ) -> StatResult<StatErps, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match core_fit.get_stat_erps(option.incoming_dps, option.time_options, option.shield_perc) {
+        match core_fit.get_stat_erps(option.incoming_dps, option.time, option.shield_perc) {
             Ok(stat) => stats.push(Ok(stat)),
             Err(err) => return StatResult::Error(err),
         }
@@ -510,7 +510,7 @@ fn get_cap_balance_stats(
 ) -> StatResult<Value, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match core_fit.get_stat_cap_balance(&option.src_kinds, option.time_options) {
+        match core_fit.get_stat_cap_balance(&option.src_kinds, option.time) {
             Ok(stat) => stats.push(Ok(stat)),
             Err(err) => match err.is_fatal() {
                 true => return StatResult::Error(err),
@@ -551,7 +551,7 @@ fn get_incoming_jam_stats(
 ) -> StatResult<StatInJam, StatFitShipError<!>, !> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.into_iter() {
-        match core_fit.get_stat_incoming_jam(option.time_options) {
+        match core_fit.get_stat_incoming_jam(option.time) {
             Ok(stat) => stats.push(Ok(stat)),
             Err(err) => return StatResult::Error(err),
         }

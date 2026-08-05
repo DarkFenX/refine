@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 @dataclasses.dataclass(kw_only=True)
 class StatsOptionRps:
 
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     shield_perc: float | type[Absent] = Absent
 
 
@@ -19,5 +19,5 @@ class StatsOptionRps:
 class StatsOptionErps:
 
     incoming_dps: DpsProfileAlias | type[Absent] = Absent
-    time_options: StatTimeBurst | StatTimeSim | type[Absent] = Absent
+    time: StatTimeBurst | StatTimeSim | type[Absent] = Absent
     shield_perc: float | type[Absent] = Absent

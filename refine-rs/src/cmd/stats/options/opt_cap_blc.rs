@@ -6,14 +6,14 @@ pub struct StatOptionCapBlc {
     #[cfg_attr(feature = "serde", serde(default))]
     pub src_kinds: StatCapBlcSrcKinds = StatCapBlcSrcKinds { default: true, .. },
     // Unlike other stats, default is sim mode over burst mode
-    #[cfg_attr(feature = "serde", serde(default = "time_options_default"))]
-    pub time_options: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
+    #[cfg_attr(feature = "serde", serde(default = "time_default"))]
+    pub time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
-fn time_options_default() -> StatTimeOptions {
+fn time_default() -> StatTimeOptions {
     StatTimeOptions::Sim(StatTimeOptionsSim { .. })
 }
