@@ -273,3 +273,81 @@ def test_application(client, consts):
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_nonproj_dmg_stats.dps == [approx(109.666132), approx(65.799679), 0, 0]
     assert api_module_nonproj_dmg_stats.volley == [approx(701.863248), approx(421.117949), 0, 0]
+
+
+def test_crit(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_turret_laser(
+        client=client, basic_info=eve_basic_info, dmg_mult=36.25, capacity=1, cycle_time=6400,
+        reload_time=0.01, range_optimal=220000, range_falloff=42200, tracking=0.6,
+        sig_resolution=40000)
+    eve_charge_id = make_eve_charge_crystal(
+        client=client, basic_info=eve_basic_info, dmgs=(20, 12, 0, 0), volume=1,
+        get_damaged=1, hp=1, vol_dmg=0.01, vol_chance=0.1)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=500, speed=1550)
+    eve_tgt_ship_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info, radius=215, speed=1600, sig_radius=1880)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 220715, 0), movement=(0, 0, 0))
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    # Verification - ensure perfectly applied damage equals to paper damage
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(),
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    (api_module_stats_default_nonproj,
+     api_module_stats_default_proj,
+     api_module_stats_excluded_nonproj,
+     api_module_stats_excluded_proj,
+     api_module_stats_included_nonproj,
+     api_module_stats_included_proj) = api_module_stats.dmg
+    assert api_module_stats_default_nonproj.dps.em == approx(api_module_stats_default_proj.dps.em)
+    assert api_module_stats_default_nonproj.dps.thermal == approx(api_module_stats_default_proj.dps.thermal)
+    assert api_module_stats_default_nonproj.volley.em == approx(api_module_stats_default_proj.volley.em)
+    assert api_module_stats_default_nonproj.volley.thermal == approx(api_module_stats_default_proj.volley.thermal)
+    assert api_module_stats_excluded_nonproj.dps.em == approx(api_module_stats_excluded_proj.dps.em)
+    assert api_module_stats_excluded_nonproj.dps.thermal == approx(api_module_stats_excluded_proj.dps.thermal)
+    assert api_module_stats_excluded_nonproj.volley.em == approx(api_module_stats_excluded_proj.volley.em)
+    assert api_module_stats_excluded_nonproj.volley.thermal == approx(api_module_stats_excluded_proj.volley.thermal)
+    assert api_module_stats_included_nonproj.dps.em == approx(api_module_stats_included_proj.dps.em)
+    assert api_module_stats_included_nonproj.dps.thermal == approx(api_module_stats_included_proj.dps.thermal)
+    assert api_module_stats_included_nonproj.volley.em == approx(api_module_stats_included_proj.volley.em)
+    assert api_module_stats_included_nonproj.volley.thermal == approx(api_module_stats_included_proj.volley.thermal)
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 262915, 0))
+    # Verification - non-perfect application at 1 falloff
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_module_stats_default, api_module_stats_excluded, api_module_stats_included = api_module_stats.dmg
+    assert api_module_stats_default.dps == [approx(44.751758), approx(26.851055), 0, 0]
+    assert api_module_stats_default.volley == [approx(286.41125), approx(171.84675), 0, 0]
+    assert api_module_stats_excluded.dps == [approx(42.551625), approx(25.530975), 0, 0]
+    assert api_module_stats_excluded.volley == [approx(272.330402), approx(163.398241), 0, 0]
+    assert api_module_stats_included.dps == [approx(44.751758), approx(26.851055), 0, 0]
+    assert api_module_stats_included.volley == [approx(286.41125), approx(171.84675), 0, 0]
+    # Action
+    api_tgt_ship.change_ship(coordinates=(0, 347315, 0))
+    # Verification - non-perfect application at 3 falloffs, difference is very stark between crit
+    # and non-crit
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_module_stats_default, api_module_stats_excluded, api_module_stats_included = api_module_stats.dmg
+    assert api_module_stats_default.dps == [approx(0.6637573), approx(0.3982544), 0, 0]
+    assert api_module_stats_default.volley == [approx(4.248047), approx(2.548828), 0, 0]
+    assert api_module_stats_excluded.dps == [approx(0.1113971), approx(0.06683827), 0, 0]
+    assert api_module_stats_excluded.volley == [approx(0.7129415), approx(0.4277649), 0, 0]
+    assert api_module_stats_included.dps == [approx(0.6637573), approx(0.3982544), 0, 0]
+    assert api_module_stats_included.volley == [approx(4.248047), approx(2.548828), 0, 0]
