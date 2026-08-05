@@ -237,3 +237,81 @@ def test_application(client, consts):
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_module_nonproj_dmg_stats.dps == [0, approx(320.454817), 0, approx(227.878981)]
     assert api_module_nonproj_dmg_stats.volley == [0, approx(1121.591861), 0, approx(797.576434)]
+
+
+def test_crit(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_module_id = make_eve_turret_spool(
+        client=client, basic_info=eve_basic_info,
+        dmg_mult=2.65, spool_step=0.07, spool_max=2.125,
+        capacity=5, cycle_time=3500, reload_time=0.01,
+        range_optimal=21825, tracking=5.5, sig_resolution=40000)
+    eve_charge_id = make_eve_charge_normal(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 630, 0, 448), volume=0.01)
+    eve_src_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info, radius=550, speed=720)
+    eve_tgt_ship_id = make_eve_ship(
+        client=client, basic_info=eve_basic_info, radius=88, speed=2600, sig_radius=550)
+    client.create_sources()
+    api_sol = client.create_sol(default_spool=Spool.spool_scale_to_api(val=1))
+    api_src_fit = api_sol.create_fit()
+    api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0), movement=(0, 0, 0))
+    api_src_module = api_src_fit.add_module(
+        type_id=eve_module_id, state=consts.ApiModuleState.active, charge_type_id=eve_charge_id)
+    api_tgt_fit = api_sol.create_fit()
+    api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 11500, 0), movement=(0, 0, 0))
+    api_src_module.change_module(add_proj_item_ids=[api_tgt_ship.id])
+    # Verification - ensure perfectly applied damage equals to paper damage
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(),
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    (api_module_stats_default_nonproj,
+     api_module_stats_default_proj,
+     api_module_stats_excluded_nonproj,
+     api_module_stats_excluded_proj,
+     api_module_stats_included_nonproj,
+     api_module_stats_included_proj) = api_module_stats.dmg
+    assert api_module_stats_default_nonproj.dps.thermal == approx(api_module_stats_default_proj.dps.thermal)
+    assert api_module_stats_default_nonproj.dps.explosive == approx(api_module_stats_default_proj.dps.explosive)
+    assert api_module_stats_default_nonproj.volley.thermal == approx(api_module_stats_default_proj.volley.thermal)
+    assert api_module_stats_default_nonproj.volley.explosive == approx(api_module_stats_default_proj.volley.explosive)
+    assert api_module_stats_excluded_nonproj.dps.thermal == approx(api_module_stats_excluded_proj.dps.thermal)
+    assert api_module_stats_excluded_nonproj.dps.explosive == approx(api_module_stats_excluded_proj.dps.explosive)
+    assert api_module_stats_excluded_nonproj.volley.thermal == approx(api_module_stats_excluded_proj.volley.thermal)
+    assert api_module_stats_excluded_nonproj.volley.explosive == approx(api_module_stats_excluded_proj.volley.explosive)
+    assert api_module_stats_included_nonproj.dps.thermal == approx(api_module_stats_included_proj.dps.thermal)
+    assert api_module_stats_included_nonproj.dps.explosive == approx(api_module_stats_included_proj.dps.explosive)
+    assert api_module_stats_included_nonproj.volley.thermal == approx(api_module_stats_included_proj.volley.thermal)
+    assert api_module_stats_included_nonproj.volley.explosive == approx(api_module_stats_included_proj.volley.explosive)
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 0.5))
+    # Verification - non-perfect application due to target moving
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_module_stats_default, api_module_stats_excluded, api_module_stats_included = api_module_stats.dmg
+    assert api_module_stats_default.dps == [0, approx(226.217602), 0, approx(160.86585)]
+    assert api_module_stats_default.volley == [0, approx(791.761607), 0, approx(563.030476)]
+    assert api_module_stats_excluded.dps == [0, approx(192.671947), 0, approx(137.011162)]
+    assert api_module_stats_excluded.volley == [0, approx(674.351815), 0, approx(479.539069)]
+    assert api_module_stats_included.dps == [0, approx(226.217602), 0, approx(160.86585)]
+    assert api_module_stats_included.volley == [0, approx(791.761607), 0, approx(563.030476)]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 1))
+    # Verification - even worse application due to target moving at full speed; since chance to hit
+    # is low, difference is very stark between crit and non-crit
+    api_module_stats = api_src_module.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.exclude, projectee_item_id=api_tgt_ship.id),
+        StatsOptionItemDmg(crits=consts.ApiStatCrits.include, projectee_item_id=api_tgt_ship.id)]))
+    api_module_stats_default, api_module_stats_excluded, api_module_stats_included = api_module_stats.dmg
+    assert api_module_stats_default.dps == [0, approx(9.120279), 0, approx(6.485532)]
+    assert api_module_stats_default.volley == [0, approx(31.920978), 0, approx(22.699362)]
+    assert api_module_stats_excluded.dps == [0, approx(1.53077), 0, approx(1.088547)]
+    assert api_module_stats_excluded.volley == [0, approx(5.357693), 0, approx(3.809915)]
+    assert api_module_stats_included.dps == [0, approx(9.120279), 0, approx(6.485532)]
+    assert api_module_stats_included.volley == [0, approx(31.920978), 0, approx(22.699362)]
