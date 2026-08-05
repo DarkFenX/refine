@@ -598,6 +598,17 @@ def test_missile_attr_drf_absent(client, consts):
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
     assert api_charge_nonproj_dmg_stats.dps == [approx(238.558909), 0, 0, 0]
     assert api_charge_nonproj_dmg_stats.volley == [approx(1884.615385), 0, 0, 0]
+    # Action
+    api_tgt_ship.change_ship(movement=(0, 0, 0))
+    # Verification
+    api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_charge_proj_dmg_stats.dps == [approx(238.558909), 0, 0, 0]
+    assert api_charge_proj_dmg_stats.volley == [approx(1884.615385), 0, 0, 0]
+    api_charge_nonproj_dmg_stats = api_src_module_nonproj.charge.get_stats(options=ItemStatsOptions(
+        dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
+    assert api_charge_nonproj_dmg_stats.dps == [approx(238.558909), 0, 0, 0]
+    assert api_charge_nonproj_dmg_stats.volley == [approx(1884.615385), 0, 0, 0]
 
 
 def test_missile_ship_not_loaded(client, consts):

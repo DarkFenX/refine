@@ -87,7 +87,12 @@ fn get_missile_application_mult(
         return PValue::ZERO;
     }
     // "Mobile" part
-    let mobile_mult = (radius_ratio * src_ev / tgt_speed).pow_pvalue(src_drf);
+    let mobile_base = radius_ratio * src_ev / tgt_speed;
+    // Mobile base >= 1 + positive DRF means that static part will always win, so return it early
+    if !mobile_base.is_nan() && mobile_base >= PValue::ONE {
+        return radius_ratio.clamp(PValue::ZERO, PValue::ONE);
+    }
+    let mobile_mult = mobile_base.pow_pvalue(src_drf);
     if mobile_mult.is_nan() {
         return PValue::ZERO;
     }
@@ -183,7 +188,7 @@ fn calc_angular(
     );
     let velocity = tgt_velocity - src_velocity;
     let range_c2c = proj_data.get_range_c2c();
-    let result = Xyz::get_vector_cross_product(velocity, coordinates).get_vector_magnitude() / (range_c2c * range_c2c);
+    let result = Xyz::get_vector_cross_product(velocity, coordinates).get_vector_magnitude() / range_c2c.powi(2);
     match result.is_nan() {
         true => PValue::ZERO,
         false => result,
