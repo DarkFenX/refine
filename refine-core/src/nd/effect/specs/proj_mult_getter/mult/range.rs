@@ -188,6 +188,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
         ctx.ac().emp_field_range,
         Value::ZERO,
     ));
+    let aoe_reach_range = aoe_range + proj_data.get_tgt_radius();
     let flight_duration_lower = flight_duration.floor_tick();
     // Bombs appear in center of attacking ship
     let proj_range = proj_data.get_range_c2c();
@@ -195,8 +196,8 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
         // When flight duration is aligned to ticks, need to do fewer calculations
         true => {
             let flight_range = calc_flight_range(max_velocity, flight_duration, inertia_factor);
-            let short_range = PValue::from_value_clamped(flight_range - aoe_range - proj_data.get_tgt_radius());
-            let long_range = flight_range + aoe_range + proj_data.get_tgt_radius();
+            let short_range = PValue::from_value_clamped(flight_range - aoe_reach_range);
+            let long_range = flight_range + aoe_reach_range;
             match proj_range >= short_range && proj_range <= long_range {
                 true => PValue::ONE,
                 false => PValue::ZERO,
@@ -210,12 +211,10 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_range_mult(
             let flight_range_higher = calc_flight_range(max_velocity, flight_duration_higher, inertia_factor);
             let chance_higher = (flight_duration * PValue::SERVER_TICK_HZ).fract();
             let chance_lower = PValue::from_value_unchecked(PValue::ONE - chance_higher);
-            let lower_short_range =
-                PValue::from_value_clamped(flight_range_lower - aoe_range - proj_data.get_tgt_radius());
-            let lower_long_range = flight_range_lower + aoe_range + proj_data.get_tgt_radius();
-            let higher_short_range =
-                PValue::from_value_clamped(flight_range_higher - aoe_range - proj_data.get_tgt_radius());
-            let higher_long_range = flight_range_higher + aoe_range + proj_data.get_tgt_radius();
+            let lower_short_range = PValue::from_value_clamped(flight_range_lower - aoe_reach_range);
+            let lower_long_range = flight_range_lower + aoe_reach_range;
+            let higher_short_range = PValue::from_value_clamped(flight_range_higher - aoe_reach_range);
+            let higher_long_range = flight_range_higher + aoe_reach_range;
             let mut mult = PValue::ZERO;
             if proj_range >= lower_short_range && proj_range <= lower_long_range {
                 mult += chance_lower;
