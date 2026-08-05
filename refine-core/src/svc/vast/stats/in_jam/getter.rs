@@ -1,7 +1,7 @@
 use super::accum::SeqInstanceAccumEcm;
 use crate::{
     PValue, UnitInterval, Value,
-    stats::{StatInJam, StatTimeOptions},
+    stats::{StatCritOptions, StatInJam, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -53,7 +53,7 @@ impl Vast {
                             cseq,
                             ospec,
                             (),
-                            true,
+                            StatCritOptions::default(),
                             Some(projectee_item_uid),
                             burst_opts.spool,
                             SeqAccum::new_ecm(sensors),
@@ -72,7 +72,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
-                                true,
+                                StatCritOptions::default(),
                                 Some(projectee_item_uid),
                                 SeqAccum::new_ecm(sensors),
                                 time,
@@ -90,7 +90,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
-                                true,
+                                StatCritOptions::default(),
                                 Some(projectee_item_uid),
                                 SeqAccum::new_ecm(sensors),
                                 SeqInstanceAccumEcm::new(sensors),

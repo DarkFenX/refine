@@ -1,6 +1,7 @@
 use crate::{
     PValue,
     misc::EffectSpec,
+    stats::StatCritOptions,
     svc::{Calc, SvcCtx},
     ud::UItemId,
 };
@@ -10,7 +11,7 @@ pub(in crate::svc) fn get_espec_proj_mult(
     calc: &mut Calc,
     projector_espec: EffectSpec,
     projectee_uid: UItemId,
-    include_crits: bool,
+    crit_options: StatCritOptions,
 ) -> Option<PValue> {
     let projector_effect = ctx.u_data.r_data.get_effect_by_rid(projector_espec.effect_rid);
     let proj_mult_getter = projector_effect.proj_mod?.proj_mult?;
@@ -22,6 +23,6 @@ pub(in crate::svc) fn get_espec_proj_mult(
         projector_effect,
         projectee_uid,
         proj_data,
-        include_crits,
+        crit_options,
     ))
 }

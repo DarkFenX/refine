@@ -2,7 +2,9 @@ use super::breacher::{AppliedBreacherAccum, BreacherAccum};
 use crate::{
     PValue,
     misc::DmgKinds,
-    stats::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions},
+    stats::{
+        StatChargeOptions, StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatTimeOptions,
+    },
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -22,8 +24,8 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        include_crits: bool,
-        include_charges: bool,
+        crit_options: StatCritOptions,
+        charge_options: StatChargeOptions,
     ) -> Result<StatDmg, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
         let mut volley_normal = DmgKinds::default();
@@ -37,8 +39,8 @@ impl Vast {
             &mut breacher_accum,
             item_uid,
             time_options,
-            include_crits,
-            include_charges,
+            crit_options,
+            charge_options,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
             StatTimeOptions::Burst(..) => (breacher_accum.get_dps(), breacher_accum.get_volley()),
@@ -61,8 +63,8 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        include_crits: bool,
-        include_charges: bool,
+        crit_options: StatCritOptions,
+        charge_options: StatChargeOptions,
         projectee_uid: UItemId,
     ) -> Result<StatDmgApplied, IntStatItemError<!>> {
         let mut dps_normal = DmgKinds::default();
@@ -77,8 +79,8 @@ impl Vast {
             &mut breacher_accum,
             item_uid,
             time_options,
-            include_crits,
-            include_charges,
+            crit_options,
+            charge_options,
             projectee_uid,
         )?;
         let (dps_breacher, volley_breacher) = match time_options {
@@ -105,8 +107,8 @@ impl Vast {
         breacher_accum: &mut BreacherAccum,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        include_crits: bool,
-        include_charges: bool,
+        crit_options: StatCritOptions,
+        charge_options: StatChargeOptions,
     ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -126,7 +128,7 @@ impl Vast {
                             cseq,
                             ospec,
                             (),
-                            include_crits,
+                            crit_options,
                             None,
                             burst_opts.spool,
                             SeqAccum::new_stack_max(),
@@ -145,7 +147,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
-                                include_crits,
+                                crit_options,
                                 None,
                                 SeqAccum::new_stack_max(),
                                 time,
@@ -163,7 +165,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
-                                include_crits,
+                                crit_options,
                                 None,
                                 SeqAccum::new_stack_max(),
                                 SeqInstanceAccumMax::new(),
@@ -182,7 +184,7 @@ impl Vast {
                 breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec);
             }
         }
-        if include_charges {
+        if charge_options.is_enabled() {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 let _ = Self::internal_get_stat_item_dmg_checked(
                     reuse_cseq_map,
@@ -193,8 +195,8 @@ impl Vast {
                     breacher_accum,
                     charge_uid,
                     time_options,
-                    include_crits,
-                    false,
+                    crit_options,
+                    StatChargeOptions::Exclude,
                 );
             }
         }
@@ -209,8 +211,8 @@ impl Vast {
         breacher_accum: &mut AppliedBreacherAccum,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        include_crits: bool,
-        include_charges: bool,
+        crit_options: StatCritOptions,
+        charge_options: StatChargeOptions,
         projectee_uid: UItemId,
     ) -> Result<(), IntStatItemError<!>> {
         check_autocharge_charge_drone_fighter_module(ctx.u_data, item_uid)?;
@@ -231,7 +233,7 @@ impl Vast {
                             cseq,
                             ospec,
                             (),
-                            include_crits,
+                            crit_options,
                             Some(projectee_uid),
                             burst_opts.spool,
                             SeqAccum::new_stack_max(),
@@ -250,7 +252,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
-                                include_crits,
+                                crit_options,
                                 Some(projectee_uid),
                                 SeqAccum::new_stack_max(),
                                 time,
@@ -268,7 +270,7 @@ impl Vast {
                                 cseq,
                                 ospec,
                                 (),
-                                include_crits,
+                                crit_options,
                                 Some(projectee_uid),
                                 SeqAccum::new_stack_max(),
                                 SeqInstanceAccumMax::new(),
@@ -284,10 +286,10 @@ impl Vast {
                 }
             }
             if let Some(ospec) = &effect.breacher_dmg {
-                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, include_crits, projectee_uid);
+                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, crit_options, projectee_uid);
             }
         }
-        if include_charges {
+        if charge_options.is_enabled() {
             for charge_uid in ctx.u_data.items.get(item_uid).iter_charges() {
                 let _ = Self::internal_get_stat_item_dmg_applied_checked(
                     reuse_cseq_map,
@@ -298,8 +300,8 @@ impl Vast {
                     breacher_accum,
                     charge_uid,
                     time_options,
-                    include_crits,
-                    false,
+                    crit_options,
+                    StatChargeOptions::Exclude,
                     projectee_uid,
                 );
             }

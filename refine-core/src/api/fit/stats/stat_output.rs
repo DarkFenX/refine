@@ -1,13 +1,10 @@
 use crate::{
-    api::{FitMut, StatFitAppliedError},
-    num::PValue,
-    svc::{
-        cycle::CseqMap,
-        vast::{
-            StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
-            StatOutRepItemKinds, StatOutReps, StatTimeOptions,
-        },
+    FitMut, PValue,
+    stats::{
+        StatCritOptions, StatDmg, StatDmgApplied, StatDmgItemKinds, StatMining, StatMiningItemKinds, StatNeutItemKinds,
+        StatOutRepItemKinds, StatOutReps, StatTimeOptions, err::StatFitAppliedError,
     },
+    svc::cycle::CseqMap,
     ud::ItemId,
 };
 
@@ -16,7 +13,7 @@ impl<'s> FitMut<'s> {
         &mut self,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
     ) -> StatDmg {
         self.sol.svc.get_stat_fit_dmg_raw(
             &mut CseqMap::new(),
@@ -24,14 +21,14 @@ impl<'s> FitMut<'s> {
             self.uid,
             item_kinds,
             time_options,
-            include_crits,
+            crit_options,
         )
     }
     pub fn get_stat_dmg_applied(
         &mut self,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         projectee_item_id: &ItemId,
     ) -> Result<StatDmgApplied, StatFitAppliedError> {
         let projectee_uid = self.sol.u_data.get_projectee_uid(projectee_item_id)?;
@@ -41,7 +38,7 @@ impl<'s> FitMut<'s> {
             self.uid,
             item_kinds,
             time_options,
-            include_crits,
+            crit_options,
             projectee_uid,
         ))
     }

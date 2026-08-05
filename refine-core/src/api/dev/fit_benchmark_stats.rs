@@ -3,8 +3,8 @@ use crate::{
     misc::DpsProfile,
     num::{PValue, UnitInterval},
     stats::{
-        StatCapBlcRegen, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatNeutItemKinds, StatOutRepItemKinds,
-        StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
+        StatCapBlcRegen, StatCritOptions, StatDmgItemKinds, StatJumpRange, StatMiningItemKinds, StatNeutItemKinds,
+        StatOutRepItemKinds, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
     svc::{
         cycle::CseqMap,
@@ -85,7 +85,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_burst,
-                true,
+                StatCritOptions::default(),
             );
             self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
@@ -93,7 +93,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_inf,
-                true,
+                StatCritOptions::default(),
             );
             self.sol.svc.get_stat_fit_dmg_raw(
                 &mut reuse_cseq_map,
@@ -101,7 +101,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_1200,
-                true,
+                StatCritOptions::default(),
             );
             self.sol.svc.get_stat_fit_dmg_applied(
                 &mut reuse_cseq_map,
@@ -109,7 +109,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_burst,
-                true,
+                StatCritOptions::default(),
                 projectee_item_uid,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
@@ -118,7 +118,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_inf,
-                true,
+                StatCritOptions::default(),
                 projectee_item_uid,
             );
             self.sol.svc.get_stat_fit_dmg_applied(
@@ -127,7 +127,7 @@ impl<'s> FitMut<'s> {
                 self.uid,
                 dmg_item_kinds,
                 time_sim_1200,
-                true,
+                StatCritOptions::default(),
                 projectee_item_uid,
             );
             ////////////////////////////////////////////////////////////////////////////////////////////////////////////

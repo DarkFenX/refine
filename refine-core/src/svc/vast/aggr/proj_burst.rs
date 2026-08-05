@@ -6,13 +6,12 @@ use super::{
     traits::{HasImpact, InstanceLimit},
 };
 use crate::{
-    misc::Spool,
+    Count, PValue, Spool, Value,
     nd::NEffectOutputGetter,
-    num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
+    stats::StatCritOptions,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
         spool::ResolvedSpool,
     },
@@ -29,7 +28,7 @@ pub(in crate::svc::vast) fn aggr_proj_burst<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
-    include_crits: bool,
+    crit_options: StatCritOptions,
     projectee_uid: Option<UItemId>,
     spool: Option<Spool>,
     mut accum: SeqAccum<IA>,
@@ -46,7 +45,7 @@ where
         effect,
         ospec,
         base_xargs,
-        include_crits,
+        crit_options,
         projectee_uid,
     )?;
     let cycle_data = cseq.get_first_cycle();

@@ -261,8 +261,8 @@ fn get_dmg_stats(
             Some(projectee_item_id) => {
                 match core_item.get_stat_dmg_applied(
                     option.time_options,
-                    option.include_crits,
-                    option.include_charges,
+                    option.crits,
+                    option.charges,
                     option.ignore_state,
                     &projectee_item_id,
                 ) {
@@ -274,12 +274,7 @@ fn get_dmg_stats(
                 };
             }
             None => {
-                match core_item.get_stat_dmg(
-                    option.time_options,
-                    option.include_crits,
-                    option.include_charges,
-                    option.ignore_state,
-                ) {
+                match core_item.get_stat_dmg(option.time_options, option.crits, option.charges, option.ignore_state) {
                     Ok(stat) => stats.push(Ok(StatDmg::from_core(stat))),
                     Err(err) => {
                         let err = conv_err_item(err);
@@ -317,7 +312,7 @@ fn get_outgoing_nps_stats(
             Some(projectee_item_id) => {
                 match core_item.get_stat_outgoing_nps_applied(
                     option.time_options,
-                    option.include_charges,
+                    option.charges,
                     option.ignore_state,
                     &projectee_item_id,
                 ) {
@@ -328,19 +323,16 @@ fn get_outgoing_nps_stats(
                     },
                 }
             }
-            None => {
-                match core_item.get_stat_outgoing_nps(option.time_options, option.include_charges, option.ignore_state)
-                {
-                    Ok(stat) => stats.push(Ok(stat)),
-                    Err(err) => {
-                        let err = conv_err_item(err);
-                        match err.is_fatal() {
-                            true => return StatResult::Error(err),
-                            false => stats.push(Err(err)),
-                        }
+            None => match core_item.get_stat_outgoing_nps(option.time_options, option.charges, option.ignore_state) {
+                Ok(stat) => stats.push(Ok(stat)),
+                Err(err) => {
+                    let err = conv_err_item(err);
+                    match err.is_fatal() {
+                        true => return StatResult::Error(err),
+                        false => stats.push(Err(err)),
                     }
                 }
-            }
+            },
         }
     }
     StatResult::Result(stats)

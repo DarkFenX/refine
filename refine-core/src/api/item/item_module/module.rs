@@ -1,8 +1,9 @@
 use crate::{
-    api::{Charge, ChargeMut, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, ModuleState},
-    misc::{InfCount, ItemOptionalReloadInfo, ItemSpoolInfo, ModRack},
-    num::{Count, Index},
-    sol::SolarSystem,
+    Charge, ChargeMut, Count, Fit, FitMut, Index, ItemCommon, ItemMutCommon, ItemOptionalReloadInfo, ItemSpoolInfo,
+    ModRack, ModuleState, SolarSystem,
+    api::{ItemMutSealed, ItemSealed},
+    misc::InfCount,
+    stats::StatChargeOptions,
     svc::cycle::CseqMap,
     ud::{UEffectUpdates, UItemId, UModule},
 };
@@ -87,7 +88,7 @@ impl<'s> ModuleMut<'s> {
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let mut reuse_eupdates = UEffectUpdates::new();
-        let saved_state = self.active_stat_prepare(false, true, &mut reuse_eupdates);
+        let saved_state = self.active_stat_prepare(StatChargeOptions::Exclude, true, &mut reuse_eupdates);
         let result = match self
             .sol
             .svc

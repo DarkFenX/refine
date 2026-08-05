@@ -1,9 +1,10 @@
 use crate::{
     PValue, UnitInterval, Value,
     rd::RAttr,
+    stats::StatCritOptions,
     svc::{
-        SvcCtx,
-        calc::{Calc, CtxModifier, misc::ItemAttrData},
+        Calc, SvcCtx,
+        calc::{CtxModifier, misc::ItemAttrData},
         err::UItemLoadedError,
     },
     ud::{UItem, UItemId},
@@ -34,7 +35,7 @@ impl Calc {
             effect,
             item_uid,
             proj_data,
-            true,
+            StatCritOptions::default(),
         ))
     }
 }

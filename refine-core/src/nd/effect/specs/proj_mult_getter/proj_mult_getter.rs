@@ -16,6 +16,7 @@ use crate::{
     PValue,
     ad::{AAttrId, AEffect},
     rd::REffect,
+    stats::StatCritOptions,
     svc::{Calc, SvcCtx},
     ud::{UItemId, UProjData},
 };
@@ -56,7 +57,7 @@ impl NEffectProjMultGetter {
         effect: &REffect,
         projectee_uid: UItemId,
         proj_data: UProjData,
-        include_crits: bool,
+        crit_options: StatCritOptions,
     ) -> PValue {
         match self {
             Self::Null => PValue::ZERO,
@@ -65,24 +66,12 @@ impl NEffectProjMultGetter {
             Self::GenericRangeFullStsRestricted => {
                 get_std_full_restricted_range_mult(ctx, calc, projector_uid, effect, proj_data)
             }
-            Self::Turret => get_turret_proj_mult(
-                ctx,
-                calc,
-                projector_uid,
-                effect,
-                projectee_uid,
-                proj_data,
-                include_crits,
-            ),
-            Self::Disintegrator => get_disintegrator_proj_mult(
-                ctx,
-                calc,
-                projector_uid,
-                effect,
-                projectee_uid,
-                proj_data,
-                include_crits,
-            ),
+            Self::Turret => {
+                get_turret_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data, crit_options)
+            }
+            Self::Disintegrator => {
+                get_disintegrator_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data, crit_options)
+            }
             Self::Vorton => get_vorton_proj_mult(ctx, calc, projector_uid, effect, projectee_uid, proj_data),
             Self::MissileRange => get_missile_range_mult(ctx, calc, projector_uid, proj_data),
             Self::MissileRangeFof => get_fof_missile_range_mult(ctx, calc, projector_uid, proj_data),
@@ -117,15 +106,15 @@ impl NEffectProjMultGetter {
             }
         }
     }
-    pub(crate) fn get_non_proj_mult(&self, include_crits: bool) -> PValue {
+    pub(crate) fn get_non_proj_mult(&self, crit_options: StatCritOptions) -> PValue {
         match self {
             Self::Null => PValue::ZERO,
             Self::GenericRangeSimpleCts => PValue::ONE,
             Self::GenericRangeSimpleSts => PValue::ONE,
             Self::GenericRangeFullStsRestricted => PValue::ONE,
-            Self::Turret => match include_crits {
-                true => PValue::from_f64_unchecked(1.02),
-                false => PValue::ONE,
+            Self::Turret => match crit_options {
+                StatCritOptions::Include => PValue::from_f64_unchecked(1.02),
+                StatCritOptions::Exclude => PValue::ONE,
             },
             Self::Disintegrator => PValue::ONE,
             Self::Vorton => PValue::ONE,

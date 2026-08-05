@@ -7,10 +7,11 @@ use super::{
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
+    Count, PValue, UnitInterval, Value,
     misc::EffectSpec,
     nd::NEffectOutputGetter,
-    num::{Count, PValue, UnitInterval, Value},
     rd::{REffect, REffectProjOpcSpec},
+    stats::StatCritOptions,
     svc::{
         SvcCtx,
         calc::Calc,
@@ -39,7 +40,7 @@ impl<I> AggrProjInvData<I> {
         effect: &REffect,
         ospec: &REffectProjOpcSpec<BG>,
         base_xargs: BX,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         projectee_uid: Option<UItemId>,
     ) -> Option<Self>
     where
@@ -76,7 +77,7 @@ impl<I> AggrProjInvData<I> {
                     effect,
                     projectee_uid,
                     proj_data,
-                    include_crits,
+                    crit_options,
                 );
                 if proj_mult == PValue::ZERO {
                     return None;
@@ -92,7 +93,7 @@ impl<I> AggrProjInvData<I> {
                     effect,
                     projectee_uid,
                     proj_data,
-                    include_crits,
+                    crit_options,
                 );
                 if proj_mult == PValue::ZERO {
                     return None;

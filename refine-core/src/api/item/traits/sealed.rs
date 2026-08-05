@@ -1,7 +1,7 @@
 use crate::{
-    api::{MinionState, ModuleState},
+    MinionState, ModuleState, SolarSystem,
     rd::RState,
-    sol::SolarSystem,
+    stats::StatChargeOptions,
     ud::{UEffectUpdates, UItem, UItemId},
 };
 
@@ -16,7 +16,7 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
     // high enough, saves their old state and enables/activates them
     fn active_stat_prepare(
         &mut self,
-        include_charges: bool,
+        charge_options: StatChargeOptions,
         ignore_state: bool,
         reuse_eupdates: &mut UEffectUpdates,
     ) -> Option<SavedItemState> {
@@ -87,7 +87,7 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
             UItem::Fighter(fighter) => {
                 let fighter_state = fighter.get_fighter_state();
                 let mut saved_autocharge_states = Vec::new();
-                if include_charges {
+                if charge_options.is_enabled() {
                     for autocharge_uid in fighter.get_autocharges().values() {
                         let autocharge = self.get_sol().u_data.items.get(autocharge_uid).dc_autocharge().unwrap();
                         if autocharge.get_force_disabled() {
@@ -124,8 +124,8 @@ pub(in crate::api) trait ItemMutSealed: ItemSealed {
                     self.get_sol_mut(),
                     reuse_eupdates,
                 );
-                let saved_charge_state = match (charge_uid, include_charges) {
-                    (Some(charge_uid), true) => {
+                let saved_charge_state = match (charge_uid, charge_options) {
+                    (Some(charge_uid), StatChargeOptions::Include) => {
                         let charge = self.get_sol().u_data.items.get(charge_uid).dc_charge().unwrap();
                         match charge.get_force_disabled() {
                             true => {

@@ -2,7 +2,7 @@ use crate::{
     OptionalReload, PValue, Value,
     nd::NEffectGeneralOutputGetter,
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec},
-    stats::{StatHp, StatHpLayer},
+    stats::{StatCritOptions, StatHp, StatHpLayer},
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
@@ -137,7 +137,7 @@ fn get_remote_ancil_hp(
                 cseq,
                 ospec,
                 (),
-                true,
+                StatCritOptions::default(),
                 Some(projectee_item_uid),
                 SeqAccum::new_stack(),
             ) {

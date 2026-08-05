@@ -9,13 +9,13 @@ use super::{
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
+    Count, PValue, Value,
     misc::InfCount,
     nd::NEffectOutputGetter,
-    num::{Count, PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
+    stats::StatCritOptions,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
     },
     ud::UItemId,
@@ -31,7 +31,7 @@ pub(in crate::svc::vast) fn aggr_proj_clip<BG, BX, I, IA>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
-    include_crits: bool,
+    crit_options: StatCritOptions,
     projectee_uid: Option<UItemId>,
     accum: SeqAccum<IA>,
 ) -> Option<SeqAccum<IA>>
@@ -47,7 +47,7 @@ where
         effect,
         ospec,
         base_xargs,
-        include_crits,
+        crit_options,
         projectee_uid,
     )?;
     let inv_spool = AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec);

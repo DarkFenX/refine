@@ -4,12 +4,12 @@ use super::{
     traits::{HasImpact, InstanceDuration, InstanceLimit},
 };
 use crate::{
+    PValue, Value,
     nd::NEffectOutputGetter,
-    num::{PValue, Value},
     rd::{REffect, REffectProjOpcSpec},
+    stats::StatCritOptions,
     svc::{
-        SvcCtx,
-        calc::Calc,
+        Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq, GetMainDuration},
         vast::aggr::proj_shared::get_proj_spool_cycle_output,
     },
@@ -26,7 +26,7 @@ pub(in crate::svc::vast) fn aggr_proj_iter<BG, BX, I>(
     cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
     ospec: &REffectProjOpcSpec<BG>,
     base_xargs: BX,
-    include_crits: bool,
+    crit_options: StatCritOptions,
     projectee_uid: Option<UItemId>,
 ) -> Option<AggrIterData<I>>
 where
@@ -40,7 +40,7 @@ where
         effect,
         ospec,
         base_xargs,
-        include_crits,
+        crit_options,
         projectee_uid,
     )?;
     let aggr_iter = match AggrSpoolInvData::try_make(ctx, calc, projector_uid, effect, ospec) {

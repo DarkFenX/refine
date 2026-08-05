@@ -6,6 +6,7 @@ use super::{
 };
 use crate::{
     OptionalReload, PValue,
+    stats::StatCritOptions,
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CycleOptionsSim, CyclingOptions, get_item_cseq_map},
@@ -141,7 +142,7 @@ fn fill_nosfs(
                 cseq,
                 ospec,
                 (),
-                true,
+                StatCritOptions::default(),
                 projectee_item_uid,
             ) else {
                 continue;
@@ -187,7 +188,7 @@ fn fill_incoming_neuts(
                 cseq,
                 ospec,
                 (),
-                true,
+                StatCritOptions::default(),
                 Some(cap_item_uid),
             ) else {
                 continue;
@@ -233,7 +234,7 @@ fn fill_incoming_transfers(
                 cseq,
                 ospec,
                 (),
-                true,
+                StatCritOptions::default(),
                 Some(cap_item_uid),
             ) else {
                 continue;

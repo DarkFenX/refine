@@ -22,10 +22,10 @@ use crate::{
     misc::EffectSpec,
     nd::{NEffectBreacherOutputGetter, NEffectOutputGetter},
     rd::{REffect, REffectProjOpcSpec},
+    stats::{StatCritOptions, StatDmgEntryBreacher},
     svc::{
         Calc, SvcCtx,
         cycle::{CSeqHardDtFull, CycleDataFull, CycleSeq},
-        vast::StatDmgEntryBreacher,
     },
     ud::UItemId,
     util::RMap,
@@ -259,7 +259,7 @@ impl AppliedBreacherAccum {
         effect: &REffect,
         cseq: &CycleSeq<CycleDataFull, CSeqHardDtFull>,
         ospec: &REffectProjOpcSpec<NEffectBreacherOutputGetter>,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         projectee_uid: UItemId,
     ) {
         // Base output
@@ -296,7 +296,7 @@ impl AppliedBreacherAccum {
                 ctx.eff_projs
                     .get_or_make_proj_data(ctx.u_data, EffectSpec::new(item_uid, effect.rid), projectee_uid);
             applied *=
-                proj_mult_getter.get_proj_mult(ctx, calc, item_uid, effect, projectee_uid, proj_data, include_crits);
+                proj_mult_getter.get_proj_mult(ctx, calc, item_uid, effect, projectee_uid, proj_data, crit_options);
             if applied == PValue::ZERO {
                 return;
             }

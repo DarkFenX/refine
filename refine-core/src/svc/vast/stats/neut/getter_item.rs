@@ -1,6 +1,6 @@
 use crate::{
     PValue,
-    stats::StatTimeOptions,
+    stats::{StatChargeOptions, StatCritOptions, StatTimeOptions},
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -20,7 +20,7 @@ impl Vast {
         calc: &mut Calc,
         item_uid: UItemId,
         time_options: StatTimeOptions,
-        include_charges: bool,
+        charge_options: StatChargeOptions,
         projectee_uid: Option<UItemId>,
     ) -> Result<PValue, IntStatItemError<!>> {
         check_charge_drone_fighter_module(ctx.u_data, item_uid)?;
@@ -45,7 +45,7 @@ impl Vast {
                     cseq,
                     &ospec,
                     (),
-                    true,
+                    StatCritOptions::default(),
                     projectee_uid,
                     burst_opts.spool,
                     SeqAccum::new_stack(),
@@ -59,7 +59,7 @@ impl Vast {
                         cseq,
                         &ospec,
                         (),
-                        true,
+                        StatCritOptions::default(),
                         projectee_uid,
                         SeqAccum::new_stack(),
                         time,
@@ -72,7 +72,7 @@ impl Vast {
                         cseq,
                         &ospec,
                         (),
-                        true,
+                        StatCritOptions::default(),
                         projectee_uid,
                         SeqAccum::new_stack(),
                     ),
@@ -81,7 +81,7 @@ impl Vast {
                 nps += accum.get_per_second();
             }
         }
-        if include_charges {
+        if charge_options.is_enabled() {
             for charge_uid in u_item.iter_charges() {
                 if let Ok(charge_nps) = Self::get_stat_item_outgoing_nps(
                     reuse_cseq_map,
@@ -89,7 +89,7 @@ impl Vast {
                     calc,
                     charge_uid,
                     time_options,
-                    false,
+                    StatChargeOptions::Exclude,
                     projectee_uid,
                 ) {
                     nps += charge_nps;

@@ -12,6 +12,7 @@ use super::{
 use crate::{
     num::PValue,
     rd::REffect,
+    stats::StatCritOptions,
     svc::{SvcCtx, calc::Calc},
     ud::{UItemId, UProjData},
 };
@@ -23,7 +24,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_proj_mult(
     effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
-    include_crits: bool,
+    crit_options: StatCritOptions,
 ) -> PValue {
     let mut cth = get_std_full_unrestricted_range_mult(ctx, calc, projector_uid, effect, proj_data);
     if cth == PValue::ZERO {
@@ -33,7 +34,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_proj_mult(
     if cth == PValue::ZERO {
         return PValue::ZERO;
     }
-    calc_turret_mult(cth, include_crits)
+    calc_turret_mult(cth, crit_options)
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mult(
@@ -43,7 +44,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mul
     effect: &REffect,
     projectee_uid: UItemId,
     proj_data: UProjData,
-    include_crits: bool,
+    crit_options: StatCritOptions,
 ) -> PValue {
     let mut cth = get_std_simple_s2s_range_mult(ctx, calc, projector_uid, effect, proj_data);
     if cth == PValue::ZERO {
@@ -53,7 +54,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_disintegrator_proj_mul
     if cth == PValue::ZERO {
         return PValue::ZERO;
     }
-    calc_turret_mult(cth, include_crits)
+    calc_turret_mult(cth, crit_options)
 }
 
 pub(in crate::nd::effect::specs::proj_mult_getter) fn get_vorton_proj_mult(
@@ -231,11 +232,11 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_ftr_abil_kamikaze_proj
 }
 
 // Utility
-fn calc_turret_mult(chance_to_hit: PValue, include_crits: bool) -> PValue {
+fn calc_turret_mult(chance_to_hit: PValue, crit_options: StatCritOptions) -> PValue {
     // https://wiki.eveuniversity.org/Turret_mechanics#Damage
-    let wrecking_chance = match include_crits {
-        true => chance_to_hit.into_f64().min(0.01),
-        false => 0.0,
+    let wrecking_chance = match crit_options {
+        StatCritOptions::Include => chance_to_hit.into_f64().min(0.01),
+        StatCritOptions::Exclude => 0.0,
     };
     let wrecking_part = wrecking_chance * 3.0;
     let normal_chance = chance_to_hit.into_f64() - wrecking_chance;

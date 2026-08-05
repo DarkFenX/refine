@@ -2,7 +2,9 @@ use super::breacher::{AppliedBreacherAccum, BreacherAccum};
 use crate::{
     PValue,
     misc::DmgKinds,
-    stats::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatTimeOptions},
+    stats::{
+        StatCritOptions, StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgItemKinds, StatTimeOptions,
+    },
     svc::{
         Calc, SvcCtx, Vast,
         cycle::{CseqMap, CyclingOptions, get_item_cseq_map},
@@ -23,7 +25,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
     ) -> StatDmg {
         let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut dps_normal = DmgKinds::default();
@@ -39,7 +41,7 @@ impl Vast {
                 &mut volley_normal,
                 item_kinds,
                 time_options,
-                include_crits,
+                crit_options,
                 cycling_options,
                 None,
             );
@@ -75,7 +77,7 @@ impl Vast {
         fit_uids: impl ExactSizeIterator<Item = UFitId>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -92,7 +94,7 @@ impl Vast {
                 &mut volley_normal,
                 item_kinds,
                 time_options,
-                include_crits,
+                crit_options,
                 cycling_options,
                 Some(projectee_uid),
             );
@@ -103,7 +105,7 @@ impl Vast {
                 &mut breacher_accum,
                 item_kinds,
                 cycling_options,
-                include_crits,
+                crit_options,
                 projectee_uid,
             );
         }
@@ -130,7 +132,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
     ) -> StatDmg {
         let cycling_options = CyclingOptions::from_time_options(time_options);
         let mut dps_normal = DmgKinds::default();
@@ -145,7 +147,7 @@ impl Vast {
             &mut volley_normal,
             item_kinds,
             time_options,
-            include_crits,
+            crit_options,
             cycling_options,
             None,
         );
@@ -180,7 +182,7 @@ impl Vast {
         fit_uid: UFitId,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         projectee_uid: UItemId,
     ) -> StatDmgApplied {
         let cycling_options = CyclingOptions::from_time_options(time_options);
@@ -196,7 +198,7 @@ impl Vast {
             &mut volley_normal,
             item_kinds,
             time_options,
-            include_crits,
+            crit_options,
             cycling_options,
             Some(projectee_uid),
         );
@@ -207,7 +209,7 @@ impl Vast {
             &mut breacher_accum,
             item_kinds,
             cycling_options,
-            include_crits,
+            crit_options,
             projectee_uid,
         );
         let (dps_breacher, volley_breacher) = match time_options {
@@ -237,7 +239,7 @@ impl VastFitData {
         volley_normal: &mut DmgKinds<PValue>,
         item_kinds: StatDmgItemKinds,
         time_options: StatTimeOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         cycling_options: CyclingOptions,
         projectee_uid: Option<UItemId>,
     ) {
@@ -264,7 +266,7 @@ impl VastFitData {
                             cseq,
                             ospec,
                             (),
-                            include_crits,
+                            crit_options,
                             projectee_uid,
                             burst_opts.spool,
                             SeqAccum::new_stack_max(),
@@ -283,7 +285,7 @@ impl VastFitData {
                                 cseq,
                                 ospec,
                                 (),
-                                include_crits,
+                                crit_options,
                                 projectee_uid,
                                 SeqAccum::new_stack_max(),
                                 time,
@@ -301,7 +303,7 @@ impl VastFitData {
                                 cseq,
                                 ospec,
                                 (),
-                                include_crits,
+                                crit_options,
                                 projectee_uid,
                                 SeqAccum::new_stack_max(),
                                 SeqInstanceAccumMax::new(),
@@ -352,7 +354,7 @@ impl VastFitData {
         breacher_accum: &mut AppliedBreacherAccum,
         item_kinds: StatDmgItemKinds,
         cycling_options: CyclingOptions,
-        include_crits: bool,
+        crit_options: StatCritOptions,
         projectee_uid: UItemId,
     ) {
         for (&item_uid, item_data) in self.dmg_breacher.iter() {
@@ -368,7 +370,7 @@ impl VastFitData {
                 let Some(cseq) = reuse_cseq_map.get(&effect_rid) else {
                     continue;
                 };
-                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, include_crits, projectee_uid);
+                breacher_accum.add(ctx, calc, item_uid, effect, cseq, ospec, crit_options, projectee_uid);
             }
         }
     }

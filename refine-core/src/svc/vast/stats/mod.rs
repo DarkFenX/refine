@@ -1,5 +1,7 @@
 pub use cap::{StatCapBlcNosfs, StatCapBlcRegen, StatCapBlcSrcKinds, StatCapSim, StatCapSimStagger};
 pub(crate) use cap::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
+pub use charge_options::StatChargeOptions;
+pub use crit_options::StatCritOptions;
 pub use dmg::{StatDmg, StatDmgApplied, StatDmgEntry, StatDmgEntryApplied, StatDmgEntryBreacher, StatDmgItemKinds};
 pub use in_jam::StatInJam;
 pub use jump::{
@@ -19,6 +21,8 @@ pub use tank::{
 pub use time_options::{StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim};
 
 mod cap;
+mod charge_options;
+mod crit_options;
 mod dmg;
 mod err_trait;
 mod in_jam;
