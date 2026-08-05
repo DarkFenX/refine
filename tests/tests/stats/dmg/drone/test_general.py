@@ -200,3 +200,117 @@ def test_time(client, consts):
         dmg=[StatsOptionItemDmg(time=StatTimeSim(time=5))])).dmg.one()
     assert api_drone_dmg_stats.dps == [0, approx(217.464), approx(317.832), 0]
     assert api_drone_dmg_stats.volley == [0, approx(543.66), approx(794.58), 0]
+
+
+def test_crit(client, consts):
+    # Test crit flag and its combination with other features
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_drone_id = make_eve_drone(
+        client=client, basic_info=eve_basic_info, dmgs=(0, 13, 19, 0), dmg_mult=41, cycle_time=4000)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
+    api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
+    # Verification - burst time
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeBurst()),
+        StatsOptionFitDmg(time=StatTimeBurst(), crits=consts.ApiStatCrits.exclude),
+        StatsOptionFitDmg(time=StatTimeBurst(), crits=consts.ApiStatCrits.include)]))
+    api_fleet_stats_default, api_fleet_stats_excluded, api_fleet_stats_included = api_fleet_stats.dmg
+    assert api_fleet_stats_default.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fleet_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_fleet_stats_excluded.dps == [0, approx(133.25), approx(194.75), 0]
+    assert api_fleet_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_fleet_stats_included.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fleet_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeBurst()),
+        StatsOptionFitDmg(time=StatTimeBurst(), crits=consts.ApiStatCrits.exclude),
+        StatsOptionFitDmg(time=StatTimeBurst(), crits=consts.ApiStatCrits.include)]))
+    api_fit_stats_default, api_fit_stats_excluded, api_fit_stats_included = api_fit_stats.dmg
+    assert api_fit_stats_default.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fit_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_fit_stats_excluded.dps == [0, approx(133.25), approx(194.75), 0]
+    assert api_fit_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_fit_stats_included.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fit_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(time=StatTimeBurst()),
+        StatsOptionItemDmg(time=StatTimeBurst(), crits=consts.ApiStatCrits.exclude),
+        StatsOptionItemDmg(time=StatTimeBurst(), crits=consts.ApiStatCrits.include)]))
+    api_drone_stats_default, api_drone_stats_excluded, api_drone_stats_included = api_drone_stats.dmg
+    assert api_drone_stats_default.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_drone_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_drone_stats_excluded.dps == [0, approx(133.25), approx(194.75), 0]
+    assert api_drone_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_drone_stats_included.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_drone_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    # Verification - looped time
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeSim(time=None)),
+        StatsOptionFitDmg(time=StatTimeSim(time=None), crits=consts.ApiStatCrits.exclude),
+        StatsOptionFitDmg(time=StatTimeSim(time=None), crits=consts.ApiStatCrits.include)]))
+    api_fleet_stats_default, api_fleet_stats_excluded, api_fleet_stats_included = api_fleet_stats.dmg
+    assert api_fleet_stats_default.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fleet_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_fleet_stats_excluded.dps == [0, approx(133.25), approx(194.75), 0]
+    assert api_fleet_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_fleet_stats_included.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fleet_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeSim(time=None)),
+        StatsOptionFitDmg(time=StatTimeSim(time=None), crits=consts.ApiStatCrits.exclude),
+        StatsOptionFitDmg(time=StatTimeSim(time=None), crits=consts.ApiStatCrits.include)]))
+    api_fit_stats_default, api_fit_stats_excluded, api_fit_stats_included = api_fit_stats.dmg
+    assert api_fit_stats_default.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fit_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_fit_stats_excluded.dps == [0, approx(133.25), approx(194.75), 0]
+    assert api_fit_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_fit_stats_included.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_fit_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(time=StatTimeSim(time=None)),
+        StatsOptionItemDmg(time=StatTimeSim(time=None), crits=consts.ApiStatCrits.exclude),
+        StatsOptionItemDmg(time=StatTimeSim(time=None), crits=consts.ApiStatCrits.include)]))
+    api_drone_stats_default, api_drone_stats_excluded, api_drone_stats_included = api_drone_stats.dmg
+    assert api_drone_stats_default.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_drone_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_drone_stats_excluded.dps == [0, approx(133.25), approx(194.75), 0]
+    assert api_drone_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_drone_stats_included.dps == [0, approx(135.255413), approx(197.680988), 0]
+    assert api_drone_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    # Verification - specific time
+    api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeSim(time=10)),
+        StatsOptionFitDmg(time=StatTimeSim(time=10), crits=consts.ApiStatCrits.exclude),
+        StatsOptionFitDmg(time=StatTimeSim(time=10), crits=consts.ApiStatCrits.include)]))
+    api_fleet_stats_default, api_fleet_stats_excluded, api_fleet_stats_included = api_fleet_stats.dmg
+    assert api_fleet_stats_default.dps == [0, approx(162.306495), approx(237.217185), 0]
+    assert api_fleet_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_fleet_stats_excluded.dps == [0, approx(159.9), approx(233.7), 0]
+    assert api_fleet_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_fleet_stats_included.dps == [0, approx(162.306495), approx(237.217185), 0]
+    assert api_fleet_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    api_fit_stats = api_fit.get_stats(options=FitStatsOptions(dmg=[
+        StatsOptionFitDmg(time=StatTimeSim(time=10)),
+        StatsOptionFitDmg(time=StatTimeSim(time=10), crits=consts.ApiStatCrits.exclude),
+        StatsOptionFitDmg(time=StatTimeSim(time=10), crits=consts.ApiStatCrits.include)]))
+    api_fit_stats_default, api_fit_stats_excluded, api_fit_stats_included = api_fit_stats.dmg
+    assert api_fit_stats_default.dps == [0, approx(162.306495), approx(237.217185), 0]
+    assert api_fit_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_fit_stats_excluded.dps == [0, approx(159.9), approx(233.7), 0]
+    assert api_fit_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_fit_stats_included.dps == [0, approx(162.306495), approx(237.217185), 0]
+    assert api_fit_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
+    api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(dmg=[
+        StatsOptionItemDmg(time=StatTimeSim(time=10)),
+        StatsOptionItemDmg(time=StatTimeSim(time=10), crits=consts.ApiStatCrits.exclude),
+        StatsOptionItemDmg(time=StatTimeSim(time=10), crits=consts.ApiStatCrits.include)]))
+    api_drone_stats_default, api_drone_stats_excluded, api_drone_stats_included = api_drone_stats.dmg
+    assert api_drone_stats_default.dps == [0, approx(162.306495), approx(237.217185), 0]
+    assert api_drone_stats_default.volley == [0, approx(541.02165), approx(790.72395), 0]
+    assert api_drone_stats_excluded.dps == [0, approx(159.9), approx(233.7), 0]
+    assert api_drone_stats_excluded.volley == [0, approx(533), approx(779), 0]
+    assert api_drone_stats_included.dps == [0, approx(162.306495), approx(237.217185), 0]
+    assert api_drone_stats_included.volley == [0, approx(541.02165), approx(790.72395), 0]
