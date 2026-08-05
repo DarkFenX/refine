@@ -11,19 +11,15 @@ pub(crate) struct Xyz {
 // Math
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Xyz {
-    pub(crate) fn get_vector_dot_product(self, rhs: Self) -> Value {
-        self.x * rhs.x + self.y * rhs.y + self.z * rhs.z
+    pub(crate) fn get_vector_cross_product(self, rhs: Self) -> Self {
+        Self {
+            x: self.y * rhs.z - self.z * rhs.y,
+            y: self.z * rhs.x - self.x * rhs.z,
+            z: self.x * rhs.y - self.y * rhs.x,
+        }
     }
     pub(crate) fn get_vector_magnitude(self) -> PValue {
         PValue::from_value_unchecked((self.x.powi(2) + self.y.powi(2) + self.z.powi(2)).sqrt())
-    }
-    pub(crate) fn get_vector_unit(self) -> Self {
-        let magnitude = self.get_vector_magnitude();
-        Self {
-            x: self.x / magnitude,
-            y: self.y / magnitude,
-            z: self.z / magnitude,
-        }
     }
 }
 impl std::ops::Add<Xyz> for Xyz {
