@@ -24,6 +24,11 @@ Interface is built to unify multiple smaller changes into commands and command b
 ### refine-http
 High-level HTTP interface built on top of `refine-rs`.
 
+# CPU features
+The engine makes use of some hardware features like FMA (fused multiply-add). If they are not declared as available during compilation, there is a performance hit, even if minor one.
+
+On x86-64, they are enabled by passing `-C target-cpu=x86-64-v3` to the Rust compiler, via `RUSTFLAGS` or a `.cargo/config.toml`. Note that binaries built this way need a CPU no older than Intel Haswell (2013) or AMD Excavator (2015), and abort with an illegal instruction error on anything older. ARM64 needs no configuration, since FMA is a part of its baseline.
+
 # Documentation
 HTTP is considered as main interface, and it will be documented later. Until then, the easiest way to see how it works is to check tests and test framework client, as well as [non-synthetic-data tests](tests/playground/actual_data.py) which use it.
 
