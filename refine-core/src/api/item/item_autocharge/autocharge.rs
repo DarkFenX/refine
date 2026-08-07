@@ -1,5 +1,5 @@
 use crate::{
-    api::{EffectId, Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemMutSealed, ItemSealed},
+    api::{EffectId, Fit, FitMut, Item, ItemCommon, ItemMut, ItemMutCommon, ItemSealed},
     sol::SolarSystem,
     ud::{UAutocharge, UItemId},
 };
@@ -27,14 +27,15 @@ impl<'s> Autocharge<'s> {
     }
 }
 impl<'s> ItemSealed for Autocharge<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemCommon for Autocharge<'s> {}
+impl<'s> ItemCommon for Autocharge<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
 
 pub struct AutochargeMut<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,
@@ -66,20 +67,20 @@ impl<'s> AutochargeMut<'s> {
     }
 }
 impl<'s> ItemSealed for AutochargeMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemMutSealed for AutochargeMut<'s> {
+impl<'s> ItemCommon for AutochargeMut<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
+impl<'s> ItemMutCommon for AutochargeMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for AutochargeMut<'s> {}
-impl<'s> ItemMutCommon for AutochargeMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, autocharge_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_autocharge(sol, autocharge_uid).get_fit_uid();

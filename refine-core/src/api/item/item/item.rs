@@ -1,12 +1,8 @@
 use crate::{
-    api::{
-        Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
-        Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, ItemCommon, ItemMutCommon, ItemMutSealed,
-        ItemSealed, Module, ModuleMut, ProjEffect, ProjEffectMut, Rig, RigMut, Service, ServiceMut, Ship, ShipMut,
-        Skill, SkillMut, Stance, StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
-    },
-    sol::SolarSystem,
-    ud::UItemId,
+    Autocharge, AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut,
+    Fighter, FighterMut, FwEffect, FwEffectMut, Implant, ImplantMut, ItemCommon, ItemMutCommon, Module, ModuleMut,
+    ProjEffect, ProjEffectMut, Rig, RigMut, Service, ServiceMut, Ship, ShipMut, Skill, SkillMut, SolarSystem, Stance,
+    StanceMut, Subsystem, SubsystemMut, SwEffect, SwEffectMut, api::ItemSealed, ud::UItemId,
 };
 
 pub enum Item<'s> {
@@ -34,27 +30,6 @@ impl<'s> Item<'s> {
     }
 }
 impl<'s> ItemSealed for Item<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        match self {
-            Item::Autocharge(autocharge) => autocharge.get_sol(),
-            Item::Booster(booster) => booster.get_sol(),
-            Item::Character(character) => character.get_sol(),
-            Item::Charge(charge) => charge.get_sol(),
-            Item::Drone(drone) => drone.get_sol(),
-            Item::Fighter(fighter) => fighter.get_sol(),
-            Item::FwEffect(fw_effect) => fw_effect.get_sol(),
-            Item::Implant(implant) => implant.get_sol(),
-            Item::Module(module) => module.get_sol(),
-            Item::ProjEffect(proj_effect) => proj_effect.get_sol(),
-            Item::Rig(rig) => rig.get_sol(),
-            Item::Service(service) => service.get_sol(),
-            Item::Ship(ship) => ship.get_sol(),
-            Item::Skill(skill) => skill.get_sol(),
-            Item::Stance(stance) => stance.get_sol(),
-            Item::Subsystem(subsystem) => subsystem.get_sol(),
-            Item::SwEffect(sw_effect) => sw_effect.get_sol(),
-        }
-    }
     fn get_uid(&self) -> UItemId {
         match self {
             Item::Autocharge(autocharge) => autocharge.get_uid(),
@@ -77,7 +52,29 @@ impl<'s> ItemSealed for Item<'s> {
         }
     }
 }
-impl<'s> ItemCommon for Item<'s> {}
+impl<'s> ItemCommon for Item<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        match self {
+            Item::Autocharge(autocharge) => autocharge.get_sol(),
+            Item::Booster(booster) => booster.get_sol(),
+            Item::Character(character) => character.get_sol(),
+            Item::Charge(charge) => charge.get_sol(),
+            Item::Drone(drone) => drone.get_sol(),
+            Item::Fighter(fighter) => fighter.get_sol(),
+            Item::FwEffect(fw_effect) => fw_effect.get_sol(),
+            Item::Implant(implant) => implant.get_sol(),
+            Item::Module(module) => module.get_sol(),
+            Item::ProjEffect(proj_effect) => proj_effect.get_sol(),
+            Item::Rig(rig) => rig.get_sol(),
+            Item::Service(service) => service.get_sol(),
+            Item::Ship(ship) => ship.get_sol(),
+            Item::Skill(skill) => skill.get_sol(),
+            Item::Stance(stance) => stance.get_sol(),
+            Item::Subsystem(subsystem) => subsystem.get_sol(),
+            Item::SwEffect(sw_effect) => sw_effect.get_sol(),
+        }
+    }
+}
 
 pub enum ItemMut<'s> {
     Autocharge(AutochargeMut<'s>),
@@ -104,27 +101,6 @@ impl<'s> ItemMut<'s> {
     }
 }
 impl<'s> ItemSealed for ItemMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        match self {
-            ItemMut::Autocharge(autocharge) => autocharge.get_sol(),
-            ItemMut::Booster(booster) => booster.get_sol(),
-            ItemMut::Character(character) => character.get_sol(),
-            ItemMut::Charge(charge) => charge.get_sol(),
-            ItemMut::Drone(drone) => drone.get_sol(),
-            ItemMut::Fighter(fighter) => fighter.get_sol(),
-            ItemMut::FwEffect(fw_effect) => fw_effect.get_sol(),
-            ItemMut::Implant(implant) => implant.get_sol(),
-            ItemMut::Module(module) => module.get_sol(),
-            ItemMut::ProjEffect(proj_effect) => proj_effect.get_sol(),
-            ItemMut::Rig(rig) => rig.get_sol(),
-            ItemMut::Service(service) => service.get_sol(),
-            ItemMut::Ship(ship) => ship.get_sol(),
-            ItemMut::Skill(skill) => skill.get_sol(),
-            ItemMut::Stance(stance) => stance.get_sol(),
-            ItemMut::Subsystem(subsystem) => subsystem.get_sol(),
-            ItemMut::SwEffect(sw_effect) => sw_effect.get_sol(),
-        }
-    }
     fn get_uid(&self) -> UItemId {
         match self {
             ItemMut::Autocharge(autocharge) => autocharge.get_uid(),
@@ -147,7 +123,30 @@ impl<'s> ItemSealed for ItemMut<'s> {
         }
     }
 }
-impl<'s> ItemMutSealed for ItemMut<'s> {
+impl<'s> ItemCommon for ItemMut<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        match self {
+            ItemMut::Autocharge(autocharge) => autocharge.get_sol(),
+            ItemMut::Booster(booster) => booster.get_sol(),
+            ItemMut::Character(character) => character.get_sol(),
+            ItemMut::Charge(charge) => charge.get_sol(),
+            ItemMut::Drone(drone) => drone.get_sol(),
+            ItemMut::Fighter(fighter) => fighter.get_sol(),
+            ItemMut::FwEffect(fw_effect) => fw_effect.get_sol(),
+            ItemMut::Implant(implant) => implant.get_sol(),
+            ItemMut::Module(module) => module.get_sol(),
+            ItemMut::ProjEffect(proj_effect) => proj_effect.get_sol(),
+            ItemMut::Rig(rig) => rig.get_sol(),
+            ItemMut::Service(service) => service.get_sol(),
+            ItemMut::Ship(ship) => ship.get_sol(),
+            ItemMut::Skill(skill) => skill.get_sol(),
+            ItemMut::Stance(stance) => stance.get_sol(),
+            ItemMut::Subsystem(subsystem) => subsystem.get_sol(),
+            ItemMut::SwEffect(sw_effect) => sw_effect.get_sol(),
+        }
+    }
+}
+impl<'s> ItemMutCommon for ItemMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         match self {
             ItemMut::Autocharge(autocharge) => autocharge.get_sol_mut(),
@@ -170,5 +169,3 @@ impl<'s> ItemMutSealed for ItemMut<'s> {
         }
     }
 }
-impl<'s> ItemCommon for ItemMut<'s> {}
-impl<'s> ItemMutCommon for ItemMut<'s> {}

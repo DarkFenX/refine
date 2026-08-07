@@ -3,7 +3,7 @@ pub use err::{
     StatItemError,
 };
 pub use main::{ItemCommon, ItemMutCommon};
-pub(in crate::api) use sealed::{ItemMutSealed, ItemSealed};
+pub(in crate::api) use sealed::ItemSealed;
 pub use state_options::StatItemStateOptions;
 
 mod err;

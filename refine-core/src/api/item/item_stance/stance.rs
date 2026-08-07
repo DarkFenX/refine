@@ -1,5 +1,5 @@
 use crate::{
-    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    api::{Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed},
     sol::SolarSystem,
     ud::{UItemId, UStance},
 };
@@ -20,14 +20,15 @@ impl<'s> Stance<'s> {
     }
 }
 impl<'s> ItemSealed for Stance<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemCommon for Stance<'s> {}
+impl<'s> ItemCommon for Stance<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
 
 pub struct StanceMut<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,
@@ -49,20 +50,20 @@ impl<'s> StanceMut<'s> {
     }
 }
 impl<'s> ItemSealed for StanceMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemMutSealed for StanceMut<'s> {
+impl<'s> ItemCommon for StanceMut<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
+impl<'s> ItemMutCommon for StanceMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for StanceMut<'s> {}
-impl<'s> ItemMutCommon for StanceMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, stance_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_stance(sol, stance_uid).get_fit_uid();

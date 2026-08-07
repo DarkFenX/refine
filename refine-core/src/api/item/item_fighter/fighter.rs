@@ -1,5 +1,5 @@
 use crate::{
-    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, MinionState, Movement},
+    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed, MinionState, Movement},
     misc::{FighterCountInfo, ItemRearmMinionInfo},
     sol::SolarSystem,
     ud::{UFighter, UItemId},
@@ -33,14 +33,15 @@ impl<'s> Fighter<'s> {
     }
 }
 impl<'s> ItemSealed for Fighter<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemCommon for Fighter<'s> {}
+impl<'s> ItemCommon for Fighter<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
 
 pub struct FighterMut<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,
@@ -74,20 +75,20 @@ impl<'s> FighterMut<'s> {
     }
 }
 impl<'s> ItemSealed for FighterMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemMutSealed for FighterMut<'s> {
+impl<'s> ItemCommon for FighterMut<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
+impl<'s> ItemMutCommon for FighterMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for FighterMut<'s> {}
-impl<'s> ItemMutCommon for FighterMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, fighter_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_fighter(sol, fighter_uid).get_fit_uid();

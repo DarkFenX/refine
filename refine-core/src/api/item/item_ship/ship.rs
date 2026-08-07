@@ -1,5 +1,5 @@
 use crate::{
-    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed, Movement},
+    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed, Movement},
     sol::SolarSystem,
     ud::{UItemId, UShip},
 };
@@ -26,14 +26,15 @@ impl<'s> Ship<'s> {
     }
 }
 impl<'s> ItemSealed for Ship<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemCommon for Ship<'s> {}
+impl<'s> ItemCommon for Ship<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
 
 pub struct ShipMut<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,
@@ -61,20 +62,20 @@ impl<'s> ShipMut<'s> {
     }
 }
 impl<'s> ItemSealed for ShipMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemMutSealed for ShipMut<'s> {
+impl<'s> ItemCommon for ShipMut<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
+impl<'s> ItemMutCommon for ShipMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for ShipMut<'s> {}
-impl<'s> ItemMutCommon for ShipMut<'s> {}
 
 fn get_fit(sol: &SolarSystem, ship_uid: UItemId) -> Fit<'_> {
     let fit_uid = get_u_ship(sol, ship_uid).get_fit_uid();

@@ -25,12 +25,14 @@ pub use shared::{
     MutationMut, Proj, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter,
     RawMAttrMut,
 };
-pub(in crate::api) use shared::{get_ship_riad, iter_projs, iter_ranged_projs};
+pub(in crate::api) use shared::{
+    active_stat_prepare, active_stat_rollback, get_ship_riad, iter_projs, iter_ranged_projs,
+};
+pub(in crate::api) use traits::ItemSealed;
 pub use traits::{
     GetItemAttrError, ItemCommon, ItemMutCommon, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
     StatItemAppliedError, StatItemError, StatItemStateOptions,
 };
-pub(in crate::api) use traits::{ItemMutSealed, ItemSealed};
 
 mod item;
 mod item_autocharge;

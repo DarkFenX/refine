@@ -1,5 +1,5 @@
 use crate::{
-    api::{ItemCommon, ItemMutCommon, ItemMutSealed, ItemSealed},
+    api::{ItemCommon, ItemMutCommon, ItemSealed},
     sol::SolarSystem,
     ud::{UItemId, USwEffect},
 };
@@ -17,14 +17,15 @@ impl<'s> SwEffect<'s> {
     }
 }
 impl<'s> ItemSealed for SwEffect<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemCommon for SwEffect<'s> {}
+impl<'s> ItemCommon for SwEffect<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
 
 pub struct SwEffectMut<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,
@@ -39,20 +40,20 @@ impl<'s> SwEffectMut<'s> {
     }
 }
 impl<'s> ItemSealed for SwEffectMut<'s> {
-    fn get_sol(&self) -> &SolarSystem {
-        self.sol
-    }
     fn get_uid(&self) -> UItemId {
         self.uid
     }
 }
-impl<'s> ItemMutSealed for SwEffectMut<'s> {
+impl<'s> ItemCommon for SwEffectMut<'s> {
+    fn get_sol(&self) -> &SolarSystem {
+        self.sol
+    }
+}
+impl<'s> ItemMutCommon for SwEffectMut<'s> {
     fn get_sol_mut(&mut self) -> &mut SolarSystem {
         self.sol
     }
 }
-impl<'s> ItemCommon for SwEffectMut<'s> {}
-impl<'s> ItemMutCommon for SwEffectMut<'s> {}
 
 fn get_state(sol: &SolarSystem, sw_effect_uid: UItemId) -> bool {
     get_u_sw_effect(sol, sw_effect_uid).get_sw_effect_state()
