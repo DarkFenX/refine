@@ -1,3 +1,8 @@
+/// Defines if entities with their own AI (like drones) are using their propulsion mode or not.
+///
+/// It does not apply to all the entities. Some, like mining drones, do not have a "propulsion
+/// mode", and this setting will have no effect. On others, it will affect speed and signature
+/// radius.
 #[cfg_attr(
     feature = "serde",
     derive(serde::Serialize, serde::Deserialize),

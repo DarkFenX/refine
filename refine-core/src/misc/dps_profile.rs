@@ -1,5 +1,9 @@
 use crate::num::{PValue, UnitInterval};
 
+/// Damage profile received by an item.
+///
+/// Absolute values of damage do not matter, only relative. It is used to affect RAH adaptation and
+/// effective tank calculations.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct DpsProfile {
     pub em: PValue = PValue::ZERO,
@@ -9,6 +13,7 @@ pub struct DpsProfile {
     pub breacher: Option<BreacherProfile> = None,
 }
 
+/// Breacher part of damage profile received by an item.
 #[derive(Copy, Clone, Eq, PartialEq)]
 pub struct BreacherProfile {
     pub absolute_max: PValue = PValue::ZERO,

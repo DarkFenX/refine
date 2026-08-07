@@ -1,3 +1,4 @@
+/// Defines rack a module is part of.
 #[cfg_attr(
     feature = "serde",
     derive(serde::Serialize, serde::Deserialize),

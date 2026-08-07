@@ -1,3 +1,4 @@
+/// Covers all item kinds supported by the library.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
 #[display(rename_all = "snake_case")]
@@ -21,6 +22,9 @@ pub enum ItemKind {
     SwEffect,
 }
 
+/// Covers only item kinds which can be auto-detected by the library.
+///
+/// Is used in item kind mismatch validation, and internally by try-fit-items functionality.
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
 #[display(rename_all = "snake_case")]

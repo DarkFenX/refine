@@ -1,3 +1,7 @@
+/// Security zone off a solar system.
+///
+/// Included categories were picked according to them influencing ability to use items, or
+/// influencing items' strength.
 #[derive(Copy, Clone)]
 pub enum SecZone {
     HiSec(SecZoneCorruption),
@@ -7,6 +11,8 @@ pub enum SecZone {
     Hazard,
 }
 
+/// Highsecs and lowsecs can have temporary corruption status. Once it reaches 5th level, it affects
+/// ability to use certain items in those systems.
 #[derive(Copy, Clone)]
 pub enum SecZoneCorruption {
     None,
