@@ -7,19 +7,21 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
+# Local
 rs = { workspace = true, features = ["edh-phb-http", "adc-fs", "serde"] }
-axum = { version = ">=0.8.9", default-features = false, features = ["http1", "json", "query", "tokio"] }
-axum-extra = { version = ">=0.12.6", features = ["with-rejection"] }
-config = { version = ">=0.15.25", features = ["toml"] }
-http-body-util = ">=0.1.4"
-serde = { version = ">=1.0.229", features = ["derive"] }
-serde_json = { version = ">=1.0.151", features = ["float_roundtrip"] }
-thiserror = ">=2.0.19"
-time = { version = ">=0.3.55", features = ["formatting", "macros"] }
-tokio = { version = ">=1.53.1", features = ["rt", "rt-multi-thread", "net", "macros"] }
-tower = { version = ">=0.5.3", features = ["util"] }
-tower-http = { version = ">=0.7.0", features = ["normalize-path", "trace"] }
-tower-request-id = ">=0.3.0"
-tracing = ">=0.1.44"
-tracing-appender = ">=0.2.5"
-tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
+# Non-local
+axum = { workspace = true, features = ["http1", "json", "query", "tokio"] }
+axum-extra = { workspace = true, features = ["with-rejection"] }
+config = { workspace = true, features = ["toml"] }
+http-body-util = { workspace = true }
+serde = { workspace = true, features = ["derive"] }
+serde_json = { workspace = true }
+thiserror = { workspace = true }
+time = { workspace = true, features = ["formatting", "macros"] }
+tokio = { workspace = true, features = ["macros", "net", "rt", "rt-multi-thread"] }
+tower = { workspace = true, features = ["util"] }
+tower-http = { workspace = true, features = ["normalize-path", "trace"] }
+tower-request-id = { workspace = true }
+tracing = { workspace = true }
+tracing-appender = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["time"] }

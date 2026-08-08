@@ -7,6 +7,8 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
+# Local
 refine-serde-derive = { path = "../refine-serde-derive" }
-serde = ">=1.0.229"
-serde_with = ">=3.21.0"
+# Non-local
+serde = { workspace = true }
+serde_with = { workspace = true }

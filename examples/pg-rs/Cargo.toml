@@ -7,8 +7,10 @@ edition = "2024"
 publish = false
 
 [dependencies]
+# Local
 rs = { workspace = true, features = ["edh-phb-fs", "adc-fs"] }
-time = { version = ">=0.3.55", features = ["macros"] }
-tokio = { version = ">=1.53.1", features = ["rt", "macros"] }
-tracing = ">=0.1.44"
-tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
+# Non-local, workspace
+time = { workspace = true, features = ["macros"] }
+tokio = { workspace = true, features = ["rt", "macros"] }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true, features = ["time"] }
