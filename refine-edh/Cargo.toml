@@ -7,7 +7,7 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
-rc = { package = "refine-core", path = "../refine-core" }
+rc = { workspace = true }
 reqwest = { version = ">=0.13.4", features = ["blocking"], optional = true }
 serde = { version = ">=1.0.229", features = ["derive"], optional = true }
 serde_json = { version = ">=1.0.151", features = ["float_roundtrip", "raw_value"], optional = true }

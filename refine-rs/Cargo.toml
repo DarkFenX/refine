@@ -7,9 +7,9 @@ authors = ["DarkPhoenix <phoenix@mail.ru>"]
 edition = "2024"
 
 [dependencies]
-rc = { package = "refine-core", path = "../refine-core" }
-redh = { package = "refine-edh", path = "../refine-edh", optional = true }
-radc = { package = "refine-adc", path = "../refine-adc", optional = true }
+rc = { workspace = true }
+redh = { workspace = true, optional = true }
+radc = { workspace = true, optional = true }
 derive_more = { version = ">=2.1.1", features = ["display"] }
 fixedstr =  { version = ">=0.5.11", features = ["fstr"] }
 parking_lot = { version = ">=0.12.5", features = ["nightly"] }

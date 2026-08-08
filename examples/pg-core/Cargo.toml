@@ -7,9 +7,9 @@ edition = "2024"
 publish = false
 
 [dependencies]
-rc = { package = "refine-core", path = "../../refine-core" }
-redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-fs"] }
-radc = { package = "refine-adc", path = "../../refine-adc", features = ["json-zfile"] }
+rc = { workspace = true }
+redh = { workspace = true, features = ["phb-fs"] }
+radc = { workspace = true, features = ["json-zfile"] }
 chrono = ">=0.4.45"
 itertools = ">=0.15.0"
 time = { version = ">=0.3.53", features = ["macros"] }
