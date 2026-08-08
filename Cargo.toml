@@ -17,6 +17,7 @@ rc = { package = "refine-core", path = "refine-core" }
 redh = { package = "refine-edh", path = "refine-edh" }
 radc = { package = "refine-adc", path = "refine-adc" }
 rs = { package = "refine-rs", path = "refine-rs" }
+refine-serde = { path = "util/refine-serde" }
 
 [profile.dev]
 opt-level = 0
