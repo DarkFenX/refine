@@ -8,7 +8,7 @@ publish = false
 
 [dependencies]
 rs = { workspace = true, features = ["edh-phb-fs", "adc-fs"] }
-time = { version = ">=0.3.53", features = ["macros"] }
-tokio = { version = ">=1.53.0", features = ["rt", "macros"] }
+time = { version = ">=0.3.55", features = ["macros"] }
+tokio = { version = ">=1.53.1", features = ["rt", "macros"] }
 tracing = ">=0.1.44"
 tracing-subscriber = { version = ">=0.3.23", features = ["time"] }
