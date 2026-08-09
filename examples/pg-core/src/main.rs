@@ -5,7 +5,6 @@
 use std::{
     hash::{BuildHasher, Hasher},
     intrinsics::black_box,
-    path::PathBuf,
     sync::Arc,
     thread::sleep,
     time::Duration,
@@ -45,8 +44,8 @@ const EVE_DATA_DIR: &str = "/home/dfx/Desktop/phobos_tq_en-us";
 
 fn main() {
     setup_logger();
-    let edh = redh::PhbFilesystemEdh::new(EVE_DATA_DIR.into()).into();
-    let adc = radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()).into();
+    let edh = redh::PhbFilesystemEdh::new(EVE_DATA_DIR).into();
+    let adc = radc::JsonZfileAdc::new("./cache/", "tq").into();
     // test_random(&edh, &adc);
     test_crusader(&edh, &adc);
     // test_nphoon(&edh, &adc);
@@ -693,7 +692,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
 }
 
 fn get_skill_ids() -> Vec<rc::ed::EItemId> {
-    let eve_data = redh::PhbFilesystemEdh::new(EVE_DATA_DIR.into()).get_data().unwrap();
+    let eve_data = redh::PhbFilesystemEdh::new(EVE_DATA_DIR).get_data().unwrap();
     let grp_ids = eve_data
         .groups
         .data

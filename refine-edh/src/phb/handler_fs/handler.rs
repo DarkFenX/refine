@@ -18,8 +18,8 @@ impl PhbFilesystemEdh {
     ///
     /// Path should point to the top-level directory of a data dump, e.g. `/phobos_en-us` and not
     /// `/phobos_en-us/fsd_built`.
-    pub fn new(path: PathBuf) -> Self {
-        Self { base_path: path }
+    pub fn new(path: impl Into<PathBuf>) -> Self {
+        Self { base_path: path.into() }
     }
 }
 impl fmt::Debug for PhbFilesystemEdh {

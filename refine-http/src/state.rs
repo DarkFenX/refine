@@ -11,8 +11,8 @@ impl AppState {
     pub(crate) fn get_refine(&self) -> &Refine {
         &self.0.refine
     }
-    pub(crate) fn get_cache_dir(&self) -> Option<&std::path::PathBuf> {
-        self.0.cache_dir.as_ref()
+    pub(crate) fn get_cache_dir(&self) -> Option<&std::path::Path> {
+        self.0.cache_dir.as_deref()
     }
 }
 

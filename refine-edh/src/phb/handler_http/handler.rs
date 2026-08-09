@@ -24,11 +24,7 @@ impl PhbHttpEdh {
     /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_built/`.
     ///
     /// This data handler assumes that data version is known before its construction.
-    pub fn try_new<U, D>(base_url: U, data_version: D) -> Result<Self, PhbHttpEdhInitError>
-    where
-        U: AsRef<str>,
-        D: Into<String>,
-    {
+    pub fn try_new(base_url: impl AsRef<str>, data_version: impl Into<String>) -> Result<Self, PhbHttpEdhInitError> {
         let base_url = base_url.as_ref();
         let base_url_conv = match Url::parse(base_url) {
             Ok(base_url_conv) => base_url_conv,

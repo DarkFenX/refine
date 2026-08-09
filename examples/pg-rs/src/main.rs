@@ -31,8 +31,8 @@ async fn main() {
     // Initial setup
     let mut refine = Refine::new(2, 4);
     let alias_tq = SrcAlias::try_pruned("tq").unwrap();
-    let ed_handler = redh::PhbFilesystemEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()).into();
-    let ad_cacher = radc::PostcardZfileAdc::new("./cache/".into(), alias_tq.into()).into();
+    let ed_handler = redh::PhbFilesystemEdh::new("/home/dfx/Desktop/phobos_tq_en-us").into();
+    let ad_cacher = radc::PostcardZfileAdc::new("./cache/", alias_tq).into();
     refine
         .add_src(alias_tq, true, ed_handler, Some(ad_cacher))
         .await

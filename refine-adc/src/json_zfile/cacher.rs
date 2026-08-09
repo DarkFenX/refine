@@ -17,8 +17,11 @@ pub struct JsonZfileAdc {
 }
 impl JsonZfileAdc {
     /// Constructs new cacher using path to cache directory and cache file name (without extension).
-    pub fn new(dir: PathBuf, name: String) -> Self {
-        Self { dir, name }
+    pub fn new(dir: impl Into<PathBuf>, name: impl Into<String>) -> Self {
+        Self {
+            dir: dir.into(),
+            name: name.into(),
+        }
     }
     fn get_cache_path(&self) -> PathBuf {
         self.dir.join(format!("{}.json.zst", self.name))
