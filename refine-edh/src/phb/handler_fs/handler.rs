@@ -130,7 +130,7 @@ impl PhbFilesystemEdh {
     }
 }
 impl rc::ed::EveDataHandler for PhbFilesystemEdh {
-    fn get_data(&self) -> Result<rc::ed::EData, Box<dyn std::error::Error>> {
+    fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
         self.process_built_types(&mut data)?;
         self.process_built_groups(&mut data)?;
@@ -146,7 +146,7 @@ impl rc::ed::EveDataHandler for PhbFilesystemEdh {
         self.process_built_dynamicitemattributes(&mut data)?;
         Ok(data)
     }
-    fn get_data_version(&self) -> Result<String, Box<dyn std::error::Error>> {
+    fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
         let metadata = find_in_array::<PMetadata>(reader, |metadata| metadata.field_name == "client_build")

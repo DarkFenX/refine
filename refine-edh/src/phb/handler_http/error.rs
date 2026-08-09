@@ -45,3 +45,8 @@ impl PhbHttpEdhError {
         }
     }
 }
+impl From<PhbHttpEdhError> for rc::ed::err::EveDataHandlerError {
+    fn from(error: PhbHttpEdhError) -> Self {
+        Self::new(error)
+    }
+}

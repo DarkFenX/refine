@@ -43,4 +43,5 @@ pub use handler::EveDataHandler;
 
 mod consts;
 mod data;
+pub mod err;
 mod handler;

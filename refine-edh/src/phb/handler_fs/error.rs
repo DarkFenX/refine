@@ -27,3 +27,8 @@ impl PhbFsEdhError {
         }
     }
 }
+impl From<PhbFsEdhError> for rc::ed::err::EveDataHandlerError {
+    fn from(error: PhbFsEdhError) -> Self {
+        Self::new(error)
+    }
+}

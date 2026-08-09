@@ -1,14 +1,14 @@
-use crate::ed::EData;
+use crate::ed::{EData, err::EveDataHandlerError};
 
 /// EVE data handler interface definition.
-pub trait EveDataHandler: std::fmt::Debug {
+pub trait EveDataHandler: std::fmt::Debug + Send + Sync {
     /// Get main EVE data.
     ///
     /// This method should return an error only when it is impossible to fetch the data altogether.
     /// In case of a less impactful error (such as inability to deserialize one specific item within
     /// a big array of data), the error should be recorded as a meaningful warning message and
     /// stored in [`EDataCont::warnings`](crate::ed::EDataCont::warnings) for appropriate entity.
-    fn get_data(&self) -> Result<EData, Box<dyn std::error::Error>>;
+    fn get_data(&self) -> Result<EData, EveDataHandlerError>;
     /// Get version of the data.
-    fn get_data_version(&self) -> Result<String, Box<dyn std::error::Error>>;
+    fn get_data_version(&self) -> Result<String, EveDataHandlerError>;
 }
