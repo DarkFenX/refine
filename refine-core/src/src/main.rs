@@ -21,7 +21,7 @@ pub struct Src {
     info: SrcInfo,
 }
 impl Src {
-    pub fn new(ed_handler: &EveDataHandler, ad_cacher: Option<&mut AdaptedDataCacher>) -> Result<Self, SrcInitError> {
+    pub fn new(ed_handler: &EveDataHandler, ad_cacher: Option<&AdaptedDataCacher>) -> Result<Self, SrcInitError> {
         // No cacher - just generate adapted data (no cacher to write it)
         let ad_cacher = match ad_cacher {
             Some(ad_cacher) => ad_cacher,
@@ -37,9 +37,9 @@ impl Src {
                 );
             }
         };
-        let current_fingerprint = AFingerprint::new(&ed_version, &ad_cacher.get_impl_mut().get_cacher_version());
+        let current_fingerprint = AFingerprint::new(&ed_version, &ad_cacher.get_impl().get_cacher_version());
         // No cached fingerprint - generate adapted data and cache it
-        let cached_fingerprint = match ad_cacher.get_impl_mut().get_cache_fingerprint() {
+        let cached_fingerprint = match ad_cacher.get_impl().get_cache_fingerprint() {
             Ok(cached_fingerprint) => cached_fingerprint,
             Err(error) => {
                 return generate_and_cache(
@@ -61,7 +61,7 @@ impl Src {
                 current_fingerprint,
             );
         }
-        match ad_cacher.get_impl_mut().load_from_cache() {
+        match ad_cacher.get_impl().load_from_cache() {
             Ok(a_data) => process(a_data, SrcOrigin::Cached(cached_fingerprint.into_string())),
             // Cannot load cached data - generate adapted data and cache it
             Err(error) => generate_and_cache(
@@ -95,13 +95,13 @@ fn generate(ed_handler: &EveDataHandler, origin: SrcOrigin) -> Result<Src, SrcIn
 fn generate_and_cache(
     ed_handler: &EveDataHandler,
     origin: SrcOrigin,
-    ad_cacher: &mut AdaptedDataCacher,
+    ad_cacher: &AdaptedDataCacher,
     fingerprint: AFingerprint,
 ) -> Result<Src, SrcInitError> {
     let mut a_data = ADataGenerator::new().generate(ed_handler)?;
     // Cache first, then make warnings container, since it drains all the info from adapted data
     let cache_write_warning = ad_cacher
-        .get_impl_mut()
+        .get_impl()
         .write_cache(&a_data, fingerprint)
         .map_err(|error| error.to_string())
         .err();

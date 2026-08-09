@@ -41,16 +41,18 @@ fn setup_logger() -> () {
         .init();
 }
 
+const EVE_DATA_DIR: &str = "/home/dfx/Desktop/phobos_tq_en-us";
+
 fn main() {
     setup_logger();
-    let edh = EveDataHandler::new(redh::PhbFilesystemEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let mut adc = AdaptedDataCacher::new(radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()));
-    // test_random(&edh, &mut adc);
-    test_crusader(&edh, &mut adc);
-    // test_nphoon(&edh, &mut adc);
+    let edh = EveDataHandler::new(redh::PhbFilesystemEdh::new(EVE_DATA_DIR.into()));
+    let adc = AdaptedDataCacher::new(radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()));
+    // test_random(&edh, &adc);
+    test_crusader(&edh, &adc);
+    // test_nphoon(&edh, &adc);
 }
 
-fn test_random(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
+fn test_random(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let src = Src::new(edh, Some(adc)).unwrap();
     let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
@@ -62,7 +64,7 @@ fn test_random(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
     println!("{:?}", autocharges);
 }
 
-fn test_crusader(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
+fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let skill_ids = get_skill_ids();
     tracing::info!("source: initializing...");
     let src = Src::new(edh, Some(adc)).unwrap();
@@ -134,7 +136,7 @@ fn test_crusader(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn test_nphoon(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
+fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     let skill_ids = get_skill_ids();
     let src = Src::new(edh, Some(adc)).unwrap();
 
@@ -691,7 +693,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
 }
 
 fn get_skill_ids() -> Vec<rc::ed::EItemId> {
-    let eve_data = redh::PhbFilesystemEdh::new(ED_DIR.into()).get_data().unwrap();
+    let eve_data = redh::PhbFilesystemEdh::new(EVE_DATA_DIR.into()).get_data().unwrap();
     let grp_ids = eve_data
         .groups
         .data

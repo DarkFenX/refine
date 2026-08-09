@@ -73,12 +73,12 @@ impl fmt::Debug for JsonZfileAdc {
     }
 }
 impl rc::ad::AdaptedDataCacherInterface for JsonZfileAdc {
-    fn get_cache_fingerprint(&mut self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
+    fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
         let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
             .map_err(|e| JsonZfileAdcFpReadError::ReadFailed(e.to_string()))?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
-    fn load_from_cache(&mut self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
+    fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
         let full_path = self.get_cache_path();
         let file = OpenOptions::new()
             .read(true)
@@ -90,7 +90,7 @@ impl rc::ad::AdaptedDataCacherInterface for JsonZfileAdc {
         Ok(a_data)
     }
     fn write_cache(
-        &mut self,
+        &self,
         a_data: &rc::ad::AData,
         fingerprint: rc::ad::AFingerprint,
     ) -> Result<(), rc::ad::err::AdaptedDataCacherError> {

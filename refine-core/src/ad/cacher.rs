@@ -10,8 +10,8 @@ impl AdaptedDataCacher {
     pub fn new(cacher: impl AdaptedDataCacherInterface + 'static) -> Self {
         Self(Box::new(cacher))
     }
-    pub(crate) fn get_impl_mut(&mut self) -> &mut dyn AdaptedDataCacherInterface {
-        self.0.as_mut()
+    pub(crate) fn get_impl(&self) -> &dyn AdaptedDataCacherInterface {
+        self.0.as_ref()
     }
 }
 impl fmt::Debug for AdaptedDataCacher {
@@ -22,18 +22,15 @@ impl fmt::Debug for AdaptedDataCacher {
 
 /// Adapted data cacher interface definition.
 ///
-/// Caching helps to avoid regeneration of adapted data on every run, which is a very expensive
-/// process.
-///
-/// Any methods which read/write data have mutable self in signature to allow implementations of
-/// data handlers which store data on themselves.
+/// Caching helps to avoid regeneration of adapted data on every run, which is a relatively
+/// expensive process.
 pub trait AdaptedDataCacherInterface: fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
-    fn get_cache_fingerprint(&mut self) -> Result<AFingerprint, AdaptedDataCacherError>;
+    fn get_cache_fingerprint(&self) -> Result<AFingerprint, AdaptedDataCacherError>;
     /// Load cache from persistent storage.
-    fn load_from_cache(&mut self) -> Result<AData, AdaptedDataCacherError>;
+    fn load_from_cache(&self) -> Result<AData, AdaptedDataCacherError>;
     /// Store passed data in cache.
-    fn write_cache(&mut self, data: &AData, fingerprint: AFingerprint) -> Result<(), AdaptedDataCacherError>;
+    fn write_cache(&self, data: &AData, fingerprint: AFingerprint) -> Result<(), AdaptedDataCacherError>;
     /// Get adapted data cacher version.
     ///
     /// Change in version triggers adapted data cache rebuild, even if source data and core library

@@ -120,7 +120,7 @@ fn create_core_src(
     ed_handler: rc::ed::EveDataHandler,
     ad_caching: AdCaching,
 ) -> Result<rc::Src, AddSrcError> {
-    let mut adc: Option<rc::ad::AdaptedDataCacher> = match ad_caching {
+    let adc: Option<rc::ad::AdaptedDataCacher> = match ad_caching {
         AdCaching::Disabled => None,
         #[cfg(feature = "adc-fs")]
         AdCaching::Filesystem { dir } => Some(rc::ad::AdaptedDataCacher::new(radc::PostcardZfileAdc::new(
@@ -136,7 +136,7 @@ fn create_core_src(
             None => "no caching".to_string(),
         }
     );
-    let core_src = rc::Src::new(&ed_handler, adc.as_mut())?;
+    let core_src = rc::Src::new(&ed_handler, adc.as_ref())?;
 
     log_reason(&core_src);
     log_warnings(&core_src);
