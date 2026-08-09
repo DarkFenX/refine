@@ -56,15 +56,15 @@ fn execute_commands(core_fit: &mut rc::FitMut, cmds: Vec<ChangeFitEnumCmd>) -> R
 #[derive(Debug, thiserror::Error)]
 pub enum ChangeFitError {
     #[error("command #{0} failed")]
-    RenderFailed(usize, #[source] BackrefRenderError),
+    Render(usize, #[source] BackrefRenderError),
     #[error("command #{0} failed")]
-    ExecFailed(usize, #[source] ChangeFitEnumError),
+    Exec(usize, #[source] ChangeFitEnumError),
 }
 impl ChangeFitError {
     fn from_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
-        Self::RenderFailed(cmd_idx, render_err)
+        Self::Render(cmd_idx, render_err)
     }
     fn from_exec(cmd_idx: usize, exec_err: ChangeFitEnumError) -> Self {
-        Self::ExecFailed(cmd_idx, exec_err)
+        Self::Exec(cmd_idx, exec_err)
     }
 }

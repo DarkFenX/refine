@@ -60,31 +60,31 @@ impl AddItemEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum AddItemEnumError {
     #[error("failed to add booster")]
-    BoosterFailed(#[from] GetFitAddBoosterError),
+    Booster(#[from] GetFitAddBoosterError),
     #[error("failed to set character")]
-    CharacterFailed(#[from] GetFitSetCharacterError),
+    Character(#[from] GetFitSetCharacterError),
     #[error("failed to add drone")]
-    DroneFailed(#[from] GetFitAddDroneError),
+    Drone(#[from] GetFitAddDroneError),
     #[error("failed to add fighter")]
-    FighterFailed(#[from] GetFitAddFighterError),
+    Fighter(#[from] GetFitAddFighterError),
     #[error("failed to add fit-wide effect")]
-    FwEffectFailed(#[from] GetFitAddFwEffectError),
+    FwEffect(#[from] GetFitAddFwEffectError),
     #[error("failed to add implant")]
-    ImplantFailed(#[from] GetFitAddImplantError),
+    Implant(#[from] GetFitAddImplantError),
     #[error("failed to add module")]
-    ModuleFailed(#[from] GetFitAddModuleError),
+    Module(#[from] GetFitAddModuleError),
     #[error("failed to add projected effect")]
-    ProjEffectFailed(#[from] AddProjEffectError),
+    ProjEffect(#[from] AddProjEffectError),
     #[error("failed to add rig")]
-    RigFailed(#[from] GetFitAddRigError),
+    Rig(#[from] GetFitAddRigError),
     #[error("failed to add service")]
-    ServiceFailed(#[from] GetFitAddServiceError),
+    Service(#[from] GetFitAddServiceError),
     #[error("failed to set ship")]
-    ShipFailed(#[from] GetFitSetShipError),
+    Ship(#[from] GetFitSetShipError),
     #[error("failed to add skill")]
-    SkillFailed(#[from] GetFitAddSkillError),
+    Skill(#[from] GetFitAddSkillError),
     #[error("failed to set stance")]
-    StanceFailed(#[from] GetFitSetStanceError),
+    Stance(#[from] GetFitSetStanceError),
     #[error("failed to add subsystem")]
-    SubsystemFailed(#[from] GetFitAddSubsystemError),
+    Subsystem(#[from] GetFitAddSubsystemError),
 }

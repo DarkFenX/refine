@@ -329,104 +329,104 @@ impl ChangeSolEnumCmdRIds {
 pub enum ChangeSolEnumError {
     // Fleet
     #[error("failed to add fleet")]
-    FleetAddFailed(#[from] AddFleetError),
+    FleetAdd(#[from] AddFleetError),
     #[error("failed to change fleet")]
-    FleetChangeFailed(#[from] GetFleetChangeFleetError),
+    FleetChange(#[from] GetFleetChangeFleetError),
     #[error("failed to remove fleet")]
-    FleetRemoveFailed(#[from] GetFleetRemoveFleetError),
+    FleetRemove(#[from] GetFleetRemoveFleetError),
     // Fit
     #[error("failed to add fit")]
-    FitAddFailed(#[from] AddFitError),
+    FitAdd(#[from] AddFitError),
     #[error("failed to change fit")]
-    FitChangeFailed(#[from] GetFitChangeFitError),
+    FitChange(#[from] GetFitChangeFitError),
     #[error("failed to remove fit")]
-    FitRemoveFailed(#[from] GetFitRemoveFitError),
+    FitRemove(#[from] GetFitRemoveFitError),
     // Item
     #[error("failed to remove item")]
-    ItemRemoveFailed(#[from] GetItemRemoveItemError),
+    ItemRemove(#[from] GetItemRemoveItemError),
     // Item - autocharge
     #[error("failed to change autocharge")]
-    AutochargeChangeFailed(#[from] GetItemChangeAutochargeError),
+    AutochargeChange(#[from] GetItemChangeAutochargeError),
     // Item - booster
     #[error("failed to add booster")]
-    BoosterAddFailed(#[from] GetFitAddBoosterError),
+    BoosterAdd(#[from] GetFitAddBoosterError),
     #[error("failed to change booster")]
-    BoosterChangeFailed(#[from] GetItemChangeBoosterError),
+    BoosterChange(#[from] GetItemChangeBoosterError),
     // Item - character
     #[error("failed to set character")]
-    CharacterSetFailed(#[from] GetFitSetCharacterError),
+    CharacterSet(#[from] GetFitSetCharacterError),
     #[error("failed to change character")]
-    CharacterChangeFailed(#[from] ChangeCharacterError),
+    CharacterChange(#[from] ChangeCharacterError),
     #[error("failed to unset character")]
-    CharacterUnsetFailed(#[from] GetFitUnsetCharacterError),
+    CharacterUnset(#[from] GetFitUnsetCharacterError),
     // Item - charge
     #[error("failed to change charge")]
-    ChargeChangeFailed(#[from] GetItemChangeChargeError),
+    ChargeChange(#[from] GetItemChangeChargeError),
     // Item - drone
     #[error("failed to add drone")]
-    DroneAddFailed(#[from] GetFitAddDroneError),
+    DroneAdd(#[from] GetFitAddDroneError),
     #[error("failed to change drone")]
-    DroneChangeFailed(#[from] GetItemChangeDroneError),
+    DroneChange(#[from] GetItemChangeDroneError),
     // Item - fighter
     #[error("failed to add fighter")]
-    FighterAddFailed(#[from] GetFitAddFighterError),
+    FighterAdd(#[from] GetFitAddFighterError),
     #[error("failed to change fighter")]
-    FighterChangeFailed(#[from] GetItemChangeFighterError),
+    FighterChange(#[from] GetItemChangeFighterError),
     // Item - fit-wide effect
     #[error("failed to add fit-wide effect")]
-    FwEffectAddFailed(#[from] GetFitAddFwEffectError),
+    FwEffectAdd(#[from] GetFitAddFwEffectError),
     #[error("failed to change fit-wide effect")]
-    FwEffectChangeFailed(#[from] GetItemChangeFwEffectError),
+    FwEffectChange(#[from] GetItemChangeFwEffectError),
     // Item - implant
     #[error("failed to add implant")]
-    ImplantAddFailed(#[from] GetFitAddImplantError),
+    ImplantAdd(#[from] GetFitAddImplantError),
     #[error("failed to change implant")]
-    ImplantChangeFailed(#[from] GetItemChangeImplantError),
+    ImplantChange(#[from] GetItemChangeImplantError),
     // Item - module
     #[error("failed to add module")]
-    ModuleAddFailed(#[from] GetFitAddModuleError),
+    ModuleAdd(#[from] GetFitAddModuleError),
     #[error("failed to change module")]
-    ModuleChangeFailed(#[from] GetItemChangeModuleError),
+    ModuleChange(#[from] GetItemChangeModuleError),
     // Item - projected effect
     #[error("failed to add projected effect")]
-    ProjEffectAddFailed(#[from] AddProjEffectError),
+    ProjEffectAdd(#[from] AddProjEffectError),
     #[error("failed to change projected effect")]
-    ProjEffectChangeFailed(#[from] GetItemChangeProjEffectError),
+    ProjEffectChange(#[from] GetItemChangeProjEffectError),
     // Item - rig
     #[error("failed to add rig")]
-    RigAddFailed(#[from] GetFitAddRigError),
+    RigAdd(#[from] GetFitAddRigError),
     #[error("failed to change rig")]
-    RigChangeFailed(#[from] GetItemChangeRigError),
+    RigChange(#[from] GetItemChangeRigError),
     // Item - service
     #[error("failed to add service")]
-    ServiceAddFailed(#[from] GetFitAddServiceError),
+    ServiceAdd(#[from] GetFitAddServiceError),
     #[error("failed to change service")]
-    ServiceChangeFailed(#[from] GetItemChangeServiceError),
+    ServiceChange(#[from] GetItemChangeServiceError),
     // Item - ship
     #[error("failed to set ship")]
-    ShipSetFailed(#[from] GetFitSetShipError),
+    ShipSet(#[from] GetFitSetShipError),
     #[error("failed to change ship")]
-    ShipChangeFailed(#[from] ChangeShipError),
+    ShipChange(#[from] ChangeShipError),
     #[error("failed to unset ship")]
-    ShipUnsetFailed(#[from] GetFitUnsetShipError),
+    ShipUnset(#[from] GetFitUnsetShipError),
     // Item - skill
     #[error("failed to add skill")]
-    SkillAddFailed(#[from] GetFitAddSkillError),
+    SkillAdd(#[from] GetFitAddSkillError),
     #[error("failed to change skill")]
-    SkillChangeFailed(#[from] GetItemChangeSkillError),
+    SkillChange(#[from] GetItemChangeSkillError),
     // Item - stance
     #[error("failed to set stance")]
-    StanceSetFailed(#[from] GetFitSetStanceError),
+    StanceSet(#[from] GetFitSetStanceError),
     #[error("failed to change stance")]
-    StanceChangeFailed(#[from] ChangeStanceError),
+    StanceChange(#[from] ChangeStanceError),
     #[error("failed to unset stance")]
-    StanceUnsetFailed(#[from] GetFitUnsetStanceError),
+    StanceUnset(#[from] GetFitUnsetStanceError),
     // Item - subsystem
     #[error("failed to add subsystem")]
-    SubsystemAddFailed(#[from] GetFitAddSubsystemError),
+    SubsystemAdd(#[from] GetFitAddSubsystemError),
     #[error("failed to change subsystem")]
-    SubsystemChangeFailed(#[from] GetItemChangeSubsystemError),
+    SubsystemChange(#[from] GetItemChangeSubsystemError),
     // Item - system-wide effect
     #[error("failed to change system-wide effect")]
-    SwEffectChangeFailed(#[from] GetItemChangeSwEffectError),
+    SwEffectChange(#[from] GetItemChangeSwEffectError),
 }

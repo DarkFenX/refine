@@ -25,12 +25,12 @@ impl Vast {
         let agility = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.agility, Value::ZERO);
         let agility = match agility > Value::ZERO {
             true => PValue::from_value_unchecked(agility),
-            false => return Err(StatAgilityError::AgilityError(agility)),
+            false => return Err(StatAgilityError::Agility(agility)),
         };
         let mass = calc.get_item_oattr_ffb_extra(ctx, item_uid, attr_consts.mass, Value::ZERO);
         let mass = match mass > Value::ZERO {
             true => PValue::from_value_unchecked(mass),
-            false => return Err(StatAgilityError::MassError(mass)),
+            false => return Err(StatAgilityError::Mass(mass)),
         };
         Ok(AGILITY_CONST * agility * mass)
     }
@@ -49,7 +49,7 @@ impl Vast {
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatAgilityError {
     #[error("agility should be > 0, but is {0}")]
-    AgilityError(Value),
+    Agility(Value),
     #[error("mass should be > 0, but is {0}")]
-    MassError(Value),
+    Mass(Value),
 }

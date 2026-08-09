@@ -67,37 +67,37 @@ impl ChangeItemEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeItemEnumError {
     #[error("failed to change autocharge")]
-    AutochargeFailed(#[from] ItemChangeAutochargeError),
+    Autocharge(#[from] ItemChangeAutochargeError),
     #[error("failed to change booster")]
-    BoosterFailed(#[from] ItemChangeBoosterError),
+    Booster(#[from] ItemChangeBoosterError),
     #[error("failed to change character")]
-    CharacterFailed(#[from] ItemChangeCharacterError),
+    Character(#[from] ItemChangeCharacterError),
     #[error("failed to change charge")]
-    ChargeFailed(#[from] ItemChangeChargeError),
+    Charge(#[from] ItemChangeChargeError),
     #[error("failed to change drone")]
-    DroneFailed(#[from] ItemChangeDroneError),
+    Drone(#[from] ItemChangeDroneError),
     #[error("failed to change fighter")]
-    FighterFailed(#[from] ItemChangeFighterError),
+    Fighter(#[from] ItemChangeFighterError),
     #[error("failed to change fit-wide effect")]
-    FwEffectFailed(#[from] ItemChangeFwEffectError),
+    FwEffect(#[from] ItemChangeFwEffectError),
     #[error("failed to change implant")]
-    ImplantFailed(#[from] ItemChangeImplantError),
+    Implant(#[from] ItemChangeImplantError),
     #[error("failed to change module")]
-    ModuleFailed(#[from] ItemChangeModuleError),
+    Module(#[from] ItemChangeModuleError),
     #[error("failed to change projected effect")]
-    ProjEffectFailed(#[from] ItemChangeProjEffectError),
+    ProjEffect(#[from] ItemChangeProjEffectError),
     #[error("failed to change rig")]
-    RigFailed(#[from] ItemChangeRigError),
+    Rig(#[from] ItemChangeRigError),
     #[error("failed to change service")]
-    ServiceFailed(#[from] ItemChangeServiceError),
+    Service(#[from] ItemChangeServiceError),
     #[error("failed to change ship")]
-    ShipFailed(#[from] ItemChangeShipError),
+    Ship(#[from] ItemChangeShipError),
     #[error("failed to change skill")]
-    SkillFailed(#[from] ItemChangeSkillError),
+    Skill(#[from] ItemChangeSkillError),
     #[error("failed to change stance")]
-    StanceFailed(#[from] ItemChangeStanceError),
+    Stance(#[from] ItemChangeStanceError),
     #[error("failed to change subsystem")]
-    SubsystemFailed(#[from] ItemChangeSubsystemError),
+    Subsystem(#[from] ItemChangeSubsystemError),
     #[error("failed to change system-wide effect")]
-    SwEffectFailed(#[from] ItemChangeSwEffectError),
+    SwEffect(#[from] ItemChangeSwEffectError),
 }

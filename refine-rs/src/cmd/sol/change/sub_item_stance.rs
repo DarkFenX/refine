@@ -139,9 +139,9 @@ impl SolChangeStanceCmdRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeStanceError {
     #[error(transparent)]
-    StanceChangeViaFitFailed(#[from] GetFitChangeStanceError),
+    StanceChangeViaFit(#[from] GetFitChangeStanceError),
     #[error(transparent)]
-    StanceChangeViaItemFailed(#[from] GetItemChangeStanceError),
+    StanceChangeViaItem(#[from] GetItemChangeStanceError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

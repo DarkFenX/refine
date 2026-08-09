@@ -83,14 +83,14 @@ impl ICmdModuleAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddModuleError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
     #[error("failed to add projection")]
-    ProjAddFailed(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::AddProjError),
 }
 impl From<FitAddModuleError> for GetFitAddModuleError {
     fn from(err: FitAddModuleError) -> Self {
         match err {
-            FitAddModuleError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
+            FitAddModuleError::ProjAddFailed(inner) => Self::ProjAdd(inner),
         }
     }
 }

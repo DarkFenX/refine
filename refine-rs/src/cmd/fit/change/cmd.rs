@@ -264,61 +264,61 @@ impl ChangeFitEnumCmdRIds {
 pub enum ChangeFitEnumError {
     // Fit
     #[error("failed to change fleet")]
-    FitChangeFailed(#[from] FitChangeFitError),
+    FitChange(#[from] FitChangeFitError),
     // Item
     #[error("failed to remove item")]
-    ItemRemoveFailed(#[from] GetItemRemoveItemError),
+    ItemRemove(#[from] GetItemRemoveItemError),
     // Item - autocharge
     #[error("failed to change autocharge")]
-    AutochargeChangeFailed(#[from] GetItemChangeAutochargeError),
+    AutochargeChange(#[from] GetItemChangeAutochargeError),
     // Item - booster
     #[error("failed to change booster")]
-    BoosterChangeFailed(#[from] GetItemChangeBoosterError),
+    BoosterChange(#[from] GetItemChangeBoosterError),
     // Item - character
     #[error("failed to change character")]
-    CharacterChangeFailed(#[from] FitChangeCharacterError),
+    CharacterChange(#[from] FitChangeCharacterError),
     // Item - charge
     #[error("failed to change charge")]
-    ChargeChangeFailed(#[from] GetItemChangeChargeError),
+    ChargeChange(#[from] GetItemChangeChargeError),
     // Item - drone
     #[error("failed to add drone")]
-    DroneAddFailed(#[from] FitAddDroneError),
+    DroneAdd(#[from] FitAddDroneError),
     #[error("failed to change drone")]
-    DroneChangeFailed(#[from] GetItemChangeDroneError),
+    DroneChange(#[from] GetItemChangeDroneError),
     // Item - fighter
     #[error("failed to add fighter")]
-    FighterAddFailed(#[from] FitAddFighterError),
+    FighterAdd(#[from] FitAddFighterError),
     #[error("failed to change fighter")]
-    FighterChangeFailed(#[from] GetItemChangeFighterError),
+    FighterChange(#[from] GetItemChangeFighterError),
     // Item - fit-wide effect
     #[error("failed to change fit-wide effect")]
-    FwEffectChangeFailed(#[from] GetItemChangeFwEffectError),
+    FwEffectChange(#[from] GetItemChangeFwEffectError),
     // Item - implant
     #[error("failed to change implant")]
-    ImplantChangeFailed(#[from] GetItemChangeImplantError),
+    ImplantChange(#[from] GetItemChangeImplantError),
     // Item - module
     #[error("failed to add module")]
-    ModuleAddFailed(#[from] FitAddModuleError),
+    ModuleAdd(#[from] FitAddModuleError),
     #[error("failed to change module")]
-    ModuleChangeFailed(#[from] GetItemChangeModuleError),
+    ModuleChange(#[from] GetItemChangeModuleError),
     // Item - rig
     #[error("failed to change rig")]
-    RigChangeFailed(#[from] GetItemChangeRigError),
+    RigChange(#[from] GetItemChangeRigError),
     // Item - service
     #[error("failed to change service")]
-    ServiceChangeFailed(#[from] GetItemChangeServiceError),
+    ServiceChange(#[from] GetItemChangeServiceError),
     // Item - ship
     #[error("failed to change ship")]
-    ShipChangeFailed(#[from] FitChangeShipError),
+    ShipChange(#[from] FitChangeShipError),
     // Item - skill
     #[error("failed to add skill")]
-    SkillAddFailed(#[from] FitAddSkillError),
+    SkillAdd(#[from] FitAddSkillError),
     #[error("failed to change skill")]
-    SkillChangeFailed(#[from] GetItemChangeSkillError),
+    SkillChange(#[from] GetItemChangeSkillError),
     // Item - stance
     #[error("failed to change stance")]
-    StanceChangeFailed(#[from] FitChangeStanceError),
+    StanceChange(#[from] FitChangeStanceError),
     // Item - subsystem
     #[error("failed to change subsystem")]
-    SubsystemChangeFailed(#[from] GetItemChangeSubsystemError),
+    SubsystemChange(#[from] GetItemChangeSubsystemError),
 }

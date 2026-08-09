@@ -81,14 +81,14 @@ impl ICmdDroneAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddDroneError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
     #[error("failed to add projection")]
-    ProjAddFailed(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::AddProjError),
 }
 impl From<FitAddDroneError> for GetFitAddDroneError {
     fn from(err: FitAddDroneError) -> Self {
         match err {
-            FitAddDroneError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
+            FitAddDroneError::ProjAddFailed(inner) => Self::ProjAdd(inner),
         }
     }
 }

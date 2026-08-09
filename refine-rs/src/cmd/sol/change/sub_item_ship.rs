@@ -164,9 +164,9 @@ impl SolChangeShipCmdRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeShipError {
     #[error(transparent)]
-    ShipChangeViaFitFailed(#[from] GetFitChangeShipError),
+    ShipChangeViaFit(#[from] GetFitChangeShipError),
     #[error(transparent)]
-    ShipChangeViaItemFailed(#[from] GetItemChangeShipError),
+    ShipChangeViaItem(#[from] GetItemChangeShipError),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

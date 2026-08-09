@@ -30,12 +30,12 @@ impl Vast {
         let warp_range = cap / cap_need / mass;
         if !warp_range.is_finite() {
             if cap_need == PValue::ZERO {
-                return Err(StatMaxWarpRangeError::CapNeedError(cap_need));
+                return Err(StatMaxWarpRangeError::CapNeed(cap_need));
             }
-            return Err(StatMaxWarpRangeError::MassError(mass));
+            return Err(StatMaxWarpRangeError::Mass(mass));
         }
         if warp_range < PValue::FLOAT_TOLERANCE {
-            return Err(StatMaxWarpRangeError::CapAmountError(cap));
+            return Err(StatMaxWarpRangeError::CapAmount(cap));
         }
         Ok(warp_range)
     }
@@ -44,9 +44,9 @@ impl Vast {
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatMaxWarpRangeError {
     #[error("capacitor capacity should be > 0, but is {0}")]
-    CapAmountError(PValue),
+    CapAmount(PValue),
     #[error("warp capacitor need should be > 0, but is {0}")]
-    CapNeedError(PValue),
+    CapNeed(PValue),
     #[error("mass should be > 0, but is {0}")]
-    MassError(PValue),
+    Mass(PValue),
 }
