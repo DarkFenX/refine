@@ -7,14 +7,20 @@ use crate::ad::{AData, AFingerprint};
 /// Convenience wrapper to hide boxing necessary to house a cacher implementation.
 pub struct AdaptedDataCacher(pub Box<dyn AdaptedDataCacherInterface>);
 impl AdaptedDataCacher {
-    pub fn new(cacher: impl AdaptedDataCacherInterface + 'static) -> Self {
+    pub fn new<T>(cacher: T) -> Self
+    where
+        T: AdaptedDataCacherInterface + 'static,
+    {
         Self(Box::new(cacher))
     }
     pub(crate) fn get_impl(&self) -> &dyn AdaptedDataCacherInterface {
         self.0.as_ref()
     }
 }
-impl<T: AdaptedDataCacherInterface + 'static> From<T> for AdaptedDataCacher {
+impl<T> From<T> for AdaptedDataCacher
+where
+    T: AdaptedDataCacherInterface + 'static,
+{
     fn from(cacher: T) -> Self {
         Self::new(cacher)
     }

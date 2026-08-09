@@ -11,7 +11,10 @@ impl ADataGenerator {
     }
 }
 
-fn get_max_state<'a>(item_effects: impl Iterator<Item = &'a AEffectId>, effects: &RMap<AEffectId, AEffect>) -> AState {
+fn get_max_state<'a, I>(item_effects: I, effects: &RMap<AEffectId, AEffect>) -> AState
+where
+    I: Iterator<Item = &'a AEffectId>,
+{
     let mut max_state = AState::Offline;
     for effect_aid in item_effects {
         let Some(a_effect) = effects.get(effect_aid) else {

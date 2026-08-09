@@ -7,14 +7,20 @@ use crate::ed::EData;
 /// Convenience wrapper to hide boxing necessary to house a handler implementation.
 pub struct EveDataHandler(pub Box<dyn EveDataHandlerInterface>);
 impl EveDataHandler {
-    pub fn new(handler: impl EveDataHandlerInterface + 'static) -> Self {
+    pub fn new<T>(handler: T) -> Self
+    where
+        T: EveDataHandlerInterface + 'static,
+    {
         Self(Box::new(handler))
     }
     pub(crate) fn get_impl(&self) -> &dyn EveDataHandlerInterface {
         self.0.as_ref()
     }
 }
-impl<T: EveDataHandlerInterface + 'static> From<T> for EveDataHandler {
+impl<T> From<T> for EveDataHandler
+where
+    T: EveDataHandlerInterface + 'static,
+{
     fn from(handler: T) -> Self {
         Self::new(handler)
     }
