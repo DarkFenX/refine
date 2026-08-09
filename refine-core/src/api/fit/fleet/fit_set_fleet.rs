@@ -40,6 +40,6 @@ impl<'s> FitMut<'s> {
 
 #[derive(Debug, thiserror::Error)]
 pub enum SetFitFleetError {
-    #[error("{0}")]
+    #[error(transparent)]
     FleetNotFound(#[from] FleetFoundError),
 }

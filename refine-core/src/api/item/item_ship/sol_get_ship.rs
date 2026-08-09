@@ -20,8 +20,8 @@ impl SolarSystem {
 
 #[derive(Debug, thiserror::Error)]
 pub enum GetShipError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotShip(#[from] ItemKindMatchError),
 }

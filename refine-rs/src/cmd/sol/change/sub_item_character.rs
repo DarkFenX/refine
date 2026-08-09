@@ -138,9 +138,9 @@ impl SolChangeCharacterCmdRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeCharacterError {
-    #[error("{0}")]
+    #[error(transparent)]
     CharacterChangeViaFitFailed(#[from] GetFitChangeCharacterError),
-    #[error("{0}")]
+    #[error(transparent)]
     CharacterChangeViaItemFailed(#[from] GetItemChangeCharacterError),
 }
 

@@ -78,10 +78,10 @@ impl ICmdProjEffectChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeProjEffectError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotProjEffect(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotProjEffect(rc::err::ItemKindMatchError),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[source] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
@@ -122,7 +122,7 @@ impl ICmdProjEffectChangeICtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeProjEffectError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),

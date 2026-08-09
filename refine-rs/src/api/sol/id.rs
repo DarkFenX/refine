@@ -37,7 +37,7 @@ mod custom_serde {
     }
 
     #[derive(thiserror::Error, Debug)]
-    #[error("{0}")]
+    #[error(transparent)]
     pub struct ParseSolarSystemIdError(#[from] uuid::Error);
 
     impl Serialize for SolarSystemId {

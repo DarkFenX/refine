@@ -155,7 +155,7 @@ mod custom_serde {
             c = CUSTOM_PREFIX,
         )]
         InvalidPrefix,
-        #[error("{0}")]
+        #[error(transparent)]
         InvalidInt(#[from] std::num::ParseIntError),
     }
 

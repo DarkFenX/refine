@@ -163,8 +163,8 @@ impl UData {
 
 #[derive(Debug, thiserror::Error)]
 pub(crate) enum ProjecteeUidError {
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }

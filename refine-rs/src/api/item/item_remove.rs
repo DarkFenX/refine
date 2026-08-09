@@ -18,5 +18,5 @@ impl Item<'_, '_> {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("{0}")]
+#[error(transparent)]
 pub struct RemoveItemError(#[from] pub ItemRemoveItemError);

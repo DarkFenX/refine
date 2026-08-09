@@ -50,10 +50,10 @@ impl ICmdFwEffectChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeFwEffectError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotFwEffect(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotFwEffect(rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeFwEffectError> for GetItemChangeFwEffectError {
     fn from(err: ItemChangeFwEffectError) -> Self {
@@ -82,6 +82,6 @@ impl ICmdFwEffectChangeICtx {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeFwEffectError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotFwEffect(#[from] rc::err::ItemKindMatchError),
 }

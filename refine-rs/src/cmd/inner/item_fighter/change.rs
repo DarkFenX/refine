@@ -89,10 +89,10 @@ impl ICmdFighterChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeFighterError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotFighter(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotFighter(rc::err::ItemKindMatchError),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[source] rc::err::AddProjError),
     #[error("unable to remove projection: {0}")]
@@ -150,7 +150,7 @@ impl ICmdFighterChangeICtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeFighterError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotFighter(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection: {0}")]
     ProjAddFailed(#[from] rc::err::AddProjError),

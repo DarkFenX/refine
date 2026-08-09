@@ -49,6 +49,6 @@ impl<'s> FitMut<'s> {
 
 #[derive(Debug, thiserror::Error)]
 pub enum AddSkillError {
-    #[error("{0}")]
+    #[error(transparent)]
     SkillIdCollision(#[from] SkillEveTypeError),
 }

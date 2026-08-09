@@ -77,7 +77,7 @@ impl ICmdShipChangeFFitCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeShipError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no ship set")]
     FitNoShip(FitId),
@@ -95,7 +95,7 @@ impl ICmdShipChangeFItemCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeShipError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetShipError),
 }
 
@@ -143,6 +143,6 @@ pub enum FitChangeShipError {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeShipError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotShip(#[from] rc::err::ItemKindMatchError),
 }

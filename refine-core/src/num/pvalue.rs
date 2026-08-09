@@ -264,7 +264,7 @@ mod custom_serde {
 
     #[derive(Debug, thiserror::Error)]
     pub enum PValueParseError {
-        #[error("{0}")]
+        #[error(transparent)]
         InvalidFloat(#[from] std::num::ParseFloatError),
     }
 

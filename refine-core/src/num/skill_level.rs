@@ -74,7 +74,7 @@ mod custom_serde {
 
     #[derive(Debug, thiserror::Error)]
     pub enum SkillLevelParseError {
-        #[error("{0}")]
+        #[error(transparent)]
         InvalidInt(#[from] std::num::ParseIntError),
     }
 

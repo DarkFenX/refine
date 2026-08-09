@@ -54,7 +54,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
 
 #[derive(Debug, thiserror::Error)]
 pub enum GetFullMAttrError {
-    #[error("{0}")]
+    #[error(transparent)]
     AttrNotFound(#[from] AttrFoundError),
     #[error("attribute {2} is not mutable according to mutator {1} on item {0}")]
     NotMutable(ItemId, ItemTypeId, AttrId),

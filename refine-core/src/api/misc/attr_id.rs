@@ -95,7 +95,7 @@ mod custom_serde {
     pub enum AttrIdParseError {
         #[error("invalid prefix, expected \"{eve}\" or \"{custom}\" prefix", eve = EVE_PREFIX, custom = CUSTOM_PREFIX)]
         InvalidPrefix,
-        #[error("{0}")]
+        #[error(transparent)]
         InvalidInt(#[from] std::num::ParseIntError),
     }
 

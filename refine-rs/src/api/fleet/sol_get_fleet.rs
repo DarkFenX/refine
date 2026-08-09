@@ -14,5 +14,5 @@ impl<'r, 's> SolarSystem<'r> {
 }
 
 #[derive(thiserror::Error, Debug)]
-#[error("{0}")]
+#[error(transparent)]
 pub struct GetFleetError(#[from] pub rc::err::GetFleetError);

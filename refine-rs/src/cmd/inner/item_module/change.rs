@@ -91,10 +91,10 @@ impl ICmdModuleChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeModuleError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotModule(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotModule(rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection: {0}")]
@@ -190,7 +190,7 @@ impl ICmdModuleChangeICtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeModuleError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotModule(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),

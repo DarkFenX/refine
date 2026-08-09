@@ -52,7 +52,7 @@ impl ICmdStanceSetFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitSetStanceError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
 }
 

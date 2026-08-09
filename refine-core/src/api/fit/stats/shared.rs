@@ -32,9 +32,9 @@ impl<'s> FitMut<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatFitAppliedError {
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 // Conversions
@@ -55,14 +55,14 @@ pub enum StatFitShipError<SS>
 where
     SS: std::error::Error,
 {
-    #[error("{0}")]
+    #[error(transparent)]
     NoShip(#[from] FitHasShipError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     UnsupportedStat(#[from] SupportedStatError),
-    #[error("{0}")]
-    StatSpecific(#[source] SS),
+    #[error(transparent)]
+    StatSpecific(SS),
 }
 // Conversions
 impl<SS> From<StatItemError<SS>> for StatFitShipError<SS>
@@ -83,17 +83,17 @@ pub enum StatFitShipAppliedError<SS>
 where
     SS: std::error::Error,
 {
-    #[error("{0}")]
+    #[error(transparent)]
     NoShip(#[from] FitHasShipError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     UnsupportedStat(#[from] SupportedStatError),
-    #[error("{0}")]
-    StatSpecific(#[source] SS),
-    #[error("{0}")]
+    #[error(transparent)]
+    StatSpecific(SS),
+    #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 // Conversions
@@ -120,14 +120,14 @@ pub enum StatFitCharacterError<SS>
 where
     SS: std::error::Error,
 {
-    #[error("{0}")]
+    #[error(transparent)]
     NoCharacter(#[from] FitHasCharacterError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     UnsupportedStat(#[from] SupportedStatError),
-    #[error("{0}")]
-    StatSpecific(#[source] SS),
+    #[error(transparent)]
+    StatSpecific(SS),
 }
 // Conversions
 impl<SS> From<StatItemError<SS>> for StatFitCharacterError<SS>

@@ -54,10 +54,10 @@ impl ICmdBoosterChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeBoosterError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotBooster(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotBooster(rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeBoosterError> for GetItemChangeBoosterError {
     fn from(err: ItemChangeBoosterError) -> Self {
@@ -87,6 +87,6 @@ impl ICmdBoosterChangeICtx {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeBoosterError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotBooster(#[from] rc::err::ItemKindMatchError),
 }

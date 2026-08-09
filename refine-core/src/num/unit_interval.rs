@@ -116,7 +116,7 @@ mod custom_serde {
 
     #[derive(Debug, thiserror::Error)]
     pub enum UnitIntervalParseError {
-        #[error("{0}")]
+        #[error(transparent)]
         InvalidFloat(#[from] std::num::ParseFloatError),
     }
 

@@ -25,55 +25,55 @@ pub(crate) enum ApiError {
     PathSrcParseFailedOnAdd(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error("alias \"{0}\" not found")]
     PathSrcParseFailedMisc(#[source] rs::src::err::SrcAliasPruneInitError),
-    #[error("{0}")]
+    #[error(transparent)]
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
     #[error("alias \"{0}\" not found")]
     BodySrcParseFailed(String, #[source] rs::src::err::SrcAliasPruneInitError),
-    #[error("{0}")]
+    #[error(transparent)]
     SrcAddFailed(#[from] rs::src::err::AddSrcError),
-    #[error("{0}")]
+    #[error(transparent)]
     SrcRemoveFailed(#[from] rs::src::err::RemoveSrcError),
     // Solar system-related
-    #[error("{0}")]
+    #[error(transparent)]
     PathSolParseFailed(#[from] rs::err::ParseSolarSystemIdError),
-    #[error("{0}")]
+    #[error(transparent)]
     PathSolNotFound(#[from] rs::err::GetSolError),
-    #[error("{0}")]
+    #[error(transparent)]
     SolAddFailed(#[from] rs::err::AddSolError),
     #[error("{1}")]
     SolChangeFailed(usize, #[source] rs::err::ChangeSolEnumError),
-    #[error("{0}")]
+    #[error(transparent)]
     SolRemoveFailed(#[from] rs::err::RemoveSolError),
-    #[error("{0}")]
+    #[error(transparent)]
     SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
     // Fleet-related
-    #[error("{0}")]
+    #[error(transparent)]
     PathFleetParseFailed(#[from] rs::err::ParseFleetIdError),
-    #[error("{0}")]
+    #[error(transparent)]
     PathFleetNotFound(#[from] rs::err::GetFleetError),
-    #[error("{0}")]
+    #[error(transparent)]
     FleetAddFailed(#[from] rs::err::AddFleetError),
-    #[error("{0}")]
+    #[error(transparent)]
     FleetChangeFailed(#[from] rs::err::ChangeFleetError),
     // Fit-related
-    #[error("{0}")]
+    #[error(transparent)]
     PathFitParseFailed(#[from] rs::err::ParseFitIdError),
-    #[error("{0}")]
+    #[error(transparent)]
     PathFitNotFound(#[from] rs::err::GetFitError),
-    #[error("{0}")]
+    #[error(transparent)]
     FitAddFailed(#[from] rs::err::AddFitError),
     #[error("{1}")]
     FitChangeFailed(usize, #[source] rs::err::ChangeFitEnumError),
     // Item-related
-    #[error("{0}")]
+    #[error(transparent)]
     PathItemParseFailed(#[from] rs::err::ParseItemIdError),
-    #[error("{0}")]
+    #[error(transparent)]
     PathItemNotFound(#[from] rs::err::GetItemError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemAddFailed(#[from] rs::err::AddItemEnumError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemChangeFailed(#[from] rs::err::ChangeItemEnumError),
-    #[error("{0}")]
+    #[error(transparent)]
     ItemRemoveFailed(#[from] rs::err::RemoveItemError),
 }
 

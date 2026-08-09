@@ -37,5 +37,5 @@ impl Fleet<'_, '_> {
 }
 
 #[derive(Debug, thiserror::Error)]
-#[error("{0}")]
+#[error(transparent)]
 pub struct ChangeFleetError(#[from] pub FleetChangeFleetError);

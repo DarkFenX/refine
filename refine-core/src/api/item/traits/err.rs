@@ -6,27 +6,27 @@ use crate::{
 
 #[derive(Debug, thiserror::Error)]
 pub enum GetItemAttrError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     AttrNotFound(#[from] AttrFoundError),
 }
 
 #[derive(Debug, thiserror::Error)]
 pub enum IterItemAttrsError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
 #[derive(Debug, thiserror::Error)]
 pub enum IterItemEffectsError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
 #[derive(Debug, thiserror::Error)]
 pub enum IterItemModifiersError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
@@ -38,12 +38,12 @@ pub enum StatItemError<SS>
 where
     SS: std::error::Error,
 {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     UnsupportedStat(#[from] SupportedStatError),
-    #[error("{0}")]
-    StatSpecific(#[source] SS),
+    #[error(transparent)]
+    StatSpecific(SS),
 }
 // Conversions
 impl<SS> StatItemError<SS>
@@ -64,15 +64,15 @@ pub enum StatItemAppliedError<SS>
 where
     SS: std::error::Error,
 {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     UnsupportedStat(#[from] SupportedStatError),
-    #[error("{0}")]
-    StatSpecific(#[source] SS),
-    #[error("{0}")]
+    #[error(transparent)]
+    StatSpecific(SS),
+    #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
 // Conversions

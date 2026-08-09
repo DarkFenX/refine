@@ -67,6 +67,6 @@ impl SolarSystem {
 
 #[derive(Debug, thiserror::Error)]
 pub enum GetItemError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
 }

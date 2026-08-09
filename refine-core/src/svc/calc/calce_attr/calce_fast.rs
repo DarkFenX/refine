@@ -264,7 +264,7 @@ impl Calc {
 
 #[derive(Debug, thiserror::Error)]
 enum GetOAttrError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] UItemLoadedError),
     #[error("no attribute in request")]
     NoAttr,

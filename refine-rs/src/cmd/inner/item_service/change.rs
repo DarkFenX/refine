@@ -51,10 +51,10 @@ impl ICmdServiceChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeServiceError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotService(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotService(rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeServiceError> for GetItemChangeServiceError {
     fn from(err: ItemChangeServiceError) -> Self {
@@ -83,6 +83,6 @@ impl ICmdServiceChangeICtx {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeServiceError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotService(#[from] rc::err::ItemKindMatchError),
 }

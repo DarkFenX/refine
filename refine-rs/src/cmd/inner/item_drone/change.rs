@@ -87,10 +87,10 @@ impl ICmdDroneChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeDroneError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotDrone(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotDrone(rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection: {0}")]
@@ -169,7 +169,7 @@ impl ICmdDroneChangeICtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeDroneError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotDrone(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),

@@ -49,7 +49,7 @@ impl ICmdRigAddFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddRigError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
 }
 

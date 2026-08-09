@@ -50,10 +50,10 @@ impl ICmdImplantChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeImplantError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetItemError),
-    #[error("{0}")]
-    ItemIsNotImplant(#[source] rc::err::ItemKindMatchError),
+    #[error(transparent)]
+    ItemIsNotImplant(rc::err::ItemKindMatchError),
 }
 impl From<ItemChangeImplantError> for GetItemChangeImplantError {
     fn from(err: ItemChangeImplantError) -> Self {
@@ -82,6 +82,6 @@ impl ICmdImplantChangeICtx {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeImplantError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotImplant(#[from] rc::err::ItemKindMatchError),
 }

@@ -71,7 +71,7 @@ impl ICmdFitChangeFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeFitError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
     #[error("failed to set fleet: {0}")]
     FleetSetFailed(#[source] rc::err::SetFitFleetError),

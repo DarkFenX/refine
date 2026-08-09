@@ -41,7 +41,7 @@ impl ICmdStanceUnsetFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitUnsetStanceError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
 }
 

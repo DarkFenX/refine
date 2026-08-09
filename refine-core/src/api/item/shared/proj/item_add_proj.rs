@@ -2,10 +2,10 @@ use crate::err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError}
 
 #[derive(Debug, thiserror::Error)]
 pub enum AddProjError {
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjectionAlreadyExists(#[from] ProjNotFoundError),
 }

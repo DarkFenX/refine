@@ -11,10 +11,10 @@ pub(crate) enum IntStatItemError<SS>
 where
     SS: std::error::Error,
 {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemNotLoaded(#[from] UItemLoadedError),
-    #[error("{0}")]
+    #[error(transparent)]
     UnsupportedStat(#[from] UItemKindVsStatError),
-    #[error("{0}")]
-    StatSpecific(#[source] SS),
+    #[error(transparent)]
+    StatSpecific(SS),
 }

@@ -75,7 +75,7 @@ impl ICmdStanceChangeFFitCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeStanceError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
     #[error("fit {0} has no stance set")]
     FitNoStance(FitId),
@@ -93,7 +93,7 @@ impl ICmdStanceChangeFItemCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeStanceError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemGetFailed(#[from] rc::err::GetStanceError),
 }
 
@@ -135,6 +135,6 @@ pub enum FitChangeStanceError {
 
 #[derive(thiserror::Error, Debug)]
 pub enum ItemChangeStanceError {
-    #[error("{0}")]
+    #[error(transparent)]
     ItemIsNotStance(#[from] rc::err::ItemKindMatchError),
 }

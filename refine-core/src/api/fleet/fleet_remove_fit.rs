@@ -17,7 +17,7 @@ impl<'s> FleetMut<'s> {
 
 #[derive(Debug, thiserror::Error)]
 pub enum FleetRemoveFitError {
-    #[error("{0}")]
+    #[error(transparent)]
     FitNotFound(#[from] FitFoundError),
     #[error("fit {1} is not a member of fleet {0}")]
     FitIsNotInThisFleet(FleetId, FitId),

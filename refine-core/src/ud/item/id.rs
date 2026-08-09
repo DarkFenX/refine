@@ -63,7 +63,7 @@ mod custom_serde {
     }
 
     #[derive(Debug, thiserror::Error)]
-    #[error("{0}")]
+    #[error(transparent)]
     pub struct ParseItemIdError(#[from] std::num::ParseIntError);
 
     impl Serialize for ItemId {

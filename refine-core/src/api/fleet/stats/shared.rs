@@ -27,8 +27,8 @@ impl<'s> FleetMut<'s> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatFleetAppliedError {
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
-    #[error("{0}")]
+    #[error(transparent)]
     ProjecteeCantTakeProjs(#[from] ItemReceiveProjError),
 }
