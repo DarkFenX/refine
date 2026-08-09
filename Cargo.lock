@@ -1674,7 +1674,6 @@ dependencies = [
  "angle-sc",
  "cranelift-entity",
  "derive_more",
- "either",
  "indexmap 2.14.0",
  "itertools",
  "lender",

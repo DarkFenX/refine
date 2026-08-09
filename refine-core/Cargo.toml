@@ -13,7 +13,6 @@ refine-serde = { workspace = true, optional = true }
 angle-sc = { workspace = true }
 cranelift-entity = { workspace = true }
 derive_more = { workspace = true, features = ["display"] }
-either = { workspace = true }
 indexmap = { workspace = true }
 itertools = { workspace = true }
 lender = { workspace = true }

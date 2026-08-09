@@ -1,5 +1,3 @@
-use either::Either;
-
 use crate::{
     EffectMode, ItemId, ItemKind, NpcProp, OptionalReload, PValue, RearmMinion, SkillLevel, Spool,
     ad::{AEffectId, AItemId},
@@ -560,11 +558,10 @@ impl UItem {
         }
     }
     pub(crate) fn iter_charges(&self) -> impl Iterator<Item = UItemId> {
-        let charge_uid = self.get_charge_uid();
-        match self.get_autocharges() {
-            Some(autocharges) => Either::Left(charge_uid.into_iter().chain(autocharges.values())),
-            None => Either::Right(charge_uid.into_iter()),
-        }
-        .into_iter()
+        self.get_charge_uid().into_iter().chain(
+            self.get_autocharges()
+                .into_iter()
+                .flat_map(|autocharges| autocharges.values()),
+        )
     }
 }
