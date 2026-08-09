@@ -73,12 +73,12 @@ impl fmt::Debug for PostcardZfileAdc {
     }
 }
 impl rc::ad::AdaptedDataCacher for PostcardZfileAdc {
-    fn get_cache_fingerprint(&mut self) -> Result<rc::ad::AFingerprint, Box<dyn std::error::Error>> {
+    fn get_cache_fingerprint(&mut self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
         let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
             .map_err(|e| PostcardZfileAdcFpReadError::ReadFailed(e.to_string()))?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
-    fn load_from_cache(&mut self) -> Result<rc::ad::AData, Box<dyn std::error::Error>> {
+    fn load_from_cache(&mut self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
         let full_path = self.get_cache_path();
         let file = OpenOptions::new()
             .read(true)
@@ -90,14 +90,15 @@ impl rc::ad::AdaptedDataCacher for PostcardZfileAdc {
         // the only stored strings are ADG warnings, and all of them are capped, so 64k is more than
         // enough.
         let mut scratch = vec![0; 64 * 1024];
-        let (a_data, _) = postcard::from_io((BufReader::new(reader), scratch.as_mut_slice()))?;
+        let (a_data, _) = postcard::from_io((BufReader::new(reader), scratch.as_mut_slice()))
+            .map_err(PostcardZfileAdcDataReadError::from)?;
         Ok(a_data)
     }
     fn write_cache(
         &mut self,
         a_data: &rc::ad::AData,
         fingerprint: rc::ad::AFingerprint,
-    ) -> Result<(), Box<dyn std::error::Error>> {
+    ) -> Result<(), rc::ad::err::AdaptedDataCacherError> {
         self.create_cache_dir()?;
         self.write_data(a_data)?;
         self.write_fingerprint(fingerprint)?;

@@ -13,11 +13,21 @@ impl From<serde_json::Error> for JsonZfileAdcDataReadError {
         }
     }
 }
+impl From<JsonZfileAdcDataReadError> for rc::ad::err::AdaptedDataCacherError {
+    fn from(error: JsonZfileAdcDataReadError) -> Self {
+        Self::new(error)
+    }
+}
 
 #[derive(thiserror::Error, Debug)]
 pub(super) enum JsonZfileAdcFpReadError {
     #[error("reading failed: {0}")]
     ReadFailed(String),
+}
+impl From<JsonZfileAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
+    fn from(error: JsonZfileAdcFpReadError) -> Self {
+        Self::new(error)
+    }
 }
 
 #[expect(clippy::enum_variant_names)]
@@ -43,5 +53,10 @@ impl From<serde_json::Error> for JsonZfileAdcWriteError {
             true => Self::DataWriteFailed(error.to_string()),
             false => Self::DataSerializeFailed(error.to_string()),
         }
+    }
+}
+impl From<JsonZfileAdcWriteError> for rc::ad::err::AdaptedDataCacherError {
+    fn from(error: JsonZfileAdcWriteError) -> Self {
+        Self::new(error)
     }
 }

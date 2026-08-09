@@ -10,11 +10,21 @@ impl From<postcard::Error> for PostcardZfileAdcDataReadError {
         Self::ParseFailed(error.to_string())
     }
 }
+impl From<PostcardZfileAdcDataReadError> for rc::ad::err::AdaptedDataCacherError {
+    fn from(error: PostcardZfileAdcDataReadError) -> Self {
+        Self::new(error)
+    }
+}
 
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PostcardZfileAdcFpReadError {
     #[error("reading failed: {0}")]
     ReadFailed(String),
+}
+impl From<PostcardZfileAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
+    fn from(error: PostcardZfileAdcFpReadError) -> Self {
+        Self::new(error)
+    }
 }
 
 #[expect(clippy::enum_variant_names)]
@@ -37,5 +47,10 @@ impl From<std::io::Error> for PostcardZfileAdcWriteError {
 impl From<postcard::Error> for PostcardZfileAdcWriteError {
     fn from(error: postcard::Error) -> Self {
         Self::DataSerializeFailed(error.to_string())
+    }
+}
+impl From<PostcardZfileAdcWriteError> for rc::ad::err::AdaptedDataCacherError {
+    fn from(error: PostcardZfileAdcWriteError) -> Self {
+        Self::new(error)
     }
 }

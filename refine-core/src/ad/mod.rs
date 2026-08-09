@@ -22,6 +22,10 @@ pub(crate) use generator::ADataGenerator;
 mod cacher;
 mod consts;
 mod data;
-pub mod err;
 mod fingerprint;
 mod generator;
+
+pub mod err {
+    pub use crate::ad::cacher::AdaptedDataCacherError;
+    pub(crate) use crate::ad::generator::ADataGeneratorError;
+}

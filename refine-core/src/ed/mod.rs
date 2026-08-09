@@ -43,5 +43,8 @@ pub use handler::EveDataHandler;
 
 mod consts;
 mod data;
-pub mod err;
 mod handler;
+
+pub mod err {
+    pub use crate::ed::handler::EveDataHandlerError;
+}
