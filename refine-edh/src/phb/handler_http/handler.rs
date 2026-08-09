@@ -33,10 +33,7 @@ impl PhbHttpEdh {
         let base_url_conv = match Url::parse(base_url) {
             Ok(base_url_conv) => base_url_conv,
             Err(error) => {
-                return Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
-                    base_url.to_string(),
-                    format!("failed to interpret: {error}"),
-                ));
+                return Err(PhbHttpEdhInitError::BaseUrlParse(base_url.to_string(), error));
             }
         };
         match base_url_conv.has_host() && !base_url_conv.cannot_be_a_base() {
@@ -45,10 +42,7 @@ impl PhbHttpEdh {
                 data_version: data_version.into(),
                 client: Client::new(),
             }),
-            false => Err(PhbHttpEdhInitError::PhbHttpInvalidBaseUrl(
-                base_url.to_string(),
-                "cannot be used as base URL".to_string(),
-            )),
+            false => Err(PhbHttpEdhInitError::BaseUrlNotABase(base_url.to_string())),
         }
     }
 }
