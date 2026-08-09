@@ -16,17 +16,17 @@ pub enum PhbHttpEdhInitError {
 
 #[derive(thiserror::Error, Debug)]
 pub enum PhbHttpEdhError {
-    /// HTTP handler is unable to join base URL and suffix.
+    /// Handler is unable to join base URL and suffix.
     ///
     /// Includes suffix and error source.
     #[error("{0} is failed to be joined to base URL")]
     Join(String, #[source] url::ParseError),
-    /// HTTP handler is unable to fetch data.
+    /// Handler is unable to fetch data.
     ///
     /// Includes suffix and error source.
     #[error("{0} fetching failed")]
     Fetch(String, #[source] Box<dyn std::error::Error + Send + Sync>),
-    /// HTTP handler is unable to parse data.
+    /// Handler is unable to parse data.
     ///
     /// Includes suffix and error source.
     #[error("{0} parsing failed")]
