@@ -14,7 +14,14 @@
 #[cfg(feature = "phb-fs")]
 pub use phb::PhbFilesystemEdh;
 #[cfg(feature = "phb-http")]
-pub use phb::{PhbHttpEdh, PhbHttpEdhInitError};
+pub use phb::PhbHttpEdh;
 
 #[cfg(any(feature = "phb-http", feature = "phb-fs"))]
 mod phb;
+
+pub mod err {
+    #[cfg(feature = "phb-fs")]
+    pub use crate::phb::PhbFsEdhError;
+    #[cfg(feature = "phb-http")]
+    pub use crate::phb::{PhbHttpEdhError, PhbHttpEdhInitError};
+}

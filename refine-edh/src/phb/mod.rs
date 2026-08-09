@@ -1,7 +1,7 @@
 #[cfg(feature = "phb-fs")]
-pub use handler_fs::PhbFilesystemEdh;
+pub use handler_fs::{PhbFilesystemEdh, PhbFsEdhError};
 #[cfg(feature = "phb-http")]
-pub use handler_http::{PhbHttpEdh, PhbHttpEdhInitError};
+pub use handler_http::{PhbHttpEdh, PhbHttpEdhError, PhbHttpEdhInitError};
 
 #[cfg(any(feature = "phb-fs", feature = "phb-http"))]
 mod data;

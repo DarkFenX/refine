@@ -1,5 +1,5 @@
 #[derive(thiserror::Error, Debug)]
-pub(super) enum PostcardZfileAdcDataReadError {
+pub enum PostcardZfileAdcDataReadError {
     #[error("reading failed")]
     Read(#[source] std::io::Error),
     #[error("parsing failed")]
@@ -17,7 +17,7 @@ impl From<PostcardZfileAdcDataReadError> for rc::ad::err::AdaptedDataCacherError
 }
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum PostcardZfileAdcFpReadError {
+pub enum PostcardZfileAdcFpReadError {
     #[error("reading failed")]
     Read(#[source] std::io::Error),
 }
@@ -28,7 +28,7 @@ impl From<PostcardZfileAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum PostcardZfileAdcWriteError {
+pub enum PostcardZfileAdcWriteError {
     #[error("unable to create directory")]
     CreateDir(#[source] std::io::Error),
     #[error("unable to write data")]

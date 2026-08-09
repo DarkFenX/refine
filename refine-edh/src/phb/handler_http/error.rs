@@ -15,7 +15,7 @@ pub enum PhbHttpEdhInitError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum PhbHttpEdhError {
+pub enum PhbHttpEdhError {
     /// HTTP handler is unable to join base URL and suffix.
     ///
     /// Includes suffix and error source.

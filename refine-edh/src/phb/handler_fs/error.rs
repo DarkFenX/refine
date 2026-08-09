@@ -1,7 +1,7 @@
 use crate::phb::parsing::ReadParseFailReason;
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum PhbFsEdhError {
+pub enum PhbFsEdhError {
     /// Filesystem handler is unable to read data.
     ///
     /// Includes suffix and error source.

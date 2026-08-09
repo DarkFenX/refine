@@ -1,4 +1,4 @@
-pub use error::PhbHttpEdhInitError;
+pub use error::{PhbHttpEdhError, PhbHttpEdhInitError};
 pub use handler::PhbHttpEdh;
 
 mod error;

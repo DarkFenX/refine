@@ -1,5 +1,5 @@
 #[derive(thiserror::Error, Debug)]
-pub(super) enum JsonZfileAdcDataReadError {
+pub enum JsonZfileAdcDataReadError {
     #[error("reading failed")]
     Read(#[source] std::io::Error),
     #[error("parsing failed")]
@@ -20,7 +20,7 @@ impl From<JsonZfileAdcDataReadError> for rc::ad::err::AdaptedDataCacherError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum JsonZfileAdcFpReadError {
+pub enum JsonZfileAdcFpReadError {
     #[error("reading failed")]
     Read(#[source] std::io::Error),
 }
@@ -31,7 +31,7 @@ impl From<JsonZfileAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub(super) enum JsonZfileAdcWriteError {
+pub enum JsonZfileAdcWriteError {
     #[error("unable to create directory")]
     CreateDir(#[source] std::io::Error),
     #[error("unable to write data")]

@@ -15,4 +15,13 @@ mod json_zfile;
 #[cfg(feature = "postcard-zfile")]
 mod postcard_zfile;
 
+pub mod err {
+    #[cfg(feature = "json-zfile")]
+    pub use crate::json_zfile::{JsonZfileAdcDataReadError, JsonZfileAdcFpReadError, JsonZfileAdcWriteError};
+    #[cfg(feature = "postcard-zfile")]
+    pub use crate::postcard_zfile::{
+        PostcardZfileAdcDataReadError, PostcardZfileAdcFpReadError, PostcardZfileAdcWriteError,
+    };
+}
+
 const VERSION: &str = env!("CARGO_PKG_VERSION");

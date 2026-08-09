@@ -1,3 +1,4 @@
+pub use error::PhbFsEdhError;
 pub use handler::PhbFilesystemEdh;
 
 mod address;
