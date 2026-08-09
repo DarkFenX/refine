@@ -45,7 +45,7 @@ impl Refine {
         &self,
         alias: SrcAlias,
         make_default: bool,
-        ed_handler: Box<dyn rc::ed::EveDataHandler + Send>,
+        ed_handler: Box<dyn rc::ed::EveDataHandler>,
     ) -> Result<Src<'_>, AddSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
