@@ -42,7 +42,10 @@ pub trait EveDataHandlerInterface: fmt::Debug + Send + Sync {
 #[error(transparent)]
 pub struct EveDataHandlerError(pub Box<dyn std::error::Error + Send + Sync>);
 impl EveDataHandlerError {
-    pub fn new(error: impl std::error::Error + Send + Sync + 'static) -> Self {
+    pub fn new<E>(error: E) -> Self
+    where
+        E: std::error::Error + Send + Sync + 'static,
+    {
         Self(Box::new(error))
     }
 }

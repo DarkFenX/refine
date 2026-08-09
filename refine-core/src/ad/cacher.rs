@@ -47,7 +47,10 @@ pub trait AdaptedDataCacherInterface: fmt::Debug + Send + Sync {
 #[error(transparent)]
 pub struct AdaptedDataCacherError(pub Box<dyn std::error::Error + Send + Sync>);
 impl AdaptedDataCacherError {
-    pub fn new(error: impl std::error::Error + Send + Sync + 'static) -> Self {
+    pub fn new<E>(error: E) -> Self
+    where
+        E: std::error::Error + Send + Sync + 'static,
+    {
         Self(Box::new(error))
     }
 }
