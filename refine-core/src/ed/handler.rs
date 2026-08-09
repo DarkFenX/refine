@@ -14,6 +14,11 @@ impl EveDataHandler {
         self.0.as_ref()
     }
 }
+impl<T: EveDataHandlerInterface + 'static> From<T> for EveDataHandler {
+    fn from(handler: T) -> Self {
+        Self::new(handler)
+    }
+}
 impl fmt::Debug for EveDataHandler {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.0, f)

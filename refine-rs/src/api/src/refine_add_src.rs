@@ -16,7 +16,7 @@ impl Refine {
         make_default: bool,
         ed_dir: std::path::PathBuf,
     ) -> Result<Src<'_>, AddSrcError> {
-        let ed_handler = rc::ed::EveDataHandler::new(redh::PhbFilesystemEdh::new(ed_dir));
+        let ed_handler = redh::PhbFilesystemEdh::new(ed_dir).into();
         self.add_src(alias, make_default, ed_handler).await
     }
     /// Add a data source, using Phobos-generated EVE data export served via HTTP.
@@ -35,10 +35,9 @@ impl Refine {
         U: AsRef<str>,
         D: Into<String>,
     {
-        let ed_handler = rc::ed::EveDataHandler::new(
-            redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
-                .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
-        );
+        let ed_handler = redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
+            .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?
+            .into();
         self.add_src(alias, make_default, ed_handler).await
     }
     async fn add_src(
@@ -123,10 +122,7 @@ fn create_core_src(
     let adc: Option<rc::ad::AdaptedDataCacher> = match ad_caching {
         AdCaching::Disabled => None,
         #[cfg(feature = "adc-fs")]
-        AdCaching::Filesystem { dir } => Some(rc::ad::AdaptedDataCacher::new(radc::PostcardZfileAdc::new(
-            dir,
-            alias.into(),
-        ))),
+        AdCaching::Filesystem { dir } => Some(radc::PostcardZfileAdc::new(dir, alias.into()).into()),
     };
     tracing::info!(
         "initializing new source with {:?} and {}",

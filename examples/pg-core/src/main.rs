@@ -45,8 +45,8 @@ const EVE_DATA_DIR: &str = "/home/dfx/Desktop/phobos_tq_en-us";
 
 fn main() {
     setup_logger();
-    let edh = EveDataHandler::new(redh::PhbFilesystemEdh::new(EVE_DATA_DIR.into()));
-    let adc = AdaptedDataCacher::new(radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()));
+    let edh = redh::PhbFilesystemEdh::new(EVE_DATA_DIR.into()).into();
+    let adc = radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()).into();
     // test_random(&edh, &adc);
     test_crusader(&edh, &adc);
     // test_nphoon(&edh, &adc);

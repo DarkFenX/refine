@@ -14,6 +14,11 @@ impl AdaptedDataCacher {
         self.0.as_ref()
     }
 }
+impl<T: AdaptedDataCacherInterface + 'static> From<T> for AdaptedDataCacher {
+    fn from(cacher: T) -> Self {
+        Self::new(cacher)
+    }
+}
 impl fmt::Debug for AdaptedDataCacher {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         fmt::Debug::fmt(&self.0, f)
