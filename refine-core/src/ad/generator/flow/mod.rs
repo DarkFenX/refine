@@ -1,3 +1,5 @@
+pub use s4_clean::ADataGeneratorCleanupError;
+
 mod s1_fetch;
 mod s2_pk;
 mod s3_norm;

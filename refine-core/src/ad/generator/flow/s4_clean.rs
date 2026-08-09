@@ -1,7 +1,6 @@
 use crate::{
     ad::{
         ADataGenerator, ADataWarnings,
-        err::ADataGeneratorError,
         generator::rels::{KeyDb, KeyPart},
     },
     ed::{EBuffId, EData, EDataCont, EEffectId, EItemCatId, EItemGrpId, EItemId, EItemListId},
@@ -11,7 +10,7 @@ use crate::{
 const MAX_CYCLES: u32 = 100;
 
 impl ADataGenerator {
-    pub(in crate::ad::generator) fn clean_unused(&mut self) -> Result<(), ADataGeneratorError> {
+    pub(in crate::ad::generator) fn clean_unused(&mut self) -> Result<(), ADataGeneratorCleanupError> {
         let mut trash = EData::new();
         self.trash_all(&mut trash);
         self.restore_core_items(&mut trash);
@@ -24,9 +23,7 @@ impl ADataGenerator {
         while changes {
             counter += 1;
             if counter > MAX_CYCLES {
-                return Err(ADataGeneratorError::CleanupFailed(format!(
-                    "reached limit of {MAX_CYCLES} cycles"
-                )));
+                return Err(ADataGeneratorCleanupError { max_cycles: MAX_CYCLES });
             }
             changes = self.restore_item_data(&mut trash) || self.restore_fk_tgts(&mut trash);
         }
@@ -185,7 +182,7 @@ impl ADataGenerator {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Recording stats
+// Reporting - stats and errors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ADataGenerator {
     fn record_stats(&mut self, trash: &EData) {
@@ -222,4 +219,10 @@ where
     let ratio = removed as f64 / total as f64;
     let warning = format!("cleaned {:.1}% of {}", ratio * 100.0, T::lib_get_name());
     a_warnings.cleanup.push(warning);
+}
+
+#[derive(Debug, thiserror::Error)]
+#[error("reached limit of {max_cycles} cycles")]
+pub struct ADataGeneratorCleanupError {
+    pub max_cycles: u32,
 }

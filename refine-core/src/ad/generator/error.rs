@@ -1,7 +1,9 @@
+use crate::{ad::err::ADataGeneratorCleanupError, ed::err::EveDataHandlerError};
+
 #[derive(Debug, thiserror::Error)]
-pub(crate) enum ADataGeneratorError {
-    #[error("failed to fetch data: {0}")]
-    DataFetchFailed(String),
-    #[error("failed to clean data: {0}")]
-    CleanupFailed(String),
+pub enum ADataGeneratorError {
+    #[error("failed to fetch EVE data")]
+    DataFetch(#[from] EveDataHandlerError),
+    #[error("failed to clean EVE data")]
+    Cleanup(#[from] ADataGeneratorCleanupError),
 }

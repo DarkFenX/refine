@@ -26,6 +26,8 @@ mod fingerprint;
 mod generator;
 
 pub mod err {
-    pub use crate::ad::cacher::AdaptedDataCacherError;
-    pub(crate) use crate::ad::generator::ADataGeneratorError;
+    pub use crate::ad::{
+        cacher::AdaptedDataCacherError,
+        generator::{ADataGeneratorCleanupError, ADataGeneratorError},
+    };
 }

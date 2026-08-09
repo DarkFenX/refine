@@ -1,7 +1,8 @@
 //! Adapted data generator
 
 use eff_abil::get_abil_effect;
-pub(crate) use error::ADataGeneratorError;
+pub use error::ADataGeneratorError;
+pub use flow::ADataGeneratorCleanupError;
 pub(crate) use generator::ADataGenerator;
 use support::AdgSupport;
 

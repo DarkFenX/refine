@@ -1,8 +1,6 @@
-use std::error::Report;
-
 use crate::{
-    ad::{ADataGenerator, ADataWarnings, err::ADataGeneratorError},
-    ed::{EDataCont, EveDataHandler},
+    ad::{ADataGenerator, ADataWarnings},
+    ed::{EDataCont, EveDataHandler, err::EveDataHandlerError},
     util::LibNamed,
 };
 
@@ -10,11 +8,8 @@ impl ADataGenerator {
     pub(in crate::ad::generator) fn fetch_data(
         &mut self,
         ed_handler: &EveDataHandler,
-    ) -> Result<(), ADataGeneratorError> {
-        self.e_data = ed_handler
-            .get_impl()
-            .get_data()
-            .map_err(|e| ADataGeneratorError::DataFetchFailed(Report::new(&e).to_string()))?;
+    ) -> Result<(), EveDataHandlerError> {
+        self.e_data = ed_handler.get_impl().get_data()?;
         record_warnings(&mut self.e_data.items, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.groups, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.item_lists, &mut self.a_data.warnings);
