@@ -33,7 +33,7 @@ impl PostcardZfileAdc {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
                     io::ErrorKind::AlreadyExists => Ok(()),
-                    _ => Err(PostcardZfileAdcWriteError::CreateDirFailed(e.to_string())),
+                    _ => Err(PostcardZfileAdcWriteError::CreateDir(e)),
                 }
             }
         }
@@ -58,8 +58,8 @@ impl PostcardZfileAdc {
             .write(true)
             .truncate(true)
             .open(fp_path)
-            .map_err(|e| PostcardZfileAdcWriteError::FpWriteFailed(e.to_string()))?;
-        write!(file, "{fingerprint}").map_err(|e| PostcardZfileAdcWriteError::FpWriteFailed(e.to_string()))?;
+            .map_err(PostcardZfileAdcWriteError::FpWrite)?;
+        write!(file, "{fingerprint}").map_err(PostcardZfileAdcWriteError::FpWrite)?;
         Ok(())
     }
 }
@@ -74,8 +74,8 @@ impl fmt::Debug for PostcardZfileAdc {
 }
 impl rc::ad::AdaptedDataCacherInterface for PostcardZfileAdc {
     fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
-        let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
-            .map_err(|e| PostcardZfileAdcFpReadError::ReadFailed(e.to_string()))?;
+        let fingerprint =
+            std::fs::read_to_string(self.get_fingerprint_path()).map_err(PostcardZfileAdcFpReadError::Read)?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
     fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
@@ -83,9 +83,8 @@ impl rc::ad::AdaptedDataCacherInterface for PostcardZfileAdc {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| PostcardZfileAdcDataReadError::ReadFailed(e.to_string()))?;
-        let reader =
-            zstd::stream::Decoder::new(file).map_err(|e| PostcardZfileAdcDataReadError::ReadFailed(e.to_string()))?;
+            .map_err(PostcardZfileAdcDataReadError::Read)?;
+        let reader = zstd::stream::Decoder::new(file).map_err(PostcardZfileAdcDataReadError::Read)?;
         // Scratch buffer needs to be bigger than the longest string in cache. As of 2026-07-30,
         // the only stored strings are ADG warnings, and all of them are capped, so 64k is more than
         // enough.

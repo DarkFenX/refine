@@ -1,13 +1,13 @@
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PostcardZfileAdcDataReadError {
-    #[error("reading failed: {0}")]
-    ReadFailed(String),
-    #[error("parsing failed: {0}")]
-    ParseFailed(String),
+    #[error("reading failed")]
+    Read(#[source] std::io::Error),
+    #[error("parsing failed")]
+    Parse(#[source] postcard::Error),
 }
 impl From<postcard::Error> for PostcardZfileAdcDataReadError {
     fn from(error: postcard::Error) -> Self {
-        Self::ParseFailed(error.to_string())
+        Self::Parse(error)
     }
 }
 impl From<PostcardZfileAdcDataReadError> for rc::ad::err::AdaptedDataCacherError {
@@ -18,8 +18,8 @@ impl From<PostcardZfileAdcDataReadError> for rc::ad::err::AdaptedDataCacherError
 
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PostcardZfileAdcFpReadError {
-    #[error("reading failed: {0}")]
-    ReadFailed(String),
+    #[error("reading failed")]
+    Read(#[source] std::io::Error),
 }
 impl From<PostcardZfileAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
     fn from(error: PostcardZfileAdcFpReadError) -> Self {
@@ -27,26 +27,25 @@ impl From<PostcardZfileAdcFpReadError> for rc::ad::err::AdaptedDataCacherError {
     }
 }
 
-#[expect(clippy::enum_variant_names)]
 #[derive(thiserror::Error, Debug)]
 pub(super) enum PostcardZfileAdcWriteError {
-    #[error("unable to create directory: {0}")]
-    CreateDirFailed(String),
-    #[error("unable to write data: {0}")]
-    DataWriteFailed(String),
-    #[error("unable to serialize data: {0}")]
-    DataSerializeFailed(String),
-    #[error("unable to write fingerprint: {0}")]
-    FpWriteFailed(String),
+    #[error("unable to create directory")]
+    CreateDir(#[source] std::io::Error),
+    #[error("unable to write data")]
+    DataWrite(#[source] std::io::Error),
+    #[error("unable to serialize data")]
+    DataSerialize(#[source] postcard::Error),
+    #[error("unable to write fingerprint")]
+    FpWrite(#[source] std::io::Error),
 }
 impl From<std::io::Error> for PostcardZfileAdcWriteError {
     fn from(error: std::io::Error) -> Self {
-        Self::DataWriteFailed(error.to_string())
+        Self::DataWrite(error)
     }
 }
 impl From<postcard::Error> for PostcardZfileAdcWriteError {
     fn from(error: postcard::Error) -> Self {
-        Self::DataSerializeFailed(error.to_string())
+        Self::DataSerialize(error)
     }
 }
 impl From<PostcardZfileAdcWriteError> for rc::ad::err::AdaptedDataCacherError {

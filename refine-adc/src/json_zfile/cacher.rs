@@ -33,7 +33,7 @@ impl JsonZfileAdc {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
                     io::ErrorKind::AlreadyExists => Ok(()),
-                    _ => Err(JsonZfileAdcWriteError::CreateDirFailed(e.to_string())),
+                    _ => Err(JsonZfileAdcWriteError::CreateDir(e)),
                 }
             }
         }
@@ -58,8 +58,8 @@ impl JsonZfileAdc {
             .write(true)
             .truncate(true)
             .open(fp_path)
-            .map_err(|e| JsonZfileAdcWriteError::FpWriteFailed(e.to_string()))?;
-        write!(file, "{fingerprint}").map_err(|e| JsonZfileAdcWriteError::FpWriteFailed(e.to_string()))?;
+            .map_err(JsonZfileAdcWriteError::FpWrite)?;
+        write!(file, "{fingerprint}").map_err(JsonZfileAdcWriteError::FpWrite)?;
         Ok(())
     }
 }
@@ -74,8 +74,8 @@ impl fmt::Debug for JsonZfileAdc {
 }
 impl rc::ad::AdaptedDataCacherInterface for JsonZfileAdc {
     fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
-        let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
-            .map_err(|e| JsonZfileAdcFpReadError::ReadFailed(e.to_string()))?;
+        let fingerprint =
+            std::fs::read_to_string(self.get_fingerprint_path()).map_err(JsonZfileAdcFpReadError::Read)?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
     fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
@@ -83,9 +83,8 @@ impl rc::ad::AdaptedDataCacherInterface for JsonZfileAdc {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
-        let reader =
-            zstd::stream::Decoder::new(file).map_err(|e| JsonZfileAdcDataReadError::ReadFailed(e.to_string()))?;
+            .map_err(JsonZfileAdcDataReadError::Read)?;
+        let reader = zstd::stream::Decoder::new(file).map_err(JsonZfileAdcDataReadError::Read)?;
         let a_data = serde_json::from_reader(BufReader::new(reader)).map_err(JsonZfileAdcDataReadError::from)?;
         Ok(a_data)
     }
