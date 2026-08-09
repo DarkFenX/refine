@@ -10,7 +10,10 @@ use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
 use super::shared::SolInfoParams;
-use crate::{err::ApiError, state::AppState};
+use crate::{
+    err::{ApiError, ApiErrorIndexed},
+    state::AppState,
+};
 
 #[derive(Deserialize)]
 pub(crate) struct SolChangeReqBody {
@@ -46,7 +49,7 @@ async fn internal_change_sol(
     for (index, raw_cmd) in payload.commands.into_iter().enumerate() {
         match serde_json::from_value(raw_cmd) {
             Ok(cmd) => cmds.push(cmd),
-            Err(de_err) => return Err(ApiError::BatchParseFailed(index, de_err)),
+            Err(de_err) => return Err(ApiError::BatchParseFailed(ApiErrorIndexed::new(index, de_err))),
         }
     }
     let (cmd_resps, sol_info) = state

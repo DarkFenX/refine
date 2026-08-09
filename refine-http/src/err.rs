@@ -1,5 +1,3 @@
-use std::error::Report;
-
 use axum::{
     Json,
     extract::rejection::{JsonRejection, QueryRejection},
@@ -14,10 +12,10 @@ pub(crate) enum ApiError {
     Query(QueryRejection),
     #[error("{}", .0.body_text())]
     Json(JsonRejection),
-    #[error("command #{0} parsing failed")]
-    BatchParseFailed(usize, #[source] serde_json::Error),
-    #[error("command #{0} backref rendering failed")]
-    BackrefRenderFailed(usize, #[source] rs::err::BackrefRenderError),
+    #[error(transparent)]
+    BatchParseFailed(ApiErrorIndexed<serde_json::Error>),
+    #[error(transparent)]
+    BackrefRenderFailed(ApiErrorIndexed<rs::err::BackrefRenderError>),
     #[error("failed to read request body")]
     RequestReadFailed(#[source] axum::Error),
     #[error("failed to process request body: {0}")]
@@ -44,8 +42,8 @@ pub(crate) enum ApiError {
     PathSolNotFound(#[from] rs::err::GetSolError),
     #[error(transparent)]
     SolAddFailed(#[from] rs::err::AddSolError),
-    #[error("command #{0} failed")]
-    SolChangeFailed(usize, #[source] rs::err::ChangeSolEnumError),
+    #[error(transparent)]
+    SolChangeFailed(ApiErrorIndexed<rs::err::ChangeSolEnumError>),
     #[error(transparent)]
     SolRemoveFailed(#[from] rs::err::RemoveSolError),
     #[error(transparent)]
@@ -66,8 +64,8 @@ pub(crate) enum ApiError {
     PathFitNotFound(#[from] rs::err::GetFitError),
     #[error(transparent)]
     FitAddFailed(#[from] rs::err::AddFitError),
-    #[error("command #{0} failed")]
-    FitChangeFailed(usize, #[source] rs::err::ChangeFitEnumError),
+    #[error(transparent)]
+    FitChangeFailed(ApiErrorIndexed<rs::err::ChangeFitEnumError>),
     // Item-related
     #[error(transparent)]
     PathItemParseFailed(#[from] rs::err::ParseItemIdError),
@@ -134,7 +132,7 @@ impl ApiError {
             Self::SolAddFailed(err) => match err {
                 rs::err::AddSolError::GetSrcFailed(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
-            Self::SolChangeFailed(_, err_l1) => match err_l1 {
+            Self::SolChangeFailed(err) => match &err.error {
                 // Fleets
                 rs::err::ChangeSolEnumError::FleetAddFailed(rs::err::AddFleetError::FitAddFailed(..)) => {
                     (StatusCode::BAD_REQUEST, "FLT-003")
@@ -379,7 +377,7 @@ impl ApiError {
             Self::FitAddFailed(err) => match err {
                 rs::err::AddFitError::FleetSetFailed(..) => (StatusCode::BAD_REQUEST, "FIT-003"),
             },
-            Self::FitChangeFailed(_, err_l1) => match err_l1 {
+            Self::FitChangeFailed(err) => match &err.error {
                 // Fit
                 rs::err::ChangeFitEnumError::FitChangeFailed(rs::err::FitChangeFitError::FleetSetFailed(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-004")
@@ -619,12 +617,43 @@ impl ApiError {
     }
     fn get_cmd_index(&self) -> Option<usize> {
         match self {
-            Self::BatchParseFailed(index, _) => Some(*index),
-            Self::BackrefRenderFailed(index, _) => Some(*index),
-            Self::SolChangeFailed(index, _) => Some(*index),
-            Self::FitChangeFailed(index, _) => Some(*index),
+            Self::BatchParseFailed(err) => Some(err.index),
+            Self::BackrefRenderFailed(err) => Some(err.index),
+            Self::SolChangeFailed(err) => Some(err.index),
+            Self::FitChangeFailed(err) => Some(err.index),
             _ => None,
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Helpers
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Carries extra info about source of a command batch execution failure
+#[derive(Debug)]
+pub(crate) struct ApiErrorIndexed<E> {
+    pub(crate) index: usize,
+    pub(crate) error: E,
+}
+impl<E> ApiErrorIndexed<E> {
+    pub(crate) fn new(index: usize, error: E) -> Self {
+        Self { index, error }
+    }
+}
+impl<E> std::fmt::Display for ApiErrorIndexed<E>
+where
+    E: std::fmt::Display,
+{
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        std::fmt::Display::fmt(&self.error, f)
+    }
+}
+impl<E> std::error::Error for ApiErrorIndexed<E>
+where
+    E: std::error::Error + 'static,
+{
+    fn source(&self) -> Option<&(dyn std::error::Error + 'static)> {
+        self.error.source()
     }
 }
 
@@ -644,16 +673,24 @@ impl From<JsonRejection> for ApiError {
 impl From<rs::err::ChangeSolError> for ApiError {
     fn from(err: rs::err::ChangeSolError) -> Self {
         match err {
-            rs::err::ChangeSolError::RenderFailed(index, inner) => Self::BackrefRenderFailed(index, inner),
-            rs::err::ChangeSolError::ExecFailed(index, inner) => Self::SolChangeFailed(index, inner),
+            rs::err::ChangeSolError::RenderFailed(index, inner) => {
+                Self::BackrefRenderFailed(ApiErrorIndexed { index, error: inner })
+            }
+            rs::err::ChangeSolError::ExecFailed(index, inner) => {
+                Self::SolChangeFailed(ApiErrorIndexed { index, error: inner })
+            }
         }
     }
 }
 impl From<rs::err::ChangeFitError> for ApiError {
     fn from(err: rs::err::ChangeFitError) -> Self {
         match err {
-            rs::err::ChangeFitError::RenderFailed(index, inner) => Self::BackrefRenderFailed(index, inner),
-            rs::err::ChangeFitError::ExecFailed(index, inner) => Self::FitChangeFailed(index, inner),
+            rs::err::ChangeFitError::RenderFailed(index, inner) => {
+                Self::BackrefRenderFailed(ApiErrorIndexed { index, error: inner })
+            }
+            rs::err::ChangeFitError::ExecFailed(index, inner) => {
+                Self::FitChangeFailed(ApiErrorIndexed { index, error: inner })
+            }
         }
     }
 }
@@ -664,7 +701,7 @@ impl IntoResponse for ApiError {
         let cmd_index = self.get_cmd_index();
         let payload = ApiErrorResponse {
             code: api_code,
-            message: Report::new(&self).to_string(),
+            message: std::error::Report::new(&self).to_string(),
             cmd_index,
         };
         (http_code, Json(payload)).into_response()
