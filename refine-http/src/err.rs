@@ -14,12 +14,12 @@ pub(crate) enum ApiError {
     Query(QueryRejection),
     #[error("{}", .0.body_text())]
     Json(JsonRejection),
-    #[error("{1}")]
-    BatchParseFailed(usize, String),
+    #[error("command #{0} parsing failed")]
+    BatchParseFailed(usize, #[source] serde_json::Error),
     #[error("command #{0} backref rendering failed")]
     BackrefRenderFailed(usize, #[source] rs::err::BackrefRenderError),
-    #[error("failed to read request body: {0}")]
-    RequestReadFailed(String),
+    #[error("failed to read request body")]
+    RequestReadFailed(#[source] axum::Error),
     #[error("failed to process request body: {0}")]
     RequestTooLarge(String),
     // Source-related

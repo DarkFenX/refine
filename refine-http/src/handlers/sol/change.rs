@@ -1,4 +1,4 @@
-use std::{error::Report, str::FromStr};
+use std::str::FromStr;
 
 use axum::{
     Json,
@@ -46,7 +46,7 @@ async fn internal_change_sol(
     for (index, raw_cmd) in payload.commands.into_iter().enumerate() {
         match serde_json::from_value(raw_cmd) {
             Ok(cmd) => cmds.push(cmd),
-            Err(de_err) => return Err(ApiError::BatchParseFailed(index, Report::new(&de_err).to_string())),
+            Err(de_err) => return Err(ApiError::BatchParseFailed(index, de_err)),
         }
     }
     let (cmd_resps, sol_info) = state
