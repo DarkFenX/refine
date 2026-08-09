@@ -24,7 +24,8 @@ async fn internal_get_source(
     src_alias: String,
     params: SrcInfoParams,
 ) -> Result<rs::src::SrcInfo, ApiError> {
-    let src_alias = rs::src::SrcAlias::try_pruned(&src_alias).map_err(ApiError::PathSrcParseFailedMisc)?;
+    let src_alias =
+        rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseFailedMisc(src_alias, err))?;
     let src_info = state
         .get_refine()
         .get_src(Some(src_alias))

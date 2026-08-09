@@ -24,7 +24,7 @@ pub(crate) enum ApiError {
     #[error("\"{0}\" cannot be used as a source alias: {1}")]
     PathSrcParseFailedOnAdd(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error("alias \"{0}\" not found")]
-    PathSrcParseFailedMisc(#[source] rs::src::err::SrcAliasPruneInitError),
+    PathSrcParseFailedMisc(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error(transparent)]
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
     #[error("alias \"{0}\" not found")]
