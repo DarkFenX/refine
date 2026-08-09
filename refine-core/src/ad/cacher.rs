@@ -1,4 +1,24 @@
+use std::fmt;
+
 use crate::ad::{AData, AFingerprint};
+
+/// Adapted data cacher.
+///
+/// Convenience wrapper to hide boxing necessary to house a cacher implementation.
+pub struct AdaptedDataCacher(pub Box<dyn AdaptedDataCacherInterface>);
+impl AdaptedDataCacher {
+    pub fn new(cacher: impl AdaptedDataCacherInterface + 'static) -> Self {
+        Self(Box::new(cacher))
+    }
+    pub(crate) fn get_impl_mut(&mut self) -> &mut dyn AdaptedDataCacherInterface {
+        self.0.as_mut()
+    }
+}
+impl fmt::Debug for AdaptedDataCacher {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Debug::fmt(&self.0, f)
+    }
+}
 
 /// Adapted data cacher interface definition.
 ///
@@ -7,7 +27,7 @@ use crate::ad::{AData, AFingerprint};
 ///
 /// Any methods which read/write data have mutable self in signature to allow implementations of
 /// data handlers which store data on themselves.
-pub trait AdaptedDataCacher: std::fmt::Debug + Send + Sync {
+pub trait AdaptedDataCacherInterface: fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
     fn get_cache_fingerprint(&mut self) -> Result<AFingerprint, AdaptedDataCacherError>;
     /// Load cache from persistent storage.

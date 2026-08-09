@@ -17,7 +17,7 @@ use rc::{
     AddMode, ItemCommon, ItemMutCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone,
     SecZoneCorruption, SkillLevel, SolarSystem, Src, VERSION,
     ad::{AState, AdaptedDataCacher},
-    ed::{EItemCatId, EveDataHandler},
+    ed::{EItemCatId, EveDataHandler, EveDataHandlerInterface},
     src::SrcOrigin,
     val::ValOptions,
 };
@@ -43,17 +43,15 @@ fn setup_logger() -> () {
 
 fn main() {
     setup_logger();
-    let edh: Box<dyn EveDataHandler> =
-        Box::new(redh::PhbFilesystemEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
-    let mut adc: Box<dyn AdaptedDataCacher> =
-        Box::new(radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()));
+    let edh = EveDataHandler::new(redh::PhbFilesystemEdh::new("/home/dfx/Desktop/phobos_tq_en-us".into()));
+    let mut adc = AdaptedDataCacher::new(radc::JsonZfileAdc::new(PathBuf::from("./cache/"), "tq".to_string()));
     // test_random(&edh, &mut adc);
     test_crusader(&edh, &mut adc);
     // test_nphoon(&edh, &mut adc);
 }
 
-fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
-    let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
+fn test_random(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
+    let src = Src::new(edh, Some(adc)).unwrap();
     let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
     let mut fighter = fit.add_fighter(ItemTypeId::from_i32(40562), MinionState::InBay, None, None);
@@ -64,10 +62,10 @@ fn test_random(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     println!("{:?}", autocharges);
 }
 
-fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
-    let skill_ids = get_skill_ids(&edh);
+fn test_crusader(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
+    let skill_ids = get_skill_ids();
     tracing::info!("source: initializing...");
-    let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
+    let src = Src::new(edh, Some(adc)).unwrap();
     match src.get_info().origin {
         SrcOrigin::Cached(_) => tracing::info!("source: loaded from cache"),
         SrcOrigin::Generated(_) => tracing::info!("source: generated"),
@@ -136,9 +134,9 @@ fn test_crusader(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCac
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCacher>) {
-    let skill_ids = get_skill_ids(&edh);
-    let src = Src::new(edh.as_ref(), Some(adc)).unwrap();
+fn test_nphoon(edh: &EveDataHandler, adc: &mut AdaptedDataCacher) {
+    let skill_ids = get_skill_ids();
+    let src = Src::new(edh, Some(adc)).unwrap();
 
     let mut sol_sys = SolarSystem::new(&src);
     sol_sys.set_sec_zone(SecZone::HiSec(SecZoneCorruption::None));
@@ -692,8 +690,8 @@ fn test_nphoon(edh: &Box<dyn EveDataHandler>, adc: &mut Box<dyn AdaptedDataCache
     println!("{iterations} iterations done in {delta_seconds:.3} seconds, {ips:.2} iterations per second")
 }
 
-fn get_skill_ids(edh: &Box<dyn EveDataHandler>) -> Vec<rc::ed::EItemId> {
-    let eve_data = edh.get_data().unwrap();
+fn get_skill_ids() -> Vec<rc::ed::EItemId> {
+    let eve_data = redh::PhbFilesystemEdh::new(ED_DIR.into()).get_data().unwrap();
     let grp_ids = eve_data
         .groups
         .data

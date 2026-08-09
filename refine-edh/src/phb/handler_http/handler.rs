@@ -164,7 +164,7 @@ impl PhbHttpEdh {
         Ok(())
     }
 }
-impl rc::ed::EveDataHandler for PhbHttpEdh {
+impl rc::ed::EveDataHandlerInterface for PhbHttpEdh {
     fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
         self.process_built_types(&mut data)?;

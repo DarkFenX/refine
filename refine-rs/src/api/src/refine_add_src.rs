@@ -16,7 +16,7 @@ impl Refine {
         make_default: bool,
         ed_dir: std::path::PathBuf,
     ) -> Result<Src<'_>, AddSrcError> {
-        let ed_handler = Box::new(redh::PhbFilesystemEdh::new(ed_dir));
+        let ed_handler = rc::ed::EveDataHandler::new(redh::PhbFilesystemEdh::new(ed_dir));
         self.add_src(alias, make_default, ed_handler).await
     }
     /// Add a data source, using Phobos-generated EVE data export served via HTTP.
@@ -35,7 +35,7 @@ impl Refine {
         U: AsRef<str>,
         D: Into<String>,
     {
-        let ed_handler = Box::new(
+        let ed_handler = rc::ed::EveDataHandler::new(
             redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
                 .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?,
         );
@@ -45,7 +45,7 @@ impl Refine {
         &self,
         alias: SrcAlias,
         make_default: bool,
-        ed_handler: Box<dyn rc::ed::EveDataHandler>,
+        ed_handler: rc::ed::EveDataHandler,
     ) -> Result<Src<'_>, AddSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
@@ -117,13 +117,16 @@ pub enum AddSrcError {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
     #[cfg(feature = "adc-fs")] alias: &SrcAlias,
-    ed_handler: Box<dyn rc::ed::EveDataHandler>,
+    ed_handler: rc::ed::EveDataHandler,
     ad_caching: AdCaching,
 ) -> Result<rc::Src, AddSrcError> {
-    let mut adc: Option<Box<dyn rc::ad::AdaptedDataCacher>> = match ad_caching {
+    let mut adc: Option<rc::ad::AdaptedDataCacher> = match ad_caching {
         AdCaching::Disabled => None,
         #[cfg(feature = "adc-fs")]
-        AdCaching::Filesystem { dir } => Some(Box::new(radc::PostcardZfileAdc::new(dir, alias.into()))),
+        AdCaching::Filesystem { dir } => Some(rc::ad::AdaptedDataCacher::new(radc::PostcardZfileAdc::new(
+            dir,
+            alias.into(),
+        ))),
     };
     tracing::info!(
         "initializing new source with {:?} and {}",
@@ -133,7 +136,7 @@ fn create_core_src(
             None => "no caching".to_string(),
         }
     );
-    let core_src = rc::Src::new(ed_handler.as_ref(), adc.as_mut())?;
+    let core_src = rc::Src::new(&ed_handler, adc.as_mut())?;
 
     log_reason(&core_src);
     log_warnings(&core_src);

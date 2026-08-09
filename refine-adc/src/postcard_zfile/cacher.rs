@@ -72,7 +72,7 @@ impl fmt::Debug for PostcardZfileAdc {
         )
     }
 }
-impl rc::ad::AdaptedDataCacher for PostcardZfileAdc {
+impl rc::ad::AdaptedDataCacherInterface for PostcardZfileAdc {
     fn get_cache_fingerprint(&mut self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
         let fingerprint = std::fs::read_to_string(self.get_fingerprint_path())
             .map_err(|e| PostcardZfileAdcFpReadError::ReadFailed(e.to_string()))?;

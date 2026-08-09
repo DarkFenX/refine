@@ -129,7 +129,7 @@ impl PhbFilesystemEdh {
         Ok(())
     }
 }
-impl rc::ed::EveDataHandler for PhbFilesystemEdh {
+impl rc::ed::EveDataHandlerInterface for PhbFilesystemEdh {
     fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
         self.process_built_types(&mut data)?;

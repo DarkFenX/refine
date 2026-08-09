@@ -1,7 +1,27 @@
+use std::fmt;
+
 use crate::ed::EData;
 
+/// EVE data handler.
+///
+/// Convenience wrapper to hide boxing necessary to house a handler implementation.
+pub struct EveDataHandler(pub Box<dyn EveDataHandlerInterface>);
+impl EveDataHandler {
+    pub fn new(handler: impl EveDataHandlerInterface + 'static) -> Self {
+        Self(Box::new(handler))
+    }
+    pub(crate) fn get_impl(&self) -> &dyn EveDataHandlerInterface {
+        self.0.as_ref()
+    }
+}
+impl fmt::Debug for EveDataHandler {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        fmt::Debug::fmt(&self.0, f)
+    }
+}
+
 /// EVE data handler interface definition.
-pub trait EveDataHandler: std::fmt::Debug + Send + Sync {
+pub trait EveDataHandlerInterface: fmt::Debug + Send + Sync {
     /// Get main EVE data.
     ///
     /// This method should return an error only when it is impossible to fetch the data altogether.

@@ -7,9 +7,10 @@ use crate::{
 impl ADataGenerator {
     pub(in crate::ad::generator) fn fetch_data(
         &mut self,
-        ed_handler: &dyn EveDataHandler,
+        ed_handler: &EveDataHandler,
     ) -> Result<(), ADataGeneratorError> {
         self.e_data = ed_handler
+            .get_impl()
             .get_data()
             .map_err(|e| ADataGeneratorError::DataFetchFailed(e.to_string()))?;
         record_warnings(&mut self.e_data.items, &mut self.a_data.warnings);

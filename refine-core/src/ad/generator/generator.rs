@@ -18,7 +18,7 @@ impl ADataGenerator {
             support: AdgSupport::new(),
         }
     }
-    pub(crate) fn generate(mut self, ed_handler: &dyn EveDataHandler) -> Result<AData, ADataGeneratorError> {
+    pub(crate) fn generate(mut self, ed_handler: &EveDataHandler) -> Result<AData, ADataGeneratorError> {
         self.fetch_data(ed_handler)?;
         self.dedup_pks();
         self.normalize();
