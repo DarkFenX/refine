@@ -11,6 +11,9 @@ impl AppState {
     pub(crate) fn get_refine(&self) -> &Refine {
         &self.0.refine
     }
+    pub(crate) fn get_cache_dir(&self) -> Option<&std::path::PathBuf> {
+        self.0.cache_dir.as_ref()
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -18,13 +21,13 @@ impl AppState {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct InnerAppState {
     refine: Refine,
+    cache_dir: Option<std::path::PathBuf>,
 }
 impl InnerAppState {
     fn new(standard_threads: usize, heavy_threads: usize, cache_dir: Option<std::path::PathBuf>) -> Self {
-        let refine = match cache_dir {
-            Some(cache_dir) => Refine::with_fs_adc(standard_threads, heavy_threads, cache_dir),
-            None => Refine::new(standard_threads, heavy_threads),
-        };
-        InnerAppState { refine }
+        InnerAppState {
+            refine: Refine::new(standard_threads, heavy_threads),
+            cache_dir,
+        }
     }
 }

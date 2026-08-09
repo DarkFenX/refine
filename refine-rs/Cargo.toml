@@ -9,8 +9,6 @@ edition = "2024"
 [dependencies]
 # Local
 rc = { workspace = true }
-redh = { workspace = true, optional = true }
-radc = { workspace = true, optional = true }
 # Non-local
 derive_more = { workspace = true, features = ["display"] }
 fixedstr = { workspace = true, features = ["fstr"] }
@@ -35,16 +33,4 @@ serde = [
     "time/formatting",
     "time/macros",
     "uuid/serde",
-]
-edh-phb-fs = [
-    "dep:redh",
-    "redh/phb-fs",
-]
-edh-phb-http = [
-    "dep:redh",
-    "redh/phb-http",
-]
-adc-fs = [
-    "dep:radc",
-    "radc/postcard-zfile",
 ]

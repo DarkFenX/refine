@@ -39,9 +39,15 @@ async fn internal_add_source(
     let ed_base_url = payload.data_base_url;
     let ed_version = payload.data_version;
     let make_default = payload.make_default.unwrap_or(false);
+    let ed_handler = redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
+        .map_err(|err| ApiError::EdhInitFailed(Box::new(err)))?
+        .into();
+    let ad_cacher = state
+        .get_cache_dir()
+        .map(|cache_dir| radc::PostcardZfileAdc::new(cache_dir.clone(), src_alias.into()).into());
     let src = state
         .get_refine()
-        .add_src_with_phb_http(src_alias, make_default, ed_base_url, ed_version)
+        .add_src(src_alias, make_default, ed_handler, ad_cacher)
         .await?;
     let src_mode = params.src.unwrap_or_default();
     Ok(src.get_info(src_mode).await)

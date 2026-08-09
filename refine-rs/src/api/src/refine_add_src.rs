@@ -3,48 +3,18 @@ use std::sync::Arc;
 use crate::{
     Refine,
     src::{Src, SrcAlias},
-    svc::{AdCaching, SrcInnerGuarded},
+    svc::SrcInnerGuarded,
 };
 
 impl Refine {
-    /// Add a data source, using Phobos-generated EVE data export stored on filesystem.
-    #[cfg(feature = "edh-phb-fs")]
+    /// Add a data source, using passed EVE data handler and optional adapted data cacher.
     #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src_with_phb_fs(
-        &self,
-        alias: SrcAlias,
-        make_default: bool,
-        ed_dir: std::path::PathBuf,
-    ) -> Result<Src<'_>, AddSrcError> {
-        let ed_handler = redh::PhbFilesystemEdh::new(ed_dir).into();
-        self.add_src(alias, make_default, ed_handler).await
-    }
-    /// Add a data source, using Phobos-generated EVE data export served via HTTP.
-    ///
-    /// You must have prior knowledge of EVE data version which is served to use this method.
-    #[cfg(feature = "edh-phb-http")]
-    #[tracing::instrument(name = "src-add", level = "trace", skip_all)]
-    pub async fn add_src_with_phb_http<U, D>(
-        &self,
-        alias: SrcAlias,
-        make_default: bool,
-        ed_base_url: U,
-        ed_version: D,
-    ) -> Result<Src<'_>, AddSrcError>
-    where
-        U: AsRef<str>,
-        D: Into<String>,
-    {
-        let ed_handler = redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
-            .map_err(|edh_err| AddSrcError::EdhInitFailed(Box::new(edh_err)))?
-            .into();
-        self.add_src(alias, make_default, ed_handler).await
-    }
-    async fn add_src(
+    pub async fn add_src(
         &self,
         alias: SrcAlias,
         make_default: bool,
         ed_handler: rc::ed::EveDataHandler,
+        ad_cacher: Option<rc::ad::AdaptedDataCacher>,
     ) -> Result<Src<'_>, AddSrcError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
@@ -55,17 +25,11 @@ impl Refine {
         }
         self.lock_alias(alias).await;
         // Create source in a heavy threadpool
-        let ad_caching = self.ad_caching.clone();
         let result = self
             .tpool
             .exec_heavy(move || {
-                create_core_src(
-                    #[cfg(feature = "adc-fs")]
-                    &alias,
-                    ed_handler,
-                    ad_caching,
-                )
-                .map(|core_src| SrcInnerGuarded::new(alias, time_created, Arc::new(core_src)))
+                create_core_src(ed_handler, ad_cacher)
+                    .map(|core_src| SrcInnerGuarded::new(alias, time_created, Arc::new(core_src)))
             })
             .await;
         // Write results and unlock alias
@@ -105,8 +69,6 @@ impl Refine {
 pub enum AddSrcError {
     #[error("alias \"{0}\" already exists")]
     SrcAliasNotAvailable(SrcAlias),
-    #[error("EVE data handler initialization failed: {0}")]
-    EdhInitFailed(#[source] Box<dyn std::error::Error + Send + Sync>),
     #[error("source initialization failed: {0}")]
     SrcInitFailed(#[from] rc::src::err::SrcInitError),
 }
@@ -115,24 +77,18 @@ pub enum AddSrcError {
 // Sync processing
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn create_core_src(
-    #[cfg(feature = "adc-fs")] alias: &SrcAlias,
     ed_handler: rc::ed::EveDataHandler,
-    ad_caching: AdCaching,
+    ad_cacher: Option<rc::ad::AdaptedDataCacher>,
 ) -> Result<rc::Src, AddSrcError> {
-    let adc: Option<rc::ad::AdaptedDataCacher> = match ad_caching {
-        AdCaching::Disabled => None,
-        #[cfg(feature = "adc-fs")]
-        AdCaching::Filesystem { dir } => Some(radc::PostcardZfileAdc::new(dir, alias.into()).into()),
-    };
     tracing::info!(
         "initializing new source with {:?} and {}",
         ed_handler,
-        match adc.as_ref() {
-            Some(adc) => format!("{:?}", adc),
+        match ad_cacher.as_ref() {
+            Some(ad_cacher) => format!("{:?}", ad_cacher),
             None => "no caching".to_string(),
         }
     );
-    let core_src = rc::Src::new(&ed_handler, adc.as_ref())?;
+    let core_src = rc::Src::new(&ed_handler, ad_cacher.as_ref())?;
 
     log_reason(&core_src);
     log_warnings(&core_src);

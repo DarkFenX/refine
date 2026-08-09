@@ -8,7 +8,9 @@ publish = false
 
 [dependencies]
 # Local
-rs = { workspace = true, features = ["edh-phb-fs", "adc-fs"] }
+rs = { workspace = true }
+radc = { workspace = true, features = ["postcard-zfile"] }
+redh = { workspace = true, features = ["phb-fs"] }
 # Non-local, workspace
 time = { workspace = true, features = ["macros"] }
 tokio = { workspace = true, features = ["rt", "macros"] }

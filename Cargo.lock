@@ -1721,6 +1721,8 @@ dependencies = [
 name = "refine-example-playground-rs"
 version = "0.1.0"
 dependencies = [
+ "refine-adc",
+ "refine-edh",
  "refine-rs",
  "time",
  "tokio",
@@ -1736,6 +1738,8 @@ dependencies = [
  "axum-extra",
  "config",
  "http-body-util",
+ "refine-adc",
+ "refine-edh",
  "refine-rs",
  "serde",
  "serde_json",
@@ -1757,9 +1761,7 @@ dependencies = [
  "derive_more",
  "fixedstr",
  "parking_lot",
- "refine-adc",
  "refine-core",
- "refine-edh",
  "serde",
  "serde_tuple",
  "serde_with",
