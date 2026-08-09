@@ -1,5 +1,5 @@
 #[cfg(feature = "phb-fs")]
-pub use handler_fs::{PhbFilesystemEdh, PhbFsEdhError};
+pub use handler_fs::{PhbFsEdh, PhbFsEdhError};
 #[cfg(feature = "phb-http")]
 pub use handler_http::{PhbHttpEdh, PhbHttpEdhError, PhbHttpEdhInitError};
 

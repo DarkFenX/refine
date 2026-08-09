@@ -10,10 +10,10 @@ use crate::phb::{
 };
 
 /// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
-pub struct PhbFilesystemEdh {
+pub struct PhbFsEdh {
     base_path: PathBuf,
 }
-impl PhbFilesystemEdh {
+impl PhbFsEdh {
     /// Constructs filesystem EVE data handler using provided path.
     ///
     /// Path should point to the top-level directory of a data dump, e.g. `/phobos_en-us` and not
@@ -22,20 +22,16 @@ impl PhbFilesystemEdh {
         Self { base_path: path.into() }
     }
 }
-impl fmt::Debug for PhbFilesystemEdh {
+impl fmt::Debug for PhbFsEdh {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "PhbFilesystemEdh(\"{}\")",
-            self.base_path.to_str().unwrap_or("<error>")
-        )
+        write!(f, "PhbFsEdh(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handler trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl PhbFilesystemEdh {
+impl PhbFsEdh {
     fn get_reader(&self, addr: &Address) -> Result<impl std::io::Read, PhbFsEdhError> {
         let full_path = addr.get_full_path(&self.base_path);
         let file = File::open(full_path).map_err(|e| PhbFsEdhError::from_io(e, addr.get_part_str()))?;
@@ -129,7 +125,7 @@ impl PhbFilesystemEdh {
         Ok(())
     }
 }
-impl rc::ed::EveDataHandlerInterface for PhbFilesystemEdh {
+impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
     fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
         self.process_built_types(&mut data)?;

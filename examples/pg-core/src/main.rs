@@ -44,8 +44,8 @@ const EVE_DATA_DIR: &str = "/home/dfx/Desktop/phobos_tq_en-us";
 
 fn main() {
     setup_logger();
-    let edh = redh::PhbFilesystemEdh::new(EVE_DATA_DIR).into();
-    let adc = radc::JsonZfileAdc::new("./cache/", "tq").into();
+    let edh = redh::PhbFsEdh::new(EVE_DATA_DIR).into();
+    let adc = radc::JsonZfsAdc::new("./cache/", "tq").into();
     // test_random(&edh, &adc);
     test_crusader(&edh, &adc);
     // test_nphoon(&edh, &adc);
@@ -692,7 +692,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
 }
 
 fn get_skill_ids() -> Vec<rc::ed::EItemId> {
-    let eve_data = redh::PhbFilesystemEdh::new(EVE_DATA_DIR).get_data().unwrap();
+    let eve_data = redh::PhbFsEdh::new(EVE_DATA_DIR).get_data().unwrap();
     let grp_ids = eve_data
         .groups
         .data

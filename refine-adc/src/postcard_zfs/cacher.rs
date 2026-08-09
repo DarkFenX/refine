@@ -5,17 +5,17 @@ use std::{
     path::PathBuf,
 };
 
-use super::error::{PostcardZfileAdcDataReadError, PostcardZfileAdcFpReadError, PostcardZfileAdcWriteError};
+use super::error::{PostcardZfsAdcDataReadError, PostcardZfsAdcFpReadError, PostcardZfsAdcWriteError};
 use crate::VERSION;
 
 /// Postcard adapted data cacher implementation.
 ///
 /// This cacher implements persistent cache store in the form of zstd-compressed postcard format.
-pub struct PostcardZfileAdc {
+pub struct PostcardZfsAdc {
     dir: PathBuf,
     name: String,
 }
-impl PostcardZfileAdc {
+impl PostcardZfsAdc {
     /// Constructs new cacher using path to cache directory and cache file name (without extension).
     pub fn new(dir: impl Into<PathBuf>, name: impl Into<String>) -> Self {
         Self {
@@ -29,19 +29,19 @@ impl PostcardZfileAdc {
     fn get_fingerprint_path(&self) -> PathBuf {
         self.dir.join(format!("{}.postcard.zst.fp", self.name))
     }
-    fn create_cache_dir(&self) -> Result<(), PostcardZfileAdcWriteError> {
+    fn create_cache_dir(&self) -> Result<(), PostcardZfsAdcWriteError> {
         match create_dir_all(&self.dir) {
             Ok(()) => Ok(()),
             Err(e) => {
                 match e.kind() {
                     // It's fine if it already exists for our purposes
                     io::ErrorKind::AlreadyExists => Ok(()),
-                    _ => Err(PostcardZfileAdcWriteError::CreateDir(e)),
+                    _ => Err(PostcardZfsAdcWriteError::CreateDir(e)),
                 }
             }
         }
     }
-    fn write_data(&self, a_data: &rc::ad::AData) -> Result<(), PostcardZfileAdcWriteError> {
+    fn write_data(&self, a_data: &rc::ad::AData) -> Result<(), PostcardZfsAdcWriteError> {
         let cache_path = self.get_cache_path();
         let file = OpenOptions::new()
             .create(true)
@@ -54,31 +54,31 @@ impl PostcardZfileAdc {
         postcard::to_io(a_data, writer)?;
         Ok(())
     }
-    fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), PostcardZfileAdcWriteError> {
+    fn write_fingerprint(&self, fingerprint: rc::ad::AFingerprint) -> Result<(), PostcardZfsAdcWriteError> {
         let fp_path = self.get_fingerprint_path();
         let mut file = OpenOptions::new()
             .create(true)
             .write(true)
             .truncate(true)
             .open(fp_path)
-            .map_err(PostcardZfileAdcWriteError::FpWrite)?;
-        write!(file, "{fingerprint}").map_err(PostcardZfileAdcWriteError::FpWrite)?;
+            .map_err(PostcardZfsAdcWriteError::FpWrite)?;
+        write!(file, "{fingerprint}").map_err(PostcardZfsAdcWriteError::FpWrite)?;
         Ok(())
     }
 }
-impl fmt::Debug for PostcardZfileAdc {
+impl fmt::Debug for PostcardZfsAdc {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
         write!(
             f,
-            "PostcardZfileAdc(\"{}\")",
+            "PostcardZfsAdc(\"{}\")",
             self.get_cache_path().to_str().unwrap_or("<error>")
         )
     }
 }
-impl rc::ad::AdaptedDataCacherInterface for PostcardZfileAdc {
+impl rc::ad::AdaptedDataCacherInterface for PostcardZfsAdc {
     fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
         let fingerprint =
-            std::fs::read_to_string(self.get_fingerprint_path()).map_err(PostcardZfileAdcFpReadError::Read)?;
+            std::fs::read_to_string(self.get_fingerprint_path()).map_err(PostcardZfsAdcFpReadError::Read)?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
     }
     fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
@@ -86,14 +86,14 @@ impl rc::ad::AdaptedDataCacherInterface for PostcardZfileAdc {
         let file = OpenOptions::new()
             .read(true)
             .open(full_path)
-            .map_err(PostcardZfileAdcDataReadError::Read)?;
-        let reader = zstd::stream::Decoder::new(file).map_err(PostcardZfileAdcDataReadError::Read)?;
+            .map_err(PostcardZfsAdcDataReadError::Read)?;
+        let reader = zstd::stream::Decoder::new(file).map_err(PostcardZfsAdcDataReadError::Read)?;
         // Scratch buffer needs to be bigger than the longest string in cache. As of 2026-07-30,
         // the only stored strings are ADG warnings, and all of them are capped, so 64k is more than
         // enough.
         let mut scratch = vec![0; 64 * 1024];
         let (a_data, _) = postcard::from_io((BufReader::new(reader), scratch.as_mut_slice()))
-            .map_err(PostcardZfileAdcDataReadError::from)?;
+            .map_err(PostcardZfsAdcDataReadError::from)?;
         Ok(a_data)
     }
     fn write_cache(

@@ -9,7 +9,7 @@ edition = "2024"
 [dependencies]
 # Local
 rs = { workspace = true, features = ["serde"] }
-radc = { workspace = true, features = ["postcard-zfile"] }
+radc = { workspace = true, features = ["postcard-zfs"] }
 redh = { workspace = true, features = ["phb-http"] }
 # Non-local
 axum = { workspace = true, features = ["http1", "json", "query", "tokio"] }

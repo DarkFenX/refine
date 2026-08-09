@@ -17,14 +17,14 @@ thiserror = { workspace = true, optional = true }
 zstd = { workspace = true, optional = true }
 
 [features]
-json-zfile = [
+json-zfs = [
     "dep:serde",
     "dep:serde_json",
     "dep:thiserror",
     "dep:zstd",
     "rc/serde-ad",
 ]
-postcard-zfile = [
+postcard-zfs = [
     "dep:postcard",
     "dep:serde",
     "dep:thiserror",

@@ -12,7 +12,7 @@
 //! - `phb-fs`: Enables handler which reads data from filesystem.
 
 #[cfg(feature = "phb-fs")]
-pub use phb::PhbFilesystemEdh;
+pub use phb::PhbFsEdh;
 #[cfg(feature = "phb-http")]
 pub use phb::PhbHttpEdh;
 

@@ -1,5 +1,5 @@
 pub use error::PhbFsEdhError;
-pub use handler::PhbFilesystemEdh;
+pub use handler::PhbFsEdh;
 
 mod address;
 mod error;

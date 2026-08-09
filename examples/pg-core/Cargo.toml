@@ -10,7 +10,7 @@ publish = false
 # Local
 rc = { workspace = true }
 redh = { workspace = true, features = ["phb-fs"] }
-radc = { workspace = true, features = ["json-zfile"] }
+radc = { workspace = true, features = ["json-zfs"] }
 # Non-local, workspace
 itertools = { workspace = true }
 time = { workspace = true, features = ["macros"] }

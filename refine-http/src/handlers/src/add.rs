@@ -44,7 +44,7 @@ async fn internal_add_source(
         .into();
     let ad_cacher = state
         .get_cache_dir()
-        .map(|cache_dir| radc::PostcardZfileAdc::new(cache_dir, src_alias).into());
+        .map(|cache_dir| radc::PostcardZfsAdc::new(cache_dir, src_alias).into());
     let src = state
         .get_refine()
         .add_src(src_alias, make_default, ed_handler, ad_cacher)
