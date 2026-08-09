@@ -1,4 +1,4 @@
-use std::sync::Arc;
+use std::{error::Report, sync::Arc};
 
 use super::{
     err::SrcInitError,
@@ -33,7 +33,9 @@ impl Src {
             Err(error) => {
                 return generate(
                     ed_handler,
-                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoEveDataVersion(error.to_string())),
+                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoEveDataVersion(
+                        Report::new(&error).to_string(),
+                    )),
                 );
             }
         };
@@ -44,7 +46,9 @@ impl Src {
             Err(error) => {
                 return generate_and_cache(
                     ed_handler,
-                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoCachedFingerprint(error.to_string())),
+                    SrcOrigin::Generated(SrcOriginGeneratedReason::NoCachedFingerprint(
+                        Report::new(&error).to_string(),
+                    )),
                     ad_cacher,
                     current_fingerprint,
                 );
@@ -66,7 +70,9 @@ impl Src {
             // Cannot load cached data - generate adapted data and cache it
             Err(error) => generate_and_cache(
                 ed_handler,
-                SrcOrigin::Generated(SrcOriginGeneratedReason::CacheLoadFailed(error.to_string())),
+                SrcOrigin::Generated(SrcOriginGeneratedReason::CacheLoadFailed(
+                    Report::new(&error).to_string(),
+                )),
                 ad_cacher,
                 current_fingerprint,
             ),
@@ -103,7 +109,7 @@ fn generate_and_cache(
     let cache_write_warning = ad_cacher
         .get_impl()
         .write_cache(&a_data, fingerprint)
-        .map_err(|error| error.to_string())
+        .map_err(|error| Report::new(&error).to_string())
         .err();
     let mut warnings = SrcWarnings::from_adapted_warnings(&mut a_data);
     warnings.cache_write = cache_write_warning;

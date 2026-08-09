@@ -1,3 +1,5 @@
+#![feature(error_reporter)]
+
 mod err;
 mod handlers;
 mod logging;

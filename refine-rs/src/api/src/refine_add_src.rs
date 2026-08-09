@@ -69,7 +69,7 @@ impl Refine {
 pub enum AddSrcError {
     #[error("alias \"{0}\" already exists")]
     SrcAliasNotAvailable(SrcAlias),
-    #[error("source initialization failed: {0}")]
+    #[error("source initialization failed")]
     SrcInitFailed(#[from] rc::src::err::SrcInitError),
 }
 

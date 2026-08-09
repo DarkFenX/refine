@@ -1,3 +1,5 @@
+use std::error::Report;
+
 use axum::{
     body::{Body, to_bytes},
     extract::{Request, State},
@@ -34,7 +36,7 @@ pub(crate) async fn limit_request_body_size(State(limit): State<BodyLimit>, req:
                 // figure out the cause and respond accordingly
                 Err(error) => match is_over_limit(&error) {
                     true => reject(None, limit).await,
-                    false => ApiError::RequestReadFailed(error.to_string()).into_response(),
+                    false => ApiError::RequestReadFailed(Report::new(&error).to_string()).into_response(),
                 },
             }
         }

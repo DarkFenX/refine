@@ -49,9 +49,9 @@ fn execute_commands(core_sol: &mut rc::SolarSystem, cmds: Vec<ChangeSolEnumCmd>)
 
 #[derive(Debug, thiserror::Error)]
 pub enum ChangeSolError {
-    #[error("command #{0} failed: {1}")]
+    #[error("command #{0} failed")]
     RenderFailed(usize, #[source] BackrefRenderError),
-    #[error("command #{0} failed: {1}")]
+    #[error("command #{0} failed")]
     ExecFailed(usize, #[source] ChangeSolEnumError),
 }
 impl ChangeSolError {

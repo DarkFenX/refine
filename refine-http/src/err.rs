@@ -1,3 +1,5 @@
+use std::error::Report;
+
 use axum::{
     Json,
     extract::rejection::{JsonRejection, QueryRejection},
@@ -14,14 +16,14 @@ pub(crate) enum ApiError {
     Json(JsonRejection),
     #[error("{1}")]
     BatchParseFailed(usize, String),
-    #[error("{1}")]
+    #[error("command #{0} backref rendering failed")]
     BackrefRenderFailed(usize, #[source] rs::err::BackrefRenderError),
     #[error("failed to read request body: {0}")]
     RequestReadFailed(String),
     #[error("failed to process request body: {0}")]
     RequestTooLarge(String),
     // Source-related
-    #[error("\"{0}\" cannot be used as a source alias: {1}")]
+    #[error("\"{0}\" cannot be used as a source alias")]
     PathSrcParseFailedOnAdd(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error("alias \"{0}\" not found")]
     PathSrcParseFailedMisc(String, #[source] rs::src::err::SrcAliasPruneInitError),
@@ -29,7 +31,7 @@ pub(crate) enum ApiError {
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
     #[error("alias \"{0}\" not found")]
     BodySrcParseFailed(String, #[source] rs::src::err::SrcAliasPruneInitError),
-    #[error("EVE data handler initialization failed: {0}")]
+    #[error("EVE data handler initialization failed")]
     EdhInitFailed(#[source] Box<dyn std::error::Error + Send + Sync>),
     #[error(transparent)]
     SrcAddFailed(#[from] rs::src::err::AddSrcError),
@@ -42,7 +44,7 @@ pub(crate) enum ApiError {
     PathSolNotFound(#[from] rs::err::GetSolError),
     #[error(transparent)]
     SolAddFailed(#[from] rs::err::AddSolError),
-    #[error("{1}")]
+    #[error("command #{0} failed")]
     SolChangeFailed(usize, #[source] rs::err::ChangeSolEnumError),
     #[error(transparent)]
     SolRemoveFailed(#[from] rs::err::RemoveSolError),
@@ -64,7 +66,7 @@ pub(crate) enum ApiError {
     PathFitNotFound(#[from] rs::err::GetFitError),
     #[error(transparent)]
     FitAddFailed(#[from] rs::err::AddFitError),
-    #[error("{1}")]
+    #[error("command #{0} failed")]
     FitChangeFailed(usize, #[source] rs::err::ChangeFitEnumError),
     // Item-related
     #[error(transparent)]
@@ -662,7 +664,7 @@ impl IntoResponse for ApiError {
         let cmd_index = self.get_cmd_index();
         let payload = ApiErrorResponse {
             code: api_code,
-            message: self.to_string(),
+            message: Report::new(&self).to_string(),
             cmd_index,
         };
         (http_code, Json(payload)).into_response()

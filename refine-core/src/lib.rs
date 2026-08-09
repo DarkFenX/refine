@@ -1,4 +1,5 @@
 #![feature(default_field_values)]
+#![feature(error_reporter)]
 #![feature(structural_match)]
 #![feature(step_trait)]
 #![feature(option_reduce)]

@@ -86,7 +86,7 @@ impl ICmdFighterAddFCtxRIds {
 pub enum GetFitAddFighterError {
     #[error(transparent)]
     FitGetFailed(#[from] rc::err::GetFitError),
-    #[error("failed to add projection: {0}")]
+    #[error("failed to add projection")]
     ProjAddFailed(#[source] rc::err::AddProjError),
 }
 impl From<FitAddFighterError> for GetFitAddFighterError {
@@ -122,6 +122,6 @@ impl ICmdFighterAddICtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddFighterError {
-    #[error("failed to add projection: {0}")]
+    #[error("failed to add projection")]
     ProjAddFailed(#[from] rc::err::AddProjError),
 }

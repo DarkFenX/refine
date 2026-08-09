@@ -59,6 +59,6 @@ impl ICmdProjEffectAddFCtxRIds {
 
 #[derive(thiserror::Error, Debug)]
 pub enum AddProjEffectError {
-    #[error("failed to add projection: {0}")]
+    #[error("failed to add projection")]
     ProjAddFailed(#[from] rc::err::AddProjError),
 }

@@ -97,9 +97,9 @@ pub enum GetItemChangeModuleError {
     ItemIsNotModule(rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
-    #[error("unable to add projection: {0}")]
+    #[error("unable to add projection")]
     ProjAddFailed(#[source] rc::err::AddProjError),
-    #[error("unable to remove projection: {0}")]
+    #[error("unable to remove projection")]
     ProjRemoveFailed(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeModuleError> for GetItemChangeModuleError {
@@ -194,8 +194,8 @@ pub enum ItemChangeModuleError {
     ItemIsNotModule(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
-    #[error("unable to add projection: {0}")]
+    #[error("unable to add projection")]
     ProjAddFailed(#[from] rc::err::AddProjError),
-    #[error("unable to remove projection: {0}")]
+    #[error("unable to remove projection")]
     ProjRemoveFailed(#[from] rc::err::GetProjError),
 }

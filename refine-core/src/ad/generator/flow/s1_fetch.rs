@@ -1,3 +1,5 @@
+use std::error::Report;
+
 use crate::{
     ad::{ADataGenerator, ADataWarnings, err::ADataGeneratorError},
     ed::{EDataCont, EveDataHandler},
@@ -12,7 +14,7 @@ impl ADataGenerator {
         self.e_data = ed_handler
             .get_impl()
             .get_data()
-            .map_err(|e| ADataGeneratorError::DataFetchFailed(e.to_string()))?;
+            .map_err(|e| ADataGeneratorError::DataFetchFailed(Report::new(&e).to_string()))?;
         record_warnings(&mut self.e_data.items, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.groups, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.item_lists, &mut self.a_data.warnings);

@@ -80,6 +80,6 @@ impl ICmdSkillAddICtx {
 
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddSkillError {
-    #[error("failed to add skill: {0}")]
+    #[error("failed to add skill")]
     SkillAddFailed(#[from] rc::err::AddSkillError),
 }

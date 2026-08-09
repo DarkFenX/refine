@@ -1,6 +1,8 @@
 //! Initially code was taken from axum example:
 //! <https://github.com/tokio-rs/axum/blob/main/examples/print-request-response/src/main.rs>
 
+use std::error::Report;
+
 use axum::{
     body::{Body, Bytes, to_bytes},
     extract::Request,
@@ -33,7 +35,7 @@ async fn buffer_and_log(prefix: &str, body: Body) -> Result<Bytes, ApiError> {
         Ok(bytes) => bytes,
         // Respond with request error, because only requests can fail, responses are already stored
         // in memory
-        Err(error) => return Err(ApiError::RequestReadFailed(error.to_string())),
+        Err(error) => return Err(ApiError::RequestReadFailed(Report::new(&error).to_string())),
     };
     // Before changing those logging levels, consider other places which rely on those:
     // - body limit middleware attempts to replicate the same logging;
