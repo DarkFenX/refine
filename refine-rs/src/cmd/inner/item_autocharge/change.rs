@@ -48,7 +48,7 @@ impl ICmdAutochargeChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeAutochargeError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotAutocharge(rc::err::ItemKindMatchError),
 }

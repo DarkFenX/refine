@@ -54,7 +54,7 @@ impl ICmdServiceAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddServiceError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
 }
 
 impl ICmdServiceAddICtx {

@@ -42,7 +42,7 @@ impl ICmdStanceUnsetFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitUnsetStanceError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
 }
 
 impl ICmdStanceUnsetICtx {

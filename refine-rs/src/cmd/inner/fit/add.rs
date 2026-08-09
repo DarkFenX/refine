@@ -56,5 +56,5 @@ impl ICmdFitAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum AddFitError {
     #[error("failed to set fleet")]
-    FleetSetFailed(#[from] rc::err::SetFitFleetError),
+    FleetSet(#[from] rc::err::SetFitFleetError),
 }

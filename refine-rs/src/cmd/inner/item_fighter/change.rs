@@ -90,20 +90,20 @@ impl ICmdFighterChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeFighterError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotFighter(rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
-    ProjAddFailed(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[source] rc::err::GetProjError),
+    ProjRemove(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeFighterError> for GetItemChangeFighterError {
     fn from(err: ItemChangeFighterError) -> Self {
         match err {
             ItemChangeFighterError::ItemIsNotFighter(inner) => Self::ItemIsNotFighter(inner),
-            ItemChangeFighterError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
-            ItemChangeFighterError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
+            ItemChangeFighterError::ProjAdd(inner) => Self::ProjAdd(inner),
+            ItemChangeFighterError::ProjRemove(inner) => Self::ProjRemove(inner),
         }
     }
 }
@@ -153,7 +153,7 @@ pub enum ItemChangeFighterError {
     #[error(transparent)]
     ItemIsNotFighter(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
-    ProjAddFailed(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[from] rc::err::GetProjError),
+    ProjRemove(#[from] rc::err::GetProjError),
 }

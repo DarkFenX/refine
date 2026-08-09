@@ -51,7 +51,7 @@ impl ICmdFwEffectChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeFwEffectError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotFwEffect(rc::err::ItemKindMatchError),
 }

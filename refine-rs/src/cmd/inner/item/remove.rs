@@ -50,7 +50,7 @@ pub enum GetItemRemoveItemError {
 impl From<ItemRemoveItemError> for GetItemRemoveItemError {
     fn from(err: ItemRemoveItemError) -> Self {
         match err {
-            ItemRemoveItemError::ItemRemoveFailed(inner) => Self::ItemRemove(inner),
+            ItemRemoveItemError::ItemRemove(inner) => Self::ItemRemove(inner),
         }
     }
 }
@@ -65,5 +65,5 @@ impl ICmdItemRemoveICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemRemoveItemError {
     #[error(transparent)]
-    ItemRemoveFailed(#[from] rc::err::RemoveItemError),
+    ItemRemove(#[from] rc::err::RemoveItemError),
 }

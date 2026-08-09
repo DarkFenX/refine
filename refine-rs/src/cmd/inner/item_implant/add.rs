@@ -53,7 +53,7 @@ impl ICmdImplantAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddImplantError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
 }
 
 impl ICmdImplantAddICtx {

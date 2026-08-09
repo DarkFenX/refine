@@ -88,23 +88,23 @@ impl ICmdDroneChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeDroneError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotDrone(rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection")]
-    ProjAddFailed(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[source] rc::err::GetProjError),
+    ProjRemove(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeDroneError> for GetItemChangeDroneError {
     fn from(err: ItemChangeDroneError) -> Self {
         match err {
             ItemChangeDroneError::ItemIsNotDrone(inner) => Self::ItemIsNotDrone(inner),
             ItemChangeDroneError::NotMutated(inner) => Self::NotMutated(inner),
-            ItemChangeDroneError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
-            ItemChangeDroneError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
+            ItemChangeDroneError::ProjAdd(inner) => Self::ProjAdd(inner),
+            ItemChangeDroneError::ProjRemove(inner) => Self::ProjRemove(inner),
         }
     }
 }
@@ -174,7 +174,7 @@ pub enum ItemChangeDroneError {
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection")]
-    ProjAddFailed(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[from] rc::err::GetProjError),
+    ProjRemove(#[from] rc::err::GetProjError),
 }

@@ -51,7 +51,7 @@ impl ICmdSwEffectChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeSwEffectError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotSwEffect(rc::err::ItemKindMatchError),
 }

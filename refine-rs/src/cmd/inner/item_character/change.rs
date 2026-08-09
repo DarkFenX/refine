@@ -79,7 +79,7 @@ impl ICmdCharacterChangeFFitCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitChangeCharacterError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
     #[error("fit {0} has no character set")]
     FitNoCharacter(FitId),
 }
@@ -97,7 +97,7 @@ impl ICmdCharacterChangeFItemCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeCharacterError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetCharacterError),
+    ItemGet(#[from] rc::err::GetCharacterError),
 }
 
 impl ICmdCharacterChangeICtx {

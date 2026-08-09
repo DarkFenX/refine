@@ -79,20 +79,20 @@ impl ICmdProjEffectChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeProjEffectError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotProjEffect(rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
-    ProjAddFailed(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[source] rc::err::GetProjError),
+    ProjRemove(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeProjEffectError> for GetItemChangeProjEffectError {
     fn from(err: ItemChangeProjEffectError) -> Self {
         match err {
             ItemChangeProjEffectError::ItemIsNotProjEffect(inner) => Self::ItemIsNotProjEffect(inner),
-            ItemChangeProjEffectError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
-            ItemChangeProjEffectError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
+            ItemChangeProjEffectError::ProjAdd(inner) => Self::ProjAdd(inner),
+            ItemChangeProjEffectError::ProjRemove(inner) => Self::ProjRemove(inner),
         }
     }
 }
@@ -125,7 +125,7 @@ pub enum ItemChangeProjEffectError {
     #[error(transparent)]
     ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
-    ProjAddFailed(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[from] rc::err::GetProjError),
+    ProjRemove(#[from] rc::err::GetProjError),
 }

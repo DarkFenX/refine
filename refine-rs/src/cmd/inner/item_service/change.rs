@@ -52,7 +52,7 @@ impl ICmdServiceChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeServiceError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotService(rc::err::ItemKindMatchError),
 }

@@ -40,5 +40,5 @@ impl ICmdFleetAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum AddFleetError {
     #[error("failed to add fit to fleet")]
-    FitAddFailed(#[from] rc::err::FleetAddFitError),
+    FitAdd(#[from] rc::err::FleetAddFitError),
 }

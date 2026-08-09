@@ -51,7 +51,7 @@ impl ICmdImplantChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeImplantError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotImplant(rc::err::ItemKindMatchError),
 }

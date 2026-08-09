@@ -42,7 +42,7 @@ impl ICmdFleetRemoveFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFleetRemoveFleetError {
     #[error(transparent)]
-    FleetGetFailed(#[from] rc::err::GetFleetError),
+    FleetGet(#[from] rc::err::GetFleetError),
 }
 
 impl ICmdFleetRemoveICtx {

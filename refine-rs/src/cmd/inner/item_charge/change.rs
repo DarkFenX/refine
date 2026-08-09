@@ -51,7 +51,7 @@ impl ICmdChargeChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeChargeError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotCharge(rc::err::ItemKindMatchError),
 }

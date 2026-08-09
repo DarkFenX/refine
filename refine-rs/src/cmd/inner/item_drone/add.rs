@@ -88,7 +88,7 @@ pub enum GetFitAddDroneError {
 impl From<FitAddDroneError> for GetFitAddDroneError {
     fn from(err: FitAddDroneError) -> Self {
         match err {
-            FitAddDroneError::ProjAddFailed(inner) => Self::ProjAdd(inner),
+            FitAddDroneError::ProjAdd(inner) => Self::ProjAdd(inner),
         }
     }
 }
@@ -119,5 +119,5 @@ impl ICmdDroneAddICtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddDroneError {
     #[error("failed to add projection")]
-    ProjAddFailed(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::AddProjError),
 }

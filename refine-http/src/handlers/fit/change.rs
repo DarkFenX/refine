@@ -51,7 +51,7 @@ async fn internal_change_fit(
     for (index, raw_cmd) in payload.commands.into_iter().enumerate() {
         match serde_json::from_value(raw_cmd) {
             Ok(cmd) => cmds.push(cmd),
-            Err(de_err) => return Err(ApiError::BatchParseFailed(ApiErrorIndexed::new(index, de_err))),
+            Err(de_err) => return Err(ApiError::BatchParse(ApiErrorIndexed::new(index, de_err))),
         }
     }
     let (cmd_resps, fit_info) = state

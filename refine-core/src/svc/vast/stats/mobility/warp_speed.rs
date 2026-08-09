@@ -21,7 +21,7 @@ impl Vast {
         let warp_speed = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().warp_speed_mult, Value::ZERO);
         match warp_speed > Value::FLOAT_TOLERANCE {
             true => Ok(PValue::from_value_unchecked(warp_speed)),
-            false => Err(StatWarpSpeedError::WarpSpeedError(warp_speed)),
+            false => Err(StatWarpSpeedError::WarpSpeed(warp_speed)),
         }
     }
 }
@@ -29,5 +29,5 @@ impl Vast {
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatWarpSpeedError {
     #[error("warp speed should be > 0, but is {0}")]
-    WarpSpeedError(Value),
+    WarpSpeed(Value),
 }

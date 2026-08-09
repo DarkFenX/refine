@@ -35,12 +35,12 @@ async fn internal_add_source(
     payload: AddSrcReqBody,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
-        rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseFailedOnAdd(src_alias, err))?;
+        rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseOnAdd(src_alias, err))?;
     let ed_base_url = payload.data_base_url;
     let ed_version = payload.data_version;
     let make_default = payload.make_default.unwrap_or(false);
     let ed_handler = redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
-        .map_err(|err| ApiError::EdhInitFailed(Box::new(err)))?
+        .map_err(|err| ApiError::EdhInit(Box::new(err)))?
         .into();
     let ad_cacher = state
         .get_cache_dir()

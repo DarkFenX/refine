@@ -72,5 +72,5 @@ impl Refine {
 #[derive(thiserror::Error, Debug)]
 pub enum AddSolError {
     #[error("failed to get source")]
-    GetSrcFailed(#[from] GetSrcError),
+    SrcGet(#[from] GetSrcError),
 }

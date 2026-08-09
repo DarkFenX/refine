@@ -62,7 +62,7 @@ pub enum GetFitAddSkillError {
 impl From<FitAddSkillError> for GetFitAddSkillError {
     fn from(err: FitAddSkillError) -> Self {
         match err {
-            FitAddSkillError::SkillAddFailed(inner) => Self::SkillAdd(inner),
+            FitAddSkillError::SkillAdd(inner) => Self::SkillAdd(inner),
         }
     }
 }
@@ -81,5 +81,5 @@ impl ICmdSkillAddICtx {
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddSkillError {
     #[error(transparent)]
-    SkillAddFailed(#[from] rc::err::AddSkillError),
+    SkillAdd(#[from] rc::err::AddSkillError),
 }

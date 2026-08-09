@@ -92,23 +92,23 @@ impl ICmdModuleChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeModuleError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotModule(rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection")]
-    ProjAddFailed(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[source] rc::err::GetProjError),
+    ProjRemove(#[source] rc::err::GetProjError),
 }
 impl From<ItemChangeModuleError> for GetItemChangeModuleError {
     fn from(err: ItemChangeModuleError) -> Self {
         match err {
             ItemChangeModuleError::ItemIsNotModule(inner) => Self::ItemIsNotModule(inner),
             ItemChangeModuleError::NotMutated(inner) => Self::NotMutated(inner),
-            ItemChangeModuleError::ProjAddFailed(inner) => Self::ProjAddFailed(inner),
-            ItemChangeModuleError::ProjRemoveFailed(inner) => Self::ProjRemoveFailed(inner),
+            ItemChangeModuleError::ProjAdd(inner) => Self::ProjAdd(inner),
+            ItemChangeModuleError::ProjRemove(inner) => Self::ProjRemove(inner),
         }
     }
 }
@@ -195,7 +195,7 @@ pub enum ItemChangeModuleError {
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection")]
-    ProjAddFailed(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::AddProjError),
     #[error("unable to remove projection")]
-    ProjRemoveFailed(#[from] rc::err::GetProjError),
+    ProjRemove(#[from] rc::err::GetProjError),
 }

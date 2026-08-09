@@ -42,7 +42,7 @@ impl ICmdShipUnsetFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitUnsetShipError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
 }
 
 impl ICmdShipUnsetICtx {

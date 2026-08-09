@@ -23,7 +23,7 @@ impl Vast {
         let ratio = sig_radius / sensor_str;
         let probing_size = match ratio.is_finite() {
             true => ratio.max(PValue::from_f64_unchecked(1.08)),
-            false => return Err(StatProbingSizeError::SensorStrError(sensor_str)),
+            false => return Err(StatProbingSizeError::SensorStr(sensor_str)),
         };
         Ok(probing_size)
     }
@@ -32,5 +32,5 @@ impl Vast {
 #[derive(Clone, Debug, thiserror::Error)]
 pub enum StatProbingSizeError {
     #[error("sensor strength should be > 0, but is {0}")]
-    SensorStrError(PValue),
+    SensorStr(PValue),
 }

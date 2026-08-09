@@ -51,7 +51,7 @@ impl ICmdSubsystemChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeSubsystemError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotSubsystem(rc::err::ItemKindMatchError),
 }

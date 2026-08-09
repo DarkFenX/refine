@@ -53,17 +53,17 @@ impl ICmdSkillChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeSkillError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotSkill(rc::err::ItemKindMatchError),
     #[error(transparent)]
-    TypeIdSetFailed(rc::err::SetSkillTypeIdError),
+    TypeIdSet(rc::err::SetSkillTypeIdError),
 }
 impl From<ItemChangeSkillError> for GetItemChangeSkillError {
     fn from(err: ItemChangeSkillError) -> Self {
         match err {
             ItemChangeSkillError::ItemIsNotSkill(inner) => Self::ItemIsNotSkill(inner),
-            ItemChangeSkillError::TypeIdSetFailed(inner) => Self::TypeIdSetFailed(inner),
+            ItemChangeSkillError::TypeIdSet(inner) => Self::TypeIdSet(inner),
         }
     }
 }
@@ -93,5 +93,5 @@ pub enum ItemChangeSkillError {
     #[error(transparent)]
     ItemIsNotSkill(#[from] rc::err::ItemKindMatchError),
     #[error(transparent)]
-    TypeIdSetFailed(#[from] rc::err::SetSkillTypeIdError),
+    TypeIdSet(#[from] rc::err::SetSkillTypeIdError),
 }

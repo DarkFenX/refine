@@ -53,7 +53,7 @@ impl ICmdSubsystemAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddSubsystemError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
 }
 
 impl ICmdSubsystemAddICtx {

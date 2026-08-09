@@ -51,7 +51,7 @@ impl ICmdRigChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeRigError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotRig(rc::err::ItemKindMatchError),
 }

@@ -90,7 +90,7 @@ pub enum GetFitAddModuleError {
 impl From<FitAddModuleError> for GetFitAddModuleError {
     fn from(err: FitAddModuleError) -> Self {
         match err {
-            FitAddModuleError::ProjAddFailed(inner) => Self::ProjAdd(inner),
+            FitAddModuleError::ProjAdd(inner) => Self::ProjAdd(inner),
         }
     }
 }
@@ -127,5 +127,5 @@ impl ICmdModuleAddICtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddModuleError {
     #[error("failed to add projection")]
-    ProjAddFailed(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::AddProjError),
 }

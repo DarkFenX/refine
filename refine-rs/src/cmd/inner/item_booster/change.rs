@@ -55,7 +55,7 @@ impl ICmdBoosterChangeFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetItemChangeBoosterError {
     #[error(transparent)]
-    ItemGetFailed(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemIsNotBooster(rc::err::ItemKindMatchError),
 }

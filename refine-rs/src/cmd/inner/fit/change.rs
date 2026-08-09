@@ -79,7 +79,7 @@ pub enum GetFitChangeFitError {
 impl From<FitChangeFitError> for GetFitChangeFitError {
     fn from(err: FitChangeFitError) -> Self {
         match err {
-            FitChangeFitError::FleetSetFailed(inner) => Self::FleetSet(inner),
+            FitChangeFitError::FleetSet(inner) => Self::FleetSet(inner),
         }
     }
 }
@@ -114,5 +114,5 @@ impl ICmdFitChangeICtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeFitError {
     #[error("failed to set fleet")]
-    FleetSetFailed(#[from] rc::err::SetFitFleetError),
+    FleetSet(#[from] rc::err::SetFitFleetError),
 }

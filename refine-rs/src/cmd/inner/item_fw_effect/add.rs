@@ -53,7 +53,7 @@ impl ICmdFwEffectAddFCtxRIds {
 #[derive(thiserror::Error, Debug)]
 pub enum GetFitAddFwEffectError {
     #[error(transparent)]
-    FitGetFailed(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::GetFitError),
 }
 
 impl ICmdFwEffectAddICtx {
