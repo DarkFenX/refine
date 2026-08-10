@@ -58,11 +58,14 @@ impl ADataGenerator {
 fn move_basic_attr(
     item_id: EItemId,
     attr_id: EAttrId,
-    basic_value: EFloat,
+    basic_value: Option<EFloat>,
     e_data_item_attrs: &mut EDataCont<EItemAttr>,
     attr_ids: &RSet<EAttrId>,
     seen_pks: &RSet<Vec<KeyPart>>,
 ) {
+    let Some(basic_value) = basic_value else {
+        return;
+    };
     if !attr_ids.contains(&attr_id) {
         return;
     }

@@ -16,10 +16,10 @@ impl KeyMergeOne<rc::ed::EItem> for PItem {
         vec![rc::ed::EItem {
             id: rc::ed::EItemId::from_i32(key),
             group_id: rc::ed::EItemGrpId::from_i32(self.group_id),
-            capacity: rc::ed::EFloat::from_f64(self.capacity),
-            mass: rc::ed::EFloat::from_f64(self.mass),
-            radius: rc::ed::EFloat::from_f64(self.radius),
-            volume: rc::ed::EFloat::from_f64(self.volume),
+            capacity: Some(rc::ed::EFloat::from_f64(self.capacity)),
+            mass: Some(rc::ed::EFloat::from_f64(self.mass)),
+            radius: Some(rc::ed::EFloat::from_f64(self.radius)),
+            volume: Some(rc::ed::EFloat::from_f64(self.volume)),
         }]
     }
 }

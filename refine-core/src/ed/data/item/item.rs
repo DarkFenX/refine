@@ -6,10 +6,10 @@ use crate::{
 pub struct EItem {
     pub id: EItemId,
     pub group_id: EItemGrpId,
-    pub capacity: EFloat,
-    pub mass: EFloat,
-    pub radius: EFloat,
-    pub volume: EFloat,
+    pub capacity: Option<EFloat>,
+    pub mass: Option<EFloat>,
+    pub radius: Option<EFloat>,
+    pub volume: Option<EFloat>,
 }
 impl LibNamed for EItem {
     fn lib_get_name() -> &'static str {
