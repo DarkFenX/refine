@@ -52,6 +52,12 @@ impl<T> EDataCont<T> {
             warnings: Vec::new(),
         }
     }
+    pub fn with_capacity(capacity: usize) -> EDataCont<T> {
+        EDataCont {
+            data: Vec::with_capacity(capacity),
+            warnings: Vec::new(),
+        }
+    }
 }
 impl<T> Default for EDataCont<T> {
     fn default() -> Self {

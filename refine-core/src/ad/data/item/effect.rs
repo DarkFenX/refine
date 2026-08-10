@@ -156,7 +156,8 @@ mod custom_serde_ad_container {
                 where
                     S: SeqAccess<'de>,
                 {
-                    let mut data = CMap::const_new();
+                    let size_hint = seq.size_hint().unwrap_or(0);
+                    let mut data = CMap::const_with_capacity(size_hint);
                     while let Some(element) = seq.next_element::<AItemEffect>()? {
                         data.insert(element.id, element);
                     }

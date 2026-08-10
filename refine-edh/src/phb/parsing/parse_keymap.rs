@@ -52,7 +52,8 @@ where
     where
         A: MapAccess<'de>,
     {
-        let mut e_cont = rc::ed::EDataCont::new();
+        let size_hint = map.size_hint().unwrap_or(0);
+        let mut e_cont = rc::ed::EDataCont::with_capacity(size_hint);
         while let Some(raw_key) = map.next_key::<String>()? {
             let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
@@ -94,8 +95,9 @@ where
     where
         A: MapAccess<'de>,
     {
-        let mut e_cont1 = rc::ed::EDataCont::new();
-        let mut e_cont2 = rc::ed::EDataCont::new();
+        let size_hint = map.size_hint().unwrap_or(0);
+        let mut e_cont1 = rc::ed::EDataCont::with_capacity(size_hint);
+        let mut e_cont2 = rc::ed::EDataCont::with_capacity(size_hint);
         while let Some(raw_key) = map.next_key::<String>()? {
             let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element

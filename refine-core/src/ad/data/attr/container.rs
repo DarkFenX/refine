@@ -75,7 +75,8 @@ mod custom_serde_ad {
                 where
                     S: SeqAccess<'de>,
                 {
-                    let mut data = RMap::new();
+                    let size_hint = seq.size_hint().unwrap_or(0);
+                    let mut data = RMap::with_capacity(size_hint);
                     while let Some(element) = seq.next_element::<AAttr>()? {
                         data.insert(element.id, element);
                     }
