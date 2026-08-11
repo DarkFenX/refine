@@ -424,7 +424,7 @@ def test_zero_base_value(client):
     assert api_item.attrs[eve_absolute_high_attr_id].base == approx(50)
 
 
-def test_base_out_of_range(client):
+def test_base_out_of_range_direct(client):
     # Check which value is exposed if base value is out of range (as of 2024-12-11, a thing for
     # decayed disruptor rolls)
     eve_attr1_id = client.mk_eve_attr()
@@ -444,6 +444,30 @@ def test_base_out_of_range(client):
     assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0)
     assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(110)
     assert api_item.mutation.attrs[eve_attr2_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(90)
+    assert api_item.attrs[eve_attr1_id].base == approx(110)
+    assert api_item.attrs[eve_attr2_id].base == approx(90)
+
+
+def test_base_out_of_range_reverse(client):
+    eve_attr1_id = client.mk_eve_attr()
+    eve_attr2_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
+    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_attr1_id: (1.3, 1.1), eve_attr2_id: (0.9, 0.7)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification - all the values are put onto mutation range, and reversed changes roll values
+    # compared to normal case
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 2
+    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(110)
+    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0)
     assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(90)
     assert api_item.attrs[eve_attr1_id].base == approx(110)
     assert api_item.attrs[eve_attr2_id].base == approx(90)
