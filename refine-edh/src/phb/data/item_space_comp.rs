@@ -23,19 +23,19 @@ impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
             system_wide_buffs: self.system_wide_effects.and_then(|v| v.global_debuffs).map(|data| {
                 rc::ed::EItemSpaceCompBuffData {
                     buffs: data
-                        .buffs
+                        .dbuffs
                         .into_iter()
                         .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
                             id: rc::ed::EBuffId::from_i32(id),
                             value: rc::ed::EFloat::from_f64(value),
                         })
                         .collect(),
-                    item_list_filter: data.item_list_filter.map(rc::ed::EItemListId::from_i32),
+                    item_list_filter: data.eligible_type_list_id.map(rc::ed::EItemListId::from_i32),
                 }
             }),
             system_emitter_buffs: self.system_dbuff_emitter.map(|data| rc::ed::EItemSpaceCompBuffData {
                 buffs: data
-                    .buffs
+                    .dbuff_collections
                     .into_iter()
                     .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
                         id: rc::ed::EBuffId::from_i32(id),
@@ -48,7 +48,7 @@ impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
                 .applied_proximity_effects
                 .map(|data| rc::ed::EItemSpaceCompBuffData {
                     buffs: data
-                        .buffs
+                        .effects
                         .into_iter()
                         .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
                             id: rc::ed::EBuffId::from_i32(id),
@@ -59,25 +59,25 @@ impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
                 }),
             proxy_trigger_buffs: self.proximity_trap.map(|data| rc::ed::EItemSpaceCompBuffData {
                 buffs: data
-                    .buffs
+                    .dbuffs
                     .into_iter()
                     .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
                         id: rc::ed::EBuffId::from_i32(id),
                         value: rc::ed::EFloat::from_f64(value),
                     })
                     .collect(),
-                item_list_filter: data.item_list_filter.map(rc::ed::EItemListId::from_i32),
+                item_list_filter: data.trigger_filter_type_list_id.map(rc::ed::EItemListId::from_i32),
             }),
             ship_link_buffs: self.link_with_ship.map(|data| rc::ed::EItemSpaceCompBuffData {
                 buffs: data
-                    .buffs
+                    .dbuffs
                     .into_iter()
                     .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
                         id: rc::ed::EBuffId::from_i32(id),
                         value: rc::ed::EFloat::from_f64(value),
                     })
                     .collect(),
-                item_list_filter: data.item_list_filter.map(rc::ed::EItemListId::from_i32),
+                item_list_filter: data.linkable_ship_type_list_id.map(rc::ed::EItemListId::from_i32),
             }),
         }]
     }
@@ -93,10 +93,10 @@ pub(in crate::phb) struct PItemSpaceCompSw {
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSwGlobal {
     #[serde_as(as = "Map<_, _>")]
-    #[serde(rename = "dbuffs", default)]
-    pub(in crate::phb) buffs: Vec<(i32, f64)>,
+    #[serde(default)]
+    pub(in crate::phb) dbuffs: Vec<(i32, f64)>,
     #[serde(rename = "eligibleTypeListID", default)]
-    pub(in crate::phb) item_list_filter: Option<i32>,
+    pub(in crate::phb) eligible_type_list_id: Option<i32>,
 }
 
 #[serde_as]
@@ -104,33 +104,32 @@ pub(in crate::phb) struct PItemSpaceCompSwGlobal {
 pub(in crate::phb) struct PItemSpaceCompSe {
     #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "dbuffCollections", default)]
-    pub(in crate::phb) buffs: Vec<(i32, f64)>,
+    pub(in crate::phb) dbuff_collections: Vec<(i32, f64)>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompPe {
     #[serde_as(as = "Map<_, _>")]
-    #[serde(rename = "effects", default)]
-    pub(in crate::phb) buffs: Vec<(i32, f64)>,
+    #[serde(default)]
+    pub(in crate::phb) effects: Vec<(i32, f64)>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompPt {
     #[serde_as(as = "Map<_, _>")]
-    #[serde(rename = "dbuffs", default)]
-    pub(in crate::phb) buffs: Vec<(i32, f64)>,
+    #[serde(default)]
+    pub(in crate::phb) dbuffs: Vec<(i32, f64)>,
     #[serde(rename = "triggerFilterTypeListID", default)]
-    pub(in crate::phb) item_list_filter: Option<i32>,
+    pub(in crate::phb) trigger_filter_type_list_id: Option<i32>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceCompSl {
     #[serde_as(as = "Map<_, _>")]
-    #[serde(rename = "dbuffs", default)]
-    pub(in crate::phb) buffs: Vec<(i32, f64)>,
+    pub(in crate::phb) dbuffs: Vec<(i32, f64)>,
     #[serde(rename = "linkableShipTypeListID", default)]
-    pub(in crate::phb) item_list_filter: Option<i32>,
+    pub(in crate::phb) linkable_ship_type_list_id: Option<i32>,
 }

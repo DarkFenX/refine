@@ -5,16 +5,16 @@ use crate::phb::data::{Key, KeyMergeOne};
 #[derive(Deserialize)]
 pub(in crate::phb) struct PFighterAbil {
     #[serde(rename = "disallowInHighSec")]
-    pub(in crate::phb) disallow_hisec: bool,
+    pub(in crate::phb) disallow_in_high_sec: bool,
     #[serde(rename = "disallowInLowSec")]
-    pub(in crate::phb) disallow_lowsec: bool,
+    pub(in crate::phb) disallow_in_low_sec: bool,
 }
 impl KeyMergeOne<rc::ed::EAbil> for PFighterAbil {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EAbil> {
         vec![rc::ed::EAbil {
             id: rc::ed::EAbilId::from_i32(key),
-            disallow_hisec: self.disallow_hisec,
-            disallow_lowsec: self.disallow_lowsec,
+            disallow_hisec: self.disallow_in_high_sec,
+            disallow_lowsec: self.disallow_in_low_sec,
         }]
     }
 }

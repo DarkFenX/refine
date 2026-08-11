@@ -8,44 +8,44 @@ use crate::phb::{
 #[derive(Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
-    pub(in crate::phb) category_id: i32,
+    pub(in crate::phb) effect_category: i32,
     #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_assistance: bool,
     #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
     pub(in crate::phb) is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
-    pub(in crate::phb) discharge_attr_id: Option<i32>,
+    pub(in crate::phb) discharge_attribute_id: Option<i32>,
     #[serde(rename = "durationAttributeID")]
-    pub(in crate::phb) duration_attr_id: Option<i32>,
+    pub(in crate::phb) duration_attribute_id: Option<i32>,
     #[serde(rename = "rangeAttributeID")]
-    pub(in crate::phb) range_attr_id: Option<i32>,
+    pub(in crate::phb) range_attribute_id: Option<i32>,
     #[serde(rename = "falloffAttributeID")]
-    pub(in crate::phb) falloff_attr_id: Option<i32>,
+    pub(in crate::phb) falloff_attribute_id: Option<i32>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(in crate::phb) tracking_attr_id: Option<i32>,
+    pub(in crate::phb) tracking_attribute_id: Option<i32>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(in crate::phb) usage_chance_attr_id: Option<i32>,
+    pub(in crate::phb) fitting_usage_chance_attribute_id: Option<i32>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(in crate::phb) resist_attr_id: Option<i32>,
+    pub(in crate::phb) resistance_attribute_id: Option<i32>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "effect_mod::deserialize")]
-    pub(in crate::phb) mods: Vec<PEffectMod>,
+    pub(in crate::phb) modifier_info: Vec<PEffectMod>,
 }
 impl KeyMergeOne<rc::ed::EEffect> for PEffect {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EEffect> {
         vec![rc::ed::EEffect {
             id: rc::ed::EEffectId::from_i32(key),
-            category_id: rc::ed::EEffectCatId::from_i32(self.category_id),
+            category_id: rc::ed::EEffectCatId::from_i32(self.effect_category),
             is_assistance: self.is_assistance,
             is_offensive: self.is_offensive,
-            discharge_attr_id: self.discharge_attr_id.map(rc::ed::EAttrId::from_i32),
-            duration_attr_id: self.duration_attr_id.map(rc::ed::EAttrId::from_i32),
-            range_attr_id: self.range_attr_id.map(rc::ed::EAttrId::from_i32),
-            falloff_attr_id: self.falloff_attr_id.map(rc::ed::EAttrId::from_i32),
-            tracking_attr_id: self.tracking_attr_id.map(rc::ed::EAttrId::from_i32),
-            usage_chance_attr_id: self.usage_chance_attr_id.map(rc::ed::EAttrId::from_i32),
-            resist_attr_id: self.resist_attr_id.map(rc::ed::EAttrId::from_i32),
+            discharge_attr_id: self.discharge_attribute_id.map(rc::ed::EAttrId::from_i32),
+            duration_attr_id: self.duration_attribute_id.map(rc::ed::EAttrId::from_i32),
+            range_attr_id: self.range_attribute_id.map(rc::ed::EAttrId::from_i32),
+            falloff_attr_id: self.falloff_attribute_id.map(rc::ed::EAttrId::from_i32),
+            tracking_attr_id: self.tracking_attribute_id.map(rc::ed::EAttrId::from_i32),
+            usage_chance_attr_id: self.fitting_usage_chance_attribute_id.map(rc::ed::EAttrId::from_i32),
+            resist_attr_id: self.resistance_attribute_id.map(rc::ed::EAttrId::from_i32),
             mods: self
-                .mods
+                .modifier_info
                 .into_iter()
                 .map(|p_effect_mod| p_effect_mod.into_e_effect_mod())
                 .collect(),

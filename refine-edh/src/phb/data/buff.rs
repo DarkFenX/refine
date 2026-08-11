@@ -7,39 +7,39 @@ pub(in crate::phb) struct PBuff {
     #[serde(rename = "aggregateMode")]
     pub(in crate::phb) aggregate_mode: String,
     #[serde(rename = "operationName")]
-    pub(in crate::phb) operation: String,
+    pub(in crate::phb) operation_name: String,
     #[serde(rename = "itemModifiers", default)]
-    pub(in crate::phb) item_mods: Vec<PBuffIM>,
+    pub(in crate::phb) item_modifiers: Vec<PBuffIM>,
     #[serde(rename = "locationModifiers", default)]
-    pub(in crate::phb) loc_mods: Vec<PBuffLM>,
+    pub(in crate::phb) location_modifiers: Vec<PBuffLM>,
     #[serde(rename = "locationGroupModifiers", default)]
-    pub(in crate::phb) locgroup_mods: Vec<PBuffLGM>,
+    pub(in crate::phb) location_group_modifiers: Vec<PBuffLGM>,
     #[serde(rename = "locationRequiredSkillModifiers", default)]
-    pub(in crate::phb) locsrq_mods: Vec<PBuffLRSM>,
+    pub(in crate::phb) location_required_skill_modifiers: Vec<PBuffLRSM>,
 }
 impl KeyMergeOne<rc::ed::EBuff> for PBuff {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EBuff> {
         vec![rc::ed::EBuff {
             id: rc::ed::EBuffId::from_i32(key),
             aggregate_mode: self.aggregate_mode,
-            operation: self.operation,
+            operation: self.operation_name,
             item_mods: self
-                .item_mods
+                .item_modifiers
                 .into_iter()
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),
             loc_mods: self
-                .loc_mods
+                .location_modifiers
                 .into_iter()
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),
             locgroup_mods: self
-                .locgroup_mods
+                .location_group_modifiers
                 .into_iter()
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),
             locsrq_mods: self
-                .locsrq_mods
+                .location_required_skill_modifiers
                 .into_iter()
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),

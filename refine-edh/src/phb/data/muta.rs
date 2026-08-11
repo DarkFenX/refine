@@ -7,25 +7,25 @@ use crate::phb::data::{Key, KeyMergeTwo};
 #[derive(Deserialize)]
 pub(in crate::phb) struct PMuta {
     #[serde(rename = "inputOutputMapping")]
-    pub(in crate::phb) item_maps: Vec<PMutaItemMap>,
+    pub(in crate::phb) input_output_mapping: Vec<PMutaItemMap>,
     #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "attributeIDs")]
-    pub(in crate::phb) attrs: Vec<(i32, PMutaAttrModRange)>,
+    pub(in crate::phb) attribute_ids: Vec<(i32, PMutaAttrModRange)>,
 }
 impl KeyMergeTwo<rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod> for PMuta {
     fn key_merge(self, key: Key) -> (Vec<rc::ed::EMutaItemConv>, Vec<rc::ed::EMutaAttrMod>) {
         let mut muta_items = Vec::new();
-        for item_map in self.item_maps {
-            for applicable_type in item_map.applicable_item_ids {
+        for item_map in self.input_output_mapping {
+            for applicable_type in item_map.applicable_types {
                 muta_items.push(rc::ed::EMutaItemConv {
                     muta_id: rc::ed::EItemId::from_i32(key),
                     in_item_id: rc::ed::EItemId::from_i32(applicable_type),
-                    out_item_id: rc::ed::EItemId::from_i32(item_map.result_item_id),
+                    out_item_id: rc::ed::EItemId::from_i32(item_map.resulting_type),
                 })
             }
         }
         let muta_attrs = self
-            .attrs
+            .attribute_ids
             .into_iter()
             .map(|(attr_id, range)| rc::ed::EMutaAttrMod {
                 muta_id: rc::ed::EItemId::from_i32(key),
@@ -47,7 +47,7 @@ pub(in crate::phb) struct PMutaAttrModRange {
 #[derive(Deserialize)]
 pub(in crate::phb) struct PMutaItemMap {
     #[serde(rename = "applicableTypes")]
-    pub(in crate::phb) applicable_item_ids: Vec<i32>,
+    pub(in crate::phb) applicable_types: Vec<i32>,
     #[serde(rename = "resultingType")]
-    pub(in crate::phb) result_item_id: i32,
+    pub(in crate::phb) resulting_type: i32,
 }

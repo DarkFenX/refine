@@ -8,23 +8,23 @@ use crate::phb::{
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemDogma {
     #[serde(rename = "dogmaAttributes", default)]
-    pub(in crate::phb) attrs: Vec<PItemAttrData>,
+    pub(in crate::phb) dogma_attributes: Vec<PItemAttrData>,
     #[serde(rename = "dogmaEffects", default)]
-    pub(in crate::phb) effects: Vec<PItemEffectData>,
+    pub(in crate::phb) dogma_effects: Vec<PItemEffectData>,
 }
 impl KeyMergeTwo<rc::ed::EItemAttr, rc::ed::EItemEffect> for PItemDogma {
     fn key_merge(self, key: Key) -> (Vec<rc::ed::EItemAttr>, Vec<rc::ed::EItemEffect>) {
         let item_attrs = self
-            .attrs
+            .dogma_attributes
             .into_iter()
             .map(|v| rc::ed::EItemAttr {
                 item_id: rc::ed::EItemId::from_i32(key),
-                attr_id: rc::ed::EAttrId::from_i32(v.attr_id),
+                attr_id: rc::ed::EAttrId::from_i32(v.attribute_id),
                 value: rc::ed::EFloat::from_f64(v.value),
             })
             .collect();
         let item_effects = self
-            .effects
+            .dogma_effects
             .into_iter()
             .map(|v| rc::ed::EItemEffect {
                 item_id: rc::ed::EItemId::from_i32(key),
@@ -39,7 +39,7 @@ impl KeyMergeTwo<rc::ed::EItemAttr, rc::ed::EItemEffect> for PItemDogma {
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemAttrData {
     #[serde(rename = "attributeID")]
-    pub(in crate::phb) attr_id: i32,
+    pub(in crate::phb) attribute_id: i32,
     pub(in crate::phb) value: f64,
 }
 

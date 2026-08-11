@@ -14,9 +14,9 @@ pub(in crate::phb) struct PAttr {
     #[serde(rename = "defaultValue")]
     pub(in crate::phb) default_value: f64,
     #[serde(rename = "minAttributeID")]
-    pub(in crate::phb) min_attr_id: Option<i32>,
+    pub(in crate::phb) min_attribute_id: Option<i32>,
     #[serde(rename = "maxAttributeID")]
-    pub(in crate::phb) max_attr_id: Option<i32>,
+    pub(in crate::phb) max_attribute_id: Option<i32>,
     #[serde(rename = "unitID")]
     pub(in crate::phb) unit_id: Option<i32>,
 }
@@ -27,8 +27,8 @@ impl KeyMergeOne<rc::ed::EAttr> for PAttr {
             stackable: self.stackable,
             high_is_good: self.high_is_good,
             default_value: rc::ed::EFloat::from_f64(self.default_value),
-            min_attr_id: self.min_attr_id.map(rc::ed::EAttrId::from_i32),
-            max_attr_id: self.max_attr_id.map(rc::ed::EAttrId::from_i32),
+            min_attr_id: self.min_attribute_id.map(rc::ed::EAttrId::from_i32),
+            max_attr_id: self.max_attribute_id.map(rc::ed::EAttrId::from_i32),
             unit_id: self.unit_id.map(rc::ed::EAttrUnitId::from_i32),
         }]
     }
