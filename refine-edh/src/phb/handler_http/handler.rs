@@ -58,8 +58,8 @@ impl rc::ed::EveDataHandlerInterface for PhbHttpEdh {
         self.process_groups(&mut data)?;
         self.process_typelist(&mut data)?;
         self.process_dogmaattributes(&mut data)?;
-        self.process_typedogma(&mut data)?;
         self.process_dogmaeffects(&mut data)?;
+        self.process_typedogma(&mut data)?;
         self.process_fighterabilities(&mut data)?;
         self.process_fighterabilitiesbytype(&mut data)?;
         self.process_dbuffcollections(&mut data)?;
@@ -90,12 +90,12 @@ impl PhbHttpEdh {
         e_data.attrs = self.process_one::<PAttr, _>("fsd_built/dogmaattributes.json")?;
         Ok(())
     }
-    fn process_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built/typedogma.json")?;
-        Ok(())
-    }
     fn process_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         e_data.effects = self.process_one::<PEffect, _>("fsd_built/dogmaeffects.json")?;
+        Ok(())
+    }
+    fn process_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built/typedogma.json")?;
         Ok(())
     }
     fn process_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
