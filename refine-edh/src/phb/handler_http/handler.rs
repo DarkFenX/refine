@@ -5,10 +5,10 @@ use reqwest::{Url, blocking::Client};
 use super::error::{PhbHttpEdhError, PhbHttpEdhInitError};
 use crate::phb::{
     data::{
-        PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
-        PItemSkillMap, PItemSpaceComp, PMuta,
+        KeyMergeOne, KeyMergeTwo, PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils,
+        PItemGroup, PItemList, PItemSkillMap, PItemSpaceComp, PMuta,
     },
-    parsing::{KeyMergeOne, KeyMergeTwo, extract_from_keymap_one, extract_from_keymap_two},
+    parsing::{extract_from_keymap_one, extract_from_keymap_two},
 };
 
 /// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP

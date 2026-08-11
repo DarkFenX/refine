@@ -3,12 +3,8 @@ use std::marker::PhantomData;
 use serde::de::{Deserializer, MapAccess, Visitor};
 use serde_json::value::RawValue;
 
-use super::{
-    aliases::Key,
-    error::ReadParseFailReason,
-    traits::{KeyMergeOne, KeyMergeTwo},
-    warning::cap_len,
-};
+use super::{error::ReadParseFailReason, warning::cap_len};
+use crate::phb::data::{Key, KeyMergeOne, KeyMergeTwo};
 
 const KEY_LEN_LIMIT: usize = 20;
 const WARNING_LEN_LIMIT: usize = 200;

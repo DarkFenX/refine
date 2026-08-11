@@ -12,6 +12,7 @@ pub(in crate::phb) use item_srq_map::PItemSkillMap;
 #[cfg(feature = "phb-fs")]
 pub(in crate::phb) use metadata::PMetadata;
 pub(in crate::phb) use muta::PMuta;
+pub(in crate::phb) use shared::{Key, KeyMergeOne, KeyMergeTwo};
 
 mod abil;
 mod attr;
@@ -27,3 +28,4 @@ mod item_srq_map;
 #[cfg(feature = "phb-fs")]
 mod metadata;
 mod muta;
+mod shared;

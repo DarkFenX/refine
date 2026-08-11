@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{Map, serde_as};
 
-use crate::phb::parsing::{Key, KeyMergeOne};
+use crate::phb::data::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceComp {

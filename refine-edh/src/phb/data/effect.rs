@@ -1,7 +1,7 @@
 use serde::Deserialize;
 
 use crate::phb::{
-    parsing::{Key, KeyMergeOne},
+    data::{Key, KeyMergeOne},
     serde_custom::bool_from_int,
 };
 

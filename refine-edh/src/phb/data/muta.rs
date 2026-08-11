@@ -1,7 +1,7 @@
 use serde::Deserialize;
 use serde_with::{Map, serde_as};
 
-use crate::phb::parsing::{Key, KeyMergeTwo};
+use crate::phb::data::{Key, KeyMergeTwo};
 
 #[serde_as]
 #[derive(Deserialize)]
