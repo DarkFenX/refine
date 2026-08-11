@@ -77,8 +77,8 @@ fn resolve_absolute_into_roll(
     unmutated_value: Value,
     mutation_range: &RMutaAttrRange,
 ) -> Option<UnitInterval> {
-    let min_value = unmutated_value * mutation_range.min_mult;
-    let max_value = unmutated_value * mutation_range.max_mult;
+    let min_value = unmutated_value * mutation_range.mult_min_raw;
+    let max_value = unmutated_value * mutation_range.mult_max_raw;
     if min_value == max_value {
         return None;
     }

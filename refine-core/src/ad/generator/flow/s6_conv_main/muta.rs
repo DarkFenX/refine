@@ -25,8 +25,8 @@ impl ADataGenerator {
                 a_muta.attr_mods.insert(AMutaAttr {
                     attr_id: AAttrId::from_eid(e_attr_data.attr_id),
                     range: AMutaAttrRange {
-                        min_mult: AValue::from_efloat(e_attr_data.min_attr_mult),
-                        max_mult: AValue::from_efloat(e_attr_data.max_attr_mult),
+                        mult_min: AValue::from_efloat(e_attr_data.min_attr_mult),
+                        mult_max: AValue::from_efloat(e_attr_data.max_attr_mult),
                     },
                 });
             }

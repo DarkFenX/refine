@@ -536,15 +536,16 @@ fn apply_attr_mutations(
 }
 
 fn mutate_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange, roll: UnitInterval) -> Value {
-    unmutated_value * (roll_range.min_mult + roll.into_value() * (roll_range.max_mult - roll_range.min_mult))
+    unmutated_value
+        * (roll_range.mult_min_raw + roll.into_value() * (roll_range.mult_max_raw - roll_range.mult_min_raw))
 }
 
 fn limit_attr_value(unmutated_value: Value, roll_range: &RMutaAttrRange) -> Value {
-    if roll_range.min_mult >= Value::ONE {
-        return unmutated_value * roll_range.min_mult;
+    if roll_range.mult_min_math >= Value::ONE {
+        return unmutated_value * roll_range.mult_min_math;
     }
-    if roll_range.max_mult <= Value::ONE {
-        return unmutated_value * roll_range.max_mult;
+    if roll_range.mult_max_math <= Value::ONE {
+        return unmutated_value * roll_range.mult_max_math;
     }
     unmutated_value
 }

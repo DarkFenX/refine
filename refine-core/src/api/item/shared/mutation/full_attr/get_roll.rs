@@ -52,8 +52,8 @@ fn get_roll(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Option<
     //   base value 12), it will still lie on appropriate edge of shifted roll (in this case it will be
     //   0.0 relatively [14.4, 16.8] range - range is wrong, result is right).
     let value = *u_item.get_r_item_attr_data().unwrap().attrs.get(&attr_rid).unwrap();
-    let min_value = value * a_mutation_range.min_mult;
-    let max_value = value * a_mutation_range.max_mult;
+    let min_value = value * a_mutation_range.mult_min_raw;
+    let max_value = value * a_mutation_range.mult_max_raw;
     if min_value == max_value {
         return None;
     }

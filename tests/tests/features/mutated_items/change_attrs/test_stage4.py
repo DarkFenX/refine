@@ -1,7 +1,7 @@
 from fw import Muta, approx, check_no_field
 
 
-def test_rolls_range(client):
+def test_rolls_range_direct(client):
     # Check processing of roll values - within range and out of range
     eve_add_lower_attr_id = client.mk_eve_attr()
     eve_add_within_attr_id = client.mk_eve_attr()
@@ -92,6 +92,51 @@ def test_rolls_range(client):
     assert api_item.attrs[eve_change_within_attr_id].base == approx(84)
     assert api_item.attrs[eve_change_higher_attr_id].base == approx(120)
     assert api_item.attrs[eve_remove_attr_id].base == approx(100)
+
+
+def test_rolls_range_reverse(client):
+    eve_lower_attr_id = client.mk_eve_attr()
+    eve_within_attr_id = client.mk_eve_attr()
+    eve_higher_attr_id = client.mk_eve_attr()
+    eve_base_item_id = client.mk_eve_item(
+        attrs={eve_lower_attr_id: 100, eve_within_attr_id: 100, eve_higher_attr_id: 100})
+    eve_mutated_item_id = client.mk_eve_item()
+    eve_mutator_id = client.mk_eve_mutator(
+        items=[([eve_base_item_id], eve_mutated_item_id)],
+        attrs={eve_lower_attr_id: (1.2, 0.8), eve_within_attr_id: (1.2, 0.8), eve_higher_attr_id: (1.2, 0.8)})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_module(type_id=eve_base_item_id, mutation=eve_mutator_id)
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 3
+    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(100)
+    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(0.5)
+    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(100)
+    assert api_item.attrs[eve_lower_attr_id].base == approx(100)
+    assert api_item.attrs[eve_within_attr_id].base == approx(100)
+    assert api_item.attrs[eve_higher_attr_id].base == approx(100)
+    # Action
+    api_item.change_module(mutation={
+        eve_lower_attr_id: Muta.roll_to_api(val=-5),
+        eve_within_attr_id: Muta.roll_to_api(val=0.3),
+        eve_higher_attr_id: Muta.roll_to_api(val=128)})
+    # Verification
+    api_item.update()
+    assert len(api_item.mutation.attrs) == 3
+    assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0)
+    assert api_item.mutation.attrs[eve_lower_attr_id].absolute == approx(120)
+    assert api_item.mutation.attrs[eve_within_attr_id].roll == approx(0.3)
+    assert api_item.mutation.attrs[eve_within_attr_id].absolute == approx(108)
+    assert api_item.mutation.attrs[eve_higher_attr_id].roll == approx(1)
+    assert api_item.mutation.attrs[eve_higher_attr_id].absolute == approx(80)
+    assert api_item.attrs[eve_lower_attr_id].base == approx(120)
+    assert api_item.attrs[eve_within_attr_id].base == approx(108)
+    assert api_item.attrs[eve_higher_attr_id].base == approx(80)
 
 
 def test_absolute_base_attr_value(client):

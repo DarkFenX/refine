@@ -5,6 +5,6 @@ use crate::ad::AValue;
     derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
 )]
 pub struct AMutaAttrRange {
-    pub min_mult: AValue,
-    pub max_mult: AValue,
+    pub mult_min: AValue,
+    pub mult_max: AValue,
 }
