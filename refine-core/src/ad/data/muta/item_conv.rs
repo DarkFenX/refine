@@ -4,7 +4,7 @@ use crate::ad::AItemId;
     feature = "serde-ad",
     derive(serde_tuple::Serialize_tuple, serde_tuple::Deserialize_tuple)
 )]
-pub struct AMutaItemConv {
+pub struct AMutaItem {
     pub base_item_id: AItemId,
     pub mutated_item_id: AItemId,
 }
@@ -17,24 +17,24 @@ pub struct AMutaItemConv {
     serde(transparent)
 )]
 #[derive(Default)]
-pub struct AMutaItemConvs {
-    data: Vec<AMutaItemConv>,
+pub struct AMutaItems {
+    data: Vec<AMutaItem>,
 }
-impl AMutaItemConvs {
+impl AMutaItems {
     pub const fn new() -> Self {
         Self { data: Vec::new() }
     }
-    pub fn insert(&mut self, val: AMutaItemConv) {
+    pub fn insert(&mut self, val: AMutaItem) {
         self.data.push(val);
     }
-    pub fn iter(&self) -> impl ExactSizeIterator<Item = &AMutaItemConv> {
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &AMutaItem> {
         self.data.iter()
     }
 }
-impl FromIterator<AMutaItemConv> for AMutaItemConvs {
+impl FromIterator<AMutaItem> for AMutaItems {
     fn from_iter<I>(iter: I) -> Self
     where
-        I: IntoIterator<Item = AMutaItemConv>,
+        I: IntoIterator<Item = AMutaItem>,
     {
         Self {
             data: iter.into_iter().collect(),

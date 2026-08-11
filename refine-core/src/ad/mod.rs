@@ -14,7 +14,7 @@ pub use data::{
     AEveAttrId, AEveBuffId, AEveItemListId, AItem, AItemAbils, AItemAttr, AItemAttrs, AItemBuffItemLists, AItemCatId,
     AItemEffect, AItemEffectData, AItemEffects, AItemGrpId, AItemId, AItemList, AItemListId, AItemListItemIds,
     AItemLists, AItemSkillReq, AItemSkillReqs, AItems, AModifierSrq, AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs,
-    AMutaItemConv, AMutaItemConvs, AMutas, AOp, ASkillLevel, AState, AValue,
+    AMutaItem, AMutaItems, AMutas, AOp, ASkillLevel, AState, AValue,
 };
 pub use fingerprint::AFingerprint;
 pub(crate) use generator::ADataGenerator;

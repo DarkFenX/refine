@@ -52,8 +52,7 @@ impl ADataGenerator {
             &mut self.a_data.warnings,
         );
         fk_check_referer(&self.e_data.item_srqs, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.muta_items, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(&self.e_data.muta_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
+        fk_check_referer(&self.e_data.mutas, &pkdb, &self.support, &mut self.a_data.warnings);
     }
 }
 fn fk_check_referer<T>(rer_cont: &EDataCont<T>, pkdb: &KeyDb, adg_supp: &AdgSupport, a_warnings: &mut ADataWarnings)

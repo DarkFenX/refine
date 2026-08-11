@@ -32,7 +32,7 @@ impl ADataGenerator {
         // between base item group IDs and mutated item group IDs
         let mut mutations = RMapRSet::new();
         for a_muta in self.a_data.mutas.data.values() {
-            for a_item_conv in a_muta.item_map.iter() {
+            for a_item_conv in a_muta.items.iter() {
                 let Some(base_item) = self.a_data.items.data.get(&a_item_conv.base_item_id) else {
                     continue;
                 };

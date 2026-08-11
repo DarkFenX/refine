@@ -8,7 +8,7 @@ pub use item::{
     EItemSpaceComp, EItemSpaceCompBuffData, EItemSpaceCompBuffEntry,
 };
 pub use item_list::{EItemList, EItemListId};
-pub use muta::{EMutaAttr, EMutaItem};
+pub use muta::{EMuta, EMutaAttr};
 pub use shared::{EFloat, EInt};
 
 mod abil;
