@@ -41,7 +41,7 @@ where
     type Value = rc::ed::EDataCont<EVE>;
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str(&format!("object with {} keyed by ID", std::any::type_name::<PHB>()))
+        formatter.write_str("object with entries keyed by ID")
     }
 
     fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
@@ -54,32 +54,23 @@ where
             let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
             let Ok(key) = raw_key.parse::<Key>() else {
-                let warning = format!(
-                    "failed to cast {} key \"{}\" to integer",
-                    std::any::type_name::<PHB>(),
-                    cap_len(raw_key, KEY_LEN_LIMIT)
-                );
+                let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
                 e_cont.warnings.push(warning);
                 continue;
             };
             // In case of malformed value - same, log error and skip element
-            let value = match serde_json::from_str::<PHB>(raw_value.get()) {
-                Ok(value) => value,
-                Err(error) => {
+            let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
+                Ok(phb) => phb,
+                Err(err) => {
                     let warning = cap_len(
-                        format!(
-                            "failed to parse {} value with key \"{}\": {}",
-                            std::any::type_name::<PHB>(),
-                            key,
-                            error,
-                        ),
+                        format!("failed to parse value with key \"{key}\": {err}"),
                         WARNING_LEN_LIMIT,
                     );
                     e_cont.warnings.push(warning);
                     continue;
                 }
             };
-            e_cont.data.extend(value.key_merge(key));
+            e_cont.data.extend(phb.key_merge(key));
         }
         Ok(e_cont)
     }
@@ -93,7 +84,7 @@ where
     type Value = (rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>);
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str(&format!("object with {} keyed by ID", std::any::type_name::<PHB>()))
+        formatter.write_str("object with entries keyed by ID")
     }
 
     fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
@@ -107,26 +98,17 @@ where
             let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
             let Ok(key) = raw_key.parse::<Key>() else {
-                let warning = format!(
-                    "failed to cast {} key \"{}\" to integer",
-                    std::any::type_name::<PHB>(),
-                    cap_len(raw_key, KEY_LEN_LIMIT)
-                );
+                let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
                 e_cont1.warnings.push(warning.clone());
                 e_cont2.warnings.push(warning);
                 continue;
             };
             // In case of malformed value - same, log error and skip element
-            let value = match serde_json::from_str::<PHB>(raw_value.get()) {
-                Ok(value) => value,
-                Err(error) => {
+            let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
+                Ok(phb) => phb,
+                Err(err) => {
                     let warning = cap_len(
-                        format!(
-                            "failed to parse {} value with key \"{}\": {}",
-                            std::any::type_name::<PHB>(),
-                            key,
-                            error,
-                        ),
+                        format!("failed to parse value with key \"{key}\": {err}"),
                         WARNING_LEN_LIMIT,
                     );
                     e_cont1.warnings.push(warning.clone());
@@ -134,7 +116,7 @@ where
                     continue;
                 }
             };
-            let (e_data1, e_data2) = value.key_merge(key);
+            let (e_data1, e_data2) = phb.key_merge(key);
             e_cont1.data.extend(e_data1);
             e_cont2.data.extend(e_data2);
         }

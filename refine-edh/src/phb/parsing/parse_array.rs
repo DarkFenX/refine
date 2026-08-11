@@ -45,7 +45,7 @@ where
     type Value = ();
 
     fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
-        formatter.write_str(&format!("array of {}", std::any::type_name::<T>()))
+        formatter.write_str("array of entries")
     }
 
     fn visit_seq<A>(mut self, mut seq: A) -> Result<Self::Value, A::Error>
