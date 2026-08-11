@@ -1,9 +1,9 @@
-use crate::ad::{AItemId, AMutaAttrs, AMutaItemConvs};
+use crate::ad::{AItemId, AMutaAttrs, AMutaItems};
 
 pub struct AMuta {
     pub id: AItemId,
-    pub item_map: AMutaItemConvs = AMutaItemConvs::new(),
-    pub attr_mods: AMutaAttrs = AMutaAttrs::new(),
+    pub items: AMutaItems = AMutaItems::new(),
+    pub attrs: AMutaAttrs = AMutaAttrs::new(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,8 +27,8 @@ mod custom_serde_ad {
         {
             let mut tuple = serializer.serialize_tuple(FIELDS)?;
             tuple.serialize_element(&self.id)?;
-            tuple.serialize_element(&self.item_map)?;
-            tuple.serialize_element(&self.attr_mods)?;
+            tuple.serialize_element(&self.items)?;
+            tuple.serialize_element(&self.attrs)?;
             tuple.end()
         }
     }
@@ -53,8 +53,8 @@ mod custom_serde_ad {
                 {
                     Ok(Self::Value {
                         id: seq.next_element()?.ok_or(Error::invalid_length(0, &self))?,
-                        item_map: seq.next_element()?.ok_or(Error::invalid_length(1, &self))?,
-                        attr_mods: seq.next_element()?.ok_or(Error::invalid_length(2, &self))?,
+                        items: seq.next_element()?.ok_or(Error::invalid_length(1, &self))?,
+                        attrs: seq.next_element()?.ok_or(Error::invalid_length(2, &self))?,
                     })
                 }
             }

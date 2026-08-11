@@ -1,5 +1,5 @@
 use crate::{
-    ad::{AAttrId, ADataGenerator, AItemId, AMuta, AMutaAttr, AMutaAttrRange, AMutaItemConv, AMutas, AValue},
+    ad::{AAttrId, ADataGenerator, AItemId, AMuta, AMutaAttr, AMutaAttrRange, AMutaItem, AMutas, AValue},
     util::RMap,
 };
 
@@ -13,7 +13,7 @@ impl ADataGenerator {
                     id: AItemId::from_eid(e_muta.muta_id),
                     ..
                 });
-            a_muta.item_map.insert(AMutaItemConv {
+            a_muta.items.insert(AMutaItem {
                 base_item_id: AItemId::from_eid(e_muta.in_item_id),
                 mutated_item_id: AItemId::from_eid(e_muta.out_item_id),
             });
@@ -22,7 +22,7 @@ impl ADataGenerator {
             // We are interested in attribute modifiers only for mutators which have in-out item
             // definitions
             if let Some(a_muta) = a_mutas.get_mut(&AItemId::from_eid(e_attr_data.muta_id)) {
-                a_muta.attr_mods.insert(AMutaAttr {
+                a_muta.attrs.insert(AMutaAttr {
                     attr_id: AAttrId::from_eid(e_attr_data.attr_id),
                     range: AMutaAttrRange {
                         mult_min: AValue::from_efloat(e_attr_data.min_attr_mult),
