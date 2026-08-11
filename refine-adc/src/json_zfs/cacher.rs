@@ -1,5 +1,4 @@
 use std::{
-    fmt,
     fs::{OpenOptions, create_dir_all},
     io::{self, BufReader, BufWriter, Write},
     path::PathBuf,
@@ -23,6 +22,51 @@ impl JsonZfsAdc {
             name: name.into(),
         }
     }
+}
+impl std::fmt::Debug for JsonZfsAdc {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        write!(
+            f,
+            "JsonZfsAdc(\"{}\")",
+            self.get_cache_path().to_str().unwrap_or("<error>")
+        )
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Cacher trait implementation
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl rc::ad::AdaptedDataCacherInterface for JsonZfsAdc {
+    fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
+        let fingerprint = std::fs::read_to_string(self.get_fingerprint_path()).map_err(JsonZfsAdcFpReadError::Read)?;
+        Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
+    }
+    fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
+        let full_path = self.get_cache_path();
+        let file = OpenOptions::new()
+            .read(true)
+            .open(full_path)
+            .map_err(JsonZfsAdcDataReadError::Read)?;
+        let reader = zstd::stream::Decoder::new(file).map_err(JsonZfsAdcDataReadError::Read)?;
+        let a_data = serde_json::from_reader(BufReader::new(reader)).map_err(JsonZfsAdcDataReadError::from)?;
+        Ok(a_data)
+    }
+    fn write_cache(
+        &self,
+        a_data: &rc::ad::AData,
+        fingerprint: rc::ad::AFingerprint,
+    ) -> Result<(), rc::ad::err::AdaptedDataCacherError> {
+        self.create_cache_dir()?;
+        self.write_data(a_data)?;
+        self.write_fingerprint(fingerprint)?;
+        Ok(())
+    }
+    fn get_cacher_version(&self) -> String {
+        VERSION.to_string()
+    }
+}
+
+impl JsonZfsAdc {
     fn get_cache_path(&self) -> PathBuf {
         self.dir.join(format!("{}.json.zst", self.name))
     }
@@ -64,43 +108,5 @@ impl JsonZfsAdc {
             .map_err(JsonZfsAdcWriteError::FpWrite)?;
         write!(file, "{fingerprint}").map_err(JsonZfsAdcWriteError::FpWrite)?;
         Ok(())
-    }
-}
-impl fmt::Debug for JsonZfsAdc {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        write!(
-            f,
-            "JsonZfsAdc(\"{}\")",
-            self.get_cache_path().to_str().unwrap_or("<error>")
-        )
-    }
-}
-impl rc::ad::AdaptedDataCacherInterface for JsonZfsAdc {
-    fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
-        let fingerprint = std::fs::read_to_string(self.get_fingerprint_path()).map_err(JsonZfsAdcFpReadError::Read)?;
-        Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))
-    }
-    fn load_from_cache(&self) -> Result<rc::ad::AData, rc::ad::err::AdaptedDataCacherError> {
-        let full_path = self.get_cache_path();
-        let file = OpenOptions::new()
-            .read(true)
-            .open(full_path)
-            .map_err(JsonZfsAdcDataReadError::Read)?;
-        let reader = zstd::stream::Decoder::new(file).map_err(JsonZfsAdcDataReadError::Read)?;
-        let a_data = serde_json::from_reader(BufReader::new(reader)).map_err(JsonZfsAdcDataReadError::from)?;
-        Ok(a_data)
-    }
-    fn write_cache(
-        &self,
-        a_data: &rc::ad::AData,
-        fingerprint: rc::ad::AFingerprint,
-    ) -> Result<(), rc::ad::err::AdaptedDataCacherError> {
-        self.create_cache_dir()?;
-        self.write_data(a_data)?;
-        self.write_fingerprint(fingerprint)?;
-        Ok(())
-    }
-    fn get_cacher_version(&self) -> String {
-        VERSION.to_string()
     }
 }
