@@ -5,7 +5,7 @@ use crate::phb::data::{Key, KeyMergeOne};
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemGroup {
     #[serde(rename = "categoryID")]
-    pub(in crate::phb) category_id: i32,
+    category_id: i32,
 }
 impl KeyMergeOne<rc::ed::EItemGroup> for PItemGroup {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemGroup> {

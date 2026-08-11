@@ -5,11 +5,11 @@ use crate::phb::data::{Key, KeyMergeOne};
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemFighterAbils {
     #[serde(rename = "abilitySlot0")]
-    pub(in crate::phb) ability_slot0: Option<PItemFighterAbilData>,
+    ability_slot0: Option<PItemFighterAbilData>,
     #[serde(rename = "abilitySlot1")]
-    pub(in crate::phb) ability_slot1: Option<PItemFighterAbilData>,
+    ability_slot1: Option<PItemFighterAbilData>,
     #[serde(rename = "abilitySlot2")]
-    pub(in crate::phb) ability_slot2: Option<PItemFighterAbilData>,
+    ability_slot2: Option<PItemFighterAbilData>,
 }
 impl KeyMergeOne<rc::ed::EItemAbil> for PItemFighterAbils {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemAbil> {
@@ -38,18 +38,18 @@ impl KeyMergeOne<rc::ed::EItemAbil> for PItemFighterAbils {
 }
 
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemFighterAbilData {
+struct PItemFighterAbilData {
     #[serde(rename = "abilityID")]
-    pub(in crate::phb) ability_id: i32,
+    ability_id: i32,
     #[serde(rename = "cooldownSeconds")]
-    pub(in crate::phb) cooldown_seconds: Option<f64>,
-    pub(in crate::phb) charges: Option<PItemFighterAbilChargeData>,
+    cooldown_seconds: Option<f64>,
+    charges: Option<PItemFighterAbilChargeData>,
 }
 
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemFighterAbilChargeData {
+struct PItemFighterAbilChargeData {
     #[serde(rename = "chargeCount")]
-    pub(in crate::phb) charge_count: i32,
+    charge_count: i32,
     #[serde(rename = "rearmTimeSeconds")]
-    pub(in crate::phb) rearm_time_seconds: f64,
+    rearm_time_seconds: f64,
 }

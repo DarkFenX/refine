@@ -5,11 +5,11 @@ use crate::phb::data::{Key, KeyMergeOne};
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItem {
     #[serde(rename = "groupID")]
-    pub(in crate::phb) group_id: i32,
-    pub(in crate::phb) capacity: f64,
-    pub(in crate::phb) mass: f64,
-    pub(in crate::phb) radius: f64,
-    pub(in crate::phb) volume: f64,
+    group_id: i32,
+    capacity: f64,
+    mass: f64,
+    radius: f64,
+    volume: f64,
 }
 impl KeyMergeOne<rc::ed::EItem> for PItem {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItem> {

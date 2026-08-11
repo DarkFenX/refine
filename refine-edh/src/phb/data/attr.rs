@@ -8,17 +8,17 @@ use crate::phb::{
 #[derive(Deserialize)]
 pub(in crate::phb) struct PAttr {
     #[serde(deserialize_with = "bool_from_int")]
-    pub(in crate::phb) stackable: bool,
+    stackable: bool,
     #[serde(rename = "highIsGood", deserialize_with = "bool_from_int")]
-    pub(in crate::phb) high_is_good: bool,
+    high_is_good: bool,
     #[serde(rename = "defaultValue")]
-    pub(in crate::phb) default_value: f64,
+    default_value: f64,
     #[serde(rename = "minAttributeID")]
-    pub(in crate::phb) min_attribute_id: Option<i32>,
+    min_attribute_id: Option<i32>,
     #[serde(rename = "maxAttributeID")]
-    pub(in crate::phb) max_attribute_id: Option<i32>,
+    max_attribute_id: Option<i32>,
     #[serde(rename = "unitID")]
-    pub(in crate::phb) unit_id: Option<i32>,
+    unit_id: Option<i32>,
 }
 impl KeyMergeOne<rc::ed::EAttr> for PAttr {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EAttr> {

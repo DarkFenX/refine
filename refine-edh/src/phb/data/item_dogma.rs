@@ -8,9 +8,9 @@ use crate::phb::{
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemDogma {
     #[serde(rename = "dogmaAttributes", default)]
-    pub(in crate::phb) dogma_attributes: Vec<PItemAttrData>,
+    dogma_attributes: Vec<PItemAttrData>,
     #[serde(rename = "dogmaEffects", default)]
-    pub(in crate::phb) dogma_effects: Vec<PItemEffectData>,
+    dogma_effects: Vec<PItemEffectData>,
 }
 impl KeyMergeTwo<rc::ed::EItemAttr, rc::ed::EItemEffect> for PItemDogma {
     fn key_merge(self, key: Key) -> (Vec<rc::ed::EItemAttr>, Vec<rc::ed::EItemEffect>) {
@@ -37,16 +37,16 @@ impl KeyMergeTwo<rc::ed::EItemAttr, rc::ed::EItemEffect> for PItemDogma {
 }
 
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemAttrData {
+struct PItemAttrData {
     #[serde(rename = "attributeID")]
-    pub(in crate::phb) attribute_id: i32,
-    pub(in crate::phb) value: f64,
+    attribute_id: i32,
+    value: f64,
 }
 
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemEffectData {
+struct PItemEffectData {
     #[serde(rename = "effectID")]
-    pub(in crate::phb) effect_id: i32,
+    effect_id: i32,
     #[serde(rename = "isDefault", deserialize_with = "bool_from_int")]
-    pub(in crate::phb) is_default: bool,
+    is_default: bool,
 }

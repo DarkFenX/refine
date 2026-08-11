@@ -6,15 +6,15 @@ use crate::phb::data::{Key, KeyMergeOne};
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemSpaceComp {
     #[serde(rename = "systemWideEffects", default)]
-    pub(in crate::phb) system_wide_effects: Option<PItemSpaceCompSw>,
+    system_wide_effects: Option<PItemSpaceCompSw>,
     #[serde(rename = "systemDbuffEmitter", default)]
-    pub(in crate::phb) system_dbuff_emitter: Option<PItemSpaceCompSe>,
+    system_dbuff_emitter: Option<PItemSpaceCompSe>,
     #[serde(rename = "appliedProximityEffects", default)]
-    pub(in crate::phb) applied_proximity_effects: Option<PItemSpaceCompPe>,
+    applied_proximity_effects: Option<PItemSpaceCompPe>,
     #[serde(rename = "proximityTrap", default)]
-    pub(in crate::phb) proximity_trap: Option<PItemSpaceCompPt>,
+    proximity_trap: Option<PItemSpaceCompPt>,
     #[serde(rename = "linkWithShip", default)]
-    pub(in crate::phb) link_with_ship: Option<PItemSpaceCompSl>,
+    link_with_ship: Option<PItemSpaceCompSl>,
 }
 impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EItemSpaceComp> {
@@ -84,52 +84,52 @@ impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
 }
 
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemSpaceCompSw {
+struct PItemSpaceCompSw {
     #[serde(rename = "globalDebuffs", default)]
-    pub(in crate::phb) global_debuffs: Option<PItemSpaceCompSwGlobal>,
+    global_debuffs: Option<PItemSpaceCompSwGlobal>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemSpaceCompSwGlobal {
+struct PItemSpaceCompSwGlobal {
     #[serde_as(as = "Map<_, _>")]
     #[serde(default)]
-    pub(in crate::phb) dbuffs: Vec<(i32, f64)>,
+    dbuffs: Vec<(i32, f64)>,
     #[serde(rename = "eligibleTypeListID", default)]
-    pub(in crate::phb) eligible_type_list_id: Option<i32>,
+    eligible_type_list_id: Option<i32>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemSpaceCompSe {
+struct PItemSpaceCompSe {
     #[serde_as(as = "Map<_, _>")]
     #[serde(rename = "dbuffCollections", default)]
-    pub(in crate::phb) dbuff_collections: Vec<(i32, f64)>,
+    dbuff_collections: Vec<(i32, f64)>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemSpaceCompPe {
+struct PItemSpaceCompPe {
     #[serde_as(as = "Map<_, _>")]
     #[serde(default)]
-    pub(in crate::phb) effects: Vec<(i32, f64)>,
+    effects: Vec<(i32, f64)>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemSpaceCompPt {
+struct PItemSpaceCompPt {
     #[serde_as(as = "Map<_, _>")]
     #[serde(default)]
-    pub(in crate::phb) dbuffs: Vec<(i32, f64)>,
+    dbuffs: Vec<(i32, f64)>,
     #[serde(rename = "triggerFilterTypeListID", default)]
-    pub(in crate::phb) trigger_filter_type_list_id: Option<i32>,
+    trigger_filter_type_list_id: Option<i32>,
 }
 
 #[serde_as]
 #[derive(Deserialize)]
-pub(in crate::phb) struct PItemSpaceCompSl {
+struct PItemSpaceCompSl {
     #[serde_as(as = "Map<_, _>")]
-    pub(in crate::phb) dbuffs: Vec<(i32, f64)>,
+    dbuffs: Vec<(i32, f64)>,
     #[serde(rename = "linkableShipTypeListID", default)]
-    pub(in crate::phb) linkable_ship_type_list_id: Option<i32>,
+    linkable_ship_type_list_id: Option<i32>,
 }

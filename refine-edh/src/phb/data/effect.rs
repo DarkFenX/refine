@@ -8,27 +8,27 @@ use crate::phb::{
 #[derive(Deserialize)]
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
-    pub(in crate::phb) effect_category: i32,
+    effect_category: i32,
     #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
-    pub(in crate::phb) is_assistance: bool,
+    is_assistance: bool,
     #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
-    pub(in crate::phb) is_offensive: bool,
+    is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
-    pub(in crate::phb) discharge_attribute_id: Option<i32>,
+    discharge_attribute_id: Option<i32>,
     #[serde(rename = "durationAttributeID")]
-    pub(in crate::phb) duration_attribute_id: Option<i32>,
+    duration_attribute_id: Option<i32>,
     #[serde(rename = "rangeAttributeID")]
-    pub(in crate::phb) range_attribute_id: Option<i32>,
+    range_attribute_id: Option<i32>,
     #[serde(rename = "falloffAttributeID")]
-    pub(in crate::phb) falloff_attribute_id: Option<i32>,
+    falloff_attribute_id: Option<i32>,
     #[serde(rename = "trackingSpeedAttributeID")]
-    pub(in crate::phb) tracking_attribute_id: Option<i32>,
+    tracking_attribute_id: Option<i32>,
     #[serde(rename = "fittingUsageChanceAttributeID")]
-    pub(in crate::phb) fitting_usage_chance_attribute_id: Option<i32>,
+    fitting_usage_chance_attribute_id: Option<i32>,
     #[serde(rename = "resistanceAttributeID")]
-    pub(in crate::phb) resistance_attribute_id: Option<i32>,
-    #[serde(rename = "modifierInfo", default, deserialize_with = "effect_mod::deserialize")]
-    pub(in crate::phb) modifier_info: Vec<PEffectMod>,
+    resistance_attribute_id: Option<i32>,
+    #[serde(rename = "modifierInfo", default, deserialize_with = "serde_custom::deserialize")]
+    modifier_info: Vec<PEffectMod>,
 }
 impl KeyMergeOne<rc::ed::EEffect> for PEffect {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EEffect> {
@@ -53,9 +53,9 @@ impl KeyMergeOne<rc::ed::EEffect> for PEffect {
     }
 }
 
-pub(in crate::phb) struct PEffectMod {
-    pub(in crate::phb) func: String,
-    pub(in crate::phb) args: Vec<(String, rc::ed::EPrimitive)>,
+struct PEffectMod {
+    func: String,
+    args: Vec<(String, rc::ed::EPrimitive)>,
 }
 impl PEffectMod {
     fn into_e_effect_mod(self) -> rc::ed::EEffectMod {
@@ -70,13 +70,13 @@ impl PEffectMod {
     }
 }
 
-mod effect_mod {
+mod serde_custom {
     use serde::{Deserialize, de::Error};
     use serde_json::{Map, Value};
 
     use super::PEffectMod;
 
-    pub(in crate::phb) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<PEffectMod>, D::Error>
+    pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<PEffectMod>, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
