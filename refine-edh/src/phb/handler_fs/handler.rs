@@ -1,8 +1,4 @@
-use std::{
-    fs::File,
-    io::BufReader,
-    path::{Path, PathBuf},
-};
+use std::{fs::File, io::BufReader, path::PathBuf};
 
 use super::{address::Address, error::PhbFsEdhError};
 use crate::phb::{
@@ -54,7 +50,7 @@ impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
     }
     fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
         let addr = Address::new("phobos", "metadata");
-        let reader = get_reader(&self.base_path, &addr)?;
+        let reader = self.get_reader(&addr)?;
         let metadata = find_in_array::<PMetadata>(reader, |metadata| metadata.field_name == "client_build")
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         match metadata {
@@ -66,89 +62,88 @@ impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
 
 impl PhbFsEdh {
     fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.items = process_one::<PItem, _>(&self.base_path, "fsd_built", "types")?;
+        e_data.items = self.process_one::<PItem, _>("fsd_built", "types")?;
         Ok(())
     }
     fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.groups = process_one::<PItemGroup, _>(&self.base_path, "fsd_built", "groups")?;
+        e_data.groups = self.process_one::<PItemGroup, _>("fsd_built", "groups")?;
         Ok(())
     }
     fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.item_lists = process_one::<PItemList, _>(&self.base_path, "fsd_built", "typelist")?;
+        e_data.item_lists = self.process_one::<PItemList, _>("fsd_built", "typelist")?;
         Ok(())
     }
     fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.attrs = process_one::<PAttr, _>(&self.base_path, "fsd_built", "dogmaattributes")?;
+        e_data.attrs = self.process_one::<PAttr, _>("fsd_built", "dogmaattributes")?;
         Ok(())
     }
     fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        (e_data.item_attrs, e_data.item_effects) =
-            process_two::<PItemDogma, _, _>(&self.base_path, "fsd_built", "typedogma")?;
+        (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built", "typedogma")?;
         Ok(())
     }
     fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.effects = process_one::<PEffect, _>(&self.base_path, "fsd_built", "dogmaeffects")?;
+        e_data.effects = self.process_one::<PEffect, _>("fsd_built", "dogmaeffects")?;
         Ok(())
     }
     fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.abils = process_one::<PFighterAbil, _>(&self.base_path, "fsd_lite", "fighterabilities")?;
+        e_data.abils = self.process_one::<PFighterAbil, _>("fsd_lite", "fighterabilities")?;
         Ok(())
     }
     fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.item_abils = process_one::<PItemFighterAbils, _>(&self.base_path, "fsd_lite", "fighterabilitiesbytype")?;
+        e_data.item_abils = self.process_one::<PItemFighterAbils, _>("fsd_lite", "fighterabilitiesbytype")?;
         Ok(())
     }
     fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.buffs = process_one::<PBuff, _>(&self.base_path, "fsd_lite", "dbuffcollections")?;
+        e_data.buffs = self.process_one::<PBuff, _>("fsd_lite", "dbuffcollections")?;
         Ok(())
     }
     fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.space_comps = process_one::<PItemSpaceComp, _>(&self.base_path, "fsd_built", "spacecomponentsbytype")?;
+        e_data.space_comps = self.process_one::<PItemSpaceComp, _>("fsd_built", "spacecomponentsbytype")?;
         Ok(())
     }
     fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.item_srqs = process_one::<PItemSkillMap, _>(&self.base_path, "fsd_built", "requiredskillsfortypes")?;
+        e_data.item_srqs = self.process_one::<PItemSkillMap, _>("fsd_built", "requiredskillsfortypes")?;
         Ok(())
     }
     fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         (e_data.muta_items, e_data.muta_attrs) =
-            process_two::<PMuta, _, _>(&self.base_path, "fsd_built", "dynamicitemattributes")?;
+            self.process_two::<PMuta, _, _>("fsd_built", "dynamicitemattributes")?;
         Ok(())
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shared functions
+// Shared methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-fn process_one<PHB, EVE>(
-    base_path: &Path,
-    dir: &'static str,
-    file: &'static str,
-) -> Result<rc::ed::EDataCont<EVE>, PhbFsEdhError>
-where
-    PHB: serde::de::DeserializeOwned + KeyMergeOne<EVE>,
-{
-    let addr = Address::new(dir, file);
-    let reader = get_reader(base_path, &addr)?;
-    extract_from_keymap_one::<PHB, EVE>(reader).map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
-}
-
-fn process_two<PHB, EVE1, EVE2>(
-    base_path: &Path,
-    dir: &'static str,
-    file: &'static str,
-) -> Result<(rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>), PhbFsEdhError>
-where
-    PHB: serde::de::DeserializeOwned + KeyMergeTwo<EVE1, EVE2>,
-{
-    let addr = Address::new(dir, file);
-    let reader = get_reader(base_path, &addr)?;
-    extract_from_keymap_two::<PHB, EVE1, EVE2>(reader)
-        .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
-}
-
-fn get_reader(base_path: &Path, addr: &Address) -> Result<impl std::io::Read, PhbFsEdhError> {
-    let full_path = addr.get_full_path(base_path);
-    let file = File::open(full_path).map_err(|e| PhbFsEdhError::from_io(e, addr.get_part_str()))?;
-    Ok(BufReader::with_capacity(64 * 1024, file))
+impl PhbFsEdh {
+    fn process_one<PHB, EVE>(
+        &self,
+        dir: &'static str,
+        file: &'static str,
+    ) -> Result<rc::ed::EDataCont<EVE>, PhbFsEdhError>
+    where
+        PHB: serde::de::DeserializeOwned + KeyMergeOne<EVE>,
+    {
+        let addr = Address::new(dir, file);
+        let reader = self.get_reader(&addr)?;
+        extract_from_keymap_one::<PHB, EVE>(reader).map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
+    }
+    fn process_two<PHB, EVE1, EVE2>(
+        &self,
+        dir: &'static str,
+        file: &'static str,
+    ) -> Result<(rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>), PhbFsEdhError>
+    where
+        PHB: serde::de::DeserializeOwned + KeyMergeTwo<EVE1, EVE2>,
+    {
+        let addr = Address::new(dir, file);
+        let reader = self.get_reader(&addr)?;
+        extract_from_keymap_two::<PHB, EVE1, EVE2>(reader)
+            .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
+    }
+    fn get_reader(&self, addr: &Address) -> Result<impl std::io::Read, PhbFsEdhError> {
+        let full_path = addr.get_full_path(&self.base_path);
+        let file = File::open(full_path).map_err(|e| PhbFsEdhError::from_io(e, addr.get_part_str()))?;
+        Ok(BufReader::with_capacity(64 * 1024, file))
+    }
 }
