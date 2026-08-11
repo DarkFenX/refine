@@ -229,7 +229,7 @@ fn get_mod_affectee_attr_aid(arg_map: &RMap<String, EPrimitive>) -> Result<AAttr
 
 fn get_mod_location(arg_map: &RMap<String, EPrimitive>, a_effect: &AEffect) -> Result<AEffectLocation, String> {
     let domain = get_arg_str(arg_map, "domain")?;
-    match domain.as_str() {
+    match domain {
         "itemID" => Ok(AEffectLocation::Item),
         "charID" => Ok(AEffectLocation::Char),
         "shipID" => Ok(AEffectLocation::Ship),
@@ -280,10 +280,10 @@ fn get_arg_int(arg_map: &RMap<String, EPrimitive>, name: &str) -> Result<i32, St
     }
 }
 
-fn get_arg_str(arg_map: &RMap<String, EPrimitive>, name: &str) -> Result<String, String> {
+fn get_arg_str<'a>(arg_map: &'a RMap<String, EPrimitive>, name: &str) -> Result<&'a str, String> {
     let primitive = arg_map.get(name).ok_or(format!("no \"{name}\" in args"))?;
     match primitive {
-        EPrimitive::String(s) => Ok(s.clone()),
+        EPrimitive::String(s) => Ok(s),
         _ => Err(format!("expected string in \"{name}\" value")),
     }
 }
