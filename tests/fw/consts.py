@@ -340,6 +340,9 @@ class EveAttr(IntEnum):
     tracking_speed = 160
     volume = 161
     radius = 162
+    required_skill1 = 182
+    required_skill2 = 183
+    required_skill3 = 184
     tgt_filter_typelist_id = 189
     max_locked_targets = 192
     scan_radar_strength = 208
@@ -361,6 +364,9 @@ class EveAttr(IntEnum):
     shield_expl_dmg_resonance = 272
     shield_kin_dmg_resonance = 273
     shield_therm_dmg_resonance = 274
+    required_skill1_level = 277
+    required_skill2_level = 278
+    required_skill3_level = 279
     skill_level = 280
     explosion_delay = 281
     drone_capacity = 283
@@ -417,6 +423,12 @@ class EveAttr(IntEnum):
     required_thermodynamics_skill = 1212
     drone_bandwidth = 1271
     drone_bandwidth_used = 1272
+    required_skill4 = 1285
+    required_skill4_level = 1286
+    required_skill5_level = 1287
+    required_skill6_level = 1288
+    required_skill5 = 1289
+    required_skill6 = 1290
     can_fit_ship_group1 = 1298
     can_fit_ship_group2 = 1299
     can_fit_ship_group3 = 1300

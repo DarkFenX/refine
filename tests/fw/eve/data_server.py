@@ -31,7 +31,6 @@ class EveDataServer:
             'fsd_lite/fighterabilitiesbytype.json': str_data.fighterabilitiesbytype,
             'fsd_lite/dbuffcollections.json': str_data.dbuffcollections,
             'fsd_built/spacecomponentsbytype.json': str_data.spacecomponentsbytype,
-            'fsd_built/requiredskillsfortypes.json': str_data.requiredskillsfortypes,
             'fsd_built/dynamicitemattributes.json': str_data.dynamicitemattributes}
         for suffix, container in suffix_cont_map.items():
             self.__setup_handler(url=f'/{data.alias}/{suffix}', data=container)

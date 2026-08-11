@@ -21,7 +21,6 @@ class EvePrimitives:
         self.fighterabilitiesbytype = {}
         self.dbuffcollections = {}
         self.spacecomponentsbytype = {}
-        self.requiredskillsfortypes = {}
         self.dynamicitemattributes = {}
 
     def to_strings(self, *, hook_data_str: DataStrHook | None) -> EveStrings:
@@ -36,7 +35,6 @@ class EvePrimitives:
         string_data.fighterabilitiesbytype = json.dumps(self.fighterabilitiesbytype)
         string_data.dbuffcollections = json.dumps(self.dbuffcollections)
         string_data.spacecomponentsbytype = json.dumps(self.spacecomponentsbytype)
-        string_data.requiredskillsfortypes = json.dumps(self.requiredskillsfortypes)
         string_data.dynamicitemattributes = json.dumps(self.dynamicitemattributes)
         if hook_data_str is not None:
             hook_data_str(string_data)

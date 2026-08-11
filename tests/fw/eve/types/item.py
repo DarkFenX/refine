@@ -1,6 +1,7 @@
 import typing
 from dataclasses import dataclass
 
+from fw.consts import EveAttr
 from fw.eve.exception import TestDataConsistencyError
 from fw.util import Absent, conditional_insert
 
@@ -30,7 +31,7 @@ class Item:
         self.__add_primitive_item_attributes(primitive_data=primitive_data)
         self.__add_primitive_item_effects(primitive_data=primitive_data)
         self.__add_primitive_item_abilities(primitive_data=primitive_data)
-        conditional_insert(container=primitive_data.requiredskillsfortypes, path=[self.id], value=self.skill_reqs)
+        self.__add_primitive_item_skill_reqs(primitive_data=primitive_data)
         conditional_insert(container=item_entry, path=['capacity'], value=self.capacity)
         conditional_insert(container=item_entry, path=['mass'], value=self.mass)
         conditional_insert(container=item_entry, path=['radius'], value=self.radius)
@@ -45,7 +46,7 @@ class Item:
             return
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
         if isinstance(self.attributes, dict):
-            attrs_entry = item_entry['dogmaAttributes'] = []
+            attrs_entry = item_entry.setdefault('dogmaAttributes', [])
             for attr_id, attr_val in self.attributes.items():
                 attrs_entry.append({'attributeID': attr_id, 'value': attr_val})
         else:
@@ -81,3 +82,28 @@ class Item:
                 path=['charges', 'rearmTimeSeconds'],
                 value=ability_data.charge_rearm_time)
             item_entry[f'abilitySlot{i}'] = ability_entry
+
+    __SKILL_ATTR_IDS = {
+        EveAttr.required_skill1: EveAttr.required_skill1_level,
+        EveAttr.required_skill2: EveAttr.required_skill2_level,
+        EveAttr.required_skill3: EveAttr.required_skill3_level,
+        EveAttr.required_skill4: EveAttr.required_skill4_level,
+        EveAttr.required_skill5: EveAttr.required_skill5_level,
+        EveAttr.required_skill6: EveAttr.required_skill6_level}
+
+    def __add_primitive_item_skill_reqs(self, *, primitive_data: EvePrimitives) -> None:
+        if self.skill_reqs is Absent:
+            return
+        if len(self.skill_reqs) > len(self.__SKILL_ATTR_IDS):
+            msg = 'item has too many skill requirements'
+            raise TestDataConsistencyError(msg)
+        item_entry = primitive_data.typedogma.setdefault(self.id, {})
+        attrs_entry = item_entry.setdefault('dogmaAttributes', [])
+        for attr_ids, reqs in zip(self.__SKILL_ATTR_IDS.items(), self.skill_reqs.items()):
+            if any(e['attributeID'] in attr_ids for e in attrs_entry):
+                msg = 'item already has skill requirement attribute set'
+                raise TestDataConsistencyError(msg)
+            skill_attr_id, level_attr_id = attr_ids
+            req_skill_id, req_level_id = reqs
+            attrs_entry.append({'attributeID': skill_attr_id, 'value': req_skill_id})
+            attrs_entry.append({'attributeID': level_attr_id, 'value': req_level_id})
