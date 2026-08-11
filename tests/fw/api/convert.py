@@ -51,5 +51,5 @@ class Effect:
         return f'pt{type_id}'
 
     @staticmethod
-    def scsl_to_api(*, type_id: int) -> str:
-        return f'scsl{type_id}'
+    def sl_to_api(*, type_id: int) -> str:
+        return f'sl{type_id}'
