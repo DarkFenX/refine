@@ -3,16 +3,16 @@ use crate::{
     util::LibNamed,
 };
 
-pub struct EItemSpaceComp {
+pub struct EItemBuff {
     pub item_id: EItemId,
-    pub system_wide_buffs: Option<EItemSpaceCompBuffData>,
-    pub system_emitter_buffs: Option<EItemSpaceCompBuffData>,
-    pub proxy_effect_buffs: Option<EItemSpaceCompBuffData>,
-    pub proxy_trigger_buffs: Option<EItemSpaceCompBuffData>,
-    pub ship_link_buffs: Option<EItemSpaceCompBuffData>,
+    pub system_wide_buffs: Option<EItemBuffData>,
+    pub system_emitter_buffs: Option<EItemBuffData>,
+    pub proxy_effect_buffs: Option<EItemBuffData>,
+    pub proxy_trigger_buffs: Option<EItemBuffData>,
+    pub ship_link_buffs: Option<EItemBuffData>,
 }
-impl EItemSpaceComp {
-    pub(crate) fn iter_data(&self) -> impl Iterator<Item = &EItemSpaceCompBuffData> {
+impl EItemBuff {
+    pub(crate) fn iter_data(&self) -> impl Iterator<Item = &EItemBuffData> {
         [
             &self.system_wide_buffs,
             &self.system_emitter_buffs,
@@ -32,18 +32,18 @@ impl EItemSpaceComp {
         false
     }
 }
-impl LibNamed for EItemSpaceComp {
+impl LibNamed for EItemBuff {
     fn lib_get_name() -> &'static str {
-        "EItemSpaceComp"
+        "EItemBuff"
     }
 }
 
-pub struct EItemSpaceCompBuffData {
-    pub buffs: Vec<EItemSpaceCompBuffEntry>,
+pub struct EItemBuffData {
+    pub buffs: Vec<EItemBuffEntry>,
     pub item_list_filter: Option<EItemListId>,
 }
 
-pub struct EItemSpaceCompBuffEntry {
+pub struct EItemBuffEntry {
     pub id: EBuffId,
     pub value: EFloat,
 }

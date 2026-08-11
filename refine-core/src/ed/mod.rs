@@ -36,8 +36,8 @@
 pub use data::{
     EAbil, EAbilId, EAttr, EAttrId, EAttrUnitId, EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM, EData,
     EDataCont, EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EFloat, EInt, EItem, EItemAbil, EItemAttr,
-    EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemList, EItemListId, EItemSpaceComp,
-    EItemSpaceCompBuffData, EItemSpaceCompBuffEntry, EMutaAttr, EMutaItem, EPrimitive,
+    EItemBuff, EItemBuffData, EItemBuffEntry, EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemList,
+    EItemListId, EMutaAttr, EMutaItem, EPrimitive,
 };
 pub use handler::{EveDataHandler, EveDataHandlerInterface};
 

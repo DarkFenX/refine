@@ -5,9 +5,9 @@ mod attr;
 mod buff;
 mod effect;
 mod item;
+mod item_buff;
 mod item_list;
 mod muta;
-mod space_comp;
 
 // Convert EVE data types into adapted data types.
 impl ADataGenerator {
@@ -19,6 +19,6 @@ impl ADataGenerator {
         self.conv_effects();
         self.conv_buffs();
         self.conv_abils();
-        self.apply_space_comps();
+        self.apply_item_buffs();
     }
 }

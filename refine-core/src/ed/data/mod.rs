@@ -4,8 +4,8 @@ pub use buff::{EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM};
 pub use data::{EData, EDataCont};
 pub use effect::{EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EPrimitive};
 pub use item::{
-    EItem, EItemAbil, EItemAttr, EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemSpaceComp,
-    EItemSpaceCompBuffData, EItemSpaceCompBuffEntry,
+    EItem, EItemAbil, EItemAttr, EItemBuff, EItemBuffData, EItemBuffEntry, EItemCatId, EItemEffect, EItemGroup,
+    EItemGrpId, EItemId,
 };
 pub use item_list::{EItemList, EItemListId};
 pub use muta::{EMutaAttr, EMutaItem};

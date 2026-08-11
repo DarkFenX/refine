@@ -57,7 +57,7 @@ impl ADataGenerator {
         move_data(&mut self.e_data.abils, &mut trash.abils, |_| true);
         move_data(&mut self.e_data.item_abils, &mut trash.item_abils, |_| true);
         move_data(&mut self.e_data.buffs, &mut trash.buffs, |_| true);
-        move_data(&mut self.e_data.space_comps, &mut trash.space_comps, |_| true);
+        move_data(&mut self.e_data.item_buffs, &mut trash.item_buffs, |_| true);
         move_data(&mut self.e_data.muta_items, &mut trash.muta_items, |_| true);
         move_data(&mut self.e_data.muta_attrs, &mut trash.muta_attrs, |_| true);
     }
@@ -140,7 +140,7 @@ impl ADataGenerator {
         // its value refers some item which is already "alive" is undesired.
         //
         // Extra notes on specific entities:
-        // - Space components are restored if they contain any buff data
+        // - Item buffs are restored if they contain any buff data
         // - Mutator item conversions are restored for input/output items which are alive
         // - Mutator attribute modifications are restored for alive mutators
         move_data(&mut trash.item_attrs, &mut self.e_data.item_attrs, |v| {
@@ -149,7 +149,7 @@ impl ADataGenerator {
             item_ids.contains(&v.item_id)
         }) || move_data(&mut trash.item_abils, &mut self.e_data.item_abils, |v| {
             item_ids.contains(&v.item_id)
-        }) || move_data(&mut trash.space_comps, &mut self.e_data.space_comps, |v| v.has_buffs())
+        }) || move_data(&mut trash.item_buffs, &mut self.e_data.item_buffs, |v| v.has_buffs())
             || move_data(&mut trash.muta_items, &mut self.e_data.muta_items, |v| {
                 item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
             })
@@ -196,7 +196,7 @@ impl ADataGenerator {
         record_cont_stats(&self.e_data.abils, &trash.abils, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.item_abils, &trash.item_abils, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.buffs, &trash.buffs, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.space_comps, &trash.space_comps, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.item_buffs, &trash.item_buffs, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.muta_items, &trash.muta_items, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
     }

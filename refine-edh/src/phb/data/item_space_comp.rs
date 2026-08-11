@@ -16,16 +16,16 @@ pub(in crate::phb) struct PItemSpaceComp {
     #[serde(rename = "linkWithShip", default)]
     link_with_ship: Option<PItemSpaceCompSl>,
 }
-impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemSpaceComp> {
-        vec![rc::ed::EItemSpaceComp {
+impl KeyMergeOne<rc::ed::EItemBuff> for PItemSpaceComp {
+    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemBuff> {
+        vec![rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(key),
             system_wide_buffs: self.system_wide_effects.and_then(|v| v.global_debuffs).map(|data| {
-                rc::ed::EItemSpaceCompBuffData {
+                rc::ed::EItemBuffData {
                     buffs: data
                         .dbuffs
                         .into_iter()
-                        .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
+                        .map(|(id, value)| rc::ed::EItemBuffEntry {
                             id: rc::ed::EBuffId::from_i32(id),
                             value: rc::ed::EFloat::from_f64(value),
                         })
@@ -33,46 +33,44 @@ impl KeyMergeOne<rc::ed::EItemSpaceComp> for PItemSpaceComp {
                     item_list_filter: data.eligible_type_list_id.map(rc::ed::EItemListId::from_i32),
                 }
             }),
-            system_emitter_buffs: self.system_dbuff_emitter.map(|data| rc::ed::EItemSpaceCompBuffData {
+            system_emitter_buffs: self.system_dbuff_emitter.map(|data| rc::ed::EItemBuffData {
                 buffs: data
                     .dbuff_collections
                     .into_iter()
-                    .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
+                    .map(|(id, value)| rc::ed::EItemBuffEntry {
                         id: rc::ed::EBuffId::from_i32(id),
                         value: rc::ed::EFloat::from_f64(value),
                     })
                     .collect(),
                 item_list_filter: None,
             }),
-            proxy_effect_buffs: self
-                .applied_proximity_effects
-                .map(|data| rc::ed::EItemSpaceCompBuffData {
-                    buffs: data
-                        .effects
-                        .into_iter()
-                        .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
-                            id: rc::ed::EBuffId::from_i32(id),
-                            value: rc::ed::EFloat::from_f64(value),
-                        })
-                        .collect(),
-                    item_list_filter: None,
-                }),
-            proxy_trigger_buffs: self.proximity_trap.map(|data| rc::ed::EItemSpaceCompBuffData {
+            proxy_effect_buffs: self.applied_proximity_effects.map(|data| rc::ed::EItemBuffData {
+                buffs: data
+                    .effects
+                    .into_iter()
+                    .map(|(id, value)| rc::ed::EItemBuffEntry {
+                        id: rc::ed::EBuffId::from_i32(id),
+                        value: rc::ed::EFloat::from_f64(value),
+                    })
+                    .collect(),
+                item_list_filter: None,
+            }),
+            proxy_trigger_buffs: self.proximity_trap.map(|data| rc::ed::EItemBuffData {
                 buffs: data
                     .dbuffs
                     .into_iter()
-                    .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
+                    .map(|(id, value)| rc::ed::EItemBuffEntry {
                         id: rc::ed::EBuffId::from_i32(id),
                         value: rc::ed::EFloat::from_f64(value),
                     })
                     .collect(),
                 item_list_filter: data.trigger_filter_type_list_id.map(rc::ed::EItemListId::from_i32),
             }),
-            ship_link_buffs: self.link_with_ship.map(|data| rc::ed::EItemSpaceCompBuffData {
+            ship_link_buffs: self.link_with_ship.map(|data| rc::ed::EItemBuffData {
                 buffs: data
                     .dbuffs
                     .into_iter()
-                    .map(|(id, value)| rc::ed::EItemSpaceCompBuffEntry {
+                    .map(|(id, value)| rc::ed::EItemBuffEntry {
                         id: rc::ed::EBuffId::from_i32(id),
                         value: rc::ed::EFloat::from_f64(value),
                     })

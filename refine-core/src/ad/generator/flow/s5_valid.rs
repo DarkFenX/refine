@@ -45,12 +45,7 @@ impl ADataGenerator {
         fk_check_referer(&self.e_data.abils, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(&self.e_data.item_abils, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(&self.e_data.buffs, &pkdb, &self.support, &mut self.a_data.warnings);
-        fk_check_referer(
-            &self.e_data.space_comps,
-            &pkdb,
-            &self.support,
-            &mut self.a_data.warnings,
-        );
+        fk_check_referer(&self.e_data.item_buffs, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(&self.e_data.muta_items, &pkdb, &self.support, &mut self.a_data.warnings);
         fk_check_referer(&self.e_data.muta_attrs, &pkdb, &self.support, &mut self.a_data.warnings);
     }

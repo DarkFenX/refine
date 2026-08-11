@@ -7,16 +7,16 @@ use crate::{
 pub enum AEffectId {
     // ID of a general EVE effect
     Dogma(ADogmaEffectId),
-    // Space component effect attached to an item, system-wide effect part
-    ScSystemWide(AItemId),
-    // Space component effect attached to an item, system buff emitter part
-    ScSystemEmitter(AItemId),
-    // Space component effect attached to an item, proximity effect part
-    ScProxyEffect(AItemId),
-    // Space component effect attached to an item, proximity trap/trigger part
-    ScProxyTrap(AItemId),
-    // Space component effect attached to an item, ship link part
-    ScShipLink(AItemId),
+    // Buff effect attached to an item, system-wide effect part
+    SystemWide(AItemId),
+    // Buff effect attached to an item, system buff emitter part
+    SystemEmitter(AItemId),
+    // Buff effect attached to an item, proximity effect part
+    ProxyEffect(AItemId),
+    // Buff effect attached to an item, proximity trap/trigger part
+    ProxyTrap(AItemId),
+    // Buff effect attached to an item, ship link part
+    ShipLink(AItemId),
     // ID of an effect created by the library
     Custom(ACustomEffectId),
 }
@@ -62,22 +62,22 @@ impl AEffectId {
     }
     pub(in crate::ad) fn dc_sc_item(&self) -> Option<EItemId> {
         match self {
-            Self::ScSystemWide(item_aid)
-            | Self::ScSystemEmitter(item_aid)
-            | Self::ScProxyEffect(item_aid)
-            | Self::ScProxyTrap(item_aid)
-            | Self::ScShipLink(item_aid) => Some(EItemId::from_i32(item_aid.into_i32())),
+            Self::SystemWide(item_aid)
+            | Self::SystemEmitter(item_aid)
+            | Self::ProxyEffect(item_aid)
+            | Self::ProxyTrap(item_aid)
+            | Self::ShipLink(item_aid) => Some(EItemId::from_i32(item_aid.into_i32())),
             Self::Dogma(..) | Self::Custom(..) => None,
         }
     }
     pub(in crate::ad) fn dc_dogma_effect(&self) -> Option<EEffectId> {
         match self {
             Self::Dogma(dogma_effect_aid) => Some(EEffectId::from_i32(dogma_effect_aid.into_i32())),
-            Self::ScSystemWide(..)
-            | Self::ScSystemEmitter(..)
-            | Self::ScProxyEffect(..)
-            | Self::ScProxyTrap(..)
-            | Self::ScShipLink(..)
+            Self::SystemWide(..)
+            | Self::SystemEmitter(..)
+            | Self::ProxyEffect(..)
+            | Self::ProxyTrap(..)
+            | Self::ShipLink(..)
             | Self::Custom(..) => None,
         }
     }
@@ -87,22 +87,22 @@ impl AEffectId {
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 const DOGMA_PREFIX: &str = "d";
-const SC_SYSWIDE_PREFIX: &str = "scsw";
-const SC_SYSEMIT_PREFIX: &str = "scse";
-const SC_PROXYEFF_PREFIX: &str = "scpe";
-const SC_PROXYTRAP_PREFIX: &str = "scpt";
-const SC_SHIPLINK_PREFIX: &str = "scsl";
+const SYSWIDE_PREFIX: &str = "sw";
+const SYSEMIT_PREFIX: &str = "se";
+const PROXYEFF_PREFIX: &str = "pe";
+const PROXYTRAP_PREFIX: &str = "pt";
+const SHIPLINK_PREFIX: &str = "sl";
 const CUSTOM_PREFIX: &str = "c";
 
 impl std::fmt::Display for AEffectId {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         match self {
             Self::Dogma(id) => write!(f, "{DOGMA_PREFIX}{id}"),
-            Self::ScSystemWide(id) => write!(f, "{SC_SYSWIDE_PREFIX}{id}"),
-            Self::ScSystemEmitter(id) => write!(f, "{SC_SYSEMIT_PREFIX}{id}"),
-            Self::ScProxyEffect(id) => write!(f, "{SC_PROXYEFF_PREFIX}{id}"),
-            Self::ScProxyTrap(id) => write!(f, "{SC_PROXYTRAP_PREFIX}{id}"),
-            Self::ScShipLink(id) => write!(f, "{SC_SHIPLINK_PREFIX}{id}"),
+            Self::SystemWide(id) => write!(f, "{SYSWIDE_PREFIX}{id}"),
+            Self::SystemEmitter(id) => write!(f, "{SYSEMIT_PREFIX}{id}"),
+            Self::ProxyEffect(id) => write!(f, "{PROXYEFF_PREFIX}{id}"),
+            Self::ProxyTrap(id) => write!(f, "{PROXYTRAP_PREFIX}{id}"),
+            Self::ShipLink(id) => write!(f, "{SHIPLINK_PREFIX}{id}"),
             Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
         }
     }
@@ -131,25 +131,25 @@ mod custom_serde_ad {
             E: Error,
         {
             // Process longer prefixes first in case of conflicting starting letters
-            if let Some(id_str) = v.strip_prefix(SC_SYSWIDE_PREFIX) {
+            if let Some(id_str) = v.strip_prefix(SYSWIDE_PREFIX) {
                 let id = i32::from_str(id_str).map_err(Error::custom)?;
-                return Ok(Self::Value::ScSystemWide(AItemId::from_i32(id)));
+                return Ok(Self::Value::SystemWide(AItemId::from_i32(id)));
             }
-            if let Some(id_str) = v.strip_prefix(SC_SYSEMIT_PREFIX) {
+            if let Some(id_str) = v.strip_prefix(SYSEMIT_PREFIX) {
                 let id = i32::from_str(id_str).map_err(Error::custom)?;
-                return Ok(Self::Value::ScSystemEmitter(AItemId::from_i32(id)));
+                return Ok(Self::Value::SystemEmitter(AItemId::from_i32(id)));
             }
-            if let Some(id_str) = v.strip_prefix(SC_PROXYEFF_PREFIX) {
+            if let Some(id_str) = v.strip_prefix(PROXYEFF_PREFIX) {
                 let id = i32::from_str(id_str).map_err(Error::custom)?;
-                return Ok(Self::Value::ScProxyEffect(AItemId::from_i32(id)));
+                return Ok(Self::Value::ProxyEffect(AItemId::from_i32(id)));
             }
-            if let Some(id_str) = v.strip_prefix(SC_PROXYTRAP_PREFIX) {
+            if let Some(id_str) = v.strip_prefix(PROXYTRAP_PREFIX) {
                 let id = i32::from_str(id_str).map_err(Error::custom)?;
-                return Ok(Self::Value::ScProxyTrap(AItemId::from_i32(id)));
+                return Ok(Self::Value::ProxyTrap(AItemId::from_i32(id)));
             }
-            if let Some(id_str) = v.strip_prefix(SC_SHIPLINK_PREFIX) {
+            if let Some(id_str) = v.strip_prefix(SHIPLINK_PREFIX) {
                 let id = i32::from_str(id_str).map_err(Error::custom)?;
-                return Ok(Self::Value::ScShipLink(AItemId::from_i32(id)));
+                return Ok(Self::Value::ShipLink(AItemId::from_i32(id)));
             }
             if let Some(id_str) = v.strip_prefix(DOGMA_PREFIX) {
                 let id = i32::from_str(id_str).map_err(Error::custom)?;
@@ -160,7 +160,7 @@ mod custom_serde_ad {
                 return Ok(Self::Value::Custom(ACustomEffectId::from_i32(id)));
             }
             let msg = format!(
-                "expected an int prefixed by \"{DOGMA_PREFIX}\", \"{SC_SYSWIDE_PREFIX}\", \"{SC_SYSEMIT_PREFIX}\", \"{SC_PROXYEFF_PREFIX}\", \"{SC_PROXYTRAP_PREFIX}\", \"{SC_SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\", received \"{v}\""
+                "expected an int prefixed by \"{DOGMA_PREFIX}\", \"{SYSWIDE_PREFIX}\", \"{SYSEMIT_PREFIX}\", \"{PROXYEFF_PREFIX}\", \"{PROXYTRAP_PREFIX}\", \"{SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\", received \"{v}\""
             );
             Err(Error::custom(msg))
         }
@@ -171,11 +171,11 @@ mod custom_serde_ad {
     #[serde(remote = "AEffectId")]
     enum AEffectIdDef {
         Dogma(ADogmaEffectId),
-        ScSystemWide(AItemId),
-        ScSystemEmitter(AItemId),
-        ScProxyEffect(AItemId),
-        ScProxyTrap(AItemId),
-        ScShipLink(AItemId),
+        SystemWide(AItemId),
+        SystemEmitter(AItemId),
+        ProxyEffect(AItemId),
+        ProxyTrap(AItemId),
+        ShipLink(AItemId),
         Custom(ACustomEffectId),
     }
 

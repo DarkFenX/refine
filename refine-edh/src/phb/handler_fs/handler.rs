@@ -97,7 +97,7 @@ impl PhbFsEdh {
         Ok(())
     }
     fn process_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.space_comps = self.process_one::<PItemSpaceComp, _>("fsd_built", "spacecomponentsbytype")?;
+        e_data.item_buffs = self.process_one::<PItemSpaceComp, _>("fsd_built", "spacecomponentsbytype")?;
         Ok(())
     }
     fn process_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {

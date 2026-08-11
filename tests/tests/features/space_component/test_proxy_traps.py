@@ -1,8 +1,8 @@
 """
-Space component proximity traps were initially used by the Dr Who event, and in a few following
-events. As of 2025-03-28, there seems to be no items which actively use it, so there seems to be no
-normal way of testing it. However, thanks to FC Kestrel, we know that as of 2025-03-28 traps do not
-apply to drones.
+Proximity traps were initially used by the Dr Who event, and in a few following events. As of
+2025-03-28, there seems to be no items which actively use it, so there seems to be no normal way of
+testing it. However, thanks to FC Kestrel, we know that as of 2025-03-28 traps do not apply to
+drones.
 
 Proximity traps have an item list attached, which, judging by the name, defines which entities can
 trigger those traps. Possibly, this is the list which is used to define which items buff applies to
@@ -203,7 +203,7 @@ def test_effect_mode(client, consts):
     client.mk_eve_space_comp(type_id=eve_beacon_id, pt_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     client.create_sources()
-    api_effect_id = Effect.scpt_to_api(type_id=eve_beacon_id)
+    api_effect_id = Effect.pt_to_api(type_id=eve_beacon_id)
     api_sol = client.create_sol()
     api_sw_effect = api_sol.add_sw_effect(type_id=eve_beacon_id)
     api_fit = api_sol.create_fit()

@@ -5,56 +5,51 @@ use crate::{
         ABuffId, AData, ADataGenerator, AEffect, AEffectBuff, AEffectBuffDuration, AEffectBuffFull, AEffectBuffScope,
         AEffectCatId, AEffectId, AEffectModStrength, AItemEffect, AItemId, AItemListId, AState, AValue,
     },
-    ed::EItemSpaceCompBuffData,
+    ed::EItemBuffData,
 };
 
 impl ADataGenerator {
-    pub(super) fn apply_space_comps(&mut self) {
-        for e_space_comp in self.e_data.space_comps.data.iter() {
-            let item_aid = AItemId::from_eid(e_space_comp.item_id);
+    pub(super) fn apply_item_buffs(&mut self) {
+        for e_item_buff in self.e_data.item_buffs.data.iter() {
+            let item_aid = AItemId::from_eid(e_item_buff.item_id);
             if !self.a_data.items.data.contains_key(&item_aid) {
                 continue;
             }
             process_buffs(
-                &e_space_comp.system_wide_buffs,
+                &e_item_buff.system_wide_buffs,
                 &mut self.a_data,
                 item_aid,
-                AEffectId::ScSystemWide(item_aid),
+                AEffectId::SystemWide(item_aid),
             );
             process_buffs(
-                &e_space_comp.system_emitter_buffs,
+                &e_item_buff.system_emitter_buffs,
                 &mut self.a_data,
                 item_aid,
-                AEffectId::ScSystemEmitter(item_aid),
+                AEffectId::SystemEmitter(item_aid),
             );
             process_buffs(
-                &e_space_comp.proxy_effect_buffs,
+                &e_item_buff.proxy_effect_buffs,
                 &mut self.a_data,
                 item_aid,
-                AEffectId::ScProxyEffect(item_aid),
+                AEffectId::ProxyEffect(item_aid),
             );
             process_buffs(
-                &e_space_comp.proxy_trigger_buffs,
+                &e_item_buff.proxy_trigger_buffs,
                 &mut self.a_data,
                 item_aid,
-                AEffectId::ScProxyTrap(item_aid),
+                AEffectId::ProxyTrap(item_aid),
             );
             process_buffs(
-                &e_space_comp.ship_link_buffs,
+                &e_item_buff.ship_link_buffs,
                 &mut self.a_data,
                 item_aid,
-                AEffectId::ScShipLink(item_aid),
+                AEffectId::ShipLink(item_aid),
             );
         }
     }
 }
 
-fn process_buffs(
-    e_sc_buff_data: &Option<EItemSpaceCompBuffData>,
-    a_data: &mut AData,
-    item_aid: AItemId,
-    effect_aid: AEffectId,
-) {
+fn process_buffs(e_sc_buff_data: &Option<EItemBuffData>, a_data: &mut AData, item_aid: AItemId, effect_aid: AEffectId) {
     let Some(e_sc_buff_data) = e_sc_buff_data else {
         return;
     };

@@ -35,20 +35,20 @@ class Effect:
         return f'c{custom_effect_id}'
 
     @staticmethod
-    def scsw_to_api(*, type_id: int) -> str:
-        return f'scsw{type_id}'
+    def sw_to_api(*, type_id: int) -> str:
+        return f'sw{type_id}'
 
     @staticmethod
-    def scse_to_api(*, type_id: int) -> str:
-        return f'scse{type_id}'
+    def se_to_api(*, type_id: int) -> str:
+        return f'se{type_id}'
 
     @staticmethod
-    def scpe_to_api(*, type_id: int) -> str:
-        return f'scpe{type_id}'
+    def pe_to_api(*, type_id: int) -> str:
+        return f'pe{type_id}'
 
     @staticmethod
-    def scpt_to_api(*, type_id: int) -> str:
-        return f'scpt{type_id}'
+    def pt_to_api(*, type_id: int) -> str:
+        return f'pt{type_id}'
 
     @staticmethod
     def scsl_to_api(*, type_id: int) -> str:
