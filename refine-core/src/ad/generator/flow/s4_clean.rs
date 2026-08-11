@@ -58,7 +58,6 @@ impl ADataGenerator {
         move_data(&mut self.e_data.item_abils, &mut trash.item_abils, |_| true);
         move_data(&mut self.e_data.buffs, &mut trash.buffs, |_| true);
         move_data(&mut self.e_data.space_comps, &mut trash.space_comps, |_| true);
-        move_data(&mut self.e_data.item_srqs, &mut trash.item_srqs, |_| true);
         move_data(&mut self.e_data.muta_items, &mut trash.muta_items, |_| true);
         move_data(&mut self.e_data.muta_attrs, &mut trash.muta_attrs, |_| true);
     }
@@ -151,9 +150,6 @@ impl ADataGenerator {
         }) || move_data(&mut trash.item_abils, &mut self.e_data.item_abils, |v| {
             item_ids.contains(&v.item_id)
         }) || move_data(&mut trash.space_comps, &mut self.e_data.space_comps, |v| v.has_buffs())
-            || move_data(&mut trash.item_srqs, &mut self.e_data.item_srqs, |v| {
-                item_ids.contains(&v.item_id)
-            })
             || move_data(&mut trash.muta_items, &mut self.e_data.muta_items, |v| {
                 item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
             })
@@ -201,7 +197,6 @@ impl ADataGenerator {
         record_cont_stats(&self.e_data.item_abils, &trash.item_abils, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.buffs, &trash.buffs, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.space_comps, &trash.space_comps, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.item_srqs, &trash.item_srqs, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.muta_items, &trash.muta_items, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
     }

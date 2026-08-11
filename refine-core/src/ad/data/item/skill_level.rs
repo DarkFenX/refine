@@ -1,3 +1,5 @@
+use crate::util::round_f64_to_i32;
+
 #[cfg_attr(feature = "serde-ad", derive(serde::Serialize), serde(transparent))]
 #[derive(Copy, Clone, Eq, PartialEq, Hash, Debug, derive_more::Display)]
 pub struct ASkillLevel(u8);
@@ -10,6 +12,15 @@ impl ASkillLevel {
     }
     pub fn into_u8(self) -> u8 {
         self.0
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ASkillLevel {
+    pub(in crate::ad) fn from_f64_rounded_clamped(level: f64) -> Self {
+        Self::from_i32_clamped(round_f64_to_i32(level))
     }
 }
 

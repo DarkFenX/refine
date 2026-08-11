@@ -100,14 +100,27 @@ impl ADataGenerator {
                 a_item.abil_ids.insert(AAbilId::from_eid(e_item_abil.abil_id));
             }
         }
-
         // Item skill requirements
-        for e_item_srq in self.e_data.item_srqs.data.iter() {
-            if let Some(a_item) = a_items.get_mut(&AItemId::from_eid(e_item_srq.item_id)) {
+        for a_item in a_items.values_mut() {
+            for (skill_attr_aid, skill_level_attr_aid) in AAttrId::SKILL_REQ_ATTRS.iter() {
+                let Some(skill_id) = a_item
+                    .attrs
+                    .get(skill_attr_aid)
+                    .and_then(|v| AItemId::try_from_f64_rounded(v.value.into_f64()))
+                else {
+                    continue;
+                };
+                let Some(skill_level) = a_item
+                    .attrs
+                    .get(skill_level_attr_aid)
+                    .map(|v| ASkillLevel::from_f64_rounded_clamped(v.value.into_f64()))
+                else {
+                    continue;
+                };
                 a_item.srqs.insert(AItemSkillReq {
-                    id: AItemId::from_eid(e_item_srq.skill_id),
-                    level: ASkillLevel::from_i32_clamped(e_item_srq.level.into_i32()),
-                });
+                    id: skill_id,
+                    level: skill_level,
+                })
             }
         }
         self.a_data.items = AItems { data: a_items };

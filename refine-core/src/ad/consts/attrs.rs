@@ -5,6 +5,14 @@ use crate::{
 
 impl AAttrId {
     // Composite constants
+    pub(crate) const SKILL_REQ_ATTRS: [(Self, Self); 6] = [
+        (Self::REQUIRED_SKILL1, Self::REQUIRED_SKILL1_LEVEL),
+        (Self::REQUIRED_SKILL2, Self::REQUIRED_SKILL2_LEVEL),
+        (Self::REQUIRED_SKILL3, Self::REQUIRED_SKILL3_LEVEL),
+        (Self::REQUIRED_SKILL4, Self::REQUIRED_SKILL4_LEVEL),
+        (Self::REQUIRED_SKILL5, Self::REQUIRED_SKILL5_LEVEL),
+        (Self::REQUIRED_SKILL6, Self::REQUIRED_SKILL6_LEVEL),
+    ];
     pub(crate) const BUFF_MERGE_ATTRS: [(Self, Self); 4] = [
         (Self::WARFARE_BUFF1_ID, Self::WARFARE_BUFF1_VAL),
         (Self::WARFARE_BUFF2_ID, Self::WARFARE_BUFF2_VAL),
@@ -62,6 +70,9 @@ impl AAttrId {
     pub(crate) const TRACKING_SPEED: Self = Self::from_eid(EAttrId::TRACKING_SPEED);
     pub(crate) const VOLUME: Self = Self::from_eid(EAttrId::VOLUME);
     pub(crate) const RADIUS: Self = Self::from_eid(EAttrId::RADIUS);
+    pub(crate) const REQUIRED_SKILL1: Self = Self::from_eid(EAttrId::REQUIRED_SKILL1);
+    pub(crate) const REQUIRED_SKILL2: Self = Self::from_eid(EAttrId::REQUIRED_SKILL2);
+    pub(crate) const REQUIRED_SKILL3: Self = Self::from_eid(EAttrId::REQUIRED_SKILL3);
     pub(crate) const TGT_FILTER_TYPELIST_ID: Self = Self::from_eid(EAttrId::TGT_FILTER_TYPELIST_ID);
     pub(crate) const MAX_LOCKED_TARGETS: Self = Self::from_eid(EAttrId::MAX_LOCKED_TARGETS);
     pub(crate) const SCAN_RADAR_STRENGTH: Self = Self::from_eid(EAttrId::SCAN_RADAR_STRENGTH);
@@ -84,6 +95,9 @@ impl AAttrId {
     pub(crate) const SHIELD_EXPL_DMG_RESONANCE: Self = Self::from_eid(EAttrId::SHIELD_EXPL_DMG_RESONANCE);
     pub(crate) const SHIELD_KIN_DMG_RESONANCE: Self = Self::from_eid(EAttrId::SHIELD_KIN_DMG_RESONANCE);
     pub(crate) const SHIELD_THERM_DMG_RESONANCE: Self = Self::from_eid(EAttrId::SHIELD_THERM_DMG_RESONANCE);
+    pub(crate) const REQUIRED_SKILL1_LEVEL: Self = Self::from_eid(EAttrId::REQUIRED_SKILL1_LEVEL);
+    pub(crate) const REQUIRED_SKILL2_LEVEL: Self = Self::from_eid(EAttrId::REQUIRED_SKILL2_LEVEL);
+    pub(crate) const REQUIRED_SKILL3_LEVEL: Self = Self::from_eid(EAttrId::REQUIRED_SKILL3_LEVEL);
     pub(crate) const SKILL_LEVEL: Self = Self::from_eid(EAttrId::SKILL_LEVEL);
     pub(crate) const EXPLOSION_DELAY: Self = Self::from_eid(EAttrId::EXPLOSION_DELAY);
     pub(crate) const DRONE_CAPACITY: Self = Self::from_eid(EAttrId::DRONE_CAPACITY);
@@ -172,6 +186,12 @@ impl AAttrId {
     pub(crate) const SPEED_BOOST_FACTOR_BONUS: Self = Self::from_eid(EAttrId::SPEED_BOOST_FACTOR_BONUS);
     pub(crate) const DRONE_BANDWIDTH: Self = Self::from_eid(EAttrId::DRONE_BANDWIDTH);
     pub(crate) const DRONE_BANDWIDTH_USED: Self = Self::from_eid(EAttrId::DRONE_BANDWIDTH_USED);
+    pub(crate) const REQUIRED_SKILL4: Self = Self::from_eid(EAttrId::REQUIRED_SKILL4);
+    pub(crate) const REQUIRED_SKILL4_LEVEL: Self = Self::from_eid(EAttrId::REQUIRED_SKILL4_LEVEL);
+    pub(crate) const REQUIRED_SKILL5_LEVEL: Self = Self::from_eid(EAttrId::REQUIRED_SKILL5_LEVEL);
+    pub(crate) const REQUIRED_SKILL6_LEVEL: Self = Self::from_eid(EAttrId::REQUIRED_SKILL6_LEVEL);
+    pub(crate) const REQUIRED_SKILL5: Self = Self::from_eid(EAttrId::REQUIRED_SKILL5);
+    pub(crate) const REQUIRED_SKILL6: Self = Self::from_eid(EAttrId::REQUIRED_SKILL6);
     pub(crate) const CAN_FIT_SHIP_GROUP1: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_GROUP1);
     pub(crate) const CAN_FIT_SHIP_GROUP2: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_GROUP2);
     pub(crate) const CAN_FIT_SHIP_GROUP3: Self = Self::from_eid(EAttrId::CAN_FIT_SHIP_GROUP3);

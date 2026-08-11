@@ -8,7 +8,6 @@ pub(in crate::phb) use item_dogma::PItemDogma;
 pub(in crate::phb) use item_group::PItemGroup;
 pub(in crate::phb) use item_list::PItemList;
 pub(in crate::phb) use item_space_comp::PItemSpaceComp;
-pub(in crate::phb) use item_srq_map::PItemSkillMap;
 #[cfg(feature = "phb-fs")]
 pub(in crate::phb) use metadata::PMetadata;
 pub(in crate::phb) use muta::PMuta;
@@ -24,7 +23,6 @@ mod item_dogma;
 mod item_group;
 mod item_list;
 mod item_space_comp;
-mod item_srq_map;
 #[cfg(feature = "phb-fs")]
 mod metadata;
 mod muta;

@@ -1,6 +1,6 @@
 use crate::ed::data::{
-    EAbil, EAttr, EBuff, EEffect, EItem, EItemAbil, EItemAttr, EItemEffect, EItemGroup, EItemList, EItemSkillReq,
-    EItemSpaceComp, EMutaAttr, EMutaItem,
+    EAbil, EAttr, EBuff, EEffect, EItem, EItemAbil, EItemAttr, EItemEffect, EItemGroup, EItemList, EItemSpaceComp,
+    EMutaAttr, EMutaItem,
 };
 
 #[derive(Default)]
@@ -16,7 +16,6 @@ pub struct EData {
     pub item_abils: EDataCont<EItemAbil>,
     pub buffs: EDataCont<EBuff>,
     pub space_comps: EDataCont<EItemSpaceComp>,
-    pub item_srqs: EDataCont<EItemSkillReq>,
     pub muta_items: EDataCont<EMutaItem>,
     pub muta_attrs: EDataCont<EMutaAttr>,
 }
@@ -34,7 +33,6 @@ impl EData {
             item_abils: EDataCont::new(),
             buffs: EDataCont::new(),
             space_comps: EDataCont::new(),
-            item_srqs: EDataCont::new(),
             muta_items: EDataCont::new(),
             muta_attrs: EDataCont::new(),
         }

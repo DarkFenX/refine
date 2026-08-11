@@ -6,7 +6,7 @@ use super::error::{PhbHttpEdhError, PhbHttpEdhInitError};
 use crate::phb::{
     data::{
         KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
-        PItemSkillMap, PItemSpaceComp, PMuta,
+        PItemSpaceComp, PMuta,
     },
     parsing::{extract_from_keymap_one, extract_from_keymap_two},
 };
@@ -64,7 +64,6 @@ impl rc::ed::EveDataHandlerInterface for PhbHttpEdh {
         self.process_fighterabilitiesbytype(&mut data)?;
         self.process_dbuffcollections(&mut data)?;
         self.process_spacecomponentsbytype(&mut data)?;
-        self.process_requiredskillsfortypes(&mut data)?;
         self.process_dynamicitemattributes(&mut data)?;
         Ok(data)
     }
@@ -112,10 +111,6 @@ impl PhbHttpEdh {
     }
     fn process_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
         e_data.space_comps = self.process_one::<PItemSpaceComp, _>("fsd_built/spacecomponentsbytype.json")?;
-        Ok(())
-    }
-    fn process_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        e_data.item_srqs = self.process_one::<PItemSkillMap, _>("fsd_built/requiredskillsfortypes.json")?;
         Ok(())
     }
     fn process_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {

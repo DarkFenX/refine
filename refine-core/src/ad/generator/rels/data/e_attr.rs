@@ -16,6 +16,11 @@ impl Pk for EAttr {
 impl Fk for EAttr {
     fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         let mut fks = Vec::new();
+        if EAttrId::SKILL_ID_ATTRS.contains(&self.id)
+            && let Some(fk) = attr_val_to_fk(self.default_value)
+        {
+            fks.push(fk);
+        }
         if let Some(fk) = self.get_fk_from_defval(EAttrUnitId::ITEM_ID) {
             fks.push(fk);
         }

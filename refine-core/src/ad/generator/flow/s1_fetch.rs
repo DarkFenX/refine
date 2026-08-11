@@ -21,7 +21,6 @@ impl ADataGenerator {
         record_warnings(&mut self.e_data.item_abils, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.buffs, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.space_comps, &mut self.a_data.warnings);
-        record_warnings(&mut self.e_data.item_srqs, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.muta_items, &mut self.a_data.warnings);
         record_warnings(&mut self.e_data.muta_attrs, &mut self.a_data.warnings);
         Ok(())

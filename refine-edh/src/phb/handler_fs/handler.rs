@@ -4,7 +4,7 @@ use super::{address::Address, error::PhbFsEdhError};
 use crate::phb::{
     data::{
         KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
-        PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
+        PItemSpaceComp, PMetadata, PMuta,
     },
     parsing::{extract_from_keymap_one, extract_from_keymap_two, find_in_array},
 };
@@ -44,7 +44,6 @@ impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
         self.process_fighterabilitiesbytype(&mut data)?;
         self.process_dbuffcollections(&mut data)?;
         self.process_spacecomponentsbytype(&mut data)?;
-        self.process_requiredskillsfortypes(&mut data)?;
         self.process_dynamicitemattributes(&mut data)?;
         Ok(data)
     }
@@ -99,10 +98,6 @@ impl PhbFsEdh {
     }
     fn process_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.space_comps = self.process_one::<PItemSpaceComp, _>("fsd_built", "spacecomponentsbytype")?;
-        Ok(())
-    }
-    fn process_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.item_srqs = self.process_one::<PItemSkillMap, _>("fsd_built", "requiredskillsfortypes")?;
         Ok(())
     }
     fn process_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {

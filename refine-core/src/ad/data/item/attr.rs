@@ -50,6 +50,9 @@ impl AItemAttrs {
     pub(in crate::ad) fn contains_id(&self, id: &AAttrId) -> bool {
         self.data.contains_key(id)
     }
+    pub(in crate::ad) fn get(&self, id: &AAttrId) -> Option<&AItemAttr> {
+        self.data.get(id)
+    }
     pub(in crate::ad) fn entry(&mut self, id: AAttrId) -> std::collections::hash_map::Entry<'_, AAttrId, AItemAttr> {
         self.data.entry(id)
     }

@@ -2,6 +2,14 @@ use crate::ed::EAttrId;
 
 impl EAttrId {
     // Composite constants
+    pub(crate) const SKILL_ID_ATTRS: [Self; 6] = [
+        Self::REQUIRED_SKILL1,
+        Self::REQUIRED_SKILL2,
+        Self::REQUIRED_SKILL3,
+        Self::REQUIRED_SKILL4,
+        Self::REQUIRED_SKILL5,
+        Self::REQUIRED_SKILL6,
+    ];
     pub(crate) const BUFF_ID_ATTRS: [Self; 4] = [
         Self::WARFARE_BUFF1_ID,
         Self::WARFARE_BUFF2_ID,
@@ -58,6 +66,9 @@ impl EAttrId {
     pub(crate) const TRACKING_SPEED: Self = Self::from_i32(160);
     pub(crate) const VOLUME: Self = Self::from_i32(161);
     pub(crate) const RADIUS: Self = Self::from_i32(162);
+    pub(crate) const REQUIRED_SKILL1: Self = Self::from_i32(182);
+    pub(crate) const REQUIRED_SKILL2: Self = Self::from_i32(183);
+    pub(crate) const REQUIRED_SKILL3: Self = Self::from_i32(184);
     pub(crate) const TGT_FILTER_TYPELIST_ID: Self = Self::from_i32(189);
     pub(crate) const MAX_LOCKED_TARGETS: Self = Self::from_i32(192);
     pub(crate) const SCAN_RADAR_STRENGTH: Self = Self::from_i32(208);
@@ -79,6 +90,9 @@ impl EAttrId {
     pub(crate) const SHIELD_EXPL_DMG_RESONANCE: Self = Self::from_i32(272);
     pub(crate) const SHIELD_KIN_DMG_RESONANCE: Self = Self::from_i32(273);
     pub(crate) const SHIELD_THERM_DMG_RESONANCE: Self = Self::from_i32(274);
+    pub(crate) const REQUIRED_SKILL1_LEVEL: Self = Self::from_i32(277);
+    pub(crate) const REQUIRED_SKILL2_LEVEL: Self = Self::from_i32(278);
+    pub(crate) const REQUIRED_SKILL3_LEVEL: Self = Self::from_i32(279);
     pub(crate) const SKILL_LEVEL: Self = Self::from_i32(280);
     pub(crate) const EXPLOSION_DELAY: Self = Self::from_i32(281);
     pub(crate) const DRONE_CAPACITY: Self = Self::from_i32(283);
@@ -159,6 +173,12 @@ impl EAttrId {
     pub(crate) const SPEED_BOOST_FACTOR_BONUS: Self = Self::from_i32(1270);
     pub(crate) const DRONE_BANDWIDTH: Self = Self::from_i32(1271);
     pub(crate) const DRONE_BANDWIDTH_USED: Self = Self::from_i32(1272);
+    pub(crate) const REQUIRED_SKILL4: Self = Self::from_i32(1285);
+    pub(crate) const REQUIRED_SKILL4_LEVEL: Self = Self::from_i32(1286);
+    pub(crate) const REQUIRED_SKILL5_LEVEL: Self = Self::from_i32(1287);
+    pub(crate) const REQUIRED_SKILL6_LEVEL: Self = Self::from_i32(1288);
+    pub(crate) const REQUIRED_SKILL5: Self = Self::from_i32(1289);
+    pub(crate) const REQUIRED_SKILL6: Self = Self::from_i32(1290);
     pub(crate) const CAN_FIT_SHIP_GROUP1: Self = Self::from_i32(1298);
     pub(crate) const CAN_FIT_SHIP_GROUP2: Self = Self::from_i32(1299);
     pub(crate) const CAN_FIT_SHIP_GROUP3: Self = Self::from_i32(1300);
