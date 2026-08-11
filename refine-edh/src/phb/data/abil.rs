@@ -3,13 +3,13 @@ use serde::Deserialize;
 use crate::phb::data::{Key, KeyMergeOne};
 
 #[derive(Deserialize)]
-pub(in crate::phb) struct PFighterAbil {
+pub(in crate::phb) struct PAbil {
     #[serde(rename = "disallowInHighSec")]
     disallow_in_high_sec: bool,
     #[serde(rename = "disallowInLowSec")]
     disallow_in_low_sec: bool,
 }
-impl KeyMergeOne<rc::ed::EAbil> for PFighterAbil {
+impl KeyMergeOne<rc::ed::EAbil> for PAbil {
     fn key_merge(self, key: Key) -> Vec<rc::ed::EAbil> {
         vec![rc::ed::EAbil {
             id: rc::ed::EAbilId::from_i32(key),

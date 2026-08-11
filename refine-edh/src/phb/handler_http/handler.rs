@@ -5,8 +5,8 @@ use reqwest::{Url, blocking::Client};
 use super::error::{PhbHttpEdhError, PhbHttpEdhInitError};
 use crate::phb::{
     data::{
-        KeyMergeOne, KeyMergeTwo, PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils,
-        PItemGroup, PItemList, PItemSkillMap, PItemSpaceComp, PMuta,
+        KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
+        PItemSkillMap, PItemSpaceComp, PMuta,
     },
     parsing::{extract_from_keymap_one, extract_from_keymap_two},
 };
@@ -99,11 +99,11 @@ impl PhbHttpEdh {
         Ok(())
     }
     fn process_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        e_data.abils = self.process_one::<PFighterAbil, _>("fsd_lite/fighterabilities.json")?;
+        e_data.abils = self.process_one::<PAbil, _>("fsd_lite/fighterabilities.json")?;
         Ok(())
     }
     fn process_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        e_data.item_abils = self.process_one::<PItemFighterAbils, _>("fsd_lite/fighterabilitiesbytype.json")?;
+        e_data.item_abils = self.process_one::<PItemAbils, _>("fsd_lite/fighterabilitiesbytype.json")?;
         Ok(())
     }
     fn process_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {

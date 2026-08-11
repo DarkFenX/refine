@@ -3,8 +3,8 @@ use std::{fs::File, io::BufReader, path::PathBuf};
 use super::{address::Address, error::PhbFsEdhError};
 use crate::phb::{
     data::{
-        KeyMergeOne, KeyMergeTwo, PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils,
-        PItemGroup, PItemList, PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
+        KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
+        PItemSkillMap, PItemSpaceComp, PMetadata, PMuta,
     },
     parsing::{extract_from_keymap_one, extract_from_keymap_two, find_in_array},
 };
@@ -86,11 +86,11 @@ impl PhbFsEdh {
         Ok(())
     }
     fn process_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.abils = self.process_one::<PFighterAbil, _>("fsd_lite", "fighterabilities")?;
+        e_data.abils = self.process_one::<PAbil, _>("fsd_lite", "fighterabilities")?;
         Ok(())
     }
     fn process_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
-        e_data.item_abils = self.process_one::<PItemFighterAbils, _>("fsd_lite", "fighterabilitiesbytype")?;
+        e_data.item_abils = self.process_one::<PItemAbils, _>("fsd_lite", "fighterabilitiesbytype")?;
         Ok(())
     }
     fn process_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
