@@ -1,4 +1,4 @@
-use std::{fmt, io::BufReader};
+use std::io::BufReader;
 
 use reqwest::{Url, blocking::Client};
 
@@ -8,7 +8,7 @@ use crate::phb::{
         PAttr, PBuff, PEffect, PFighterAbil, PItem, PItemDogma, PItemFighterAbils, PItemGroup, PItemList,
         PItemSkillMap, PItemSpaceComp, PMuta,
     },
-    parsing::{extract_from_keymap_one, extract_from_keymap_two},
+    parsing::{KeyMergeOne, KeyMergeTwo, extract_from_keymap_one, extract_from_keymap_two},
 };
 
 /// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP
@@ -42,118 +42,15 @@ impl PhbHttpEdh {
         }
     }
 }
-impl fmt::Debug for PhbHttpEdh {
-    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+impl std::fmt::Debug for PhbHttpEdh {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
         write!(f, "PhbHttpEdh(\"{}\")", self.base_url)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Cacher trait implementation
+// Handler trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl PhbHttpEdh {
-    fn get_reader(&self, suffix: &str) -> Result<impl std::io::Read, PhbHttpEdhError> {
-        let full_url = self
-            .base_url
-            .join(suffix)
-            .map_err(|e| PhbHttpEdhError::from_url(e, suffix))?;
-        let response = self
-            .client
-            .get(full_url)
-            .send()
-            .map_err(|e| PhbHttpEdhError::from_reqwest(e, suffix))?
-            .error_for_status()
-            .map_err(|e| PhbHttpEdhError::from_reqwest(e, suffix))?;
-        Ok(BufReader::with_capacity(64 * 1024, response))
-    }
-    // Entity-specific processing methods
-    fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/types.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.items = extract_from_keymap_one::<PItem, rc::ed::EItem>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/groups.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.groups = extract_from_keymap_one::<PItemGroup, rc::ed::EItemGroup>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/typelist.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.item_lists = extract_from_keymap_one::<PItemList, rc::ed::EItemList>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/dogmaattributes.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.attrs = extract_from_keymap_one::<PAttr, rc::ed::EAttr>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/typedogma.json";
-        let reader = self.get_reader(suffix)?;
-        (e_data.item_attrs, e_data.item_effects) =
-            extract_from_keymap_two::<PItemDogma, rc::ed::EItemAttr, rc::ed::EItemEffect>(reader)
-                .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/dogmaeffects.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.effects = extract_from_keymap_one::<PEffect, rc::ed::EEffect>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_lite/fighterabilities.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.abils = extract_from_keymap_one::<PFighterAbil, rc::ed::EAbil>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_lite/fighterabilitiesbytype.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.item_abils = extract_from_keymap_one::<PItemFighterAbils, rc::ed::EItemAbil>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_lite/dbuffcollections.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.buffs = extract_from_keymap_one::<PBuff, rc::ed::EBuff>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/spacecomponentsbytype.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.space_comps = extract_from_keymap_one::<PItemSpaceComp, rc::ed::EItemSpaceComp>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/requiredskillsfortypes.json";
-        let reader = self.get_reader(suffix)?;
-        e_data.item_srqs = extract_from_keymap_one::<PItemSkillMap, rc::ed::EItemSkillReq>(reader)
-            .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-    fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
-        let suffix = "fsd_built/dynamicitemattributes.json";
-        let reader = self.get_reader(suffix)?;
-        (e_data.muta_items, e_data.muta_attrs) =
-            extract_from_keymap_two::<PMuta, rc::ed::EMutaItemConv, rc::ed::EMutaAttrMod>(reader)
-                .map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))?;
-        Ok(())
-    }
-}
 impl rc::ed::EveDataHandlerInterface for PhbHttpEdh {
     fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
@@ -173,5 +70,94 @@ impl rc::ed::EveDataHandlerInterface for PhbHttpEdh {
     }
     fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
         Ok(self.data_version.clone())
+    }
+}
+
+impl PhbHttpEdh {
+    fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.items = self.process_one::<PItem, _>("fsd_built/types.json")?;
+        Ok(())
+    }
+    fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.groups = self.process_one::<PItemGroup, _>("fsd_built/groups.json")?;
+        Ok(())
+    }
+    fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.item_lists = self.process_one::<PItemList, _>("fsd_built/typelist.json")?;
+        Ok(())
+    }
+    fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.attrs = self.process_one::<PAttr, _>("fsd_built/dogmaattributes.json")?;
+        Ok(())
+    }
+    fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built/typedogma.json")?;
+        Ok(())
+    }
+    fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.effects = self.process_one::<PEffect, _>("fsd_built/dogmaeffects.json")?;
+        Ok(())
+    }
+    fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.abils = self.process_one::<PFighterAbil, _>("fsd_lite/fighterabilities.json")?;
+        Ok(())
+    }
+    fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.item_abils = self.process_one::<PItemFighterAbils, _>("fsd_lite/fighterabilitiesbytype.json")?;
+        Ok(())
+    }
+    fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.buffs = self.process_one::<PBuff, _>("fsd_lite/dbuffcollections.json")?;
+        Ok(())
+    }
+    fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.space_comps = self.process_one::<PItemSpaceComp, _>("fsd_built/spacecomponentsbytype.json")?;
+        Ok(())
+    }
+    fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        e_data.item_srqs = self.process_one::<PItemSkillMap, _>("fsd_built/requiredskillsfortypes.json")?;
+        Ok(())
+    }
+    fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbHttpEdhError> {
+        (e_data.muta_items, e_data.muta_attrs) =
+            self.process_two::<PMuta, _, _>("fsd_built/dynamicitemattributes.json")?;
+        Ok(())
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl PhbHttpEdh {
+    fn process_one<PHB, EVE>(&self, suffix: &str) -> Result<rc::ed::EDataCont<EVE>, PhbHttpEdhError>
+    where
+        PHB: serde::de::DeserializeOwned + KeyMergeOne<EVE>,
+    {
+        let reader = self.get_reader(suffix)?;
+        extract_from_keymap_one::<PHB, EVE>(reader).map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))
+    }
+    fn process_two<PHB, EVE1, EVE2>(
+        &self,
+        suffix: &str,
+    ) -> Result<(rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>), PhbHttpEdhError>
+    where
+        PHB: serde::de::DeserializeOwned + KeyMergeTwo<EVE1, EVE2>,
+    {
+        let reader = self.get_reader(suffix)?;
+        extract_from_keymap_two::<PHB, EVE1, EVE2>(reader).map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))
+    }
+    fn get_reader(&self, suffix: &str) -> Result<impl std::io::Read, PhbHttpEdhError> {
+        let full_url = self
+            .base_url
+            .join(suffix)
+            .map_err(|e| PhbHttpEdhError::from_url(e, suffix))?;
+        let response = self
+            .client
+            .get(full_url)
+            .send()
+            .map_err(|e| PhbHttpEdhError::from_reqwest(e, suffix))?
+            .error_for_status()
+            .map_err(|e| PhbHttpEdhError::from_reqwest(e, suffix))?;
+        Ok(BufReader::with_capacity(64 * 1024, response))
     }
 }

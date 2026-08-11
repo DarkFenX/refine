@@ -117,6 +117,9 @@ impl PhbFsEdh {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared functions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 fn process_one<PHB, EVE>(
     base_path: &Path,
     dir: &'static str,
@@ -129,6 +132,7 @@ where
     let reader = get_reader(base_path, &addr)?;
     extract_from_keymap_one::<PHB, EVE>(reader).map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
 }
+
 fn process_two<PHB, EVE1, EVE2>(
     base_path: &Path,
     dir: &'static str,
@@ -142,6 +146,7 @@ where
     extract_from_keymap_two::<PHB, EVE1, EVE2>(reader)
         .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
 }
+
 fn get_reader(base_path: &Path, addr: &Address) -> Result<impl std::io::Read, PhbFsEdhError> {
     let full_path = addr.get_full_path(base_path);
     let file = File::open(full_path).map_err(|e| PhbFsEdhError::from_io(e, addr.get_part_str()))?;
