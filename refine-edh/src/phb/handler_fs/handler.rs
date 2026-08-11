@@ -34,18 +34,18 @@ impl std::fmt::Debug for PhbFsEdh {
 impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
     fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
-        self.process_built_types(&mut data)?;
-        self.process_built_groups(&mut data)?;
-        self.process_built_typelist(&mut data)?;
-        self.process_built_dogmaattributes(&mut data)?;
-        self.process_built_typedogma(&mut data)?;
-        self.process_built_dogmaeffects(&mut data)?;
-        self.process_lite_fighterabilities(&mut data)?;
-        self.process_lite_fighterabilitiesbytype(&mut data)?;
-        self.process_lite_dbuffcollections(&mut data)?;
-        self.process_built_spacecomponentsbytype(&mut data)?;
-        self.process_built_requiredskillsfortypes(&mut data)?;
-        self.process_built_dynamicitemattributes(&mut data)?;
+        self.process_types(&mut data)?;
+        self.process_groups(&mut data)?;
+        self.process_typelist(&mut data)?;
+        self.process_dogmaattributes(&mut data)?;
+        self.process_typedogma(&mut data)?;
+        self.process_dogmaeffects(&mut data)?;
+        self.process_fighterabilities(&mut data)?;
+        self.process_fighterabilitiesbytype(&mut data)?;
+        self.process_dbuffcollections(&mut data)?;
+        self.process_spacecomponentsbytype(&mut data)?;
+        self.process_requiredskillsfortypes(&mut data)?;
+        self.process_dynamicitemattributes(&mut data)?;
         Ok(data)
     }
     fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
@@ -61,51 +61,51 @@ impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
 }
 
 impl PhbFsEdh {
-    fn process_built_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_types(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.items = self.process_one::<PItem, _>("fsd_built", "types")?;
         Ok(())
     }
-    fn process_built_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.groups = self.process_one::<PItemGroup, _>("fsd_built", "groups")?;
         Ok(())
     }
-    fn process_built_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.item_lists = self.process_one::<PItemList, _>("fsd_built", "typelist")?;
         Ok(())
     }
-    fn process_built_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.attrs = self.process_one::<PAttr, _>("fsd_built", "dogmaattributes")?;
         Ok(())
     }
-    fn process_built_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built", "typedogma")?;
         Ok(())
     }
-    fn process_built_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.effects = self.process_one::<PEffect, _>("fsd_built", "dogmaeffects")?;
         Ok(())
     }
-    fn process_lite_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.abils = self.process_one::<PFighterAbil, _>("fsd_lite", "fighterabilities")?;
         Ok(())
     }
-    fn process_lite_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.item_abils = self.process_one::<PItemFighterAbils, _>("fsd_lite", "fighterabilitiesbytype")?;
         Ok(())
     }
-    fn process_lite_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.buffs = self.process_one::<PBuff, _>("fsd_lite", "dbuffcollections")?;
         Ok(())
     }
-    fn process_built_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.space_comps = self.process_one::<PItemSpaceComp, _>("fsd_built", "spacecomponentsbytype")?;
         Ok(())
     }
-    fn process_built_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_requiredskillsfortypes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         e_data.item_srqs = self.process_one::<PItemSkillMap, _>("fsd_built", "requiredskillsfortypes")?;
         Ok(())
     }
-    fn process_built_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
+    fn process_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), PhbFsEdhError> {
         (e_data.muta_items, e_data.muta_attrs) =
             self.process_two::<PMuta, _, _>("fsd_built", "dynamicitemattributes")?;
         Ok(())
