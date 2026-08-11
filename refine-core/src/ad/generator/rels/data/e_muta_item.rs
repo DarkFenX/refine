@@ -3,10 +3,10 @@ use crate::{
         AdgSupport,
         rels::{Fk, KeyPart, Pk},
     },
-    ed::EMutaItemConv,
+    ed::EMutaItem,
 };
 
-impl Pk for EMutaItemConv {
+impl Pk for EMutaItem {
     fn get_pk(&self) -> Vec<KeyPart> {
         vec![
             KeyPart::from_item_eid(self.muta_id),
@@ -15,7 +15,7 @@ impl Pk for EMutaItemConv {
     }
 }
 
-impl Fk for EMutaItemConv {
+impl Fk for EMutaItem {
     fn get_item_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
         vec![
             KeyPart::from_item_eid(self.muta_id),
