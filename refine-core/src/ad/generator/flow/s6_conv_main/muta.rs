@@ -1,37 +1,36 @@
-use crate::ad::{AAttrId, ADataGenerator, AItemId, AMuta, AMutaAttr, AMutaAttrRange, AMutaItem, AValue};
+use crate::{
+    ad::{AAttrId, ADataGenerator, AItemId, AMuta, AMutaAttr, AMutaAttrRange, AMutaItemConv, AMutas, AValue},
+    util::RMap,
+};
 
 impl ADataGenerator {
     pub(super) fn conv_mutas(&mut self) {
-        self.a_data.mutas = self
-            .e_data
-            .mutas
-            .data
-            .iter()
-            .filter_map(|e_muta| match e_muta.in_item_ids.is_empty() {
-                true => None,
-                false => Some(AMuta {
-                    id: AItemId::from_eid(e_muta.id),
-                    items: e_muta
-                        .in_item_ids
-                        .iter()
-                        .map(|&in_item_eid| AMutaItem {
-                            base_item_id: AItemId::from_eid(in_item_eid),
-                            mutated_item_id: AItemId::from_eid(e_muta.out_item_id),
-                        })
-                        .collect(),
-                    attrs: e_muta
-                        .attrs
-                        .iter()
-                        .map(|e_muta_attr| AMutaAttr {
-                            attr_id: AAttrId::from_eid(e_muta_attr.attr_id),
-                            range: AMutaAttrRange {
-                                mult_min: AValue::from_efloat(e_muta_attr.min_attr_mult),
-                                mult_max: AValue::from_efloat(e_muta_attr.max_attr_mult),
-                            },
-                        })
-                        .collect(),
-                }),
-            })
-            .collect();
+        let mut a_mutas = RMap::new();
+        for e_muta in self.e_data.muta_items.data.iter() {
+            let a_muta = a_mutas
+                .entry(AItemId::from_eid(e_muta.muta_id))
+                .or_insert_with(|| AMuta {
+                    id: AItemId::from_eid(e_muta.muta_id),
+                    ..
+                });
+            a_muta.item_map.insert(AMutaItemConv {
+                base_item_id: AItemId::from_eid(e_muta.in_item_id),
+                mutated_item_id: AItemId::from_eid(e_muta.out_item_id),
+            });
+        }
+        for e_attr_data in self.e_data.muta_attrs.data.iter() {
+            // We are interested in attribute modifiers only for mutators which have in-out item
+            // definitions
+            if let Some(a_muta) = a_mutas.get_mut(&AItemId::from_eid(e_attr_data.muta_id)) {
+                a_muta.attr_mods.insert(AMutaAttr {
+                    attr_id: AAttrId::from_eid(e_attr_data.attr_id),
+                    range: AMutaAttrRange {
+                        mult_min: AValue::from_efloat(e_attr_data.min_attr_mult),
+                        mult_max: AValue::from_efloat(e_attr_data.max_attr_mult),
+                    },
+                });
+            }
+        }
+        self.a_data.mutas = AMutas { data: a_mutas };
     }
 }

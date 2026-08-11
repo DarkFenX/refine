@@ -26,15 +26,11 @@ impl Fk for EBuff {
             .collect()
     }
     fn get_attr_fks(&self, _: &AdgSupport) -> Vec<KeyPart> {
-        let item_mods = &self.item_mods;
-        let loc_mods = &self.loc_mods;
-        let locgroup_mods = &self.locgroup_mods;
-        let locsrq_mods = &self.locsrq_mods;
-        let mut fks = Vec::with_capacity(item_mods.len() + loc_mods.len() + locgroup_mods.len() + locsrq_mods.len());
-        fks.extend(item_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
-        fks.extend(loc_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
-        fks.extend(locgroup_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
-        fks.extend(locsrq_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
+        let mut fks = Vec::new();
+        fks.extend(self.item_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
+        fks.extend(self.loc_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
+        fks.extend(self.locgroup_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
+        fks.extend(self.locsrq_mods.iter().map(|v| KeyPart::from_attr_eid(v.attr_id)));
         fks
     }
 }

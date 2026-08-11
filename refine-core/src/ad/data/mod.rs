@@ -15,7 +15,7 @@ pub use item::{
     AItemEffects, AItemGrpId, AItemId, AItemSkillReq, AItemSkillReqs, AItems, ASkillLevel,
 };
 pub use item_list::{ACustomItemListId, AEveItemListId, AItemList, AItemListId, AItemListItemIds, AItemLists};
-pub use muta::{AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItem, AMutaItems, AMutas};
+pub use muta::{AMuta, AMutaAttr, AMutaAttrRange, AMutaAttrs, AMutaItemConv, AMutaItemConvs, AMutas};
 pub use shared::{ACount, AModifierSrq, AOp, AState, AValue};
 pub use warnings::ADataWarnings;
 

@@ -1,7 +1,7 @@
 pub use attr::{AMutaAttr, AMutaAttrs};
 pub use attr_range::AMutaAttrRange;
 pub use container::AMutas;
-pub use item_conv::{AMutaItem, AMutaItems};
+pub use item_conv::{AMutaItemConv, AMutaItemConvs};
 pub use muta::AMuta;
 
 mod attr;

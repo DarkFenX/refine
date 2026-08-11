@@ -59,7 +59,8 @@ impl ADataGenerator {
         move_data(&mut self.e_data.buffs, &mut trash.buffs, |_| true);
         move_data(&mut self.e_data.space_comps, &mut trash.space_comps, |_| true);
         move_data(&mut self.e_data.item_srqs, &mut trash.item_srqs, |_| true);
-        move_data(&mut self.e_data.mutas, &mut trash.mutas, |_| true);
+        move_data(&mut self.e_data.muta_items, &mut trash.muta_items, |_| true);
+        move_data(&mut self.e_data.muta_attrs, &mut trash.muta_attrs, |_| true);
     }
     fn restore_core_items(&mut self, trash: &mut EData) {
         let cats = [
@@ -153,9 +154,11 @@ impl ADataGenerator {
             || move_data(&mut trash.item_srqs, &mut self.e_data.item_srqs, |v| {
                 item_ids.contains(&v.item_id)
             })
-            || move_data(&mut trash.mutas, &mut self.e_data.mutas, |v| {
-                v.in_item_ids.iter().any(|in_item_id| item_ids.contains(in_item_id))
-                    || item_ids.contains(&v.out_item_id)
+            || move_data(&mut trash.muta_items, &mut self.e_data.muta_items, |v| {
+                item_ids.contains(&v.in_item_id) || item_ids.contains(&v.out_item_id)
+            })
+            || move_data(&mut trash.muta_attrs, &mut self.e_data.muta_attrs, |v| {
+                item_ids.contains(&v.muta_id)
             })
     }
     fn restore_fk_tgts(&mut self, trash: &mut EData) -> bool {
@@ -199,7 +202,8 @@ impl ADataGenerator {
         record_cont_stats(&self.e_data.buffs, &trash.buffs, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.space_comps, &trash.space_comps, &mut self.a_data.warnings);
         record_cont_stats(&self.e_data.item_srqs, &trash.item_srqs, &mut self.a_data.warnings);
-        record_cont_stats(&self.e_data.mutas, &trash.mutas, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.muta_items, &trash.muta_items, &mut self.a_data.warnings);
+        record_cont_stats(&self.e_data.muta_attrs, &trash.muta_attrs, &mut self.a_data.warnings);
     }
 }
 

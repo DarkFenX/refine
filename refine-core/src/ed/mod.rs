@@ -37,7 +37,7 @@ pub use data::{
     EAbil, EAbilId, EAttr, EAttrId, EAttrUnitId, EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM, EData,
     EDataCont, EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EFloat, EInt, EItem, EItemAbil, EItemAttr,
     EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemList, EItemListId, EItemSkillReq, EItemSpaceComp,
-    EItemSpaceCompBuffData, EItemSpaceCompBuffEntry, EMuta, EMutaAttr, EPrimitive,
+    EItemSpaceCompBuffData, EItemSpaceCompBuffEntry, EMutaAttr, EMutaItem, EPrimitive,
 };
 pub use handler::{EveDataHandler, EveDataHandlerInterface};
 

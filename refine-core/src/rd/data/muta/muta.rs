@@ -26,7 +26,7 @@ impl RMuta {
         Self {
             id: a_muta.id,
             item_map: a_muta
-                .items
+                .item_map
                 .iter()
                 .map(|v| (v.base_item_id, v.mutated_item_id))
                 .collect(),
@@ -40,7 +40,7 @@ impl RMuta {
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,
     ) {
         let a_muta = a_mutas.get(&self.id).unwrap();
-        self.attr_mods.extend(a_muta.attrs.iter().filter_map(|a_muta_attr| {
+        self.attr_mods.extend(a_muta.attr_mods.iter().filter_map(|a_muta_attr| {
             attr_aid_rid_map
                 .get(&a_muta_attr.attr_id)
                 .map(|attr_rid| (*attr_rid, RMutaAttrRange::from_a_attr_range(&a_muta_attr.range)))
