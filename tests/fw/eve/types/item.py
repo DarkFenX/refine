@@ -83,13 +83,13 @@ class Item:
                 value=ability_data.charge_rearm_time)
             item_entry[f'abilitySlot{i}'] = ability_entry
 
-    __SKILL_ATTR_IDS = {
+    __SKILL_ATTR_IDS = frozendict({
         EveAttr.required_skill1: EveAttr.required_skill1_level,
         EveAttr.required_skill2: EveAttr.required_skill2_level,
         EveAttr.required_skill3: EveAttr.required_skill3_level,
         EveAttr.required_skill4: EveAttr.required_skill4_level,
         EveAttr.required_skill5: EveAttr.required_skill5_level,
-        EveAttr.required_skill6: EveAttr.required_skill6_level}
+        EveAttr.required_skill6: EveAttr.required_skill6_level})
 
     def __add_primitive_item_skill_reqs(self, *, primitive_data: EvePrimitives) -> None:
         if self.skill_reqs is Absent:
@@ -99,7 +99,7 @@ class Item:
             raise TestDataConsistencyError(msg)
         item_entry = primitive_data.typedogma.setdefault(self.id, {})
         attrs_entry = item_entry.setdefault('dogmaAttributes', [])
-        for attr_ids, reqs in zip(self.__SKILL_ATTR_IDS.items(), self.skill_reqs.items()):
+        for attr_ids, reqs in zip(self.__SKILL_ATTR_IDS.items(), self.skill_reqs.items(), strict=False):
             if any(e['attributeID'] in attr_ids for e in attrs_entry):
                 msg = 'item already has skill requirement attribute set'
                 raise TestDataConsistencyError(msg)
