@@ -1,27 +1,39 @@
 #![cfg_attr(any(feature = "phb-http", feature = "phb-fs"), feature(integer_casts))]
 
-//! EVE data handlers which use JSON produced by [Phobos](https://github.com/pyfa-org/Phobos) as a
-//! data source. They enable `refine-core` library to access EVE data and process it for its needs.
+//! EVE data handlers which use static data export and convert it into EVE data model as defined in
+//! `refine-core`.
 //!
 //! ## Feature flags
 //!
-//! This library provides two different data handlers, with their availability controlled via
-//! feature flags.
+//! This library provides different data handlers, with their availability controlled via feature
+//! flags.
 //!
-//! - `phb-http`: Enables handler which fetches data over HTTP.
-//! - `phb-fs`: Enables handler which reads data from filesystem.
+//! - `phb-fs`: Enables handler which reads Phobos data export from filesystem.
+//! - `phb-http`: Enables handler which fetches Phobos data export over HTTP.
+//! - `sde-fs`: Enables handler which reads FC-produced SDE from filesystem.
+//! - `sde-http`: Enables handler which fetches FC-produced SDE over HTTP.
 
 #[cfg(feature = "phb-fs")]
 pub use phb::PhbFsEdh;
 #[cfg(feature = "phb-http")]
 pub use phb::PhbHttpEdh;
+#[cfg(feature = "sde-fs")]
+pub use sde::SdeFsEdh;
+#[cfg(feature = "sde-http")]
+pub use sde::SdeHttpEdh;
 
 #[cfg(any(feature = "phb-http", feature = "phb-fs"))]
 mod phb;
+#[cfg(any(feature = "sde-http", feature = "sde-fs"))]
+mod sde;
 
 pub mod err {
     #[cfg(feature = "phb-fs")]
     pub use crate::phb::PhbFsEdhError;
     #[cfg(feature = "phb-http")]
     pub use crate::phb::{PhbHttpEdhError, PhbHttpEdhInitError};
+    #[cfg(feature = "sde-fs")]
+    pub use crate::sde::SdeFsEdhError;
+    #[cfg(feature = "sde-http")]
+    pub use crate::sde::{SdeHttpEdhError, SdeHttpEdhInitError};
 }
