@@ -31,7 +31,10 @@ class ApiClientSrc(ApiClientBase, eve.EveDataManager, eve.EveDataServer):
             method='POST',
             url=f'{self._base_url}/src/{data.alias}',
             params=params,
-            json={'data_version': '1', 'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
+            json={
+                'data_version': '1',
+                'data_format': 'phb',
+                'data_base_url': f'{self._eve_data_server_base_url}/{data.alias}/'})
 
     def create_source(
             self, *,

@@ -41,7 +41,7 @@ async fn internal_add_source(
     let ed_version = payload.data_version;
     let make_default = payload.make_default.unwrap_or(false);
     let ed_handler = match payload.data_format.to_lowercase().as_str() {
-        "phb" => redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
+        "phb" | "phobos" => redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
             .map_err(|err| ApiError::EdhInit(Box::new(err)))?
             .into(),
         _ => return Err(ApiError::EdhNotFound(payload.data_format)),
