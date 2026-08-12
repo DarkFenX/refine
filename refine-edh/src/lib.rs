@@ -31,7 +31,7 @@ mod phb;
 #[cfg(any(feature = "sde-fs", feature = "sde-http"))]
 mod sde;
 #[cfg(any(feature = "phb-fs", feature = "phb-http", feature = "sde-fs", feature = "sde-http"))]
-mod util;
+mod shared;
 
 pub mod err {
     #[cfg(feature = "phb-fs")]

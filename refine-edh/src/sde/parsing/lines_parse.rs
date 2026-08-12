@@ -1,7 +1,7 @@
 use super::error::ReadParseFailReason;
 use crate::{
     sde::data::{ExtractOne, ExtractTwo},
-    util::cap_warning_len,
+    shared::cap_warning_len,
 };
 
 pub(in crate::sde) fn extract_from_lines_one<SDE, EVE>(

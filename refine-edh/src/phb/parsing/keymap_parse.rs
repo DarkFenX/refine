@@ -6,7 +6,7 @@ use serde_json::value::RawValue;
 use super::error::ReadParseFailReason;
 use crate::{
     phb::data::{Key, KeyMergeOne, KeyMergeTwo},
-    util::{cap_len, cap_warning_len},
+    shared::{cap_len, cap_warning_len},
 };
 
 const KEY_LEN_LIMIT: usize = 20;
