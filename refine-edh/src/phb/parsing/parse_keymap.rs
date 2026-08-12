@@ -54,7 +54,7 @@ where
         let size_hint = map.size_hint().unwrap_or(0);
         let mut e_cont = rc::ed::EDataCont::with_capacity(size_hint);
         while let Some(raw_key) = map.next_key::<String>()? {
-            let raw_value = map.next_value::<&RawValue>()?;
+            let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
             let Ok(key) = raw_key.parse::<Key>() else {
                 let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
@@ -98,7 +98,7 @@ where
         let mut e_cont1 = rc::ed::EDataCont::with_capacity(size_hint);
         let mut e_cont2 = rc::ed::EDataCont::with_capacity(size_hint);
         while let Some(raw_key) = map.next_key::<String>()? {
-            let raw_value = map.next_value::<&RawValue>()?;
+            let raw_value = map.next_value::<Box<RawValue>>()?;
             // In case of malformed ID - log error and skip element
             let Ok(key) = raw_key.parse::<Key>() else {
                 let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
