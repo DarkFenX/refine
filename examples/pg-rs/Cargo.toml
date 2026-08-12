@@ -8,11 +8,11 @@ publish = false
 
 [dependencies]
 # Local
-rs = { workspace = true }
-radc = { workspace = true, features = ["postcard-zfs"] }
-redh = { workspace = true, features = ["phb-fs"] }
-# Non-local, workspace
-time = { workspace = true, features = ["macros"] }
-tokio = { workspace = true, features = ["rt", "macros"] }
-tracing = { workspace = true }
-tracing-subscriber = { workspace = true, features = ["time"] }
+rs = { package = "refine-rs", path = "../../refine-rs" }
+radc = { package = "refine-adc", path = "../../refine-adc", features = ["postcard-zfs"] }
+redh = { package = "refine-edh", path = "../../refine-edh", features = ["phb-fs"] }
+# Non-local
+time = { version = ">=0.3.55", features = ["macros"] }
+tokio = { version = ">=1.53.1", features = ["rt", "macros"] }
+tracing = ">=0.1.44"
+tracing-subscriber = { version = ">=0.3.23", features = ["time"] }

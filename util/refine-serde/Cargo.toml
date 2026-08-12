@@ -10,5 +10,5 @@ edition = "2024"
 # Local
 refine-serde-derive = { path = "../refine-serde-derive" }
 # Non-local
-serde = { workspace = true }
-serde_with = { workspace = true }
+serde = ">=1.0.229"
+serde_with = ">=3.22.0"

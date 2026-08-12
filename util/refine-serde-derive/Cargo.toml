@@ -11,6 +11,6 @@ proc-macro = true
 
 [dependencies]
 # Non-local
-proc-macro2 = { workspace = true }
-quote = { workspace = true }
-syn = { workspace = true, features = ["visit-mut"] }
+proc-macro2 = ">=1.0.107"
+quote = ">=1.0.47"
+syn = { version = ">=3.0.3", features = ["visit-mut"] }
