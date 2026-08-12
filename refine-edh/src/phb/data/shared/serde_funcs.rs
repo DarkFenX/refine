@@ -1,7 +1,7 @@
 use serde::{Deserialize, Deserializer};
 
 // Modified example from https://github.com/serde-rs/serde/issues/1344
-pub(crate) fn bool_from_int<'de, D>(deserializer: D) -> Result<bool, D::Error>
+pub(in crate::phb::data) fn int_to_bool<'de, D>(deserializer: D) -> Result<bool, D::Error>
 where
     D: Deserializer<'de>,
 {

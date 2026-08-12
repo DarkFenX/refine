@@ -1,9 +1,6 @@
 use serde::Deserialize;
 
-use crate::{
-    phb::data::{Key, KeyMergeTwo},
-    util::bool_from_int,
-};
+use crate::phb::data::{Key, KeyMergeTwo, shared::int_to_bool};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PItemDogma {
