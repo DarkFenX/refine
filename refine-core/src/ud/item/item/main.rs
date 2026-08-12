@@ -507,9 +507,9 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_cap_consumers(&self) -> Option<&Vec<RItemCapConsumer>> {
+    pub(crate) fn get_cap_consumers(&self) -> Option<&[RItemCapConsumer]> {
         match self {
-            Self::Module(module) => module.get_r_item_base().map(|v| &v.cap_consumers),
+            Self::Module(module) => module.get_r_item_base().map(|v| v.cap_consumers.as_slice()),
             _ => None,
         }
     }

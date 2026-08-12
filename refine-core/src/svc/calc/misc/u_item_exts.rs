@@ -62,11 +62,11 @@ impl UItem {
         matches!(self, Self::Charge(..) | Self::Drone(..) | Self::Fighter(..))
     }
     // Buff-related
-    pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&Vec<RItemListId>> {
+    pub(in crate::svc::calc) fn get_proj_buff_item_lists(&self) -> Option<&[RItemListId]> {
         match self {
-            Self::Drone(drone) => drone.get_r_item_base().map(|v| &v.proj_buff_item_list_rids),
-            Self::Fighter(fighter) => fighter.get_r_item_base().map(|v| &v.proj_buff_item_list_rids),
-            Self::Ship(ship) => ship.get_r_item_base().map(|v| &v.proj_buff_item_list_rids),
+            Self::Drone(drone) => drone.get_r_item_base().map(|v| v.proj_buff_item_list_rids.as_slice()),
+            Self::Fighter(fighter) => fighter.get_r_item_base().map(|v| v.proj_buff_item_list_rids.as_slice()),
+            Self::Ship(ship) => ship.get_r_item_base().map(|v| v.proj_buff_item_list_rids.as_slice()),
             _ => None,
         }
     }
