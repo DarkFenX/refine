@@ -5,4 +5,5 @@ pub(in crate::sde) use lines_search::first_in_lines;
 
 mod error;
 mod lines_parse;
+#[cfg(feature = "sde-fs")]
 mod lines_search;
