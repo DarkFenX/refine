@@ -9,8 +9,9 @@ use crate::{
     shared::{cap_len, cap_warning_len},
 };
 
-const KEY_LEN_LIMIT: usize = 20;
-
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Interface methods
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::phb) fn extract_from_keymap_one<PHB, EVE>(
     reader: impl std::io::Read,
 ) -> Result<rc::ed::EDataCont<EVE>, ReadParseFailReason>
@@ -35,6 +36,9 @@ where
     Ok((e_cont1, e_cont2))
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Visitors
+////////////////////////////////////////////////////////////////////////////////////////////////////
 struct KeymapOne<PHB, EVE>(PhantomData<(PHB, EVE)>);
 impl<'de, PHB, EVE> Visitor<'de> for KeymapOne<PHB, EVE>
 where
@@ -52,25 +56,9 @@ where
     {
         let size_hint = map.size_hint().unwrap_or(0);
         let mut e_cont = rc::ed::EDataCont::with_capacity(size_hint);
-        while let Some(raw_key) = map.next_key::<String>()? {
-            let raw_value = map.next_value::<Box<RawValue>>()?;
-            // In case of malformed ID - log error and skip element
-            let Ok(key) = raw_key.parse::<Key>() else {
-                let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
-                e_cont.warnings.push(warning);
-                continue;
-            };
-            // In case of malformed value - same, log error and skip element
-            let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
-                Ok(phb) => phb,
-                Err(err) => {
-                    let warning = cap_warning_len(format!("failed to parse value with key \"{key}\": {err}"));
-                    e_cont.warnings.push(warning);
-                    continue;
-                }
-            };
+        for_each_entry::<PHB, _>(&mut map, &mut e_cont.warnings, |key, phb| {
             e_cont.data.extend(phb.key_merge(key));
-        }
+        })?;
         Ok(e_cont)
     }
 }
@@ -93,29 +81,49 @@ where
         let size_hint = map.size_hint().unwrap_or(0);
         let mut e_cont1 = rc::ed::EDataCont::with_capacity(size_hint);
         let mut e_cont2 = rc::ed::EDataCont::with_capacity(size_hint);
-        while let Some(raw_key) = map.next_key::<String>()? {
-            let raw_value = map.next_value::<Box<RawValue>>()?;
-            // In case of malformed ID - log error and skip element
-            let Ok(key) = raw_key.parse::<Key>() else {
-                let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, KEY_LEN_LIMIT));
-                e_cont1.warnings.push(warning.clone());
-                e_cont2.warnings.push(warning);
-                continue;
-            };
-            // In case of malformed value - same, log error and skip element
-            let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
-                Ok(phb) => phb,
-                Err(err) => {
-                    let warning = cap_warning_len(format!("failed to parse value with key \"{key}\": {err}"));
-                    e_cont1.warnings.push(warning.clone());
-                    e_cont2.warnings.push(warning);
-                    continue;
-                }
-            };
+        let mut warnings = Vec::new();
+        for_each_entry::<PHB, _>(&mut map, &mut warnings, |key, phb| {
             let (e_data1, e_data2) = phb.key_merge(key);
             e_cont1.data.extend(e_data1);
             e_cont2.data.extend(e_data2);
-        }
+        })?;
+        e_cont1.warnings = warnings.clone();
+        e_cont2.warnings = warnings;
         Ok((e_cont1, e_cont2))
     }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared
+////////////////////////////////////////////////////////////////////////////////////////////////////
+fn for_each_entry<'de, PHB, A>(
+    map: &mut A,
+    warnings: &mut Vec<String>,
+    mut process: impl FnMut(Key, PHB),
+) -> Result<(), A::Error>
+where
+    PHB: serde::de::DeserializeOwned,
+    A: MapAccess<'de>,
+{
+    while let Some(raw_key) = map.next_key::<String>()? {
+        // Value has to be taken even when its key is unusable, to advance to the next entry
+        let raw_value = map.next_value::<Box<RawValue>>()?;
+        // In case of malformed key - log a warning and skip element
+        let Ok(key) = raw_key.parse::<Key>() else {
+            let warning = format!("failed to cast key \"{}\" to integer", cap_len(raw_key, 20));
+            warnings.push(warning);
+            continue;
+        };
+        // In case of malformed value - same, log a warning and skip element
+        let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
+            Ok(phb) => phb,
+            Err(err) => {
+                let warning = cap_warning_len(format!("failed to parse value with key \"{key}\": {err}"));
+                warnings.push(warning);
+                continue;
+            }
+        };
+        process(key, phb);
+    }
+    Ok(())
 }
