@@ -20,5 +20,5 @@ url = { workspace = true, optional = true }
 [features]
 phb-fs = ["dep:serde", "dep:serde_json", "dep:serde_with"]
 phb-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:reqwest", "dep:url"]
-sde-fs = ["dep:serde", "dep:serde_json", "dep:serde_with"]
-sde-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:reqwest", "dep:url"]
+sde-fs = ["dep:serde", "dep:serde_json"]
+sde-http = ["dep:serde", "dep:serde_json", "dep:reqwest", "dep:url"]
