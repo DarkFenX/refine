@@ -1,5 +1,5 @@
 use crate::{
-    ed::{EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM},
+    ed::{EBuffId, EBuffIm, EBuffLgm, EBuffLm, EBuffLrsm},
     util::LibNamed,
 };
 
@@ -7,10 +7,10 @@ pub struct EBuff {
     pub id: EBuffId,
     pub aggregate_mode: String,
     pub operation: String,
-    pub item_mods: Vec<EBuffIM>,
-    pub loc_mods: Vec<EBuffLM>,
-    pub locgroup_mods: Vec<EBuffLGM>,
-    pub locsrq_mods: Vec<EBuffLRSM>,
+    pub item_mods: Vec<EBuffIm>,
+    pub loc_mods: Vec<EBuffLm>,
+    pub locgroup_mods: Vec<EBuffLgm>,
+    pub locsrq_mods: Vec<EBuffLrsm>,
 }
 impl LibNamed for EBuff {
     fn lib_get_name() -> &'static str {

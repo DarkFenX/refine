@@ -1,6 +1,6 @@
 pub use buff::EBuff;
 pub use id::EBuffId;
-pub use modifier::{EBuffIM, EBuffLGM, EBuffLM, EBuffLRSM};
+pub use modifier::{EBuffIm, EBuffLgm, EBuffLm, EBuffLrsm};
 
 mod buff;
 mod id;

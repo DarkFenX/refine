@@ -1,6 +1,6 @@
 pub use abil::{EAbil, EAbilId};
 pub use attr::{EAttr, EAttrId, EAttrUnitId};
-pub use buff::{EBuff, EBuffIM, EBuffId, EBuffLGM, EBuffLM, EBuffLRSM};
+pub use buff::{EBuff, EBuffId, EBuffIm, EBuffLgm, EBuffLm, EBuffLrsm};
 pub use data::{EData, EDataCont};
 pub use effect::{EEffect, EEffectCatId, EEffectId, EEffectMod, EEffectModArg, EPrimitive};
 pub use item::{

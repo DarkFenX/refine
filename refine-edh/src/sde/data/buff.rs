@@ -1,6 +1,9 @@
 use serde::Deserialize;
 
-use crate::sde::data::ExtractOne;
+use crate::{
+    sde::data::ExtractOne,
+    shared::data::{BuffIm, BuffLgm, BuffLm, BuffLrsm},
+};
 
 #[derive(Deserialize)]
 pub(in crate::sde) struct SBuff {
@@ -11,13 +14,13 @@ pub(in crate::sde) struct SBuff {
     #[serde(rename = "operationName")]
     operation_name: String,
     #[serde(rename = "itemModifiers", default)]
-    item_modifiers: Vec<SBuffIM>,
+    item_modifiers: Vec<BuffIm>,
     #[serde(rename = "locationModifiers", default)]
-    location_modifiers: Vec<SBuffLM>,
+    location_modifiers: Vec<BuffLm>,
     #[serde(rename = "locationGroupModifiers", default)]
-    location_group_modifiers: Vec<SBuffLGM>,
+    location_group_modifiers: Vec<BuffLgm>,
     #[serde(rename = "locationRequiredSkillModifiers", default)]
-    location_required_skill_modifiers: Vec<SBuffLRSM>,
+    location_required_skill_modifiers: Vec<BuffLrsm>,
 }
 impl ExtractOne<rc::ed::EBuff> for SBuff {
     fn extract(self) -> Vec<rc::ed::EBuff> {
@@ -46,63 +49,5 @@ impl ExtractOne<rc::ed::EBuff> for SBuff {
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),
         }]
-    }
-}
-
-#[derive(Deserialize)]
-struct SBuffIM {
-    #[serde(rename = "dogmaAttributeID")]
-    attr_id: i32,
-}
-impl SBuffIM {
-    fn into_e_buff_mod(self) -> rc::ed::EBuffIM {
-        rc::ed::EBuffIM {
-            attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
-        }
-    }
-}
-
-#[derive(Deserialize)]
-struct SBuffLM {
-    #[serde(rename = "dogmaAttributeID")]
-    attr_id: i32,
-}
-impl SBuffLM {
-    fn into_e_buff_mod(self) -> rc::ed::EBuffLM {
-        rc::ed::EBuffLM {
-            attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
-        }
-    }
-}
-
-#[derive(Deserialize)]
-struct SBuffLGM {
-    #[serde(rename = "dogmaAttributeID")]
-    attr_id: i32,
-    #[serde(rename = "groupID")]
-    group_id: i32,
-}
-impl SBuffLGM {
-    fn into_e_buff_mod(self) -> rc::ed::EBuffLGM {
-        rc::ed::EBuffLGM {
-            attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
-            group_id: rc::ed::EItemGrpId::from_i32(self.group_id),
-        }
-    }
-}
-
-#[derive(Deserialize)]
-struct SBuffLRSM {
-    #[serde(rename = "dogmaAttributeID")]
-    attr_id: i32,
-    #[serde(rename = "skillID")]
-    skill_id: i32,
-}
-impl SBuffLRSM {
-    fn into_e_buff_mod(self) -> rc::ed::EBuffLRSM {
-        rc::ed::EBuffLRSM {
-            attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
-            skill_id: rc::ed::EItemId::from_i32(self.skill_id),
-        }
     }
 }
