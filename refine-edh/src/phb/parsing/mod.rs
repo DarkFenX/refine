@@ -7,4 +7,3 @@ mod error;
 #[cfg(feature = "phb-fs")]
 mod parse_array;
 mod parse_keymap;
-mod warning;
