@@ -20,25 +20,28 @@ pub struct SdeHttpEdh {
 impl SdeHttpEdh {
     /// Constructs HTTP EVE data handler using provided base URL and data version.
     ///
-    /// URL should end with a trailing slash.
-    ///
     /// This data handler assumes that data version is known before its construction.
     pub fn try_new(base_url: impl AsRef<str>, data_version: impl Into<String>) -> Result<Self, SdeHttpEdhInitError> {
         let base_url = base_url.as_ref();
-        let base_url_conv = match Url::parse(base_url) {
+        let mut base_url_conv = match Url::parse(base_url) {
             Ok(base_url_conv) => base_url_conv,
             Err(error) => {
                 return Err(SdeHttpEdhInitError::BaseUrlParse(base_url.to_string(), error));
             }
         };
-        match base_url_conv.has_host() && !base_url_conv.cannot_be_a_base() {
-            true => Ok(Self {
-                base_url: base_url_conv,
-                data_version: data_version.into(),
-                client: Client::new(),
-            }),
-            false => Err(SdeHttpEdhInitError::BaseUrlNotABase(base_url.to_string())),
+        if !base_url_conv.has_host() || base_url_conv.cannot_be_a_base() {
+            return Err(SdeHttpEdhInitError::BaseUrlNotABase(base_url.to_string()));
         }
+        // Append trailing slash if it is not there
+        if !base_url_conv.path().ends_with('/') {
+            let path = format!("{}/", base_url_conv.path());
+            base_url_conv.set_path(&path);
+        }
+        Ok(Self {
+            base_url: base_url_conv,
+            data_version: data_version.into(),
+            client: Client::new(),
+        })
     }
 }
 impl std::fmt::Debug for SdeHttpEdh {
