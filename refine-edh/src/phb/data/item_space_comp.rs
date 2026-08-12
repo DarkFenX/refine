@@ -65,7 +65,7 @@ struct PItemSpaceCompSwGlobal {
     #[serde_as(as = "Map<_, _>")]
     #[serde(default)]
     dbuffs: Vec<(i32, f64)>,
-    #[serde(rename = "eligibleTypeListID", default)]
+    #[serde(rename = "eligibleTypeListID")]
     eligible_type_list_id: Option<i32>,
 }
 
@@ -91,7 +91,7 @@ struct PItemSpaceCompPt {
     #[serde_as(as = "Map<_, _>")]
     #[serde(default)]
     dbuffs: Vec<(i32, f64)>,
-    #[serde(rename = "triggerFilterTypeListID", default)]
+    #[serde(rename = "triggerFilterTypeListID")]
     trigger_filter_type_list_id: Option<i32>,
 }
 
@@ -100,6 +100,6 @@ struct PItemSpaceCompPt {
 struct PItemSpaceCompSl {
     #[serde_as(as = "Map<_, _>")]
     dbuffs: Vec<(i32, f64)>,
-    #[serde(rename = "linkableShipTypeListID", default)]
+    #[serde(rename = "linkableShipTypeListID")]
     linkable_ship_type_list_id: Option<i32>,
 }

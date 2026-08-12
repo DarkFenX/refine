@@ -1,19 +1,18 @@
 use serde::Deserialize;
-use serde_with::{Map, serde_as};
 
-use crate::sde::data::{Key, KeyMergeTwo};
+use crate::sde::data::ExtractTwo;
 
-#[serde_as]
 #[derive(Deserialize)]
-pub(in crate::sde) struct PMuta {
+pub(in crate::sde) struct SMuta {
+    #[serde(rename = "_key")]
+    item_id: i32,
     #[serde(rename = "inputOutputMapping")]
-    input_output_mapping: Vec<PMutaItemMap>,
-    #[serde_as(as = "Map<_, _>")]
+    input_output_mapping: Vec<SMutaItemMap>,
     #[serde(rename = "attributeIDs")]
-    attribute_ids: Vec<(i32, PMutaAttrRange)>,
+    attribute_ids: Vec<SMutaAttrRange>,
 }
-impl KeyMergeTwo<rc::ed::EMutaItem, rc::ed::EMutaAttr> for PMuta {
-    fn key_merge(self, key: Key) -> (Vec<rc::ed::EMutaItem>, Vec<rc::ed::EMutaAttr>) {
+impl ExtractTwo<rc::ed::EMutaItem, rc::ed::EMutaAttr> for SMuta {
+    fn extract(self) -> (Vec<rc::ed::EMutaItem>, Vec<rc::ed::EMutaAttr>) {
         let muta_items = self
             .input_output_mapping
             .into_iter()
@@ -22,7 +21,7 @@ impl KeyMergeTwo<rc::ed::EMutaItem, rc::ed::EMutaAttr> for PMuta {
                     .applicable_types
                     .into_iter()
                     .map(move |in_item_id| rc::ed::EMutaItem {
-                        muta_id: rc::ed::EItemId::from_i32(key),
+                        muta_id: rc::ed::EItemId::from_i32(self.item_id),
                         in_item_id: rc::ed::EItemId::from_i32(in_item_id),
                         out_item_id: rc::ed::EItemId::from_i32(item_map.resulting_type),
                     })
@@ -31,11 +30,11 @@ impl KeyMergeTwo<rc::ed::EMutaItem, rc::ed::EMutaAttr> for PMuta {
         let muta_attrs = self
             .attribute_ids
             .into_iter()
-            .map(|(attr_id, range)| rc::ed::EMutaAttr {
-                muta_id: rc::ed::EItemId::from_i32(key),
-                attr_id: rc::ed::EAttrId::from_i32(attr_id),
-                min_attr_mult: rc::ed::EFloat::from_f64(range.min),
-                max_attr_mult: rc::ed::EFloat::from_f64(range.max),
+            .map(|attr_range| rc::ed::EMutaAttr {
+                muta_id: rc::ed::EItemId::from_i32(self.item_id),
+                attr_id: rc::ed::EAttrId::from_i32(attr_range.attr_id),
+                min_attr_mult: rc::ed::EFloat::from_f64(attr_range.min),
+                max_attr_mult: rc::ed::EFloat::from_f64(attr_range.max),
             })
             .collect();
         (muta_items, muta_attrs)
@@ -43,7 +42,7 @@ impl KeyMergeTwo<rc::ed::EMutaItem, rc::ed::EMutaAttr> for PMuta {
 }
 
 #[derive(Deserialize)]
-struct PMutaItemMap {
+struct SMutaItemMap {
     #[serde(rename = "applicableTypes")]
     applicable_types: Vec<i32>,
     #[serde(rename = "resultingType")]
@@ -51,7 +50,9 @@ struct PMutaItemMap {
 }
 
 #[derive(Deserialize)]
-struct PMutaAttrRange {
+struct SMutaAttrRange {
+    #[serde(rename = "_key")]
+    attr_id: i32,
     min: f64,
     max: f64,
 }

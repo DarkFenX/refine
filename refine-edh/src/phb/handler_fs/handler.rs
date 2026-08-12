@@ -9,15 +9,16 @@ use crate::phb::{
     parsing::{extract_from_keymap_one, extract_from_keymap_two, find_in_array},
 };
 
-/// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) JSON dump
+/// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) static data
+/// export in JSON format
 pub struct PhbFsEdh {
     base_path: PathBuf,
 }
 impl PhbFsEdh {
     /// Constructs filesystem EVE data handler using provided path.
     ///
-    /// Path should point to the top-level directory of a data dump, e.g. `/phobos_en-us` and not
-    /// `/phobos_en-us/fsd_built`.
+    /// Path should point to the top-level directory of a static data export, e.g. `/phobos_en-us`
+    /// and not `/phobos_en-us/fsd_built`.
     pub fn new(path: impl Into<PathBuf>) -> Self {
         Self { base_path: path.into() }
     }

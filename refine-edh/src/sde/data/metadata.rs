@@ -1,7 +1,9 @@
 use serde::Deserialize;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PMetadata {
-    pub(in crate::sde) field_name: String,
-    pub(in crate::sde) field_value: u64,
+pub(in crate::sde) struct SMetadata {
+    #[serde(rename = "_key")]
+    pub(in crate::sde) id: String,
+    #[serde(rename = "buildNumber")]
+    pub(in crate::sde) build_number: u64,
 }

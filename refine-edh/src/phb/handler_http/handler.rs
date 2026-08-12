@@ -11,7 +11,8 @@ use crate::phb::{
     parsing::{extract_from_keymap_one, extract_from_keymap_two},
 };
 
-/// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP
+/// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) static data export in
+/// JSON format over HTTP
 pub struct PhbHttpEdh {
     base_url: Url,
     data_version: String,
@@ -20,8 +21,8 @@ pub struct PhbHttpEdh {
 impl PhbHttpEdh {
     /// Constructs HTTP EVE data handler using provided base URL and data version.
     ///
-    /// URL should end with a trailing slash, and should point to the top-level directory of
-    /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_built/`.
+    /// URL should end with a trailing slash, and should point to the top-level directory of a
+    /// static data export, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_built/`.
     ///
     /// This data handler assumes that data version is known before its construction.
     pub fn try_new(base_url: impl AsRef<str>, data_version: impl Into<String>) -> Result<Self, PhbHttpEdhInitError> {

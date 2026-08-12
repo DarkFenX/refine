@@ -3,8 +3,8 @@ use std::{fs::File, io::BufReader, path::PathBuf};
 use super::{address::Address, error::SdeFsEdhError};
 use crate::sde::{
     data::{
-        KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
-        PItemSpaceComp, PMetadata, PMuta,
+        KeyMergeOne, KeyMergeTwo, PAbil, SAttr, SBuff, SEffect, SItem, SItemAbils, SItemBuff, SItemDogma, SItemGroup,
+        SItemList, SMetadata, SMuta,
     },
     parsing::{extract_from_keymap_one, extract_from_keymap_two, find_in_array},
 };
@@ -50,7 +50,7 @@ impl rc::ed::EveDataHandlerInterface for SdeFsEdh {
     fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
-        let metadata = find_in_array::<PMetadata>(reader, |metadata| metadata.field_name == "client_build")
+        let metadata = find_in_array::<SMetadata>(reader, |metadata| metadata.field_name == "client_build")
             .map_err(|e| SdeFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         match metadata {
             Some(metadata) => Ok(metadata.field_value.to_string()),
@@ -61,27 +61,27 @@ impl rc::ed::EveDataHandlerInterface for SdeFsEdh {
 
 impl SdeFsEdh {
     fn process_types(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.items = self.process_one::<PItem, _>("fsd_built", "types")?;
+        e_data.items = self.process_one::<SItem, _>("fsd_built", "types")?;
         Ok(())
     }
     fn process_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.groups = self.process_one::<PItemGroup, _>("fsd_built", "groups")?;
+        e_data.groups = self.process_one::<SItemGroup, _>("fsd_built", "groups")?;
         Ok(())
     }
     fn process_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.item_lists = self.process_one::<PItemList, _>("fsd_built", "typelist")?;
+        e_data.item_lists = self.process_one::<SItemList, _>("fsd_built", "typelist")?;
         Ok(())
     }
     fn process_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.attrs = self.process_one::<PAttr, _>("fsd_built", "dogmaattributes")?;
+        e_data.attrs = self.process_one::<SAttr, _>("fsd_built", "dogmaattributes")?;
         Ok(())
     }
     fn process_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.effects = self.process_one::<PEffect, _>("fsd_built", "dogmaeffects")?;
+        e_data.effects = self.process_one::<SEffect, _>("fsd_built", "dogmaeffects")?;
         Ok(())
     }
     fn process_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built", "typedogma")?;
+        (e_data.item_attrs, e_data.item_effects) = self.process_two::<SItemDogma, _, _>("fsd_built", "typedogma")?;
         Ok(())
     }
     fn process_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
@@ -89,20 +89,20 @@ impl SdeFsEdh {
         Ok(())
     }
     fn process_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.item_abils = self.process_one::<PItemAbils, _>("fsd_lite", "fighterabilitiesbytype")?;
+        e_data.item_abils = self.process_one::<SItemAbils, _>("fsd_lite", "fighterabilitiesbytype")?;
         Ok(())
     }
     fn process_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.buffs = self.process_one::<PBuff, _>("fsd_lite", "dbuffcollections")?;
+        e_data.buffs = self.process_one::<SBuff, _>("fsd_lite", "dbuffcollections")?;
         Ok(())
     }
     fn process_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        e_data.item_buffs = self.process_one::<PItemSpaceComp, _>("fsd_built", "spacecomponentsbytype")?;
+        e_data.item_buffs = self.process_one::<SItemBuff, _>("fsd_built", "spacecomponentsbytype")?;
         Ok(())
     }
     fn process_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
         (e_data.muta_items, e_data.muta_attrs) =
-            self.process_two::<PMuta, _, _>("fsd_built", "dynamicitemattributes")?;
+            self.process_two::<SMuta, _, _>("fsd_built", "dynamicitemattributes")?;
         Ok(())
     }
 }

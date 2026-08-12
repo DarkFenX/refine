@@ -1,26 +1,28 @@
 use serde::Deserialize;
 
-use crate::sde::data::{Key, KeyMergeOne};
+use crate::sde::data::ExtractOne;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PBuff {
+pub(in crate::sde) struct SBuff {
+    #[serde(rename = "_key")]
+    id: i32,
     #[serde(rename = "aggregateMode")]
     aggregate_mode: String,
     #[serde(rename = "operationName")]
     operation_name: String,
     #[serde(rename = "itemModifiers", default)]
-    item_modifiers: Vec<PBuffIM>,
+    item_modifiers: Vec<SBuffIM>,
     #[serde(rename = "locationModifiers", default)]
-    location_modifiers: Vec<PBuffLM>,
+    location_modifiers: Vec<SBuffLM>,
     #[serde(rename = "locationGroupModifiers", default)]
-    location_group_modifiers: Vec<PBuffLGM>,
+    location_group_modifiers: Vec<SBuffLGM>,
     #[serde(rename = "locationRequiredSkillModifiers", default)]
-    location_required_skill_modifiers: Vec<PBuffLRSM>,
+    location_required_skill_modifiers: Vec<SBuffLRSM>,
 }
-impl KeyMergeOne<rc::ed::EBuff> for PBuff {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EBuff> {
+impl ExtractOne<rc::ed::EBuff> for SBuff {
+    fn extract(self) -> Vec<rc::ed::EBuff> {
         vec![rc::ed::EBuff {
-            id: rc::ed::EBuffId::from_i32(key),
+            id: rc::ed::EBuffId::from_i32(self.id),
             aggregate_mode: self.aggregate_mode,
             operation: self.operation_name,
             item_mods: self
@@ -48,11 +50,11 @@ impl KeyMergeOne<rc::ed::EBuff> for PBuff {
 }
 
 #[derive(Deserialize)]
-struct PBuffIM {
+struct SBuffIM {
     #[serde(rename = "dogmaAttributeID")]
     attr_id: i32,
 }
-impl PBuffIM {
+impl SBuffIM {
     fn into_e_buff_mod(self) -> rc::ed::EBuffIM {
         rc::ed::EBuffIM {
             attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
@@ -61,11 +63,11 @@ impl PBuffIM {
 }
 
 #[derive(Deserialize)]
-struct PBuffLM {
+struct SBuffLM {
     #[serde(rename = "dogmaAttributeID")]
     attr_id: i32,
 }
-impl PBuffLM {
+impl SBuffLM {
     fn into_e_buff_mod(self) -> rc::ed::EBuffLM {
         rc::ed::EBuffLM {
             attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
@@ -74,13 +76,13 @@ impl PBuffLM {
 }
 
 #[derive(Deserialize)]
-struct PBuffLGM {
+struct SBuffLGM {
     #[serde(rename = "dogmaAttributeID")]
     attr_id: i32,
     #[serde(rename = "groupID")]
     group_id: i32,
 }
-impl PBuffLGM {
+impl SBuffLGM {
     fn into_e_buff_mod(self) -> rc::ed::EBuffLGM {
         rc::ed::EBuffLGM {
             attr_id: rc::ed::EAttrId::from_i32(self.attr_id),
@@ -90,13 +92,13 @@ impl PBuffLGM {
 }
 
 #[derive(Deserialize)]
-struct PBuffLRSM {
+struct SBuffLRSM {
     #[serde(rename = "dogmaAttributeID")]
     attr_id: i32,
     #[serde(rename = "skillID")]
     skill_id: i32,
 }
-impl PBuffLRSM {
+impl SBuffLRSM {
     fn into_e_buff_mod(self) -> rc::ed::EBuffLRSM {
         rc::ed::EBuffLRSM {
             attr_id: rc::ed::EAttrId::from_i32(self.attr_id),

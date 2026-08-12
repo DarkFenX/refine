@@ -5,11 +5,11 @@ use crate::{
 
 pub struct EItemBuff {
     pub item_id: EItemId,
-    pub system_wide_buffs: Option<EItemBuffData>,
-    pub system_emitter_buffs: Option<EItemBuffData>,
-    pub proxy_effect_buffs: Option<EItemBuffData>,
-    pub proxy_trigger_buffs: Option<EItemBuffData>,
-    pub ship_link_buffs: Option<EItemBuffData>,
+    pub system_wide_buffs: Option<EItemBuffData> = None,
+    pub system_emitter_buffs: Option<EItemBuffData> = None,
+    pub proxy_effect_buffs: Option<EItemBuffData> = None,
+    pub proxy_trigger_buffs: Option<EItemBuffData> = None,
+    pub ship_link_buffs: Option<EItemBuffData> = None,
 }
 impl EItemBuff {
     pub(crate) fn iter_data(&self) -> impl Iterator<Item = &EItemBuffData> {

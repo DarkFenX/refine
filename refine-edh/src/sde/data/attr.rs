@@ -1,15 +1,13 @@
 use serde::Deserialize;
 
-use crate::{
-    sde::data::{Key, KeyMergeOne},
-    util::bool_from_int,
-};
+use crate::sde::data::ExtractOne;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PAttr {
-    #[serde(deserialize_with = "bool_from_int")]
+pub(in crate::sde) struct SAttr {
+    #[serde(rename = "_key")]
+    id: i32,
     stackable: bool,
-    #[serde(rename = "highIsGood", deserialize_with = "bool_from_int")]
+    #[serde(rename = "highIsGood")]
     high_is_good: bool,
     #[serde(rename = "defaultValue")]
     default_value: f64,
@@ -20,10 +18,10 @@ pub(in crate::sde) struct PAttr {
     #[serde(rename = "unitID")]
     unit_id: Option<i32>,
 }
-impl KeyMergeOne<rc::ed::EAttr> for PAttr {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EAttr> {
+impl ExtractOne<rc::ed::EAttr> for SAttr {
+    fn extract(self) -> Vec<rc::ed::EAttr> {
         vec![rc::ed::EAttr {
-            id: rc::ed::EAttrId::from_i32(key),
+            id: rc::ed::EAttrId::from_i32(self.id),
             stackable: self.stackable,
             high_is_good: self.high_is_good,
             default_value: rc::ed::EFloat::from_f64(self.default_value),

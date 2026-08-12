@@ -5,13 +5,13 @@ use reqwest::{Url, blocking::Client};
 use super::error::{SdeHttpEdhError, SdeHttpEdhInitError};
 use crate::sde::{
     data::{
-        KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
-        PItemSpaceComp, PMuta,
+        ExtractOne, ExtractTwo, SAbil, SAttr, SBuff, SEffect, SItem, SItemAbils, SItemBuffPe, SItemBuffPt, SItemBuffSe,
+        SItemBuffSl, SItemBuffSw, SItemDogma, SItemGroup, SItemList, SMuta, merge_item_buffs,
     },
-    parsing::{extract_from_keymap_one, extract_from_keymap_two},
+    parsing::{extract_from_lines_one, extract_from_lines_two},
 };
 
-/// Data handler which fetches [Phobos](https://github.com/pyfa-org/Phobos) JSON dump via HTTP
+/// Data handler which fetches CCP-produced SDE in JSON Lines via HTTP
 pub struct SdeHttpEdh {
     base_url: Url,
     data_version: String,
@@ -20,8 +20,7 @@ pub struct SdeHttpEdh {
 impl SdeHttpEdh {
     /// Constructs HTTP EVE data handler using provided base URL and data version.
     ///
-    /// URL should end with a trailing slash, and should point to the top-level directory of
-    /// a data dump, e.g. `/phobos_en-us/` and not `/phobos_en-us/fsd_built/`.
+    /// URL should end with a trailing slash.
     ///
     /// This data handler assumes that data version is known before its construction.
     pub fn try_new(base_url: impl AsRef<str>, data_version: impl Into<String>) -> Result<Self, SdeHttpEdhInitError> {
@@ -56,15 +55,15 @@ impl rc::ed::EveDataHandlerInterface for SdeHttpEdh {
         let mut data = rc::ed::EData::new();
         self.process_types(&mut data)?;
         self.process_groups(&mut data)?;
-        self.process_typelist(&mut data)?;
-        self.process_dogmaattributes(&mut data)?;
-        self.process_dogmaeffects(&mut data)?;
-        self.process_typedogma(&mut data)?;
-        self.process_fighterabilities(&mut data)?;
-        self.process_fighterabilitiesbytype(&mut data)?;
-        self.process_dbuffcollections(&mut data)?;
-        self.process_spacecomponentsbytype(&mut data)?;
-        self.process_dynamicitemattributes(&mut data)?;
+        self.process_type_lists(&mut data)?;
+        self.process_dogma_attributes(&mut data)?;
+        self.process_dogma_effects(&mut data)?;
+        self.process_type_dogma(&mut data)?;
+        self.process_fighter_abilities(&mut data)?;
+        self.process_fighter_abilities_by_type(&mut data)?;
+        self.process_dbuff_collections(&mut data)?;
+        self.process_item_buffs(&mut data)?;
+        self.process_dynamic_item_attributes(&mut data)?;
         Ok(data)
     }
     fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
@@ -74,48 +73,58 @@ impl rc::ed::EveDataHandlerInterface for SdeHttpEdh {
 
 impl SdeHttpEdh {
     fn process_types(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.items = self.process_one::<PItem, _>("fsd_built/types.json")?;
+        e_data.items = self.process_one::<SItem, _>("types.jsonl")?;
         Ok(())
     }
     fn process_groups(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.groups = self.process_one::<PItemGroup, _>("fsd_built/groups.json")?;
+        e_data.groups = self.process_one::<SItemGroup, _>("groups.jsonl")?;
         Ok(())
     }
-    fn process_typelist(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.item_lists = self.process_one::<PItemList, _>("fsd_built/typelist.json")?;
+    fn process_type_lists(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        e_data.item_lists = self.process_one::<SItemList, _>("typeLists.jsonl")?;
         Ok(())
     }
-    fn process_dogmaattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.attrs = self.process_one::<PAttr, _>("fsd_built/dogmaattributes.json")?;
+    fn process_dogma_attributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        e_data.attrs = self.process_one::<SAttr, _>("dogmaAttributes.jsonl")?;
         Ok(())
     }
-    fn process_dogmaeffects(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.effects = self.process_one::<PEffect, _>("fsd_built/dogmaeffects.json")?;
+    fn process_dogma_effects(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        e_data.effects = self.process_one::<SEffect, _>("dogmaEffects.jsonl")?;
         Ok(())
     }
-    fn process_typedogma(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        (e_data.item_attrs, e_data.item_effects) = self.process_two::<PItemDogma, _, _>("fsd_built/typedogma.json")?;
+    fn process_type_dogma(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        (e_data.item_attrs, e_data.item_effects) = self.process_two::<SItemDogma, _, _>("typeDogma.jsonl")?;
         Ok(())
     }
-    fn process_fighterabilities(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.abils = self.process_one::<PAbil, _>("fsd_lite/fighterabilities.json")?;
+    fn process_fighter_abilities(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        e_data.abils = self.process_one::<SAbil, _>("fighterAbilities.jsonl")?;
         Ok(())
     }
-    fn process_fighterabilitiesbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.item_abils = self.process_one::<PItemAbils, _>("fsd_lite/fighterabilitiesbytype.json")?;
+    fn process_fighter_abilities_by_type(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        e_data.item_abils = self.process_one::<SItemAbils, _>("fighterAbilitiesByType.jsonl")?;
         Ok(())
     }
-    fn process_dbuffcollections(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.buffs = self.process_one::<PBuff, _>("fsd_lite/dbuffcollections.json")?;
+    fn process_dbuff_collections(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        e_data.buffs = self.process_one::<SBuff, _>("dbuffCollections.jsonl")?;
         Ok(())
     }
-    fn process_spacecomponentsbytype(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        e_data.item_buffs = self.process_one::<PItemSpaceComp, _>("fsd_built/spacecomponentsbytype.json")?;
+    fn process_item_buffs(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        let e_item_buffs_sw = self.process_one::<SItemBuffSw, rc::ed::EItemBuff>("systemWideEffects.jsonl")?;
+        let e_item_buffs_se = self.process_one::<SItemBuffSe, rc::ed::EItemBuff>("systemDbuffEmitters.jsonl")?;
+        let e_item_buffs_pe = self.process_one::<SItemBuffPe, rc::ed::EItemBuff>("appliedProximityEffects.jsonl")?;
+        let e_item_buffs_pt = self.process_one::<SItemBuffPt, rc::ed::EItemBuff>("proximityTrap.jsonl")?;
+        let e_item_buffs_sl = self.process_one::<SItemBuffSl, rc::ed::EItemBuff>("linkWithShip.jsonl")?;
+        e_data.item_buffs = merge_item_buffs(
+            e_item_buffs_sw,
+            e_item_buffs_se,
+            e_item_buffs_pe,
+            e_item_buffs_pt,
+            e_item_buffs_sl,
+        );
         Ok(())
     }
-    fn process_dynamicitemattributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        (e_data.muta_items, e_data.muta_attrs) =
-            self.process_two::<PMuta, _, _>("fsd_built/dynamicitemattributes.json")?;
+    fn process_dynamic_item_attributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
+        (e_data.muta_items, e_data.muta_attrs) = self.process_two::<SMuta, _, _>("dynamicItemAttributes.jsonl")?;
         Ok(())
     }
 }
@@ -126,22 +135,22 @@ impl SdeHttpEdh {
 impl SdeHttpEdh {
     fn process_one<SDE, EVE>(&self, suffix: &str) -> Result<rc::ed::EDataCont<EVE>, SdeHttpEdhError>
     where
-        SDE: serde::de::DeserializeOwned + KeyMergeOne<EVE>,
+        SDE: serde::de::DeserializeOwned + ExtractOne<EVE>,
     {
         let reader = self.get_reader(suffix)?;
-        extract_from_keymap_one::<SDE, EVE>(reader).map_err(|e| SdeHttpEdhError::from_read_parse(e, suffix))
+        extract_from_lines_one::<SDE, EVE>(reader).map_err(|e| SdeHttpEdhError::from_read_parse(e, suffix))
     }
     fn process_two<SDE, EVE1, EVE2>(
         &self,
         suffix: &str,
     ) -> Result<(rc::ed::EDataCont<EVE1>, rc::ed::EDataCont<EVE2>), SdeHttpEdhError>
     where
-        SDE: serde::de::DeserializeOwned + KeyMergeTwo<EVE1, EVE2>,
+        SDE: serde::de::DeserializeOwned + ExtractTwo<EVE1, EVE2>,
     {
         let reader = self.get_reader(suffix)?;
-        extract_from_keymap_two::<SDE, EVE1, EVE2>(reader).map_err(|e| SdeHttpEdhError::from_read_parse(e, suffix))
+        extract_from_lines_two::<SDE, EVE1, EVE2>(reader).map_err(|e| SdeHttpEdhError::from_read_parse(e, suffix))
     }
-    fn get_reader(&self, suffix: &str) -> Result<impl std::io::Read, SdeHttpEdhError> {
+    fn get_reader(&self, suffix: &str) -> Result<impl std::io::BufRead, SdeHttpEdhError> {
         let full_url = self
             .base_url
             .join(suffix)

@@ -1,9 +1,11 @@
 use serde::Deserialize;
 
-use crate::sde::data::{Key, KeyMergeOne};
+use crate::sde::data::ExtractOne;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PItemList {
+pub(in crate::sde) struct SItemList {
+    #[serde(rename = "_key")]
+    id: i32,
     #[serde(rename = "includedTypeIDs", default)]
     included_type_ids: Vec<i32>,
     #[serde(rename = "includedGroupIDs", default)]
@@ -17,10 +19,10 @@ pub(in crate::sde) struct PItemList {
     #[serde(rename = "excludedCategoryIDs", default)]
     excluded_category_ids: Vec<i32>,
 }
-impl KeyMergeOne<rc::ed::EItemList> for PItemList {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemList> {
+impl ExtractOne<rc::ed::EItemList> for SItemList {
+    fn extract(self) -> Vec<rc::ed::EItemList> {
         vec![rc::ed::EItemList {
-            id: rc::ed::EItemListId::from_i32(key),
+            id: rc::ed::EItemListId::from_i32(self.id),
             included_item_ids: self
                 .included_type_ids
                 .into_iter()

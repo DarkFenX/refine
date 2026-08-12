@@ -1,16 +1,18 @@
 use serde::Deserialize;
 
-use crate::sde::data::{Key, KeyMergeOne};
+use crate::sde::data::ExtractOne;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PItemGroup {
+pub(in crate::sde) struct SItemGroup {
+    #[serde(rename = "_key")]
+    id: i32,
     #[serde(rename = "categoryID")]
     category_id: i32,
 }
-impl KeyMergeOne<rc::ed::EItemGroup> for PItemGroup {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemGroup> {
+impl ExtractOne<rc::ed::EItemGroup> for SItemGroup {
+    fn extract(self) -> Vec<rc::ed::EItemGroup> {
         vec![rc::ed::EItemGroup {
-            id: rc::ed::EItemGrpId::from_i32(key),
+            id: rc::ed::EItemGrpId::from_i32(self.id),
             category_id: rc::ed::EItemCatId::from_i32(self.category_id),
         }]
     }

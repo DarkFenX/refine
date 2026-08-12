@@ -1,25 +1,27 @@
 use serde::Deserialize;
 
-use crate::sde::data::{Key, KeyMergeOne};
+use crate::sde::data::ExtractOne;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PItem {
+pub(in crate::sde) struct SItem {
+    #[serde(rename = "_key")]
+    id: i32,
     #[serde(rename = "groupID")]
     group_id: i32,
-    capacity: f64,
-    mass: f64,
-    radius: f64,
-    volume: f64,
+    capacity: Option<f64>,
+    mass: Option<f64>,
+    radius: Option<f64>,
+    volume: Option<f64>,
 }
-impl KeyMergeOne<rc::ed::EItem> for PItem {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EItem> {
+impl ExtractOne<rc::ed::EItem> for SItem {
+    fn extract(self) -> Vec<rc::ed::EItem> {
         vec![rc::ed::EItem {
-            id: rc::ed::EItemId::from_i32(key),
+            id: rc::ed::EItemId::from_i32(self.id),
             group_id: rc::ed::EItemGrpId::from_i32(self.group_id),
-            capacity: Some(rc::ed::EFloat::from_f64(self.capacity)),
-            mass: Some(rc::ed::EFloat::from_f64(self.mass)),
-            radius: Some(rc::ed::EFloat::from_f64(self.radius)),
-            volume: Some(rc::ed::EFloat::from_f64(self.volume)),
+            capacity: self.capacity.map(rc::ed::EFloat::from_f64),
+            mass: self.mass.map(rc::ed::EFloat::from_f64),
+            radius: self.radius.map(rc::ed::EFloat::from_f64),
+            volume: self.volume.map(rc::ed::EFloat::from_f64),
         }]
     }
 }

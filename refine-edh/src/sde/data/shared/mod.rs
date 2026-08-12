@@ -1,3 +1,3 @@
-pub(in crate::sde) use key_merge::{Key, KeyMergeOne, KeyMergeTwo};
+pub(in crate::sde) use extract::{ExtractOne, ExtractTwo};
 
-mod key_merge;
+mod extract;

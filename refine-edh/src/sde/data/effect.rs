@@ -1,17 +1,16 @@
 use serde::Deserialize;
 
-use crate::{
-    sde::data::{Key, KeyMergeOne},
-    util::bool_from_int,
-};
+use crate::sde::data::ExtractOne;
 
 #[derive(Deserialize)]
-pub(in crate::sde) struct PEffect {
-    #[serde(rename = "effectCategory")]
-    effect_category: i32,
-    #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
+pub(in crate::sde) struct SEffect {
+    #[serde(rename = "_key")]
+    id: i32,
+    #[serde(rename = "effectCategoryID")]
+    effect_category_id: i32,
+    #[serde(rename = "isAssistance")]
     is_assistance: bool,
-    #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
+    #[serde(rename = "isOffensive")]
     is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
     discharge_attribute_id: Option<i32>,
@@ -28,13 +27,13 @@ pub(in crate::sde) struct PEffect {
     #[serde(rename = "resistanceAttributeID")]
     resistance_attribute_id: Option<i32>,
     #[serde(rename = "modifierInfo", default, deserialize_with = "serde_custom::deserialize")]
-    modifier_info: Vec<PEffectMod>,
+    modifier_info: Vec<SEffectMod>,
 }
-impl KeyMergeOne<rc::ed::EEffect> for PEffect {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EEffect> {
+impl ExtractOne<rc::ed::EEffect> for SEffect {
+    fn extract(self) -> Vec<rc::ed::EEffect> {
         vec![rc::ed::EEffect {
-            id: rc::ed::EEffectId::from_i32(key),
-            category_id: rc::ed::EEffectCatId::from_i32(self.effect_category),
+            id: rc::ed::EEffectId::from_i32(self.id),
+            category_id: rc::ed::EEffectCatId::from_i32(self.effect_category_id),
             is_assistance: self.is_assistance,
             is_offensive: self.is_offensive,
             discharge_attr_id: self.discharge_attribute_id.map(rc::ed::EAttrId::from_i32),
@@ -53,11 +52,11 @@ impl KeyMergeOne<rc::ed::EEffect> for PEffect {
     }
 }
 
-struct PEffectMod {
+struct SEffectMod {
     func: String,
     args: Vec<(String, rc::ed::EPrimitive)>,
 }
-impl PEffectMod {
+impl SEffectMod {
     fn into_e_effect_mod(self) -> rc::ed::EEffectMod {
         rc::ed::EEffectMod {
             func: self.func,
@@ -74,9 +73,9 @@ mod serde_custom {
     use serde::{Deserialize, de::Error};
     use serde_json::{Map, Value};
 
-    use super::PEffectMod;
+    use super::SEffectMod;
 
-    pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<PEffectMod>, D::Error>
+    pub(super) fn deserialize<'de, D>(json_mods: D) -> Result<Vec<SEffectMod>, D::Error>
     where
         D: serde::Deserializer<'de>,
     {
@@ -91,7 +90,7 @@ mod serde_custom {
                     .map_err(|e| Error::custom(format!("failed to parse argument \"{argname}\" value: {e}")))?;
                 args.push((argname, argval));
             }
-            mods.push(PEffectMod { func, args })
+            mods.push(SEffectMod { func, args })
         }
         Ok(mods)
     }
