@@ -45,7 +45,6 @@ impl SdeHttpEdhError {
     pub(super) fn from_read_parse(error: ReadParseFailReason, suffix: &str) -> Self {
         match error {
             ReadParseFailReason::Read(error) => Self::Fetch(suffix.to_string(), Box::new(error)),
-            ReadParseFailReason::Parse(error) => Self::Parse(suffix.to_string(), Box::new(error)),
         }
     }
 }

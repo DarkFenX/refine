@@ -7,11 +7,6 @@ pub enum SdeFsEdhError {
     /// Includes file name and error source.
     #[error("{0} reading failed")]
     Read(String, #[source] std::io::Error),
-    /// Handler is unable to parse data.
-    ///
-    /// Includes file name and error source.
-    #[error("{0} parsing failed")]
-    Parse(String, #[source] serde_json::Error),
     /// Handler is unable to find data build number in metadata.
     #[error("unable to find build number")]
     NoBuildNumber,
@@ -23,7 +18,6 @@ impl SdeFsEdhError {
     pub(super) fn from_read_parse(error: ReadParseFailReason, file: &str) -> Self {
         match error {
             ReadParseFailReason::Read(error) => Self::Read(file.to_string(), error),
-            ReadParseFailReason::Parse(error) => Self::Parse(file.to_string(), error),
         }
     }
 }
