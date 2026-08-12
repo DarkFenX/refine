@@ -136,7 +136,7 @@ impl SdeFsEdh {
         extract_from_keymap_two::<SDE, EVE1, EVE2>(reader)
             .map_err(|e| SdeFsEdhError::from_read_parse(e, addr.get_part_str()))
     }
-    fn get_reader(&self, addr: &Address) -> Result<impl std::io::Read, SdeFsEdhError> {
+    fn get_reader(&self, addr: &Address) -> Result<impl std::io::BufRead, SdeFsEdhError> {
         let full_path = addr.get_full_path(&self.base_path);
         let file = File::open(full_path).map_err(|e| SdeFsEdhError::from_io(e, addr.get_part_str()))?;
         Ok(BufReader::with_capacity(64 * 1024, file))

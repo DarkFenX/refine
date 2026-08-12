@@ -142,7 +142,7 @@ impl PhbHttpEdh {
         let reader = self.get_reader(suffix)?;
         extract_from_keymap_two::<PHB, EVE1, EVE2>(reader).map_err(|e| PhbHttpEdhError::from_read_parse(e, suffix))
     }
-    fn get_reader(&self, suffix: &str) -> Result<impl std::io::Read, PhbHttpEdhError> {
+    fn get_reader(&self, suffix: &str) -> Result<impl std::io::BufRead, PhbHttpEdhError> {
         let full_url = self
             .base_url
             .join(suffix)

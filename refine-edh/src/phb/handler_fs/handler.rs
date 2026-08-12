@@ -137,7 +137,7 @@ impl PhbFsEdh {
         extract_from_keymap_two::<PHB, EVE1, EVE2>(reader)
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))
     }
-    fn get_reader(&self, addr: &Address) -> Result<impl std::io::Read, PhbFsEdhError> {
+    fn get_reader(&self, addr: &Address) -> Result<impl std::io::BufRead, PhbFsEdhError> {
         let full_path = addr.get_full_path(&self.base_path);
         let file = File::open(full_path).map_err(|e| PhbFsEdhError::from_io(e, addr.get_part_str()))?;
         Ok(BufReader::with_capacity(64 * 1024, file))

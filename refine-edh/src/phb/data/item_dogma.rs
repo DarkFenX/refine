@@ -44,6 +44,6 @@ struct PItemAttrData {
 struct PItemEffectData {
     #[serde(rename = "effectID")]
     effect_id: i32,
-    #[serde(rename = "isDefault", deserialize_with = "bool_from_int")]
+    #[serde(rename = "isDefault", deserialize_with = "int_to_bool")]
     is_default: bool,
 }

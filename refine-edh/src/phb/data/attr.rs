@@ -4,9 +4,9 @@ use crate::phb::data::{Key, KeyMergeOne, shared::int_to_bool};
 
 #[derive(Deserialize)]
 pub(in crate::phb) struct PAttr {
-    #[serde(deserialize_with = "bool_from_int")]
+    #[serde(deserialize_with = "int_to_bool")]
     stackable: bool,
-    #[serde(rename = "highIsGood", deserialize_with = "bool_from_int")]
+    #[serde(rename = "highIsGood", deserialize_with = "int_to_bool")]
     high_is_good: bool,
     #[serde(rename = "defaultValue")]
     default_value: f64,

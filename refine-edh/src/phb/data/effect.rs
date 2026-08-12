@@ -6,9 +6,9 @@ use crate::phb::data::{Key, KeyMergeOne, shared::int_to_bool};
 pub(in crate::phb) struct PEffect {
     #[serde(rename = "effectCategory")]
     effect_category: i32,
-    #[serde(rename = "isAssistance", deserialize_with = "bool_from_int")]
+    #[serde(rename = "isAssistance", deserialize_with = "int_to_bool")]
     is_assistance: bool,
-    #[serde(rename = "isOffensive", deserialize_with = "bool_from_int")]
+    #[serde(rename = "isOffensive", deserialize_with = "int_to_bool")]
     is_offensive: bool,
     #[serde(rename = "dischargeAttributeID")]
     discharge_attribute_id: Option<i32>,
