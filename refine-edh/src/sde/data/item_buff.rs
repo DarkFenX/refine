@@ -20,10 +20,10 @@ pub(in crate::sde) fn merge_item_buffs(
     let warnings = sw_buffs
         .warnings
         .into_iter()
-        .chain(se_buffs.warnings.into_iter())
-        .chain(pe_buffs.warnings.into_iter())
-        .chain(pt_buffs.warnings.into_iter())
-        .chain(sl_buffs.warnings.into_iter())
+        .chain(se_buffs.warnings)
+        .chain(pe_buffs.warnings)
+        .chain(pt_buffs.warnings)
+        .chain(sl_buffs.warnings)
         .collect();
     rc::ed::EDataCont {
         data: item_buffs.into_values().collect(),
