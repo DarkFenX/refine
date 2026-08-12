@@ -23,7 +23,7 @@ impl SdeFsEdh {
 }
 impl std::fmt::Debug for SdeFsEdh {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "SdeFsEdh(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
+        write!(f, "SdeFsEdh(\"{}\")", self.base_path.display())
     }
 }
 

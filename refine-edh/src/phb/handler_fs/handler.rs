@@ -25,7 +25,7 @@ impl PhbFsEdh {
 }
 impl std::fmt::Debug for PhbFsEdh {
     fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
-        write!(f, "PhbFsEdh(\"{}\")", self.base_path.to_str().unwrap_or("<error>"))
+        write!(f, "PhbFsEdh(\"{}\")", self.base_path.display())
     }
 }
 
