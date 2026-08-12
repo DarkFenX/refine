@@ -12,13 +12,13 @@ rc = { workspace = true }
 # Non-local
 reqwest = { workspace = true, features = ["blocking"], optional = true }
 serde = { workspace = true, features = ["derive"], optional = true }
-serde_json = { workspace = true, features = ["raw_value"], optional = true }
+serde_json = { workspace = true, optional = true }
 serde_with = { workspace = true, optional = true }
 thiserror = { workspace = true }
 url = { workspace = true, optional = true }
 
 [features]
-phb-fs = ["dep:serde", "dep:serde_json", "dep:serde_with"]
-phb-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:reqwest", "dep:url"]
+phb-fs = ["dep:serde", "dep:serde_json", "dep:serde_with", "serde_json/raw_value"]
+phb-http = ["dep:serde", "dep:serde_json", "dep:serde_with", "dep:reqwest", "dep:url", "serde_json/raw_value"]
 sde-fs = ["dep:serde", "dep:serde_json"]
 sde-http = ["dep:serde", "dep:serde_json", "dep:reqwest", "dep:url"]
