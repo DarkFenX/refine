@@ -17,8 +17,8 @@ pub(in crate::phb) struct PItemSpaceComp {
     link_with_ship: Option<PItemSpaceCompSl>,
 }
 impl KeyMergeOne<rc::ed::EItemBuff> for PItemSpaceComp {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemBuff> {
-        vec![rc::ed::EItemBuff {
+    fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EItemBuff>) {
+        merged.push(rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(key),
             system_wide_buffs: self
                 .system_wide_effects
@@ -36,7 +36,7 @@ impl KeyMergeOne<rc::ed::EItemBuff> for PItemSpaceComp {
             ship_link_buffs: self
                 .link_with_ship
                 .map(|data| into_item_buff_data(data.dbuffs, data.linkable_ship_type_list_id)),
-        }]
+        });
     }
 }
 

@@ -21,8 +21,8 @@ pub(in crate::phb) struct PBuff {
     location_required_skill_modifiers: Vec<BuffLrsm>,
 }
 impl KeyMergeOne<rc::ed::EBuff> for PBuff {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EBuff> {
-        vec![rc::ed::EBuff {
+    fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EBuff>) {
+        merged.push(rc::ed::EBuff {
             id: rc::ed::EBuffId::from_i32(key),
             aggregate_mode: self.aggregate_mode,
             operation: self.operation_name,
@@ -46,6 +46,6 @@ impl KeyMergeOne<rc::ed::EBuff> for PBuff {
                 .into_iter()
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),
-        }]
+        });
     }
 }

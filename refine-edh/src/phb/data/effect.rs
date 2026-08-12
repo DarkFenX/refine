@@ -31,8 +31,8 @@ pub(in crate::phb) struct PEffect {
     modifier_info: Vec<EffectMod>,
 }
 impl KeyMergeOne<rc::ed::EEffect> for PEffect {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EEffect> {
-        vec![rc::ed::EEffect {
+    fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EEffect>) {
+        merged.push(rc::ed::EEffect {
             id: rc::ed::EEffectId::from_i32(key),
             category_id: rc::ed::EEffectCatId::from_i32(self.effect_category),
             is_assistance: self.is_assistance,
@@ -49,6 +49,6 @@ impl KeyMergeOne<rc::ed::EEffect> for PEffect {
                 .into_iter()
                 .map(EffectMod::into_e_effect_mod)
                 .collect(),
-        }]
+        });
     }
 }

@@ -18,8 +18,8 @@ pub(in crate::phb) struct PItemList {
     excluded_category_ids: Vec<i32>,
 }
 impl KeyMergeOne<rc::ed::EItemList> for PItemList {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EItemList> {
-        vec![rc::ed::EItemList {
+    fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EItemList>) {
+        merged.push(rc::ed::EItemList {
             id: rc::ed::EItemListId::from_i32(key),
             included_item_ids: self
                 .included_type_ids
@@ -51,6 +51,6 @@ impl KeyMergeOne<rc::ed::EItemList> for PItemList {
                 .into_iter()
                 .map(rc::ed::EItemCatId::from_i32)
                 .collect(),
-        }]
+        });
     }
 }

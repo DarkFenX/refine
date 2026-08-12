@@ -57,7 +57,7 @@ where
         let size_hint = map.size_hint().unwrap_or(0);
         let mut e_cont = rc::ed::EDataCont::with_capacity(size_hint);
         for_each_entry::<PHB, _>(&mut map, &mut e_cont.warnings, |key, phb| {
-            e_cont.data.extend(phb.key_merge(key));
+            phb.key_merge(key, &mut e_cont.data);
         })?;
         Ok(e_cont)
     }
@@ -83,9 +83,7 @@ where
         let mut e_cont2 = rc::ed::EDataCont::with_capacity(size_hint);
         let mut warnings = Vec::new();
         for_each_entry::<PHB, _>(&mut map, &mut warnings, |key, phb| {
-            let (e_data1, e_data2) = phb.key_merge(key);
-            e_cont1.data.extend(e_data1);
-            e_cont2.data.extend(e_data2);
+            phb.key_merge(key, &mut e_cont1.data, &mut e_cont2.data);
         })?;
         e_cont1.warnings = warnings.clone();
         e_cont2.warnings = warnings;

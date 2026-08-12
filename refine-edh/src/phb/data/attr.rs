@@ -18,8 +18,8 @@ pub(in crate::phb) struct PAttr {
     unit_id: Option<i32>,
 }
 impl KeyMergeOne<rc::ed::EAttr> for PAttr {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EAttr> {
-        vec![rc::ed::EAttr {
+    fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EAttr>) {
+        merged.push(rc::ed::EAttr {
             id: rc::ed::EAttrId::from_i32(key),
             stackable: self.stackable,
             high_is_good: self.high_is_good,
@@ -27,6 +27,6 @@ impl KeyMergeOne<rc::ed::EAttr> for PAttr {
             min_attr_id: self.min_attribute_id.map(rc::ed::EAttrId::from_i32),
             max_attr_id: self.max_attribute_id.map(rc::ed::EAttrId::from_i32),
             unit_id: self.unit_id.map(rc::ed::EAttrUnitId::from_i32),
-        }]
+        });
     }
 }

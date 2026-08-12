@@ -10,26 +10,17 @@ pub(in crate::phb) struct PItemDogma {
     dogma_effects: Vec<PItemEffectData>,
 }
 impl KeyMergeTwo<rc::ed::EItemAttr, rc::ed::EItemEffect> for PItemDogma {
-    fn key_merge(self, key: Key) -> (Vec<rc::ed::EItemAttr>, Vec<rc::ed::EItemEffect>) {
-        let item_attrs = self
-            .dogma_attributes
-            .into_iter()
-            .map(|v| rc::ed::EItemAttr {
-                item_id: rc::ed::EItemId::from_i32(key),
-                attr_id: rc::ed::EAttrId::from_i32(v.attribute_id),
-                value: rc::ed::EFloat::from_f64(v.value),
-            })
-            .collect();
-        let item_effects = self
-            .dogma_effects
-            .into_iter()
-            .map(|v| rc::ed::EItemEffect {
-                item_id: rc::ed::EItemId::from_i32(key),
-                effect_id: rc::ed::EEffectId::from_i32(v.effect_id),
-                is_default: v.is_default,
-            })
-            .collect();
-        (item_attrs, item_effects)
+    fn key_merge(self, key: Key, merged1: &mut Vec<rc::ed::EItemAttr>, merged2: &mut Vec<rc::ed::EItemEffect>) {
+        merged1.extend(self.dogma_attributes.into_iter().map(|v| rc::ed::EItemAttr {
+            item_id: rc::ed::EItemId::from_i32(key),
+            attr_id: rc::ed::EAttrId::from_i32(v.attribute_id),
+            value: rc::ed::EFloat::from_f64(v.value),
+        }));
+        merged2.extend(self.dogma_effects.into_iter().map(|v| rc::ed::EItemEffect {
+            item_id: rc::ed::EItemId::from_i32(key),
+            effect_id: rc::ed::EEffectId::from_i32(v.effect_id),
+            is_default: v.is_default,
+        }));
     }
 }
 

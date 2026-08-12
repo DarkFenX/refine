@@ -10,11 +10,11 @@ pub(in crate::phb) struct PAbil {
     disallow_in_low_sec: bool,
 }
 impl KeyMergeOne<rc::ed::EAbil> for PAbil {
-    fn key_merge(self, key: Key) -> Vec<rc::ed::EAbil> {
-        vec![rc::ed::EAbil {
+    fn key_merge(self, key: Key, merged: &mut Vec<rc::ed::EAbil>) {
+        merged.push(rc::ed::EAbil {
             id: rc::ed::EAbilId::from_i32(key),
             disallow_hisec: self.disallow_in_high_sec,
             disallow_lowsec: self.disallow_in_low_sec,
-        }]
+        });
     }
 }
