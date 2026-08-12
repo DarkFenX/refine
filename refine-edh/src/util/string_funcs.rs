@@ -1,3 +1,7 @@
+pub(crate) fn cap_warning_len(text: String) -> String {
+    cap_len(text, 200)
+}
+
 pub(crate) fn cap_len(text: String, len_limit: usize) -> String {
     let text_len = text.chars().count();
     if text_len <= len_limit {

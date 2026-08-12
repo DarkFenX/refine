@@ -1,10 +1,8 @@
 use super::error::ReadParseFailReason;
 use crate::{
     sde::data::{ExtractOne, ExtractTwo},
-    util::cap_len,
+    util::cap_warning_len,
 };
-
-const WARNING_LEN_LIMIT: usize = 200;
 
 pub(in crate::sde) fn extract_from_lines_one<SDE, EVE>(
     mut reader: impl std::io::BufRead,
@@ -28,10 +26,7 @@ where
             Ok(sde) => sde,
             // In case of malformed value - log error and skip line
             Err(err) => {
-                let warning = cap_len(
-                    format!("failed to parse value on line {lineno}: {err}"),
-                    WARNING_LEN_LIMIT,
-                );
+                let warning = cap_warning_len(format!("failed to parse value on line {lineno}: {err}"));
                 e_cont.warnings.push(warning);
                 continue;
             }
@@ -64,10 +59,7 @@ where
             Ok(sde) => sde,
             // In case of malformed value - log error and skip line
             Err(err) => {
-                let warning = cap_len(
-                    format!("failed to parse value on line {lineno}: {err}"),
-                    WARNING_LEN_LIMIT,
-                );
+                let warning = cap_warning_len(format!("failed to parse value on line {lineno}: {err}"));
                 e_cont1.warnings.push(warning.clone());
                 e_cont2.warnings.push(warning);
                 continue;

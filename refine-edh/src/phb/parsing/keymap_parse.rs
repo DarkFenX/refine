@@ -6,11 +6,10 @@ use serde_json::value::RawValue;
 use super::error::ReadParseFailReason;
 use crate::{
     phb::data::{Key, KeyMergeOne, KeyMergeTwo},
-    util::cap_len,
+    util::{cap_len, cap_warning_len},
 };
 
 const KEY_LEN_LIMIT: usize = 20;
-const WARNING_LEN_LIMIT: usize = 200;
 
 pub(in crate::phb) fn extract_from_keymap_one<PHB, EVE>(
     reader: impl std::io::Read,
@@ -65,10 +64,7 @@ where
             let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
                 Ok(phb) => phb,
                 Err(err) => {
-                    let warning = cap_len(
-                        format!("failed to parse value with key \"{key}\": {err}"),
-                        WARNING_LEN_LIMIT,
-                    );
+                    let warning = cap_warning_len(format!("failed to parse value with key \"{key}\": {err}"));
                     e_cont.warnings.push(warning);
                     continue;
                 }
@@ -110,10 +106,7 @@ where
             let phb = match serde_json::from_str::<PHB>(raw_value.get()) {
                 Ok(phb) => phb,
                 Err(err) => {
-                    let warning = cap_len(
-                        format!("failed to parse value with key \"{key}\": {err}"),
-                        WARNING_LEN_LIMIT,
-                    );
+                    let warning = cap_warning_len(format!("failed to parse value with key \"{key}\": {err}"));
                     e_cont1.warnings.push(warning.clone());
                     e_cont2.warnings.push(warning);
                     continue;
