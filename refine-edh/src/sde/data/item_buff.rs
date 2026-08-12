@@ -39,20 +39,20 @@ fn merge_e_cont(merged: &mut BTreeMap<i32, rc::ed::EItemBuff>, data: Vec<rc::ed:
             }
             Entry::Occupied(mut entry) => {
                 let target = entry.get_mut();
-                if let Some(system_wide_buffs) = item_buff.system_wide_buffs {
-                    target.system_wide_buffs = Some(system_wide_buffs);
+                if target.system_wide_buffs.is_none() {
+                    target.system_wide_buffs = item_buff.system_wide_buffs;
                 }
-                if let Some(system_emitter_buffs) = item_buff.system_emitter_buffs {
-                    target.system_emitter_buffs = Some(system_emitter_buffs);
+                if target.system_emitter_buffs.is_none() {
+                    target.system_emitter_buffs = item_buff.system_emitter_buffs;
                 }
-                if let Some(proxy_effect_buffs) = item_buff.proxy_effect_buffs {
-                    target.proxy_effect_buffs = Some(proxy_effect_buffs);
+                if target.proxy_effect_buffs.is_none() {
+                    target.proxy_effect_buffs = item_buff.proxy_effect_buffs;
                 }
-                if let Some(proxy_trigger_buffs) = item_buff.proxy_trigger_buffs {
-                    target.proxy_trigger_buffs = Some(proxy_trigger_buffs);
+                if target.proxy_trigger_buffs.is_none() {
+                    target.proxy_trigger_buffs = item_buff.proxy_trigger_buffs;
                 }
-                if let Some(ship_link_buffs) = item_buff.ship_link_buffs {
-                    target.ship_link_buffs = Some(ship_link_buffs);
+                if target.ship_link_buffs.is_none() {
+                    target.ship_link_buffs = item_buff.ship_link_buffs;
                 }
             }
         }
