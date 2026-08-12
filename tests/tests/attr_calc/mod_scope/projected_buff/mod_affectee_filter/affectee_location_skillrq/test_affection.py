@@ -38,7 +38,7 @@ def test_affected_child_of_ship_struct(client, consts):
         op=consts.EveBuffOp.post_mul,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -62,7 +62,7 @@ def test_unaffected_child_of_ship_unknown(client, consts):
         op=consts.EveBuffOp.post_mul,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -86,7 +86,7 @@ def test_unaffected_child_of_offlist_ship_ship(client, consts):
         op=consts.EveBuffOp.post_mul,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()
@@ -110,7 +110,7 @@ def test_unaffected_child_of_offlist_ship_struct(client, consts):
         op=consts.EveBuffOp.post_mul,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, skill_id=eve_skill_id)])
     eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(attrs={eve_affectee_attr_id: 7.5}, srqs={eve_skill_id: 1})
     client.create_sources()
     api_sol = client.create_sol()

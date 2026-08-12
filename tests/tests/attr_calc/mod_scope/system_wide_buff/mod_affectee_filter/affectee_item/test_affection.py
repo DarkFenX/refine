@@ -37,7 +37,7 @@ def test_affected_root_ship_struct_multiple(client, consts):
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_sw_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_sw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_sw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -91,7 +91,7 @@ def test_unaffected_root_offlist_ship(client, consts):
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_sw_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_sw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_sw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
@@ -160,7 +160,7 @@ def test_unaffected_unbuffable_item_kind(client, consts):
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_sw_effect_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_sw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_sw_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()

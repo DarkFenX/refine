@@ -9,10 +9,10 @@ from fw.eve.types import (
     Group,
     Item,
     ItemAbilityData,
+    ItemBuff,
+    ItemBuffData,
     ItemList,
     Mutator,
-    SpaceComponent,
-    SpaceComponentBuffData,
 )
 from fw.util import Absent
 from .primitives import EvePrimitives
@@ -36,7 +36,7 @@ class EveObjects:
         self.effects: dict[int, list[Effect]] = {}
         self.buffs: dict[int, list[Buff]] = {}
         self.abilities: dict[int, list[Ability]] = {}
-        self.space_comps: dict[int, list[SpaceComponent]] = {}
+        self.item_buffs: dict[int, list[ItemBuff]] = {}
         self.mutators: dict[int, list[Mutator]] = {}
         # Variables point at next ID to allocate
         self.item_id: int = 1000000
@@ -276,7 +276,7 @@ class EveObjects:
         self.abilities.setdefault(id_, []).append(abil)
         return abil
 
-    def mk_space_comp(
+    def mk_item_buff(
             self, *,
             type_id: int,
             sw_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent],
@@ -284,16 +284,16 @@ class EveObjects:
             pe_buffs: dict[int, float] | type[Absent],
             pt_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent],
             sl_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent],
-    ) -> SpaceComponent:
-        space_comp = SpaceComponent(
+    ) -> ItemBuff:
+        item_buff = ItemBuff(
             type_id=type_id,
-            system_wide_buffs=SpaceComponentBuffData.from_raw(data=sw_buffs) if sw_buffs is not Absent else Absent,
-            system_emitter_buffs=SpaceComponentBuffData.from_raw(data=se_buffs) if se_buffs is not Absent else Absent,
-            proxy_effect_buffs=SpaceComponentBuffData.from_raw(data=pe_buffs) if pe_buffs is not Absent else Absent,
-            proxy_trap_buffs=SpaceComponentBuffData.from_raw(data=pt_buffs) if pt_buffs is not Absent else Absent,
-            ship_link_buffs=SpaceComponentBuffData.from_raw(data=sl_buffs) if sl_buffs is not Absent else Absent)
-        self.space_comps.setdefault(type_id, []).append(space_comp)
-        return space_comp
+            system_wide_buffs=ItemBuffData.from_raw(data=sw_buffs) if sw_buffs is not Absent else Absent,
+            system_emitter_buffs=ItemBuffData.from_raw(data=se_buffs) if se_buffs is not Absent else Absent,
+            proxy_effect_buffs=ItemBuffData.from_raw(data=pe_buffs) if pe_buffs is not Absent else Absent,
+            proxy_trap_buffs=ItemBuffData.from_raw(data=pt_buffs) if pt_buffs is not Absent else Absent,
+            ship_link_buffs=ItemBuffData.from_raw(data=sl_buffs) if sl_buffs is not Absent else Absent)
+        self.item_buffs.setdefault(type_id, []).append(item_buff)
+        return item_buff
 
     def mk_mutator(
             self, *,
@@ -327,7 +327,7 @@ class EveObjects:
         self.__handle_container(primitive_data=primitive_data, container=self.effects, entity_class=Effect)
         self.__handle_container(primitive_data=primitive_data, container=self.buffs, entity_class=Buff)
         self.__handle_container(primitive_data=primitive_data, container=self.abilities, entity_class=Ability)
-        self.__handle_container(primitive_data=primitive_data, container=self.space_comps, entity_class=SpaceComponent)
+        self.__handle_container(primitive_data=primitive_data, container=self.item_buffs, entity_class=ItemBuff)
         self.__handle_container(primitive_data=primitive_data, container=self.mutators, entity_class=Mutator)
         if hook_data_prim is not None:
             hook_data_prim(primitive_data)

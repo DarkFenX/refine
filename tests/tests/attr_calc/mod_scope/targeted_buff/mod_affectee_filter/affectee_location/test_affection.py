@@ -40,7 +40,7 @@ def test_affected_child_of_ship_struct(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_module_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_module_id, sw_buffs=({eve_buff_id: -55}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_module_id, sw_buffs=({eve_buff_id: -55}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -93,7 +93,7 @@ def test_unaffected_child_of_offlist_ship_ship(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_module_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_module_id, sw_buffs=({eve_buff_id: -55}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_module_id, sw_buffs=({eve_buff_id: -55}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()
@@ -118,7 +118,7 @@ def test_unaffected_child_of_offlist_ship_struct(client, consts):
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
     eve_module_id = client.mk_eve_item()
-    client.mk_eve_space_comp(type_id=eve_module_id, sw_buffs=({eve_buff_id: -55}, eve_item_list_id))
+    client.mk_eve_item_buff(type_id=eve_module_id, sw_buffs=({eve_buff_id: -55}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_fit1 = api_sol.create_fit()

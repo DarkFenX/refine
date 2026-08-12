@@ -455,7 +455,7 @@ class EveTypeFactory(EveDataManager):
             group_id=group_id,
             skill_id=skill_id)
 
-    def mk_eve_space_comp(
+    def mk_eve_item_buff(
             self, *,
             datas: list[EveObjects] | type[Default] = Default,
             type_id: int,
@@ -468,10 +468,10 @@ class EveTypeFactory(EveDataManager):
         if datas is Default:
             datas = [self._get_default_eve_data()]
         for data in datas:
-            # Space components are attached to items, so allocate one to make sure item ID is not
-            # taken by anything else later
+            # Item buffs are attached to items, so allocate one to make sure item ID is not taken by
+            # anything else later, which might be confusing
             data.alloc_item_id(id_=type_id)
-            data.mk_space_comp(
+            data.mk_item_buff(
                 type_id=type_id,
                 sw_buffs=Absent if sw_buffs is Default else sw_buffs,
                 se_buffs=Absent if se_buffs is Default else se_buffs,
