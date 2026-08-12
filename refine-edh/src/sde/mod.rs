@@ -11,5 +11,3 @@ mod handler_fs;
 mod handler_http;
 #[cfg(any(feature = "sde-fs", feature = "sde-http"))]
 mod parsing;
-#[cfg(any(feature = "sde-fs", feature = "sde-http"))]
-mod serde_custom;

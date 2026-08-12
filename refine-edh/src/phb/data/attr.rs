@@ -1,8 +1,8 @@
 use serde::Deserialize;
 
-use crate::phb::{
-    data::{Key, KeyMergeOne},
-    serde_custom::bool_from_int,
+use crate::{
+    phb::data::{Key, KeyMergeOne},
+    util::bool_from_int,
 };
 
 #[derive(Deserialize)]

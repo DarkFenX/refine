@@ -1,4 +1,4 @@
-#![cfg_attr(any(feature = "phb-http", feature = "phb-fs"), feature(integer_casts))]
+#![cfg_attr(any(feature = "phb-fs", feature = "phb-http"), feature(integer_casts))]
 
 //! EVE data handlers which use static data export and convert it into EVE data model as defined in
 //! `refine-core`.
@@ -22,10 +22,12 @@ pub use sde::SdeFsEdh;
 #[cfg(feature = "sde-http")]
 pub use sde::SdeHttpEdh;
 
-#[cfg(any(feature = "phb-http", feature = "phb-fs"))]
+#[cfg(any(feature = "phb-fs", feature = "phb-http"))]
 mod phb;
-#[cfg(any(feature = "sde-http", feature = "sde-fs"))]
+#[cfg(any(feature = "sde-fs", feature = "sde-http"))]
 mod sde;
+#[cfg(any(feature = "phb-fs", feature = "phb-http", feature = "sde-fs", feature = "sde-http"))]
+mod util;
 
 pub mod err {
     #[cfg(feature = "phb-fs")]
