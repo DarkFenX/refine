@@ -5,26 +5,14 @@ use serde::Deserialize;
 use crate::sde::data::ExtractOne;
 
 pub(in crate::sde) fn merge_item_buffs(
-    sw_buffs: rc::ed::EDataCont<rc::ed::EItemBuff>,
-    se_buffs: rc::ed::EDataCont<rc::ed::EItemBuff>,
-    pe_buffs: rc::ed::EDataCont<rc::ed::EItemBuff>,
-    pt_buffs: rc::ed::EDataCont<rc::ed::EItemBuff>,
-    sl_buffs: rc::ed::EDataCont<rc::ed::EItemBuff>,
+    e_conts: [rc::ed::EDataCont<rc::ed::EItemBuff>; 5],
 ) -> rc::ed::EDataCont<rc::ed::EItemBuff> {
     let mut item_buffs = BTreeMap::new();
-    merge_e_cont(&mut item_buffs, sw_buffs.data);
-    merge_e_cont(&mut item_buffs, se_buffs.data);
-    merge_e_cont(&mut item_buffs, pe_buffs.data);
-    merge_e_cont(&mut item_buffs, pt_buffs.data);
-    merge_e_cont(&mut item_buffs, sl_buffs.data);
-    let warnings = sw_buffs
-        .warnings
-        .into_iter()
-        .chain(se_buffs.warnings)
-        .chain(pe_buffs.warnings)
-        .chain(pt_buffs.warnings)
-        .chain(sl_buffs.warnings)
-        .collect();
+    let mut warnings = Vec::new();
+    for e_cont in e_conts {
+        merge_e_cont(&mut item_buffs, e_cont.data);
+        warnings.extend(e_cont.warnings);
+    }
     rc::ed::EDataCont {
         data: item_buffs.into_values().collect(),
         warnings,

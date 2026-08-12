@@ -95,18 +95,13 @@ impl SdeFsEdh {
         Ok(())
     }
     fn process_item_buffs(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
-        let e_item_buffs_sw = self.process_one::<SItemBuffSw, _>("systemWideEffects.jsonl")?;
-        let e_item_buffs_se = self.process_one::<SItemBuffSe, _>("systemDbuffEmitters.jsonl")?;
-        let e_item_buffs_pe = self.process_one::<SItemBuffPe, _>("appliedProximityEffects.jsonl")?;
-        let e_item_buffs_pt = self.process_one::<SItemBuffPt, _>("proximityTrap.jsonl")?;
-        let e_item_buffs_sl = self.process_one::<SItemBuffSl, _>("linkWithShip.jsonl")?;
-        e_data.item_buffs = merge_item_buffs(
-            e_item_buffs_sw,
-            e_item_buffs_se,
-            e_item_buffs_pe,
-            e_item_buffs_pt,
-            e_item_buffs_sl,
-        );
+        e_data.item_buffs = merge_item_buffs([
+            self.process_one::<SItemBuffSw, _>("systemWideEffects.jsonl")?,
+            self.process_one::<SItemBuffSe, _>("systemDbuffEmitters.jsonl")?,
+            self.process_one::<SItemBuffPe, _>("appliedProximityEffects.jsonl")?,
+            self.process_one::<SItemBuffPt, _>("proximityTrap.jsonl")?,
+            self.process_one::<SItemBuffSl, _>("linkWithShip.jsonl")?,
+        ]);
         Ok(())
     }
     fn process_dynamic_item_attributes(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeFsEdhError> {
