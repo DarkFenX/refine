@@ -1,4 +1,7 @@
-#![cfg_attr(any(feature = "phb-fs", feature = "phb-http"), feature(integer_casts))]
+#![cfg_attr(
+    any(feature = "phb-fs", feature = "phb-http", feature = "sde-fs", feature = "sde-http"),
+    feature(integer_casts)
+)]
 #![cfg_attr(any(feature = "sde-fs", feature = "sde-http"), feature(default_field_values))]
 
 //! EVE data handlers which use static data export and convert it into EVE data model as defined in
