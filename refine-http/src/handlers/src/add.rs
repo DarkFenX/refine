@@ -44,6 +44,9 @@ async fn internal_add_source(
         "phb" | "phobos" => redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
             .map_err(|err| ApiError::EdhInit(Box::new(err)))?
             .into(),
+        "sde" => redh::SdeHttpEdh::try_new(ed_base_url, ed_version)
+            .map_err(|err| ApiError::EdhInit(Box::new(err)))?
+            .into(),
         _ => return Err(ApiError::EdhNotFound(payload.data_format)),
     };
     let ad_cacher = state

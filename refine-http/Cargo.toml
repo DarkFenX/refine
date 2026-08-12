@@ -10,7 +10,7 @@ edition = "2024"
 # Local
 rs = { workspace = true, features = ["serde"] }
 radc = { workspace = true, features = ["postcard-zfs"] }
-redh = { workspace = true, features = ["phb-http"] }
+redh = { workspace = true, features = ["phb-http", "sde-http"] }
 # Non-local
 axum = { workspace = true, features = ["http1", "json", "query", "tokio"] }
 axum-extra = { workspace = true, features = ["with-rejection"] }
