@@ -23,7 +23,7 @@ class Item:
     system_wide_buffs: ItemBuffData | type[Absent]
     system_emitter_buffs: ItemBuffData | type[Absent]
     proxy_effect_buffs: ItemBuffData | type[Absent]
-    proxy_trap_buffs: ItemBuffData | type[Absent]
+    proxy_trigger_buffs: ItemBuffData | type[Absent]
     ship_link_buffs: ItemBuffData | type[Absent]
     skill_reqs: dict[int, int] | type[Absent]
     capacity: float | type[Absent]
@@ -114,16 +114,16 @@ class Item:
                 container=item_buff_entry,
                 path=['appliedProximityEffects', 'effects'],
                 value=self.proxy_effect_buffs.buffs)
-        # Proximity traps
-        if self.proxy_trap_buffs is not Absent:
+        # Proximity triggers
+        if self.proxy_trigger_buffs is not Absent:
             conditional_insert(
                 container=item_buff_entry,
                 path=['proximityTrap', 'dbuffs'],
-                value=self.proxy_trap_buffs.buffs)
+                value=self.proxy_trigger_buffs.buffs)
             conditional_insert(
                 container=item_buff_entry,
                 path=['proximityTrap', 'triggerFilterTypeListID'],
-                value=self.proxy_trap_buffs.item_list_id)
+                value=self.proxy_trigger_buffs.item_list_id)
         # Ship links
         if self.ship_link_buffs is not Absent:
             conditional_insert(

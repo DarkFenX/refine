@@ -15,7 +15,7 @@ pub enum EffectId {
     /// Buff effect attached to an item, proximity effect part.
     ProxyEffect(ItemTypeId),
     /// Buff effect attached to an item, proximity trigger/trap part.
-    ProxyTrap(ItemTypeId),
+    ProxyTrigger(ItemTypeId),
     /// Buff effect attached to an item, ship link part.
     ShipLink(ItemTypeId),
     /// ID of an effect created by the library.
@@ -58,7 +58,7 @@ impl EffectId {
             AEffectId::SystemWide(id) => Self::SystemWide(ItemTypeId::from_aid(id)),
             AEffectId::SystemEmitter(id) => Self::SystemEmitter(ItemTypeId::from_aid(id)),
             AEffectId::ProxyEffect(id) => Self::ProxyEffect(ItemTypeId::from_aid(id)),
-            AEffectId::ProxyTrap(id) => Self::ProxyTrap(ItemTypeId::from_aid(id)),
+            AEffectId::ProxyTrigger(id) => Self::ProxyTrigger(ItemTypeId::from_aid(id)),
             AEffectId::ShipLink(id) => Self::ShipLink(ItemTypeId::from_aid(id)),
             AEffectId::Custom(id) => Self::Custom(CustomEffectId(id.into_i32())),
         }
@@ -69,7 +69,7 @@ impl EffectId {
             EffectId::SystemWide(id) => AEffectId::SystemWide(id.into_aid()),
             EffectId::SystemEmitter(id) => AEffectId::SystemEmitter(id.into_aid()),
             EffectId::ProxyEffect(id) => AEffectId::ProxyEffect(id.into_aid()),
-            EffectId::ProxyTrap(id) => AEffectId::ProxyTrap(id.into_aid()),
+            EffectId::ProxyTrigger(id) => AEffectId::ProxyTrigger(id.into_aid()),
             EffectId::ShipLink(id) => AEffectId::ShipLink(id.into_aid()),
             EffectId::Custom(id) => AEffectId::Custom(ACustomEffectId::from_i32(id.0)),
         }
@@ -83,7 +83,7 @@ const DOGMA_PREFIX: &str = "d";
 const SYSWIDE_PREFIX: &str = "sw";
 const SYSEMIT_PREFIX: &str = "se";
 const PROXYEFF_PREFIX: &str = "pe";
-const PROXYTRAP_PREFIX: &str = "pt";
+const PROXYTRIG_PREFIX: &str = "pt";
 const SHIPLINK_PREFIX: &str = "sl";
 const CUSTOM_PREFIX: &str = "c";
 
@@ -94,7 +94,7 @@ impl std::fmt::Display for EffectId {
             Self::SystemWide(id) => write!(f, "{SYSWIDE_PREFIX}{id}"),
             Self::SystemEmitter(id) => write!(f, "{SYSEMIT_PREFIX}{id}"),
             Self::ProxyEffect(id) => write!(f, "{PROXYEFF_PREFIX}{id}"),
-            Self::ProxyTrap(id) => write!(f, "{PROXYTRAP_PREFIX}{id}"),
+            Self::ProxyTrigger(id) => write!(f, "{PROXYTRIG_PREFIX}{id}"),
             Self::ShipLink(id) => write!(f, "{SHIPLINK_PREFIX}{id}"),
             Self::Custom(id) => write!(f, "{CUSTOM_PREFIX}{id}"),
         }
@@ -126,8 +126,8 @@ mod custom_serde {
             if let Some(id_str) = s.strip_prefix(PROXYEFF_PREFIX) {
                 return Ok(Self::ProxyEffect(ItemTypeId::from_str(id_str)?));
             }
-            if let Some(id_str) = s.strip_prefix(PROXYTRAP_PREFIX) {
-                return Ok(Self::ProxyTrap(ItemTypeId::from_str(id_str)?));
+            if let Some(id_str) = s.strip_prefix(PROXYTRIG_PREFIX) {
+                return Ok(Self::ProxyTrigger(ItemTypeId::from_str(id_str)?));
             }
             if let Some(id_str) = s.strip_prefix(SHIPLINK_PREFIX) {
                 return Ok(Self::ShipLink(ItemTypeId::from_str(id_str)?));
@@ -145,7 +145,7 @@ mod custom_serde {
     #[derive(Debug, thiserror::Error)]
     pub enum EffectIdParseError {
         #[error(
-            "invalid prefix, expected \"{DOGMA_PREFIX}\", \"{SYSWIDE_PREFIX}\", \"{SYSEMIT_PREFIX}\", \"{PROXYEFF_PREFIX}\", \"{PROXYTRAP_PREFIX}\", \"{SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\" prefix"
+            "invalid prefix, expected \"{DOGMA_PREFIX}\", \"{SYSWIDE_PREFIX}\", \"{SYSEMIT_PREFIX}\", \"{PROXYEFF_PREFIX}\", \"{PROXYTRIG_PREFIX}\", \"{SHIPLINK_PREFIX}\", or \"{CUSTOM_PREFIX}\" prefix"
         )]
         InvalidPrefix,
         #[error(transparent)]

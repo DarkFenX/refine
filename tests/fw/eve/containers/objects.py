@@ -158,7 +158,7 @@ class EveObjects:
             system_wide_buffs=ItemBuffData.from_raw(data=sw_buffs) if sw_buffs is not Absent else Absent,
             system_emitter_buffs=ItemBuffData.from_raw(data=se_buffs) if se_buffs is not Absent else Absent,
             proxy_effect_buffs=ItemBuffData.from_raw(data=pe_buffs) if pe_buffs is not Absent else Absent,
-            proxy_trap_buffs=ItemBuffData.from_raw(data=pt_buffs) if pt_buffs is not Absent else Absent,
+            proxy_trigger_buffs=ItemBuffData.from_raw(data=pt_buffs) if pt_buffs is not Absent else Absent,
             ship_link_buffs=ItemBuffData.from_raw(data=sl_buffs) if sl_buffs is not Absent else Absent,
             skill_reqs=srqs,
             capacity=capacity,

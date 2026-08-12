@@ -37,7 +37,7 @@ impl ADataGenerator {
                 &e_item_buff.proxy_trigger_buffs,
                 &mut self.a_data,
                 item_aid,
-                AEffectId::ProxyTrap(item_aid),
+                AEffectId::ProxyTrigger(item_aid),
             );
             process_buffs(
                 &e_item_buff.ship_link_buffs,
