@@ -60,12 +60,12 @@ pub(in crate::sde) struct SItemBuffSw {
     eligible_type_list_id: Option<i32>,
 }
 impl ExtractOne<rc::ed::EItemBuff> for SItemBuffSw {
-    fn extract(self) -> Vec<rc::ed::EItemBuff> {
-        vec![rc::ed::EItemBuff {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemBuff>) {
+        extracted.push(rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(self.item_id),
             system_wide_buffs: Some(into_item_buff_data(self.dbuffs, self.eligible_type_list_id)),
             ..
-        }]
+        });
     }
 }
 
@@ -80,12 +80,12 @@ pub(in crate::sde) struct SItemBuffSe {
     dbuffs: Vec<SItemBuffEntry>,
 }
 impl ExtractOne<rc::ed::EItemBuff> for SItemBuffSe {
-    fn extract(self) -> Vec<rc::ed::EItemBuff> {
-        vec![rc::ed::EItemBuff {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemBuff>) {
+        extracted.push(rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(self.item_id),
             system_emitter_buffs: Some(into_item_buff_data(self.dbuffs, None)),
             ..
-        }]
+        });
     }
 }
 
@@ -100,12 +100,12 @@ pub(in crate::sde) struct SItemBuffPe {
     dbuffs: Vec<SItemBuffEntry>,
 }
 impl ExtractOne<rc::ed::EItemBuff> for SItemBuffPe {
-    fn extract(self) -> Vec<rc::ed::EItemBuff> {
-        vec![rc::ed::EItemBuff {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemBuff>) {
+        extracted.push(rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(self.item_id),
             proxy_effect_buffs: Some(into_item_buff_data(self.dbuffs, None)),
             ..
-        }]
+        });
     }
 }
 
@@ -122,12 +122,12 @@ pub(in crate::sde) struct SItemBuffPt {
     trigger_filter_type_list_id: Option<i32>,
 }
 impl ExtractOne<rc::ed::EItemBuff> for SItemBuffPt {
-    fn extract(self) -> Vec<rc::ed::EItemBuff> {
-        vec![rc::ed::EItemBuff {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemBuff>) {
+        extracted.push(rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(self.item_id),
             proxy_trigger_buffs: Some(into_item_buff_data(self.dbuffs, self.trigger_filter_type_list_id)),
             ..
-        }]
+        });
     }
 }
 
@@ -144,12 +144,12 @@ pub(in crate::sde) struct SItemBuffSl {
     linkable_ship_type_list_id: Option<i32>,
 }
 impl ExtractOne<rc::ed::EItemBuff> for SItemBuffSl {
-    fn extract(self) -> Vec<rc::ed::EItemBuff> {
-        vec![rc::ed::EItemBuff {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemBuff>) {
+        extracted.push(rc::ed::EItemBuff {
             item_id: rc::ed::EItemId::from_i32(self.item_id),
             ship_link_buffs: Some(into_item_buff_data(self.dbuffs, self.linkable_ship_type_list_id)),
             ..
-        }]
+        });
     }
 }
 

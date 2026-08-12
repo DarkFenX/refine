@@ -33,8 +33,8 @@ pub(in crate::sde) struct SEffect {
     modifier_info: Vec<EffectMod>,
 }
 impl ExtractOne<rc::ed::EEffect> for SEffect {
-    fn extract(self) -> Vec<rc::ed::EEffect> {
-        vec![rc::ed::EEffect {
+    fn extract(self, extracted: &mut Vec<rc::ed::EEffect>) {
+        extracted.push(rc::ed::EEffect {
             id: rc::ed::EEffectId::from_i32(self.id),
             category_id: rc::ed::EEffectCatId::from_i32(self.effect_category_id),
             is_assistance: self.is_assistance,
@@ -51,6 +51,6 @@ impl ExtractOne<rc::ed::EEffect> for SEffect {
                 .into_iter()
                 .map(EffectMod::into_e_effect_mod)
                 .collect(),
-        }]
+        });
     }
 }

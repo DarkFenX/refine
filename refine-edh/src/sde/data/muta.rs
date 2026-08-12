@@ -12,32 +12,23 @@ pub(in crate::sde) struct SMuta {
     attribute_ids: Vec<SMutaAttrRange>,
 }
 impl ExtractTwo<rc::ed::EMutaItem, rc::ed::EMutaAttr> for SMuta {
-    fn extract(self) -> (Vec<rc::ed::EMutaItem>, Vec<rc::ed::EMutaAttr>) {
-        let muta_items = self
-            .input_output_mapping
-            .into_iter()
-            .flat_map(|item_map| {
-                item_map
-                    .applicable_types
-                    .into_iter()
-                    .map(move |in_item_id| rc::ed::EMutaItem {
-                        muta_id: rc::ed::EItemId::from_i32(self.item_id),
-                        in_item_id: rc::ed::EItemId::from_i32(in_item_id),
-                        out_item_id: rc::ed::EItemId::from_i32(item_map.resulting_type),
-                    })
-            })
-            .collect();
-        let muta_attrs = self
-            .attribute_ids
-            .into_iter()
-            .map(|attr_range| rc::ed::EMutaAttr {
-                muta_id: rc::ed::EItemId::from_i32(self.item_id),
-                attr_id: rc::ed::EAttrId::from_i32(attr_range.attr_id),
-                min_attr_mult: rc::ed::EFloat::from_f64(attr_range.min),
-                max_attr_mult: rc::ed::EFloat::from_f64(attr_range.max),
-            })
-            .collect();
-        (muta_items, muta_attrs)
+    fn extract(self, extracted1: &mut Vec<rc::ed::EMutaItem>, extracted2: &mut Vec<rc::ed::EMutaAttr>) {
+        extracted1.extend(self.input_output_mapping.into_iter().flat_map(|item_map| {
+            item_map
+                .applicable_types
+                .into_iter()
+                .map(move |in_item_id| rc::ed::EMutaItem {
+                    muta_id: rc::ed::EItemId::from_i32(self.item_id),
+                    in_item_id: rc::ed::EItemId::from_i32(in_item_id),
+                    out_item_id: rc::ed::EItemId::from_i32(item_map.resulting_type),
+                })
+        }));
+        extracted2.extend(self.attribute_ids.into_iter().map(|attr_range| rc::ed::EMutaAttr {
+            muta_id: rc::ed::EItemId::from_i32(self.item_id),
+            attr_id: rc::ed::EAttrId::from_i32(attr_range.attr_id),
+            min_attr_mult: rc::ed::EFloat::from_f64(attr_range.min),
+            max_attr_mult: rc::ed::EFloat::from_f64(attr_range.max),
+        }));
     }
 }
 

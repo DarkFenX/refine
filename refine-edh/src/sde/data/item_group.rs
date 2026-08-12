@@ -10,10 +10,10 @@ pub(in crate::sde) struct SItemGroup {
     category_id: i32,
 }
 impl ExtractOne<rc::ed::EItemGroup> for SItemGroup {
-    fn extract(self) -> Vec<rc::ed::EItemGroup> {
-        vec![rc::ed::EItemGroup {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemGroup>) {
+        extracted.push(rc::ed::EItemGroup {
             id: rc::ed::EItemGrpId::from_i32(self.id),
             category_id: rc::ed::EItemCatId::from_i32(self.category_id),
-        }]
+        });
     }
 }

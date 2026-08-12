@@ -17,10 +17,10 @@ pub(in crate::sde) struct SItemAbils {
     ability_slot2: Option<ItemAbilData>,
 }
 impl ExtractOne<rc::ed::EItemAbil> for SItemAbils {
-    fn extract(self) -> Vec<rc::ed::EItemAbil> {
-        into_e_item_abils(
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemAbil>) {
+        extracted.extend(into_e_item_abils(
             self.item_id,
             [self.ability_slot0, self.ability_slot1, self.ability_slot2],
-        )
+        ));
     }
 }

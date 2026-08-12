@@ -20,8 +20,8 @@ pub(in crate::sde) struct SItemList {
     excluded_category_ids: Vec<i32>,
 }
 impl ExtractOne<rc::ed::EItemList> for SItemList {
-    fn extract(self) -> Vec<rc::ed::EItemList> {
-        vec![rc::ed::EItemList {
+    fn extract(self, extracted: &mut Vec<rc::ed::EItemList>) {
+        extracted.push(rc::ed::EItemList {
             id: rc::ed::EItemListId::from_i32(self.id),
             included_item_ids: self
                 .included_type_ids
@@ -53,6 +53,6 @@ impl ExtractOne<rc::ed::EItemList> for SItemList {
                 .into_iter()
                 .map(rc::ed::EItemCatId::from_i32)
                 .collect(),
-        }]
+        });
     }
 }

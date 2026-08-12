@@ -19,8 +19,8 @@ pub(in crate::sde) struct SAttr {
     unit_id: Option<i32>,
 }
 impl ExtractOne<rc::ed::EAttr> for SAttr {
-    fn extract(self) -> Vec<rc::ed::EAttr> {
-        vec![rc::ed::EAttr {
+    fn extract(self, extracted: &mut Vec<rc::ed::EAttr>) {
+        extracted.push(rc::ed::EAttr {
             id: rc::ed::EAttrId::from_i32(self.id),
             stackable: self.stackable,
             high_is_good: self.high_is_good,
@@ -28,6 +28,6 @@ impl ExtractOne<rc::ed::EAttr> for SAttr {
             min_attr_id: self.min_attribute_id.map(rc::ed::EAttrId::from_i32),
             max_attr_id: self.max_attribute_id.map(rc::ed::EAttrId::from_i32),
             unit_id: self.unit_id.map(rc::ed::EAttrUnitId::from_i32),
-        }]
+        });
     }
 }

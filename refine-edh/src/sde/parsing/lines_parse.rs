@@ -15,7 +15,7 @@ where
 {
     let mut e_cont = rc::ed::EDataCont::new();
     for_each_line::<SDE>(reader, &mut e_cont.warnings, |sde| {
-        e_cont.data.extend(sde.extract());
+        sde.extract(&mut e_cont.data);
     })?;
     Ok(e_cont)
 }
@@ -30,9 +30,7 @@ where
     let mut e_cont2 = rc::ed::EDataCont::new();
     let mut warnings = Vec::new();
     for_each_line::<SDE>(reader, &mut warnings, |sde| {
-        let (e_data1, e_data2) = sde.extract();
-        e_cont1.data.extend(e_data1);
-        e_cont2.data.extend(e_data2);
+        sde.extract(&mut e_cont1.data, &mut e_cont2.data);
     })?;
     e_cont1.warnings = warnings.clone();
     e_cont2.warnings = warnings;

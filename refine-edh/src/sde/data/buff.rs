@@ -23,8 +23,8 @@ pub(in crate::sde) struct SBuff {
     location_required_skill_modifiers: Vec<BuffLrsm>,
 }
 impl ExtractOne<rc::ed::EBuff> for SBuff {
-    fn extract(self) -> Vec<rc::ed::EBuff> {
-        vec![rc::ed::EBuff {
+    fn extract(self, extracted: &mut Vec<rc::ed::EBuff>) {
+        extracted.push(rc::ed::EBuff {
             id: rc::ed::EBuffId::from_i32(self.id),
             aggregate_mode: self.aggregate_mode,
             operation: self.operation_name,
@@ -48,6 +48,6 @@ impl ExtractOne<rc::ed::EBuff> for SBuff {
                 .into_iter()
                 .map(|p_buff_mod| p_buff_mod.into_e_buff_mod())
                 .collect(),
-        }]
+        });
     }
 }
