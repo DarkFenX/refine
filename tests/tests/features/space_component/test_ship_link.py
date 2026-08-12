@@ -16,12 +16,11 @@ def test_affectee_filter_item_list(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_attr_id)])
-    eve_beacon_id = client.mk_eve_item()
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     eve_struct_id = client.mk_eve_struct(attrs={eve_attr_id: 200})
     eve_drone_id = client.mk_eve_drone(attrs={eve_attr_id: 200})
     eve_item_list_id = client.mk_eve_item_list(inc_type_ids=[eve_struct_id, eve_drone_id])
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs=({eve_buff_id: 10}, eve_item_list_id))
+    eve_beacon_id = client.mk_eve_item(sl_buffs=({eve_buff_id: 10}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_sol.add_sw_effect(type_id=eve_beacon_id)
@@ -44,8 +43,7 @@ def test_affectee_filter_unspecified(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_attr_id)])
-    eve_beacon_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs={eve_buff_id: 10})
+    eve_beacon_id = client.mk_eve_item(sl_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     eve_struct_id = client.mk_eve_struct(attrs={eve_attr_id: 200})
     eve_drone_id = client.mk_eve_drone(attrs={eve_attr_id: 200})
@@ -71,8 +69,7 @@ def test_affectee_filter_location(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_mods=[client.mk_eve_buff_mod(attr_id=eve_attr_id)])
-    eve_beacon_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs={eve_buff_id: 10})
+    eve_beacon_id = client.mk_eve_item(sl_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     eve_struct_id = client.mk_eve_struct(attrs={eve_attr_id: 200})
     eve_item_id = client.mk_eve_item(attrs={eve_attr_id: 200})
@@ -108,8 +105,7 @@ def test_affectee_filter_location_group(client, consts):
             client.mk_eve_buff_mod(attr_id=eve_attr_id, group_id=eve_ship_group_id),
             client.mk_eve_buff_mod(attr_id=eve_attr_id, group_id=eve_struct_group_id),
             client.mk_eve_buff_mod(attr_id=eve_attr_id, group_id=eve_item_group_id)])
-    eve_beacon_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs={eve_buff_id: 10})
+    eve_beacon_id = client.mk_eve_item(sl_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(grp_id=eve_ship_group_id, attrs={eve_attr_id: 200})
     eve_struct_id = client.mk_eve_struct(grp_id=eve_struct_group_id, attrs={eve_attr_id: 200})
     eve_item_id = client.mk_eve_item(grp_id=eve_item_group_id, attrs={eve_attr_id: 200})
@@ -144,8 +140,7 @@ def test_affectee_filter_location_skillreq(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         loc_srq_mods=[client.mk_eve_buff_mod(attr_id=eve_attr_id, skill_id=eve_skill1_id)])
-    eve_beacon_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs={eve_buff_id: 10})
+    eve_beacon_id = client.mk_eve_item(sl_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200}, srqs={eve_skill1_id: 1})
     eve_struct_id = client.mk_eve_struct(attrs={eve_attr_id: 200}, srqs={eve_skill1_id: 1})
     eve_item_id = client.mk_eve_item(attrs={eve_attr_id: 200}, srqs={eve_skill1_id: 1})
@@ -178,8 +173,7 @@ def test_state(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_attr_id)])
-    eve_beacon_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs={eve_buff_id: 10})
+    eve_beacon_id = client.mk_eve_item(sl_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     client.create_sources()
     api_sol = client.create_sol()
@@ -196,8 +190,7 @@ def test_effect_mode(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_percent,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_attr_id)])
-    eve_beacon_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_beacon_id, sl_buffs={eve_buff_id: 10})
+    eve_beacon_id = client.mk_eve_item(sl_buffs={eve_buff_id: 10})
     eve_ship_id = client.mk_eve_ship(attrs={eve_attr_id: 200})
     client.create_sources()
     api_effect_id = Effect.sl_to_api(type_id=eve_beacon_id)

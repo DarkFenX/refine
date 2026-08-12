@@ -12,8 +12,7 @@ def setup_root_test(*, client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         item_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id)])
-    eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    eve_proj_effect_id = client.mk_eve_item(sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     client.create_sources()
     api_sol = client.create_sol()
     api_proj_effect = api_sol.add_proj_effect(type_id=eve_proj_effect_id)

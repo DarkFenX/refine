@@ -8,6 +8,7 @@ from fw.util import Absent, conditional_insert
 if typing.TYPE_CHECKING:
     from fw.eve.containers.primitives import EvePrimitives
     from .item_ability import ItemAbilityData
+    from .item_buff import ItemBuffData
 
 
 @dataclass(kw_only=True)
@@ -19,6 +20,11 @@ class Item:
     effect_ids: list[int] | type[Absent]
     default_effect_id: int | None
     ability_data: list[ItemAbilityData] | type[Absent]
+    system_wide_buffs: ItemBuffData | type[Absent]
+    system_emitter_buffs: ItemBuffData | type[Absent]
+    proxy_effect_buffs: ItemBuffData | type[Absent]
+    proxy_trap_buffs: ItemBuffData | type[Absent]
+    ship_link_buffs: ItemBuffData | type[Absent]
     skill_reqs: dict[int, int] | type[Absent]
     capacity: float | type[Absent]
     mass: float | type[Absent]
@@ -31,6 +37,7 @@ class Item:
         self.__add_primitive_item_attributes(primitive_data=primitive_data)
         self.__add_primitive_item_effects(primitive_data=primitive_data)
         self.__add_primitive_item_abilities(primitive_data=primitive_data)
+        self.__add_primitive_item_buffs(primitive_data=primitive_data)
         self.__add_primitive_item_skill_reqs(primitive_data=primitive_data)
         conditional_insert(container=item_entry, path=['capacity'], value=self.capacity)
         conditional_insert(container=item_entry, path=['mass'], value=self.mass)
@@ -82,6 +89,53 @@ class Item:
                 path=['charges', 'rearmTimeSeconds'],
                 value=ability_data.charge_rearm_time)
             item_entry[f'abilitySlot{i}'] = ability_entry
+
+    def __add_primitive_item_buffs(self, *, primitive_data: EvePrimitives) -> None:
+        item_buff_entry = {}
+        # System-wide effects
+        if self.system_wide_buffs is not Absent:
+            conditional_insert(
+                container=item_buff_entry,
+                path=['systemWideEffects', 'globalDebuffs', 'dbuffs'],
+                value=self.system_wide_buffs.buffs)
+            conditional_insert(
+                container=item_buff_entry,
+                path=['systemWideEffects', 'globalDebuffs', 'eligibleTypeListID'],
+                value=self.system_wide_buffs.item_list_id)
+        # System buff emitters
+        if self.system_emitter_buffs is not Absent:
+            conditional_insert(
+                container=item_buff_entry,
+                path=['systemDbuffEmitter', 'dbuffCollections'],
+                value=self.system_emitter_buffs.buffs)
+        # Proximity effects
+        if self.proxy_effect_buffs is not Absent:
+            conditional_insert(
+                container=item_buff_entry,
+                path=['appliedProximityEffects', 'effects'],
+                value=self.proxy_effect_buffs.buffs)
+        # Proximity traps
+        if self.proxy_trap_buffs is not Absent:
+            conditional_insert(
+                container=item_buff_entry,
+                path=['proximityTrap', 'dbuffs'],
+                value=self.proxy_trap_buffs.buffs)
+            conditional_insert(
+                container=item_buff_entry,
+                path=['proximityTrap', 'triggerFilterTypeListID'],
+                value=self.proxy_trap_buffs.item_list_id)
+        # Ship links
+        if self.ship_link_buffs is not Absent:
+            conditional_insert(
+                container=item_buff_entry,
+                path=['linkWithShip', 'dbuffs'],
+                value=self.ship_link_buffs.buffs)
+            conditional_insert(
+                container=item_buff_entry,
+                path=['linkWithShip', 'linkableShipTypeListID'],
+                value=self.ship_link_buffs.item_list_id)
+        if item_buff_entry:
+            primitive_data.spacecomponentsbytype[self.id] = item_buff_entry
 
     __SKILL_ATTR_IDS = frozendict({
         EveAttr.required_skill1: EveAttr.required_skill1_level,

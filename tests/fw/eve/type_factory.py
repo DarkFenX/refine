@@ -6,6 +6,7 @@ from .data_manager import EveDataManager
 from .types import BuffModifier, EffectModifier, ItemAbilityData
 
 if typing.TYPE_CHECKING:
+    from .aliases import PeBuffs, PtBuffs, SeBuffs, SlBuffs, SwBuffs
     from .containers import EveObjects
 
 
@@ -89,8 +90,13 @@ class EveTypeFactory(EveDataManager):
             cat_id: int | type[Absent | Default] = Default,
             attrs: dict[int, float] | type[Absent | Default] = Default,
             eff_ids: list[int] | type[Absent | Default] = Default,
-            defeff_id: int | type[Default] | None = Default,
+            defeff_id: int | type[Absent | Default] | None = Default,
             abils: list[ItemAbilityData] | type[Absent] = Absent,
+            sw_buffs: SwBuffs | type[Absent] = Absent,
+            se_buffs: SeBuffs | type[Absent] = Absent,
+            pe_buffs: PeBuffs | type[Absent] = Absent,
+            pt_buffs: PtBuffs | type[Absent] = Absent,
+            sl_buffs: SlBuffs | type[Absent] = Absent,
             srqs: dict[int, int] | type[Absent | Default] = Default,
             capacity: float | type[Absent | Default] = Default,
             mass: float | type[Absent | Default] = Default,
@@ -126,6 +132,11 @@ class EveTypeFactory(EveDataManager):
                 eff_ids=[] if eff_ids is Default else eff_ids,
                 defeff_id=None if defeff_id is Default else defeff_id,
                 abils=abils,
+                sw_buffs=sw_buffs,
+                se_buffs=se_buffs,
+                pe_buffs=pe_buffs,
+                pt_buffs=pt_buffs,
+                sl_buffs=sl_buffs,
                 srqs={} if srqs is Default else srqs,
                 capacity=0.0 if capacity is Default else capacity,
                 mass=0.0 if mass is Default else mass,
@@ -454,30 +465,6 @@ class EveTypeFactory(EveDataManager):
             attr_id=attr_id,
             group_id=group_id,
             skill_id=skill_id)
-
-    def mk_eve_item_buff(
-            self, *,
-            datas: list[EveObjects] | type[Default] = Default,
-            type_id: int,
-            sw_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent | Default] = Default,
-            se_buffs: dict[int, float] | type[Absent | Default] = Default,
-            pe_buffs: dict[int, float] | type[Absent | Default] = Default,
-            pt_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent | Default] = Default,
-            sl_buffs: dict[int, float] | tuple[dict[int, float], int] | type[Absent | Default] = Default,
-    ) -> None:
-        if datas is Default:
-            datas = [self._get_default_eve_data()]
-        for data in datas:
-            # Item buffs are attached to items, so allocate one to make sure item ID is not taken by
-            # anything else later, which might be confusing
-            data.alloc_item_id(id_=type_id)
-            data.mk_item_buff(
-                type_id=type_id,
-                sw_buffs=Absent if sw_buffs is Default else sw_buffs,
-                se_buffs=Absent if se_buffs is Default else se_buffs,
-                pe_buffs=Absent if pe_buffs is Default else pe_buffs,
-                pt_buffs=Absent if pt_buffs is Default else pt_buffs,
-                sl_buffs=Absent if sl_buffs is Default else sl_buffs)
 
     def mk_eve_abil(
             self, *,

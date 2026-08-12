@@ -37,8 +37,7 @@ def test_affected_child_of_ship_struct(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
-    eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    eve_proj_effect_id = client.mk_eve_item(sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
@@ -61,8 +60,7 @@ def test_unaffected_child_of_ship_unknown(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
-    eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    eve_proj_effect_id = client.mk_eve_item(sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
@@ -85,8 +83,7 @@ def test_unaffected_child_of_offlist_ship_ship(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
-    eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    eve_proj_effect_id = client.mk_eve_item(sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
@@ -109,8 +106,7 @@ def test_unaffected_child_of_offlist_ship_struct(client, consts):
         aggr_mode=consts.EveBuffAggrMode.max,
         op=consts.EveBuffOp.post_mul,
         loc_grp_mods=[client.mk_eve_buff_mod(attr_id=eve_affectee_attr_id, group_id=eve_grp_id)])
-    eve_proj_effect_id = client.mk_eve_item()
-    client.mk_eve_item_buff(type_id=eve_proj_effect_id, sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
+    eve_proj_effect_id = client.mk_eve_item(sw_buffs=({eve_buff_id: 5}, eve_item_list_id))
     eve_module_id = client.mk_eve_item(grp_id=eve_grp_id, attrs={eve_affectee_attr_id: 7.5})
     client.create_sources()
     api_sol = client.create_sol()
