@@ -1,5 +1,8 @@
 pub(in crate::sde) use error::ReadParseFailReason;
-pub(in crate::sde) use parse_lines::{extract_from_lines_one, extract_from_lines_two};
+pub(in crate::sde) use lines_parse::{extract_from_lines_one, extract_from_lines_two};
+#[cfg(feature = "sde-fs")]
+pub(in crate::sde) use lines_search::first_in_lines;
 
 mod error;
-mod parse_lines;
+mod lines_parse;
+mod lines_search;

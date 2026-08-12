@@ -11,7 +11,7 @@ use crate::sde::{
     parsing::{extract_from_lines_one, extract_from_lines_two},
 };
 
-/// Data handler which fetches CCP-produced SDE in JSON Lines via HTTP
+/// Data handler which fetches CCP-produced SDE in JSON Lines format via HTTP
 pub struct SdeHttpEdh {
     base_url: Url,
     data_version: String,
@@ -109,11 +109,11 @@ impl SdeHttpEdh {
         Ok(())
     }
     fn process_item_buffs(&self, e_data: &mut rc::ed::EData) -> Result<(), SdeHttpEdhError> {
-        let e_item_buffs_sw = self.process_one::<SItemBuffSw, rc::ed::EItemBuff>("systemWideEffects.jsonl")?;
-        let e_item_buffs_se = self.process_one::<SItemBuffSe, rc::ed::EItemBuff>("systemDbuffEmitters.jsonl")?;
-        let e_item_buffs_pe = self.process_one::<SItemBuffPe, rc::ed::EItemBuff>("appliedProximityEffects.jsonl")?;
-        let e_item_buffs_pt = self.process_one::<SItemBuffPt, rc::ed::EItemBuff>("proximityTrap.jsonl")?;
-        let e_item_buffs_sl = self.process_one::<SItemBuffSl, rc::ed::EItemBuff>("linkWithShip.jsonl")?;
+        let e_item_buffs_sw = self.process_one::<SItemBuffSw, _>("systemWideEffects.jsonl")?;
+        let e_item_buffs_se = self.process_one::<SItemBuffSe, _>("systemDbuffEmitters.jsonl")?;
+        let e_item_buffs_pe = self.process_one::<SItemBuffPe, _>("appliedProximityEffects.jsonl")?;
+        let e_item_buffs_pt = self.process_one::<SItemBuffPt, _>("proximityTrap.jsonl")?;
+        let e_item_buffs_sl = self.process_one::<SItemBuffSl, _>("linkWithShip.jsonl")?;
         e_data.item_buffs = merge_item_buffs(
             e_item_buffs_sw,
             e_item_buffs_se,

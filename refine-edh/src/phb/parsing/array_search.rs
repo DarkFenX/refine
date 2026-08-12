@@ -4,7 +4,7 @@ use serde_json::value::RawValue;
 use super::error::ReadParseFailReason;
 
 // Returns first array entry accepted by the predicate
-pub(in crate::phb) fn find_in_array<T>(
+pub(in crate::phb) fn first_in_array<T>(
     reader: impl std::io::Read,
     predicate: impl FnMut(&T) -> bool,
 ) -> Result<Option<T>, ReadParseFailReason>

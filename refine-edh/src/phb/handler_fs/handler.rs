@@ -6,7 +6,7 @@ use crate::phb::{
         KeyMergeOne, KeyMergeTwo, PAbil, PAttr, PBuff, PEffect, PItem, PItemAbils, PItemDogma, PItemGroup, PItemList,
         PItemSpaceComp, PMetadata, PMuta,
     },
-    parsing::{extract_from_keymap_one, extract_from_keymap_two, find_in_array},
+    parsing::{extract_from_keymap_one, extract_from_keymap_two, first_in_array},
 };
 
 /// Data handler which uses locally stored [Phobos](https://github.com/pyfa-org/Phobos) static data
@@ -51,7 +51,7 @@ impl rc::ed::EveDataHandlerInterface for PhbFsEdh {
     fn get_data_version(&self) -> Result<String, rc::ed::err::EveDataHandlerError> {
         let addr = Address::new("phobos", "metadata");
         let reader = self.get_reader(&addr)?;
-        let metadata = find_in_array::<PMetadata>(reader, |metadata| metadata.field_name == "client_build")
+        let metadata = first_in_array::<PMetadata>(reader, |metadata| metadata.field_name == "client_build")
             .map_err(|e| PhbFsEdhError::from_read_parse(e, addr.get_part_str()))?;
         match metadata {
             Some(metadata) => Ok(metadata.field_value.to_string()),
