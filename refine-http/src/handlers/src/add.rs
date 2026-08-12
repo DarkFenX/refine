@@ -12,6 +12,7 @@ use crate::{err::ApiError, state::AppState};
 #[derive(serde::Deserialize)]
 pub(crate) struct AddSrcReqBody {
     data_version: String,
+    data_format: String,
     data_base_url: String,
     make_default: Option<bool>,
 }
@@ -39,9 +40,12 @@ async fn internal_add_source(
     let ed_base_url = payload.data_base_url;
     let ed_version = payload.data_version;
     let make_default = payload.make_default.unwrap_or(false);
-    let ed_handler = redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
-        .map_err(|err| ApiError::EdhInit(Box::new(err)))?
-        .into();
+    let ed_handler = match payload.data_format.to_lowercase().as_str() {
+        "phb" => redh::PhbHttpEdh::try_new(ed_base_url, ed_version)
+            .map_err(|err| ApiError::EdhInit(Box::new(err)))?
+            .into(),
+        _ => return Err(ApiError::EdhNotFound(payload.data_format)),
+    };
     let ad_cacher = state
         .get_cache_dir()
         .map(|cache_dir| radc::PostcardZfsAdc::new(cache_dir, src_alias).into());

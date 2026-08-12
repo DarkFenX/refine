@@ -29,6 +29,8 @@ pub(crate) enum ApiError {
     PathSrcNotFound(#[from] rs::src::err::GetSrcError),
     #[error("alias \"{0}\" not found")]
     BodySrcParse(String, #[source] rs::src::err::SrcAliasPruneInitError),
+    #[error("EVE data handler not found for requested format \"{0}\"")]
+    EdhNotFound(String),
     #[error("EVE data handler initialization failed")]
     EdhInit(#[source] Box<dyn std::error::Error + Send + Sync>),
     #[error(transparent)]
@@ -114,7 +116,8 @@ impl ApiError {
                 rs::src::err::GetSrcError::DefaultNotDefined => (StatusCode::NOT_FOUND, "SRC-002"),
             },
             Self::BodySrcParse(..) => (StatusCode::BAD_REQUEST, "SRC-005"),
-            Self::EdhInit(..) => (StatusCode::BAD_REQUEST, "EDH-001"),
+            Self::EdhNotFound(..) => (StatusCode::BAD_REQUEST, "EDH-001"),
+            Self::EdhInit(..) => (StatusCode::BAD_REQUEST, "EDH-002"),
             Self::SrcAdd(err) => match err {
                 rs::src::err::AddSrcError::SrcAliasNotAvailable(..) => (StatusCode::FORBIDDEN, "SRC-006"),
                 rs::src::err::AddSrcError::SrcInit(..) => (StatusCode::UNPROCESSABLE_ENTITY, "SNT-001"),
