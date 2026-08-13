@@ -5,37 +5,23 @@ use crate::ed::data::{
 
 #[derive(Default)]
 pub struct EData {
-    pub items: EDataCont<EItem>,
-    pub groups: EDataCont<EItemGroup>,
-    pub item_lists: EDataCont<EItemList>,
-    pub attrs: EDataCont<EAttr>,
-    pub item_attrs: EDataCont<EItemAttr>,
-    pub effects: EDataCont<EEffect>,
-    pub item_effects: EDataCont<EItemEffect>,
-    pub abils: EDataCont<EAbil>,
-    pub item_abils: EDataCont<EItemAbil>,
-    pub buffs: EDataCont<EBuff>,
-    pub item_buffs: EDataCont<EItemBuff>,
-    pub muta_items: EDataCont<EMutaItem>,
-    pub muta_attrs: EDataCont<EMutaAttr>,
+    pub items: EDataCont<EItem> = EDataCont::default(),
+    pub groups: EDataCont<EItemGroup> = EDataCont::default(),
+    pub item_lists: EDataCont<EItemList> = EDataCont::default(),
+    pub attrs: EDataCont<EAttr> = EDataCont::default(),
+    pub item_attrs: EDataCont<EItemAttr> = EDataCont::default(),
+    pub effects: EDataCont<EEffect> = EDataCont::default(),
+    pub item_effects: EDataCont<EItemEffect> = EDataCont::default(),
+    pub abils: EDataCont<EAbil> = EDataCont::default(),
+    pub item_abils: EDataCont<EItemAbil> = EDataCont::default(),
+    pub buffs: EDataCont<EBuff> = EDataCont::default(),
+    pub item_buffs: EDataCont<EItemBuff> = EDataCont::default(),
+    pub muta_items: EDataCont<EMutaItem> = EDataCont::default(),
+    pub muta_attrs: EDataCont<EMutaAttr> = EDataCont::default(),
 }
 impl EData {
     pub fn new() -> Self {
-        Self {
-            items: EDataCont::new(),
-            groups: EDataCont::new(),
-            item_lists: EDataCont::new(),
-            attrs: EDataCont::new(),
-            item_attrs: EDataCont::new(),
-            effects: EDataCont::new(),
-            item_effects: EDataCont::new(),
-            abils: EDataCont::new(),
-            item_abils: EDataCont::new(),
-            buffs: EDataCont::new(),
-            item_buffs: EDataCont::new(),
-            muta_items: EDataCont::new(),
-            muta_attrs: EDataCont::new(),
-        }
+        Self::default()
     }
 }
 
@@ -45,10 +31,7 @@ pub struct EDataCont<T> {
 }
 impl<T> EDataCont<T> {
     pub fn new() -> EDataCont<T> {
-        EDataCont {
-            data: Vec::new(),
-            warnings: Vec::new(),
-        }
+        Self::default()
     }
     pub fn with_capacity(capacity: usize) -> EDataCont<T> {
         EDataCont {
@@ -57,8 +40,11 @@ impl<T> EDataCont<T> {
         }
     }
 }
-impl<T> Default for EDataCont<T> {
+const impl<T> Default for EDataCont<T> {
     fn default() -> Self {
-        Self::new()
+        EDataCont {
+            data: Vec::new(),
+            warnings: Vec::new(),
+        }
     }
 }
