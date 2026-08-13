@@ -27,8 +27,11 @@ where
     let func_field = "func";
     let mut mods = Vec::new();
     for json_mod in <Vec<serde_json::Value>>::deserialize(json_mods)?.into_iter() {
-        let mut json_mod_map =
-            <serde_json::Map<String, serde_json::Value>>::deserialize(json_mod).map_err(serde::de::Error::custom)?;
+        let serde_json::Value::Object(mut json_mod_map) = json_mod else {
+            return Err(serde::de::Error::custom(
+                "unexpected JSON entity, expected a map representing an effect modifier",
+            ));
+        };
         let func = extract_string(&mut json_mod_map, func_field)?;
         let mut args = Vec::new();
         for (argname, v) in json_mod_map.into_iter() {
