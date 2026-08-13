@@ -1,5 +1,4 @@
 use serde::Deserialize;
-use serde_json::{Map, Value};
 
 pub(crate) struct EffectMod {
     func: String,
@@ -18,14 +17,18 @@ impl EffectMod {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// JSON parsing
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) fn deser_effect_mods<'de, D>(json_mods: D) -> Result<Vec<EffectMod>, D::Error>
 where
     D: serde::Deserializer<'de>,
 {
     let func_field = "func";
     let mut mods = Vec::new();
-    for json_mod in <Vec<Value>>::deserialize(json_mods)?.into_iter() {
-        let mut json_mod_map = <Map<String, Value>>::deserialize(json_mod).map_err(serde::de::Error::custom)?;
+    for json_mod in <Vec<serde_json::Value>>::deserialize(json_mods)?.into_iter() {
+        let mut json_mod_map =
+            <serde_json::Map<String, serde_json::Value>>::deserialize(json_mod).map_err(serde::de::Error::custom)?;
         let func = extract_string(&mut json_mod_map, func_field)?;
         let mut args = Vec::new();
         for (argname, v) in json_mod_map.into_iter() {
@@ -38,7 +41,7 @@ where
     Ok(mods)
 }
 
-fn extract_string<E>(map: &mut Map<String, Value>, key: &'static str) -> Result<String, E>
+fn extract_string<E>(map: &mut serde_json::Map<String, serde_json::Value>, key: &'static str) -> Result<String, E>
 where
     E: serde::de::Error,
 {
@@ -46,24 +49,24 @@ where
         return Err(serde::de::Error::missing_field(key));
     };
     match value {
-        Value::String(string) => Ok(string),
+        serde_json::Value::String(string) => Ok(string),
         _ => Err(serde::de::Error::custom(format!("unexpected type of {key} value"))),
     }
 }
 
-fn primitivize<E>(json: Value) -> Result<rc::ed::EPrimitive, E>
+fn primitivize<E>(json: serde_json::Value) -> Result<rc::ed::EPrimitive, E>
 where
     E: serde::de::Error,
 {
     match json {
-        Value::Null => Ok(rc::ed::EPrimitive::Null),
-        Value::Bool(value) => Ok(rc::ed::EPrimitive::Bool(value)),
-        Value::Number(value) => match (value.as_i64(), value.as_f64()) {
+        serde_json::Value::Null => Ok(rc::ed::EPrimitive::Null),
+        serde_json::Value::Bool(value) => Ok(rc::ed::EPrimitive::Bool(value)),
+        serde_json::Value::Number(value) => match (value.as_i64(), value.as_f64()) {
             (Some(value), _) => Ok(rc::ed::EPrimitive::Int(value.saturating_cast())),
             (None, Some(value)) => Ok(rc::ed::EPrimitive::Float(value)),
             (None, None) => Err(serde::de::Error::custom("unexpected number type")),
         },
-        Value::String(value) => Ok(rc::ed::EPrimitive::String(value)),
+        serde_json::Value::String(value) => Ok(rc::ed::EPrimitive::String(value)),
         _ => Err(serde::de::Error::custom("unexpected type")),
     }
 }
