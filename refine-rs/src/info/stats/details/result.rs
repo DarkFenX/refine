@@ -5,6 +5,12 @@ pub enum StatResult<T, EO, EI> {
     Error(EO),
 }
 impl<T, EO, EI> StatResult<T, EO, EI> {
+    pub fn unwrap(self) -> Vec<Result<T, EI>> {
+        match self {
+            Self::Result(stat) => stat,
+            _ => panic!(),
+        }
+    }
     pub fn is_not_requested(&self) -> bool {
         matches!(self, StatResult::NotRequested)
     }
