@@ -38,7 +38,7 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            i32::deserialize(deserializer).map(ASkillLevel::from_i32_clamped)
+            u8::deserialize(deserializer).map(ASkillLevel::from_u8_clamped)
         }
     }
 }

@@ -7,7 +7,7 @@ pub enum StatResult<T, EO, EI> {
 impl<T, EO, EI> StatResult<T, EO, EI> {
     pub fn unwrap(self) -> Vec<Result<T, EI>>
     where
-        EO: std::fmt::Debug
+        EO: std::fmt::Debug,
     {
         match self {
             Self::NotRequested => panic!("called StatResult::unwrap() on a `NotRequested` value"),
