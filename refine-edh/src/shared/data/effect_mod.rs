@@ -24,7 +24,6 @@ pub(crate) fn deser_effect_mods<'de, D>(json_mods: D) -> Result<Vec<EffectMod>, 
 where
     D: serde::Deserializer<'de>,
 {
-    let func_field = "func";
     let mut mods = Vec::new();
     for json_mod in <Vec<serde_json::Value>>::deserialize(json_mods)?.into_iter() {
         let serde_json::Value::Object(mut json_mod_map) = json_mod else {
@@ -32,7 +31,7 @@ where
                 "unexpected JSON entity, expected a map representing an effect modifier",
             ));
         };
-        let func = extract_string(&mut json_mod_map, func_field)?;
+        let func = extract_string(&mut json_mod_map, "func")?;
         let mut args = Vec::new();
         for (argname, v) in json_mod_map.into_iter() {
             let argval = primitivize::<D::Error>(v)
