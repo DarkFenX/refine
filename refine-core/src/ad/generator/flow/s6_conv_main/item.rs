@@ -113,7 +113,7 @@ impl ADataGenerator {
                 let Some(skill_level) = a_item
                     .attrs
                     .get(skill_level_attr_aid)
-                    .map(|v| ASkillLevel::from_f64_rounded_clamped(v.value.into_f64()))
+                    .map(|v| ASkillLevel::from_f64_rounded(v.value.into_f64()))
                 else {
                     continue;
                 };

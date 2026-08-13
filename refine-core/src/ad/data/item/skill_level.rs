@@ -19,7 +19,7 @@ impl ASkillLevel {
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ASkillLevel {
-    pub(in crate::ad) fn from_f64_rounded_clamped(level: f64) -> Self {
+    pub(in crate::ad) fn from_f64_rounded(level: f64) -> Self {
         Self::from_i32_clamped(round_f64_to_i32(level))
     }
 }
