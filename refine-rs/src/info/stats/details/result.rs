@@ -5,10 +5,14 @@ pub enum StatResult<T, EO, EI> {
     Error(EO),
 }
 impl<T, EO, EI> StatResult<T, EO, EI> {
-    pub fn unwrap(self) -> Vec<Result<T, EI>> {
+    pub fn unwrap(self) -> Vec<Result<T, EI>>
+    where
+        EO: std::fmt::Debug
+    {
         match self {
+            Self::NotRequested => panic!("called StatResult::unwrap() on a `NotRequested` value"),
             Self::Result(stat) => stat,
-            _ => panic!(),
+            Self::Error(e) => panic!("called StatResult::unwrap() on a `Error` value: {:?}", e),
         }
     }
     pub fn is_not_requested(&self) -> bool {
