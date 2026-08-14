@@ -1,48 +1,72 @@
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum SrcInfoMode {
     Partial,
-    #[default]
     Full,
+}
+const impl Default for SrcInfoMode {
+    fn default() -> Self {
+        Self::Full
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum SolInfoMode {
     Id,
-    #[default]
     Full,
+}
+const impl Default for SolInfoMode {
+    fn default() -> Self {
+        Self::Full
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum FleetInfoMode {
-    #[default]
     Id,
     Full,
 }
+const impl Default for FleetInfoMode {
+    fn default() -> Self {
+        Self::Id
+    }
+}
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum FitInfoMode {
     Id,
-    #[default]
     Full,
+}
+const impl Default for FitInfoMode {
+    fn default() -> Self {
+        Self::Full
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum ItemInfoMode {
     Id,
     Partial,
-    #[default]
     Full,
+}
+const impl Default for ItemInfoMode {
+    fn default() -> Self {
+        Self::Full
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum ValInfoMode {
     Simple,
-    #[default]
     Detailed,
+}
+const impl Default for ValInfoMode {
+    fn default() -> Self {
+        Self::Detailed
+    }
 }
