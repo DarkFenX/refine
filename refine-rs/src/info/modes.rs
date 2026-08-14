@@ -9,7 +9,7 @@ pub enum SrcInfoMode {
 }
 const impl Default for SrcInfoMode {
     fn default() -> Self {
-        Self::Full
+        Self::Partial
     }
 }
 
