@@ -9,7 +9,7 @@ impl<'r, 's> SolarSystem<'r> {
         let fit = Fit::new(self, cmd_resp.fit_id);
         Ok(fit)
     }
-    #[tracing::instrument(name = "fit-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-add-inf", level = "trace", skip_all)]
     pub async fn add_fit_and_get_info(
         &'s mut self,
         cmd: AddFitCmd,

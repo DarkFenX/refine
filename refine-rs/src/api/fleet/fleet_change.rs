@@ -15,7 +15,7 @@ impl Fleet<'_, '_> {
             .await?;
         Ok(())
     }
-    #[tracing::instrument(name = "flt-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         cmd: ChangeFleetCmd,

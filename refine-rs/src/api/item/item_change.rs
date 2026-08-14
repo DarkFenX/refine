@@ -13,7 +13,7 @@ impl Item<'_, '_> {
             })
             .await
     }
-    #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "itm-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         cmd: ChangeItemEnumCmd,

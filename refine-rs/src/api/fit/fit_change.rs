@@ -18,7 +18,7 @@ impl Fit<'_, '_> {
             })
             .await
     }
-    #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         cmds: Vec<ChangeFitEnumCmd>,

@@ -9,7 +9,7 @@ impl<'r, 's> SolarSystem<'r> {
         let item = Item::new(self, item_id);
         Ok(item)
     }
-    #[tracing::instrument(name = "itm-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "itm-add-inf", level = "trace", skip_all)]
     pub async fn add_item_and_get_info(
         &'s mut self,
         cmd: AddItemEnumCmd,

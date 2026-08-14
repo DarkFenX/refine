@@ -9,7 +9,7 @@ impl<'r, 's> SolarSystem<'r> {
         let fleet = Fleet::new(self, cmd_resp);
         Ok(fleet)
     }
-    #[tracing::instrument(name = "flt-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "flt-add-inf", level = "trace", skip_all)]
     pub async fn add_fleet_and_get_info(
         &'s mut self,
         cmd: AddFleetCmd,

@@ -19,7 +19,7 @@ impl Refine {
         let sol = SolarSystem::new(self, inner_sol).await;
         Ok(sol)
     }
-    #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-add-inf", level = "trace", skip_all)]
     pub async fn add_sol_and_get_info(
         &self,
         src_alias: Option<SrcAlias>,

@@ -11,7 +11,7 @@ impl SolarSystem<'_> {
         self.exec_standard_safe(move |core_sol| core_sol.set_src(&src)).await;
         Ok(())
     }
-    #[tracing::instrument(name = "sol-swt-src", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-swt-src-inf", level = "trace", skip_all)]
     pub async fn switch_src_and_get_info(
         &mut self,
         src_alias: Option<SrcAlias>,

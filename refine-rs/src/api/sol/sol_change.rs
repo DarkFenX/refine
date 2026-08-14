@@ -12,7 +12,7 @@ impl SolarSystem<'_> {
         })
         .await
     }
-    #[tracing::instrument(name = "sol-chg", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
         cmds: Vec<ChangeSolEnumCmd>,
