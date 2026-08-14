@@ -58,7 +58,7 @@ pub enum ItemInfoMode {
 }
 const impl Default for ItemInfoMode {
     fn default() -> Self {
-        Self::Full
+        Self::Partial
     }
 }
 
