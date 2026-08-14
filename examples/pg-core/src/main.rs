@@ -16,7 +16,7 @@ use rc::{
     AddMode, ItemCommon, ItemMutCommon, ItemTypeId, Lender, MinionState, ModRack, ModuleState, NpcProp, SecZone,
     SecZoneCorruption, SkillLevel, SolarSystem, Src, VERSION,
     ad::{AState, AdaptedDataCacher},
-    ed::{EItemCatId, EveDataHandler, EveDataHandlerInterface},
+    ed::{EItemCatId, EveDataHandler, EveDataHandlerCore},
     src::SrcOrigin,
     val::ValOptions,
 };

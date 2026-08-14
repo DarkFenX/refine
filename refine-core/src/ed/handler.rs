@@ -5,21 +5,21 @@ use crate::ed::EData;
 /// EVE data handler.
 ///
 /// Convenience wrapper to hide boxing necessary to house a handler implementation.
-pub struct EveDataHandler(pub Box<dyn EveDataHandlerInterface>);
+pub struct EveDataHandler(pub Box<dyn EveDataHandlerCore>);
 impl EveDataHandler {
     pub fn new<T>(handler: T) -> Self
     where
-        T: EveDataHandlerInterface + 'static,
+        T: EveDataHandlerCore + 'static,
     {
         Self(Box::new(handler))
     }
-    pub(crate) fn get_impl(&self) -> &dyn EveDataHandlerInterface {
+    pub(crate) fn get_impl(&self) -> &dyn EveDataHandlerCore {
         self.0.as_ref()
     }
 }
 impl<T> From<T> for EveDataHandler
 where
-    T: EveDataHandlerInterface + 'static,
+    T: EveDataHandlerCore + 'static,
 {
     fn from(handler: T) -> Self {
         Self::new(handler)
@@ -32,7 +32,7 @@ impl fmt::Debug for EveDataHandler {
 }
 
 /// EVE data handler interface definition.
-pub trait EveDataHandlerInterface: fmt::Debug + Send + Sync {
+pub trait EveDataHandlerCore: fmt::Debug + Send + Sync {
     /// Get main EVE data.
     ///
     /// This method should return an error only when it is impossible to fetch the data altogether.

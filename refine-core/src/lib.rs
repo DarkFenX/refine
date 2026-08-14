@@ -20,8 +20,8 @@
 //! setup consists of the following steps:
 //!
 //! - you feed an [`ed::EveDataHandler`] and an optional [`ad::AdaptedDataCacher`] to the [`Src`]
-//!   constructor. Both are wrappers which carry your [`ed::EveDataHandlerInterface`] and
-//!   [`ad::AdaptedDataCacherInterface`] implementations;
+//!   constructor. Both are wrappers which carry your [`ed::EveDataHandlerCore`] and
+//!   [`ad::AdaptedDataCacherCore`] implementations;
 //! - during [`Src`] initialization, the library attempts to use cached adapted data. If its
 //!   fingerprint (data version \+ library version at the time of cache generation) and current
 //!   fingerprint (version of currently provided data + current library version) matched, cached

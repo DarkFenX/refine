@@ -4,7 +4,7 @@
 //! for ease of use by various refine components. Since adapted types can be persisted, it helps to
 //! avoid processing every time data is loaded.
 
-pub use cacher::{AdaptedDataCacher, AdaptedDataCacherInterface};
+pub use cacher::{AdaptedDataCacher, AdaptedDataCacherCore};
 pub use data::{
     AAbil, AAbilId, AAbils, AAttr, AAttrId, AAttrs, ABuff, ABuffAffecteeFilter, ABuffAggrMode, ABuffId, ABuffModifier,
     ABuffModifiers, ABuffs, ACount, ACustomAttrId, ACustomBuffId, ACustomEffectId, ACustomItemListId, AData,

@@ -5,21 +5,21 @@ use crate::ad::{AData, AFingerprint};
 /// Adapted data cacher.
 ///
 /// Convenience wrapper to hide boxing necessary to house a cacher implementation.
-pub struct AdaptedDataCacher(pub Box<dyn AdaptedDataCacherInterface>);
+pub struct AdaptedDataCacher(pub Box<dyn AdaptedDataCacherCore>);
 impl AdaptedDataCacher {
     pub fn new<T>(cacher: T) -> Self
     where
-        T: AdaptedDataCacherInterface + 'static,
+        T: AdaptedDataCacherCore + 'static,
     {
         Self(Box::new(cacher))
     }
-    pub(crate) fn get_impl(&self) -> &dyn AdaptedDataCacherInterface {
+    pub(crate) fn get_impl(&self) -> &dyn AdaptedDataCacherCore {
         self.0.as_ref()
     }
 }
 impl<T> From<T> for AdaptedDataCacher
 where
-    T: AdaptedDataCacherInterface + 'static,
+    T: AdaptedDataCacherCore + 'static,
 {
     fn from(cacher: T) -> Self {
         Self::new(cacher)
@@ -35,7 +35,7 @@ impl fmt::Debug for AdaptedDataCacher {
 ///
 /// Caching helps to avoid regeneration of adapted data on every run, which is a relatively
 /// expensive process.
-pub trait AdaptedDataCacherInterface: fmt::Debug + Send + Sync {
+pub trait AdaptedDataCacherCore: fmt::Debug + Send + Sync {
     /// Get cached data fingerprint.
     fn get_cache_fingerprint(&self) -> Result<AFingerprint, AdaptedDataCacherError>;
     /// Load cache from persistent storage.

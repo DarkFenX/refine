@@ -36,7 +36,7 @@ impl std::fmt::Debug for JsonZfsAdc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cacher trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl rc::ad::AdaptedDataCacherInterface for JsonZfsAdc {
+impl rc::ad::AdaptedDataCacherCore for JsonZfsAdc {
     fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
         let fingerprint = std::fs::read_to_string(self.get_fingerprint_path()).map_err(JsonZfsAdcFpReadError::Read)?;
         Ok(rc::ad::AFingerprint::from_string(fingerprint.trim().into()))

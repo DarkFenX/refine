@@ -39,7 +39,7 @@ pub use data::{
     EItemBuff, EItemBuffData, EItemBuffEntry, EItemCatId, EItemEffect, EItemGroup, EItemGrpId, EItemId, EItemList,
     EItemListId, EMutaAttr, EMutaItem, EPrimitive,
 };
-pub use handler::{EveDataHandler, EveDataHandlerInterface};
+pub use handler::{EveDataHandler, EveDataHandlerCore};
 
 mod consts;
 mod data;

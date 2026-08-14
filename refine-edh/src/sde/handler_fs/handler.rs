@@ -30,7 +30,7 @@ impl std::fmt::Debug for SdeFsEdh {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Handler trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl rc::ed::EveDataHandlerInterface for SdeFsEdh {
+impl rc::ed::EveDataHandlerCore for SdeFsEdh {
     fn get_data(&self) -> Result<rc::ed::EData, rc::ed::err::EveDataHandlerError> {
         let mut data = rc::ed::EData::new();
         self.process_types(&mut data)?;

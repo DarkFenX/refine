@@ -36,7 +36,7 @@ impl std::fmt::Debug for PostcardZfsAdc {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Cacher trait implementation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl rc::ad::AdaptedDataCacherInterface for PostcardZfsAdc {
+impl rc::ad::AdaptedDataCacherCore for PostcardZfsAdc {
     fn get_cache_fingerprint(&self) -> Result<rc::ad::AFingerprint, rc::ad::err::AdaptedDataCacherError> {
         let fingerprint =
             std::fs::read_to_string(self.get_fingerprint_path()).map_err(PostcardZfsAdcFpReadError::Read)?;
