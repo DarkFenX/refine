@@ -1,5 +1,30 @@
 use crate::val::{FitValInfoDetails, SolValInfoDetails};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Info modes
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Copy, Clone)]
+pub enum ValInfoMode {
+    Simple,
+    Detailed,
+}
+const impl Default for ValInfoMode {
+    fn default() -> Self {
+        Self::Detailed
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Copy, Clone, Default)]
+pub struct ValInfoModes {
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub validation: ValInfoMode = ValInfoMode::default(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Infos
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct FitValInfo {

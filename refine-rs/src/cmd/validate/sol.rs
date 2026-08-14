@@ -1,6 +1,6 @@
 use crate::{
     FitId,
-    val::{SolValInfo, ValInfoMode, ValOptions},
+    val::{SolValInfo, ValInfoMode, ValInfoModes, ValOptions},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -31,12 +31,12 @@ impl ValidateSolCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ValidateSolCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem, val_mode: ValInfoMode) -> SolValInfo {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem, modes: ValInfoModes) -> SolValInfo {
         let core_options = rc::val::ValOptionsSol {
             fit_ids: self.fit_ids,
             options: self.options,
         };
-        match val_mode {
+        match modes.validation {
             ValInfoMode::Simple => SolValInfo {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,

@@ -8,13 +8,12 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::shared::ValInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn validate_fit(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<ValInfoParams>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::val::ValInfoModes>, ApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<rs::val::ValidateFitCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
@@ -28,7 +27,7 @@ async fn internal_validate_fit(
     state: AppState,
     sol_id: String,
     fit_id: String,
-    params: ValInfoParams,
+    params: rs::val::ValInfoModes,
     payload: rs::val::ValidateFitCmd,
 ) -> Result<rs::val::FitValInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -39,7 +38,7 @@ async fn internal_validate_fit(
         .await?
         .get_fit(fit_id)
         .await?
-        .validate(payload, params.validation.unwrap_or_default())
+        .validate(payload, params)
         .await;
     Ok(val_info)
 }
