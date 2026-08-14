@@ -3,7 +3,10 @@ use rc::ItemCommon;
 use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
-use crate::{AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification};
+use crate::{
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    Modification,
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -45,10 +48,10 @@ pub struct FwEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FwEffectInfo {
-    pub(in crate::info) fn from_core(core_fw_effect: &mut rc::FwEffectMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_fw_effect: &mut rc::FwEffectMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_fw_effect.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FwEffectInfoExt {
                     #[cfg(feature = "serde")]
@@ -56,9 +59,9 @@ impl FwEffectInfo {
                     type_id: core_fw_effect.get_type_id(),
                     fit_id: core_fw_effect.get_fit().get_fit_id(),
                     state: core_fw_effect.get_state(),
-                    attrs: get_attrs(core_fw_effect, item_mode),
-                    effects: get_effects(core_fw_effect, item_mode),
-                    mods: get_mods(core_fw_effect, item_mode),
+                    attrs: get_attrs(core_fw_effect, modes),
+                    effects: get_effects(core_fw_effect, modes),
+                    mods: get_mods(core_fw_effect, modes),
                 }),
             },
         }

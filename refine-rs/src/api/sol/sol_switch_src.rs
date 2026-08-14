@@ -1,5 +1,5 @@
 use crate::{
-    FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfo, SolInfoMode, SolarSystem,
+    SolInfo, SolInfoModes, SolarSystem,
     src::{SrcAlias, err::GetSrcError},
 };
 
@@ -15,10 +15,7 @@ impl SolarSystem<'_> {
     pub async fn switch_src_and_get_info(
         &mut self,
         src_alias: Option<SrcAlias>,
-        sol_mode: SolInfoMode,
-        fleet_mode: FleetInfoMode,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
+        info_modes: SolInfoModes,
     ) -> Result<SolInfo, SolSwitchSrcError> {
         let inner_src = self.refine.internal_get_src(src_alias).await?;
         let src = inner_src.get_core().clone();
@@ -28,7 +25,7 @@ impl SolarSystem<'_> {
         let sol_info = self
             .exec_standard_safe(move |core_sol| {
                 core_sol.set_src(&src);
-                SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, sol_mode, fleet_mode, fit_mode, item_mode)
+                SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, info_modes)
             })
             .await;
         self.inner.set_src_alias(inner_src.get_alias());

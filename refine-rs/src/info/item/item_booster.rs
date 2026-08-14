@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    SideEffectInfo, SlotIndex,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    Modification, SideEffectInfo, SlotIndex,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -56,10 +56,10 @@ pub struct BoosterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterInfo {
-    pub(in crate::info) fn from_core(core_booster: &mut rc::BoosterMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_booster: &mut rc::BoosterMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_booster.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(BoosterInfoExt {
                     #[cfg(feature = "serde")]
@@ -77,9 +77,9 @@ impl BoosterInfo {
                             )
                         })
                         .collect(),
-                    attrs: get_attrs(core_booster, item_mode),
-                    effects: get_effects(core_booster, item_mode),
-                    mods: get_mods(core_booster, item_mode),
+                    attrs: get_attrs(core_booster, modes),
+                    effects: get_effects(core_booster, modes),
+                    mods: get_mods(core_booster, modes),
                 }),
             },
         }

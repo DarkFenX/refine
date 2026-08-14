@@ -5,13 +5,12 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::shared::SrcInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn get_source(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<SrcInfoParams>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoModes>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_source(state, src_alias, params).await {
         Ok(..) => StatusCode::OK.into_response(),
@@ -22,7 +21,7 @@ pub(crate) async fn get_source(
 async fn internal_get_source(
     state: AppState,
     src_alias: String,
-    params: SrcInfoParams,
+    params: rs::src::SrcInfoModes,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
         rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;
@@ -30,7 +29,7 @@ async fn internal_get_source(
         .get_refine()
         .get_src(Some(src_alias))
         .await?
-        .get_info(params.src.unwrap_or_default())
+        .get_info(params)
         .await;
     Ok(src_info)
 }

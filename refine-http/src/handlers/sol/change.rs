@@ -9,7 +9,6 @@ use axum::{
 use axum_extra::extract::WithRejection;
 use serde::{Deserialize, Serialize};
 
-use super::shared::SolInfoParams;
 use crate::{
     err::{ApiError, ApiErrorIndexed},
     state::AppState,
@@ -29,7 +28,7 @@ struct SolChangeResp {
 pub(crate) async fn change_sol(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<SolInfoParams>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoModes>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<SolChangeReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_sol(state, sol_id, params, payload).await {
@@ -41,7 +40,7 @@ pub(crate) async fn change_sol(
 async fn internal_change_sol(
     state: AppState,
     sol_id: String,
-    params: SolInfoParams,
+    params: rs::SolInfoModes,
     payload: SolChangeReqBody,
 ) -> Result<SolChangeResp, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -56,13 +55,7 @@ async fn internal_change_sol(
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .change_and_get_info(
-            cmds,
-            params.sol.unwrap_or_default(),
-            params.fleet.unwrap_or_default(),
-            params.fit.unwrap_or_default(),
-            params.item.unwrap_or_default(),
-        )
+        .change_and_get_info(cmds, params)
         .await?;
     Ok(SolChangeResp {
         solar_system: sol_info,

@@ -4,7 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, SlotIndex,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    Modification, SlotIndex,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -49,10 +50,10 @@ pub struct SubsystemInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemInfo {
-    pub(in crate::info) fn from_core(core_subsystem: &mut rc::SubsystemMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_subsystem: &mut rc::SubsystemMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_subsystem.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SubsystemInfoExt {
                     #[cfg(feature = "serde")]
@@ -61,9 +62,9 @@ impl SubsystemInfo {
                     fit_id: core_subsystem.get_fit().get_fit_id(),
                     slot: core_subsystem.get_slot(),
                     state: core_subsystem.get_state(),
-                    attrs: get_attrs(core_subsystem, item_mode),
-                    effects: get_effects(core_subsystem, item_mode),
-                    mods: get_mods(core_subsystem, item_mode),
+                    attrs: get_attrs(core_subsystem, modes),
+                    effects: get_effects(core_subsystem, modes),
+                    mods: get_mods(core_subsystem, modes),
                 }),
             },
         }

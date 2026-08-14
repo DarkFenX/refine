@@ -4,7 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo,
+    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId, Modification,
+    ProjInfo,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -51,10 +52,10 @@ pub struct ProjEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectInfo {
-    pub(in crate::info) fn from_core(core_proj_effect: &mut rc::ProjEffectMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_proj_effect: &mut rc::ProjEffectMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_proj_effect.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ProjEffectInfoExt {
                     #[cfg(feature = "serde")]
@@ -62,9 +63,9 @@ impl ProjEffectInfo {
                     type_id: core_proj_effect.get_type_id(),
                     state: core_proj_effect.get_state(),
                     projs: core_proj_effect.iter_projs().map(ProjInfo::from_core).collect(),
-                    attrs: get_attrs(core_proj_effect, item_mode),
-                    effects: get_effects(core_proj_effect, item_mode),
-                    mods: get_mods(core_proj_effect, item_mode),
+                    attrs: get_attrs(core_proj_effect, modes),
+                    effects: get_effects(core_proj_effect, modes),
+                    mods: get_mods(core_proj_effect, modes),
                 }),
             },
         }

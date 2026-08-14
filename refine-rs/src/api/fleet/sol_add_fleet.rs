@@ -1,4 +1,4 @@
-use crate::{AddFleetCmd, Fleet, FleetInfo, FleetInfoMode, SolarSystem, err::AddFleetError};
+use crate::{AddFleetCmd, Fleet, FleetInfo, FleetInfoModes, SolarSystem, err::AddFleetError};
 
 impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "flt-add", level = "trace", skip_all)]
@@ -12,14 +12,14 @@ impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "flt-add-inf", level = "trace", skip_all)]
     pub async fn add_fleet_and_get_info(
         &'s mut self,
-        cmd: AddFleetCmd,
-        fleet_mode: FleetInfoMode,
+        exec_cmd: AddFleetCmd,
+        info_modes: FleetInfoModes,
     ) -> Result<(Fleet<'r, 's>, FleetInfo), AddFleetError> {
         let (fleet_id, fleet_info) = self
             .exec_standard_fallible(move |core_sol| {
-                let fleet_id = cmd.execute(core_sol).map(|cmd_resp| cmd_resp.fleet_id)?;
+                let fleet_id = exec_cmd.execute(core_sol).map(|cmd_resp| cmd_resp.fleet_id)?;
                 let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
-                let item_info = FleetInfo::from_core(&mut core_fleet, fleet_mode);
+                let item_info = FleetInfo::from_core(&mut core_fleet, info_modes);
                 Ok::<_, AddFleetError>((fleet_id, item_info))
             })
             .await?;

@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, CmdResps, Fit, FitInfo, FitInfoMode, ItemInfoMode,
+    ChangeFitEnumCmd, CmdResps, Fit, FitInfo, FitInfoModes,
     err::{BackrefRenderError, ChangeFitEnumError},
 };
 
@@ -21,9 +21,8 @@ impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        cmds: Vec<ChangeFitEnumCmd>,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
+        exec_cmds: Vec<ChangeFitEnumCmd>,
+        info_modes: FitInfoModes,
     ) -> Result<(CmdResps, FitInfo), ChangeFitError> {
         // Variables for move
         let fit_id = self.id;
@@ -32,8 +31,8 @@ impl Fit<'_, '_> {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
-                let cmd_resps = execute_commands(&mut core_fit, cmds)?;
-                let fit_info = FitInfo::from_core(&mut core_fit, fit_mode, item_mode);
+                let cmd_resps = execute_commands(&mut core_fit, exec_cmds)?;
+                let fit_info = FitInfo::from_core(&mut core_fit, info_modes);
                 Ok((cmd_resps, fit_info))
             })
             .await

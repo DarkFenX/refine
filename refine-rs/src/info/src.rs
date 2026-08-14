@@ -1,4 +1,4 @@
-use crate::src::{SrcAlias, SrcInfoMode, SrcOrigin, SrcWarnings};
+use crate::src::{SrcAlias, SrcInfoMode, SrcInfoModes, SrcOrigin, SrcWarnings};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -27,13 +27,13 @@ impl SrcInfo {
         alias: SrcAlias,
         time_created: time::UtcDateTime,
         core_info: &rc::src::SrcInfo,
-        src_mode: SrcInfoMode,
+        modes: SrcInfoModes,
     ) -> Self {
         Self {
             alias,
             time_created,
             origin: core_info.origin.clone(),
-            extended: match src_mode {
+            extended: match modes.src {
                 SrcInfoMode::Partial => None,
                 SrcInfoMode::Full => Some(SrcInfoExt {
                     warnings: core_info.warnings.clone(),

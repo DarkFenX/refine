@@ -6,7 +6,7 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::shared::{SolInfoParams, parse_src_alias_from_body};
+use super::shared::parse_src_alias_from_body;
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Default, serde::Deserialize)]
@@ -18,7 +18,7 @@ pub(crate) struct AddSolReqBody {
 
 pub(crate) async fn add_sol(
     State(state): State<AppState>,
-    WithRejection(Query(params), _): WithRejection<Query<SolInfoParams>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoModes>, ApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<AddSolReqBody>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
@@ -30,20 +30,13 @@ pub(crate) async fn add_sol(
 
 async fn internal_add_sol(
     state: AppState,
-    params: SolInfoParams,
+    params: rs::SolInfoModes,
     payload: AddSolReqBody,
 ) -> Result<rs::SolInfo, ApiError> {
     let src_alias = parse_src_alias_from_body(payload.src_alias)?;
     let (_, sol_info) = state
         .get_refine()
-        .add_sol_and_get_info(
-            src_alias,
-            payload.cmd,
-            params.sol.unwrap_or_default(),
-            params.fleet.unwrap_or_default(),
-            params.fit.unwrap_or_default(),
-            params.item.unwrap_or_default(),
-        )
+        .add_sol_and_get_info(src_alias, payload.cmd, params)
         .await?;
     Ok(sol_info)
 }

@@ -3,7 +3,10 @@ use rc::ItemCommon;
 use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
-use crate::{AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification};
+use crate::{
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    Modification,
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -45,10 +48,10 @@ pub struct RigInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigInfo {
-    pub(in crate::info) fn from_core(core_rig: &mut rc::RigMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_rig: &mut rc::RigMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_rig.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(RigInfoExt {
                     #[cfg(feature = "serde")]
@@ -56,9 +59,9 @@ impl RigInfo {
                     type_id: core_rig.get_type_id(),
                     fit_id: core_rig.get_fit().get_fit_id(),
                     state: core_rig.get_state(),
-                    attrs: get_attrs(core_rig, item_mode),
-                    effects: get_effects(core_rig, item_mode),
-                    mods: get_mods(core_rig, item_mode),
+                    attrs: get_attrs(core_rig, modes),
+                    effects: get_effects(core_rig, modes),
+                    mods: get_mods(core_rig, modes),
                 }),
             },
         }

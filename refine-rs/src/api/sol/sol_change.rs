@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, CmdResps, FitInfoMode, FleetInfoMode, ItemInfoMode, SolInfo, SolInfoMode, SolarSystem,
+    ChangeSolEnumCmd, CmdResps, SolInfo, SolInfoModes, SolarSystem,
     err::{BackrefRenderError, ChangeSolEnumError},
 };
 
@@ -15,19 +15,15 @@ impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        cmds: Vec<ChangeSolEnumCmd>,
-        sol_mode: SolInfoMode,
-        fleet_mode: FleetInfoMode,
-        fit_mode: FitInfoMode,
-        item_mode: ItemInfoMode,
+        exec_cmds: Vec<ChangeSolEnumCmd>,
+        info_modes: SolInfoModes,
     ) -> Result<(CmdResps, SolInfo), ChangeSolError> {
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = self.get_src_alias();
         self.exec_standard_fallible(move |core_sol| {
-            let cmd_resps = execute_commands(core_sol, cmds)?;
-            let sol_info =
-                SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, sol_mode, fleet_mode, fit_mode, item_mode);
+            let cmd_resps = execute_commands(core_sol, exec_cmds)?;
+            let sol_info = SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, info_modes);
             Ok((cmd_resps, sol_info))
         })
         .await

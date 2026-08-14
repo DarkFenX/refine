@@ -1,7 +1,7 @@
-use crate::{Fit, FitInfo, FitInfoMode, ItemInfoMode};
+use crate::{Fit, FitInfo, FitInfoModes};
 
 impl Fit<'_, '_> {
-    pub async fn get_info(&mut self, fit_mode: FitInfoMode, item_mode: ItemInfoMode) -> FitInfo {
+    pub async fn get_info(&mut self, info_modes: FitInfoModes) -> FitInfo {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -9,7 +9,7 @@ impl Fit<'_, '_> {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
-                FitInfo::from_core(&mut core_fit, fit_mode, item_mode)
+                FitInfo::from_core(&mut core_fit, info_modes)
             })
             .await
     }

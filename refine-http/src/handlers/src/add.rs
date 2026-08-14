@@ -6,7 +6,6 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
-use super::shared::SrcInfoParams;
 use crate::{err::ApiError, state::AppState};
 
 #[derive(serde::Deserialize)]
@@ -20,7 +19,7 @@ pub(crate) struct AddSrcReqBody {
 pub(crate) async fn add_source(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<SrcInfoParams>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoModes>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<AddSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_add_source(state, src_alias, params, payload).await {
@@ -32,7 +31,7 @@ pub(crate) async fn add_source(
 async fn internal_add_source(
     state: AppState,
     src_alias: String,
-    params: SrcInfoParams,
+    params: rs::src::SrcInfoModes,
     payload: AddSrcReqBody,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
@@ -56,6 +55,5 @@ async fn internal_add_source(
         .get_refine()
         .add_src(src_alias, make_default, ed_handler, ad_cacher)
         .await?;
-    let src_mode = params.src.unwrap_or_default();
-    Ok(src.get_info(src_mode).await)
+    Ok(src.get_info(params).await)
 }

@@ -3,7 +3,10 @@ use rc::ItemCommon;
 use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
-use crate::{AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification};
+use crate::{
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    Modification,
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -47,10 +50,10 @@ pub struct AutochargeInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeInfo {
-    pub(super) fn from_core(core_autocharge: &mut rc::AutochargeMut, item_mode: ItemInfoMode) -> Self {
+    pub(super) fn from_core(core_autocharge: &mut rc::AutochargeMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_autocharge.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(AutochargeInfoExt {
                     #[cfg(feature = "serde")]
@@ -60,9 +63,9 @@ impl AutochargeInfo {
                     cont_item_id: core_autocharge.get_cont_item().get_item_id(),
                     cont_effect_id: core_autocharge.get_cont_effect_id(),
                     state: core_autocharge.get_state(),
-                    attrs: get_attrs(core_autocharge, item_mode),
-                    effects: get_effects(core_autocharge, item_mode),
-                    mods: get_mods(core_autocharge, item_mode),
+                    attrs: get_attrs(core_autocharge, modes),
+                    effects: get_effects(core_autocharge, modes),
+                    mods: get_mods(core_autocharge, modes),
                 }),
             },
         }

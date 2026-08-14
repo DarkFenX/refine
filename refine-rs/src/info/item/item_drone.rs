@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemMutationInfo,
-    ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
+    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes,
+    ItemMutationInfo, ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -55,10 +55,10 @@ pub struct DroneInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneInfo {
-    pub(in crate::info) fn from_core(core_drone: &mut rc::DroneMut, item_mode: ItemInfoMode) -> Self {
+    pub(in crate::info) fn from_core(core_drone: &mut rc::DroneMut, modes: ItemInfoModes) -> Self {
         Self {
             id: core_drone.get_item_id(),
-            extended: match item_mode {
+            extended: match modes.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(DroneInfoExt {
                     #[cfg(feature = "serde")]
@@ -71,9 +71,9 @@ impl DroneInfo {
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),
                     projs: core_drone.iter_projs().map(RangedProjInfo::from_core).collect(),
-                    attrs: get_attrs(core_drone, item_mode),
-                    effects: get_effects(core_drone, item_mode),
-                    mods: get_mods(core_drone, item_mode),
+                    attrs: get_attrs(core_drone, modes),
+                    effects: get_effects(core_drone, modes),
+                    mods: get_mods(core_drone, modes),
                 }),
             },
         }
