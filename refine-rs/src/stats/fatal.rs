@@ -1,6 +1,6 @@
 use crate::stats::err::{StatFitShipAppliedError, StatItemAppliedError};
 
-pub(crate) trait StatErrorFatality {
+pub(in crate::stats) trait StatErrorFatality {
     fn is_fatal(&self) -> bool;
 }
 

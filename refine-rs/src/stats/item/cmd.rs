@@ -3,13 +3,12 @@ use rc::ItemMutCommon;
 use crate::{
     PValue, Value,
     stats::{
-        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
-        StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
+        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatErrorFatality, StatInJam, StatJump, StatMining,
+        StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
+        StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
+        StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatItemAppliedError, StatItemError, StatJumpError},
     },
-    svc::StatErrorFatality,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

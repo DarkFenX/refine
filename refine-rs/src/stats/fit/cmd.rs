@@ -1,13 +1,12 @@
 use crate::{
     PValue, Value,
     stats::{
-        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOption,
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatErrorFatality, StatInJam, StatJump, StatMining,
+        StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
         StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
     },
-    svc::StatErrorFatality,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
