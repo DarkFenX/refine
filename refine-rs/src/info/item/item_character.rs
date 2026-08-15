@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
     Modification,
 };
 
@@ -48,10 +48,10 @@ pub struct CharacterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterInfo {
-    pub(in crate::info) fn from_core(core_character: &mut rc::CharacterMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_character: &mut rc::CharacterMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_character.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(CharacterInfoExt {
                     #[cfg(feature = "serde")]
@@ -59,9 +59,9 @@ impl CharacterInfo {
                     type_id: core_character.get_type_id(),
                     fit_id: core_character.get_fit().get_fit_id(),
                     state: core_character.get_state(),
-                    attrs: get_attrs(core_character, modes),
-                    effects: get_effects(core_character, modes),
-                    mods: get_mods(core_character, modes),
+                    attrs: get_attrs(core_character, info_args),
+                    effects: get_effects(core_character, info_args),
+                    mods: get_mods(core_character, info_args),
                 }),
             },
         }

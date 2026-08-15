@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn change_item(
     State(state): State<AppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoArgs>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::ChangeItemEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_item(state, sol_id, item_id, params, payload).await {
@@ -26,7 +26,7 @@ async fn internal_change_item(
     state: AppState,
     sol_id: String,
     item_id: String,
-    params: rs::ItemInfoModes,
+    params: rs::ItemInfoArgs,
     payload: rs::ChangeItemEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

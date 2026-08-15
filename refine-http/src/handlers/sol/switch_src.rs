@@ -20,7 +20,7 @@ pub(crate) struct ChangeSolSrcReqBody {
 pub(crate) async fn switch_sol_src(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoArgs>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<ChangeSolSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_switch_sol_src(state, sol_id, params, payload).await {
@@ -32,7 +32,7 @@ pub(crate) async fn switch_sol_src(
 async fn internal_switch_sol_src(
     state: AppState,
     sol_id: String,
-    params: rs::SolInfoModes,
+    params: rs::SolInfoArgs,
     payload: ChangeSolSrcReqBody,
 ) -> Result<rs::SolInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, CmdResps, Fit, FitInfo, FitInfoModes,
+    ChangeFitEnumCmd, CmdResps, Fit, FitInfo, FitInfoArgs,
     err::{BackrefRenderError, ChangeFitEnumError},
 };
 
@@ -22,7 +22,7 @@ impl Fit<'_, '_> {
     pub async fn change_and_get_info(
         &mut self,
         exec_cmds: Vec<ChangeFitEnumCmd>,
-        info_modes: FitInfoModes,
+        info_args: FitInfoArgs,
     ) -> Result<(CmdResps, FitInfo), ChangeFitError> {
         // Variables for move
         let fit_id = self.id;
@@ -32,7 +32,7 @@ impl Fit<'_, '_> {
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let cmd_resps = execute_commands(&mut core_fit, exec_cmds)?;
-                let fit_info = FitInfo::from_core(&mut core_fit, info_modes);
+                let fit_info = FitInfo::from_core(&mut core_fit, info_args);
                 Ok((cmd_resps, fit_info))
             })
             .await

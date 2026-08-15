@@ -9,14 +9,14 @@ pub use item::{
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use modes::{
-    FitInfoMode, FitInfoModes, FleetInfoMode, FleetInfoModes, ItemInfoMode, ItemInfoModes, SolInfoMode, SolInfoModes,
+    FitInfoArgs, FitInfoMode, FleetInfoArgs, FleetInfoMode, ItemInfoArgs, ItemInfoMode, SolInfoArgs, SolInfoMode,
 };
 pub use sol::{SolInfo, SolInfoExt};
-pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode, SrcInfoModes};
+pub use src::{SrcInfo, SrcInfoArgs, SrcInfoExt, SrcInfoMode};
 pub use stats::{
     FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
 };
-pub use val::{FitValInfo, SolValInfo, ValInfoMode, ValInfoModes};
+pub use val::{FitValInfo, SolValInfo, ValInfoArgs, ValInfoMode};
 
 mod fit;
 mod fleet;

@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn get_fleet(
     State(state): State<AppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::FleetInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::FleetInfoArgs>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_fleet(state, sol_id, fleet_id, params).await {
         Ok(fleet_info) => (StatusCode::OK, Json(fleet_info)).into_response(),
@@ -25,7 +25,7 @@ async fn internal_get_fleet(
     state: AppState,
     sol_id: String,
     fleet_id: String,
-    params: rs::FleetInfoModes,
+    params: rs::FleetInfoArgs,
 ) -> Result<rs::FleetInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;

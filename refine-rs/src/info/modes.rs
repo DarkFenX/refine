@@ -1,5 +1,5 @@
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Basic modes
+// Info modes
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
@@ -51,11 +51,11 @@ const impl Default for ItemInfoMode {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Modes combined into parameters for specific "endpoints"
+// Info arguments for specific entities
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
-pub struct SolInfoModes {
+pub struct SolInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub sol: SolInfoMode = SolInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
@@ -65,45 +65,45 @@ pub struct SolInfoModes {
     #[cfg_attr(feature = "serde", serde(default))]
     pub item: ItemInfoMode = ItemInfoMode::default(),
 }
-impl SolInfoModes {
-    pub(crate) fn get_fleet_modes(&self) -> FleetInfoModes {
-        FleetInfoModes { fleet: self.fleet }
+impl SolInfoArgs {
+    pub(crate) fn get_fleet_args(&self) -> FleetInfoArgs {
+        FleetInfoArgs { fleet: self.fleet }
     }
-    pub(crate) fn get_fit_modes(&self) -> FitInfoModes {
-        FitInfoModes {
+    pub(crate) fn get_fit_args(&self) -> FitInfoArgs {
+        FitInfoArgs {
             fit: self.fit,
             item: self.item,
         }
     }
-    pub(crate) fn get_item_modes(&self) -> ItemInfoModes {
-        ItemInfoModes { item: self.item }
+    pub(crate) fn get_item_args(&self) -> ItemInfoArgs {
+        ItemInfoArgs { item: self.item }
     }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
-pub struct FleetInfoModes {
+pub struct FleetInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub fleet: FleetInfoMode = FleetInfoMode::default(),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
-pub struct FitInfoModes {
+pub struct FitInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub fit: FitInfoMode = FitInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub item: ItemInfoMode = ItemInfoMode::default(),
 }
-impl FitInfoModes {
-    pub(crate) fn get_item_modes(&self) -> ItemInfoModes {
-        ItemInfoModes { item: self.item }
+impl FitInfoArgs {
+    pub(crate) fn get_item_args(&self) -> ItemInfoArgs {
+        ItemInfoArgs { item: self.item }
     }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
-pub struct ItemInfoModes {
+pub struct ItemInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub item: ItemInfoMode = ItemInfoMode::default(),
 }

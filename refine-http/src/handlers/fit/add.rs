@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn add_fit(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::FitInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::FitInfoArgs>, ApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<rs::AddFitCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
@@ -26,7 +26,7 @@ pub(crate) async fn add_fit(
 async fn internal_add_fit(
     state: AppState,
     sol_id: String,
-    params: rs::FitInfoModes,
+    params: rs::FitInfoArgs,
     payload: rs::AddFitCmd,
 ) -> Result<rs::FitInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

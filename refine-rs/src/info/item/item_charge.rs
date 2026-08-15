@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
     Modification,
 };
 
@@ -49,10 +49,10 @@ pub struct ChargeInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChargeInfo {
-    pub(super) fn from_core(core_charge: &mut rc::ChargeMut, modes: ItemInfoModes) -> Self {
+    pub(super) fn from_core(core_charge: &mut rc::ChargeMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_charge.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ChargeInfoExt {
                     #[cfg(feature = "serde")]
@@ -61,9 +61,9 @@ impl ChargeInfo {
                     fit_id: core_charge.get_fit().get_fit_id(),
                     cont_item_id: core_charge.get_cont_item().get_item_id(),
                     state: core_charge.get_state(),
-                    attrs: get_attrs(core_charge, modes),
-                    effects: get_effects(core_charge, modes),
-                    mods: get_mods(core_charge, modes),
+                    attrs: get_attrs(core_charge, info_args),
+                    effects: get_effects(core_charge, info_args),
+                    mods: get_mods(core_charge, info_args),
                 }),
             },
         }

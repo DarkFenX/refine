@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
     Modification, SlotIndex,
 };
 
@@ -50,10 +50,10 @@ pub struct ImplantInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantInfo {
-    pub(in crate::info) fn from_core(core_implant: &mut rc::ImplantMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_implant: &mut rc::ImplantMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_implant.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ImplantInfoExt {
                     #[cfg(feature = "serde")]
@@ -62,9 +62,9 @@ impl ImplantInfo {
                     fit_id: core_implant.get_fit().get_fit_id(),
                     slot: core_implant.get_slot(),
                     state: core_implant.get_state(),
-                    attrs: get_attrs(core_implant, modes),
-                    effects: get_effects(core_implant, modes),
-                    mods: get_mods(core_implant, modes),
+                    attrs: get_attrs(core_implant, info_args),
+                    effects: get_effects(core_implant, info_args),
+                    mods: get_mods(core_implant, info_args),
                 }),
             },
         }

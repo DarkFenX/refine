@@ -35,11 +35,11 @@ pub use cmd::{
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
-    FitInfoExt, FitInfoMode, FitInfoModes, FleetInfo, FleetInfoExt, FleetInfoMode, FleetInfoModes, FwEffectInfo,
-    FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoMode, ItemInfoModes, ItemMutationInfo, ModuleInfo,
+    FitInfoArgs, FitInfoExt, FitInfoMode, FleetInfo, FleetInfoArgs, FleetInfoExt, FleetInfoMode, FwEffectInfo,
+    FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoArgs, ItemInfoMode, ItemMutationInfo, ModuleInfo,
     ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo,
     ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt,
-    SolInfo, SolInfoExt, SolInfoMode, SolInfoModes, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt,
+    SolInfo, SolInfoArgs, SolInfoExt, SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt,
     SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{

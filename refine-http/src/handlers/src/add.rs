@@ -19,7 +19,7 @@ pub(crate) struct AddSrcReqBody {
 pub(crate) async fn add_source(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoArgs>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<AddSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_add_source(state, src_alias, params, payload).await {
@@ -31,7 +31,7 @@ pub(crate) async fn add_source(
 async fn internal_add_source(
     state: AppState,
     src_alias: String,
-    params: rs::src::SrcInfoModes,
+    params: rs::src::SrcInfoArgs,
     payload: AddSrcReqBody,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =

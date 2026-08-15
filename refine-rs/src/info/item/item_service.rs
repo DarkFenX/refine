@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
     Modification, ServiceState,
 };
 
@@ -48,10 +48,10 @@ pub struct ServiceInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceInfo {
-    pub(in crate::info) fn from_core(core_service: &mut rc::ServiceMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_service: &mut rc::ServiceMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_service.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ServiceInfoExt {
                     #[cfg(feature = "serde")]
@@ -59,9 +59,9 @@ impl ServiceInfo {
                     type_id: core_service.get_type_id(),
                     fit_id: core_service.get_fit().get_fit_id(),
                     state: core_service.get_state(),
-                    attrs: get_attrs(core_service, modes),
-                    effects: get_effects(core_service, modes),
-                    mods: get_mods(core_service, modes),
+                    attrs: get_attrs(core_service, info_args),
+                    effects: get_effects(core_service, info_args),
+                    mods: get_mods(core_service, info_args),
                 }),
             },
         }

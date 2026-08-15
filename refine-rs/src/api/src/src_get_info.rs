@@ -1,12 +1,12 @@
-use crate::src::{Src, SrcInfo, SrcInfoModes};
+use crate::src::{Src, SrcInfo, SrcInfoArgs};
 
 impl Src<'_> {
-    pub async fn get_info(&self, modes: SrcInfoModes) -> SrcInfo {
+    pub async fn get_info(&self, info_args: SrcInfoArgs) -> SrcInfo {
         SrcInfo::from_alias_and_core(
             self.inner.get_alias(),
             self.inner.get_time_created(),
             self.inner.get_core().get_info(),
-            modes,
+            info_args,
         )
     }
 }

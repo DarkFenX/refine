@@ -1,7 +1,7 @@
 use rc::Lender;
 
 use crate::{
-    DpsProfile, FitInfo, FleetInfo, ProjEffectInfo, SecZone, SolInfoMode, SolInfoModes, SolarSystemId, Spool,
+    DpsProfile, FitInfo, FleetInfo, ProjEffectInfo, SecZone, SolInfoArgs, SolInfoMode, SolarSystemId, Spool,
     SwEffectInfo, src::SrcAlias,
 };
 
@@ -38,14 +38,14 @@ impl SolInfo {
         sol_id: SolarSystemId,
         src_alias: SrcAlias,
         core_sol: &mut rc::SolarSystem,
-        modes: SolInfoModes,
+        info_args: SolInfoArgs,
     ) -> Self {
         Self {
             id: sol_id,
             src_alias,
-            extended: match modes.sol {
+            extended: match info_args.sol {
                 SolInfoMode::Id => None,
-                SolInfoMode::Full => SolInfoExt::try_from_core(core_sol, modes),
+                SolInfoMode::Full => SolInfoExt::try_from_core(core_sol, info_args),
             },
         }
     }
@@ -63,28 +63,28 @@ impl SolInfo {
 }
 
 impl SolInfoExt {
-    pub(crate) fn try_from_core(core_sol: &mut rc::SolarSystem, modes: SolInfoModes) -> Option<Self> {
-        match modes.sol {
+    pub(crate) fn try_from_core(core_sol: &mut rc::SolarSystem, info_args: SolInfoArgs) -> Option<Self> {
+        match info_args.sol {
             SolInfoMode::Id => None,
             SolInfoMode::Full => Some(Self {
                 fleets: core_sol
                     .iter_fleets_mut()
-                    .map_into_iter(|mut core_fleet| FleetInfo::from_core(&mut core_fleet, modes.get_fleet_modes()))
+                    .map_into_iter(|mut core_fleet| FleetInfo::from_core(&mut core_fleet, info_args.get_fleet_args()))
                     .collect(),
                 fits: core_sol
                     .iter_fits_mut()
-                    .map_into_iter(|mut core_fit| FitInfo::from_core(&mut core_fit, modes.get_fit_modes()))
+                    .map_into_iter(|mut core_fit| FitInfo::from_core(&mut core_fit, info_args.get_fit_args()))
                     .collect(),
                 sw_effects: core_sol
                     .iter_sw_effects_mut()
                     .map_into_iter(|mut core_sw_effect| {
-                        SwEffectInfo::from_core(&mut core_sw_effect, modes.get_item_modes())
+                        SwEffectInfo::from_core(&mut core_sw_effect, info_args.get_item_args())
                     })
                     .collect(),
                 proj_effects: core_sol
                     .iter_proj_effects_mut()
                     .map_into_iter(|mut proj_effect| {
-                        ProjEffectInfo::from_core(&mut proj_effect, modes.get_item_modes())
+                        ProjEffectInfo::from_core(&mut proj_effect, info_args.get_item_args())
                     })
                     .collect(),
                 sec_zone: core_sol.get_sec_zone(),

@@ -1,18 +1,18 @@
 use crate::{
     Fit,
-    val::{FitValInfo, ValInfoModes, ValidateFitCmd},
+    val::{FitValInfo, ValInfoArgs, ValidateFitCmd},
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-val", level = "trace", skip_all)]
-    pub async fn validate(&mut self, cmd: ValidateFitCmd, modes: ValInfoModes) -> FitValInfo {
+    pub async fn validate(&mut self, cmd: ValidateFitCmd, info_args: ValInfoArgs) -> FitValInfo {
         // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_safe(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the fit before we get it here
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
-                cmd.execute(&mut core_fit, modes)
+                cmd.execute(&mut core_fit, info_args)
             })
             .await
     }

@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn change_fleet(
     State(state): State<AppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::FleetInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::FleetInfoArgs>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::ChangeFleetCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_fleet(state, sol_id, fleet_id, params, payload).await {
@@ -26,7 +26,7 @@ async fn internal_change_fleet(
     state: AppState,
     sol_id: String,
     fleet_id: String,
-    params: rs::FleetInfoModes,
+    params: rs::FleetInfoArgs,
     payload: rs::ChangeFleetCmd,
 ) -> Result<rs::FleetInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

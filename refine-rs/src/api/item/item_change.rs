@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, ChangedItemIdsResp, Item, ItemInfo, ItemInfoModes, err::ChangeItemEnumError};
+use crate::{ChangeItemEnumCmd, ChangedItemIdsResp, Item, ItemInfo, ItemInfoArgs, err::ChangeItemEnumError};
 
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
@@ -17,7 +17,7 @@ impl Item<'_, '_> {
     pub async fn change_and_get_info(
         &mut self,
         exec_cmd: ChangeItemEnumCmd,
-        info_modes: ItemInfoModes,
+        info_args: ItemInfoArgs,
     ) -> Result<(ChangedItemIdsResp, ItemInfo), ChangeItemEnumError> {
         // Variables for move
         let item_id = self.id;
@@ -26,7 +26,7 @@ impl Item<'_, '_> {
                 // Holding mutex on sol - nothing can remove the item before we get it here
                 let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
                 let resp = exec_cmd.execute(&mut core_item)?;
-                let item_info = ItemInfo::from_core(&mut core_item, info_modes);
+                let item_info = ItemInfo::from_core(&mut core_item, info_args);
                 Ok((resp, item_info))
             })
             .await

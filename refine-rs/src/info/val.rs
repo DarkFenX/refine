@@ -17,7 +17,7 @@ const impl Default for ValInfoMode {
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
-pub struct ValInfoModes {
+pub struct ValInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub validation: ValInfoMode = ValInfoMode::default(),
 }

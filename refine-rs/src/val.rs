@@ -2,5 +2,5 @@ pub use rc::val::{ValOptions, ValResultFit as FitValInfoDetails, ValResultSol as
 
 pub use crate::{
     cmd::{TryFitItemsCmd, ValidateFitCmd, ValidateSolCmd},
-    info::{FitValInfo, SolValInfo, ValInfoMode, ValInfoModes},
+    info::{FitValInfo, SolValInfo, ValInfoArgs, ValInfoMode},
 };

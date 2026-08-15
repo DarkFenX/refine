@@ -10,7 +10,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn get_source(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoArgs>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_source(state, src_alias, params).await {
         Ok(..) => StatusCode::OK.into_response(),
@@ -21,7 +21,7 @@ pub(crate) async fn get_source(
 async fn internal_get_source(
     state: AppState,
     src_alias: String,
-    params: rs::src::SrcInfoModes,
+    params: rs::src::SrcInfoArgs,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
         rs::src::SrcAlias::try_pruned(&src_alias).map_err(|err| ApiError::PathSrcParseMisc(src_alias, err))?;

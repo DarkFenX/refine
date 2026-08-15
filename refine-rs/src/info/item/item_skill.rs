@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
     Modification, SkillLevel,
 };
 
@@ -49,10 +49,10 @@ pub struct SkillInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillInfo {
-    pub(in crate::info) fn from_core(core_skill: &mut rc::SkillMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_skill: &mut rc::SkillMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_skill.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SkillInfoExt {
                     #[cfg(feature = "serde")]
@@ -61,9 +61,9 @@ impl SkillInfo {
                     fit_id: core_skill.get_fit().get_fit_id(),
                     level: core_skill.get_level(),
                     state: core_skill.get_state(),
-                    attrs: get_attrs(core_skill, modes),
-                    effects: get_effects(core_skill, modes),
-                    mods: get_mods(core_skill, modes),
+                    attrs: get_attrs(core_skill, info_args),
+                    effects: get_effects(core_skill, info_args),
+                    mods: get_mods(core_skill, info_args),
                 }),
             },
         }

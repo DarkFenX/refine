@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
     Modification,
 };
 
@@ -48,10 +48,10 @@ pub struct StanceInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceInfo {
-    pub(in crate::info) fn from_core(core_stance: &mut rc::StanceMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_stance: &mut rc::StanceMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_stance.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(StanceInfoExt {
                     #[cfg(feature = "serde")]
@@ -59,9 +59,9 @@ impl StanceInfo {
                     type_id: core_stance.get_type_id(),
                     fit_id: core_stance.get_fit().get_fit_id(),
                     state: core_stance.get_state(),
-                    attrs: get_attrs(core_stance, modes),
-                    effects: get_effects(core_stance, modes),
-                    mods: get_mods(core_stance, modes),
+                    attrs: get_attrs(core_stance, info_args),
+                    effects: get_effects(core_stance, info_args),
+                    mods: get_mods(core_stance, info_args),
                 }),
             },
         }

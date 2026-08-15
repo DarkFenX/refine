@@ -17,7 +17,7 @@ const impl Default for SrcInfoMode {
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
-pub struct SrcInfoModes {
+pub struct SrcInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub src: SrcInfoMode = SrcInfoMode::default(),
 }
@@ -52,13 +52,13 @@ impl SrcInfo {
         alias: SrcAlias,
         time_created: time::UtcDateTime,
         core_info: &rc::src::SrcInfo,
-        modes: SrcInfoModes,
+        info_args: SrcInfoArgs,
     ) -> Self {
         Self {
             alias,
             time_created,
             origin: core_info.origin.clone(),
-            extended: match modes.src {
+            extended: match info_args.src {
                 SrcInfoMode::Partial => None,
                 SrcInfoMode::Full => Some(SrcInfoExt {
                     warnings: core_info.warnings.clone(),

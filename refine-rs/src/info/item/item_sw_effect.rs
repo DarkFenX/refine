@@ -4,7 +4,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemTypeId, Modification,
+    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId, Modification,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -46,19 +46,19 @@ pub struct SwEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectInfo {
-    pub(in crate::info) fn from_core(core_sw_effect: &mut rc::SwEffectMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_sw_effect: &mut rc::SwEffectMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_sw_effect.get_item_id(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SwEffectInfoExt {
                     #[cfg(feature = "serde")]
                     kind: ItemKind::SwEffect,
                     type_id: core_sw_effect.get_type_id(),
                     state: core_sw_effect.get_state(),
-                    attrs: get_attrs(core_sw_effect, modes),
-                    effects: get_effects(core_sw_effect, modes),
-                    mods: get_mods(core_sw_effect, modes),
+                    attrs: get_attrs(core_sw_effect, info_args),
+                    effects: get_effects(core_sw_effect, info_args),
+                    mods: get_mods(core_sw_effect, info_args),
                 }),
             },
         }

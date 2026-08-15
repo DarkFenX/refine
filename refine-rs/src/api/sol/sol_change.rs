@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, CmdResps, SolInfo, SolInfoModes, SolarSystem,
+    ChangeSolEnumCmd, CmdResps, SolInfo, SolInfoArgs, SolarSystem,
     err::{BackrefRenderError, ChangeSolEnumError},
 };
 
@@ -16,14 +16,14 @@ impl SolarSystem<'_> {
     pub async fn change_and_get_info(
         &mut self,
         exec_cmds: Vec<ChangeSolEnumCmd>,
-        info_modes: SolInfoModes,
+        info_args: SolInfoArgs,
     ) -> Result<(CmdResps, SolInfo), ChangeSolError> {
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = self.get_src_alias();
         self.exec_standard_fallible(move |core_sol| {
             let cmd_resps = execute_commands(core_sol, exec_cmds)?;
-            let sol_info = SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, info_modes);
+            let sol_info = SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, info_args);
             Ok((cmd_resps, sol_info))
         })
         .await

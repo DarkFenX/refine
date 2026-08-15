@@ -1,4 +1,4 @@
-use crate::{ChangeFleetCmd, Fleet, FleetInfo, FleetInfoModes, err::FleetChangeFleetError};
+use crate::{ChangeFleetCmd, Fleet, FleetInfo, FleetInfoArgs, err::FleetChangeFleetError};
 
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-chg", level = "trace", skip_all)]
@@ -19,7 +19,7 @@ impl Fleet<'_, '_> {
     pub async fn change_and_get_info(
         &mut self,
         exec_cmd: ChangeFleetCmd,
-        info_modes: FleetInfoModes,
+        info_args: FleetInfoArgs,
     ) -> Result<FleetInfo, ChangeFleetError> {
         // Variables for move
         let fleet_id = self.id;
@@ -29,7 +29,7 @@ impl Fleet<'_, '_> {
                 // high-level Fleet
                 let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
                 exec_cmd.execute(&mut core_fleet)?;
-                let item_info = FleetInfo::from_core(&mut core_fleet, info_modes);
+                let item_info = FleetInfo::from_core(&mut core_fleet, info_args);
                 Ok(item_info)
             })
             .await

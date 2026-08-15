@@ -18,7 +18,7 @@ pub(crate) struct AddSolReqBody {
 
 pub(crate) async fn add_sol(
     State(state): State<AppState>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoModes>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoArgs>, ApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<AddSolReqBody>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
@@ -30,7 +30,7 @@ pub(crate) async fn add_sol(
 
 async fn internal_add_sol(
     state: AppState,
-    params: rs::SolInfoModes,
+    params: rs::SolInfoArgs,
     payload: AddSolReqBody,
 ) -> Result<rs::SolInfo, ApiError> {
     let src_alias = parse_src_alias_from_body(payload.src_alias)?;

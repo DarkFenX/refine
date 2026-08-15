@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, EffectId, FighterCountInfo, FitId, ItemAttrValues,
-    ItemEffectInfo, ItemId, ItemInfoMode, ItemInfoModes, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification,
+    ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification,
     Movement, RangedProjInfo,
 };
 
@@ -68,7 +68,7 @@ pub struct FighterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterInfo {
-    pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, modes: ItemInfoModes) -> Self {
+    pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, info_args: ItemInfoArgs) -> Self {
         Self {
             id: core_fighter.get_item_id(),
             autocharges: core_fighter
@@ -76,11 +76,11 @@ impl FighterInfo {
                 .map_into_iter(|mut autocharge| {
                     (
                         autocharge.get_cont_effect_id(),
-                        AutochargeInfo::from_core(&mut autocharge, modes),
+                        AutochargeInfo::from_core(&mut autocharge, info_args),
                     )
                 })
                 .collect(),
-            extended: match modes.item {
+            extended: match info_args.item {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FighterInfoExt {
                     #[cfg(feature = "serde")]
@@ -97,9 +97,9 @@ impl FighterInfo {
                     coordinates: core_fighter.get_coordinates(),
                     movement: core_fighter.get_movement(),
                     projs: core_fighter.iter_projs().map(RangedProjInfo::from_core).collect(),
-                    attrs: get_attrs(core_fighter, modes),
-                    effects: get_effects(core_fighter, modes),
-                    mods: get_mods(core_fighter, modes),
+                    attrs: get_attrs(core_fighter, info_args),
+                    effects: get_effects(core_fighter, info_args),
+                    mods: get_mods(core_fighter, info_args),
                 }),
             },
         }
