@@ -14,11 +14,12 @@ pub struct ValidateSolCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ValidateSolCmd {
-    pub fn new(options: ValOptions) -> Self {
-        Self {
-            options,
-            fit_ids: Vec::new(),
-        }
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_options(mut self, options: ValOptions) -> Self {
+        self.options = options;
+        self
     }
     pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitId>) -> Self {
         self.fit_ids.clear();

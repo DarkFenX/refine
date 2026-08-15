@@ -4,15 +4,19 @@ use crate::val::{FitValInfo, ValInfoMode, ValOptions};
 #[derive(Default)]
 pub struct ValidateFitCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: ValOptions = ValOptions { .. },
+    options: ValOptions = ValOptions { default: true, .. },
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ValidateFitCmd {
-    pub fn new(options: ValOptions) -> Self {
-        Self { options }
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_options(mut self, options: ValOptions) -> Self {
+        self.options = options;
+        self
     }
 }
 
