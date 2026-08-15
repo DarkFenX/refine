@@ -1,7 +1,7 @@
 pub(crate) use fit::FitInfoModesInt;
 pub use fit::{FitInfo, FitInfoExt, FitInfoMode, FitInfoModes, FitInfoModesBackref};
 pub(crate) use fleet::FleetInfoModesInt;
-pub use fleet::{FleetInfo, FleetInfoExt, FleetInfoMode, FleetInfoModes, FleetInfoModesBackref};
+pub use fleet::{FleetInfo, FleetInfoCmd, FleetInfoExt, FleetInfoMode, FleetInfoModes, FleetInfoModesBackref};
 pub(crate) use item::ItemInfoModesInt;
 pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
@@ -28,4 +28,3 @@ mod sol;
 mod src;
 mod stats;
 mod val;
-mod cmd;

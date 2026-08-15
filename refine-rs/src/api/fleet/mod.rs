@@ -1,6 +1,5 @@
 pub use fleet::Fleet;
 pub use fleet_change::ChangeFleetError;
-pub use info_args::FleetInfoArgs;
 pub use sol_get_fleet::GetFleetError;
 
 mod fleet;
@@ -8,6 +7,5 @@ mod fleet_change;
 mod fleet_get_info;
 mod fleet_get_stats;
 mod fleet_remove;
-mod info_args;
 mod sol_add_fleet;
 mod sol_get_fleet;
