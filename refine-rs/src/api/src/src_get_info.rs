@@ -6,7 +6,7 @@ impl Src<'_> {
             self.inner.get_alias(),
             self.inner.get_time_created(),
             self.inner.get_core().get_info(),
-            info_args,
+            info_args.src,
         )
     }
 }

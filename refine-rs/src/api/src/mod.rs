@@ -1,10 +1,12 @@
 pub use alias::{SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError};
+pub use info_args::SrcInfoArgs;
 pub use refine_add_src::AddSrcError;
 pub use refine_get_src::GetSrcError;
 pub use src::Src;
 pub use src_remove::RemoveSrcError;
 
 mod alias;
+mod info_args;
 mod refine_add_src;
 mod refine_get_src;
 mod src;

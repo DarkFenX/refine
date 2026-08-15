@@ -4,7 +4,9 @@
 #![feature(const_default)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 
-pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
+pub use api::{
+    Fit, FitInfoArgs, Fleet, FleetInfoArgs, Item, ItemInfoArgs, Refine, SolInfoArgs, SolarSystem, SolarSystemId,
+};
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
@@ -35,13 +37,12 @@ pub use cmd::{
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
-    FitInfoArgs, FitInfoExt, FitInfoMode, FitInfoModes, FitInfoModesBackref, FleetInfo, FleetInfoArgs, FleetInfoExt,
-    FleetInfoMode, FleetInfoModes, FleetInfoModesBackref, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt,
-    ItemInfo, ItemInfoArgs, ItemInfoMode, ItemInfoModes, ItemInfoModesBackref, ItemMutationInfo, ModuleInfo,
-    ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo,
-    ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt,
-    SolInfo, SolInfoArgs, SolInfoExt, SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt,
-    SwEffectInfo, SwEffectInfoExt,
+    FitInfoExt, FitInfoMode, FitInfoModes, FitInfoModesBackref, FleetInfo, FleetInfoExt, FleetInfoMode, FleetInfoModes,
+    FleetInfoModesBackref, FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoMode,
+    ItemInfoModes, ItemInfoModesBackref, ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo,
+    ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo,
+    ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, SolInfo, SolInfoExt,
+    SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, DefOption, DefOptionExt,

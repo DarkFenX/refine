@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn validate_fit(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::val::ValInfoArgs>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::val::ValFitInfoArgs>, ApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<rs::val::ValidateFitCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
@@ -27,7 +27,7 @@ async fn internal_validate_fit(
     state: AppState,
     sol_id: String,
     fit_id: String,
-    params: rs::val::ValInfoArgs,
+    params: rs::val::ValFitInfoArgs,
     payload: rs::val::ValidateFitCmd,
 ) -> Result<rs::val::FitValInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

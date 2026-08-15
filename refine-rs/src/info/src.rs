@@ -1,8 +1,5 @@
 use crate::src::{SrcAlias, SrcOrigin, SrcWarnings};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Info modes
-////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum SrcInfoMode {
@@ -15,16 +12,6 @@ const impl Default for SrcInfoMode {
     }
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
-pub struct SrcInfoArgs {
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub src: SrcInfoMode = SrcInfoMode::default(),
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Infos
-////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
 pub struct SrcInfo {
@@ -52,13 +39,13 @@ impl SrcInfo {
         alias: SrcAlias,
         time_created: time::UtcDateTime,
         core_info: &rc::src::SrcInfo,
-        info_args: SrcInfoArgs,
+        src_info_mode: SrcInfoMode,
     ) -> Self {
         Self {
             alias,
             time_created,
             origin: core_info.origin.clone(),
-            extended: match info_args.src {
+            extended: match src_info_mode {
                 SrcInfoMode::Partial => None,
                 SrcInfoMode::Full => Some(SrcInfoExt {
                     warnings: core_info.warnings.clone(),

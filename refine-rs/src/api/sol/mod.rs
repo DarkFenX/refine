@@ -1,6 +1,7 @@
 #[cfg(feature = "serde")]
 pub use id::ParseSolarSystemIdError;
 pub use id::SolarSystemId;
+pub use info_args::{SolInfoArgs, ValSolInfoArgs};
 pub use refine_add_sol::AddSolError;
 pub use refine_get_sol::GetSolError;
 pub use sol::SolarSystem;
@@ -9,6 +10,7 @@ pub use sol_remove::RemoveSolError;
 pub use sol_switch_src::SolSwitchSrcError;
 
 mod id;
+mod info_args;
 mod refine_add_sol;
 mod refine_get_sol;
 mod sol;

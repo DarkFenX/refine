@@ -9,16 +9,16 @@ pub use item::{
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use modes::{
-    FitInfoArgs, FitInfoMode, FitInfoModes, FitInfoModesBackref, FleetInfoArgs, FleetInfoMode, FleetInfoModes,
-    FleetInfoModesBackref, ItemInfoArgs, ItemInfoMode, ItemInfoModes, ItemInfoModesBackref, SolInfoArgs, SolInfoMode,
+    FitInfoMode, FitInfoModes, FitInfoModesBackref, FleetInfoMode, FleetInfoModes, FleetInfoModesBackref, ItemInfoMode,
+    ItemInfoModes, ItemInfoModesBackref, SolInfoMode,
 };
 pub(crate) use modes::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt};
 pub use sol::{SolInfo, SolInfoExt};
-pub use src::{SrcInfo, SrcInfoArgs, SrcInfoExt, SrcInfoMode};
+pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
 pub use stats::{
     FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
 };
-pub use val::{FitValInfo, SolValInfo, ValInfoArgs, ValInfoMode};
+pub use val::{FitValInfo, SolValInfo, ValInfoMode};
 
 mod fit;
 mod fleet;

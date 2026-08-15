@@ -1,5 +1,6 @@
 pub use fit::Fit;
 pub use fit_change::ChangeFitError;
+pub use info_args::{FitInfoArgs, ValFitInfoArgs};
 pub use sol_get_fit::GetFitError;
 
 mod fit;
@@ -9,5 +10,6 @@ mod fit_get_stats;
 mod fit_remove;
 mod fit_try_fit_items;
 mod fit_validate;
+mod info_args;
 mod sol_add_fit;
 mod sol_get_fit;

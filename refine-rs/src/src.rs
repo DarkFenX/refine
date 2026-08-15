@@ -1,8 +1,8 @@
 pub use rc::src::{SrcOrigin, SrcOriginGeneratedReason, SrcWarnings};
 
 pub use crate::{
-    api::{Src, SrcAlias},
-    info::{SrcInfo, SrcInfoArgs, SrcInfoExt, SrcInfoMode},
+    api::{Src, SrcAlias, SrcInfoArgs},
+    info::{SrcInfo, SrcInfoExt, SrcInfoMode},
 };
 
 pub mod err {

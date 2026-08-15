@@ -1,4 +1,4 @@
-use crate::val::{FitValInfo, ValInfoArgs, ValInfoMode, ValOptions};
+use crate::val::{FitValInfo, ValInfoMode, ValOptions};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -20,8 +20,8 @@ impl ValidateFitCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ValidateFitCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut, info_args: ValInfoArgs) -> FitValInfo {
-        match info_args.validation {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut, val_info_mode: ValInfoMode) -> FitValInfo {
+        match val_info_mode {
             ValInfoMode::Simple => FitValInfo {
                 passed: core_fit.validate_fast(&self.options),
                 details: None,
