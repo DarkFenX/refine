@@ -5,8 +5,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, EffectId, FighterCountInfo, FitId, ItemAttrValues,
-    ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification,
-    Movement, RangedProjInfo,
+    ItemEffectInfo, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification, Movement,
+    RangedProjInfo, info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
@@ -68,19 +68,21 @@ pub struct FighterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterInfo {
-    pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let fighter_id = core_fighter.get_item_id();
+        let fighter_info_mode = item_info_modes.get(&fighter_id);
         Self {
-            id: core_fighter.get_item_id(),
+            id: fighter_id,
             autocharges: core_fighter
                 .iter_autocharges_mut()
                 .map_into_iter(|mut autocharge| {
                     (
                         autocharge.get_cont_effect_id(),
-                        AutochargeInfo::from_core(&mut autocharge, info_args),
+                        AutochargeInfo::from_core(&mut autocharge, item_info_modes),
                     )
                 })
                 .collect(),
-            extended: match info_args.item {
+            extended: match fighter_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(FighterInfoExt {
                     #[cfg(feature = "serde")]
@@ -97,9 +99,9 @@ impl FighterInfo {
                     coordinates: core_fighter.get_coordinates(),
                     movement: core_fighter.get_movement(),
                     projs: core_fighter.iter_projs().map(RangedProjInfo::from_core).collect(),
-                    attrs: get_attrs(core_fighter, info_args),
-                    effects: get_effects(core_fighter, info_args),
-                    mods: get_mods(core_fighter, info_args),
+                    attrs: get_attrs(core_fighter, fighter_info_mode),
+                    effects: get_effects(core_fighter, fighter_info_mode),
+                    mods: get_mods(core_fighter, fighter_info_mode),
                 }),
             },
         }

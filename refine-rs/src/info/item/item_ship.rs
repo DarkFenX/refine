@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode,
-    ItemTypeId, Modification, Movement,
+    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
+    Modification, Movement, info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,10 +50,12 @@ pub struct ShipInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipInfo {
-    pub(in crate::info) fn from_core(core_ship: &mut rc::ShipMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(core_ship: &mut rc::ShipMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let ship_id = core_ship.get_item_id();
+        let ship_info_mode = item_info_modes.get(&ship_id);
         Self {
-            id: core_ship.get_item_id(),
-            extended: match info_args.item {
+            id: ship_id,
+            extended: match ship_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ShipInfoExt {
                     #[cfg(feature = "serde")]
@@ -63,9 +65,9 @@ impl ShipInfo {
                     state: core_ship.get_state(),
                     coordinates: core_ship.get_coordinates(),
                     movement: core_ship.get_movement(),
-                    attrs: get_attrs(core_ship, info_args),
-                    effects: get_effects(core_ship, info_args),
-                    mods: get_mods(core_ship, info_args),
+                    attrs: get_attrs(core_ship, ship_info_mode),
+                    effects: get_effects(core_ship, ship_info_mode),
+                    mods: get_mods(core_ship, ship_info_mode),
                 }),
             },
         }

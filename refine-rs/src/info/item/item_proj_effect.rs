@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId, Modification,
-    ProjInfo,
+    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo,
+    info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -52,10 +52,15 @@ pub struct ProjEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectInfo {
-    pub(in crate::info) fn from_core(core_proj_effect: &mut rc::ProjEffectMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(
+        core_proj_effect: &mut rc::ProjEffectMut,
+        item_info_modes: &ItemInfoModesInt,
+    ) -> Self {
+        let proj_effect_id = core_proj_effect.get_item_id();
+        let proj_effect_info_mode = item_info_modes.get(&proj_effect_id);
         Self {
-            id: core_proj_effect.get_item_id(),
-            extended: match info_args.item {
+            id: proj_effect_id,
+            extended: match proj_effect_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ProjEffectInfoExt {
                     #[cfg(feature = "serde")]
@@ -63,9 +68,9 @@ impl ProjEffectInfo {
                     type_id: core_proj_effect.get_type_id(),
                     state: core_proj_effect.get_state(),
                     projs: core_proj_effect.iter_projs().map(ProjInfo::from_core).collect(),
-                    attrs: get_attrs(core_proj_effect, info_args),
-                    effects: get_effects(core_proj_effect, info_args),
-                    mods: get_mods(core_proj_effect, info_args),
+                    attrs: get_attrs(core_proj_effect, proj_effect_info_mode),
+                    effects: get_effects(core_proj_effect, proj_effect_info_mode),
+                    mods: get_mods(core_proj_effect, proj_effect_info_mode),
                 }),
             },
         }

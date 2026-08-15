@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
-    Modification, SlotIndex,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, SlotIndex,
+    info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,10 +50,12 @@ pub struct ImplantInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantInfo {
-    pub(in crate::info) fn from_core(core_implant: &mut rc::ImplantMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(core_implant: &mut rc::ImplantMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let implant_id = core_implant.get_item_id();
+        let implant_info_mode = item_info_modes.get(&implant_id);
         Self {
-            id: core_implant.get_item_id(),
-            extended: match info_args.item {
+            id: implant_id,
+            extended: match implant_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ImplantInfoExt {
                     #[cfg(feature = "serde")]
@@ -62,9 +64,9 @@ impl ImplantInfo {
                     fit_id: core_implant.get_fit().get_fit_id(),
                     slot: core_implant.get_slot(),
                     state: core_implant.get_state(),
-                    attrs: get_attrs(core_implant, info_args),
-                    effects: get_effects(core_implant, info_args),
-                    mods: get_mods(core_implant, info_args),
+                    attrs: get_attrs(core_implant, implant_info_mode),
+                    effects: get_effects(core_implant, implant_info_mode),
+                    mods: get_mods(core_implant, implant_info_mode),
                 }),
             },
         }

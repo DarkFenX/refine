@@ -9,8 +9,10 @@ pub use item::{
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use modes::{
-    FitInfoArgs, FitInfoMode, FleetInfoArgs, FleetInfoMode, ItemInfoArgs, ItemInfoMode, SolInfoArgs, SolInfoMode,
+    FitInfoArgs, FitInfoMode, FitInfoModes, FitInfoModesBackref, FleetInfoArgs, FleetInfoMode, FleetInfoModes,
+    FleetInfoModesBackref, ItemInfoArgs, ItemInfoMode, ItemInfoModes, ItemInfoModesBackref, SolInfoArgs, SolInfoMode,
 };
+pub(crate) use modes::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt};
 pub use sol::{SolInfo, SolInfoExt};
 pub use src::{SrcInfo, SrcInfoArgs, SrcInfoExt, SrcInfoMode};
 pub use stats::{

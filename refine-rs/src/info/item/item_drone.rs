@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode,
-    ItemMutationInfo, ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
+    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemMutationInfo,
+    ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo, info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -55,10 +55,12 @@ pub struct DroneInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneInfo {
-    pub(in crate::info) fn from_core(core_drone: &mut rc::DroneMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(core_drone: &mut rc::DroneMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let drone_id = core_drone.get_item_id();
+        let drone_info_mode = item_info_modes.get(&drone_id);
         Self {
-            id: core_drone.get_item_id(),
-            extended: match info_args.item {
+            id: drone_id,
+            extended: match drone_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(DroneInfoExt {
                     #[cfg(feature = "serde")]
@@ -71,9 +73,9 @@ impl DroneInfo {
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),
                     projs: core_drone.iter_projs().map(RangedProjInfo::from_core).collect(),
-                    attrs: get_attrs(core_drone, info_args),
-                    effects: get_effects(core_drone, info_args),
-                    mods: get_mods(core_drone, info_args),
+                    attrs: get_attrs(core_drone, drone_info_mode),
+                    effects: get_effects(core_drone, drone_info_mode),
+                    mods: get_mods(core_drone, drone_info_mode),
                 }),
             },
         }

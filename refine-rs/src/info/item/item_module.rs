@@ -4,9 +4,9 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, ChargeInfo, Count, EffectId, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs,
-    ItemInfoMode, ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification,
-    ModuleState, RangedProjInfo, TriStateField,
+    AttrId, ChargeInfo, Count, EffectId, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
+    ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState,
+    RangedProjInfo, TriStateField, info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -64,15 +64,17 @@ pub struct ModuleInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleInfo {
-    pub(in crate::info) fn from_core(core_module: &mut rc::ModuleMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(core_module: &mut rc::ModuleMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let module_id = core_module.get_item_id();
+        let module_info_mode = item_info_modes.get(&module_id);
         let charge_info = core_module
             .get_charge_mut()
-            .map(|mut core_charge| ChargeInfo::from_core(&mut core_charge, info_args));
+            .map(|mut core_charge| ChargeInfo::from_core(&mut core_charge, item_info_modes));
         let has_charge = charge_info.is_some();
         Self {
-            id: core_module.get_item_id(),
+            id: module_id,
             charge: charge_info,
-            extended: match info_args.item {
+            extended: match module_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => {
                     let charge_count = match has_charge {
@@ -103,9 +105,9 @@ impl ModuleInfo {
                         spool_cycles: core_module.get_spool_cycle_count(),
                         optional_reload: core_module.get_optional_reload(),
                         projs: core_module.iter_projs().map(RangedProjInfo::from_core).collect(),
-                        attrs: get_attrs(core_module, info_args),
-                        effects: get_effects(core_module, info_args),
-                        mods: get_mods(core_module, info_args),
+                        attrs: get_attrs(core_module, module_info_mode),
+                        effects: get_effects(core_module, module_info_mode),
+                        mods: get_mods(core_module, module_info_mode),
                     })
                 }
             },

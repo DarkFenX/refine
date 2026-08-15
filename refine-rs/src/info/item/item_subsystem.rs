@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
-    Modification, SlotIndex,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, SlotIndex,
+    info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,10 +50,15 @@ pub struct SubsystemInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemInfo {
-    pub(in crate::info) fn from_core(core_subsystem: &mut rc::SubsystemMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(
+        core_subsystem: &mut rc::SubsystemMut,
+        item_info_modes: &ItemInfoModesInt,
+    ) -> Self {
+        let subsystem_id = core_subsystem.get_item_id();
+        let subsystem_info_mode = item_info_modes.get(&subsystem_id);
         Self {
-            id: core_subsystem.get_item_id(),
-            extended: match info_args.item {
+            id: subsystem_id,
+            extended: match subsystem_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(SubsystemInfoExt {
                     #[cfg(feature = "serde")]
@@ -62,9 +67,9 @@ impl SubsystemInfo {
                     fit_id: core_subsystem.get_fit().get_fit_id(),
                     slot: core_subsystem.get_slot(),
                     state: core_subsystem.get_state(),
-                    attrs: get_attrs(core_subsystem, info_args),
-                    effects: get_effects(core_subsystem, info_args),
-                    mods: get_mods(core_subsystem, info_args),
+                    attrs: get_attrs(core_subsystem, subsystem_info_mode),
+                    effects: get_effects(core_subsystem, subsystem_info_mode),
+                    mods: get_mods(core_subsystem, subsystem_info_mode),
                 }),
             },
         }

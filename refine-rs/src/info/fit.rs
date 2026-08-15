@@ -1,9 +1,9 @@
 use rc::Lender;
 
 use crate::{
-    BoosterInfo, CharacterInfo, DpsProfile, DroneInfo, FighterInfo, FitId, FitInfoArgs, FitInfoMode, FitSecStatus,
-    FleetId, FwEffectInfo, ImplantInfo, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo,
-    SubsystemInfo,
+    BoosterInfo, CharacterInfo, DpsProfile, DroneInfo, FighterInfo, FitId, FitInfoMode, FitSecStatus, FleetId,
+    FwEffectInfo, ImplantInfo, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
+    info::{FitInfoModesInt, ItemInfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -70,98 +70,89 @@ impl ModuleRacks {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfo {
-    pub(crate) fn from_core(core_fit: &mut rc::FitMut, info_args: FitInfoArgs) -> Self {
+    pub(crate) fn from_core(
+        core_fit: &mut rc::FitMut,
+        fit_info_modes: &FitInfoModesInt,
+        item_info_modes: &ItemInfoModesInt,
+    ) -> Self {
+        let fit_id = core_fit.get_fit_id();
+        let fit_info_mode = fit_info_modes.get(&fit_id);
         Self {
-            id: core_fit.get_fit_id(),
-            extended: match info_args.fit {
+            id: fit_id,
+            extended: match fit_info_mode {
                 FitInfoMode::Id => None,
                 FitInfoMode::Full => Some(FitInfoExt {
                     fleet_id: core_fit.get_fleet().map(|v| v.get_fleet_id()),
-                    character: core_fit.get_character_mut().map(|mut core_character| {
-                        CharacterInfo::from_core(&mut core_character, info_args.get_item_args())
-                    }),
+                    character: core_fit
+                        .get_character_mut()
+                        .map(|mut core_character| CharacterInfo::from_core(&mut core_character, item_info_modes)),
                     skills: core_fit
                         .iter_skills_mut()
-                        .map_into_iter(|mut core_skill| {
-                            SkillInfo::from_core(&mut core_skill, info_args.get_item_args())
-                        })
+                        .map_into_iter(|mut core_skill| SkillInfo::from_core(&mut core_skill, item_info_modes))
                         .collect(),
                     implants: core_fit
                         .iter_implants_mut()
-                        .map_into_iter(|mut core_implant| {
-                            ImplantInfo::from_core(&mut core_implant, info_args.get_item_args())
-                        })
+                        .map_into_iter(|mut core_implant| ImplantInfo::from_core(&mut core_implant, item_info_modes))
                         .collect(),
                     boosters: core_fit
                         .iter_boosters_mut()
-                        .map_into_iter(|mut core_booster| {
-                            BoosterInfo::from_core(&mut core_booster, info_args.get_item_args())
-                        })
+                        .map_into_iter(|mut core_booster| BoosterInfo::from_core(&mut core_booster, item_info_modes))
                         .collect(),
                     ship: core_fit
                         .get_ship_mut()
-                        .map(|mut core_ship| ShipInfo::from_core(&mut core_ship, info_args.get_item_args())),
+                        .map(|mut core_ship| ShipInfo::from_core(&mut core_ship, item_info_modes)),
                     stance: core_fit
                         .get_stance_mut()
-                        .map(|mut core_stance| StanceInfo::from_core(&mut core_stance, info_args.get_item_args())),
+                        .map(|mut core_stance| StanceInfo::from_core(&mut core_stance, item_info_modes)),
                     subsystems: core_fit
                         .iter_subsystems_mut()
                         .map_into_iter(|mut core_subsystem| {
-                            SubsystemInfo::from_core(&mut core_subsystem, info_args.get_item_args())
+                            SubsystemInfo::from_core(&mut core_subsystem, item_info_modes)
                         })
                         .collect(),
                     modules: ModuleRacks {
                         high: core_fit
                             .iter_modules_mut(rc::ModRack::High)
                             .map_into_iter(|core_module| {
-                                core_module.map(|mut core_module| {
-                                    ModuleInfo::from_core(&mut core_module, info_args.get_item_args())
-                                })
+                                core_module
+                                    .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                         mid: core_fit
                             .iter_modules_mut(rc::ModRack::Mid)
                             .map_into_iter(|core_module| {
-                                core_module.map(|mut core_module| {
-                                    ModuleInfo::from_core(&mut core_module, info_args.get_item_args())
-                                })
+                                core_module
+                                    .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                         low: core_fit
                             .iter_modules_mut(rc::ModRack::Low)
                             .map_into_iter(|core_module| {
-                                core_module.map(|mut core_module| {
-                                    ModuleInfo::from_core(&mut core_module, info_args.get_item_args())
-                                })
+                                core_module
+                                    .map(|mut core_module| ModuleInfo::from_core(&mut core_module, item_info_modes))
                             })
                             .collect(),
                     },
                     rigs: core_fit
                         .iter_rigs_mut()
-                        .map_into_iter(|mut core_rig| RigInfo::from_core(&mut core_rig, info_args.get_item_args()))
+                        .map_into_iter(|mut core_rig| RigInfo::from_core(&mut core_rig, item_info_modes))
                         .collect(),
                     services: core_fit
                         .iter_services_mut()
-                        .map_into_iter(|mut core_service| {
-                            ServiceInfo::from_core(&mut core_service, info_args.get_item_args())
-                        })
+                        .map_into_iter(|mut core_service| ServiceInfo::from_core(&mut core_service, item_info_modes))
                         .collect(),
                     drones: core_fit
                         .iter_drones_mut()
-                        .map_into_iter(|mut core_drone| {
-                            DroneInfo::from_core(&mut core_drone, info_args.get_item_args())
-                        })
+                        .map_into_iter(|mut core_drone| DroneInfo::from_core(&mut core_drone, item_info_modes))
                         .collect(),
                     fighters: core_fit
                         .iter_fighters_mut()
-                        .map_into_iter(|mut core_fighter| {
-                            FighterInfo::from_core(&mut core_fighter, info_args.get_item_args())
-                        })
+                        .map_into_iter(|mut core_fighter| FighterInfo::from_core(&mut core_fighter, item_info_modes))
                         .collect(),
                     fw_effects: core_fit
                         .iter_fw_effects_mut()
                         .map_into_iter(|mut core_fw_effect| {
-                            FwEffectInfo::from_core(&mut core_fw_effect, info_args.get_item_args())
+                            FwEffectInfo::from_core(&mut core_fw_effect, item_info_modes)
                         })
                         .collect(),
                     sec_status: core_fit.get_sec_status(),

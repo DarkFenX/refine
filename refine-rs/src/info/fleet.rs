@@ -1,6 +1,6 @@
 use rc::Lender;
 
-use crate::{FitId, FleetId, FleetInfoArgs, FleetInfoMode};
+use crate::{FitId, FleetId, FleetInfoMode, info::FleetInfoModesInt};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -21,10 +21,12 @@ pub struct FleetInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfo {
-    pub(crate) fn from_core(core_fleet: &mut rc::FleetMut, info_args: FleetInfoArgs) -> Self {
+    pub(crate) fn from_core(core_fleet: &mut rc::FleetMut, fleet_info_modes: &FleetInfoModesInt) -> Self {
+        let fleet_id = core_fleet.get_fleet_id();
+        let fleet_info_mode = fleet_info_modes.get(&fleet_id);
         Self {
-            id: core_fleet.get_fleet_id(),
-            extended: match info_args.fleet {
+            id: fleet_id,
+            extended: match fleet_info_mode {
                 FleetInfoMode::Id => None,
                 FleetInfoMode::Full => Some(FleetInfoExt {
                     fit_ids: core_fleet

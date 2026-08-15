@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
-    Modification,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
+    info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,10 +50,12 @@ pub struct AutochargeInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeInfo {
-    pub(super) fn from_core(core_autocharge: &mut rc::AutochargeMut, info_args: ItemInfoArgs) -> Self {
+    pub(super) fn from_core(core_autocharge: &mut rc::AutochargeMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let autocharge_id = core_autocharge.get_item_id();
+        let autocharge_info_mode = item_info_modes.get(&autocharge_id);
         Self {
-            id: core_autocharge.get_item_id(),
-            extended: match info_args.item {
+            id: autocharge_id,
+            extended: match autocharge_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(AutochargeInfoExt {
                     #[cfg(feature = "serde")]
@@ -63,9 +65,9 @@ impl AutochargeInfo {
                     cont_item_id: core_autocharge.get_cont_item().get_item_id(),
                     cont_effect_id: core_autocharge.get_cont_effect_id(),
                     state: core_autocharge.get_state(),
-                    attrs: get_attrs(core_autocharge, info_args),
-                    effects: get_effects(core_autocharge, info_args),
-                    mods: get_mods(core_autocharge, info_args),
+                    attrs: get_attrs(core_autocharge, autocharge_info_mode),
+                    effects: get_effects(core_autocharge, autocharge_info_mode),
+                    mods: get_mods(core_autocharge, autocharge_info_mode),
                 }),
             },
         }

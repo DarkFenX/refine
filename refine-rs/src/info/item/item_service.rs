@@ -4,8 +4,8 @@ use super::shared::{get_attrs, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoArgs, ItemInfoMode, ItemTypeId,
-    Modification, ServiceState,
+    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
+    ServiceState, info::ItemInfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -48,10 +48,12 @@ pub struct ServiceInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceInfo {
-    pub(in crate::info) fn from_core(core_service: &mut rc::ServiceMut, info_args: ItemInfoArgs) -> Self {
+    pub(in crate::info) fn from_core(core_service: &mut rc::ServiceMut, item_info_modes: &ItemInfoModesInt) -> Self {
+        let service_id = core_service.get_item_id();
+        let service_info_mode = item_info_modes.get(&service_id);
         Self {
-            id: core_service.get_item_id(),
-            extended: match info_args.item {
+            id: service_id,
+            extended: match service_info_mode {
                 ItemInfoMode::Id => None,
                 ItemInfoMode::Partial | ItemInfoMode::Full => Some(ServiceInfoExt {
                     #[cfg(feature = "serde")]
@@ -59,9 +61,9 @@ impl ServiceInfo {
                     type_id: core_service.get_type_id(),
                     fit_id: core_service.get_fit().get_fit_id(),
                     state: core_service.get_state(),
-                    attrs: get_attrs(core_service, info_args),
-                    effects: get_effects(core_service, info_args),
-                    mods: get_mods(core_service, info_args),
+                    attrs: get_attrs(core_service, service_info_mode),
+                    effects: get_effects(core_service, service_info_mode),
+                    mods: get_mods(core_service, service_info_mode),
                 }),
             },
         }

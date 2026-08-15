@@ -1,5 +1,9 @@
+use std::collections::HashMap;
+
+use crate::{FitId, FitIdBackref, FleetId, FleetIdBackref, ItemId, ItemIdBackref};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Info modes
+// Modes - sol
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
@@ -13,6 +17,9 @@ const impl Default for SolInfoMode {
     }
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modes - fleet
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum FleetInfoMode {
@@ -26,6 +33,54 @@ const impl Default for FleetInfoMode {
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Clone)]
+pub struct FleetInfoModes {
+    pub default: FleetInfoMode = FleetInfoMode::default(),
+    pub overrides: Vec<(FleetId, FleetInfoMode)> = Vec::new(),
+}
+impl FleetInfoModes {
+    fn into_internal(self) -> FleetInfoModesInt {
+        FleetInfoModesInt {
+            default: self.default,
+            overrides: self.overrides.into_iter().collect(),
+        }
+    }
+}
+const impl Default for FleetInfoModes {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Clone)]
+pub struct FleetInfoModesBackref {
+    pub default: FleetInfoMode = FleetInfoMode::default(),
+    pub overrides: Vec<(FleetIdBackref, FleetInfoMode)> = Vec::new(),
+}
+const impl Default for FleetInfoModesBackref {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+
+pub(crate) struct FleetInfoModesInt {
+    default: FleetInfoMode,
+    overrides: HashMap<FleetId, FleetInfoMode>,
+}
+impl FleetInfoModesInt {
+    pub(in crate::info) fn get(&self, id: &FleetId) -> FleetInfoMode {
+        match self.overrides.get(id) {
+            Some(mode) => *mode,
+            None => self.default,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modes - fit
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum FitInfoMode {
     Id,
@@ -37,6 +92,54 @@ const impl Default for FitInfoMode {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Clone)]
+pub struct FitInfoModes {
+    pub default: FitInfoMode = FitInfoMode::default(),
+    pub overrides: Vec<(FitId, FitInfoMode)> = Vec::new(),
+}
+impl FitInfoModes {
+    pub(crate) fn into_internal(self) -> FitInfoModesInt {
+        FitInfoModesInt {
+            default: self.default,
+            overrides: self.overrides.into_iter().collect(),
+        }
+    }
+}
+const impl Default for FitInfoModes {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Clone)]
+pub struct FitInfoModesBackref {
+    pub default: FitInfoMode = FitInfoMode::default(),
+    pub overrides: Vec<(FitIdBackref, FitInfoMode)> = Vec::new(),
+}
+const impl Default for FitInfoModesBackref {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+
+pub(crate) struct FitInfoModesInt {
+    default: FitInfoMode,
+    overrides: HashMap<FitId, FitInfoMode>,
+}
+impl FitInfoModesInt {
+    pub(in crate::info) fn get(&self, id: &FitId) -> FitInfoMode {
+        match self.overrides.get(id) {
+            Some(mode) => *mode,
+            None => self.default,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Modes - item
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
 #[derive(Copy, Clone)]
 pub enum ItemInfoMode {
@@ -50,36 +153,70 @@ const impl Default for ItemInfoMode {
     }
 }
 
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Clone)]
+pub struct ItemInfoModes {
+    pub default: ItemInfoMode = ItemInfoMode::default(),
+    pub overrides: Vec<(ItemId, ItemInfoMode)> = Vec::new(),
+}
+impl ItemInfoModes {
+    pub(crate) fn into_internal(self) -> ItemInfoModesInt {
+        ItemInfoModesInt {
+            default: self.default,
+            overrides: self.overrides.into_iter().collect(),
+        }
+    }
+}
+const impl Default for ItemInfoModes {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
+#[derive(Clone)]
+pub struct ItemInfoModesBackref {
+    pub default: ItemInfoMode = ItemInfoMode::default(),
+    pub overrides: Vec<(ItemIdBackref, ItemInfoMode)> = Vec::new(),
+}
+const impl Default for ItemInfoModesBackref {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+
+pub(crate) struct ItemInfoModesInt {
+    default: ItemInfoMode,
+    overrides: HashMap<ItemId, ItemInfoMode>,
+}
+impl ItemInfoModesInt {
+    pub(in crate::info) fn get(&self, id: &ItemId) -> ItemInfoMode {
+        match self.overrides.get(id) {
+            Some(mode) => *mode,
+            None => self.default,
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Info arguments for specific entities
+// Arguments - sol
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Clone, Default)]
 pub struct SolInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub sol: SolInfoMode = SolInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub fleet: FleetInfoMode = FleetInfoMode::default(),
+    pub fleet: FleetInfoModes = FleetInfoModes::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub fit: FitInfoMode = FitInfoMode::default(),
+    pub fit: FitInfoModes = FitInfoModes::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item: ItemInfoMode = ItemInfoMode::default(),
-}
-impl SolInfoArgs {
-    pub(crate) fn get_fleet_args(&self) -> FleetInfoArgs {
-        FleetInfoArgs { fleet: self.fleet }
-    }
-    pub(crate) fn get_fit_args(&self) -> FitInfoArgs {
-        FitInfoArgs {
-            fit: self.fit,
-            item: self.item,
-        }
-    }
-    pub(crate) fn get_item_args(&self) -> ItemInfoArgs {
-        ItemInfoArgs { item: self.item }
-    }
+    pub item: ItemInfoModes = ItemInfoModes::default(),
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Arguments - fleet
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct FleetInfoArgs {
@@ -87,23 +224,24 @@ pub struct FleetInfoArgs {
     pub fleet: FleetInfoMode = FleetInfoMode::default(),
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Arguments - fit
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Clone, Default)]
 pub struct FitInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
     pub fit: FitInfoMode = FitInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item: ItemInfoMode = ItemInfoMode::default(),
-}
-impl FitInfoArgs {
-    pub(crate) fn get_item_args(&self) -> ItemInfoArgs {
-        ItemInfoArgs { item: self.item }
-    }
+    pub item: ItemInfoModes = ItemInfoModes::default(),
 }
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Arguments - item
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Clone, Default)]
 pub struct ItemInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item: ItemInfoMode = ItemInfoMode::default(),
+    pub item: ItemInfoModes = ItemInfoModes::default(),
 }
