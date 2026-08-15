@@ -1,4 +1,4 @@
-use crate::{AddFleetCmd, Fleet, FleetInfo, FleetInfoArgs, SolarSystem, err::AddFleetError};
+use crate::{AddFleetCmd, Fleet, FleetInfo, FleetInfoArgs, SolarSystem, err::AddFleetError, info::FleetInfoModesInt};
 
 impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "flt-add", level = "trace", skip_all)]
@@ -19,8 +19,9 @@ impl<'r, 's> SolarSystem<'r> {
             .exec_standard_fallible(move |core_sol| {
                 let fleet_id = exec_cmd.execute(core_sol).map(|cmd_resp| cmd_resp.fleet_id)?;
                 let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
-                let item_info = FleetInfo::from_core(&mut core_fleet, info_args);
-                Ok::<_, AddFleetError>((fleet_id, item_info))
+                let fleet_info_modes = FleetInfoModesInt::from_pub_mode(info_args.fleet);
+                let fleet_info = FleetInfo::from_core(&mut core_fleet, &fleet_info_modes);
+                Ok::<_, AddFleetError>((fleet_id, fleet_info))
             })
             .await?;
         let fleet = Fleet::new(self, fleet_id);

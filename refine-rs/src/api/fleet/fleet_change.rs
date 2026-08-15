@@ -1,4 +1,4 @@
-use crate::{ChangeFleetCmd, Fleet, FleetInfo, FleetInfoArgs, err::FleetChangeFleetError};
+use crate::{ChangeFleetCmd, Fleet, FleetInfo, FleetInfoArgs, err::FleetChangeFleetError, info::FleetInfoModesInt};
 
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-chg", level = "trace", skip_all)]
@@ -29,8 +29,9 @@ impl Fleet<'_, '_> {
                 // high-level Fleet
                 let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
                 exec_cmd.execute(&mut core_fleet)?;
-                let item_info = FleetInfo::from_core(&mut core_fleet, info_args);
-                Ok(item_info)
+                let fleet_info_modes = FleetInfoModesInt::from_pub_mode(info_args.fleet);
+                let fleet_info = FleetInfo::from_core(&mut core_fleet, &fleet_info_modes);
+                Ok(fleet_info)
             })
             .await
     }

@@ -1,6 +1,7 @@
 use crate::{
     ChangeSolEnumCmd, CmdResps, SolInfo, SolInfoArgs, SolarSystem,
     err::{BackrefRenderError, ChangeSolEnumError},
+    info::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt},
 };
 
 impl SolarSystem<'_> {
@@ -23,7 +24,19 @@ impl SolarSystem<'_> {
         let src_alias = self.get_src_alias();
         self.exec_standard_fallible(move |core_sol| {
             let cmd_resps = execute_commands(core_sol, exec_cmds)?;
-            let sol_info = SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, info_args);
+            let sol_info_mode = info_args.sol;
+            let fleet_info_modes = FleetInfoModesInt::from_pub_modes_regular(info_args.fleet);
+            let fit_info_modes = FitInfoModesInt::from_pub_modes_regular(info_args.fit);
+            let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+            let sol_info = SolInfo::from_ids_and_core(
+                sol_id,
+                src_alias,
+                core_sol,
+                sol_info_mode,
+                &fleet_info_modes,
+                &fit_info_modes,
+                &item_info_modes,
+            );
             Ok((cmd_resps, sol_info))
         })
         .await

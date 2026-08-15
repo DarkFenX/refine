@@ -1,6 +1,7 @@
 use crate::{
     ChangeFitEnumCmd, CmdResps, Fit, FitInfo, FitInfoArgs,
     err::{BackrefRenderError, ChangeFitEnumError},
+    info::{FitInfoModesInt, ItemInfoModesInt},
 };
 
 impl Fit<'_, '_> {
@@ -32,7 +33,9 @@ impl Fit<'_, '_> {
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let cmd_resps = execute_commands(&mut core_fit, exec_cmds)?;
-                let fit_info = FitInfo::from_core(&mut core_fit, info_args);
+                let fit_info_modes = FitInfoModesInt::from_pub_mode(info_args.fit);
+                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+                let fit_info = FitInfo::from_core(&mut core_fit, &fit_info_modes, &item_info_modes);
                 Ok((cmd_resps, fit_info))
             })
             .await

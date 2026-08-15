@@ -1,4 +1,4 @@
-use crate::{Fleet, FleetInfo, FleetInfoArgs};
+use crate::{Fleet, FleetInfo, FleetInfoArgs, info::FleetInfoModesInt};
 
 impl Fleet<'_, '_> {
     pub async fn get_info(&mut self, info_args: FleetInfoArgs) -> FleetInfo {
@@ -9,7 +9,8 @@ impl Fleet<'_, '_> {
                 // Holding mutex on sol - nothing can remove the core fleet without consuming the
                 // high-level Fleet
                 let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
-                FleetInfo::from_core(&mut core_fleet, info_args)
+                let fleet_info_modes = FleetInfoModesInt::from_pub_mode(info_args.fleet);
+                FleetInfo::from_core(&mut core_fleet, &fleet_info_modes)
             })
             .await
     }

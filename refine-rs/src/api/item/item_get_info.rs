@@ -1,4 +1,4 @@
-use crate::{Item, ItemInfo, ItemInfoArgs};
+use crate::{Item, ItemInfo, ItemInfoArgs, info::ItemInfoModesInt};
 
 impl Item<'_, '_> {
     pub async fn get_info(&mut self, info_args: ItemInfoArgs) -> ItemInfo {
@@ -8,7 +8,8 @@ impl Item<'_, '_> {
             .exec_standard_safe(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the item before we get it here
                 let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
-                ItemInfo::from_core(&mut core_item, info_args)
+                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+                ItemInfo::from_core(&mut core_item, &item_info_modes)
             })
             .await
     }

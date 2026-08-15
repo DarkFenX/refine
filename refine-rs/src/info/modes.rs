@@ -38,14 +38,6 @@ pub struct FleetInfoModes {
     pub default: FleetInfoMode = FleetInfoMode::default(),
     pub overrides: Vec<(FleetId, FleetInfoMode)> = Vec::new(),
 }
-impl FleetInfoModes {
-    fn into_internal(self) -> FleetInfoModesInt {
-        FleetInfoModesInt {
-            default: self.default,
-            overrides: self.overrides.into_iter().collect(),
-        }
-    }
-}
 const impl Default for FleetInfoModes {
     fn default() -> Self {
         Self { .. }
@@ -69,6 +61,18 @@ pub(crate) struct FleetInfoModesInt {
     overrides: HashMap<FleetId, FleetInfoMode>,
 }
 impl FleetInfoModesInt {
+    pub(crate) fn from_pub_mode(pub_mode: FleetInfoMode) -> Self {
+        Self {
+            default: pub_mode,
+            overrides: HashMap::new(),
+        }
+    }
+    pub(crate) fn from_pub_modes_regular(pub_modes: FleetInfoModes) -> Self {
+        Self {
+            default: pub_modes.default,
+            overrides: pub_modes.overrides.into_iter().collect(),
+        }
+    }
     pub(in crate::info) fn get(&self, id: &FleetId) -> FleetInfoMode {
         match self.overrides.get(id) {
             Some(mode) => *mode,
@@ -98,14 +102,6 @@ pub struct FitInfoModes {
     pub default: FitInfoMode = FitInfoMode::default(),
     pub overrides: Vec<(FitId, FitInfoMode)> = Vec::new(),
 }
-impl FitInfoModes {
-    pub(crate) fn into_internal(self) -> FitInfoModesInt {
-        FitInfoModesInt {
-            default: self.default,
-            overrides: self.overrides.into_iter().collect(),
-        }
-    }
-}
 const impl Default for FitInfoModes {
     fn default() -> Self {
         Self { .. }
@@ -129,6 +125,18 @@ pub(crate) struct FitInfoModesInt {
     overrides: HashMap<FitId, FitInfoMode>,
 }
 impl FitInfoModesInt {
+    pub(crate) fn from_pub_mode(pub_mode: FitInfoMode) -> Self {
+        Self {
+            default: pub_mode,
+            overrides: HashMap::new(),
+        }
+    }
+    pub(crate) fn from_pub_modes_regular(pub_modes: FitInfoModes) -> Self {
+        Self {
+            default: pub_modes.default,
+            overrides: pub_modes.overrides.into_iter().collect(),
+        }
+    }
     pub(in crate::info) fn get(&self, id: &FitId) -> FitInfoMode {
         match self.overrides.get(id) {
             Some(mode) => *mode,
@@ -159,14 +167,6 @@ pub struct ItemInfoModes {
     pub default: ItemInfoMode = ItemInfoMode::default(),
     pub overrides: Vec<(ItemId, ItemInfoMode)> = Vec::new(),
 }
-impl ItemInfoModes {
-    pub(crate) fn into_internal(self) -> ItemInfoModesInt {
-        ItemInfoModesInt {
-            default: self.default,
-            overrides: self.overrides.into_iter().collect(),
-        }
-    }
-}
 const impl Default for ItemInfoModes {
     fn default() -> Self {
         Self { .. }
@@ -190,6 +190,12 @@ pub(crate) struct ItemInfoModesInt {
     overrides: HashMap<ItemId, ItemInfoMode>,
 }
 impl ItemInfoModesInt {
+    pub(crate) fn from_pub_modes_regular(pub_modes: ItemInfoModes) -> Self {
+        Self {
+            default: pub_modes.default,
+            overrides: pub_modes.overrides.into_iter().collect(),
+        }
+    }
     pub(in crate::info) fn get(&self, id: &ItemId) -> ItemInfoMode {
         match self.overrides.get(id) {
             Some(mode) => *mode,

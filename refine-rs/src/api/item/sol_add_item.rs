@@ -1,4 +1,4 @@
-use crate::{AddItemEnumCmd, Item, ItemInfo, ItemInfoArgs, SolarSystem, err::AddItemEnumError};
+use crate::{AddItemEnumCmd, Item, ItemInfo, ItemInfoArgs, SolarSystem, err::AddItemEnumError, info::ItemInfoModesInt};
 
 impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "itm-add", level = "trace", skip_all)]
@@ -19,7 +19,8 @@ impl<'r, 's> SolarSystem<'r> {
             .exec_standard_fallible(move |core_sol| {
                 let item_id = exec_cmd.execute(core_sol)?.item_id;
                 let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
-                let item_info = ItemInfo::from_core(&mut core_item, info_args);
+                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+                let item_info = ItemInfo::from_core(&mut core_item, &item_info_modes);
                 Ok::<_, AddItemEnumError>((item_id, item_info))
             })
             .await?;

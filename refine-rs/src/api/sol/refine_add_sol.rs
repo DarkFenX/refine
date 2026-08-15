@@ -2,6 +2,7 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     AddSolCmd, Refine, SolInfo, SolInfoArgs, SolInfoExt, SolarSystem, SolarSystemId,
+    info::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt},
     src::{SrcAlias, err::GetSrcError},
     svc::SolarSystemInnerGuarded,
 };
@@ -32,7 +33,17 @@ impl Refine {
             .tpool
             .exec_standard(move || {
                 let mut core_sol = exec_cmd.execute(&core_src);
-                let info_ext = SolInfoExt::try_from_core(&mut core_sol, info_args);
+                let sol_info_mode = info_args.sol;
+                let fleet_info_modes = FleetInfoModesInt::from_pub_modes_regular(info_args.fleet);
+                let fit_info_modes = FitInfoModesInt::from_pub_modes_regular(info_args.fit);
+                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+                let info_ext = SolInfoExt::try_from_core(
+                    &mut core_sol,
+                    sol_info_mode,
+                    &fleet_info_modes,
+                    &fit_info_modes,
+                    &item_info_modes,
+                );
                 (core_sol, info_ext)
             })
             .await;

@@ -1,5 +1,6 @@
 use crate::{
     SolInfo, SolInfoArgs, SolarSystem,
+    info::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt},
     src::{SrcAlias, err::GetSrcError},
 };
 
@@ -25,7 +26,19 @@ impl SolarSystem<'_> {
         let sol_info = self
             .exec_standard_safe(move |core_sol| {
                 core_sol.set_src(&src);
-                SolInfo::from_ids_and_core(sol_id, src_alias, core_sol, info_args)
+                let sol_info_mode = info_args.sol;
+                let fleet_info_modes = FleetInfoModesInt::from_pub_modes_regular(info_args.fleet);
+                let fit_info_modes = FitInfoModesInt::from_pub_modes_regular(info_args.fit);
+                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+                SolInfo::from_ids_and_core(
+                    sol_id,
+                    src_alias,
+                    core_sol,
+                    sol_info_mode,
+                    &fleet_info_modes,
+                    &fit_info_modes,
+                    &item_info_modes,
+                )
             })
             .await;
         self.inner.set_src_alias(inner_src.get_alias());
