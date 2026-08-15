@@ -2,5 +2,4 @@ pub use dmg::{StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherR
 pub use result::StatResult;
 
 mod dmg;
-mod fatal;
 mod result;
