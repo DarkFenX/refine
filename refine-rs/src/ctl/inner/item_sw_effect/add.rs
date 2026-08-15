@@ -1,0 +1,24 @@
+use crate::{AddedItemIdsResp, ItemTypeId, ctl::shared::EffectModes};
+
+// Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(crate) struct ICmdSwEffectAddFCtx {
+    pub(in crate::ctl) type_id: ItemTypeId,
+    pub(in crate::ctl) state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdSwEffectAddFCtx {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
+        let mut core_sw_effect = core_sol.add_sw_effect(self.type_id);
+        if let Some(state) = self.state {
+            core_sw_effect.set_state(state);
+        }
+        self.effect_modes.apply(&mut core_sw_effect);
+        AddedItemIdsResp::from_core_sw_effect(core_sw_effect)
+    }
+}

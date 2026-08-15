@@ -1,0 +1,52 @@
+use crate::{CtlCmdResps, FitId, FitIdBackref, err::BackrefRenderError};
+
+// Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdFitRemoveFCtxBIds {
+    pub(in crate::ctl) fit_id: FitIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    pub(in crate::ctl) ictx_cmd: ICmdFitRemoveICtx = ICmdFitRemoveICtx,
+}
+pub(crate) struct ICmdFitRemoveFCtxRIds {
+    fit_id: FitId,
+    ictx_cmd: ICmdFitRemoveICtx,
+}
+
+// Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdFitRemoveICtx;
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdFitRemoveFCtxBIds {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFitRemoveFCtxRIds, BackrefRenderError> {
+        Ok(ICmdFitRemoveFCtxRIds {
+            fit_id: resps.render_fit_id(self.fit_id)?,
+            ictx_cmd: self.ictx_cmd,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdFitRemoveFCtxRIds {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitRemoveFitError> {
+        let core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        self.ictx_cmd.execute(core_fit);
+        Ok(())
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum GetFitRemoveFitError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+}
+
+impl ICmdFitRemoveICtx {
+    pub(in crate::ctl) fn execute(self, core_fit: rc::FitMut) {
+        core_fit.remove()
+    }
+}

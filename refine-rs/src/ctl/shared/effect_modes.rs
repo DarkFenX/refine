@@ -1,0 +1,32 @@
+use rc::ItemMutCommon;
+
+use crate::{EffectId, EffectMode};
+
+#[cfg_attr(
+    feature = "serde",
+    cfg_eval,
+    serde_with::serde_as,
+    derive(serde::Deserialize),
+    serde(transparent)
+)]
+#[derive(Default)]
+pub(in crate::ctl) struct EffectModes {
+    #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
+    data: Vec<(EffectId, EffectMode)>,
+}
+impl EffectModes {
+    pub(in crate::ctl) const fn new() -> Self {
+        Self { data: Vec::new() }
+    }
+    pub(in crate::ctl) fn clear(&mut self) {
+        self.data.clear();
+    }
+    pub(in crate::ctl) fn extend(&mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) {
+        self.data.extend(effect_modes);
+    }
+    pub(in crate::ctl) fn apply(&self, core_item: &mut impl ItemMutCommon) {
+        if !self.data.is_empty() {
+            core_item.set_effect_modes(self.data.iter().map(|(k, v)| (*k, *v)));
+        }
+    }
+}

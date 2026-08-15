@@ -1,0 +1,92 @@
+use crate::{
+    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId,
+    ctl::shared::{EffectModes, SideEffects},
+    err::BackrefRenderError,
+};
+
+// Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdBoosterChangeFCtxBIds {
+    pub(in crate::ctl) item_id: ItemIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    pub(in crate::ctl) ictx_cmd: ICmdBoosterChangeICtx = ICmdBoosterChangeICtx { .. },
+}
+pub(crate) struct ICmdBoosterChangeFCtxRIds {
+    item_id: ItemId,
+    ictx_cmd: ICmdBoosterChangeICtx,
+}
+
+// Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdBoosterChangeICtx {
+    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
+    pub(in crate::ctl) state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) side_effects: SideEffects = SideEffects::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdBoosterChangeFCtxBIds {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdBoosterChangeFCtxRIds, BackrefRenderError> {
+        Ok(ICmdBoosterChangeFCtxRIds {
+            item_id: resps.render_item_id(self.item_id)?,
+            ictx_cmd: self.ictx_cmd,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdBoosterChangeFCtxRIds {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, GetItemChangeBoosterError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.ictx_cmd.execute(&mut core_item)?)
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum GetItemChangeBoosterError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotBooster(rc::err::ItemKindMatchError),
+}
+impl From<ItemChangeBoosterError> for GetItemChangeBoosterError {
+    fn from(err: ItemChangeBoosterError) -> Self {
+        match err {
+            ItemChangeBoosterError::ItemIsNotBooster(inner) => Self::ItemIsNotBooster(inner),
+        }
+    }
+}
+
+impl ICmdBoosterChangeICtx {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_item: &mut rc::ItemMut,
+    ) -> Result<ChangedItemIdsResp, ItemChangeBoosterError> {
+        let core_booster = core_item.dc_booster()?;
+        if let Some(type_id) = self.type_id {
+            core_booster.set_type_id(type_id);
+        }
+        if let Some(state) = self.state {
+            core_booster.set_state(state);
+        }
+        self.side_effects.apply(core_booster);
+        self.effect_modes.apply(core_booster);
+        Ok(ChangedItemIdsResp::default())
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum ItemChangeBoosterError {
+    #[error(transparent)]
+    ItemIsNotBooster(#[from] rc::err::ItemKindMatchError),
+}

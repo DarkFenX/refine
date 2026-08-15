@@ -8,7 +8,7 @@ pub use crate::{
         AddSolError, ChangeFitError, ChangeFleetError, ChangeSolError, GetFitError, GetFleetError, GetItemError,
         GetSolError, RemoveItemError, RemoveSolError, SolSwitchSrcError,
     },
-    cmd::{
+    ctl::{
         AddFitError, AddFleetError, AddItemEnumError, AddProjEffectError, BackrefRenderError, ChangeCharacterError,
         ChangeFitEnumError, ChangeItemEnumError, ChangeShipError, ChangeSolEnumError, ChangeStanceError,
         FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError, FitChangeCharacterError,

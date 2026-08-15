@@ -11,7 +11,7 @@ pub use rc::{
 };
 
 pub use crate::{
-    cmd::{
+    ctl::{
         GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionCapBlc, StatOptionCapSim,
         StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining,

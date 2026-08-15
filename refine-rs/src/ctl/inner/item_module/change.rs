@@ -1,0 +1,201 @@
+use rc::ItemCommon;
+
+use crate::{
+    ChangeMutation, ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, ModuleState, MoveMode,
+    OptionalReload, Spool, TriStateField, ctl::shared::EffectModes, err::BackrefRenderError,
+};
+
+// Commands with full context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdModuleChangeFCtxBIds {
+    pub(in crate::ctl) item_id: ItemIdBackref,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    pub(in crate::ctl) ictx_cmd: ICmdModuleChangeICtxBIds = ICmdModuleChangeICtxBIds { .. },
+}
+pub(crate) struct ICmdModuleChangeFCtxRIds {
+    item_id: ItemId,
+    ictx_cmd: ICmdModuleChangeICtxRIds,
+}
+
+// Commands with incomplete context
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdModuleChangeICtxBIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    pub(in crate::ctl) shared: ICmdModuleChangeShared = ICmdModuleChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdModuleChangeICtxRIds {
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    pub(in crate::ctl) shared: ICmdModuleChangeShared = ICmdModuleChangeShared { .. },
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub(in crate::ctl) struct ICmdModuleChangeShared {
+    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
+    #[cfg_attr(feature = "serde", serde(rename = "move"))]
+    pub(in crate::ctl) move_: Option<MoveMode> = None,
+    pub(in crate::ctl) state: Option<ModuleState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) charge_type_id: TriStateField<ItemTypeId> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) spool: TriStateField<Spool> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) optional_reload: TriStateField<OptionalReload> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
+    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdModuleChangeFCtxBIds {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleChangeFCtxRIds, BackrefRenderError> {
+        Ok(ICmdModuleChangeFCtxRIds {
+            item_id: resps.render_item_id(self.item_id)?,
+            ictx_cmd: self.ictx_cmd.render(resps)?,
+        })
+    }
+}
+
+impl ICmdModuleChangeICtxBIds {
+    fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleChangeICtxRIds, BackrefRenderError> {
+        Ok(ICmdModuleChangeICtxRIds {
+            shared: self.shared,
+            add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
+            rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ICmdModuleChangeFCtxRIds {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, GetItemChangeModuleError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.ictx_cmd.execute(&mut core_item)?)
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum GetItemChangeModuleError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotModule(rc::err::ItemKindMatchError),
+    #[error("unable to mutate attributes: item {0} is not mutated")]
+    NotMutated(ItemId),
+    #[error("unable to add projection")]
+    ProjAdd(#[source] rc::err::AddProjError),
+    #[error("unable to remove projection")]
+    ProjRemove(#[source] rc::err::GetProjError),
+}
+impl From<ItemChangeModuleError> for GetItemChangeModuleError {
+    fn from(err: ItemChangeModuleError) -> Self {
+        match err {
+            ItemChangeModuleError::ItemIsNotModule(inner) => Self::ItemIsNotModule(inner),
+            ItemChangeModuleError::NotMutated(inner) => Self::NotMutated(inner),
+            ItemChangeModuleError::ProjAdd(inner) => Self::ProjAdd(inner),
+            ItemChangeModuleError::ProjRemove(inner) => Self::ProjRemove(inner),
+        }
+    }
+}
+
+impl ICmdModuleChangeICtxRIds {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_item: &mut rc::ItemMut,
+    ) -> Result<ChangedItemIdsResp, ItemChangeModuleError> {
+        let mut resp = ChangedItemIdsResp::default();
+        let core_module = core_item.dc_module()?;
+        for projectee_item_id in self.rm_proj_item_ids.iter() {
+            core_module.get_proj_mut(projectee_item_id)?.remove();
+        }
+        if let Some(type_id) = self.shared.type_id {
+            core_module.set_type_id(type_id);
+        }
+        if let Some(move_) = self.shared.move_ {
+            core_module.move_(move_);
+        }
+        if let Some(state) = self.shared.state {
+            core_module.set_state(state);
+        }
+        match &self.shared.mutation {
+            TriStateField::Value(mutation) => {
+                // Mutates item or updates existing mutation
+                if let Some(mutator_id) = mutation.mutator_id {
+                    match core_module.get_mutation_mut() {
+                        Some(core_mutation) => core_mutation.set_mutator_type_id(mutator_id),
+                        None => core_module.mutate(mutator_id).unwrap(),
+                    };
+                }
+                if !mutation.attrs.is_empty() {
+                    match core_module.get_mutation_mut() {
+                        Some(mut core_mutation) => mutation.apply_attrs(&mut core_mutation),
+                        None => return Err(ItemChangeModuleError::NotMutated(core_module.get_item_id())),
+                    };
+                }
+            }
+            TriStateField::None => {
+                // Do nothing if mutation was not there
+                if let Some(core_mutation) = core_module.get_mutation_mut() {
+                    core_mutation.remove();
+                }
+            }
+            TriStateField::Absent => (),
+        }
+        match self.shared.charge_type_id {
+            TriStateField::Value(charge_type_id) => {
+                let core_charge = core_module.set_charge_type_id(charge_type_id);
+                // Set response charge ID only if we actually did it
+                resp = ChangedItemIdsResp::from_core_charge(core_charge);
+            }
+            TriStateField::None => {
+                // Do nothing if module had no charge
+                if let Some(core_charge) = core_module.get_charge_mut() {
+                    core_charge.remove()
+                }
+            }
+            TriStateField::Absent => (),
+        }
+        match self.shared.spool {
+            TriStateField::Value(spool) => core_module.set_spool(Some(spool)),
+            TriStateField::None => core_module.set_spool(None),
+            TriStateField::Absent => (),
+        }
+        match self.shared.optional_reload {
+            TriStateField::Value(optional_reload) => core_module.set_optional_reload(Some(optional_reload)),
+            TriStateField::None => core_module.set_optional_reload(None),
+            TriStateField::Absent => (),
+        }
+        self.shared.effect_modes.apply(core_module);
+        for projectee_item_id in self.add_proj_item_ids.iter() {
+            core_module.add_proj(projectee_item_id)?;
+        }
+        Ok(resp)
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum ItemChangeModuleError {
+    #[error(transparent)]
+    ItemIsNotModule(#[from] rc::err::ItemKindMatchError),
+    #[error("unable to mutate attributes: item {0} is not mutated")]
+    NotMutated(ItemId),
+    #[error("unable to add projection")]
+    ProjAdd(#[from] rc::err::AddProjError),
+    #[error("unable to remove projection")]
+    ProjRemove(#[from] rc::err::GetProjError),
+}

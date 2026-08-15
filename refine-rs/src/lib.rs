@@ -8,7 +8,7 @@ pub use api::{
     Fit, FitInfoArgs, FitInfoArgsBackref, Fleet, FleetInfoArgs, Item, ItemInfoArgs, Refine, SolInfoArgs,
     SolInfoArgsBackref, SolarSystem, SolarSystemId,
 };
-pub use cmd::{
+pub use ctl::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
     ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
@@ -57,7 +57,7 @@ pub use src::{Src, SrcAlias};
 pub use util::TriStateField;
 
 mod api;
-mod cmd;
+mod ctl;
 pub mod dev;
 pub mod err;
 mod info;

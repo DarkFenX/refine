@@ -28,3 +28,4 @@ mod sol;
 mod src;
 mod stats;
 mod val;
+mod cmd;
