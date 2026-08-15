@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Fit<'_, '_> {
-    pub async fn get_stats(&mut self, cmd: GetFitStatsCmd) -> FitStats {
+    pub async fn get_stats(&mut self, stat_cmd: GetFitStatsCmd) -> FitStats {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -12,7 +12,7 @@ impl Fit<'_, '_> {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
-                cmd.execute(&mut core_fit)
+                stat_cmd.execute(&mut core_fit)
             })
             .await
     }

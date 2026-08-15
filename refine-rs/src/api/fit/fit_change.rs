@@ -1,7 +1,6 @@
 use crate::{
-    ChangeFitEnumCmd, CtlCmdResps, Fit, FitInfo, FitInfoArgsBackref,
+    ChangeFitEnumCmd, CtlCmdResps, Fit, FitInfo, FitInfoCmdBackref,
     err::{BackrefRenderError, ChangeFitEnumError},
-    info::{FitInfoModesInt, ItemInfoModesInt},
 };
 
 impl Fit<'_, '_> {
@@ -23,7 +22,7 @@ impl Fit<'_, '_> {
     pub async fn change_and_get_info(
         &mut self,
         ctl_cmds: Vec<ChangeFitEnumCmd>,
-        info_args: FitInfoArgsBackref,
+        info_cmd: FitInfoCmdBackref,
     ) -> Result<(CtlCmdResps, FitInfo), ChangeFitError> {
         // Variables for move
         let fit_id = self.id;
@@ -33,9 +32,7 @@ impl Fit<'_, '_> {
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let ctl_cmd_resps = execute_commands(&mut core_fit, ctl_cmds)?;
-                let fit_info_modes = FitInfoModesInt::from_pub_mode(info_args.fit);
-                let item_info_modes = ItemInfoModesInt::from_pub_modes_backref(info_args.item, &ctl_cmd_resps);
-                let fit_info = FitInfo::from_core(&mut core_fit, &fit_info_modes, &item_info_modes);
+                let fit_info = info_cmd.execute(&mut core_fit, &ctl_cmd_resps);
                 Ok((ctl_cmd_resps, fit_info))
             })
             .await
@@ -47,9 +44,9 @@ fn execute_commands(core_fit: &mut rc::FitMut, ctl_cmds: Vec<ChangeFitEnumCmd>) 
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
             .render(&ctl_cmd_resps)
-            .map_err(|render_err| ChangeFitError::from_render(index, render_err))?
+            .map_err(|render_err| ChangeFitError::from_ctl_render(index, render_err))?
             .execute(core_fit)
-            .map_err(|exec_err| ChangeFitError::from_exec(index, exec_err))?;
+            .map_err(|exec_err| ChangeFitError::from_ctl_exec(index, exec_err))?;
         ctl_cmd_resps.append(ctl_cmd_resp);
     }
     Ok(ctl_cmd_resps)
@@ -63,10 +60,10 @@ pub enum ChangeFitError {
     CtlExec(usize, #[source] ChangeFitEnumError),
 }
 impl ChangeFitError {
-    fn from_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
+    fn from_ctl_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
         Self::CtlRender(cmd_idx, render_err)
     }
-    fn from_exec(cmd_idx: usize, exec_err: ChangeFitEnumError) -> Self {
+    fn from_ctl_exec(cmd_idx: usize, exec_err: ChangeFitEnumError) -> Self {
         Self::CtlExec(cmd_idx, exec_err)
     }
 }

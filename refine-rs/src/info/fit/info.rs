@@ -70,7 +70,7 @@ impl ModuleRacks {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfo {
-    pub(crate) fn from_core(
+    pub(in crate::info) fn from_core(
         core_fit: &mut rc::FitMut,
         fit_info_modes: &FitInfoModesInt,
         item_info_modes: &ItemInfoModesInt,

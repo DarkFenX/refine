@@ -1,6 +1,8 @@
-pub use fit::{FitInfo, FitInfoExt};
+pub use cmd::{FitInfoCmd, FitInfoCmdBackref};
+pub use info::{FitInfo, FitInfoExt};
 pub(crate) use mode::FitInfoModesInt;
 pub use mode::{FitInfoMode, FitInfoModes, FitInfoModesBackref};
 
-mod fit;
+mod cmd;
+mod info;
 mod mode;

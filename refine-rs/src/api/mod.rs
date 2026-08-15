@@ -1,4 +1,4 @@
-pub use fit::{ChangeFitError, Fit, FitInfoArgs, FitInfoArgsBackref, GetFitError, ValFitInfoArgs};
+pub use fit::{ChangeFitError, Fit, GetFitError, ValFitInfoArgs};
 pub use fleet::{ChangeFleetError, Fleet, GetFleetError};
 pub use item::{GetItemError, Item, RemoveItemError};
 pub use refine::Refine;

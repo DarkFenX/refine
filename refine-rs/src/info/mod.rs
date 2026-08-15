@@ -1,5 +1,5 @@
 pub(crate) use fit::FitInfoModesInt;
-pub use fit::{FitInfo, FitInfoExt, FitInfoMode, FitInfoModes, FitInfoModesBackref};
+pub use fit::{FitInfo, FitInfoCmd, FitInfoCmdBackref, FitInfoExt, FitInfoMode, FitInfoModes, FitInfoModesBackref};
 pub(crate) use fleet::FleetInfoModesInt;
 pub use fleet::{FleetInfo, FleetInfoCmd, FleetInfoExt, FleetInfoMode, FleetInfoModes, FleetInfoModesBackref};
 pub(crate) use item::ItemInfoModesInt;
