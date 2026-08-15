@@ -14,7 +14,7 @@ pub use item::{
 };
 pub use mode::InfoModes;
 pub(crate) use mode::InfoModesInt;
-pub use sol::{SolInfo, SolInfoExt, SolInfoMode};
+pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
 pub use stats::{
     FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,

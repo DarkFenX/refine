@@ -25,7 +25,6 @@ impl FleetInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
-        let fleet_info_modes = FleetInfoModesInt::from_pub_mode(self.fleet);
-        FleetInfo::from_core(core_fleet, &fleet_info_modes)
+        FleetInfo::from_core(core_fleet, &FleetInfoModesInt::from_pub_mode(self.fleet))
     }
 }

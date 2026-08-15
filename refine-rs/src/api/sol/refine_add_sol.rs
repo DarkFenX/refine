@@ -1,19 +1,22 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    AddSolCmd, Refine, SolInfo, SolInfoArgs, SolInfoExt, SolarSystem, SolarSystemId,
-    info::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt},
+    AddSolCmd, Refine, SolInfo, SolInfoCmd, SolarSystem, SolarSystemId,
     src::{SrcAlias, err::GetSrcError},
     svc::SolarSystemInnerGuarded,
 };
 
 impl Refine {
     #[tracing::instrument(name = "sol-add", level = "trace", skip_all)]
-    pub async fn add_sol(&self, src_alias: Option<SrcAlias>, cmd: AddSolCmd) -> Result<SolarSystem<'_>, AddSolError> {
+    pub async fn add_sol(
+        &self,
+        src_alias: Option<SrcAlias>,
+        ctl_cmd: AddSolCmd,
+    ) -> Result<SolarSystem<'_>, AddSolError> {
         let inner_src = self.internal_get_src(src_alias).await?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
-        let core_sol = self.tpool.exec_standard(move || cmd.execute(&core_src)).await;
+        let core_sol = self.tpool.exec_standard(move || ctl_cmd.execute(&core_src)).await;
         let src_alias = inner_src.get_alias();
         let inner_sol = self.create_and_store_inner_sol(src_alias, core_sol).await;
         let sol = SolarSystem::new(self, inner_sol).await;
@@ -23,8 +26,8 @@ impl Refine {
     pub async fn add_sol_and_get_info(
         &self,
         src_alias: Option<SrcAlias>,
-        exec_cmd: AddSolCmd,
-        info_args: SolInfoArgs,
+        ctl_cmd: AddSolCmd,
+        info_cmd: SolInfoCmd,
     ) -> Result<(SolarSystem<'_>, SolInfo), AddSolError> {
         let inner_src = self.internal_get_src(src_alias).await?;
         // Variables for move
@@ -32,18 +35,8 @@ impl Refine {
         let (core_sol, info_ext) = self
             .tpool
             .exec_standard(move || {
-                let mut core_sol = exec_cmd.execute(&core_src);
-                let sol_info_mode = info_args.sol;
-                let fleet_info_modes = FleetInfoModesInt::from_pub_modes_regular(info_args.fleet);
-                let fit_info_modes = FitInfoModesInt::from_pub_modes_regular(info_args.fit);
-                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
-                let info_ext = SolInfoExt::try_from_core(
-                    &mut core_sol,
-                    sol_info_mode,
-                    &fleet_info_modes,
-                    &fit_info_modes,
-                    &item_info_modes,
-                );
+                let mut core_sol = ctl_cmd.execute(&core_src);
+                let info_ext = info_cmd.execute_into_info_ext(&mut core_sol);
                 (core_sol, info_ext)
             })
             .await;

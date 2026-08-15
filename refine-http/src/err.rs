@@ -676,10 +676,10 @@ impl From<JsonRejection> for ApiError {
 impl From<rs::err::ChangeSolError> for ApiError {
     fn from(err: rs::err::ChangeSolError) -> Self {
         match err {
-            rs::err::ChangeSolError::Render(index, inner) => {
+            rs::err::ChangeSolError::CtlRender(index, inner) => {
                 Self::BackrefRender(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::ChangeSolError::Exec(index, inner) => Self::SolChange(ApiErrorIndexed { index, error: inner }),
+            rs::err::ChangeSolError::CtlExec(index, inner) => Self::SolChange(ApiErrorIndexed { index, error: inner }),
         }
     }
 }

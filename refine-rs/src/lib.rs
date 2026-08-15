@@ -4,7 +4,7 @@
 #![feature(const_default)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 
-pub use api::{Fit, Fleet, Item, Refine, SolInfoArgs, SolInfoArgsBackref, SolarSystem, SolarSystemId};
+pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use ctl::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
@@ -40,8 +40,8 @@ pub use info::{
     ImplantInfoExt, InfoModes, ItemInfo, ItemInfoCmd, ItemInfoMode, ItemInfoModes, ItemInfoModesBackref,
     ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo,
     RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp,
-    SkillInfo, SkillInfoExt, SolInfo, SolInfoExt, SolInfoMode, StanceInfo, StanceInfoExt, SubsystemInfo,
-    SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    SkillInfo, SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode, StanceInfo,
+    StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, DefOption, DefOptionExt,

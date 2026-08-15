@@ -29,7 +29,6 @@ impl ItemInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
-        let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(self.item);
-        ItemInfo::from_core(core_item, &item_info_modes)
+        ItemInfo::from_core(core_item, &ItemInfoModesInt::from_pub_modes_regular(self.item))
     }
 }

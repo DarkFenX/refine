@@ -38,8 +38,10 @@ impl FitInfoCmdBackref {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmdBackref {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut, ctl_cmd_resps: &CtlCmdResps) -> FitInfo {
-        let fit_info_modes = FitInfoModesInt::from_pub_mode(self.fit);
-        let item_info_modes = ItemInfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps);
-        FitInfo::from_core(core_fit, &fit_info_modes, &item_info_modes)
+        FitInfo::from_core(
+            core_fit,
+            &FitInfoModesInt::from_pub_mode(self.fit),
+            &ItemInfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
+        )
     }
 }

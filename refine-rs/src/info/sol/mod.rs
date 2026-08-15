@@ -1,5 +1,7 @@
+pub use cmd::{SolInfoCmd, SolInfoCmdBackref};
+pub use info::{SolInfo, SolInfoExt};
 pub use mode::SolInfoMode;
-pub use sol::{SolInfo, SolInfoExt};
 
+mod cmd;
+mod info;
 mod mode;
-mod sol;

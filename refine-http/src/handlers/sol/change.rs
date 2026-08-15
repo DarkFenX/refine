@@ -28,7 +28,7 @@ struct SolChangeResp {
 pub(crate) async fn change_sol(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoArgsBackref>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoCmdBackref>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<SolChangeReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_sol(state, sol_id, params, payload).await {
@@ -40,7 +40,7 @@ pub(crate) async fn change_sol(
 async fn internal_change_sol(
     state: AppState,
     sol_id: String,
-    params: rs::SolInfoArgsBackref,
+    params: rs::SolInfoCmdBackref,
     payload: SolChangeReqBody,
 ) -> Result<SolChangeResp, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

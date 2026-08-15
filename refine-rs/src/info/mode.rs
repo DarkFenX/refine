@@ -62,8 +62,7 @@ impl<M, I> InfoModesInt<M, I> {
             overrides: pub_modes
                 .overrides
                 .into_iter()
-                .map(|overrides| overrides.1.into_iter().map(move |id| (id, overrides.0)))
-                .flatten()
+                .flat_map(|overrides| overrides.1.into_iter().map(move |id| (id, overrides.0)))
                 .collect(),
         }
     }
@@ -79,7 +78,7 @@ impl<M, I> InfoModesInt<M, I> {
             overrides: pub_modes
                 .overrides
                 .into_iter()
-                .map(|overrides| {
+                .flat_map(|overrides| {
                     overrides
                         .1
                         .into_iter()
@@ -88,7 +87,6 @@ impl<M, I> InfoModesInt<M, I> {
                             Err(..) => None,
                         })
                 })
-                .flatten()
                 .collect(),
         }
     }
