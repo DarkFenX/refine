@@ -1,11 +1,7 @@
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub enum ValInfoMode {
     Simple,
+    #[default]
     Detailed,
-}
-const impl Default for ValInfoMode {
-    fn default() -> Self {
-        Self::Detailed
-    }
 }

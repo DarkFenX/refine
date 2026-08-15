@@ -4,5 +4,5 @@ use crate::val::ValInfoMode;
 #[derive(Copy, Clone, Default)]
 pub struct ValFitInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub validation: ValInfoMode = ValInfoMode::default(),
+    pub validation: ValInfoMode,
 }

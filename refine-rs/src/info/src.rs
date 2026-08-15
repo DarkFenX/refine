@@ -1,15 +1,11 @@
 use crate::src::{SrcAlias, SrcOrigin, SrcWarnings};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub enum SrcInfoMode {
+    #[default]
     Partial,
     Full,
-}
-const impl Default for SrcInfoMode {
-    fn default() -> Self {
-        Self::Partial
-    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

@@ -4,7 +4,7 @@ use crate::{FleetInfo, FleetInfoMode, info::InfoModesInt};
 #[derive(Copy, Clone, Default)]
 pub struct FleetInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: FleetInfoMode = FleetInfoMode::default(),
+    fleet: FleetInfoMode,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

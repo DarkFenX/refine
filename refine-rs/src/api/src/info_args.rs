@@ -4,5 +4,5 @@ use crate::src::SrcInfoMode;
 #[derive(Copy, Clone, Default)]
 pub struct SrcInfoArgs {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub src: SrcInfoMode = SrcInfoMode::default(),
+    pub src: SrcInfoMode,
 }

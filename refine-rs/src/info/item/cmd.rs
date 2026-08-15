@@ -7,7 +7,7 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemId> = InfoModes::default(),
+    item: InfoModes<ItemInfoMode, ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

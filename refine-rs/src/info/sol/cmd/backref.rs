@@ -8,13 +8,13 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct SolInfoCmdBackref {
     #[cfg_attr(feature = "serde", serde(default))]
-    sol: SolInfoMode = SolInfoMode::default(),
+    sol: SolInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: InfoModes<FleetInfoMode, FleetIdBackref> = InfoModes::default(),
+    fleet: InfoModes<FleetInfoMode, FleetIdBackref>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: InfoModes<FitInfoMode, FitIdBackref> = InfoModes::default(),
+    fit: InfoModes<FitInfoMode, FitIdBackref>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemIdBackref> = InfoModes::default(),
+    item: InfoModes<ItemInfoMode, ItemIdBackref>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

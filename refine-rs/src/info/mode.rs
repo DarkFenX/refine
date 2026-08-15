@@ -2,29 +2,23 @@ use std::{collections::HashMap, hash::Hash};
 
 use crate::{CtlCmdResps, ctl::CtlCmdBackref};
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Public
-////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub(in crate::info) struct InfoModes<M, I>
-where
-    M: const Default,
-{
-    pub default: M = M::default(),
-    pub overrides: Vec<(M, Vec<I>)> = Vec::new(),
+pub(in crate::info) struct InfoModes<M, I> {
+    pub default: M,
+    pub overrides: Vec<(M, Vec<I>)>,
 }
-const impl<M, I> Default for InfoModes<M, I>
+impl<M, I> Default for InfoModes<M, I>
 where
-    M: const Default,
+    M: Default,
 {
     fn default() -> Self {
-        Self { .. }
+        Self {
+            default: M::default(),
+            overrides: Vec::new(),
+        }
     }
 }
 
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Private
-////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(in crate::info) struct InfoModesInt<M, I> {
     default: M,
     overrides: HashMap<I, M>,
@@ -54,7 +48,7 @@ impl<M, I> InfoModesInt<M, I> {
     }
     pub(in crate::info) fn from_pub_modes_regular(pub_modes: InfoModes<M, I>) -> Self
     where
-        M: Copy + const Default,
+        M: Copy,
         I: Eq + Hash,
     {
         Self {
@@ -68,7 +62,7 @@ impl<M, I> InfoModesInt<M, I> {
     }
     pub(in crate::info) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
     where
-        M: Copy + const Default,
+        M: Copy,
         B: CtlCmdBackref<Target = I>,
         I: Eq + Hash,
     {
@@ -103,7 +97,7 @@ mod custom_serde {
 
     impl<'de, M, I> Deserialize<'de> for InfoModes<M, I>
     where
-        M: const Default + Deserialize<'de>,
+        M: Deserialize<'de>,
         I: Deserialize<'de>,
     {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
@@ -111,7 +105,10 @@ mod custom_serde {
             D: Deserializer<'de>,
         {
             Ok(match InfoModesFormats::deserialize(deserializer)? {
-                InfoModesFormats::Simple(default) => Self { default, .. },
+                InfoModesFormats::Simple(default) => Self {
+                    default,
+                    overrides: Vec::new(),
+                },
                 InfoModesFormats::Extended(default, overrides) => Self { default, overrides },
             })
         }

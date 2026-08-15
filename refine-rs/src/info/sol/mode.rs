@@ -1,11 +1,7 @@
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(rename_all = "snake_case"))]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Default)]
 pub enum SolInfoMode {
     Id,
+    #[default]
     Full,
-}
-const impl Default for SolInfoMode {
-    fn default() -> Self {
-        Self::Full
-    }
 }

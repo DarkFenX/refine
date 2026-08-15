@@ -7,9 +7,9 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct FitInfoCmdBackref {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: FitInfoMode = FitInfoMode::default(),
+    fit: FitInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemIdBackref> = InfoModes::default(),
+    item: InfoModes<ItemInfoMode, ItemIdBackref>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
