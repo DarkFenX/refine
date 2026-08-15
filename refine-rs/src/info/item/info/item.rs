@@ -30,7 +30,7 @@ pub enum ItemInfo {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfo {
-    pub(crate) fn from_core(core_item: &mut rc::ItemMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(in crate::info) fn from_core(core_item: &mut rc::ItemMut, item_info_modes: &ItemInfoModesInt) -> Self {
         match core_item {
             rc::ItemMut::Autocharge(core_autocharge) => Self::from_core_autocharge(core_autocharge, item_info_modes),
             rc::ItemMut::Booster(core_booster) => Self::from_core_booster(core_booster, item_info_modes),

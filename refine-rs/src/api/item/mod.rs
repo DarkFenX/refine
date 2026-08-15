@@ -1,9 +1,7 @@
-pub use info_args::ItemInfoArgs;
 pub use item::Item;
 pub use item_remove::RemoveItemError;
 pub use sol_get_item::GetItemError;
 
-mod info_args;
 mod item;
 mod item_change;
 mod item_get_info;

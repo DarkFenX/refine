@@ -14,8 +14,8 @@ impl FleetInfoCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_mode(mut self, fleet_mode: FleetInfoMode) -> Self {
-        self.fleet = fleet_mode;
+    pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
+        self.fleet = mode;
         self
     }
 }

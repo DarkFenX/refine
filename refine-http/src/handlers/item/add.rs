@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn add_item(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoArgs>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoCmd>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::AddItemEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_add_item(state, sol_id, params, payload).await {
@@ -25,7 +25,7 @@ pub(crate) async fn add_item(
 async fn internal_add_item(
     state: AppState,
     sol_id: String,
-    params: rs::ItemInfoArgs,
+    params: rs::ItemInfoCmd,
     payload: rs::AddItemEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
