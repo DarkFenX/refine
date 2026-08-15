@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitIdBackref, ItemIdBackref,
+    ChangeSolEnumCmd, ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref,
     ItemTypeId, Movement,
     cmd::inner::{
         ICmdShipChangeFFitCtxBIds, ICmdShipChangeFFitCtxRIds, ICmdShipChangeFItemCtxBIds, ICmdShipChangeFItemCtxRIds,
@@ -140,7 +140,7 @@ impl From<SolChangeShipViaItemCmd> for ChangeSolEnumCmd {
 // Change - non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeShipCmd {
-    pub(super) fn render(self, resps: &CmdResps) -> Result<SolChangeShipCmdRIds, BackrefRenderError> {
+    pub(super) fn render(self, resps: &CtlCmdResps) -> Result<SolChangeShipCmdRIds, BackrefRenderError> {
         match self {
             SolChangeShipCmd::ViaFitId(cmd) => Ok(SolChangeShipCmdRIds::ViaFitId(cmd.inner.render(resps)?)),
             SolChangeShipCmd::ViaItemId(cmd) => Ok(SolChangeShipCmdRIds::ViaItemId(cmd.inner.render(resps)?)),

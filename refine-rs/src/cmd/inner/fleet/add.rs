@@ -1,4 +1,4 @@
-use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBackref, err::BackrefRenderError};
+use crate::{AddedFleetIdResp, CtlCmdResps, FitId, FitIdBackref, err::BackrefRenderError};
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -17,7 +17,7 @@ pub(crate) struct ICmdFleetAddFCtxRIds {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFleetAddFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFleetAddFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFleetAddFCtxRIds, BackrefRenderError> {
         Ok(ICmdFleetAddFCtxRIds {
             fit_ids: resps.render_fit_ids(self.fit_ids)?,
         })

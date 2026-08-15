@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBackref, err::BackrefRenderError};
+use crate::{CtlCmdResps, FitId, FitIdBackref, err::BackrefRenderError};
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -20,7 +20,7 @@ pub(crate) struct ICmdShipUnsetICtx;
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdShipUnsetFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdShipUnsetFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipUnsetFCtxRIds, BackrefRenderError> {
         Ok(ICmdShipUnsetFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,

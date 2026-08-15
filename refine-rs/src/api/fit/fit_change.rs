@@ -1,12 +1,12 @@
 use crate::{
-    ChangeFitEnumCmd, CmdResps, Fit, FitInfo, FitInfoArgs,
+    ChangeFitEnumCmd, CtlCmdResps, Fit, FitInfo, FitInfoArgsBackref,
     err::{BackrefRenderError, ChangeFitEnumError},
     info::{FitInfoModesInt, ItemInfoModesInt},
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, cmds: Vec<ChangeFitEnumCmd>) -> Result<CmdResps, ChangeFitError> {
+    pub async fn change(&mut self, cmds: Vec<ChangeFitEnumCmd>) -> Result<CtlCmdResps, ChangeFitError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -23,8 +23,8 @@ impl Fit<'_, '_> {
     pub async fn change_and_get_info(
         &mut self,
         exec_cmds: Vec<ChangeFitEnumCmd>,
-        info_args: FitInfoArgs,
-    ) -> Result<(CmdResps, FitInfo), ChangeFitError> {
+        info_args: FitInfoArgsBackref,
+    ) -> Result<(CtlCmdResps, FitInfo), ChangeFitError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -32,18 +32,18 @@ impl Fit<'_, '_> {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
-                let cmd_resps = execute_commands(&mut core_fit, exec_cmds)?;
+                let ctl_cmd_resps = execute_commands(&mut core_fit, exec_cmds)?;
                 let fit_info_modes = FitInfoModesInt::from_pub_mode(info_args.fit);
-                let item_info_modes = ItemInfoModesInt::from_pub_modes_regular(info_args.item);
+                let item_info_modes = ItemInfoModesInt::from_pub_modes_backref(info_args.item, &ctl_cmd_resps);
                 let fit_info = FitInfo::from_core(&mut core_fit, &fit_info_modes, &item_info_modes);
-                Ok((cmd_resps, fit_info))
+                Ok((ctl_cmd_resps, fit_info))
             })
             .await
     }
 }
 
-fn execute_commands(core_fit: &mut rc::FitMut, cmds: Vec<ChangeFitEnumCmd>) -> Result<CmdResps, ChangeFitError> {
-    let mut cmd_resps = CmdResps::with_capacity(cmds.len());
+fn execute_commands(core_fit: &mut rc::FitMut, cmds: Vec<ChangeFitEnumCmd>) -> Result<CtlCmdResps, ChangeFitError> {
+    let mut cmd_resps = CtlCmdResps::with_capacity(cmds.len());
     for (index, cmd) in cmds.into_iter().enumerate() {
         let resp = cmd
             .render(&cmd_resps)

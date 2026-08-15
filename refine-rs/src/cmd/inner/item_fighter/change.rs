@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, Coordinates, CountNz, ItemId, ItemIdBackref, ItemTypeId, MinionState, Movement,
+    ChangedItemIdsResp, Coordinates, CountNz, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, MinionState, Movement,
     RearmMinion, TriStateField,
     cmd::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
@@ -56,7 +56,7 @@ pub(in crate::cmd) struct ICmdFighterChangeShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFighterChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFighterChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFighterChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdFighterChangeFCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -65,7 +65,7 @@ impl ICmdFighterChangeFCtxBIds {
 }
 
 impl ICmdFighterChangeICtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<ICmdFighterChangeICtxRIds, BackrefRenderError> {
+    fn render(self, resps: &CtlCmdResps) -> Result<ICmdFighterChangeICtxRIds, BackrefRenderError> {
         Ok(ICmdFighterChangeICtxRIds {
             shared: self.shared,
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,

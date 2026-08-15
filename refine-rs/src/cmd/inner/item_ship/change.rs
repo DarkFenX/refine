@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, Coordinates, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, Movement,
+    ChangedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, Movement,
     cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -42,7 +42,7 @@ pub(crate) struct ICmdShipChangeICtx {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdShipChangeFFitCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdShipChangeFFitCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipChangeFFitCtxRIds, BackrefRenderError> {
         Ok(ICmdShipChangeFFitCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,
@@ -50,7 +50,7 @@ impl ICmdShipChangeFFitCtxBIds {
     }
 }
 impl ICmdShipChangeFItemCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdShipChangeFItemCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipChangeFItemCtxRIds, BackrefRenderError> {
         Ok(ICmdShipChangeFItemCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd,

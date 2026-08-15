@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, ModuleState, MoveMode,
+    ChangeMutation, ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, ModuleState, MoveMode,
     OptionalReload, Spool, TriStateField, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -58,7 +58,7 @@ pub(in crate::cmd) struct ICmdModuleChangeShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdModuleChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdModuleChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdModuleChangeFCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -67,7 +67,7 @@ impl ICmdModuleChangeFCtxBIds {
 }
 
 impl ICmdModuleChangeICtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<ICmdModuleChangeICtxRIds, BackrefRenderError> {
+    fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleChangeICtxRIds, BackrefRenderError> {
         Ok(ICmdModuleChangeICtxRIds {
             shared: self.shared,
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,

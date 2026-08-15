@@ -1,9 +1,10 @@
 pub(in crate::cmd) use abilities::Abilities;
+pub(crate) use backrefs::CtlCmdBackref;
 pub use backrefs::{FitIdBackref, FleetIdBackref, ItemIdBackref};
 pub(in crate::cmd) use effect_modes::EffectModes;
 pub use mutation::{AddMutation, AttrMutation, ChangeMutation};
 pub use resp::{
-    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BackrefRenderError, ChangedItemIdsResp, CmdResp, CmdResps,
+    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BackrefRenderError, ChangedItemIdsResp, CmdResp, CtlCmdResps,
 };
 pub(in crate::cmd) use side_effects::SideEffects;
 pub(in crate::cmd) use sol_cloner::SolCloner;

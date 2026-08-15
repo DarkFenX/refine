@@ -1,5 +1,5 @@
 use crate::{
-    AddedItemIdsResp, CmdResps, Coordinates, CountNz, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
+    AddedItemIdsResp, Coordinates, CountNz, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
     MinionState, Movement, RearmMinion,
     cmd::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
@@ -52,7 +52,7 @@ pub(in crate::cmd) struct ICmdFighterAddShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFighterAddFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFighterAddFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFighterAddFCtxRIds, BackrefRenderError> {
         Ok(ICmdFighterAddFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -61,7 +61,7 @@ impl ICmdFighterAddFCtxBIds {
 }
 
 impl ICmdFighterAddICtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFighterAddICtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFighterAddICtxRIds, BackrefRenderError> {
         Ok(ICmdFighterAddICtxRIds {
             shared: self.shared,
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,

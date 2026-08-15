@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, CmdResps, Coordinates, ItemId, ItemIdBackref, ItemTypeId, MinionState,
+    ChangeMutation, ChangedItemIdsResp, Coordinates, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, MinionState,
     Movement, NpcProp, TriStateField, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -54,7 +54,7 @@ pub(in crate::cmd) struct ICmdDroneChangeShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdDroneChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdDroneChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdDroneChangeFCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -63,7 +63,7 @@ impl ICmdDroneChangeFCtxBIds {
 }
 
 impl ICmdDroneChangeICtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<ICmdDroneChangeICtxRIds, BackrefRenderError> {
+    fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneChangeICtxRIds, BackrefRenderError> {
         Ok(ICmdDroneChangeICtxRIds {
             shared: self.shared,
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,

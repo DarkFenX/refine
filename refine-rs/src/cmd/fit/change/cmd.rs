@@ -1,5 +1,5 @@
 use crate::{
-    CmdResp, CmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd,
+    CmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd,
     FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeAutochargeCmd,
     FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
     FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
@@ -141,7 +141,7 @@ pub(crate) enum ChangeFitEnumCmdRIds {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFitEnumCmd {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<ChangeFitEnumCmdRIds, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<ChangeFitEnumCmdRIds, BackrefRenderError> {
         Ok(match self {
             // Fit
             Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),

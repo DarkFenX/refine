@@ -3,7 +3,7 @@ use super::{
     sub_item_stance::SolChangeStanceCmdRIds,
 };
 use crate::{
-    CmdResp, CmdResps, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
+    CmdResp, CtlCmdResps, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
     SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
     SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
     SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd,
@@ -180,7 +180,7 @@ pub(crate) enum ChangeSolEnumCmdRIds {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeSolEnumCmd {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<ChangeSolEnumCmdRIds, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<ChangeSolEnumCmdRIds, BackrefRenderError> {
         Ok(match self {
             // Solar system
             Self::ChangeSol(cmd) => ChangeSolEnumCmdRIds::ChangeSol(cmd.inner),

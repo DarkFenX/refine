@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
+    ChangeSolEnumCmd, ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
     cmd::inner::{
         ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
         ICmdStanceChangeFItemCtxRIds, ICmdStanceSetFCtxBIds, ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds,
@@ -115,7 +115,7 @@ impl From<SolChangeStanceViaItemCmd> for ChangeSolEnumCmd {
 // Change - non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeStanceCmd {
-    pub(super) fn render(self, resps: &CmdResps) -> Result<SolChangeStanceCmdRIds, BackrefRenderError> {
+    pub(super) fn render(self, resps: &CtlCmdResps) -> Result<SolChangeStanceCmdRIds, BackrefRenderError> {
         match self {
             SolChangeStanceCmd::ViaFitId(cmd) => Ok(SolChangeStanceCmdRIds::ViaFitId(cmd.inner.render(resps)?)),
             SolChangeStanceCmd::ViaItemId(cmd) => Ok(SolChangeStanceCmdRIds::ViaItemId(cmd.inner.render(resps)?)),

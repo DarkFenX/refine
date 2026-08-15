@@ -1,5 +1,5 @@
 use crate::{
-    AddedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
+    AddedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -29,7 +29,7 @@ pub(in crate::cmd) struct ICmdProjEffectAddShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdProjEffectAddFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdProjEffectAddFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdProjEffectAddFCtxRIds, BackrefRenderError> {
         Ok(ICmdProjEffectAddFCtxRIds {
             shared: self.shared,
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,

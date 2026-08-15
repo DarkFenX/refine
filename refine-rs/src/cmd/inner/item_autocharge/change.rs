@@ -1,4 +1,6 @@
-use crate::{ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, cmd::shared::EffectModes, err::BackrefRenderError,
+};
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -24,7 +26,10 @@ pub(in crate::cmd) struct ICmdAutochargeChangeICtx {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdAutochargeChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdAutochargeChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(
+        self,
+        resps: &CtlCmdResps,
+    ) -> Result<ICmdAutochargeChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdAutochargeChangeFCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd,

@@ -38,9 +38,10 @@ pub use item::{
     ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd,
     ItemChangeSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RemoveItemCmd,
 };
+pub(crate) use shared::CtlCmdBackref;
 pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
-    ChangedItemIdsResp, CmdResp, CmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref,
+    ChangedItemIdsResp, CmdResp, CtlCmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
     AddSolCmd, ChangeCharacterError, ChangeShipError, ChangeSolEnumCmd, ChangeSolEnumError, ChangeStanceError,

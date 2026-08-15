@@ -1,5 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -45,7 +46,10 @@ pub(in crate::cmd) struct ICmdProjEffectChangeShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdProjEffectChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdProjEffectChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(
+        self,
+        resps: &CtlCmdResps,
+    ) -> Result<ICmdProjEffectChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdProjEffectChangeFCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -54,7 +58,7 @@ impl ICmdProjEffectChangeFCtxBIds {
 }
 
 impl ICmdProjEffectChangeICtxBIds {
-    fn render(self, resps: &CmdResps) -> Result<ICmdProjEffectChangeICtxRIds, BackrefRenderError> {
+    fn render(self, resps: &CtlCmdResps) -> Result<ICmdProjEffectChangeICtxRIds, BackrefRenderError> {
         Ok(ICmdProjEffectChangeICtxRIds {
             shared: self.shared,
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,

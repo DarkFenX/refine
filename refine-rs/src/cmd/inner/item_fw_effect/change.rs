@@ -1,5 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -27,7 +28,7 @@ pub(in crate::cmd) struct ICmdFwEffectChangeICtx {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFwEffectChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFwEffectChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFwEffectChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdFwEffectChangeFCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,
             ictx_cmd: self.ictx_cmd,

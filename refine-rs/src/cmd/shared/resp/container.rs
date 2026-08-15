@@ -1,10 +1,10 @@
 use crate::{CmdResp, FitId, FitIdBackref, FleetId, FleetIdBackref, ItemId, ItemIdBackref, err::BackrefRenderError};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
-pub struct CmdResps {
+pub struct CtlCmdResps {
     data: Vec<CmdResp>,
 }
-impl CmdResps {
+impl CtlCmdResps {
     pub fn get(&self, index: usize) -> Option<&CmdResp> {
         self.data.get(index)
     }
@@ -13,7 +13,7 @@ impl CmdResps {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl CmdResps {
+impl CtlCmdResps {
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
             data: Vec::with_capacity(capacity),

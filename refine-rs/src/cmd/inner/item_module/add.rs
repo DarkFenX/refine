@@ -1,6 +1,6 @@
 use crate::{
-    AddMode, AddMutation, AddedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, ModRack,
-    ModuleState, OptionalReload, Spool, cmd::shared::EffectModes, err::BackrefRenderError,
+    AddMode, AddMutation, AddedItemIdsResp, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
+    ModRack, ModuleState, OptionalReload, Spool, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
@@ -50,7 +50,7 @@ pub(in crate::cmd) struct ICmdModuleAddShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdModuleAddFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdModuleAddFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleAddFCtxRIds, BackrefRenderError> {
         Ok(ICmdModuleAddFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -59,7 +59,7 @@ impl ICmdModuleAddFCtxBIds {
 }
 
 impl ICmdModuleAddICtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdModuleAddICtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleAddICtxRIds, BackrefRenderError> {
         Ok(ICmdModuleAddICtxRIds {
             shared: self.shared,
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,

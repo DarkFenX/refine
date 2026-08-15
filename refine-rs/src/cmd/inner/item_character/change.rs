@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes,
+    ChangedItemIdsResp, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, cmd::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -40,7 +40,10 @@ pub(crate) struct ICmdCharacterChangeICtx {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdCharacterChangeFFitCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdCharacterChangeFFitCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(
+        self,
+        resps: &CtlCmdResps,
+    ) -> Result<ICmdCharacterChangeFFitCtxRIds, BackrefRenderError> {
         Ok(ICmdCharacterChangeFFitCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,
@@ -50,7 +53,7 @@ impl ICmdCharacterChangeFFitCtxBIds {
 impl ICmdCharacterChangeFItemCtxBIds {
     pub(in crate::cmd) fn render(
         self,
-        resps: &CmdResps,
+        resps: &CtlCmdResps,
     ) -> Result<ICmdCharacterChangeFItemCtxRIds, BackrefRenderError> {
         Ok(ICmdCharacterChangeFItemCtxRIds {
             item_id: resps.render_item_id(self.item_id)?,

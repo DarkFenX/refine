@@ -1,5 +1,5 @@
 use crate::{
-    AddedItemIdsResp, CmdResps, Coordinates, FitId, FitIdBackref, ItemTypeId, Movement, cmd::shared::EffectModes,
+    AddedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBackref, ItemTypeId, Movement, cmd::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -32,7 +32,7 @@ pub(crate) struct ICmdShipSetICtx {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdShipSetFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdShipSetFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipSetFCtxRIds, BackrefRenderError> {
         Ok(ICmdShipSetFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd,

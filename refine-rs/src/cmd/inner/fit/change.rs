@@ -1,5 +1,5 @@
 use crate::{
-    CmdResps, DpsProfile, FitId, FitIdBackref, FitSecStatus, FleetId, FleetIdBackref, TriStateField,
+    CtlCmdResps, DpsProfile, FitId, FitIdBackref, FitSecStatus, FleetId, FleetIdBackref, TriStateField,
     err::BackrefRenderError,
 };
 
@@ -38,7 +38,7 @@ pub(in crate::cmd) struct CmdFitChangeShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdFitChangeFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFitChangeFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFitChangeFCtxRIds, BackrefRenderError> {
         Ok(ICmdFitChangeFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -47,7 +47,7 @@ impl ICmdFitChangeFCtxBIds {
 }
 
 impl ICmdFitChangeICtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdFitChangeICtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFitChangeICtxRIds, BackrefRenderError> {
         Ok(ICmdFitChangeICtxRIds {
             shared: self.shared,
             fleet_id: match self.fleet_id {

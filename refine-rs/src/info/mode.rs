@@ -1,5 +1,7 @@
 use std::{collections::HashMap, hash::Hash};
 
+use crate::{CtlCmdResps, cmd::CtlCmdBackref};
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,6 +60,25 @@ impl<M, I> InfoModesInt<M, I> {
         Self {
             default: pub_modes.default,
             overrides: pub_modes.overrides.into_iter().collect(),
+        }
+    }
+    pub(crate) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
+    where
+        M: const Default,
+        B: CtlCmdBackref<Target = I>,
+        I: Eq + Hash,
+    {
+        // Silently skip error in rendering; worst-case just default mode will be used
+        Self {
+            default: pub_modes.default,
+            overrides: pub_modes
+                .overrides
+                .into_iter()
+                .filter_map(|(backref, mode)| match backref.render(ctl_cmd_resps) {
+                    Ok(id) => Some((id, mode)),
+                    Err(..) => None,
+                })
+                .collect(),
         }
     }
 }

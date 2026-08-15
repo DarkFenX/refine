@@ -5,12 +5,13 @@
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 
 pub use api::{
-    Fit, FitInfoArgs, Fleet, FleetInfoArgs, Item, ItemInfoArgs, Refine, SolInfoArgs, SolarSystem, SolarSystemId,
+    Fit, FitInfoArgs, FitInfoArgsBackref, Fleet, FleetInfoArgs, Item, ItemInfoArgs, Refine, SolInfoArgs,
+    SolInfoArgsBackref, SolarSystem, SolarSystemId,
 };
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
-    ChangedItemIdsResp, CmdResp, CmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
+    ChangedItemIdsResp, CmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
     FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd,
     FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
     FitChangeFighterCmd, FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd,

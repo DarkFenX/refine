@@ -1,22 +1,54 @@
-use crate::{FitId, FleetId, ItemId};
+use crate::{CtlCmdResps, FitId, FleetId, ItemId, err::BackrefRenderError};
 
+pub(crate) trait CtlCmdBackref {
+    type Target;
+    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError>;
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fleet
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub enum FleetIdBackref {
     Id(FleetId),
     Backref(usize),
 }
+impl CtlCmdBackref for FleetIdBackref {
+    type Target = FleetId;
+    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
+        ctl_cmd_resps.render_fleet_id(self)
+    }
+}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub enum FitIdBackref {
     Id(FitId),
     Backref(usize),
 }
+impl CtlCmdBackref for FitIdBackref {
+    type Target = FitId;
+    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
+        ctl_cmd_resps.render_fit_id(self)
+    }
+}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Item
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
 pub enum ItemIdBackref {
     Id(ItemId),
     BackrefMain(usize),
     BackrefCharge(usize),
+}
+impl CtlCmdBackref for ItemIdBackref {
+    type Target = ItemId;
+    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
+        ctl_cmd_resps.render_item_id(self)
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
+    ChangeSolEnumCmd, ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
     cmd::inner::{
         ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
         ICmdCharacterChangeFItemCtxRIds, ICmdCharacterSetFCtxBIds, ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds,
@@ -115,7 +115,7 @@ impl From<SolChangeCharacterViaItemCmd> for ChangeSolEnumCmd {
 // Change - non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeCharacterCmd {
-    pub(super) fn render(self, resps: &CmdResps) -> Result<SolChangeCharacterCmdRIds, BackrefRenderError> {
+    pub(super) fn render(self, resps: &CtlCmdResps) -> Result<SolChangeCharacterCmdRIds, BackrefRenderError> {
         match self {
             SolChangeCharacterCmd::ViaFitId(cmd) => Ok(SolChangeCharacterCmdRIds::ViaFitId(cmd.inner.render(resps)?)),
             SolChangeCharacterCmd::ViaItemId(cmd) => Ok(SolChangeCharacterCmdRIds::ViaItemId(cmd.inner.render(resps)?)),

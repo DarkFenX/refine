@@ -22,13 +22,13 @@ pub(crate) struct FitChangeReqBody {
 #[derive(Serialize)]
 struct FitChangeResp {
     fit: rs::FitInfo,
-    cmd_results: rs::CmdResps,
+    cmd_results: rs::CtlCmdResps,
 }
 
 pub(crate) async fn change_fit(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::FitInfoArgs>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<rs::FitInfoArgsBackref>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<FitChangeReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_fit(state, sol_id, fit_id, params, payload).await {
@@ -41,7 +41,7 @@ async fn internal_change_fit(
     state: AppState,
     sol_id: String,
     fit_id: String,
-    params: rs::FitInfoArgs,
+    params: rs::FitInfoArgsBackref,
     payload: FitChangeReqBody,
 ) -> Result<FitChangeResp, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;

@@ -1,5 +1,5 @@
 use crate::{
-    AddMutation, AddedItemIdsResp, CmdResps, Coordinates, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
+    AddMutation, AddedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
     MinionState, Movement, NpcProp, cmd::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -48,7 +48,7 @@ pub(in crate::cmd) struct ICmdDroneAddShared {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ICmdDroneAddFCtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdDroneAddFCtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneAddFCtxRIds, BackrefRenderError> {
         Ok(ICmdDroneAddFCtxRIds {
             fit_id: resps.render_fit_id(self.fit_id)?,
             ictx_cmd: self.ictx_cmd.render(resps)?,
@@ -57,7 +57,7 @@ impl ICmdDroneAddFCtxBIds {
 }
 
 impl ICmdDroneAddICtxBIds {
-    pub(in crate::cmd) fn render(self, resps: &CmdResps) -> Result<ICmdDroneAddICtxRIds, BackrefRenderError> {
+    pub(in crate::cmd) fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneAddICtxRIds, BackrefRenderError> {
         Ok(ICmdDroneAddICtxRIds {
             shared: self.shared,
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
