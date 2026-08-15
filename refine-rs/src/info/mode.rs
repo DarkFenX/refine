@@ -11,7 +11,7 @@ where
     M: const Default,
 {
     pub default: M = M::default(),
-    pub overrides: Vec<(I, M)> = Vec::new(),
+    pub overrides: Vec<(M, Vec<I>)> = Vec::new(),
 }
 const impl<M, I> Default for InfoModes<M, I>
 where
@@ -54,17 +54,22 @@ impl<M, I> InfoModesInt<M, I> {
     }
     pub(crate) fn from_pub_modes_regular(pub_modes: InfoModes<M, I>) -> Self
     where
-        M: const Default,
+        M: Copy + const Default,
         I: Eq + Hash,
     {
         Self {
             default: pub_modes.default,
-            overrides: pub_modes.overrides.into_iter().collect(),
+            overrides: pub_modes
+                .overrides
+                .into_iter()
+                .map(|overrides| overrides.1.into_iter().map(move |id| (id, overrides.0)))
+                .flatten()
+                .collect(),
         }
     }
     pub(crate) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
     where
-        M: const Default,
+        M: Copy + const Default,
         B: CtlCmdBackref<Target = I>,
         I: Eq + Hash,
     {
@@ -74,10 +79,16 @@ impl<M, I> InfoModesInt<M, I> {
             overrides: pub_modes
                 .overrides
                 .into_iter()
-                .filter_map(|(backref, mode)| match backref.render(ctl_cmd_resps) {
-                    Ok(id) => Some((id, mode)),
-                    Err(..) => None,
+                .map(|overrides| {
+                    overrides
+                        .1
+                        .into_iter()
+                        .filter_map(move |backref| match backref.render(ctl_cmd_resps) {
+                            Ok(id) => Some((id, overrides.0)),
+                            Err(..) => None,
+                        })
                 })
+                .flatten()
                 .collect(),
         }
     }
@@ -112,6 +123,6 @@ mod custom_serde {
     #[serde(untagged)]
     enum InfoModesFormats<M, I> {
         Simple(M),
-        Extended(M, Vec<(I, M)>),
+        Extended(M, Vec<(M, Vec<I>)>),
     }
 }
