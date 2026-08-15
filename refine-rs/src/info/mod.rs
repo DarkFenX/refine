@@ -16,7 +16,6 @@ pub use mode::InfoModes;
 pub(crate) use mode::InfoModesInt;
 pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
-pub use val::{FitValInfo, SolValInfo, ValInfoMode};
 
 mod fit;
 mod fleet;
@@ -24,4 +23,3 @@ mod item;
 mod mode;
 mod sol;
 mod src;
-mod val;
