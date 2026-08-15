@@ -16,6 +16,8 @@ pub use item_skill::{SkillInfo, SkillInfoExt};
 pub use item_stance::{StanceInfo, StanceInfoExt};
 pub use item_subsystem::{SubsystemInfo, SubsystemInfoExt};
 pub use item_sw_effect::{SwEffectInfo, SwEffectInfoExt};
+pub(crate) use mode::ItemInfoModesInt;
+pub use mode::{ItemInfoMode, ItemInfoModes, ItemInfoModesBackref};
 pub use shared::{
     AbilityInfo, AttrMutationInfo, ItemMutationInfo, ProjInfo, RangedProjInfo, SideEffectInfo, SideEffectMod,
     SideEffectOp,
@@ -39,4 +41,5 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod mode;
 mod shared;
