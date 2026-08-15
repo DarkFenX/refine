@@ -19,7 +19,7 @@ pub enum StatOptionExt<T> {
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatOption {
-    pub(in crate::stats::cmd) fn into_enabled(self, default: bool) -> bool {
+    pub(in crate::stats) fn into_enabled(self, default: bool) -> bool {
         match self {
             Self::Default => default,
             Self::Disabled => false,
@@ -29,7 +29,7 @@ impl StatOption {
 }
 
 impl<T> StatOptionExt<T> {
-    pub(in crate::stats::cmd) fn into_enabled(self, default: bool) -> Option<Vec<T>>
+    pub(in crate::stats) fn into_enabled(self, default: bool) -> Option<Vec<T>>
     where
         T: Default,
     {
