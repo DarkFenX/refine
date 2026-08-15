@@ -1,7 +1,6 @@
 pub use cmd::FleetInfoCmd;
 pub use info::{FleetInfo, FleetInfoExt};
-pub(crate) use mode::FleetInfoModesInt;
-pub use mode::{FleetInfoMode, FleetInfoModes, FleetInfoModesBackref};
+pub use mode::FleetInfoMode;
 
 mod cmd;
 mod info;

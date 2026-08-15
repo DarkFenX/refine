@@ -6,7 +6,7 @@ use crate::{CtlCmdResps, ctl::CtlCmdBackref};
 // Public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
-pub struct InfoModes<M, I>
+pub(in crate::info) struct InfoModes<M, I>
 where
     M: const Default,
 {
@@ -25,7 +25,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) struct InfoModesInt<M, I> {
+pub(in crate::info) struct InfoModesInt<M, I> {
     default: M,
     overrides: HashMap<I, M>,
 }
@@ -46,13 +46,13 @@ impl<M, I> InfoModesInt<M, I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<M, I> InfoModesInt<M, I> {
-    pub(crate) fn from_pub_mode(pub_mode: M) -> Self {
+    pub(in crate::info) fn from_pub_mode(pub_mode: M) -> Self {
         Self {
             default: pub_mode,
             overrides: HashMap::new(),
         }
     }
-    pub(crate) fn from_pub_modes_regular(pub_modes: InfoModes<M, I>) -> Self
+    pub(in crate::info) fn from_pub_modes_regular(pub_modes: InfoModes<M, I>) -> Self
     where
         M: Copy + const Default,
         I: Eq + Hash,
@@ -66,7 +66,7 @@ impl<M, I> InfoModesInt<M, I> {
                 .collect(),
         }
     }
-    pub(crate) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
+    pub(in crate::info) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
     where
         M: Copy + const Default,
         B: CtlCmdBackref<Target = I>,

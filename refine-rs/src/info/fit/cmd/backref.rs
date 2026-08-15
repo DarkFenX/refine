@@ -1,6 +1,6 @@
 use crate::{
-    CtlCmdResps, FitInfo, FitInfoMode, ItemIdBackref, ItemInfoMode, ItemInfoModesBackref,
-    info::{FitInfoModesInt, ItemInfoModesInt},
+    CtlCmdResps, FitInfo, FitInfoMode, ItemIdBackref, ItemInfoMode,
+    info::{InfoModes, InfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -9,7 +9,7 @@ pub struct FitInfoCmdBackref {
     #[cfg_attr(feature = "serde", serde(default))]
     fit: FitInfoMode = FitInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    item: ItemInfoModesBackref = ItemInfoModesBackref::default(),
+    item: InfoModes<ItemInfoMode, ItemIdBackref> = InfoModes::default(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,8 +40,8 @@ impl FitInfoCmdBackref {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut, ctl_cmd_resps: &CtlCmdResps) -> FitInfo {
         FitInfo::from_core(
             core_fit,
-            &FitInfoModesInt::from_pub_mode(self.fit),
-            &ItemInfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
+            &InfoModesInt::from_pub_mode(self.fit),
+            &InfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
         )
     }
 }

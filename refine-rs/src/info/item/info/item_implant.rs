@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, SlotIndex,
-    info::ItemInfoModesInt,
+    info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,7 +50,10 @@ pub struct ImplantInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantInfo {
-    pub(in crate::info) fn from_core(core_implant: &mut rc::ImplantMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(in crate::info) fn from_core(
+        core_implant: &mut rc::ImplantMut,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+    ) -> Self {
         let implant_id = core_implant.get_item_id();
         let implant_info_mode = item_info_modes.get(&implant_id);
         Self {

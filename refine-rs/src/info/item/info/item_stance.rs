@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    info::ItemInfoModesInt,
+    info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -48,7 +48,10 @@ pub struct StanceInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceInfo {
-    pub(in crate::info) fn from_core(core_stance: &mut rc::StanceMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(in crate::info) fn from_core(
+        core_stance: &mut rc::StanceMut,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+    ) -> Self {
         let stance_id = core_stance.get_item_id();
         let stance_info_mode = item_info_modes.get(&stance_id);
         Self {

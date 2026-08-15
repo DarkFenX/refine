@@ -1,10 +1,13 @@
-use crate::{ItemId, ItemInfo, ItemInfoMode, ItemInfoModes, info::ItemInfoModesInt};
+use crate::{
+    ItemId, ItemInfo, ItemInfoMode,
+    info::{InfoModes, InfoModesInt},
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: ItemInfoModes = ItemInfoModes::default(),
+    item: InfoModes<ItemInfoMode, ItemId> = InfoModes::default(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -29,6 +32,6 @@ impl ItemInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
-        ItemInfo::from_core(core_item, &ItemInfoModesInt::from_pub_modes_regular(self.item))
+        ItemInfo::from_core(core_item, &InfoModesInt::from_pub_modes_regular(self.item))
     }
 }

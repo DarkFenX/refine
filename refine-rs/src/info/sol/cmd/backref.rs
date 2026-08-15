@@ -1,7 +1,7 @@
 use crate::{
-    CtlCmdResps, FitIdBackref, FitInfoMode, FitInfoModesBackref, FleetIdBackref, FleetInfoMode, FleetInfoModesBackref,
-    ItemIdBackref, ItemInfoMode, ItemInfoModesBackref, SolInfo, SolInfoMode, SolarSystemId, SrcAlias,
-    info::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt},
+    CtlCmdResps, FitIdBackref, FitInfoMode, FleetIdBackref, FleetInfoMode, ItemIdBackref, ItemInfoMode, SolInfo,
+    SolInfoMode, SolarSystemId, SrcAlias,
+    info::{InfoModes, InfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -10,11 +10,11 @@ pub struct SolInfoCmdBackref {
     #[cfg_attr(feature = "serde", serde(default))]
     sol: SolInfoMode = SolInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: FleetInfoModesBackref = FleetInfoModesBackref::default(),
+    fleet: InfoModes<FleetInfoMode, FleetIdBackref> = InfoModes::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: FitInfoModesBackref = FitInfoModesBackref::default(),
+    fit: InfoModes<FitInfoMode, FitIdBackref> = InfoModes::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    item: ItemInfoModesBackref = ItemInfoModesBackref::default(),
+    item: InfoModes<ItemInfoMode, ItemIdBackref> = InfoModes::default(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -70,9 +70,9 @@ impl SolInfoCmdBackref {
             src_alias,
             core_sol,
             self.sol,
-            &FleetInfoModesInt::from_pub_modes_backref(self.fleet, ctl_cmd_resps),
-            &FitInfoModesInt::from_pub_modes_backref(self.fit, ctl_cmd_resps),
-            &ItemInfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
+            &InfoModesInt::from_pub_modes_backref(self.fleet, ctl_cmd_resps),
+            &InfoModesInt::from_pub_modes_backref(self.fit, ctl_cmd_resps),
+            &InfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
         )
     }
 }

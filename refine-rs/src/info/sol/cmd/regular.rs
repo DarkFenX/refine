@@ -1,7 +1,7 @@
 use crate::{
-    FitId, FitInfoMode, FitInfoModes, FleetId, FleetInfoMode, FleetInfoModes, ItemId, ItemInfoMode, ItemInfoModes,
-    SolInfo, SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
-    info::{FitInfoModesInt, FleetInfoModesInt, ItemInfoModesInt},
+    FitId, FitInfoMode, FleetId, FleetInfoMode, ItemId, ItemInfoMode, SolInfo, SolInfoExt, SolInfoMode, SolarSystemId,
+    SrcAlias,
+    info::{InfoModes, InfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -10,11 +10,11 @@ pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     sol: SolInfoMode = SolInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: FleetInfoModes = FleetInfoModes::default(),
+    fleet: InfoModes<FleetInfoMode, FleetId> = InfoModes::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: FitInfoModes = FitInfoModes::default(),
+    fit: InfoModes<FitInfoMode, FitId> = InfoModes::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    item: ItemInfoModes = ItemInfoModes::default(),
+    item: InfoModes<ItemInfoMode, ItemId> = InfoModes::default(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -69,9 +69,9 @@ impl SolInfoCmd {
             src_alias,
             core_sol,
             self.sol,
-            &FleetInfoModesInt::from_pub_modes_regular(self.fleet),
-            &FitInfoModesInt::from_pub_modes_regular(self.fit),
-            &ItemInfoModesInt::from_pub_modes_regular(self.item),
+            &InfoModesInt::from_pub_modes_regular(self.fleet),
+            &InfoModesInt::from_pub_modes_regular(self.fit),
+            &InfoModesInt::from_pub_modes_regular(self.item),
         )
     }
 
@@ -79,9 +79,9 @@ impl SolInfoCmd {
         SolInfoExt::try_from_core(
             core_sol,
             self.sol,
-            &FleetInfoModesInt::from_pub_modes_regular(self.fleet),
-            &FitInfoModesInt::from_pub_modes_regular(self.fit),
-            &ItemInfoModesInt::from_pub_modes_regular(self.item),
+            &InfoModesInt::from_pub_modes_regular(self.fleet),
+            &InfoModesInt::from_pub_modes_regular(self.fit),
+            &InfoModesInt::from_pub_modes_regular(self.item),
         )
     }
 }

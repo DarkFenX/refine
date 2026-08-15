@@ -1,4 +1,4 @@
-use crate::{FleetInfo, FleetInfoMode, info::FleetInfoModesInt};
+use crate::{FleetInfo, FleetInfoMode, info::InfoModesInt};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
@@ -25,6 +25,6 @@ impl FleetInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
-        FleetInfo::from_core(core_fleet, &FleetInfoModesInt::from_pub_mode(self.fleet))
+        FleetInfo::from_core(core_fleet, &InfoModesInt::from_pub_mode(self.fleet))
     }
 }

@@ -2,8 +2,8 @@ use rc::Lender;
 
 use crate::{
     BoosterInfo, CharacterInfo, DpsProfile, DroneInfo, FighterInfo, FitId, FitInfoMode, FitSecStatus, FleetId,
-    FwEffectInfo, ImplantInfo, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
-    info::{FitInfoModesInt, ItemInfoModesInt},
+    FwEffectInfo, ImplantInfo, ItemId, ItemInfoMode, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo,
+    SubsystemInfo, info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -72,8 +72,8 @@ impl ModuleRacks {
 impl FitInfo {
     pub(in crate::info) fn from_core(
         core_fit: &mut rc::FitMut,
-        fit_info_modes: &FitInfoModesInt,
-        item_info_modes: &ItemInfoModesInt,
+        fit_info_modes: &InfoModesInt<FitInfoMode, FitId>,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
     ) -> Self {
         let fit_id = core_fit.get_fit_id();
         let fit_info_mode = fit_info_modes.get(&fit_id);

@@ -35,13 +35,12 @@ pub use ctl::{
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
-    FitInfoCmd, FitInfoCmdBackref, FitInfoExt, FitInfoMode, FitInfoModes, FitInfoModesBackref, FleetInfo, FleetInfoCmd,
-    FleetInfoExt, FleetInfoMode, FleetInfoModes, FleetInfoModesBackref, FwEffectInfo, FwEffectInfoExt, ImplantInfo,
-    ImplantInfoExt, InfoModes, ItemInfo, ItemInfoCmd, ItemInfoMode, ItemInfoModes, ItemInfoModesBackref,
-    ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo,
-    RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp,
-    SkillInfo, SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode, StanceInfo,
-    StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
+    FitInfoCmd, FitInfoCmdBackref, FitInfoExt, FitInfoMode, FleetInfo, FleetInfoCmd, FleetInfoExt, FleetInfoMode,
+    FwEffectInfo, FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemInfo, ItemInfoCmd, ItemInfoMode, ItemMutationInfo,
+    ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt,
+    ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo,
+    SkillInfoExt, SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode, StanceInfo, StanceInfoExt,
+    SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub use rc::{
     AbilityId, AddMode, Affector, AttrId, BreacherProfile, Coordinates, Count, CountNz, DefOption, DefOptionExt,

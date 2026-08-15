@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
-    Modification, Movement, info::ItemInfoModesInt,
+    Modification, Movement, info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,7 +50,10 @@ pub struct ShipInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipInfo {
-    pub(in crate::info) fn from_core(core_ship: &mut rc::ShipMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(in crate::info) fn from_core(
+        core_ship: &mut rc::ShipMut,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+    ) -> Self {
         let ship_id = core_ship.get_item_id();
         let ship_info_mode = item_info_modes.get(&ship_id);
         Self {

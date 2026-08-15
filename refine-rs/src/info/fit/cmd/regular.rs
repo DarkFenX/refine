@@ -1,6 +1,6 @@
 use crate::{
-    FitInfo, FitInfoMode, ItemId, ItemInfoMode, ItemInfoModes,
-    info::{FitInfoModesInt, ItemInfoModesInt},
+    FitInfo, FitInfoMode, ItemId, ItemInfoMode,
+    info::{InfoModes, InfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -9,7 +9,7 @@ pub struct FitInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fit: FitInfoMode = FitInfoMode::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    item: ItemInfoModes = ItemInfoModes::default(),
+    item: InfoModes<ItemInfoMode, ItemId> = InfoModes::default(),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -40,8 +40,8 @@ impl FitInfoCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
         FitInfo::from_core(
             core_fit,
-            &FitInfoModesInt::from_pub_mode(self.fit),
-            &ItemInfoModesInt::from_pub_modes_regular(self.item),
+            &InfoModesInt::from_pub_mode(self.fit),
+            &InfoModesInt::from_pub_modes_regular(self.item),
         )
     }
 }

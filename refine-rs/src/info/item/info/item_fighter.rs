@@ -6,7 +6,7 @@ use crate::ItemKind;
 use crate::{
     AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, EffectId, FighterCountInfo, FitId, ItemAttrValues,
     ItemEffectInfo, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification, Movement,
-    RangedProjInfo, info::ItemInfoModesInt,
+    RangedProjInfo, info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
@@ -68,7 +68,10 @@ pub struct FighterInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterInfo {
-    pub(in crate::info) fn from_core(core_fighter: &mut rc::FighterMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(in crate::info) fn from_core(
+        core_fighter: &mut rc::FighterMut,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+    ) -> Self {
         let fighter_id = core_fighter.get_item_id();
         let fighter_info_mode = item_info_modes.get(&fighter_id);
         Self {

@@ -7,8 +7,7 @@ pub use info::{
     ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo,
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
-pub(crate) use mode::ItemInfoModesInt;
-pub use mode::{ItemInfoMode, ItemInfoModes, ItemInfoModesBackref};
+pub use mode::ItemInfoMode;
 
 mod cmd;
 mod info;

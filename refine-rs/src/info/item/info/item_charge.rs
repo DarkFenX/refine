@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    info::ItemInfoModesInt,
+    info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -49,7 +49,10 @@ pub struct ChargeInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChargeInfo {
-    pub(super) fn from_core(core_charge: &mut rc::ChargeMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(super) fn from_core(
+        core_charge: &mut rc::ChargeMut,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+    ) -> Self {
         let charge_id = core_charge.get_item_id();
         let charge_info_mode = item_info_modes.get(&charge_id);
         Self {

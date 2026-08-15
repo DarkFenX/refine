@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    info::ItemInfoModesInt,
+    info::InfoModesInt,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -47,7 +47,10 @@ pub struct SwEffectInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectInfo {
-    pub(in crate::info) fn from_core(core_sw_effect: &mut rc::SwEffectMut, item_info_modes: &ItemInfoModesInt) -> Self {
+    pub(in crate::info) fn from_core(
+        core_sw_effect: &mut rc::SwEffectMut,
+        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+    ) -> Self {
         let sw_effect_id = core_sw_effect.get_item_id();
         let sw_effect_info_mode = item_info_modes.get(&sw_effect_id);
         Self {
