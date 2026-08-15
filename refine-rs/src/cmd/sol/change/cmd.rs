@@ -3,7 +3,7 @@ use super::{
     sub_item_stance::SolChangeStanceCmdRIds,
 };
 use crate::{
-    CmdResp, CtlCmdResps, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
+    CtlCmdResp, CtlCmdResps, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
     SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
     SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
     SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd,
@@ -254,7 +254,7 @@ impl ChangeSolEnumCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeSolEnumCmdRIds {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, ChangeSolEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CtlCmdResp, ChangeSolEnumError> {
         match self {
             // Solar system
             #[expect(clippy::unit_arg)]

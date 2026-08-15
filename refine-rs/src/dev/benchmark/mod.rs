@@ -4,6 +4,7 @@ pub use sub_stats::DevBenchmarkStatsCmd;
 pub use sub_try_fit_items::DevBenchmarkTryFitItemsCmd;
 
 mod cmd;
+mod sol_benchmark;
 mod sub_attr_calc;
 mod sub_stats;
 mod sub_try_fit_items;

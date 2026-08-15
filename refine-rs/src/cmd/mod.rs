@@ -1,6 +1,3 @@
-pub use dev::{
-    DecCheckCmd, DevBenchmarkAttrCalcCmd, DevBenchmarkCmd, DevBenchmarkStatsCmd, DevBenchmarkTryFitItemsCmd,
-};
 pub use fit::{
     AddFitCmd, ChangeFitEnumCmd, ChangeFitEnumError, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
     FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
@@ -41,7 +38,7 @@ pub use item::{
 pub(crate) use shared::CtlCmdBackref;
 pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
-    ChangedItemIdsResp, CmdResp, CtlCmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref,
+    ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
     AddSolCmd, ChangeCharacterError, ChangeShipError, ChangeSolEnumCmd, ChangeSolEnumError, ChangeStanceError,
@@ -65,7 +62,6 @@ pub use stats::{
 pub use try_fit_items::TryFitItemsCmd;
 pub use validate::{ValidateFitCmd, ValidateSolCmd};
 
-mod dev;
 mod fit;
 mod fleet;
 mod inner;

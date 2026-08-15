@@ -1,5 +1,5 @@
 use crate::{
-    CmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd,
+    CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd,
     FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeAutochargeCmd,
     FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
     FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
@@ -201,7 +201,7 @@ impl ChangeFitEnumCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChangeFitEnumCmdRIds {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, ChangeFitEnumError> {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CtlCmdResp, ChangeFitEnumError> {
         match self {
             // Fit
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_fit)?.into()),

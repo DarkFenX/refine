@@ -1,6 +1,10 @@
 use tokio_rayon::rayon::prelude::*;
 
-use crate::{FitId, ItemTypeId, cmd::shared::SolCloner, dev::DevBenchmarkCmd, val::ValOptions};
+use crate::{
+    FitId, ItemTypeId,
+    dev::{DevBenchmarkCmd, SolCloner},
+    val::ValOptions,
+};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct DevBenchmarkTryFitItemsCmd {

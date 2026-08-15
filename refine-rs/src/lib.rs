@@ -11,7 +11,7 @@ pub use api::{
 pub use cmd::{
     AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
     AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
-    ChangedItemIdsResp, CmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
+    ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
     FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd,
     FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
     FitChangeFighterCmd, FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd,

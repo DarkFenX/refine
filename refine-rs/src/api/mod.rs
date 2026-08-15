@@ -13,7 +13,6 @@ pub use src::{
     SrcInfoArgs,
 };
 
-mod dev;
 mod fit;
 mod fleet;
 mod item;

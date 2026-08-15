@@ -2,14 +2,14 @@ use rc::ItemCommon;
 
 use crate::{FitId, FleetId, ItemId};
 
-pub enum CmdResp {
+pub enum CtlCmdResp {
     AddedFleetId(AddedFleetIdResp),
     AddedFitId(AddedFitIdResp),
     AddedItemIds(AddedItemIdsResp),
     ChangedItemIds(ChangedItemIdsResp),
     NoData,
 }
-impl CmdResp {
+impl CtlCmdResp {
     pub fn get_fleet_id(&self) -> Option<FleetId> {
         match self {
             Self::AddedFleetId(resp) => Some(resp.fleet_id),
@@ -64,29 +64,29 @@ pub struct ChangedItemIdsResp {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl From<()> for CmdResp {
+impl From<()> for CtlCmdResp {
     fn from(_: ()) -> Self {
-        CmdResp::NoData
+        CtlCmdResp::NoData
     }
 }
-impl From<AddedFitIdResp> for CmdResp {
+impl From<AddedFitIdResp> for CtlCmdResp {
     fn from(resp: AddedFitIdResp) -> Self {
-        CmdResp::AddedFitId(resp)
+        CtlCmdResp::AddedFitId(resp)
     }
 }
-impl From<AddedFleetIdResp> for CmdResp {
+impl From<AddedFleetIdResp> for CtlCmdResp {
     fn from(resp: AddedFleetIdResp) -> Self {
-        CmdResp::AddedFleetId(resp)
+        CtlCmdResp::AddedFleetId(resp)
     }
 }
-impl From<AddedItemIdsResp> for CmdResp {
+impl From<AddedItemIdsResp> for CtlCmdResp {
     fn from(resp: AddedItemIdsResp) -> Self {
-        CmdResp::AddedItemIds(resp)
+        CtlCmdResp::AddedItemIds(resp)
     }
 }
-impl From<ChangedItemIdsResp> for CmdResp {
+impl From<ChangedItemIdsResp> for CtlCmdResp {
     fn from(resp: ChangedItemIdsResp) -> Self {
-        CmdResp::ChangedItemIds(resp)
+        CtlCmdResp::ChangedItemIds(resp)
     }
 }
 
@@ -216,7 +216,7 @@ mod custom_serde {
 
     use super::*;
 
-    impl Serialize for CmdResp {
+    impl Serialize for CtlCmdResp {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,

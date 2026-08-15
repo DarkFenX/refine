@@ -686,10 +686,10 @@ impl From<rs::err::ChangeSolError> for ApiError {
 impl From<rs::err::ChangeFitError> for ApiError {
     fn from(err: rs::err::ChangeFitError) -> Self {
         match err {
-            rs::err::ChangeFitError::Render(index, inner) => {
+            rs::err::ChangeFitError::CtlRender(index, inner) => {
                 Self::BackrefRender(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::ChangeFitError::Exec(index, inner) => Self::FitChange(ApiErrorIndexed { index, error: inner }),
+            rs::err::ChangeFitError::CtlExec(index, inner) => Self::FitChange(ApiErrorIndexed { index, error: inner }),
         }
     }
 }

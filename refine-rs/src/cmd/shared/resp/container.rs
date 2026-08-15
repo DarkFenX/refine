@@ -1,11 +1,11 @@
-use crate::{CmdResp, FitId, FitIdBackref, FleetId, FleetIdBackref, ItemId, ItemIdBackref, err::BackrefRenderError};
+use crate::{CtlCmdResp, FitId, FitIdBackref, FleetId, FleetIdBackref, ItemId, ItemIdBackref, err::BackrefRenderError};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct CtlCmdResps {
-    data: Vec<CmdResp>,
+    data: Vec<CtlCmdResp>,
 }
 impl CtlCmdResps {
-    pub fn get(&self, index: usize) -> Option<&CmdResp> {
+    pub fn get(&self, index: usize) -> Option<&CtlCmdResp> {
         self.data.get(index)
     }
 }
@@ -19,7 +19,7 @@ impl CtlCmdResps {
             data: Vec::with_capacity(capacity),
         }
     }
-    pub(crate) fn append(&mut self, resp: CmdResp) {
+    pub(crate) fn append(&mut self, resp: CtlCmdResp) {
         self.data.push(resp);
     }
     pub(in crate::cmd) fn render_fleet_id(&self, fleet_id: FleetIdBackref) -> Result<FleetId, BackrefRenderError> {
@@ -65,33 +65,33 @@ impl CtlCmdResps {
     fn get_fleet_id(&self, index: usize) -> Result<FleetId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::AddedFleetId(resp) => Ok(resp.fleet_id),
+            CtlCmdResp::AddedFleetId(resp) => Ok(resp.fleet_id),
             _ => Err(BackrefRenderError::NoFleetId(index)),
         }
     }
     fn get_fit_id(&self, index: usize) -> Result<FitId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::AddedFitId(resp) => Ok(resp.fit_id),
+            CtlCmdResp::AddedFitId(resp) => Ok(resp.fit_id),
             _ => Err(BackrefRenderError::NoFitId(index)),
         }
     }
     fn get_item_id(&self, index: usize) -> Result<ItemId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::AddedItemIds(resp) => Ok(resp.item_id),
+            CtlCmdResp::AddedItemIds(resp) => Ok(resp.item_id),
             _ => Err(BackrefRenderError::NoItemId(index)),
         }
     }
     fn get_charge_item_id(&self, index: usize) -> Result<ItemId, BackrefRenderError> {
         let resp = self.get_resp(index)?;
         match resp {
-            CmdResp::AddedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
-            CmdResp::ChangedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
+            CtlCmdResp::AddedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
+            CtlCmdResp::ChangedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
             _ => Err(BackrefRenderError::NoChargeItemId(index)),
         }
     }
-    fn get_resp(&self, index: usize) -> Result<&CmdResp, BackrefRenderError> {
+    fn get_resp(&self, index: usize) -> Result<&CtlCmdResp, BackrefRenderError> {
         self.data.get(index).ok_or(BackrefRenderError::NotFound(index))
     }
 }
