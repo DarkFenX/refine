@@ -53,12 +53,6 @@ pub use sol::{
     SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd,
     SolUnsetShipCmd, SolUnsetStanceCmd,
 };
-pub use stats::{
-    GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp,
-    StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-    StatOptionFitOutRps, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps,
-    StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
-};
 pub use try_fit_items::TryFitItemsCmd;
 pub use validate::{ValidateFitCmd, ValidateSolCmd};
 
@@ -68,6 +62,5 @@ mod inner;
 mod item;
 mod shared;
 mod sol;
-mod stats;
 mod try_fit_items;
 mod validate;

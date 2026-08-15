@@ -1,3 +1,12 @@
+pub use cmd::{
+    GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp,
+    StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+    StatOptionFitOutRps, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps,
+    StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
+};
+pub use info::{
+    FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
+};
 pub use rc::{
     CtlAffectors as StatAffectors,
     stats::{
@@ -10,20 +19,6 @@ pub use rc::{
     },
 };
 
-pub use crate::{
-    ctl::{
-        GetFitStatsCmd, GetFleetStatsCmd, GetItemStatsCmd, StatOption, StatOptionCapBlc, StatOptionCapSim,
-        StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining,
-        StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass,
-        StatOptionRps,
-    },
-    info::{
-        FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw,
-        StatResult,
-    },
-};
-
-pub mod err {
-    pub use rc::stats::err::*;
-}
+mod cmd;
+pub mod err;
+mod info;

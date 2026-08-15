@@ -16,9 +16,6 @@ pub use mode::InfoModes;
 pub(crate) use mode::InfoModesInt;
 pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
-pub use stats::{
-    FitStats, FleetStats, ItemStats, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
-};
 pub use val::{FitValInfo, SolValInfo, ValInfoMode};
 
 mod fit;
@@ -27,5 +24,4 @@ mod item;
 mod mode;
 mod sol;
 mod src;
-mod stats;
 mod val;
