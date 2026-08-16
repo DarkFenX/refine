@@ -1,7 +1,4 @@
-use crate::{
-    FitIdBr, FleetIdBr, SolCtlCmd,
-    ctl::core::{ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
-};
+use crate::{FitIdBr, FleetIdBr, SolCtlCmd, ctl::core::ICmdFleetChangeFCtxBIds};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change
@@ -31,26 +28,5 @@ impl SolChangeFleetCmd {
 impl From<SolChangeFleetCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeFleetCmd) -> Self {
         Self::ChangeFleet(sub_cmd)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Remove
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub struct SolRemoveFleetCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdFleetRemoveFCtxBIds,
-}
-impl SolRemoveFleetCmd {
-    pub fn new(fleet_id: FleetIdBr) -> Self {
-        Self {
-            inner: ICmdFleetRemoveFCtxBIds { fleet_id, .. },
-        }
-    }
-}
-impl From<SolRemoveFleetCmd> for SolCtlCmd {
-    fn from(sub_cmd: SolRemoveFleetCmd) -> Self {
-        Self::RemoveFleet(sub_cmd)
     }
 }

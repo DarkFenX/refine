@@ -4,33 +4,33 @@ use super::{
 };
 use crate::{
     CtlCmdResp, CtlCmdResps, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitIdBr, FitRemoveCmd,
-    FleetAddCmdBr, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFwEffectCmd, SolAddImplantCmd,
-    SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd,
-    SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd,
-    SolChangeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd,
-    SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd,
-    SolChangeSkillCmd, SolChangeStanceCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolRemoveFleetCmd,
+    FleetAddCmdBr, FleetIdBr, FleetRemoveCmd, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFwEffectCmd,
+    SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd,
+    SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd,
+    SolChangeChargeCmd, SolChangeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd, SolChangeFwEffectCmd,
+    SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
+    SolChangeShipCmd, SolChangeSkillCmd, SolChangeStanceCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd,
     SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd,
     SolUnsetStanceCmd,
     ctl::core::{
         FitChangeCmdCtxFit, FitChangeCmdCtxFitBr, FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetAddCmd,
-        ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
-        ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
-        ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds,
-        ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds, ICmdImplantChangeFCtxRIds,
-        ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds,
-        ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds,
-        ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSkillAddFCtxRIds,
-        ICmdSkillChangeFCtxRIds, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ICmdSubsystemAddFCtxRIds,
-        ICmdSubsystemChangeFCtxRIds, ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxRIds,
+        FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds,
+        ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds, ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds,
+        ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds,
+        ICmdFleetChangeFCtxRIds, ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds,
+        ICmdImplantChangeFCtxRIds, ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds,
+        ICmdProjEffectAddFCtxRIds, ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds,
+        ICmdServiceAddFCtxRIds, ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds,
+        ICmdSkillAddFCtxRIds, ICmdSkillChangeFCtxRIds, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds,
+        ICmdSubsystemAddFCtxRIds, ICmdSubsystemChangeFCtxRIds, ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxRIds,
     },
     err::{
         AddProjEffectError, BackrefRenderError, ChangeCharacterError, ChangeShipError, ChangeStanceError, FitAddError,
-        FitGetFitChangeError, FitGetFitRemoveError, FleetAddError, GetFitAddBoosterError, GetFitAddDroneError,
-        GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError,
-        GetFitAddServiceError, GetFitAddSkillError, GetFitAddSubsystemError, GetFitSetCharacterError,
-        GetFitSetShipError, GetFitSetStanceError, GetFitUnsetCharacterError, GetFitUnsetShipError,
-        GetFitUnsetStanceError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
+        FitGetFitChangeError, FitGetFitRemoveError, FleetAddError, FleetGetFleetRemoveError, GetFitAddBoosterError,
+        GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError,
+        GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError, GetFitAddSubsystemError,
+        GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, GetFitUnsetCharacterError,
+        GetFitUnsetShipError, GetFitUnsetStanceError, GetFleetChangeFleetError, GetItemChangeAutochargeError,
         GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
         GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeProjEffectError,
         GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError, GetItemChangeSubsystemError,
@@ -49,7 +49,7 @@ pub enum SolCtlCmd {
     // Fleet
     AddFleet(FleetAddCmdBr),
     ChangeFleet(SolChangeFleetCmd),
-    RemoveFleet(SolRemoveFleetCmd),
+    RemoveFleet(FleetRemoveCmdCtxFleetBr),
     // Fit
     AddFit(FitAddCmdBr),
     ChangeFit(FitChangeCmdCtxFitBr),
@@ -116,7 +116,7 @@ pub(crate) enum SolCtlCmdRendered {
     // Fleet
     AddFleet(FleetAddCmd),
     ChangeFleet(ICmdFleetChangeFCtxRIds),
-    RemoveFleet(ICmdFleetRemoveFCtxRIds),
+    RemoveFleet(FleetRemoveCmdCtxFleet),
     // Fit
     AddFit(FitAddCmd),
     ChangeFit(FitChangeCmdCtxFit),
@@ -197,6 +197,11 @@ impl FleetAddCmdBr {
         SolCtlCmd::AddFleet(self)
     }
 }
+impl FleetRemoveCmd {
+    pub fn into_sol_ctl(self, fleet_id: impl Into<FleetIdBr>) -> SolCtlCmd {
+        SolCtlCmd::RemoveFleet(self.into_ctx_fit_br(fleet_id))
+    }
+}
 // Fit
 impl FitAddCmd {
     pub fn into_sol_ctl(self) -> SolCtlCmd {
@@ -235,7 +240,7 @@ impl SolCtlCmd {
             // Fleet
             Self::AddFleet(cmd) => SolCtlCmdRendered::AddFleet(cmd.render(resps)?),
             Self::ChangeFleet(cmd) => SolCtlCmdRendered::ChangeFleet(cmd.inner.render(resps)?),
-            Self::RemoveFleet(cmd) => SolCtlCmdRendered::RemoveFleet(cmd.inner.render(resps)?),
+            Self::RemoveFleet(cmd) => SolCtlCmdRendered::RemoveFleet(cmd.render(resps)?),
             // Fit
             Self::AddFit(cmd) => SolCtlCmdRendered::AddFit(cmd.render(resps)?),
             Self::ChangeFit(cmd) => SolCtlCmdRendered::ChangeFit(cmd.render(resps)?),
@@ -381,7 +386,7 @@ pub enum ChangeSolEnumError {
     #[error("failed to change fleet")]
     FleetChange(#[from] GetFleetChangeFleetError),
     #[error("failed to remove fleet")]
-    FleetRemove(#[from] GetFleetRemoveFleetError),
+    FleetRemove(#[from] FleetGetFleetRemoveError),
     // Fit
     #[error("failed to add fit")]
     FitAdd(#[from] FitAddError),

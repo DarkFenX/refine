@@ -158,7 +158,6 @@ impl FitChangeCmd {
         Ok(())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeError {
     #[error("failed to set fleet")]
@@ -171,7 +170,6 @@ impl FitChangeCmdCtxFit {
         Ok(self.core.execute(&mut core_fit)?)
     }
 }
-
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitChangeError {
     #[error(transparent)]

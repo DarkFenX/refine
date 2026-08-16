@@ -1,5 +1,5 @@
 pub use cmd::{ChangeSolEnumError, SolCtlCmd};
-pub use sub_fleet::{SolChangeFleetCmd, SolRemoveFleetCmd};
+pub use sub_fleet::SolChangeFleetCmd;
 pub use sub_item::SolRemoveItemCmd;
 pub use sub_item_autocharge::SolChangeAutochargeCmd;
 pub use sub_item_booster::{SolAddBoosterCmd, SolChangeBoosterCmd};

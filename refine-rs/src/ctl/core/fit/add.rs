@@ -105,7 +105,6 @@ impl FitAddCmd {
         Ok(AddedFitIdResp::from_core_fit(core_fit))
     }
 }
-
 #[derive(thiserror::Error, Debug)]
 pub enum FitAddError {
     #[error("failed to set fleet")]

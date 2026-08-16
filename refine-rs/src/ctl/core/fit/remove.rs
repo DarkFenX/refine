@@ -66,7 +66,6 @@ impl FitRemoveCmdCtxFit {
         Ok(())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitRemoveError {
     #[error(transparent)]

@@ -1,29 +1,51 @@
 use crate::{CtlCmdResps, FleetId, FleetIdBr, err::BackrefRenderError};
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFleetRemoveFCtxBIds {
-    pub(in crate::ctl) fleet_id: FleetIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdFleetRemoveICtx = ICmdFleetRemoveICtx,
-}
-pub(crate) struct ICmdFleetRemoveFCtxRIds {
+#[derive(Default)]
+pub struct FleetRemoveCmd;
+
+// Extra context commands
+pub struct FleetRemoveCmdCtxFleet {
     fleet_id: FleetId,
-    ictx_cmd: ICmdFleetRemoveICtx,
+    core: FleetRemoveCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct FleetRemoveCmdCtxFleetBr {
+    fleet_id: FleetIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: FleetRemoveCmd = FleetRemoveCmd,
 }
 
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFleetRemoveICtx;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetRemoveCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetRemoveCmd {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetRemoveCmdCtxFleetBr {
+        FleetRemoveCmdCtxFleetBr {
+            fleet_id: fleet_id.into(),
+            core: self,
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFleetRemoveFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFleetRemoveFCtxRIds, BackrefRenderError> {
-        Ok(ICmdFleetRemoveFCtxRIds {
+impl FleetRemoveCmdCtxFleetBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FleetRemoveCmdCtxFleet, BackrefRenderError> {
+        Ok(FleetRemoveCmdCtxFleet {
             fleet_id: resps.render_fleet_id(self.fleet_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -31,22 +53,21 @@ impl ICmdFleetRemoveFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFleetRemoveFCtxRIds {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetRemoveFleetError> {
+impl FleetRemoveCmd {
+    pub(crate) fn execute(self, core_fleet: rc::FleetMut) {
+        core_fleet.remove()
+    }
+}
+
+impl FleetRemoveCmdCtxFleet {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FleetGetFleetRemoveError> {
         let core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
-        self.ictx_cmd.execute(core_fleet);
+        self.core.execute(core_fleet);
         Ok(())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum GetFleetRemoveFleetError {
+pub enum FleetGetFleetRemoveError {
     #[error(transparent)]
     FleetGet(#[from] rc::err::GetFleetError),
-}
-
-impl ICmdFleetRemoveICtx {
-    pub(in crate::ctl) fn execute(self, core_fleet: rc::FleetMut) {
-        core_fleet.remove()
-    }
 }

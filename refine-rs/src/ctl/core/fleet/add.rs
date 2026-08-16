@@ -71,7 +71,6 @@ impl FleetAddCmd {
         Ok(AddedFleetIdResp::from_core_fleet(core_fleet))
     }
 }
-
 #[derive(thiserror::Error, Debug)]
 pub enum FleetAddError {
     #[error("failed to add fit to fleet")]

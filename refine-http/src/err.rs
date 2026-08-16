@@ -145,7 +145,7 @@ impl ApiError {
                     rs::err::GetFleetChangeFleetError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
                     rs::err::GetFleetChangeFleetError::FitRemove(..) => (StatusCode::BAD_REQUEST, "FLT-005"),
                 },
-                rs::err::ChangeSolEnumError::FleetRemove(rs::err::GetFleetRemoveFleetError::FleetGet(_)) => {
+                rs::err::ChangeSolEnumError::FleetRemove(rs::err::FleetGetFleetRemoveError::FleetGet(_)) => {
                     (StatusCode::BAD_REQUEST, "FLT-001")
                 }
                 // Fits

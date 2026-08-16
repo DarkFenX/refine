@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn remove_fleet(
     State(state): State<AppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::RemoveFleetCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::FleetRemoveCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_remove_fleet(state, sol_id, fleet_id, payload).await {
@@ -26,7 +26,7 @@ async fn internal_remove_fleet(
     state: AppState,
     sol_id: String,
     fleet_id: String,
-    payload: rs::RemoveFleetCmd,
+    payload: rs::FleetRemoveCmd,
 ) -> Result<(), ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;
