@@ -1,8 +1,5 @@
 pub use add::{AddFitError, FitAddCmd, FitAddCmdBackref};
-pub use change::{FitChangeFitError, GetFitChangeFitError};
-pub(in crate::ctl) use change::{
-    ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds,
-};
+pub use change::{FitChangeCmd, FitChangeCmdBackref, FitChangeError};
 pub use remove::FitRemoveCmd;
 
 mod add;

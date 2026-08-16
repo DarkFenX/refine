@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, Coordinates, EffectId, EffectMode, ItemTypeId, Movement,
+    Coordinates, EffectId, EffectMode, FitCtlCmd, ItemTypeId, Movement,
     ctl::core::{ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx},
 };
 
@@ -35,7 +35,7 @@ impl FitSetShipCmd {
         self
     }
 }
-impl From<FitSetShipCmd> for ChangeFitEnumCmd {
+impl From<FitSetShipCmd> for FitCtlCmd {
     fn from(sub_cmd: FitSetShipCmd) -> Self {
         Self::SetShip(sub_cmd)
     }
@@ -76,7 +76,7 @@ impl FitChangeShipCmd {
         self
     }
 }
-impl From<FitChangeShipCmd> for ChangeFitEnumCmd {
+impl From<FitChangeShipCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeShipCmd) -> Self {
         Self::ChangeShip(sub_cmd)
     }
@@ -96,7 +96,7 @@ impl FitUnsetShipCmd {
         Self::default()
     }
 }
-impl From<FitUnsetShipCmd> for ChangeFitEnumCmd {
+impl From<FitUnsetShipCmd> for FitCtlCmd {
     fn from(sub_cmd: FitUnsetShipCmd) -> Self {
         Self::UnsetShip(sub_cmd)
     }

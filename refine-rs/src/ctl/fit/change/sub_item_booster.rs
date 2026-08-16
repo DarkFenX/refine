@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId,
     ctl::core::{ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds},
 };
 
@@ -32,7 +32,7 @@ impl FitAddBoosterCmd {
         self
     }
 }
-impl From<FitAddBoosterCmd> for ChangeFitEnumCmd {
+impl From<FitAddBoosterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddBoosterCmd) -> Self {
         Self::AddBooster(sub_cmd)
     }
@@ -71,7 +71,7 @@ impl FitChangeBoosterCmd {
         self
     }
 }
-impl From<FitChangeBoosterCmd> for ChangeFitEnumCmd {
+impl From<FitChangeBoosterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeBoosterCmd) -> Self {
         Self::ChangeBooster(sub_cmd)
     }

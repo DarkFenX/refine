@@ -1,4 +1,4 @@
-use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, ctl::core::ICmdChargeChangeFCtxBIds};
+use crate::{EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, ctl::core::ICmdChargeChangeFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeChargeCmd {
@@ -25,7 +25,7 @@ impl FitChangeChargeCmd {
         self
     }
 }
-impl From<FitChangeChargeCmd> for ChangeFitEnumCmd {
+impl From<FitChangeChargeCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeChargeCmd) -> Self {
         Self::ChangeCharge(sub_cmd)
     }

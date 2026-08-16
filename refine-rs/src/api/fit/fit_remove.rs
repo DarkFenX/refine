@@ -1,8 +1,8 @@
-use crate::{Fit, RemoveFitCmd};
+use crate::{Fit, FitRemoveCmd};
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-rmv", level = "trace", skip_all)]
-    pub async fn remove(self, cmd: RemoveFitCmd) {
+    pub async fn remove(self, cmd: FitRemoveCmd) {
         // Variables for move
         let fit_id = self.id;
         self.sol

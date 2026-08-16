@@ -1,11 +1,11 @@
 use crate::{
-    ChangeFitEnumCmd, CtlCmdResps, Fit, FitInfo, FitInfoCmdBackref,
-    err::{BackrefRenderError, ChangeFitEnumError},
+    CtlCmdResps, Fit, FitCtlCmd, FitInfo, FitInfoCmdBackref,
+    err::{BackrefRenderError, FitCtlCmdError},
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmds: Vec<ChangeFitEnumCmd>) -> Result<CtlCmdResps, ChangeFitError> {
+    pub async fn change(&mut self, ctl_cmds: Vec<FitCtlCmd>) -> Result<CtlCmdResps, CtlFitChangeError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -21,9 +21,9 @@ impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        ctl_cmds: Vec<ChangeFitEnumCmd>,
+        ctl_cmds: Vec<FitCtlCmd>,
         info_cmd: FitInfoCmdBackref,
-    ) -> Result<(CtlCmdResps, FitInfo), ChangeFitError> {
+    ) -> Result<(CtlCmdResps, FitInfo), CtlFitChangeError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -39,31 +39,31 @@ impl Fit<'_, '_> {
     }
 }
 
-fn execute_commands(core_fit: &mut rc::FitMut, ctl_cmds: Vec<ChangeFitEnumCmd>) -> Result<CtlCmdResps, ChangeFitError> {
+fn execute_commands(core_fit: &mut rc::FitMut, ctl_cmds: Vec<FitCtlCmd>) -> Result<CtlCmdResps, CtlFitChangeError> {
     let mut ctl_cmd_resps = CtlCmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
             .render(&ctl_cmd_resps)
-            .map_err(|render_err| ChangeFitError::from_ctl_render(index, render_err))?
+            .map_err(|render_err| CtlFitChangeError::from_ctl_render(index, render_err))?
             .execute(core_fit)
-            .map_err(|exec_err| ChangeFitError::from_ctl_exec(index, exec_err))?;
+            .map_err(|exec_err| CtlFitChangeError::from_ctl_exec(index, exec_err))?;
         ctl_cmd_resps.append(ctl_cmd_resp);
     }
     Ok(ctl_cmd_resps)
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum ChangeFitError {
+pub enum CtlFitChangeError {
     #[error("command #{0} failed")]
     CtlRender(usize, #[source] BackrefRenderError),
     #[error("command #{0} failed")]
-    CtlExec(usize, #[source] ChangeFitEnumError),
+    CtlExec(usize, #[source] FitCtlCmdError),
 }
-impl ChangeFitError {
+impl CtlFitChangeError {
     fn from_ctl_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
         Self::CtlRender(cmd_idx, render_err)
     }
-    fn from_ctl_exec(cmd_idx: usize, exec_err: ChangeFitEnumError) -> Self {
+    fn from_ctl_exec(cmd_idx: usize, exec_err: FitCtlCmdError) -> Self {
         Self::CtlExec(cmd_idx, exec_err)
     }
 }

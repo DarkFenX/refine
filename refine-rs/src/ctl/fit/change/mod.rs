@@ -1,5 +1,4 @@
-pub use cmd::{ChangeFitEnumCmd, ChangeFitEnumError};
-pub use sub_fit::FitChangeFitCmd;
+pub use cmd::{FitCtlCmd, FitCtlCmdError};
 pub use sub_item::FitRemoveItemCmd;
 pub use sub_item_autocharge::FitChangeAutochargeCmd;
 pub use sub_item_booster::{FitAddBoosterCmd, FitChangeBoosterCmd};
@@ -18,7 +17,7 @@ pub use sub_item_stance::{FitChangeStanceCmd, FitSetStanceCmd, FitUnsetStanceCmd
 pub use sub_item_subsystem::{FitAddSubsystemCmd, FitChangeSubsystemCmd};
 
 mod cmd;
-mod sub_fit;
+mod sub_fit_change;
 mod sub_item;
 mod sub_item_autocharge;
 mod sub_item_booster;

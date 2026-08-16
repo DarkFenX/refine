@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, SkillLevel,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, SkillLevel,
     ctl::core::{ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
@@ -27,7 +27,7 @@ impl FitAddSkillCmd {
         self
     }
 }
-impl From<FitAddSkillCmd> for ChangeFitEnumCmd {
+impl From<FitAddSkillCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddSkillCmd) -> Self {
         Self::AddSkill(sub_cmd)
     }
@@ -65,7 +65,7 @@ impl FitChangeSkillCmd {
         self
     }
 }
-impl From<FitChangeSkillCmd> for ChangeFitEnumCmd {
+impl From<FitChangeSkillCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeSkillCmd) -> Self {
         Self::ChangeSkill(sub_cmd)
     }

@@ -1,24 +1,24 @@
 use crate::{
     CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd,
     FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeAutochargeCmd,
-    FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
-    FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
+    FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeCmd, FitChangeDroneCmd,
+    FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
     FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd,
     FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
     FitUnsetStanceCmd,
     ctl::core::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
-        ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeICtxRIds,
-        ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
-        ICmdItemRemoveFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds,
-        ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
-        ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx,
-        ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds,
+        ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx,
+        ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds, ICmdItemRemoveFCtxRIds,
+        ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx,
+        ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx,
+        ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
+        ICmdSubsystemChangeFCtxRIds,
     },
     err::{
         BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
-        FitChangeCharacterError, FitChangeFitError, FitChangeShipError, FitChangeStanceError,
+        FitChangeCharacterError, FitChangeError, FitChangeShipError, FitChangeStanceError,
         GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
         GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
         GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError, GetItemChangeSubsystemError,
@@ -31,9 +31,9 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
-pub enum ChangeFitEnumCmd {
+pub enum FitCtlCmd {
     // Fit
-    ChangeFit(FitChangeFitCmd),
+    ChangeFit(FitChangeCmd),
     // Item
     RemoveItem(FitRemoveItemCmd),
     // Item - autocharge
@@ -84,9 +84,9 @@ pub enum ChangeFitEnumCmd {
     ChangeSubsystem(FitChangeSubsystemCmd),
 }
 
-pub(crate) enum ChangeFitEnumCmdRIds {
+pub(crate) enum FitCtlCmdRendered {
     // Fit
-    ChangeFit(ICmdFitChangeICtxRIds),
+    ChangeFit(FitChangeCmd),
     // Item
     RemoveItem(ICmdItemRemoveFCtxRIds),
     // Item - autocharge
@@ -140,59 +140,59 @@ pub(crate) enum ChangeFitEnumCmdRIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ChangeFitEnumCmd {
-    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<ChangeFitEnumCmdRIds, BackrefRenderError> {
+impl FitCtlCmd {
+    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<FitCtlCmdRendered, BackrefRenderError> {
         Ok(match self {
             // Fit
-            Self::ChangeFit(cmd) => ChangeFitEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),
+            Self::ChangeFit(cmd) => FitCtlCmdRendered::ChangeFit(cmd),
             // Item
-            Self::RemoveItem(cmd) => ChangeFitEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
+            Self::RemoveItem(cmd) => FitCtlCmdRendered::RemoveItem(cmd.inner.render(resps)?),
             // Item - autocharge
-            Self::ChangeAutocharge(cmd) => ChangeFitEnumCmdRIds::ChangeAutocharge(cmd.inner.render(resps)?),
+            Self::ChangeAutocharge(cmd) => FitCtlCmdRendered::ChangeAutocharge(cmd.inner.render(resps)?),
             // Item - booster
-            Self::AddBooster(cmd) => ChangeFitEnumCmdRIds::AddBooster(cmd.inner),
-            Self::ChangeBooster(cmd) => ChangeFitEnumCmdRIds::ChangeBooster(cmd.inner.render(resps)?),
+            Self::AddBooster(cmd) => FitCtlCmdRendered::AddBooster(cmd.inner),
+            Self::ChangeBooster(cmd) => FitCtlCmdRendered::ChangeBooster(cmd.inner.render(resps)?),
             // Item - character
-            Self::SetCharacter(cmd) => ChangeFitEnumCmdRIds::SetCharacter(cmd.inner),
-            Self::ChangeCharacter(cmd) => ChangeFitEnumCmdRIds::ChangeCharacter(cmd.inner),
-            Self::UnsetCharacter(cmd) => ChangeFitEnumCmdRIds::UnsetCharacter(cmd.inner),
+            Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd.inner),
+            Self::ChangeCharacter(cmd) => FitCtlCmdRendered::ChangeCharacter(cmd.inner),
+            Self::UnsetCharacter(cmd) => FitCtlCmdRendered::UnsetCharacter(cmd.inner),
             // Item - charge
-            Self::ChangeCharge(cmd) => ChangeFitEnumCmdRIds::ChangeCharge(cmd.inner.render(resps)?),
+            Self::ChangeCharge(cmd) => FitCtlCmdRendered::ChangeCharge(cmd.inner.render(resps)?),
             // Item - drone
-            Self::AddDrone(cmd) => ChangeFitEnumCmdRIds::AddDrone(cmd.inner.render(resps)?),
-            Self::ChangeDrone(cmd) => ChangeFitEnumCmdRIds::ChangeDrone(cmd.inner.render(resps)?),
+            Self::AddDrone(cmd) => FitCtlCmdRendered::AddDrone(cmd.inner.render(resps)?),
+            Self::ChangeDrone(cmd) => FitCtlCmdRendered::ChangeDrone(cmd.inner.render(resps)?),
             // Item - fighter
-            Self::AddFighter(cmd) => ChangeFitEnumCmdRIds::AddFighter(cmd.inner.render(resps)?),
-            Self::ChangeFighter(cmd) => ChangeFitEnumCmdRIds::ChangeFighter(cmd.inner.render(resps)?),
+            Self::AddFighter(cmd) => FitCtlCmdRendered::AddFighter(cmd.inner.render(resps)?),
+            Self::ChangeFighter(cmd) => FitCtlCmdRendered::ChangeFighter(cmd.inner.render(resps)?),
             // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => ChangeFitEnumCmdRIds::AddFwEffect(cmd.inner),
-            Self::ChangeFwEffect(cmd) => ChangeFitEnumCmdRIds::ChangeFwEffect(cmd.inner.render(resps)?),
+            Self::AddFwEffect(cmd) => FitCtlCmdRendered::AddFwEffect(cmd.inner),
+            Self::ChangeFwEffect(cmd) => FitCtlCmdRendered::ChangeFwEffect(cmd.inner.render(resps)?),
             // Item - implant
-            Self::AddImplant(cmd) => ChangeFitEnumCmdRIds::AddImplant(cmd.inner),
-            Self::ChangeImplant(cmd) => ChangeFitEnumCmdRIds::ChangeImplant(cmd.inner.render(resps)?),
+            Self::AddImplant(cmd) => FitCtlCmdRendered::AddImplant(cmd.inner),
+            Self::ChangeImplant(cmd) => FitCtlCmdRendered::ChangeImplant(cmd.inner.render(resps)?),
             // Item - drone
-            Self::AddModule(cmd) => ChangeFitEnumCmdRIds::AddModule(cmd.inner.render(resps)?),
-            Self::ChangeModule(cmd) => ChangeFitEnumCmdRIds::ChangeModule(cmd.inner.render(resps)?),
+            Self::AddModule(cmd) => FitCtlCmdRendered::AddModule(cmd.inner.render(resps)?),
+            Self::ChangeModule(cmd) => FitCtlCmdRendered::ChangeModule(cmd.inner.render(resps)?),
             // Item - rig
-            Self::AddRig(cmd) => ChangeFitEnumCmdRIds::AddRig(cmd.inner),
-            Self::ChangeRig(cmd) => ChangeFitEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
+            Self::AddRig(cmd) => FitCtlCmdRendered::AddRig(cmd.inner),
+            Self::ChangeRig(cmd) => FitCtlCmdRendered::ChangeRig(cmd.inner.render(resps)?),
             // Item - service
-            Self::AddService(cmd) => ChangeFitEnumCmdRIds::AddService(cmd.inner),
-            Self::ChangeService(cmd) => ChangeFitEnumCmdRIds::ChangeService(cmd.inner.render(resps)?),
+            Self::AddService(cmd) => FitCtlCmdRendered::AddService(cmd.inner),
+            Self::ChangeService(cmd) => FitCtlCmdRendered::ChangeService(cmd.inner.render(resps)?),
             // Item - ship
-            Self::SetShip(cmd) => ChangeFitEnumCmdRIds::SetShip(cmd.inner),
-            Self::ChangeShip(cmd) => ChangeFitEnumCmdRIds::ChangeShip(cmd.inner),
-            Self::UnsetShip(cmd) => ChangeFitEnumCmdRIds::UnsetShip(cmd.inner),
+            Self::SetShip(cmd) => FitCtlCmdRendered::SetShip(cmd.inner),
+            Self::ChangeShip(cmd) => FitCtlCmdRendered::ChangeShip(cmd.inner),
+            Self::UnsetShip(cmd) => FitCtlCmdRendered::UnsetShip(cmd.inner),
             // Item - skill
-            Self::AddSkill(cmd) => ChangeFitEnumCmdRIds::AddSkill(cmd.inner),
-            Self::ChangeSkill(cmd) => ChangeFitEnumCmdRIds::ChangeSkill(cmd.inner.render(resps)?),
+            Self::AddSkill(cmd) => FitCtlCmdRendered::AddSkill(cmd.inner),
+            Self::ChangeSkill(cmd) => FitCtlCmdRendered::ChangeSkill(cmd.inner.render(resps)?),
             // Item - stance
-            Self::SetStance(cmd) => ChangeFitEnumCmdRIds::SetStance(cmd.inner),
-            Self::ChangeStance(cmd) => ChangeFitEnumCmdRIds::ChangeStance(cmd.inner),
-            Self::UnsetStance(cmd) => ChangeFitEnumCmdRIds::UnsetStance(cmd.inner),
+            Self::SetStance(cmd) => FitCtlCmdRendered::SetStance(cmd.inner),
+            Self::ChangeStance(cmd) => FitCtlCmdRendered::ChangeStance(cmd.inner),
+            Self::UnsetStance(cmd) => FitCtlCmdRendered::UnsetStance(cmd.inner),
             // Item - subsystem
-            Self::AddSubsystem(cmd) => ChangeFitEnumCmdRIds::AddSubsystem(cmd.inner),
-            Self::ChangeSubsystem(cmd) => ChangeFitEnumCmdRIds::ChangeSubsystem(cmd.inner.render(resps)?),
+            Self::AddSubsystem(cmd) => FitCtlCmdRendered::AddSubsystem(cmd.inner),
+            Self::ChangeSubsystem(cmd) => FitCtlCmdRendered::ChangeSubsystem(cmd.inner.render(resps)?),
         })
     }
 }
@@ -200,8 +200,8 @@ impl ChangeFitEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ChangeFitEnumCmdRIds {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CtlCmdResp, ChangeFitEnumError> {
+impl FitCtlCmdRendered {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CtlCmdResp, FitCtlCmdError> {
         match self {
             // Fit
             Self::ChangeFit(cmd) => Ok(cmd.execute(core_fit)?.into()),
@@ -261,10 +261,10 @@ impl ChangeFitEnumCmdRIds {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeFitEnumError {
+pub enum FitCtlCmdError {
     // Fit
     #[error("failed to change fleet")]
-    FitChange(#[from] FitChangeFitError),
+    FitChange(#[from] FitChangeError),
     // Item
     #[error("failed to remove item")]
     ItemRemove(#[from] GetItemRemoveItemError),

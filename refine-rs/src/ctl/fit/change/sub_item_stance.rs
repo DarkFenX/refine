@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemTypeId,
+    EffectId, EffectMode, FitCtlCmd, ItemTypeId,
     ctl::core::{ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx},
 };
 
@@ -27,7 +27,7 @@ impl FitSetStanceCmd {
         self
     }
 }
-impl From<FitSetStanceCmd> for ChangeFitEnumCmd {
+impl From<FitSetStanceCmd> for FitCtlCmd {
     fn from(sub_cmd: FitSetStanceCmd) -> Self {
         Self::SetStance(sub_cmd)
     }
@@ -60,7 +60,7 @@ impl FitChangeStanceCmd {
         self
     }
 }
-impl From<FitChangeStanceCmd> for ChangeFitEnumCmd {
+impl From<FitChangeStanceCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeStanceCmd) -> Self {
         Self::ChangeStance(sub_cmd)
     }
@@ -80,7 +80,7 @@ impl FitUnsetStanceCmd {
         Self::default()
     }
 }
-impl From<FitUnsetStanceCmd> for ChangeFitEnumCmd {
+impl From<FitUnsetStanceCmd> for FitCtlCmd {
     fn from(sub_cmd: FitUnsetStanceCmd) -> Self {
         Self::UnsetStance(sub_cmd)
     }

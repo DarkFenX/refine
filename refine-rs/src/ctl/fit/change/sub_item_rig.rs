@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId,
     ctl::core::{ICmdRigAddICtx, ICmdRigChangeFCtxBIds},
 };
 
@@ -27,7 +27,7 @@ impl FitAddRigCmd {
         self
     }
 }
-impl From<FitAddRigCmd> for ChangeFitEnumCmd {
+impl From<FitAddRigCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddRigCmd) -> Self {
         Self::AddRig(sub_cmd)
     }
@@ -61,7 +61,7 @@ impl FitChangeRigCmd {
         self
     }
 }
-impl From<FitChangeRigCmd> for ChangeFitEnumCmd {
+impl From<FitChangeRigCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeRigCmd) -> Self {
         Self::ChangeRig(sub_cmd)
     }

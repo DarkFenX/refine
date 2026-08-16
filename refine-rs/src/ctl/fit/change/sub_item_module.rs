@@ -1,5 +1,5 @@
 use crate::{
-    AddMode, AddMutation, ChangeFitEnumCmd, ChangeMutation, EffectId, EffectMode, ItemIdBackref, ItemTypeId, ModRack,
+    AddMode, AddMutation, ChangeMutation, EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, ModRack,
     ModuleState, MoveMode, OptionalReload, Spool,
     ctl::core::{ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
 };
@@ -54,7 +54,7 @@ impl FitAddModuleCmd {
         self
     }
 }
-impl From<FitAddModuleCmd> for ChangeFitEnumCmd {
+impl From<FitAddModuleCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddModuleCmd) -> Self {
         Self::AddModule(sub_cmd)
     }
@@ -118,7 +118,7 @@ impl FitChangeModuleCmd {
         self
     }
 }
-impl From<FitChangeModuleCmd> for ChangeFitEnumCmd {
+impl From<FitChangeModuleCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeModuleCmd) -> Self {
         Self::ChangeModule(sub_cmd)
     }

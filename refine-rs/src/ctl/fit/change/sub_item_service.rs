@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, ServiceState,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, ServiceState,
     ctl::core::{ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
@@ -23,7 +23,7 @@ impl FitAddServiceCmd {
         self
     }
 }
-impl From<FitAddServiceCmd> for ChangeFitEnumCmd {
+impl From<FitAddServiceCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddServiceCmd) -> Self {
         Self::AddService(sub_cmd)
     }
@@ -57,7 +57,7 @@ impl FitChangeServiceCmd {
         self
     }
 }
-impl From<FitChangeServiceCmd> for ChangeFitEnumCmd {
+impl From<FitChangeServiceCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeServiceCmd) -> Self {
         Self::ChangeService(sub_cmd)
     }

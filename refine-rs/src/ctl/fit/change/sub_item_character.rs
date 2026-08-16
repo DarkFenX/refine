@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemTypeId,
+    EffectId, EffectMode, FitCtlCmd, ItemTypeId,
     ctl::core::{ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx},
 };
 
@@ -27,7 +27,7 @@ impl FitSetCharacterCmd {
         self
     }
 }
-impl From<FitSetCharacterCmd> for ChangeFitEnumCmd {
+impl From<FitSetCharacterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitSetCharacterCmd) -> Self {
         Self::SetCharacter(sub_cmd)
     }
@@ -60,7 +60,7 @@ impl FitChangeCharacterCmd {
         self
     }
 }
-impl From<FitChangeCharacterCmd> for ChangeFitEnumCmd {
+impl From<FitChangeCharacterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeCharacterCmd) -> Self {
         Self::ChangeCharacter(sub_cmd)
     }
@@ -80,7 +80,7 @@ impl FitUnsetCharacterCmd {
         Self::default()
     }
 }
-impl From<FitUnsetCharacterCmd> for ChangeFitEnumCmd {
+impl From<FitUnsetCharacterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitUnsetCharacterCmd) -> Self {
         Self::UnsetCharacter(sub_cmd)
     }

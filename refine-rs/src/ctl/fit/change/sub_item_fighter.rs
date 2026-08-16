@@ -1,6 +1,6 @@
 use crate::{
-    AbilityId, ChangeFitEnumCmd, Coordinates, CountNz, EffectId, EffectMode, ItemIdBackref, ItemTypeId, MinionState,
-    Movement, RearmMinion,
+    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, MinionState, Movement,
+    RearmMinion,
     ctl::core::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
@@ -53,7 +53,7 @@ impl FitAddFighterCmd {
         self
     }
 }
-impl From<FitAddFighterCmd> for ChangeFitEnumCmd {
+impl From<FitAddFighterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddFighterCmd) -> Self {
         Self::AddFighter(sub_cmd)
     }
@@ -118,7 +118,7 @@ impl FitChangeFighterCmd {
         self
     }
 }
-impl From<FitChangeFighterCmd> for ChangeFitEnumCmd {
+impl From<FitChangeFighterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeFighterCmd) -> Self {
         Self::ChangeFighter(sub_cmd)
     }

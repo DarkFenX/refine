@@ -1,5 +1,5 @@
 use crate::{
-    ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId,
     ctl::core::{ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxBIds},
 };
 
@@ -27,7 +27,7 @@ impl FitAddSubsystemCmd {
         self
     }
 }
-impl From<FitAddSubsystemCmd> for ChangeFitEnumCmd {
+impl From<FitAddSubsystemCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddSubsystemCmd) -> Self {
         Self::AddSubsystem(sub_cmd)
     }
@@ -61,7 +61,7 @@ impl FitChangeSubsystemCmd {
         self
     }
 }
-impl From<FitChangeSubsystemCmd> for ChangeFitEnumCmd {
+impl From<FitChangeSubsystemCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeSubsystemCmd) -> Self {
         Self::ChangeSubsystem(sub_cmd)
     }

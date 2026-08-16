@@ -1,6 +1,6 @@
 use crate::{
-    AddMutation, ChangeFitEnumCmd, ChangeMutation, Coordinates, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
-    MinionState, Movement, NpcProp,
+    AddMutation, ChangeMutation, Coordinates, EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, MinionState,
+    Movement, NpcProp,
     ctl::core::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
@@ -48,7 +48,7 @@ impl FitAddDroneCmd {
         self
     }
 }
-impl From<FitAddDroneCmd> for ChangeFitEnumCmd {
+impl From<FitAddDroneCmd> for FitCtlCmd {
     fn from(sub_cmd: FitAddDroneCmd) -> Self {
         Self::AddDrone(sub_cmd)
     }
@@ -108,7 +108,7 @@ impl FitChangeDroneCmd {
         self
     }
 }
-impl From<FitChangeDroneCmd> for ChangeFitEnumCmd {
+impl From<FitChangeDroneCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeDroneCmd) -> Self {
         Self::ChangeDrone(sub_cmd)
     }
