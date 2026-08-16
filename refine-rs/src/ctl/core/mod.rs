@@ -61,10 +61,9 @@ pub use item_rig::{
     FitGetRigAddError, ItemGetRigChangeError, RigAddCmd, RigAddCmdCtxFit, RigAddCmdCtxFitBr, RigChangeCmd,
     RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, RigChangeError,
 };
-pub use item_service::{GetFitAddServiceError, GetItemChangeServiceError, ItemChangeServiceError};
-pub(in crate::ctl) use item_service::{
-    ICmdServiceAddFCtxBIds, ICmdServiceAddFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds,
-    ICmdServiceChangeFCtxRIds, ICmdServiceChangeICtx,
+pub use item_service::{
+    FitGetServiceAddError, ItemGetServiceChangeError, ServiceAddCmd, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
+    ServiceChangeCmd, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, ServiceChangeError,
 };
 pub use item_ship::{
     FitChangeShipError, GetFitChangeShipError, GetFitSetShipError, GetFitUnsetShipError, GetItemChangeShipError,

@@ -1,13 +1,13 @@
 use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, ImplantChangeCmd,
     ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeModuleCmd,
-    ItemChangeProjEffectCmd, ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd,
-    ItemChangeSwEffectCmd, RigChangeCmd, SubsystemChangeCmd,
+    ItemChangeProjEffectCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSwEffectCmd,
+    RigChangeCmd, ServiceChangeCmd, SubsystemChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, ImplantChangeError, ItemChangeCharacterError,
         ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeModuleError,
-        ItemChangeProjEffectError, ItemChangeServiceError, ItemChangeShipError, ItemChangeSkillError,
-        ItemChangeStanceError, ItemChangeSwEffectError, RigChangeError, SubsystemChangeError,
+        ItemChangeProjEffectError, ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError,
+        ItemChangeSwEffectError, RigChangeError, ServiceChangeError, SubsystemChangeError,
     },
 };
 
@@ -28,7 +28,7 @@ pub enum ItemCtlCmd {
     Module(ItemChangeModuleCmd),
     ProjEffect(ItemChangeProjEffectCmd),
     Rig(RigChangeCmd),
-    Service(ItemChangeServiceCmd),
+    Service(ServiceChangeCmd),
     Ship(ItemChangeShipCmd),
     Skill(ItemChangeSkillCmd),
     Stance(ItemChangeStanceCmd),
@@ -59,6 +59,11 @@ impl RigChangeCmd {
         ItemCtlCmd::Rig(self)
     }
 }
+impl ServiceChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Service(self)
+    }
+}
 impl SubsystemChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Subsystem(self)
@@ -82,7 +87,7 @@ impl ItemCtlCmd {
             Self::Module(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Rig(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Service(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Service(cmd) => Ok(cmd.execute(core_item)?),
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
@@ -117,7 +122,7 @@ pub enum ItemCtlError {
     #[error("failed to change rig")]
     Rig(#[from] RigChangeError),
     #[error("failed to change service")]
-    Service(#[from] ItemChangeServiceError),
+    Service(#[from] ServiceChangeError),
     #[error("failed to change ship")]
     Ship(#[from] ItemChangeShipError),
     #[error("failed to change skill")]

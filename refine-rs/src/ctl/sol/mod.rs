@@ -8,7 +8,6 @@ pub use sub_item_fighter::{SolAddFighterCmd, SolChangeFighterCmd};
 pub use sub_item_fw_effect::{SolAddFwEffectCmd, SolChangeFwEffectCmd};
 pub use sub_item_module::{SolAddModuleCmd, SolChangeModuleCmd};
 pub use sub_item_proj_effect::{SolAddProjEffectCmd, SolChangeProjEffectCmd};
-pub use sub_item_service::{SolAddServiceCmd, SolChangeServiceCmd};
 pub use sub_item_ship::{
     ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,
 };
@@ -26,7 +25,6 @@ mod sub_item_fighter;
 mod sub_item_fw_effect;
 mod sub_item_module;
 mod sub_item_proj_effect;
-mod sub_item_service;
 mod sub_item_ship;
 mod sub_item_skill;
 mod sub_item_stance;

@@ -1,37 +1,71 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, ServiceState, ctl::shared::EffectModes,
-    err::BackrefRenderError,
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ServiceState,
+    ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdServiceChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdServiceChangeICtx = ICmdServiceChangeICtx { .. },
-}
-pub(crate) struct ICmdServiceChangeFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdServiceChangeICtx,
+#[derive(Default)]
+pub struct ServiceChangeCmd {
+    type_id: Option<ItemTypeId> = None,
+    state: Option<ServiceState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
+pub struct ServiceChangeCmdCtxItem {
+    item_id: ItemId,
+    core: ServiceChangeCmd,
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdServiceChangeICtx {
-    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) state: Option<ServiceState> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+pub struct ServiceChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: ServiceChangeCmd = ServiceChangeCmd { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ServiceChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: ServiceState) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ServiceChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ServiceChangeCmdCtxItemBr {
+        ServiceChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdServiceChangeFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdServiceChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdServiceChangeFCtxRIds {
+impl ServiceChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ServiceChangeCmdCtxItem, BackrefRenderError> {
+        Ok(ServiceChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -39,36 +73,8 @@ impl ICmdServiceChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdServiceChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeServiceError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_item)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeServiceError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
-    #[error(transparent)]
-    ItemIsNotService(rc::err::ItemKindMatchError),
-}
-impl From<ItemChangeServiceError> for GetItemChangeServiceError {
-    fn from(err: ItemChangeServiceError) -> Self {
-        match err {
-            ItemChangeServiceError::ItemIsNotService(inner) => Self::ItemIsNotService(inner),
-        }
-    }
-}
-
-impl ICmdServiceChangeICtx {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeServiceError> {
+impl ServiceChangeCmd {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ServiceChangeError> {
         let core_service = core_item.dc_service()?;
         if let Some(type_id) = self.type_id {
             core_service.set_type_id(type_id);
@@ -80,9 +86,32 @@ impl ICmdServiceChangeICtx {
         Ok(ChangedItemIdsResp::default())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeServiceError {
+pub enum ServiceChangeError {
     #[error(transparent)]
     ItemIsNotService(#[from] rc::err::ItemKindMatchError),
+}
+
+impl ServiceChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetServiceChangeError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetServiceChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotService(rc::err::ItemKindMatchError),
+}
+impl From<ServiceChangeError> for ItemGetServiceChangeError {
+    fn from(err: ServiceChangeError) -> Self {
+        match err {
+            ServiceChangeError::ItemIsNotService(inner) => Self::ItemIsNotService(inner),
+        }
+    }
 }
