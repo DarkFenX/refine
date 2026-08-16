@@ -47,4 +47,3 @@ mod sub_item_skill;
 mod sub_item_stance;
 mod sub_item_subsystem;
 mod sub_item_sw_effect;
-mod sub_sol;
