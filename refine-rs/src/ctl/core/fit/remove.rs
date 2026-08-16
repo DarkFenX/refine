@@ -12,9 +12,9 @@ pub struct FitRemoveCmdCtxFit {
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitRemoveCmdCtxFitBr {
-    pub(in crate::ctl) fit_id: FitIdBr,
+    fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) core: FitRemoveCmd = FitRemoveCmd,
+    core: FitRemoveCmd = FitRemoveCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -23,6 +23,18 @@ pub struct FitRemoveCmdCtxFitBr {
 impl FitRemoveCmd {
     pub fn new() -> Self {
         Self::default()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitRemoveCmd {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitRemoveCmdCtxFitBr {
+        FitRemoveCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
     }
 }
 

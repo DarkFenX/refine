@@ -13,6 +13,11 @@ pub enum FleetIdBr {
     Id(FleetId),
     Br(usize),
 }
+impl From<FleetId> for FleetIdBr {
+    fn from(fleet_id: FleetId) -> Self {
+        FleetIdBr::Id(fleet_id)
+    }
+}
 impl CtlCmdBr for FleetIdBr {
     type Target = FleetId;
     fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
@@ -27,6 +32,11 @@ impl CtlCmdBr for FleetIdBr {
 pub enum FitIdBr {
     Id(FitId),
     Br(usize),
+}
+impl From<FitId> for FitIdBr {
+    fn from(fit_id: FitId) -> Self {
+        FitIdBr::Id(fit_id)
+    }
 }
 impl CtlCmdBr for FitIdBr {
     type Target = FitId;
@@ -43,6 +53,11 @@ pub enum ItemIdBr {
     Id(ItemId),
     BrMain(usize),
     BrCharge(usize),
+}
+impl From<ItemId> for ItemIdBr {
+    fn from(item_id: ItemId) -> Self {
+        ItemIdBr::Id(item_id)
+    }
 }
 impl CtlCmdBr for ItemIdBr {
     type Target = ItemId;

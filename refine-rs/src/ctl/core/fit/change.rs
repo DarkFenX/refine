@@ -33,9 +33,9 @@ pub struct FitChangeCmdCtxFit {
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeCmdCtxFitBr {
-    pub(in crate::ctl) fit_id: FitIdBr,
+    fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) core: FitChangeCmdBr,
+    core: FitChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -85,6 +85,21 @@ impl FitChangeCmd {
         FitChangeCmdBr {
             fleet_id: self.fleet_id.map(FleetIdBr::Id),
             shared: self.shared,
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitChangeCmdCtxFitBr {
+        FitChangeCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl FitChangeCmdBr {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitChangeCmdCtxFitBr {
+        FitChangeCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
         }
     }
 }

@@ -3,7 +3,7 @@ use super::{
     sub_item_stance::SolChangeStanceCmdRIds,
 };
 use crate::{
-    CtlCmdResp, CtlCmdResps, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitId, FitIdBr, FitRemoveCmd,
+    CtlCmdResp, CtlCmdResps, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitIdBr, FitRemoveCmd,
     SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd,
     SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd,
     SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd,
@@ -192,21 +192,18 @@ impl FitAddCmdBr {
     }
 }
 impl FitChangeCmd {
-    pub fn into_sol_ctl(self, fit_id: FitId) -> SolCtlCmd {
-        SolCtlCmd::ChangeFit(FitChangeCmdCtxFitBr {
-            fit_id: FitIdBr::Id(fit_id),
-            core: self.into_br(),
-        })
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeFit(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitChangeCmdBr {
-    pub fn into_sol_ctl(self, fit_id: FitIdBr) -> SolCtlCmd {
-        SolCtlCmd::ChangeFit(FitChangeCmdCtxFitBr { fit_id, core: self })
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeFit(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitRemoveCmd {
-    pub fn into_sol_ctl(self, fit_id: FitIdBr) -> SolCtlCmd {
-        SolCtlCmd::RemoveFit(FitRemoveCmdCtxFitBr { fit_id, core: self })
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::RemoveFit(self.into_ctx_fit_br(fit_id))
     }
 }
 
