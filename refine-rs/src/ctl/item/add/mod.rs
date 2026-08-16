@@ -6,7 +6,6 @@ pub use sub_module::ItemAddModuleCmd;
 pub use sub_proj_effect::ItemAddProjEffectCmd;
 pub use sub_ship::ItemSetShipCmd;
 pub use sub_stance::ItemSetStanceCmd;
-pub use sub_sw_effect::ItemAddSwEffectCmd;
 
 mod cmd;
 mod sub_character;
@@ -16,4 +15,3 @@ mod sub_module;
 mod sub_proj_effect;
 mod sub_ship;
 mod sub_stance;
-mod sub_sw_effect;

@@ -14,7 +14,6 @@ pub use sub_item_stance::{
     ChangeStanceError, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolSetStanceCmd,
     SolUnsetStanceCmd,
 };
-pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
 mod cmd;
 mod sub_item_character;
@@ -24,4 +23,3 @@ mod sub_item_module;
 mod sub_item_proj_effect;
 mod sub_item_ship;
 mod sub_item_stance;
-mod sub_item_sw_effect;

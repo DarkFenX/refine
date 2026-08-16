@@ -1,13 +1,13 @@
 use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, FwEffectChangeCmd, ImplantChangeCmd,
     ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeModuleCmd, ItemChangeProjEffectCmd,
-    ItemChangeShipCmd, ItemChangeStanceCmd, ItemChangeSwEffectCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd,
-    SubsystemChangeCmd,
+    ItemChangeShipCmd, ItemChangeStanceCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd,
+    SwEffectChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, FwEffectChangeError, ImplantChangeError,
         ItemChangeCharacterError, ItemChangeDroneError, ItemChangeFighterError, ItemChangeModuleError,
-        ItemChangeProjEffectError, ItemChangeShipError, ItemChangeStanceError, ItemChangeSwEffectError, RigChangeError,
-        ServiceChangeError, SkillChangeError, SubsystemChangeError,
+        ItemChangeProjEffectError, ItemChangeShipError, ItemChangeStanceError, RigChangeError, ServiceChangeError,
+        SkillChangeError, SubsystemChangeError, SwEffectChangeError,
     },
 };
 
@@ -33,7 +33,7 @@ pub enum ItemCtlCmd {
     Skill(SkillChangeCmd),
     Stance(ItemChangeStanceCmd),
     Subsystem(SubsystemChangeCmd),
-    SwEffect(ItemChangeSwEffectCmd),
+    SwEffect(SwEffectChangeCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -79,6 +79,11 @@ impl SubsystemChangeCmd {
         ItemCtlCmd::Subsystem(self)
     }
 }
+impl SwEffectChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::SwEffect(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
@@ -102,7 +107,7 @@ impl ItemCtlCmd {
             Self::Skill(cmd) => Ok(cmd.execute(core_item)?),
             Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Subsystem(cmd) => Ok(cmd.execute(core_item)?),
-            Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::SwEffect(cmd) => Ok(cmd.execute(core_item)?),
         }
     }
 }
@@ -142,5 +147,5 @@ pub enum ItemCtlError {
     #[error("failed to change subsystem")]
     Subsystem(#[from] SubsystemChangeError),
     #[error("failed to change system-wide effect")]
-    SwEffect(#[from] ItemChangeSwEffectError),
+    SwEffect(#[from] SwEffectChangeError),
 }

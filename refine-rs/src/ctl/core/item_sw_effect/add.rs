@@ -1,18 +1,35 @@
-use crate::{AddedItemIdsResp, ItemTypeId, ctl::shared::EffectModes};
+use crate::{AddedItemIdsResp, EffectId, EffectMode, ItemTypeId, ctl::shared::EffectModes};
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdSwEffectAddFCtx {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: Option<bool> = None,
+pub struct SwEffectAddCmd {
+    type_id: ItemTypeId,
+    state: Option<bool> = None,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes = EffectModes::new(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SwEffectAddCmd {
+    pub fn new(type_id: ItemTypeId) -> Self {
+        Self { type_id, .. }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSwEffectAddFCtx {
+impl SwEffectAddCmd {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
         let mut core_sw_effect = core_sol.add_sw_effect(self.type_id);
         if let Some(state) = self.state {

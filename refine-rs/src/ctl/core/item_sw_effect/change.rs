@@ -1,36 +1,71 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdSwEffectChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdSwEffectChangeICtx = ICmdSwEffectChangeICtx { .. },
-}
-pub(crate) struct ICmdSwEffectChangeFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdSwEffectChangeICtx,
+#[derive(Default)]
+pub struct SwEffectChangeCmd {
+    type_id: Option<ItemTypeId> = None,
+    state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
+pub struct SwEffectChangeCmdCtxItem {
+    item_id: ItemId,
+    core: SwEffectChangeCmd,
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdSwEffectChangeICtx {
-    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) state: Option<bool> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+pub struct SwEffectChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: SwEffectChangeCmd = SwEffectChangeCmd { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SwEffectChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SwEffectChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> SwEffectChangeCmdCtxItemBr {
+        SwEffectChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSwEffectChangeFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdSwEffectChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdSwEffectChangeFCtxRIds {
+impl SwEffectChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SwEffectChangeCmdCtxItem, BackrefRenderError> {
+        Ok(SwEffectChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -38,36 +73,11 @@ impl ICmdSwEffectChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSwEffectChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeSwEffectError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_item)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeSwEffectError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
-    #[error(transparent)]
-    ItemIsNotSwEffect(rc::err::ItemKindMatchError),
-}
-impl From<ItemChangeSwEffectError> for GetItemChangeSwEffectError {
-    fn from(err: ItemChangeSwEffectError) -> Self {
-        match err {
-            ItemChangeSwEffectError::ItemIsNotSwEffect(inner) => Self::ItemIsNotSwEffect(inner),
-        }
-    }
-}
-
-impl ICmdSwEffectChangeICtx {
+impl SwEffectChangeCmd {
     pub(in crate::ctl) fn execute(
         self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeSwEffectError> {
+    ) -> Result<ChangedItemIdsResp, SwEffectChangeError> {
         let core_sw_effect = core_item.dc_sw_effect()?;
         if let Some(type_id) = self.type_id {
             core_sw_effect.set_type_id(type_id);
@@ -79,9 +89,32 @@ impl ICmdSwEffectChangeICtx {
         Ok(ChangedItemIdsResp::default())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeSwEffectError {
+pub enum SwEffectChangeError {
     #[error(transparent)]
     ItemIsNotSwEffect(#[from] rc::err::ItemKindMatchError),
+}
+
+impl SwEffectChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetSwEffectChangeError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetSwEffectChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotSwEffect(rc::err::ItemKindMatchError),
+}
+impl From<SwEffectChangeError> for ItemGetSwEffectChangeError {
+    fn from(err: SwEffectChangeError) -> Self {
+        match err {
+            SwEffectChangeError::ItemIsNotSwEffect(inner) => Self::ItemIsNotSwEffect(inner),
+        }
+    }
 }

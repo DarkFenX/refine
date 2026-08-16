@@ -350,8 +350,8 @@ impl ApiError {
                 },
                 // Item - system-wide effect
                 rs::err::ChangeSolEnumError::SwEffectChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeSwEffectError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeSwEffectError::ItemIsNotSwEffect(..) => (StatusCode::BAD_REQUEST, "SWE-001"),
+                    rs::err::ItemGetSwEffectChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetSwEffectChangeError::ItemIsNotSwEffect(..) => (StatusCode::BAD_REQUEST, "SWE-001"),
                 },
             },
             Self::SolRemove(err) => match err {
@@ -609,7 +609,7 @@ impl ApiError {
                 rs::err::ItemCtlError::Subsystem(rs::err::SubsystemChangeError::ItemIsNotSubsystem(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
-                rs::err::ItemCtlError::SwEffect(rs::err::ItemChangeSwEffectError::ItemIsNotSwEffect(_)) => {
+                rs::err::ItemCtlError::SwEffect(rs::err::SwEffectChangeError::ItemIsNotSwEffect(_)) => {
                     (StatusCode::BAD_REQUEST, "SWE-001")
                 }
             },

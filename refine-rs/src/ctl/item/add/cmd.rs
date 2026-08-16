@@ -1,7 +1,7 @@
 use crate::{
     AddedItemIdsResp, BoosterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd, ItemAddDroneCmd, ItemAddFighterCmd,
-    ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
-    RigAddCmd, ServiceAddCmd, SkillAddCmd, SubsystemAddCmd,
+    ItemAddModuleCmd, ItemAddProjEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RigAddCmd,
+    ServiceAddCmd, SkillAddCmd, SubsystemAddCmd, SwEffectAddCmd,
     ctl::core::{
         BoosterAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit,
         SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
@@ -33,7 +33,7 @@ pub enum ItemAddCmd {
     Skill(SkillAddCmdCtxFit),
     Stance(ItemSetStanceCmd),
     Subsystem(SubsystemAddCmdCtxFit),
-    SwEffect(ItemAddSwEffectCmd),
+    SwEffect(SwEffectAddCmd),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -74,6 +74,11 @@ impl SubsystemAddCmd {
         ItemAddCmd::Subsystem(self.into_ctx_fit(fit_id))
     }
 }
+impl SwEffectAddCmd {
+    pub fn into_item_add(self) -> ItemAddCmd {
+        ItemAddCmd::SwEffect(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
@@ -95,7 +100,7 @@ impl ItemAddCmd {
             Self::Skill(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::Subsystem(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_sol)),
+            Self::SwEffect(cmd) => Ok(cmd.execute(core_sol)),
         }
     }
 }
