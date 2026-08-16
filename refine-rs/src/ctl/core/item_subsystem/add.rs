@@ -1,38 +1,71 @@
 use crate::{
-    AddedItemIdsResp, CtlCmdResps, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdSubsystemAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdSubsystemAddICtx,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdSubsystemAddFCtxRIds {
-    pub(in crate::ctl) fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdSubsystemAddICtx,
+pub struct SubsystemAddCmd {
+    type_id: ItemTypeId,
+    state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdSubsystemAddICtx {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: Option<bool> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+pub struct SubsystemAddCmdCtxFit {
+    fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: SubsystemAddCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct SubsystemAddCmdCtxFitBr {
+    fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: SubsystemAddCmd,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SubsystemAddCmd {
+    pub fn new(type_id: ItemTypeId) -> Self {
+        Self { type_id, .. }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SubsystemAddCmd {
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> SubsystemAddCmdCtxFit {
+        SubsystemAddCmdCtxFit { fit_id, core: self }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> SubsystemAddCmdCtxFitBr {
+        SubsystemAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSubsystemAddFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdSubsystemAddFCtxRIds, BackrefRenderError> {
-        Ok(ICmdSubsystemAddFCtxRIds {
+impl SubsystemAddCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SubsystemAddCmdCtxFit, BackrefRenderError> {
+        Ok(SubsystemAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -40,23 +73,7 @@ impl ICmdSubsystemAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSubsystemAddFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitAddSubsystemError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit))
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitAddSubsystemError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-}
-
-impl ICmdSubsystemAddICtx {
+impl SubsystemAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_subsystem = core_fit.add_subsystem(self.type_id);
         if let Some(state) = self.state {
@@ -65,4 +82,19 @@ impl ICmdSubsystemAddICtx {
         self.effect_modes.apply(&mut core_subsystem);
         AddedItemIdsResp::from_core_subsystem(core_subsystem)
     }
+}
+
+impl SubsystemAddCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, FitGetSubsystemAddError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetSubsystemAddError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
 }

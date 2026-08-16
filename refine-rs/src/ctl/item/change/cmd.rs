@@ -2,12 +2,12 @@ use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, ImplantChangeCmd,
     ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeModuleCmd,
     ItemChangeProjEffectCmd, ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd,
-    ItemChangeSubsystemCmd, ItemChangeSwEffectCmd, RigChangeCmd,
+    ItemChangeSwEffectCmd, RigChangeCmd, SubsystemChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, ImplantChangeError, ItemChangeCharacterError,
         ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeModuleError,
         ItemChangeProjEffectError, ItemChangeServiceError, ItemChangeShipError, ItemChangeSkillError,
-        ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError, RigChangeError,
+        ItemChangeStanceError, ItemChangeSwEffectError, RigChangeError, SubsystemChangeError,
     },
 };
 
@@ -32,7 +32,7 @@ pub enum ItemCtlCmd {
     Ship(ItemChangeShipCmd),
     Skill(ItemChangeSkillCmd),
     Stance(ItemChangeStanceCmd),
-    Subsystem(ItemChangeSubsystemCmd),
+    Subsystem(SubsystemChangeCmd),
     SwEffect(ItemChangeSwEffectCmd),
 }
 
@@ -59,6 +59,11 @@ impl RigChangeCmd {
         ItemCtlCmd::Rig(self)
     }
 }
+impl SubsystemChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Subsystem(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
@@ -81,7 +86,7 @@ impl ItemCtlCmd {
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
-            Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Subsystem(cmd) => Ok(cmd.execute(core_item)?),
             Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
         }
     }
@@ -120,7 +125,7 @@ pub enum ItemCtlError {
     #[error("failed to change stance")]
     Stance(#[from] ItemChangeStanceError),
     #[error("failed to change subsystem")]
-    Subsystem(#[from] ItemChangeSubsystemError),
+    Subsystem(#[from] SubsystemChangeError),
     #[error("failed to change system-wide effect")]
     SwEffect(#[from] ItemChangeSwEffectError),
 }

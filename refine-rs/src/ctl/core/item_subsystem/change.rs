@@ -1,36 +1,71 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdSubsystemChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdSubsystemChangeICtx = ICmdSubsystemChangeICtx { .. },
-}
-pub(crate) struct ICmdSubsystemChangeFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdSubsystemChangeICtx,
+#[derive(Default)]
+pub struct SubsystemChangeCmd {
+    type_id: Option<ItemTypeId> = None,
+    state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
+pub struct SubsystemChangeCmdCtxItem {
+    item_id: ItemId,
+    core: SubsystemChangeCmd,
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdSubsystemChangeICtx {
-    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) state: Option<bool> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+pub struct SubsystemChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: SubsystemChangeCmd = SubsystemChangeCmd { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SubsystemChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SubsystemChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> SubsystemChangeCmdCtxItemBr {
+        SubsystemChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSubsystemChangeFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdSubsystemChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdSubsystemChangeFCtxRIds {
+impl SubsystemChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SubsystemChangeCmdCtxItem, BackrefRenderError> {
+        Ok(SubsystemChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -38,36 +73,11 @@ impl ICmdSubsystemChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSubsystemChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeSubsystemError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_item)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeSubsystemError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
-    #[error(transparent)]
-    ItemIsNotSubsystem(rc::err::ItemKindMatchError),
-}
-impl From<ItemChangeSubsystemError> for GetItemChangeSubsystemError {
-    fn from(err: ItemChangeSubsystemError) -> Self {
-        match err {
-            ItemChangeSubsystemError::ItemIsNotSubsystem(inner) => Self::ItemIsNotSubsystem(inner),
-        }
-    }
-}
-
-impl ICmdSubsystemChangeICtx {
+impl SubsystemChangeCmd {
     pub(in crate::ctl) fn execute(
         self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeSubsystemError> {
+    ) -> Result<ChangedItemIdsResp, SubsystemChangeError> {
         let core_subsystem = core_item.dc_subsystem()?;
         if let Some(type_id) = self.type_id {
             core_subsystem.set_type_id(type_id);
@@ -79,9 +89,32 @@ impl ICmdSubsystemChangeICtx {
         Ok(ChangedItemIdsResp::default())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeSubsystemError {
+pub enum SubsystemChangeError {
     #[error(transparent)]
     ItemIsNotSubsystem(#[from] rc::err::ItemKindMatchError),
+}
+
+impl SubsystemChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetSubsystemChangeError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetSubsystemChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotSubsystem(rc::err::ItemKindMatchError),
+}
+impl From<SubsystemChangeError> for ItemGetSubsystemChangeError {
+    fn from(err: SubsystemChangeError) -> Self {
+        match err {
+            SubsystemChangeError::ItemIsNotSubsystem(inner) => Self::ItemIsNotSubsystem(inner),
+        }
+    }
 }

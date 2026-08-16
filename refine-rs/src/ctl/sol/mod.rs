@@ -17,7 +17,6 @@ pub use sub_item_stance::{
     ChangeStanceError, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolSetStanceCmd,
     SolUnsetStanceCmd,
 };
-pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
 pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
 mod cmd;
@@ -31,5 +30,4 @@ mod sub_item_service;
 mod sub_item_ship;
 mod sub_item_skill;
 mod sub_item_stance;
-mod sub_item_subsystem;
 mod sub_item_sw_effect;

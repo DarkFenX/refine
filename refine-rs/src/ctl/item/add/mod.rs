@@ -9,7 +9,6 @@ pub use sub_service::ItemAddServiceCmd;
 pub use sub_ship::ItemSetShipCmd;
 pub use sub_skill::ItemAddSkillCmd;
 pub use sub_stance::ItemSetStanceCmd;
-pub use sub_subsystem::ItemAddSubsystemCmd;
 pub use sub_sw_effect::ItemAddSwEffectCmd;
 
 mod cmd;
@@ -23,5 +22,4 @@ mod sub_service;
 mod sub_ship;
 mod sub_skill;
 mod sub_stance;
-mod sub_subsystem;
 mod sub_sw_effect;

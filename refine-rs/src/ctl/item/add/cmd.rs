@@ -1,13 +1,12 @@
 use crate::{
     AddedItemIdsResp, BoosterAddCmd, FitId, ImplantAddCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd,
-    ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd,
-    ItemAddSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RigAddCmd,
-    ctl::core::{BoosterAddCmdCtxFit, ImplantAddCmdCtxFit, RigAddCmdCtxFit},
+    ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSwEffectCmd,
+    ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RigAddCmd, SubsystemAddCmd,
+    ctl::core::{BoosterAddCmdCtxFit, ImplantAddCmdCtxFit, RigAddCmdCtxFit, SubsystemAddCmdCtxFit},
     err::{
-        AddProjEffectError, FitGetBoosterAddError, FitGetImplantAddError, FitGetRigAddError, GetFitAddDroneError,
-        GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddModuleError, GetFitAddServiceError,
-        GetFitAddSkillError, GetFitAddSubsystemError, GetFitSetCharacterError, GetFitSetShipError,
-        GetFitSetStanceError,
+        AddProjEffectError, FitGetBoosterAddError, FitGetImplantAddError, FitGetRigAddError, FitGetSubsystemAddError,
+        GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddModuleError,
+        GetFitAddServiceError, GetFitAddSkillError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
     },
 };
 
@@ -30,7 +29,7 @@ pub enum ItemAddCmd {
     Ship(ItemSetShipCmd),
     Skill(ItemAddSkillCmd),
     Stance(ItemSetStanceCmd),
-    Subsystem(ItemAddSubsystemCmd),
+    Subsystem(SubsystemAddCmdCtxFit),
     SwEffect(ItemAddSwEffectCmd),
 }
 
@@ -50,6 +49,11 @@ impl ImplantAddCmd {
 impl RigAddCmd {
     pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
         ItemAddCmd::Rig(self.into_ctx_fit(fit_id))
+    }
+}
+impl SubsystemAddCmd {
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
+        ItemAddCmd::Subsystem(self.into_ctx_fit(fit_id))
     }
 }
 
@@ -72,7 +76,7 @@ impl ItemAddCmd {
             Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::Skill(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::Stance(cmd) => Ok(cmd.inner.execute(core_sol)?),
-            Self::Subsystem(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Subsystem(cmd) => Ok(cmd.execute(core_sol)?),
             Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_sol)),
         }
     }
@@ -107,5 +111,5 @@ pub enum ItemAddError {
     #[error("failed to set stance")]
     Stance(#[from] GetFitSetStanceError),
     #[error("failed to add subsystem")]
-    Subsystem(#[from] GetFitAddSubsystemError),
+    Subsystem(#[from] FitGetSubsystemAddError),
 }

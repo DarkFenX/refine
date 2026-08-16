@@ -89,10 +89,10 @@ pub(in crate::ctl) use item_stance::{
     ICmdStanceChangeFItemCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetFCtxBIds, ICmdStanceSetFCtxRIds,
     ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds, ICmdStanceUnsetFCtxRIds, ICmdStanceUnsetICtx,
 };
-pub use item_subsystem::{GetFitAddSubsystemError, GetItemChangeSubsystemError, ItemChangeSubsystemError};
-pub(in crate::ctl) use item_subsystem::{
-    ICmdSubsystemAddFCtxBIds, ICmdSubsystemAddFCtxRIds, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxBIds,
-    ICmdSubsystemChangeFCtxRIds, ICmdSubsystemChangeICtx,
+pub use item_subsystem::{
+    FitGetSubsystemAddError, ItemGetSubsystemChangeError, SubsystemAddCmd, SubsystemAddCmdCtxFit,
+    SubsystemAddCmdCtxFitBr, SubsystemChangeCmd, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr,
+    SubsystemChangeError,
 };
 pub use item_sw_effect::{GetItemChangeSwEffectError, ItemChangeSwEffectError};
 pub(in crate::ctl) use item_sw_effect::{

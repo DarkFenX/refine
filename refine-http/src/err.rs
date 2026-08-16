@@ -339,12 +339,12 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 // Item - subsystem
-                rs::err::ChangeSolEnumError::SubsystemAdd(rs::err::GetFitAddSubsystemError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::SubsystemAdd(rs::err::FitGetSubsystemAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::SubsystemChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeSubsystemError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeSubsystemError::ItemIsNotSubsystem(..) => {
+                    rs::err::ItemGetSubsystemChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetSubsystemChangeError::ItemIsNotSubsystem(..) => {
                         (StatusCode::BAD_REQUEST, "SUB-001")
                     }
                 },
@@ -486,8 +486,8 @@ impl ApiError {
                 }
                 // Item - subsystem
                 rs::err::FitCtlCmdError::SubsystemChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeSubsystemError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeSubsystemError::ItemIsNotSubsystem(..) => {
+                    rs::err::ItemGetSubsystemChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetSubsystemChangeError::ItemIsNotSubsystem(..) => {
                         (StatusCode::BAD_REQUEST, "SUB-001")
                     }
                 },
@@ -543,7 +543,7 @@ impl ApiError {
                 rs::err::ItemAddError::Stance(rs::err::GetFitSetStanceError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddError::Subsystem(rs::err::GetFitAddSubsystemError::FitGet(..)) => {
+                rs::err::ItemAddError::Subsystem(rs::err::FitGetSubsystemAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
             },
@@ -606,7 +606,7 @@ impl ApiError {
                 rs::err::ItemCtlError::Stance(rs::err::ItemChangeStanceError::ItemIsNotStance(..)) => {
                     (StatusCode::BAD_REQUEST, "STC-001")
                 }
-                rs::err::ItemCtlError::Subsystem(rs::err::ItemChangeSubsystemError::ItemIsNotSubsystem(..)) => {
+                rs::err::ItemCtlError::Subsystem(rs::err::SubsystemChangeError::ItemIsNotSubsystem(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
                 rs::err::ItemCtlError::SwEffect(rs::err::ItemChangeSwEffectError::ItemIsNotSwEffect(_)) => {
