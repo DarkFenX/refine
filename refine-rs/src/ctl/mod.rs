@@ -1,10 +1,10 @@
 pub use core::{
     AddFitError, AddFleetError, AddProjEffectError, FitAddCmd, FitAddCmdBackref, FitAddDroneError, FitAddFighterError,
     FitAddModuleError, FitAddSkillError, FitChangeCharacterError, FitChangeFitError, FitChangeShipError,
-    FitChangeStanceError, FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError,
-    GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError,
-    GetFitAddSkillError, GetFitAddSubsystemError, GetFitChangeCharacterError, GetFitChangeFitError,
-    GetFitChangeShipError, GetFitChangeStanceError, GetFitRemoveFitError, GetFitSetCharacterError, GetFitSetShipError,
+    FitChangeStanceError, FitRemoveCmd, FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError,
+    GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError,
+    GetFitAddServiceError, GetFitAddSkillError, GetFitAddSubsystemError, GetFitChangeCharacterError,
+    GetFitChangeFitError, GetFitChangeShipError, GetFitChangeStanceError, GetFitSetCharacterError, GetFitSetShipError,
     GetFitSetStanceError, GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError,
     GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError,
     GetItemChangeCharacterError, GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError,
@@ -51,8 +51,9 @@ pub use sol::{
     SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd,
     SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd,
     SolChangeSkillCmd, SolChangeSolCmd, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd,
-    SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
-    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+    SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd, SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref,
+    SolCtlFitRemoveError, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd,
+    SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 
 mod core;

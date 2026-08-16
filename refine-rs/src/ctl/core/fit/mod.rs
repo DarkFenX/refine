@@ -3,8 +3,7 @@ pub use change::{FitChangeFitError, GetFitChangeFitError};
 pub(in crate::ctl) use change::{
     ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds,
 };
-pub use remove::GetFitRemoveFitError;
-pub(in crate::ctl) use remove::{ICmdFitRemoveFCtxBIds, ICmdFitRemoveFCtxRIds, ICmdFitRemoveICtx};
+pub use remove::FitRemoveCmd;
 
 mod add;
 mod change;

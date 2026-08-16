@@ -8,8 +8,9 @@ pub use change::{
     SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd,
     SolChangeServiceCmd, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd,
     SolChangeSolCmd, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd,
-    SolChangeSwEffectCmd, SolCtlCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd,
-    SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+    SolChangeSwEffectCmd, SolCtlCmd, SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref, SolCtlFitRemoveError,
+    SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd,
+    SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 
 mod add;

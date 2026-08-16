@@ -1,10 +1,10 @@
-use crate::ctl::core::ICmdFitRemoveICtx;
+use crate::ctl::core::FitRemoveCmd;
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct RemoveFitCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
-    inner: ICmdFitRemoveICtx = ICmdFitRemoveICtx,
+    inner: FitRemoveCmd = FitRemoveCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

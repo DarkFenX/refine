@@ -1,9 +1,6 @@
-pub use fit::{
-    AddFitError, FitAddCmd, FitAddCmdBackref, FitChangeFitError, GetFitChangeFitError, GetFitRemoveFitError,
-};
+pub use fit::{AddFitError, FitAddCmd, FitAddCmdBackref, FitChangeFitError, FitRemoveCmd, GetFitChangeFitError};
 pub(in crate::ctl) use fit::{
-    ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds, ICmdFitRemoveFCtxBIds,
-    ICmdFitRemoveFCtxRIds, ICmdFitRemoveICtx,
+    ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds,
 };
 pub use fleet::{AddFleetError, FleetChangeFleetError, GetFleetChangeFleetError, GetFleetRemoveFleetError};
 pub(in crate::ctl) use fleet::{

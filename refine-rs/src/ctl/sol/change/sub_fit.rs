@@ -1,7 +1,4 @@
-use crate::{
-    DpsProfile, FitIdBackref, FitSecStatus, FleetIdBackref, SolCtlCmd,
-    ctl::core::{ICmdFitChangeFCtxBIds, ICmdFitRemoveFCtxBIds},
-};
+use crate::{DpsProfile, FitIdBackref, FitSecStatus, FleetIdBackref, SolCtlCmd, ctl::core::ICmdFitChangeFCtxBIds};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change
@@ -33,26 +30,5 @@ impl SolChangeFitCmd {
 impl From<SolChangeFitCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeFitCmd) -> Self {
         Self::ChangeFit(sub_cmd)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Remove
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub struct SolRemoveFitCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdFitRemoveFCtxBIds,
-}
-impl SolRemoveFitCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
-        Self {
-            inner: ICmdFitRemoveFCtxBIds { fit_id, .. },
-        }
-    }
-}
-impl From<SolRemoveFitCmd> for SolCtlCmd {
-    fn from(sub_cmd: SolRemoveFitCmd) -> Self {
-        Self::RemoveFit(sub_cmd)
     }
 }
