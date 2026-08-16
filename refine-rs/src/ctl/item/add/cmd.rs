@@ -1,15 +1,15 @@
 use crate::{
     AddedItemIdsResp, BoosterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd, ItemAddDroneCmd, ItemAddFighterCmd,
-    ItemAddModuleCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, ProjEffectAddCmd, RigAddCmd,
-    ServiceAddCmd, SkillAddCmd, SubsystemAddCmd, SwEffectAddCmd,
+    ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd,
+    SkillAddCmd, SubsystemAddCmd, SwEffectAddCmd,
     ctl::core::{
-        BoosterAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit,
-        SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
+        BoosterAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit,
+        ServiceAddCmdCtxFit, SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
     },
     err::{
-        FitGetBoosterAddError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetRigAddError, FitGetServiceAddError,
-        FitGetSkillAddError, FitGetSubsystemAddError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddModuleError,
-        GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ProjEffectAddError,
+        FitGetBoosterAddError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError,
+        FitGetServiceAddError, FitGetSkillAddError, FitGetSubsystemAddError, GetFitAddDroneError,
+        GetFitAddFighterError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ProjEffectAddError,
     },
 };
 
@@ -25,7 +25,7 @@ pub enum ItemAddCmd {
     Fighter(ItemAddFighterCmd),
     FwEffect(FwEffectAddCmdCtxFit),
     Implant(ImplantAddCmdCtxFit),
-    Module(ItemAddModuleCmd),
+    Module(ModuleAddCmdCtxFit),
     ProjEffect(ProjEffectAddCmd),
     Rig(RigAddCmdCtxFit),
     Service(ServiceAddCmdCtxFit),
@@ -52,6 +52,11 @@ impl FwEffectAddCmd {
 impl ImplantAddCmd {
     pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
         ItemAddCmd::Implant(self.into_ctx_fit(fit_id))
+    }
+}
+impl ModuleAddCmd {
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
+        ItemAddCmd::Module(self.into_ctx_fit(fit_id))
     }
 }
 impl ProjEffectAddCmd {
@@ -97,7 +102,7 @@ impl ItemAddCmd {
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::FwEffect(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Implant(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Module(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Module(cmd) => Ok(cmd.execute(core_sol)?),
             Self::ProjEffect(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Rig(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Service(cmd) => Ok(cmd.execute(core_sol)?),
@@ -125,7 +130,7 @@ pub enum ItemAddError {
     #[error("failed to add implant")]
     Implant(#[from] FitGetImplantAddError),
     #[error("failed to add module")]
-    Module(#[from] GetFitAddModuleError),
+    Module(#[from] FitGetModuleAddError),
     #[error("failed to add projected effect")]
     ProjEffect(#[from] ProjEffectAddError),
     #[error("failed to add rig")]

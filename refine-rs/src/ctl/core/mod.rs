@@ -46,10 +46,10 @@ pub use item_implant::{
     FitGetImplantAddError, ImplantAddCmd, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr, ImplantChangeCmd,
     ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ImplantChangeError, ItemGetImplantChangeError,
 };
-pub use item_module::{FitAddModuleError, GetFitAddModuleError, GetItemChangeModuleError, ItemChangeModuleError};
-pub(in crate::ctl) use item_module::{
-    ICmdModuleAddFCtxBIds, ICmdModuleAddFCtxRIds, ICmdModuleAddICtxBIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared,
-    ICmdModuleChangeFCtxBIds, ICmdModuleChangeFCtxRIds, ICmdModuleChangeICtxRIds,
+pub use item_module::{
+    FitGetModuleAddError, ItemGetModuleChangeError, ModuleAddCmd, ModuleAddCmdBr, ModuleAddCmdCtxFit,
+    ModuleAddCmdCtxFitBr, ModuleAddError, ModuleChangeCmd, ModuleChangeCmdBr, ModuleChangeCmdCtxItem,
+    ModuleChangeCmdCtxItemBr, ModuleChangeError,
 };
 pub use item_proj_effect::{
     ItemGetProjEffectChangeError, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectAddError, ProjEffectChangeCmd,

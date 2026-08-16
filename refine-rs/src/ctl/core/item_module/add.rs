@@ -1,68 +1,179 @@
 use crate::{
-    AddMode, AddMutation, AddedItemIdsResp, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, ModRack,
-    ModuleState, OptionalReload, Spool, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddMode, AddMutation, AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
+    ItemTypeId, ModRack, ModuleState, OptionalReload, Spool, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdModuleAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
+pub struct ModuleAddCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<ItemId> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdModuleAddICtxBIds,
+    shared: ModuleAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdModuleAddFCtxRIds {
-    pub(in crate::ctl) fit_id: FitId,
+pub struct ModuleAddCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdModuleAddICtxRIds,
+    shared: ModuleAddCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+struct ModuleAddCmdShared {
+    rack: ModRack,
+    add_mode: AddMode,
+    type_id: ItemTypeId,
+    state: ModuleState,
+    mutation: Option<AddMutation> = None,
+    charge_type_id: Option<ItemTypeId> = None,
+    spool: Option<Spool> = None,
+    optional_reload: Option<OptionalReload> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdModuleAddICtxBIds {
+pub struct ModuleAddCmdCtxFit {
+    fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdModuleAddShared,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    core: ModuleAddCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdModuleAddICtxRIds {
+pub struct ModuleAddCmdCtxFitBr {
+    fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdModuleAddShared,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemId> = Vec::new(),
+    core: ModuleAddCmdBr,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdModuleAddShared {
-    pub(in crate::ctl) rack: ModRack,
-    pub(in crate::ctl) add_mode: AddMode,
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: ModuleState,
-    pub(in crate::ctl) mutation: Option<AddMutation> = None,
-    pub(in crate::ctl) charge_type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) spool: Option<Spool> = None,
-    pub(in crate::ctl) optional_reload: Option<OptionalReload> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModuleAddCmd {
+    pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
+        Self {
+            shared: ModuleAddCmdShared {
+                rack,
+                add_mode,
+                type_id,
+                state,
+                ..
+            },
+            ..
+        }
+    }
+    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+        self.shared.mutation = Some(mutation);
+        self
+    }
+    pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
+        self.shared.charge_type_id = Some(charge_type_id);
+        self
+    }
+    pub fn with_spool(mut self, spool: Spool) -> Self {
+        self.shared.spool = Some(spool);
+        self
+    }
+    pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
+        self.shared.optional_reload = Some(optional_reload);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+impl ModuleAddCmdBr {
+    pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
+        Self {
+            shared: ModuleAddCmdShared {
+                rack,
+                add_mode,
+                type_id,
+                state,
+                ..
+            },
+            ..
+        }
+    }
+    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+        self.shared.mutation = Some(mutation);
+        self
+    }
+    pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
+        self.shared.charge_type_id = Some(charge_type_id);
+        self
+    }
+    pub fn with_spool(mut self, spool: Spool) -> Self {
+        self.shared.spool = Some(spool);
+        self
+    }
+    pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
+        self.shared.optional_reload = Some(optional_reload);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModuleAddCmd {
+    pub(in crate::ctl) fn into_br(self) -> ModuleAddCmdBr {
+        ModuleAddCmdBr {
+            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ModuleAddCmdCtxFit {
+        ModuleAddCmdCtxFit { fit_id, core: self }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ModuleAddCmdCtxFitBr {
+        ModuleAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl ModuleAddCmdBr {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ModuleAddCmdCtxFitBr {
+        ModuleAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdModuleAddFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleAddFCtxRIds, BackrefRenderError> {
-        Ok(ICmdModuleAddFCtxRIds {
+impl ModuleAddCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ModuleAddCmdCtxFit, BackrefRenderError> {
+        Ok(ModuleAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd.render(resps)?,
+            core: self.core.render(resps)?,
         })
     }
 }
 
-impl ICmdModuleAddICtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdModuleAddICtxRIds, BackrefRenderError> {
-        Ok(ICmdModuleAddICtxRIds {
-            shared: self.shared,
+impl ModuleAddCmdBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ModuleAddCmd, BackrefRenderError> {
+        Ok(ModuleAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            shared: self.shared,
         })
     }
 }
@@ -70,33 +181,8 @@ impl ICmdModuleAddICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdModuleAddFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitAddModuleError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitAddModuleError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-    #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
-}
-impl From<FitAddModuleError> for GetFitAddModuleError {
-    fn from(err: FitAddModuleError) -> Self {
-        match err {
-            FitAddModuleError::ProjAdd(inner) => Self::ProjAdd(inner),
-        }
-    }
-}
-
-impl ICmdModuleAddICtxRIds {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddModuleError> {
+impl ModuleAddCmd {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ModuleAddError> {
         let mut core_module = core_fit.add_module(
             self.shared.rack,
             self.shared.add_mode,
@@ -123,9 +209,32 @@ impl ICmdModuleAddICtxRIds {
         Ok(AddedItemIdsResp::from_core_module(core_module))
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum FitAddModuleError {
+pub enum ModuleAddError {
     #[error("failed to add projection")]
     ProjAdd(#[from] rc::err::AddProjError),
+}
+
+impl ModuleAddCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, FitGetModuleAddError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetModuleAddError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+    #[error("failed to add projection")]
+    ProjAdd(#[source] rc::err::AddProjError),
+}
+impl From<ModuleAddError> for FitGetModuleAddError {
+    fn from(err: ModuleAddError) -> Self {
+        match err {
+            ModuleAddError::ProjAdd(inner) => Self::ProjAdd(inner),
+        }
+    }
 }

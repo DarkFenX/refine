@@ -248,15 +248,15 @@ impl ApiError {
                 },
                 // Item - module
                 rs::err::ChangeSolEnumError::ModuleAdd(err_l2) => match err_l2 {
-                    rs::err::GetFitAddModuleError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
+                    rs::err::FitGetModuleAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetModuleAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
                 },
                 rs::err::ChangeSolEnumError::ModuleChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeModuleError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeModuleError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
-                    rs::err::GetItemChangeModuleError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
-                    rs::err::GetItemChangeModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
-                    rs::err::GetItemChangeModuleError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
+                    rs::err::ItemGetModuleChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetModuleChangeError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
+                    rs::err::ItemGetModuleChangeError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
+                    rs::err::ItemGetModuleChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
+                    rs::err::ItemGetModuleChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
                 },
                 // Item - projected effect
                 rs::err::ChangeSolEnumError::ProjEffectAdd(rs::err::ProjEffectAddError::ProjAdd(..)) => {
@@ -445,15 +445,15 @@ impl ApiError {
                     rs::err::ItemGetImplantChangeError::ItemIsNotImplant(..) => (StatusCode::BAD_REQUEST, "IMP-001"),
                 },
                 // Item - module
-                rs::err::FitCtlCmdError::ModuleAdd(rs::err::FitAddModuleError::ProjAdd(..)) => {
+                rs::err::FitCtlCmdError::ModuleAdd(rs::err::ModuleAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "MOD-002")
                 }
                 rs::err::FitCtlCmdError::ModuleChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeModuleError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeModuleError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
-                    rs::err::GetItemChangeModuleError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
-                    rs::err::GetItemChangeModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
-                    rs::err::GetItemChangeModuleError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
+                    rs::err::ItemGetModuleChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetModuleChangeError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
+                    rs::err::ItemGetModuleChangeError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
+                    rs::err::ItemGetModuleChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
+                    rs::err::ItemGetModuleChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
                 },
                 // Item - rig
                 rs::err::FitCtlCmdError::RigChange(err_l2) => match err_l2 {
@@ -519,8 +519,8 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Module(err_l2) => match err_l2 {
-                    rs::err::GetFitAddModuleError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
+                    rs::err::FitGetModuleAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetModuleAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
                 },
                 rs::err::ItemAddError::ProjEffect(rs::err::ProjEffectAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "PJE-002")
@@ -578,10 +578,10 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "IMP-001")
                 }
                 rs::err::ItemCtlError::Module(err_l2) => match err_l2 {
-                    rs::err::ItemChangeModuleError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
-                    rs::err::ItemChangeModuleError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
-                    rs::err::ItemChangeModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
-                    rs::err::ItemChangeModuleError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
+                    rs::err::ModuleChangeError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
+                    rs::err::ModuleChangeError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
+                    rs::err::ModuleChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
+                    rs::err::ModuleChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
                 },
                 rs::err::ItemCtlError::ProjEffect(err_l2) => match err_l2 {
                     rs::err::ProjEffectChangeError::ItemIsNotProjEffect(..) => (StatusCode::BAD_REQUEST, "PJE-001"),

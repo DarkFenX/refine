@@ -5,7 +5,6 @@ pub use sub_item_character::{
 };
 pub use sub_item_drone::{SolAddDroneCmd, SolChangeDroneCmd};
 pub use sub_item_fighter::{SolAddFighterCmd, SolChangeFighterCmd};
-pub use sub_item_module::{SolAddModuleCmd, SolChangeModuleCmd};
 pub use sub_item_ship::{
     ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,
 };
@@ -18,6 +17,5 @@ mod cmd;
 mod sub_item_character;
 mod sub_item_drone;
 mod sub_item_fighter;
-mod sub_item_module;
 mod sub_item_ship;
 mod sub_item_stance;

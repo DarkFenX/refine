@@ -8,10 +8,10 @@ pub(crate) trait CtlCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fleet
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//! Backreference type for fleet IDs.
-//!
-//! They allow you to refer fleets created by some previous command in the command batch you are
-//! submitting.
+/// Backreference type for fleet IDs.
+///
+/// They allow you to refer fleets created by some previous command in the command batch you are
+/// submitting.
 #[derive(Copy, Clone)]
 pub enum FleetIdBr {
     Id(FleetId),
@@ -32,10 +32,10 @@ impl CtlCmdBr for FleetIdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//! Backreference type for fit IDs.
-//!
-//! They allow you to refer fits created by some previous command in the command batch you are
-//! submitting.
+/// Backreference type for fit IDs.
+///
+/// They allow you to refer fits created by some previous command in the command batch you are
+/// submitting.
 #[derive(Copy, Clone)]
 pub enum FitIdBr {
     Id(FitId),
@@ -56,10 +56,10 @@ impl CtlCmdBr for FitIdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Item
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-//! Backreference type for item IDs.
-//!
-//! They allow you to refer items created by some previous command in the command batch you are
-//! submitting.
+/// Backreference type for item IDs.
+///
+/// They allow you to refer items created by some previous command in the command batch you are
+/// submitting.
 #[derive(Copy, Clone)]
 pub enum ItemIdBr {
     Id(ItemId),

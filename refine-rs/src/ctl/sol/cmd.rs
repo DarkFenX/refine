@@ -6,11 +6,12 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, FitAddCmd,
     FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitIdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr,
     FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr,
-    ItemRemoveCmd, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd,
-    RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd, SolAddDroneCmd, SolAddFighterCmd,
-    SolAddModuleCmd, SolChangeCharacterCmd, SolChangeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeModuleCmd,
-    SolChangeShipCmd, SolChangeStanceCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd,
-    SolUnsetShipCmd, SolUnsetStanceCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
+    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd,
+    ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
+    ServiceChangeCmd, SkillAddCmd, SkillChangeCmd, SolAddDroneCmd, SolAddFighterCmd, SolChangeCharacterCmd,
+    SolChangeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeShipCmd, SolChangeStanceCmd, SolSetCharacterCmd,
+    SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd, SubsystemAddCmd,
+    SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
         BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr,
@@ -18,25 +19,25 @@ use crate::{
         FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr, FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr,
         FwEffectAddCmdCtxFit, FwEffectAddCmdCtxFitBr, FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr,
         ICmdCharacterSetFCtxRIds, ICmdCharacterUnsetFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
-        ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds,
-        ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds,
-        ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr,
-        ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr,
-        RigAddCmdCtxFit, RigAddCmdCtxFitBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit,
-        ServiceAddCmdCtxFitBr, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, SkillAddCmdCtxFit,
-        SkillAddCmdCtxFitBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemAddCmdCtxFit,
-        SubsystemAddCmdCtxFitBr, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem,
-        SwEffectChangeCmdCtxItemBr,
+        ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds,
+        ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
+        ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
+        ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr,
+        ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit, RigAddCmdCtxFitBr,
+        RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
+        ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr,
+        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemAddCmdCtxFit, SubsystemAddCmdCtxFitBr,
+        SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, ChangeCharacterError, ChangeShipError, ChangeStanceError, FitAddError,
         FitGetBoosterAddError, FitGetFitChangeError, FitGetFitRemoveError, FitGetFwEffectAddError,
-        FitGetImplantAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError, FitGetSubsystemAddError,
-        FleetAddError, FleetGetFleetChangeError, FleetGetFleetRemoveError, GetFitAddDroneError, GetFitAddFighterError,
-        GetFitAddModuleError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
+        FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError,
+        FitGetSubsystemAddError, FleetAddError, FleetGetFleetChangeError, FleetGetFleetRemoveError,
+        GetFitAddDroneError, GetFitAddFighterError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
         GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError, GetItemChangeDroneError,
-        GetItemChangeFighterError, GetItemChangeModuleError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
-        ItemGetChargeChangeError, ItemGetFwEffectChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError,
+        GetItemChangeFighterError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetChargeChangeError,
+        ItemGetFwEffectChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError,
         ItemGetProjEffectChangeError, ItemGetRigChangeError, ItemGetServiceChangeError, ItemGetSkillChangeError,
         ItemGetSubsystemChangeError, ItemGetSwEffectChangeError, ProjEffectAddError,
     },
@@ -84,8 +85,8 @@ pub enum SolCtlCmd {
     AddImplant(ImplantAddCmdCtxFitBr),
     ChangeImplant(ImplantChangeCmdCtxItemBr),
     // Item - module
-    AddModule(SolAddModuleCmd),
-    ChangeModule(SolChangeModuleCmd),
+    AddModule(ModuleAddCmdCtxFitBr),
+    ChangeModule(ModuleChangeCmdCtxItemBr),
     // Item - projected effect
     AddProjEffect(ProjEffectAddCmdBr),
     ChangeProjEffect(ProjEffectChangeCmdCtxItemBr),
@@ -151,8 +152,8 @@ pub(crate) enum SolCtlCmdRendered {
     AddImplant(ImplantAddCmdCtxFit),
     ChangeImplant(ImplantChangeCmdCtxItem),
     // Item - module
-    AddModule(ICmdModuleAddFCtxRIds),
-    ChangeModule(ICmdModuleChangeFCtxRIds),
+    AddModule(ModuleAddCmdCtxFit),
+    ChangeModule(ModuleChangeCmdCtxItem),
     // Item - projected effect
     AddProjEffect(ProjEffectAddCmd),
     ChangeProjEffect(ProjEffectChangeCmdCtxItem),
@@ -293,6 +294,27 @@ impl ImplantChangeCmd {
         SolCtlCmd::ChangeImplant(self.into_ctx_item_br(item_id))
     }
 }
+// Item - module
+impl ModuleAddCmd {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::AddModule(self.into_ctx_fit_br(fit_id))
+    }
+}
+impl ModuleAddCmdBr {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::AddModule(self.into_ctx_fit_br(fit_id))
+    }
+}
+impl ModuleChangeCmd {
+    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeModule(self.into_ctx_item_br(item_id))
+    }
+}
+impl ModuleChangeCmdBr {
+    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeModule(self.into_ctx_item_br(item_id))
+    }
+}
 // Item - projected effect
 impl ProjEffectAddCmd {
     pub fn into_sol_ctl(self) -> SolCtlCmd {
@@ -412,8 +434,8 @@ impl SolCtlCmd {
             Self::AddImplant(cmd) => SolCtlCmdRendered::AddImplant(cmd.render(resps)?),
             Self::ChangeImplant(cmd) => SolCtlCmdRendered::ChangeImplant(cmd.render(resps)?),
             // Item - module
-            Self::AddModule(cmd) => SolCtlCmdRendered::AddModule(cmd.inner.render(resps)?),
-            Self::ChangeModule(cmd) => SolCtlCmdRendered::ChangeModule(cmd.inner.render(resps)?),
+            Self::AddModule(cmd) => SolCtlCmdRendered::AddModule(cmd.render(resps)?),
+            Self::ChangeModule(cmd) => SolCtlCmdRendered::ChangeModule(cmd.render(resps)?),
             // Item - projected effect
             Self::AddProjEffect(cmd) => SolCtlCmdRendered::AddProjEffect(cmd.render(resps)?),
             Self::ChangeProjEffect(cmd) => SolCtlCmdRendered::ChangeProjEffect(cmd.render(resps)?),
@@ -578,9 +600,9 @@ pub enum ChangeSolEnumError {
     ImplantChange(#[from] ItemGetImplantChangeError),
     // Item - module
     #[error("failed to add module")]
-    ModuleAdd(#[from] GetFitAddModuleError),
+    ModuleAdd(#[from] FitGetModuleAddError),
     #[error("failed to change module")]
-    ModuleChange(#[from] GetItemChangeModuleError),
+    ModuleChange(#[from] ItemGetModuleChangeError),
     // Item - projected effect
     #[error("failed to add projected effect")]
     ProjEffectAdd(#[from] ProjEffectAddError),
