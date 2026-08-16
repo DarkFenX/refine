@@ -1,32 +1,7 @@
 use crate::{
     FitIdBr, FleetIdBr, SolCtlCmd,
-    ctl::core::{ICmdFleetAddFCtxBIds, ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
+    ctl::core::{ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
 };
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Add
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
-pub struct SolAddFleetCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdFleetAddFCtxBIds = ICmdFleetAddFCtxBIds { .. },
-}
-impl SolAddFleetCmd {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
-        self.inner.fit_ids.clear();
-        self.inner.fit_ids.extend(fit_ids);
-        self
-    }
-}
-impl From<SolAddFleetCmd> for SolCtlCmd {
-    fn from(sub_cmd: SolAddFleetCmd) -> Self {
-        Self::AddFleet(sub_cmd)
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change

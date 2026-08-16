@@ -1,4 +1,4 @@
-pub use add::{AddFitError, FitAddCmd, FitAddCmdBr};
+pub use add::{FitAddCmd, FitAddCmdBr, FitAddError};
 pub use change::{
     FitChangeCmd, FitChangeCmdBr, FitChangeCmdCtxFit, FitChangeCmdCtxFitBr, FitChangeError, FitGetFitChangeError,
 };

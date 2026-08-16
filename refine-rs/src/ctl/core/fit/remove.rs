@@ -5,7 +5,7 @@ use crate::{CtlCmdResps, FitId, FitIdBr, err::BackrefRenderError};
 #[derive(Default)]
 pub struct FitRemoveCmd;
 
-// Full context commands
+// Extra context commands
 pub struct FitRemoveCmdCtxFit {
     fit_id: FitId,
     core: FitRemoveCmd,

@@ -56,7 +56,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathFleetNotFound(#[from] rs::err::GetFleetError),
     #[error(transparent)]
-    FleetAdd(#[from] rs::err::AddFleetError),
+    FleetAdd(#[from] rs::err::FleetAddError),
     #[error(transparent)]
     FleetChange(#[from] rs::err::ChangeFleetError),
     // Fit-related
@@ -65,7 +65,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathFitNotFound(#[from] rs::err::GetFitError),
     #[error(transparent)]
-    FitAdd(#[from] rs::err::AddFitError),
+    FitAdd(#[from] rs::err::FitAddError),
     #[error(transparent)]
     FitChange(ApiErrorIndexed<rs::err::FitCtlCmdError>),
     // Item-related
@@ -137,7 +137,7 @@ impl ApiError {
             },
             Self::SolChange(err) => match &err.error {
                 // Fleets
-                rs::err::ChangeSolEnumError::FleetAdd(rs::err::AddFleetError::FitAdd(..)) => {
+                rs::err::ChangeSolEnumError::FleetAdd(rs::err::FleetAddError::FitAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "FLT-003")
                 }
                 rs::err::ChangeSolEnumError::FleetChange(err_l2) => match err_l2 {
@@ -149,7 +149,7 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FLT-001")
                 }
                 // Fits
-                rs::err::ChangeSolEnumError::FitAdd(rs::err::AddFitError::FleetSet(..)) => {
+                rs::err::ChangeSolEnumError::FitAdd(rs::err::FitAddError::FleetSet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-003")
                 }
                 rs::err::ChangeSolEnumError::FitChange(err_l2) => match err_l2 {
@@ -366,7 +366,7 @@ impl ApiError {
             Self::PathFleetParse(..) => (StatusCode::NOT_FOUND, "FLT-002"),
             Self::PathFleetNotFound(..) => (StatusCode::NOT_FOUND, "FLT-001"),
             Self::FleetAdd(err) => match err {
-                rs::err::AddFleetError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-003"),
+                rs::err::FleetAddError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-003"),
             },
             Self::FleetChange(rs::err::ChangeFleetError(err)) => match err {
                 rs::err::FleetChangeFleetError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
@@ -378,7 +378,7 @@ impl ApiError {
             Self::PathFitParse(..) => (StatusCode::NOT_FOUND, "FIT-002"),
             Self::PathFitNotFound(..) => (StatusCode::NOT_FOUND, "FIT-001"),
             Self::FitAdd(err) => match err {
-                rs::err::AddFitError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-003"),
+                rs::err::FitAddError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-003"),
             },
             Self::FitChange(err) => match &err.error {
                 // Fit

@@ -91,7 +91,7 @@ impl FitAddCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitAddCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, AddFitError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, FitAddError> {
         let mut core_fit = core_sol.add_fit();
         if let Some(fleet_id) = self.fleet_id {
             core_fit.set_fleet(&fleet_id)?;
@@ -107,7 +107,7 @@ impl FitAddCmd {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum AddFitError {
+pub enum FitAddError {
     #[error("failed to set fleet")]
     FleetSet(#[from] rc::err::SetFitFleetError),
 }

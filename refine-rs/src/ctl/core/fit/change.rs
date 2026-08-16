@@ -26,7 +26,7 @@ struct CmdFitChangeShared {
     rah_incoming_dps: TriStateField<DpsProfile> = TriStateField::Absent,
 }
 
-// Full context commands
+// Extra context commands
 pub struct FitChangeCmdCtxFit {
     fit_id: FitId,
     core: FitChangeCmd,

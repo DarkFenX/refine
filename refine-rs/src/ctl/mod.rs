@@ -1,21 +1,22 @@
 pub use core::{
-    AddFitError, AddFleetError, AddProjEffectError, FitAddCmd, FitAddCmdBr, FitAddDroneError, FitAddFighterError,
-    FitAddModuleError, FitAddSkillError, FitChangeCharacterError, FitChangeCmd, FitChangeCmdBr, FitChangeError,
-    FitChangeShipError, FitChangeStanceError, FitGetFitChangeError, FitGetFitRemoveError, FitRemoveCmd,
-    FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
-    GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
-    GetFitAddSubsystemError, GetFitChangeCharacterError, GetFitChangeShipError, GetFitChangeStanceError,
-    GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, GetFitUnsetCharacterError, GetFitUnsetShipError,
-    GetFitUnsetStanceError, GetFleetChangeFleetError, GetFleetRemoveFleetError, GetItemChangeAutochargeError,
-    GetItemChangeBoosterError, GetItemChangeCharacterError, GetItemChangeChargeError, GetItemChangeDroneError,
-    GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
-    GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeShipError,
-    GetItemChangeSkillError, GetItemChangeStanceError, GetItemChangeSubsystemError, GetItemChangeSwEffectError,
-    GetItemRemoveItemError, ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError,
-    ItemChangeChargeError, ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError,
-    ItemChangeImplantError, ItemChangeModuleError, ItemChangeProjEffectError, ItemChangeRigError,
-    ItemChangeServiceError, ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError,
-    ItemChangeSwEffectError, ItemRemoveItemError, SolAddCmd, SolChangeCmd,
+    AddProjEffectError, FitAddCmd, FitAddCmdBr, FitAddDroneError, FitAddError, FitAddFighterError, FitAddModuleError,
+    FitAddSkillError, FitChangeCharacterError, FitChangeCmd, FitChangeCmdBr, FitChangeError, FitChangeShipError,
+    FitChangeStanceError, FitGetFitChangeError, FitGetFitRemoveError, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr,
+    FleetAddError, FleetChangeFleetError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError,
+    GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError,
+    GetFitAddSkillError, GetFitAddSubsystemError, GetFitChangeCharacterError, GetFitChangeShipError,
+    GetFitChangeStanceError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
+    GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError, GetFleetChangeFleetError,
+    GetFleetRemoveFleetError, GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeCharacterError,
+    GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
+    GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeProjEffectError, GetItemChangeRigError,
+    GetItemChangeServiceError, GetItemChangeShipError, GetItemChangeSkillError, GetItemChangeStanceError,
+    GetItemChangeSubsystemError, GetItemChangeSwEffectError, GetItemRemoveItemError, ItemChangeAutochargeError,
+    ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError, ItemChangeDroneError,
+    ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError, ItemChangeModuleError,
+    ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError, ItemChangeShipError, ItemChangeSkillError,
+    ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError, ItemRemoveItemError, SolAddCmd,
+    SolChangeCmd,
 };
 
 pub use fit::{
@@ -26,7 +27,7 @@ pub use fit::{
     FitChangeStanceCmd, FitChangeSubsystemCmd, FitCtlCmd, FitCtlCmdError, FitRemoveItemCmd, FitSetCharacterCmd,
     FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
 };
-pub use fleet::{AddFleetCmd, ChangeFleetCmd, RemoveFleetCmd};
+pub use fleet::{ChangeFleetCmd, RemoveFleetCmd};
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd,
     ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd,
@@ -43,8 +44,8 @@ pub use shared::{
 };
 pub use sol::{
     ChangeCharacterError, ChangeShipError, ChangeSolEnumError, ChangeStanceError, SolAddBoosterCmd, SolAddDroneCmd,
-    SolAddFighterCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd,
-    SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd,
+    SolAddFighterCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd,
+    SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd,
     SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
     SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd, SolChangeFwEffectCmd,
     SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
