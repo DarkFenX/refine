@@ -1,21 +1,20 @@
 use crate::{
-    AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterUnsetCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps,
-    DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
-    FighterChangeCmdBr, FitChangeCharacterCmd, FitChangeCmd, FitChangeShipCmd, FitChangeStanceCmd, FitSetCharacterCmd,
-    FitSetShipCmd, FitSetStanceCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FwEffectAddCmd, FwEffectChangeCmd,
-    ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
-    ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd,
-    SubsystemAddCmd, SubsystemChangeCmd,
+    AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterSetCmd, CharacterUnsetCmd, ChargeChangeCmd,
+    CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
+    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCharacterCmd, FitChangeCmd, FitChangeShipCmd,
+    FitChangeStanceCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FwEffectAddCmd,
+    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
+    ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd,
+    SkillChangeCmd, SubsystemAddCmd, SubsystemChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr,
         FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr,
-        ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
-        ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ImplantChangeCmdCtxItem,
-        ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleChangeCmdCtxItem,
-        ModuleChangeCmdCtxItemBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceChangeCmdCtxItem,
-        ServiceChangeCmdCtxItemBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemChangeCmdCtxItem,
-        SubsystemChangeCmdCtxItemBr,
+        ICmdCharacterChangeICtx, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdStanceChangeICtx,
+        ICmdStanceSetICtx, ICmdStanceUnsetICtx, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr,
+        ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr,
+        RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr,
+        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, DroneAddError, FighterAddError, FitChangeCharacterError, FitChangeError,
@@ -42,7 +41,7 @@ pub enum FitCtlCmd {
     AddBooster(BoosterAddCmd),
     ChangeBooster(BoosterChangeCmdCtxItemBr),
     // Item - character
-    SetCharacter(FitSetCharacterCmd),
+    SetCharacter(CharacterSetCmd),
     ChangeCharacter(FitChangeCharacterCmd),
     UnsetCharacter(CharacterUnsetCmd),
     // Item - charge
@@ -95,7 +94,7 @@ pub(crate) enum FitCtlCmdRendered {
     AddBooster(BoosterAddCmd),
     ChangeBooster(BoosterChangeCmdCtxItem),
     // Item - character
-    SetCharacter(ICmdCharacterSetICtx),
+    SetCharacter(CharacterSetCmd),
     ChangeCharacter(ICmdCharacterChangeICtx),
     UnsetCharacter(CharacterUnsetCmd),
     // Item - charge
@@ -176,6 +175,11 @@ impl ChargeChangeCmd {
     }
 }
 // Item - character
+impl CharacterSetCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::SetCharacter(self)
+    }
+}
 impl CharacterUnsetCmd {
     pub fn into_fit_ctl(self) -> FitCtlCmd {
         FitCtlCmd::UnsetCharacter(self)
@@ -327,7 +331,7 @@ impl FitCtlCmd {
             Self::AddBooster(cmd) => FitCtlCmdRendered::AddBooster(cmd),
             Self::ChangeBooster(cmd) => FitCtlCmdRendered::ChangeBooster(cmd.render(resps)?),
             // Item - character
-            Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd.inner),
+            Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd),
             Self::ChangeCharacter(cmd) => FitCtlCmdRendered::ChangeCharacter(cmd.inner),
             Self::UnsetCharacter(cmd) => FitCtlCmdRendered::UnsetCharacter(cmd),
             // Item - charge

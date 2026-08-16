@@ -17,14 +17,13 @@ pub use item_booster::{
     BoosterChangeCmdCtxItemBr, BoosterChangeError, FitGetBoosterAddError, ItemGetBoosterChangeError,
 };
 pub use item_character::{
-    CharacterUnsetCmd, CharacterUnsetCmdCtxFit, CharacterUnsetCmdCtxFitBr, FitChangeCharacterError,
-    FitGetCharacterUnsetError, GetFitChangeCharacterError, GetFitSetCharacterError, GetItemChangeCharacterError,
-    ItemChangeCharacterError,
+    CharacterSetCmd, CharacterSetCmdCtxFit, CharacterSetCmdCtxFitBr, CharacterUnsetCmd, CharacterUnsetCmdCtxFit,
+    CharacterUnsetCmdCtxFitBr, FitChangeCharacterError, FitGetCharacterSetError, FitGetCharacterUnsetError,
+    GetFitChangeCharacterError, GetItemChangeCharacterError, ItemChangeCharacterError,
 };
 pub(in crate::ctl) use item_character::{
     ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
-    ICmdCharacterChangeFItemCtxRIds, ICmdCharacterChangeICtx, ICmdCharacterSetFCtxBIds, ICmdCharacterSetFCtxRIds,
-    ICmdCharacterSetICtx,
+    ICmdCharacterChangeFItemCtxRIds, ICmdCharacterChangeICtx,
 };
 pub use item_charge::{
     ChargeChangeCmd, ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, ChargeChangeError, ItemGetChargeChangeError,

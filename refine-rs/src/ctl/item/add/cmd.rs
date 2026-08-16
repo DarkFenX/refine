@@ -1,15 +1,16 @@
 use crate::{
-    AddedItemIdsResp, BoosterAddCmd, DroneAddCmd, FighterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd,
-    ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd,
-    SkillAddCmd, SubsystemAddCmd, SwEffectAddCmd,
+    AddedItemIdsResp, BoosterAddCmd, CharacterSetCmd, DroneAddCmd, FighterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd,
+    ItemSetShipCmd, ItemSetStanceCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd, SkillAddCmd,
+    SubsystemAddCmd, SwEffectAddCmd,
     ctl::core::{
-        BoosterAddCmdCtxFit, DroneAddCmdCtxFit, FighterAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit,
-        ModuleAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit, SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
+        BoosterAddCmdCtxFit, CharacterSetCmdCtxFit, DroneAddCmdCtxFit, FighterAddCmdCtxFit, FwEffectAddCmdCtxFit,
+        ImplantAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit, SkillAddCmdCtxFit,
+        SubsystemAddCmdCtxFit,
     },
     err::{
-        FitGetBoosterAddError, FitGetDroneAddError, FitGetFighterAddError, FitGetFwEffectAddError,
-        FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError,
-        FitGetSubsystemAddError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ProjEffectAddError,
+        FitGetBoosterAddError, FitGetCharacterSetError, FitGetDroneAddError, FitGetFighterAddError,
+        FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError,
+        FitGetSkillAddError, FitGetSubsystemAddError, GetFitSetShipError, GetFitSetStanceError, ProjEffectAddError,
     },
 };
 
@@ -20,7 +21,7 @@ use crate::{
 )]
 pub enum ItemAddCmd {
     Booster(BoosterAddCmdCtxFit),
-    Character(ItemSetCharacterCmd),
+    Character(CharacterSetCmdCtxFit),
     Drone(DroneAddCmdCtxFit),
     Fighter(FighterAddCmdCtxFit),
     FwEffect(FwEffectAddCmdCtxFit),
@@ -42,6 +43,11 @@ pub enum ItemAddCmd {
 impl BoosterAddCmd {
     pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
         ItemAddCmd::Booster(self.into_ctx_fit(fit_id))
+    }
+}
+impl CharacterSetCmd {
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
+        ItemAddCmd::Character(self.into_ctx_fit(fit_id))
     }
 }
 impl DroneAddCmd {
@@ -107,7 +113,7 @@ impl ItemAddCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddError> {
         match self {
             Self::Booster(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Character(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Drone(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Fighter(cmd) => Ok(cmd.execute(core_sol)?),
             Self::FwEffect(cmd) => Ok(cmd.execute(core_sol)?),
@@ -130,7 +136,7 @@ pub enum ItemAddError {
     #[error("failed to add booster")]
     Booster(#[from] FitGetBoosterAddError),
     #[error("failed to set character")]
-    Character(#[from] GetFitSetCharacterError),
+    Character(#[from] FitGetCharacterSetError),
     #[error("failed to add drone")]
     Drone(#[from] FitGetDroneAddError),
     #[error("failed to add fighter")]

@@ -182,7 +182,7 @@ impl ApiError {
                     rs::err::ItemGetBoosterChangeError::ItemIsNotBooster(..) => (StatusCode::BAD_REQUEST, "BST-001"),
                 },
                 // Item - character
-                rs::err::ChangeSolEnumError::CharacterSet(rs::err::GetFitSetCharacterError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::CharacterSet(rs::err::FitGetCharacterSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::CharacterChange(err_l2) => match err_l2 {
@@ -501,7 +501,7 @@ impl ApiError {
                 rs::err::ItemAddError::Booster(rs::err::FitGetBoosterAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddError::Character(rs::err::GetFitSetCharacterError::FitGet(..)) => {
+                rs::err::ItemAddError::Character(rs::err::FitGetCharacterSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Drone(err_l2) => match err_l2 {
