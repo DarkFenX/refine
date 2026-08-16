@@ -1,38 +1,96 @@
 use crate::{
-    AddedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdProjEffectAddFCtxBIds {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdProjEffectAddShared,
+pub struct ProjEffectAddCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: ProjEffectAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdProjEffectAddFCtxRIds {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdProjEffectAddShared,
+pub struct ProjEffectAddCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemId> = Vec::new(),
+    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: ProjEffectAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdProjEffectAddShared {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: Option<bool> = None,
+struct ProjEffectAddCmdShared {
+    type_id: ItemTypeId,
+    state: Option<bool> = None,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes = EffectModes::new(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectAddCmd {
+    pub fn new(type_id: ItemTypeId) -> Self {
+        Self {
+            shared: ProjEffectAddCmdShared { type_id, .. },
+            ..
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.shared.state = Some(state);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+impl ProjEffectAddCmdBr {
+    pub fn new(type_id: ItemTypeId) -> Self {
+        Self {
+            shared: ProjEffectAddCmdShared { type_id, .. },
+            ..
+        }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.shared.state = Some(state);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectAddCmd {
+    pub(in crate::ctl) fn into_br(self) -> ProjEffectAddCmdBr {
+        ProjEffectAddCmdBr {
+            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdProjEffectAddFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdProjEffectAddFCtxRIds, BackrefRenderError> {
-        Ok(ICmdProjEffectAddFCtxRIds {
-            shared: self.shared,
+impl ProjEffectAddCmdBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ProjEffectAddCmd, BackrefRenderError> {
+        Ok(ProjEffectAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            shared: self.shared,
         })
     }
 }
@@ -40,11 +98,11 @@ impl ICmdProjEffectAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdProjEffectAddFCtxRIds {
+impl ProjEffectAddCmd {
     pub(in crate::ctl) fn execute(
         self,
         core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, AddProjEffectError> {
+    ) -> Result<AddedItemIdsResp, ProjEffectAddError> {
         let mut core_proj_effect = core_sol.add_proj_effect(self.shared.type_id);
         if let Some(state) = self.shared.state {
             core_proj_effect.set_state(state);
@@ -56,9 +114,8 @@ impl ICmdProjEffectAddFCtxRIds {
         Ok(AddedItemIdsResp::from_core_proj_effect(core_proj_effect))
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum AddProjEffectError {
+pub enum ProjEffectAddError {
     #[error("failed to add projection")]
     ProjAdd(#[from] rc::err::AddProjError),
 }

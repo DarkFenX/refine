@@ -259,16 +259,16 @@ impl ApiError {
                     rs::err::GetItemChangeModuleError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
                 },
                 // Item - projected effect
-                rs::err::ChangeSolEnumError::ProjEffectAdd(rs::err::AddProjEffectError::ProjAdd(..)) => {
+                rs::err::ChangeSolEnumError::ProjEffectAdd(rs::err::ProjEffectAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "PJE-002")
                 }
                 rs::err::ChangeSolEnumError::ProjEffectChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeProjEffectError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeProjEffectError::ItemIsNotProjEffect(..) => {
+                    rs::err::ItemGetProjEffectChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetProjEffectChangeError::ItemIsNotProjEffect(..) => {
                         (StatusCode::BAD_REQUEST, "PJE-001")
                     }
-                    rs::err::GetItemChangeProjEffectError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "PJE-003"),
-                    rs::err::GetItemChangeProjEffectError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
+                    rs::err::ItemGetProjEffectChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "PJE-003"),
+                    rs::err::ItemGetProjEffectChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
                 },
                 // Item - rig
                 rs::err::ChangeSolEnumError::RigAdd(rs::err::FitGetRigAddError::FitGet(..)) => {
@@ -522,7 +522,7 @@ impl ApiError {
                     rs::err::GetFitAddModuleError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::GetFitAddModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
                 },
-                rs::err::ItemAddError::ProjEffect(rs::err::AddProjEffectError::ProjAdd(..)) => {
+                rs::err::ItemAddError::ProjEffect(rs::err::ProjEffectAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "PJE-002")
                 }
                 rs::err::ItemAddError::Rig(rs::err::FitGetRigAddError::FitGet(..)) => {
@@ -584,9 +584,9 @@ impl ApiError {
                     rs::err::ItemChangeModuleError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
                 },
                 rs::err::ItemCtlError::ProjEffect(err_l2) => match err_l2 {
-                    rs::err::ItemChangeProjEffectError::ItemIsNotProjEffect(..) => (StatusCode::BAD_REQUEST, "PJE-001"),
-                    rs::err::ItemChangeProjEffectError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "PJE-003"),
-                    rs::err::ItemChangeProjEffectError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
+                    rs::err::ProjEffectChangeError::ItemIsNotProjEffect(..) => (StatusCode::BAD_REQUEST, "PJE-001"),
+                    rs::err::ProjEffectChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "PJE-003"),
+                    rs::err::ProjEffectChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
                 },
                 rs::err::ItemCtlError::Rig(rs::err::RigChangeError::ItemIsNotRig(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")

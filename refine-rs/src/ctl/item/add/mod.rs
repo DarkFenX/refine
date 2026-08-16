@@ -3,7 +3,6 @@ pub use sub_character::ItemSetCharacterCmd;
 pub use sub_drone::ItemAddDroneCmd;
 pub use sub_fighter::ItemAddFighterCmd;
 pub use sub_module::ItemAddModuleCmd;
-pub use sub_proj_effect::ItemAddProjEffectCmd;
 pub use sub_ship::ItemSetShipCmd;
 pub use sub_stance::ItemSetStanceCmd;
 
@@ -12,6 +11,5 @@ mod sub_character;
 mod sub_drone;
 mod sub_fighter;
 mod sub_module;
-mod sub_proj_effect;
 mod sub_ship;
 mod sub_stance;

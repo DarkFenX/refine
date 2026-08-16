@@ -1,67 +1,151 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdProjEffectChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
+#[derive(Default)]
+pub struct ProjEffectChangeCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_proj_item_ids: Vec<ItemId> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdProjEffectChangeICtxBIds = ICmdProjEffectChangeICtxBIds { .. },
+    shared: ProjEffectChangeCmdShared = ProjEffectChangeCmdShared { .. },
 }
-pub(crate) struct ICmdProjEffectChangeFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdProjEffectChangeICtxRIds,
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+pub struct ProjEffectChangeCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: ProjEffectChangeCmdShared = ProjEffectChangeCmdShared { .. },
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+struct ProjEffectChangeCmdShared {
+    type_id: Option<ItemTypeId> = None,
+    state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdProjEffectChangeICtxBIds {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdProjEffectChangeShared = ICmdProjEffectChangeShared { .. },
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+// Extra context commands
+pub struct ProjEffectChangeCmdCtxItem {
+    item_id: ItemId,
+    core: ProjEffectChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdProjEffectChangeICtxRIds {
+pub struct ProjEffectChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdProjEffectChangeShared = ICmdProjEffectChangeShared { .. },
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_proj_item_ids: Vec<ItemId> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+    core: ProjEffectChangeCmdBr = ProjEffectChangeCmdBr { .. },
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdProjEffectChangeShared {
-    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) state: Option<bool> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.shared.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.shared.state = Some(state);
+        self
+    }
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.add_proj_item_ids.extend(add_proj_item_ids);
+        self
+    }
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.rm_proj_item_ids.extend(rm_proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+impl ProjEffectChangeCmdBr {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.shared.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.shared.state = Some(state);
+        self
+    }
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.add_proj_item_ids.extend(add_proj_item_ids);
+        self
+    }
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.rm_proj_item_ids.extend(rm_proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectChangeCmd {
+    fn into_br(self) -> ProjEffectChangeCmdBr {
+        ProjEffectChangeCmdBr {
+            add_proj_item_ids: self.add_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            rm_proj_item_ids: self.rm_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ProjEffectChangeCmdCtxItemBr {
+        ProjEffectChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl ProjEffectChangeCmdBr {
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ProjEffectChangeCmdCtxItemBr {
+        ProjEffectChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdProjEffectChangeFCtxBIds {
-    pub(in crate::ctl) fn render(
-        self,
-        resps: &CtlCmdResps,
-    ) -> Result<ICmdProjEffectChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdProjEffectChangeFCtxRIds {
+impl ProjEffectChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ProjEffectChangeCmdCtxItem, BackrefRenderError> {
+        Ok(ProjEffectChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd.render(resps)?,
+            core: self.core.render(resps)?,
         })
     }
 }
 
-impl ICmdProjEffectChangeICtxBIds {
-    fn render(self, resps: &CtlCmdResps) -> Result<ICmdProjEffectChangeICtxRIds, BackrefRenderError> {
-        Ok(ICmdProjEffectChangeICtxRIds {
-            shared: self.shared,
+impl ProjEffectChangeCmdBr {
+    fn render(self, resps: &CtlCmdResps) -> Result<ProjEffectChangeCmd, BackrefRenderError> {
+        Ok(ProjEffectChangeCmd {
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,
+            shared: self.shared,
         })
     }
 }
@@ -69,42 +153,11 @@ impl ICmdProjEffectChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdProjEffectChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeProjEffectError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_item)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeProjEffectError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
-    #[error(transparent)]
-    ItemIsNotProjEffect(rc::err::ItemKindMatchError),
-    #[error("unable to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
-    #[error("unable to remove projection")]
-    ProjRemove(#[source] rc::err::GetProjError),
-}
-impl From<ItemChangeProjEffectError> for GetItemChangeProjEffectError {
-    fn from(err: ItemChangeProjEffectError) -> Self {
-        match err {
-            ItemChangeProjEffectError::ItemIsNotProjEffect(inner) => Self::ItemIsNotProjEffect(inner),
-            ItemChangeProjEffectError::ProjAdd(inner) => Self::ProjAdd(inner),
-            ItemChangeProjEffectError::ProjRemove(inner) => Self::ProjRemove(inner),
-        }
-    }
-}
-
-impl ICmdProjEffectChangeICtxRIds {
+impl ProjEffectChangeCmd {
     pub(in crate::ctl) fn execute(
         self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeProjEffectError> {
+    ) -> Result<ChangedItemIdsResp, ProjEffectChangeError> {
         let core_proj_effect = core_item.dc_proj_effect()?;
         for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_proj_effect.get_proj_mut(projectee_item_id)?.remove();
@@ -122,13 +175,42 @@ impl ICmdProjEffectChangeICtxRIds {
         Ok(ChangedItemIdsResp::default())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeProjEffectError {
+pub enum ProjEffectChangeError {
     #[error(transparent)]
     ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
     ProjAdd(#[from] rc::err::AddProjError),
     #[error("unable to remove projection")]
     ProjRemove(#[from] rc::err::GetProjError),
+}
+
+impl ProjEffectChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetProjEffectChangeError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetProjEffectChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotProjEffect(rc::err::ItemKindMatchError),
+    #[error("unable to add projection")]
+    ProjAdd(#[source] rc::err::AddProjError),
+    #[error("unable to remove projection")]
+    ProjRemove(#[source] rc::err::GetProjError),
+}
+impl From<ProjEffectChangeError> for ItemGetProjEffectChangeError {
+    fn from(err: ProjEffectChangeError) -> Self {
+        match err {
+            ProjEffectChangeError::ItemIsNotProjEffect(inner) => Self::ItemIsNotProjEffect(inner),
+            ProjEffectChangeError::ProjAdd(inner) => Self::ProjAdd(inner),
+            ProjEffectChangeError::ProjRemove(inner) => Self::ProjRemove(inner),
+        }
+    }
 }

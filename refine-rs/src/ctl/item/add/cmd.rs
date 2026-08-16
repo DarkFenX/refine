@@ -1,15 +1,15 @@
 use crate::{
     AddedItemIdsResp, BoosterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd, ItemAddDroneCmd, ItemAddFighterCmd,
-    ItemAddModuleCmd, ItemAddProjEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RigAddCmd,
+    ItemAddModuleCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, ProjEffectAddCmd, RigAddCmd,
     ServiceAddCmd, SkillAddCmd, SubsystemAddCmd, SwEffectAddCmd,
     ctl::core::{
         BoosterAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit,
         SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
     },
     err::{
-        AddProjEffectError, FitGetBoosterAddError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetRigAddError,
-        FitGetServiceAddError, FitGetSkillAddError, FitGetSubsystemAddError, GetFitAddDroneError,
-        GetFitAddFighterError, GetFitAddModuleError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
+        FitGetBoosterAddError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetRigAddError, FitGetServiceAddError,
+        FitGetSkillAddError, FitGetSubsystemAddError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddModuleError,
+        GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ProjEffectAddError,
     },
 };
 
@@ -26,7 +26,7 @@ pub enum ItemAddCmd {
     FwEffect(FwEffectAddCmdCtxFit),
     Implant(ImplantAddCmdCtxFit),
     Module(ItemAddModuleCmd),
-    ProjEffect(ItemAddProjEffectCmd),
+    ProjEffect(ProjEffectAddCmd),
     Rig(RigAddCmdCtxFit),
     Service(ServiceAddCmdCtxFit),
     Ship(ItemSetShipCmd),
@@ -52,6 +52,11 @@ impl FwEffectAddCmd {
 impl ImplantAddCmd {
     pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
         ItemAddCmd::Implant(self.into_ctx_fit(fit_id))
+    }
+}
+impl ProjEffectAddCmd {
+    pub fn into_item_add(self) -> ItemAddCmd {
+        ItemAddCmd::ProjEffect(self)
     }
 }
 impl RigAddCmd {
@@ -93,7 +98,7 @@ impl ItemAddCmd {
             Self::FwEffect(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Implant(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Module(cmd) => Ok(cmd.inner.execute(core_sol)?),
-            Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::ProjEffect(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Rig(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Service(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?),
@@ -122,7 +127,7 @@ pub enum ItemAddError {
     #[error("failed to add module")]
     Module(#[from] GetFitAddModuleError),
     #[error("failed to add projected effect")]
-    ProjEffect(#[from] AddProjEffectError),
+    ProjEffect(#[from] ProjEffectAddError),
     #[error("failed to add rig")]
     Rig(#[from] FitGetRigAddError),
     #[error("failed to add service")]

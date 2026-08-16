@@ -1,12 +1,12 @@
 use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, FwEffectChangeCmd, ImplantChangeCmd,
-    ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeModuleCmd, ItemChangeProjEffectCmd,
-    ItemChangeShipCmd, ItemChangeStanceCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd,
+    ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeModuleCmd, ItemChangeShipCmd,
+    ItemChangeStanceCmd, ProjEffectChangeCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd,
     SwEffectChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, FwEffectChangeError, ImplantChangeError,
         ItemChangeCharacterError, ItemChangeDroneError, ItemChangeFighterError, ItemChangeModuleError,
-        ItemChangeProjEffectError, ItemChangeShipError, ItemChangeStanceError, RigChangeError, ServiceChangeError,
+        ItemChangeShipError, ItemChangeStanceError, ProjEffectChangeError, RigChangeError, ServiceChangeError,
         SkillChangeError, SubsystemChangeError, SwEffectChangeError,
     },
 };
@@ -26,7 +26,7 @@ pub enum ItemCtlCmd {
     FwEffect(FwEffectChangeCmd),
     Implant(ImplantChangeCmd),
     Module(ItemChangeModuleCmd),
-    ProjEffect(ItemChangeProjEffectCmd),
+    ProjEffect(ProjEffectChangeCmd),
     Rig(RigChangeCmd),
     Service(ServiceChangeCmd),
     Ship(ItemChangeShipCmd),
@@ -57,6 +57,11 @@ impl FwEffectChangeCmd {
 impl ImplantChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Implant(self)
+    }
+}
+impl ProjEffectChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::ProjEffect(self)
     }
 }
 impl RigChangeCmd {
@@ -100,7 +105,7 @@ impl ItemCtlCmd {
             Self::FwEffect(cmd) => Ok(cmd.execute(core_item)?),
             Self::Implant(cmd) => Ok(cmd.execute(core_item)?),
             Self::Module(cmd) => Ok(cmd.inner.execute(core_item)?),
-            Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::ProjEffect(cmd) => Ok(cmd.execute(core_item)?),
             Self::Rig(cmd) => Ok(cmd.execute(core_item)?),
             Self::Service(cmd) => Ok(cmd.execute(core_item)?),
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
@@ -133,7 +138,7 @@ pub enum ItemCtlError {
     #[error("failed to change module")]
     Module(#[from] ItemChangeModuleError),
     #[error("failed to change projected effect")]
-    ProjEffect(#[from] ItemChangeProjEffectError),
+    ProjEffect(#[from] ProjEffectChangeError),
     #[error("failed to change rig")]
     Rig(#[from] RigChangeError),
     #[error("failed to change service")]
