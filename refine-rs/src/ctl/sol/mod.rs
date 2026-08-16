@@ -1,15 +1,55 @@
-pub use change::{
-    ChangeCharacterError, ChangeShipError, ChangeSolEnumError, ChangeStanceError, SolAddBoosterCmd, SolAddDroneCmd,
-    SolAddFighterCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd,
-    SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd,
-    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
-    SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd, SolChangeFwEffectCmd,
-    SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
-    SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd, SolChangeStanceCmd,
-    SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd,
-    SolCtlFitChangeCmd, SolCtlFitChangeCmdBackref, SolCtlFitChangeError, SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref,
-    SolCtlFitRemoveError, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd,
-    SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+pub use cmd::{ChangeSolEnumError, SolCtlCmd};
+pub use sub_fit_change::{SolCtlFitChangeCmd, SolCtlFitChangeCmdBackref, SolCtlFitChangeError};
+pub use sub_fit_remove::{SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref, SolCtlFitRemoveError};
+pub use sub_fleet::{SolAddFleetCmd, SolChangeFleetCmd, SolRemoveFleetCmd};
+pub use sub_item::SolRemoveItemCmd;
+pub use sub_item_autocharge::SolChangeAutochargeCmd;
+pub use sub_item_booster::{SolAddBoosterCmd, SolChangeBoosterCmd};
+pub use sub_item_character::{
+    ChangeCharacterError, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
+    SolSetCharacterCmd, SolUnsetCharacterCmd,
 };
+pub use sub_item_charge::SolChangeChargeCmd;
+pub use sub_item_drone::{SolAddDroneCmd, SolChangeDroneCmd};
+pub use sub_item_fighter::{SolAddFighterCmd, SolChangeFighterCmd};
+pub use sub_item_fw_effect::{SolAddFwEffectCmd, SolChangeFwEffectCmd};
+pub use sub_item_implant::{SolAddImplantCmd, SolChangeImplantCmd};
+pub use sub_item_module::{SolAddModuleCmd, SolChangeModuleCmd};
+pub use sub_item_proj_effect::{SolAddProjEffectCmd, SolChangeProjEffectCmd};
+pub use sub_item_rig::{SolAddRigCmd, SolChangeRigCmd};
+pub use sub_item_service::{SolAddServiceCmd, SolChangeServiceCmd};
+pub use sub_item_ship::{
+    ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,
+};
+pub use sub_item_skill::{SolAddSkillCmd, SolChangeSkillCmd};
+pub use sub_item_stance::{
+    ChangeStanceError, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolSetStanceCmd,
+    SolUnsetStanceCmd,
+};
+pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
+pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
-mod change;
+mod cmd;
+mod sub_fit_add;
+mod sub_fit_change;
+mod sub_fit_remove;
+mod sub_fleet;
+mod sub_item;
+mod sub_item_autocharge;
+mod sub_item_booster;
+mod sub_item_character;
+mod sub_item_charge;
+mod sub_item_drone;
+mod sub_item_fighter;
+mod sub_item_fw_effect;
+mod sub_item_implant;
+mod sub_item_module;
+mod sub_item_proj_effect;
+mod sub_item_rig;
+mod sub_item_service;
+mod sub_item_ship;
+mod sub_item_skill;
+mod sub_item_stance;
+mod sub_item_subsystem;
+mod sub_item_sw_effect;
+mod sub_sol;
