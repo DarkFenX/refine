@@ -1,5 +1,5 @@
 use crate::{
-    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, MinionState, Movement,
+    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FitCtlCmd, ItemIdBr, ItemTypeId, MinionState, Movement,
     RearmMinion,
     ctl::core::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
@@ -42,7 +42,7 @@ impl FitAddFighterCmd {
         self.inner.shared.movement = Some(movement);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.proj_item_ids.clear();
         self.inner.proj_item_ids.extend(proj_item_ids);
         self
@@ -68,7 +68,7 @@ pub struct FitChangeFighterCmd {
     pub(super) inner: ICmdFighterChangeFCtxBIds,
 }
 impl FitChangeFighterCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdFighterChangeFCtxBIds { item_id, .. },
         }
@@ -102,12 +102,12 @@ impl FitChangeFighterCmd {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.add_proj_item_ids.clear();
         self.inner.ictx_cmd.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.rm_proj_item_ids.clear();
         self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self

@@ -1,6 +1,6 @@
-pub use add::{AddFitError, FitAddCmd, FitAddCmdBackref};
+pub use add::{AddFitError, FitAddCmd, FitAddCmdBr};
 pub use change::{FitChangeCmd, FitChangeCmdBr, FitChangeError};
-pub use remove::FitRemoveCmd;
+pub use remove::{FitGetFitRemoveError, FitRemoveCmd, FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr};
 
 mod add;
 mod change;

@@ -1,11 +1,11 @@
 use crate::{
-    AddedItemIdsResp, CtlCmdResps, FitId, FitIdBackref, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddedItemIdsResp, CtlCmdResps, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdImplantAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBackref,
+    pub(in crate::ctl) fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdImplantAddICtx,
 }

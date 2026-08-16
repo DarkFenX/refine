@@ -1,9 +1,9 @@
-use crate::{CtlCmdResps, ItemId, ItemIdBackref, RemoveMode, err::BackrefRenderError};
+use crate::{CtlCmdResps, ItemId, ItemIdBr, RemoveMode, err::BackrefRenderError};
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdItemRemoveFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBackref,
+    pub(in crate::ctl) item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
 }

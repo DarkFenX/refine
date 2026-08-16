@@ -1,6 +1,6 @@
 use crate::{
-    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, MinionState,
-    Movement, RearmMinion, SolCtlCmd,
+    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, MinionState, Movement,
+    RearmMinion, SolCtlCmd,
     ctl::core::{ICmdFighterAddFCtxBIds, ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
@@ -13,7 +13,7 @@ pub struct SolAddFighterCmd {
     pub(super) inner: ICmdFighterAddFCtxBIds,
 }
 impl SolAddFighterCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId, state: MinionState) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId, state: MinionState) -> Self {
         Self {
             inner: ICmdFighterAddFCtxBIds {
                 fit_id,
@@ -45,7 +45,7 @@ impl SolAddFighterCmd {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.proj_item_ids.clear();
         self.inner.ictx_cmd.proj_item_ids.extend(proj_item_ids);
         self
@@ -71,7 +71,7 @@ pub struct SolChangeFighterCmd {
     pub(super) inner: ICmdFighterChangeFCtxBIds,
 }
 impl SolChangeFighterCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdFighterChangeFCtxBIds { item_id, .. },
         }
@@ -105,12 +105,12 @@ impl SolChangeFighterCmd {
         self.inner.ictx_cmd.shared.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.add_proj_item_ids.clear();
         self.inner.ictx_cmd.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.rm_proj_item_ids.clear();
         self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self

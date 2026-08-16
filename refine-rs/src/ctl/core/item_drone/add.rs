@@ -1,12 +1,12 @@
 use crate::{
-    AddMutation, AddedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
-    MinionState, Movement, NpcProp, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddMutation, AddedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, MinionState,
+    Movement, NpcProp, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdDroneAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBackref,
+    pub(in crate::ctl) fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdDroneAddICtxBIds,
 }
@@ -23,7 +23,7 @@ pub(in crate::ctl) struct ICmdDroneAddICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) shared: ICmdDroneAddShared,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBr> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdDroneAddICtxRIds {

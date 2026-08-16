@@ -1,6 +1,6 @@
 use crate::{
-    AddedItemIdsResp, Coordinates, CountNz, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId,
-    MinionState, Movement, RearmMinion,
+    AddedItemIdsResp, Coordinates, CountNz, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, MinionState,
+    Movement, RearmMinion,
     ctl::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
 };
@@ -8,7 +8,7 @@ use crate::{
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdFighterAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBackref,
+    pub(in crate::ctl) fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdFighterAddICtxBIds,
 }
@@ -25,7 +25,7 @@ pub(in crate::ctl) struct ICmdFighterAddICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) shared: ICmdFighterAddShared,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBr> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(crate) struct ICmdFighterAddICtxRIds {

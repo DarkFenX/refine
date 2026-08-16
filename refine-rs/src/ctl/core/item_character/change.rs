@@ -1,12 +1,12 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, FitId, FitIdBackref, ItemId, ItemIdBackref, ItemTypeId, ctl::shared::EffectModes,
+    ChangedItemIdsResp, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
 // Commands with full context via fit ID
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdCharacterChangeFFitCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBackref,
+    pub(in crate::ctl) fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }
@@ -18,7 +18,7 @@ pub(crate) struct ICmdCharacterChangeFFitCtxRIds {
 // Commands with full context via item ID
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdCharacterChangeFItemCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBackref,
+    pub(in crate::ctl) item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdCharacterChangeICtx = ICmdCharacterChangeICtx { .. },
 }

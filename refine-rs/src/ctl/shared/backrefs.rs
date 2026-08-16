@@ -1,6 +1,6 @@
 use crate::{CtlCmdResps, FitId, FleetId, ItemId, err::BackrefRenderError};
 
-pub(crate) trait CtlCmdBackref {
+pub(crate) trait CtlCmdBr {
     type Target;
     fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError>;
 }
@@ -9,11 +9,11 @@ pub(crate) trait CtlCmdBackref {
 // Fleet
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub enum FleetIdBackref {
+pub enum FleetIdBr {
     Id(FleetId),
-    Backref(usize),
+    Br(usize),
 }
-impl CtlCmdBackref for FleetIdBackref {
+impl CtlCmdBr for FleetIdBr {
     type Target = FleetId;
     fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
         ctl_cmd_resps.render_fleet_id(self)
@@ -24,11 +24,11 @@ impl CtlCmdBackref for FleetIdBackref {
 // Fit
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub enum FitIdBackref {
+pub enum FitIdBr {
     Id(FitId),
-    Backref(usize),
+    Br(usize),
 }
-impl CtlCmdBackref for FitIdBackref {
+impl CtlCmdBr for FitIdBr {
     type Target = FitId;
     fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
         ctl_cmd_resps.render_fit_id(self)
@@ -39,12 +39,12 @@ impl CtlCmdBackref for FitIdBackref {
 // Item
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]
-pub enum ItemIdBackref {
+pub enum ItemIdBr {
     Id(ItemId),
-    BackrefMain(usize),
-    BackrefCharge(usize),
+    BrMain(usize),
+    BrCharge(usize),
 }
-impl CtlCmdBackref for ItemIdBackref {
+impl CtlCmdBr for ItemIdBr {
     type Target = ItemId;
     fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
         ctl_cmd_resps.render_item_id(self)
@@ -65,7 +65,7 @@ mod custom_serde {
     const BACKREF_PREFIX: &str = "#";
     const CHARGE_SUFFIX: &str = "c";
 
-    impl<'de> Deserialize<'de> for FleetIdBackref {
+    impl<'de> Deserialize<'de> for FleetIdBr {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
@@ -73,7 +73,7 @@ mod custom_serde {
             struct VisitorImpl;
 
             impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = FleetIdBackref;
+                type Value = FleetIdBr;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                     formatter.write_str("fleet ID, or #-prefixed backreference")
@@ -85,7 +85,7 @@ mod custom_serde {
                 {
                     if let Some(value_str) = v.strip_prefix(BACKREF_PREFIX) {
                         let index = usize::from_str(value_str).map_err(|e| Error::custom(e))?;
-                        return Ok(Self::Value::Backref(index));
+                        return Ok(Self::Value::Br(index));
                     }
                     let fleet_id = FleetId::from_str(v).map_err(|e| Error::custom(e))?;
                     Ok(Self::Value::Id(fleet_id))
@@ -95,7 +95,7 @@ mod custom_serde {
         }
     }
 
-    impl<'de> Deserialize<'de> for FitIdBackref {
+    impl<'de> Deserialize<'de> for FitIdBr {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
@@ -103,7 +103,7 @@ mod custom_serde {
             struct VisitorImpl;
 
             impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = FitIdBackref;
+                type Value = FitIdBr;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                     formatter.write_str("fit ID, or #-prefixed backreference")
@@ -115,7 +115,7 @@ mod custom_serde {
                 {
                     if let Some(value_str) = v.strip_prefix(BACKREF_PREFIX) {
                         let index = usize::from_str(value_str).map_err(|e| Error::custom(e))?;
-                        return Ok(Self::Value::Backref(index));
+                        return Ok(Self::Value::Br(index));
                     }
                     let fit_id = FitId::from_str(v).map_err(|e| Error::custom(e))?;
                     Ok(Self::Value::Id(fit_id))
@@ -125,7 +125,7 @@ mod custom_serde {
         }
     }
 
-    impl<'de> Deserialize<'de> for ItemIdBackref {
+    impl<'de> Deserialize<'de> for ItemIdBr {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
@@ -133,7 +133,7 @@ mod custom_serde {
             struct VisitorImpl;
 
             impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = ItemIdBackref;
+                type Value = ItemIdBr;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                     formatter.write_str("item ID, or #-prefixed backreference")
@@ -146,10 +146,10 @@ mod custom_serde {
                     if let Some(value_str) = v.strip_prefix(BACKREF_PREFIX) {
                         if let Some(value_str) = value_str.strip_suffix(CHARGE_SUFFIX) {
                             let index = usize::from_str(value_str).map_err(|e| Error::custom(e))?;
-                            return Ok(Self::Value::BackrefCharge(index));
+                            return Ok(Self::Value::BrCharge(index));
                         }
                         let index = usize::from_str(value_str).map_err(|e| Error::custom(e))?;
-                        return Ok(Self::Value::BackrefMain(index));
+                        return Ok(Self::Value::BrMain(index));
                     }
                     let item_id = ItemId::from_str(v).map_err(|e| Error::custom(e))?;
                     Ok(Self::Value::Id(item_id))

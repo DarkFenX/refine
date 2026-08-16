@@ -1,21 +1,21 @@
 use crate::{
-    CtlCmdResps, FitInfo, FitInfoMode, ItemIdBackref, ItemInfoMode,
+    CtlCmdResps, FitInfo, FitInfoMode, ItemIdBr, ItemInfoMode,
     info::{InfoModes, InfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
-pub struct FitInfoCmdBackref {
+pub struct FitInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     fit: FitInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemIdBackref>,
+    item: InfoModes<ItemInfoMode, ItemIdBr>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitInfoCmdBackref {
+impl FitInfoCmdBr {
     pub fn new() -> Self {
         Self::default()
     }
@@ -27,7 +27,7 @@ impl FitInfoCmdBackref {
         self.item.default = mode;
         self
     }
-    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.item.overrides.push((mode, item_ids.collect()));
         self
     }
@@ -36,7 +36,7 @@ impl FitInfoCmdBackref {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitInfoCmdBackref {
+impl FitInfoCmdBr {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut, ctl_cmd_resps: &CtlCmdResps) -> FitInfo {
         FitInfo::from_core(
             core_fit,

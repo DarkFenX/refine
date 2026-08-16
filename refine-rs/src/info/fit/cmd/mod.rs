@@ -1,4 +1,4 @@
-pub use backref::FitInfoCmdBackref;
+pub use backref::FitInfoCmdBr;
 pub use regular::FitInfoCmd;
 
 mod backref;

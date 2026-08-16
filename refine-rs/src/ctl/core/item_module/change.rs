@@ -1,14 +1,14 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, ModuleState, MoveMode,
+    ChangeMutation, ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, ModuleState, MoveMode,
     OptionalReload, Spool, TriStateField, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdModuleChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBackref,
+    pub(in crate::ctl) item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdModuleChangeICtxBIds = ICmdModuleChangeICtxBIds { .. },
 }
@@ -23,9 +23,9 @@ pub(in crate::ctl) struct ICmdModuleChangeICtxBIds {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) shared: ICmdModuleChangeShared = ICmdModuleChangeShared { .. },
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    pub(in crate::ctl) add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemIdBackref> = Vec::new(),
+    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdModuleChangeICtxRIds {

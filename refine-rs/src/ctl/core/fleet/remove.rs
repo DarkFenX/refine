@@ -1,9 +1,9 @@
-use crate::{CtlCmdResps, FleetId, FleetIdBackref, err::BackrefRenderError};
+use crate::{CtlCmdResps, FleetId, FleetIdBr, err::BackrefRenderError};
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdFleetRemoveFCtxBIds {
-    pub(in crate::ctl) fleet_id: FleetIdBackref,
+    pub(in crate::ctl) fleet_id: FleetIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdFleetRemoveICtx = ICmdFleetRemoveICtx,
 }

@@ -1,4 +1,4 @@
-pub use fit::{FitInfo, FitInfoCmd, FitInfoCmdBackref, FitInfoExt, FitInfoMode};
+pub use fit::{FitInfo, FitInfoCmd, FitInfoCmdBr, FitInfoExt, FitInfoMode};
 pub use fleet::{FleetInfo, FleetInfoCmd, FleetInfoExt, FleetInfoMode};
 pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
@@ -9,7 +9,7 @@ pub use item::{
     StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 use mode::{InfoModes, InfoModesInt};
-pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBackref, SolInfoExt, SolInfoMode};
+pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
 
 mod fit;

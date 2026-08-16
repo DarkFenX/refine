@@ -1,4 +1,4 @@
-use crate::{CtlCmdResp, FitId, FitIdBackref, FleetId, FleetIdBackref, ItemId, ItemIdBackref, err::BackrefRenderError};
+use crate::{CtlCmdResp, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr, err::BackrefRenderError};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(transparent))]
 pub struct CtlCmdResps {
@@ -22,42 +22,39 @@ impl CtlCmdResps {
     pub(crate) fn append(&mut self, resp: CtlCmdResp) {
         self.data.push(resp);
     }
-    pub(in crate::ctl) fn render_fleet_id(&self, fleet_id: FleetIdBackref) -> Result<FleetId, BackrefRenderError> {
+    pub(in crate::ctl) fn render_fleet_id(&self, fleet_id: FleetIdBr) -> Result<FleetId, BackrefRenderError> {
         match fleet_id {
-            FleetIdBackref::Id(item_id) => Ok(item_id),
-            FleetIdBackref::Backref(index) => self.get_fleet_id(index),
+            FleetIdBr::Id(item_id) => Ok(item_id),
+            FleetIdBr::Br(index) => self.get_fleet_id(index),
         }
     }
-    pub(in crate::ctl) fn render_fit_id(&self, fit_id: FitIdBackref) -> Result<FitId, BackrefRenderError> {
+    pub(in crate::ctl) fn render_fit_id(&self, fit_id: FitIdBr) -> Result<FitId, BackrefRenderError> {
         match fit_id {
-            FitIdBackref::Id(item_id) => Ok(item_id),
-            FitIdBackref::Backref(index) => self.get_fit_id(index),
+            FitIdBr::Id(item_id) => Ok(item_id),
+            FitIdBr::Br(index) => self.get_fit_id(index),
         }
     }
-    pub(in crate::ctl) fn render_fit_ids(
-        &self,
-        backref_fit_ids: Vec<FitIdBackref>,
-    ) -> Result<Vec<FitId>, BackrefRenderError> {
-        let mut fit_ids = Vec::with_capacity(backref_fit_ids.len());
-        for backref_fit_id in backref_fit_ids {
+    pub(in crate::ctl) fn render_fit_ids(&self, br_fit_ids: Vec<FitIdBr>) -> Result<Vec<FitId>, BackrefRenderError> {
+        let mut fit_ids = Vec::with_capacity(br_fit_ids.len());
+        for backref_fit_id in br_fit_ids {
             fit_ids.push(self.render_fit_id(backref_fit_id)?);
         }
         Ok(fit_ids)
     }
-    pub(in crate::ctl) fn render_item_id(&self, item_id: ItemIdBackref) -> Result<ItemId, BackrefRenderError> {
+    pub(in crate::ctl) fn render_item_id(&self, item_id: ItemIdBr) -> Result<ItemId, BackrefRenderError> {
         match item_id {
-            ItemIdBackref::Id(item_id) => Ok(item_id),
-            ItemIdBackref::BackrefMain(index) => self.get_item_id(index),
-            ItemIdBackref::BackrefCharge(index) => self.get_charge_item_id(index),
+            ItemIdBr::Id(item_id) => Ok(item_id),
+            ItemIdBr::BrMain(index) => self.get_item_id(index),
+            ItemIdBr::BrCharge(index) => self.get_charge_item_id(index),
         }
     }
     pub(in crate::ctl) fn render_item_ids(
         &self,
-        backref_item_ids: Vec<ItemIdBackref>,
+        br_item_ids: Vec<ItemIdBr>,
     ) -> Result<Vec<ItemId>, BackrefRenderError> {
-        let mut item_ids = Vec::with_capacity(backref_item_ids.len());
-        for backref_item_id in backref_item_ids {
-            item_ids.push(self.render_item_id(backref_item_id)?);
+        let mut item_ids = Vec::with_capacity(br_item_ids.len());
+        for br_item_id in br_item_ids {
+            item_ids.push(self.render_item_id(br_item_id)?);
         }
         Ok(item_ids)
     }

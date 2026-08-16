@@ -156,7 +156,7 @@ impl ApiError {
                     rs::err::SolCtlFitChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::SolCtlFitChangeError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-004"),
                 },
-                rs::err::ChangeSolEnumError::FitRemove(rs::err::SolCtlFitRemoveError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::FitRemove(rs::err::FitGetFitRemoveError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 // Item

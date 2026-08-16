@@ -1,4 +1,4 @@
-use crate::{ItemIdBackref, RemoveMode, SolCtlCmd, ctl::core::ICmdItemRemoveFCtxBIds};
+use crate::{ItemIdBr, RemoveMode, SolCtlCmd, ctl::core::ICmdItemRemoveFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolRemoveItemCmd {
@@ -6,7 +6,7 @@ pub struct SolRemoveItemCmd {
     pub(super) inner: ICmdItemRemoveFCtxBIds,
 }
 impl SolRemoveItemCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdItemRemoveFCtxBIds { item_id, .. },
         }

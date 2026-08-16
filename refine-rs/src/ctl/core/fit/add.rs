@@ -1,5 +1,8 @@
-use crate::{AddedFitIdResp, CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBackref, err::BackrefRenderError};
+use crate::{AddedFitIdResp, CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BackrefRenderError};
 
+// Full context commands
+
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitAddCmd {
@@ -10,8 +13,8 @@ pub struct FitAddCmd {
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
-pub struct FitAddCmdBackref {
-    fleet_id: Option<FleetIdBackref> = None,
+pub struct FitAddCmdBr {
+    fleet_id: Option<FleetIdBr> = None,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitAddCmdShared = FitAddCmdShared { .. },
 }
@@ -43,11 +46,11 @@ impl FitAddCmd {
     }
 }
 
-impl FitAddCmdBackref {
+impl FitAddCmdBr {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: FleetIdBackref) -> Self {
+    pub fn with_fleet_id(mut self, fleet_id: FleetIdBr) -> Self {
         self.fleet_id = Some(fleet_id);
         self
     }
@@ -64,7 +67,7 @@ impl FitAddCmdBackref {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitAddCmdBackref {
+impl FitAddCmdBr {
     pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FitAddCmd, BackrefRenderError> {
         Ok(FitAddCmd {
             shared: self.shared,

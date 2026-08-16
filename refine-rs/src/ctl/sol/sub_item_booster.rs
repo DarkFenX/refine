@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, SolCtlCmd,
     ctl::core::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds},
 };
 
@@ -12,7 +12,7 @@ pub struct SolAddBoosterCmd {
     pub(super) inner: ICmdBoosterAddFCtxBIds,
 }
 impl SolAddBoosterCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdBoosterAddFCtxBIds {
                 fit_id,
@@ -50,7 +50,7 @@ pub struct SolChangeBoosterCmd {
     pub(super) inner: ICmdBoosterChangeFCtxBIds,
 }
 impl SolChangeBoosterCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdBoosterChangeFCtxBIds { item_id, .. },
         }

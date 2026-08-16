@@ -1,12 +1,12 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBackref, ItemTypeId, SkillLevel, ctl::shared::EffectModes,
+    ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, SkillLevel, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
 // Commands with full context
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub(in crate::ctl) struct ICmdSkillChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBackref,
+    pub(in crate::ctl) item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(in crate::ctl) ictx_cmd: ICmdSkillChangeICtx = ICmdSkillChangeICtx { .. },
 }

@@ -1,5 +1,5 @@
 use crate::{
-    CtlCmdResps, Fit, FitCtlCmd, FitInfo, FitInfoCmdBackref,
+    CtlCmdResps, Fit, FitCtlCmd, FitInfo, FitInfoCmdBr,
     err::{BackrefRenderError, FitCtlCmdError},
 };
 
@@ -22,7 +22,7 @@ impl Fit<'_, '_> {
     pub async fn change_and_get_info(
         &mut self,
         ctl_cmds: Vec<FitCtlCmd>,
-        info_cmd: FitInfoCmdBackref,
+        info_cmd: FitInfoCmdBr,
     ) -> Result<(CtlCmdResps, FitInfo), CtlFitChangeError> {
         // Variables for move
         let fit_id = self.id;

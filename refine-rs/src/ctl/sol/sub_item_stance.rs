@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, SolCtlCmd,
     ctl::core::{
         ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
         ICmdStanceChangeFItemCtxRIds, ICmdStanceSetFCtxBIds, ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds,
@@ -16,7 +16,7 @@ pub struct SolSetStanceCmd {
     pub(super) inner: ICmdStanceSetFCtxBIds,
 }
 impl SolSetStanceCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdStanceSetFCtxBIds {
                 fit_id,
@@ -55,7 +55,7 @@ pub struct SolChangeStanceViaFitCmd {
     inner: ICmdStanceChangeFFitCtxBIds,
 }
 impl SolChangeStanceViaFitCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
+    pub fn new(fit_id: FitIdBr) -> Self {
         Self {
             inner: ICmdStanceChangeFFitCtxBIds { fit_id, .. },
         }
@@ -86,7 +86,7 @@ pub struct SolChangeStanceViaItemCmd {
     inner: ICmdStanceChangeFItemCtxBIds,
 }
 impl SolChangeStanceViaItemCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdStanceChangeFItemCtxBIds { item_id, .. },
         }
@@ -153,7 +153,7 @@ pub struct SolUnsetStanceCmd {
     pub(super) inner: ICmdStanceUnsetFCtxBIds,
 }
 impl SolUnsetStanceCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
+    pub fn new(fit_id: FitIdBr) -> Self {
         Self {
             inner: ICmdStanceUnsetFCtxBIds { fit_id, .. },
         }

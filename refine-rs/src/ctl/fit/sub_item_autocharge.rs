@@ -1,4 +1,4 @@
-use crate::{EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ctl::core::ICmdAutochargeChangeFCtxBIds};
+use crate::{EffectId, EffectMode, FitCtlCmd, ItemIdBr, ctl::core::ICmdAutochargeChangeFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeAutochargeCmd {
@@ -10,7 +10,7 @@ pub struct FitChangeAutochargeCmd {
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeAutochargeCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdAutochargeChangeFCtxBIds { item_id, .. },
         }

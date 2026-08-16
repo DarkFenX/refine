@@ -1,11 +1,11 @@
 use crate::{
-    CtlCmdResps, FitChangeCmd, FitChangeCmdBr, FitId, FitIdBackref,
+    CtlCmdResps, FitChangeCmd, FitChangeCmdBr, FitId, FitIdBr,
     err::{BackrefRenderError, FitChangeError},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub struct SolCtlFitChangeCmdBackref {
-    fit_id: FitIdBackref,
+pub struct SolCtlFitChangeCmdBr {
+    fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FitChangeCmdBr,
 }
@@ -17,7 +17,7 @@ pub struct SolCtlFitChangeCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolCtlFitChangeCmdBackref {
+impl SolCtlFitChangeCmdBr {
     pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SolCtlFitChangeCmd, BackrefRenderError> {
         Ok(SolCtlFitChangeCmd {
             fit_id: resps.render_fit_id(self.fit_id)?,

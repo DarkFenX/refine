@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    EffectId, EffectMode, ItemIdBr, ItemTypeId, SolCtlCmd,
     ctl::core::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
 };
 
@@ -24,7 +24,7 @@ impl SolAddProjEffectCmd {
         self.inner.shared.state = Some(state);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.proj_item_ids.clear();
         self.inner.proj_item_ids.extend(proj_item_ids);
         self
@@ -50,7 +50,7 @@ pub struct SolChangeProjEffectCmd {
     pub(super) inner: ICmdProjEffectChangeFCtxBIds,
 }
 impl SolChangeProjEffectCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdProjEffectChangeFCtxBIds { item_id, .. },
         }
@@ -63,12 +63,12 @@ impl SolChangeProjEffectCmd {
         self.inner.ictx_cmd.shared.state = Some(state);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.add_proj_item_ids.clear();
         self.inner.ictx_cmd.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.inner.ictx_cmd.rm_proj_item_ids.clear();
         self.inner.ictx_cmd.rm_proj_item_ids.extend(rm_proj_item_ids);
         self

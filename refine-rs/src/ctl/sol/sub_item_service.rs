@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, ServiceState, SolCtlCmd,
+    EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, ServiceState, SolCtlCmd,
     ctl::core::{ICmdServiceAddFCtxBIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
@@ -12,7 +12,7 @@ pub struct SolAddServiceCmd {
     pub(super) inner: ICmdServiceAddFCtxBIds,
 }
 impl SolAddServiceCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId, state: ServiceState) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId, state: ServiceState) -> Self {
         Self {
             inner: ICmdServiceAddFCtxBIds {
                 fit_id,
@@ -41,7 +41,7 @@ pub struct SolChangeServiceCmd {
     pub(super) inner: ICmdServiceChangeFCtxBIds,
 }
 impl SolChangeServiceCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdServiceChangeFCtxBIds { item_id, .. },
         }

@@ -1,5 +1,8 @@
-use crate::{CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBackref, TriStateField, err::BackrefRenderError};
+use crate::{CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BackrefRenderError};
 
+// Full context commands
+
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeCmd {
@@ -13,7 +16,7 @@ pub struct FitChangeCmd {
 #[derive(Default)]
 pub struct FitChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_id: TriStateField<FleetIdBackref> = TriStateField::Absent,
+    fleet_id: TriStateField<FleetIdBr> = TriStateField::Absent,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: CmdFitChangeShared = CmdFitChangeShared { .. },
 }
@@ -50,7 +53,7 @@ impl FitChangeCmdBr {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
+    pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBr>) -> Self {
         self.fleet_id = fleet_id.into();
         self
     }

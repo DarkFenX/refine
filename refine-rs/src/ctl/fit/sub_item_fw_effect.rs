@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBr, ItemTypeId,
     ctl::core::{ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
 };
 
@@ -42,7 +42,7 @@ pub struct FitChangeFwEffectCmd {
     pub(super) inner: ICmdFwEffectChangeFCtxBIds,
 }
 impl FitChangeFwEffectCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdFwEffectChangeFCtxBIds { item_id, .. },
         }

@@ -1,6 +1,6 @@
 use crate::{
-    ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    Movement, SolCtlCmd,
+    ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, Movement,
+    SolCtlCmd,
     ctl::core::{
         ICmdShipChangeFFitCtxBIds, ICmdShipChangeFFitCtxRIds, ICmdShipChangeFItemCtxBIds, ICmdShipChangeFItemCtxRIds,
         ICmdShipSetFCtxBIds, ICmdShipSetICtx, ICmdShipUnsetFCtxBIds,
@@ -17,7 +17,7 @@ pub struct SolSetShipCmd {
     pub(super) inner: ICmdShipSetFCtxBIds,
 }
 impl SolSetShipCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdShipSetFCtxBIds {
                 fit_id,
@@ -64,7 +64,7 @@ pub struct SolChangeShipViaFitCmd {
     inner: ICmdShipChangeFFitCtxBIds,
 }
 impl SolChangeShipViaFitCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
+    pub fn new(fit_id: FitIdBr) -> Self {
         Self {
             inner: ICmdShipChangeFFitCtxBIds { fit_id, .. },
         }
@@ -103,7 +103,7 @@ pub struct SolChangeShipViaItemCmd {
     inner: ICmdShipChangeFItemCtxBIds,
 }
 impl SolChangeShipViaItemCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdShipChangeFItemCtxBIds { item_id, .. },
         }
@@ -178,7 +178,7 @@ pub struct SolUnsetShipCmd {
     pub(super) inner: ICmdShipUnsetFCtxBIds,
 }
 impl SolUnsetShipCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
+    pub fn new(fit_id: FitIdBr) -> Self {
         Self {
             inner: ICmdShipUnsetFCtxBIds { fit_id, .. },
         }

@@ -45,9 +45,7 @@ async fn main() {
     let resps = sol
         .change(vec![
             rs::SolAddFleetCmd::new().into(),
-            rs::SolAddFitCmd::new()
-                .with_fleet_id(rs::FleetIdBackref::Backref(0))
-                .into(),
+            rs::SolAddFitCmd::new().with_fleet_id(rs::FleetIdBr::Br(0)).into(),
         ])
         .await
         .unwrap();

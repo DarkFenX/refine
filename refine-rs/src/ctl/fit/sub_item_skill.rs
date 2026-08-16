@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, SkillLevel,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBr, ItemTypeId, SkillLevel,
     ctl::core::{ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
@@ -42,7 +42,7 @@ pub struct FitChangeSkillCmd {
     pub(super) inner: ICmdSkillChangeFCtxBIds,
 }
 impl FitChangeSkillCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdSkillChangeFCtxBIds { item_id, .. },
         }

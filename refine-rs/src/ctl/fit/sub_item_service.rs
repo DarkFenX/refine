@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, FitCtlCmd, ItemIdBackref, ItemTypeId, ServiceState,
+    EffectId, EffectMode, FitCtlCmd, ItemIdBr, ItemTypeId, ServiceState,
     ctl::core::{ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
@@ -38,7 +38,7 @@ pub struct FitChangeServiceCmd {
     pub(super) inner: ICmdServiceChangeFCtxBIds,
 }
 impl FitChangeServiceCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdServiceChangeFCtxBIds { item_id, .. },
         }

@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-use crate::{CtlCmdResps, ctl::CtlCmdBackref};
+use crate::{CtlCmdResps, ctl::CtlCmdBr};
 
 #[derive(Clone)]
 pub(in crate::info) struct InfoModes<M, I> {
@@ -63,7 +63,7 @@ impl<M, I> InfoModesInt<M, I> {
     pub(in crate::info) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
     where
         M: Copy,
-        B: CtlCmdBackref<Target = I>,
+        B: CtlCmdBr<Target = I>,
         I: Eq + Hash,
     {
         // Silently skip error in rendering; worst-case just default mode will be used

@@ -1,5 +1,5 @@
 use crate::{
-    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, SolCtlCmd,
     ctl::core::{ICmdImplantAddFCtxBIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxBIds},
 };
 
@@ -12,7 +12,7 @@ pub struct SolAddImplantCmd {
     pub(super) inner: ICmdImplantAddFCtxBIds,
 }
 impl SolAddImplantCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdImplantAddFCtxBIds {
                 fit_id,
@@ -45,7 +45,7 @@ pub struct SolChangeImplantCmd {
     pub(super) inner: ICmdImplantChangeFCtxBIds,
 }
 impl SolChangeImplantCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdImplantChangeFCtxBIds { item_id, .. },
         }

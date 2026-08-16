@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, SolCtlCmd,
     ctl::core::{
         ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
         ICmdCharacterChangeFItemCtxRIds, ICmdCharacterSetFCtxBIds, ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds,
@@ -16,7 +16,7 @@ pub struct SolSetCharacterCmd {
     pub(super) inner: ICmdCharacterSetFCtxBIds,
 }
 impl SolSetCharacterCmd {
-    pub fn new(fit_id: FitIdBackref, type_id: ItemTypeId) -> Self {
+    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId) -> Self {
         Self {
             inner: ICmdCharacterSetFCtxBIds {
                 fit_id,
@@ -55,7 +55,7 @@ pub struct SolChangeCharacterViaFitCmd {
     inner: ICmdCharacterChangeFFitCtxBIds,
 }
 impl SolChangeCharacterViaFitCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
+    pub fn new(fit_id: FitIdBr) -> Self {
         Self {
             inner: ICmdCharacterChangeFFitCtxBIds { fit_id, .. },
         }
@@ -86,7 +86,7 @@ pub struct SolChangeCharacterViaItemCmd {
     inner: ICmdCharacterChangeFItemCtxBIds,
 }
 impl SolChangeCharacterViaItemCmd {
-    pub fn new(item_id: ItemIdBackref) -> Self {
+    pub fn new(item_id: ItemIdBr) -> Self {
         Self {
             inner: ICmdCharacterChangeFItemCtxBIds { item_id, .. },
         }
@@ -153,7 +153,7 @@ pub struct SolUnsetCharacterCmd {
     pub(super) inner: ICmdCharacterUnsetFCtxBIds,
 }
 impl SolUnsetCharacterCmd {
-    pub fn new(fit_id: FitIdBackref) -> Self {
+    pub fn new(fit_id: FitIdBr) -> Self {
         Self {
             inner: ICmdCharacterUnsetFCtxBIds { fit_id, .. },
         }

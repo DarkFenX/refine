@@ -1,4 +1,4 @@
-pub use cmd::{SolInfoCmd, SolInfoCmdBackref};
+pub use cmd::{SolInfoCmd, SolInfoCmdBr};
 pub use info::{SolInfo, SolInfoExt};
 pub use mode::SolInfoMode;
 

@@ -1,26 +1,26 @@
 use crate::{
-    CtlCmdResps, FitIdBackref, FitInfoMode, FleetIdBackref, FleetInfoMode, ItemIdBackref, ItemInfoMode, SolInfo,
-    SolInfoMode, SolarSystemId, SrcAlias,
+    CtlCmdResps, FitIdBr, FitInfoMode, FleetIdBr, FleetInfoMode, ItemIdBr, ItemInfoMode, SolInfo, SolInfoMode,
+    SolarSystemId, SrcAlias,
     info::{InfoModes, InfoModesInt},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
-pub struct SolInfoCmdBackref {
+pub struct SolInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     sol: SolInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: InfoModes<FleetInfoMode, FleetIdBackref>,
+    fleet: InfoModes<FleetInfoMode, FleetIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: InfoModes<FitInfoMode, FitIdBackref>,
+    fit: InfoModes<FitInfoMode, FitIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemIdBackref>,
+    item: InfoModes<ItemInfoMode, ItemIdBr>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolInfoCmdBackref {
+impl SolInfoCmdBr {
     pub fn new() -> Self {
         Self::default()
     }
@@ -32,7 +32,7 @@ impl SolInfoCmdBackref {
         self.fleet.default = mode;
         self
     }
-    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, item_ids: impl Iterator<Item = FleetIdBackref>) -> Self {
+    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, item_ids: impl Iterator<Item = FleetIdBr>) -> Self {
         self.fleet.overrides.push((mode, item_ids.collect()));
         self
     }
@@ -40,7 +40,7 @@ impl SolInfoCmdBackref {
         self.fit.default = mode;
         self
     }
-    pub fn with_fit_overrides(mut self, mode: FitInfoMode, item_ids: impl Iterator<Item = FitIdBackref>) -> Self {
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, item_ids: impl Iterator<Item = FitIdBr>) -> Self {
         self.fit.overrides.push((mode, item_ids.collect()));
         self
     }
@@ -48,7 +48,7 @@ impl SolInfoCmdBackref {
         self.item.default = mode;
         self
     }
-    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBackref>) -> Self {
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.item.overrides.push((mode, item_ids.collect()));
         self
     }
@@ -57,7 +57,7 @@ impl SolInfoCmdBackref {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolInfoCmdBackref {
+impl SolInfoCmdBr {
     pub(crate) fn execute(
         self,
         sol_id: SolarSystemId,
