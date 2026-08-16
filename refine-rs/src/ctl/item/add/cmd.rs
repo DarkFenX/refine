@@ -1,14 +1,14 @@
 use crate::{
-    AddedItemIdsResp, BoosterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd, ItemAddDroneCmd, ItemAddFighterCmd,
+    AddedItemIdsResp, BoosterAddCmd, DroneAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd, ItemAddFighterCmd,
     ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd,
     SkillAddCmd, SubsystemAddCmd, SwEffectAddCmd,
     ctl::core::{
-        BoosterAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit,
-        ServiceAddCmdCtxFit, SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
+        BoosterAddCmdCtxFit, DroneAddCmdCtxFit, FwEffectAddCmdCtxFit, ImplantAddCmdCtxFit, ModuleAddCmdCtxFit,
+        RigAddCmdCtxFit, ServiceAddCmdCtxFit, SkillAddCmdCtxFit, SubsystemAddCmdCtxFit,
     },
     err::{
-        FitGetBoosterAddError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError,
-        FitGetServiceAddError, FitGetSkillAddError, FitGetSubsystemAddError, GetFitAddDroneError,
+        FitGetBoosterAddError, FitGetDroneAddError, FitGetFwEffectAddError, FitGetImplantAddError,
+        FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError, FitGetSubsystemAddError,
         GetFitAddFighterError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, ProjEffectAddError,
     },
 };
@@ -21,7 +21,7 @@ use crate::{
 pub enum ItemAddCmd {
     Booster(BoosterAddCmdCtxFit),
     Character(ItemSetCharacterCmd),
-    Drone(ItemAddDroneCmd),
+    Drone(DroneAddCmdCtxFit),
     Fighter(ItemAddFighterCmd),
     FwEffect(FwEffectAddCmdCtxFit),
     Implant(ImplantAddCmdCtxFit),
@@ -42,6 +42,11 @@ pub enum ItemAddCmd {
 impl BoosterAddCmd {
     pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
         ItemAddCmd::Booster(self.into_ctx_fit(fit_id))
+    }
+}
+impl DroneAddCmd {
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
+        ItemAddCmd::Drone(self.into_ctx_fit(fit_id))
     }
 }
 impl FwEffectAddCmd {
@@ -98,7 +103,7 @@ impl ItemAddCmd {
         match self {
             Self::Booster(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?),
-            Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Drone(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::FwEffect(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Implant(cmd) => Ok(cmd.execute(core_sol)?),
@@ -122,7 +127,7 @@ pub enum ItemAddError {
     #[error("failed to set character")]
     Character(#[from] GetFitSetCharacterError),
     #[error("failed to add drone")]
-    Drone(#[from] GetFitAddDroneError),
+    Drone(#[from] FitGetDroneAddError),
     #[error("failed to add fighter")]
     Fighter(#[from] GetFitAddFighterError),
     #[error("failed to add fit-wide effect")]

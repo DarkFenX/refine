@@ -1,11 +1,11 @@
 use crate::{
-    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, FwEffectChangeCmd, ImplantChangeCmd,
-    ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeShipCmd, ItemChangeStanceCmd,
+    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, DroneChangeCmd, FwEffectChangeCmd,
+    ImplantChangeCmd, ItemChangeCharacterCmd, ItemChangeFighterCmd, ItemChangeShipCmd, ItemChangeStanceCmd,
     ModuleChangeCmd, ProjEffectChangeCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd,
     SwEffectChangeCmd,
     err::{
-        AutochargeChangeError, BoosterChangeError, ChargeChangeError, FwEffectChangeError, ImplantChangeError,
-        ItemChangeCharacterError, ItemChangeDroneError, ItemChangeFighterError, ItemChangeShipError,
+        AutochargeChangeError, BoosterChangeError, ChargeChangeError, DroneChangeError, FwEffectChangeError,
+        ImplantChangeError, ItemChangeCharacterError, ItemChangeFighterError, ItemChangeShipError,
         ItemChangeStanceError, ModuleChangeError, ProjEffectChangeError, RigChangeError, ServiceChangeError,
         SkillChangeError, SubsystemChangeError, SwEffectChangeError,
     },
@@ -21,7 +21,7 @@ pub enum ItemCtlCmd {
     Booster(BoosterChangeCmd),
     Character(ItemChangeCharacterCmd),
     Charge(ChargeChangeCmd),
-    Drone(ItemChangeDroneCmd),
+    Drone(DroneChangeCmd),
     Fighter(ItemChangeFighterCmd),
     FwEffect(FwEffectChangeCmd),
     Implant(ImplantChangeCmd),
@@ -47,6 +47,11 @@ impl BoosterChangeCmd {
 impl ChargeChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Charge(self)
+    }
+}
+impl DroneChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Drone(self)
     }
 }
 impl FwEffectChangeCmd {
@@ -105,7 +110,7 @@ impl ItemCtlCmd {
             Self::Booster(cmd) => Ok(cmd.execute(core_item)?),
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Charge(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Drone(cmd) => Ok(cmd.execute(core_item)?),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::FwEffect(cmd) => Ok(cmd.execute(core_item)?),
             Self::Implant(cmd) => Ok(cmd.execute(core_item)?),
@@ -133,7 +138,7 @@ pub enum ItemCtlError {
     #[error("failed to change charge")]
     Charge(#[from] ChargeChangeError),
     #[error("failed to change drone")]
-    Drone(#[from] ItemChangeDroneError),
+    Drone(#[from] DroneChangeError),
     #[error("failed to change fighter")]
     Fighter(#[from] ItemChangeFighterError),
     #[error("failed to change fit-wide effect")]

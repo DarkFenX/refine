@@ -28,10 +28,10 @@ pub(in crate::ctl) use item_character::{
 pub use item_charge::{
     ChargeChangeCmd, ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, ChargeChangeError, ItemGetChargeChangeError,
 };
-pub use item_drone::{FitAddDroneError, GetFitAddDroneError, GetItemChangeDroneError, ItemChangeDroneError};
-pub(in crate::ctl) use item_drone::{
-    ICmdDroneAddFCtxBIds, ICmdDroneAddFCtxRIds, ICmdDroneAddICtxBIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared,
-    ICmdDroneChangeFCtxBIds, ICmdDroneChangeFCtxRIds, ICmdDroneChangeICtxRIds,
+pub use item_drone::{
+    DroneAddCmd, DroneAddCmdBr, DroneAddCmdCtxFit, DroneAddCmdCtxFitBr, DroneAddError, DroneChangeCmd,
+    DroneChangeCmdBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr, DroneChangeError, FitGetDroneAddError,
+    ItemGetDroneChangeError,
 };
 pub use item_fighter::{FitAddFighterError, GetFitAddFighterError, GetItemChangeFighterError, ItemChangeFighterError};
 pub(in crate::ctl) use item_fighter::{

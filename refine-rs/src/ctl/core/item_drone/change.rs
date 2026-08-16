@@ -1,73 +1,191 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, Coordinates, CtlCmdResps, ItemId, ItemIdBr, ItemTypeId, MinionState, Movement,
-    NpcProp, TriStateField, ctl::shared::EffectModes, err::BackrefRenderError,
+    ChangeMutation, ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
+    MinionState, Movement, NpcProp, TriStateField, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
+#[derive(Default)]
+pub struct DroneChangeCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_proj_item_ids: Vec<ItemId> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdDroneChangeICtxBIds = ICmdDroneChangeICtxBIds { .. },
+    shared: DroneChangeCmdShared = DroneChangeCmdShared { .. },
 }
-pub(crate) struct ICmdDroneChangeFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdDroneChangeICtxRIds,
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+pub struct DroneChangeCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: DroneChangeCmdShared = DroneChangeCmdShared { .. },
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+struct DroneChangeCmdShared {
+    type_id: Option<ItemTypeId> = None,
+    state: Option<MinionState> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(default))]
+    npc_prop: TriStateField<NpcProp> = TriStateField::Absent,
+    coordinates: Option<Coordinates> = None,
+    movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneChangeICtxBIds {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+// Extra context commands
+pub struct DroneChangeCmdCtxItem {
+    item_id: ItemId,
+    core: DroneChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneChangeICtxRIds {
+pub struct DroneChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdDroneChangeShared = ICmdDroneChangeShared { .. },
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_proj_item_ids: Vec<ItemId> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+    core: DroneChangeCmdBr = DroneChangeCmdBr { .. },
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneChangeShared {
-    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) state: Option<MinionState> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) npc_prop: TriStateField<NpcProp> = TriStateField::Absent,
-    pub(in crate::ctl) coordinates: Option<Coordinates> = None,
-    pub(in crate::ctl) movement: Option<Movement> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl DroneChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.shared.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: MinionState) -> Self {
+        self.shared.state = Some(state);
+        self
+    }
+    pub fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
+        self.shared.mutation = mutation.into();
+        self
+    }
+    pub fn with_npc_prop(mut self, npc_prop: Option<NpcProp>) -> Self {
+        self.shared.npc_prop = npc_prop.into();
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.add_proj_item_ids.extend(add_proj_item_ids);
+        self
+    }
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.rm_proj_item_ids.extend(rm_proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+impl DroneChangeCmdBr {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.shared.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: MinionState) -> Self {
+        self.shared.state = Some(state);
+        self
+    }
+    pub fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
+        self.shared.mutation = mutation.into();
+        self
+    }
+    pub fn with_npc_prop(mut self, npc_prop: Option<NpcProp>) -> Self {
+        self.shared.npc_prop = npc_prop.into();
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.add_proj_item_ids.extend(add_proj_item_ids);
+        self
+    }
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.rm_proj_item_ids.extend(rm_proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl DroneChangeCmd {
+    fn into_br(self) -> DroneChangeCmdBr {
+        DroneChangeCmdBr {
+            add_proj_item_ids: self.add_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            rm_proj_item_ids: self.rm_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> DroneChangeCmdCtxItemBr {
+        DroneChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl DroneChangeCmdBr {
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> DroneChangeCmdCtxItemBr {
+        DroneChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdDroneChangeFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdDroneChangeFCtxRIds {
+impl DroneChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<DroneChangeCmdCtxItem, BackrefRenderError> {
+        Ok(DroneChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd.render(resps)?,
+            core: self.core.render(resps)?,
         })
     }
 }
 
-impl ICmdDroneChangeICtxBIds {
-    fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneChangeICtxRIds, BackrefRenderError> {
-        Ok(ICmdDroneChangeICtxRIds {
-            shared: self.shared,
+impl DroneChangeCmdBr {
+    fn render(self, resps: &CtlCmdResps) -> Result<DroneChangeCmd, BackrefRenderError> {
+        Ok(DroneChangeCmd {
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,
+            shared: self.shared,
         })
     }
 }
@@ -75,45 +193,8 @@ impl ICmdDroneChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdDroneChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeDroneError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_item)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeDroneError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
-    #[error(transparent)]
-    ItemIsNotDrone(rc::err::ItemKindMatchError),
-    #[error("unable to mutate attributes: item {0} is not mutated")]
-    NotMutated(ItemId),
-    #[error("unable to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
-    #[error("unable to remove projection")]
-    ProjRemove(#[source] rc::err::GetProjError),
-}
-impl From<ItemChangeDroneError> for GetItemChangeDroneError {
-    fn from(err: ItemChangeDroneError) -> Self {
-        match err {
-            ItemChangeDroneError::ItemIsNotDrone(inner) => Self::ItemIsNotDrone(inner),
-            ItemChangeDroneError::NotMutated(inner) => Self::NotMutated(inner),
-            ItemChangeDroneError::ProjAdd(inner) => Self::ProjAdd(inner),
-            ItemChangeDroneError::ProjRemove(inner) => Self::ProjRemove(inner),
-        }
-    }
-}
-
-impl ICmdDroneChangeICtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeDroneError> {
+impl DroneChangeCmd {
+    pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, DroneChangeError> {
         let core_drone = core_item.dc_drone()?;
         for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_drone.get_proj_mut(projectee_item_id)?.remove();
@@ -136,7 +217,7 @@ impl ICmdDroneChangeICtxRIds {
                 if !mutation.attrs.is_empty() {
                     match core_drone.get_mutation_mut() {
                         Some(mut core_mutation) => mutation.apply_attrs(&mut core_mutation),
-                        None => return Err(ItemChangeDroneError::NotMutated(core_drone.get_item_id())),
+                        None => return Err(DroneChangeError::NotMutated(core_drone.get_item_id())),
                     };
                 }
             }
@@ -166,9 +247,8 @@ impl ICmdDroneChangeICtxRIds {
         Ok(ChangedItemIdsResp::default())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeDroneError {
+pub enum DroneChangeError {
     #[error(transparent)]
     ItemIsNotDrone(#[from] rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
@@ -177,4 +257,37 @@ pub enum ItemChangeDroneError {
     ProjAdd(#[from] rc::err::AddProjError),
     #[error("unable to remove projection")]
     ProjRemove(#[from] rc::err::GetProjError),
+}
+
+impl DroneChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetDroneChangeError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetDroneChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotDrone(rc::err::ItemKindMatchError),
+    #[error("unable to mutate attributes: item {0} is not mutated")]
+    NotMutated(ItemId),
+    #[error("unable to add projection")]
+    ProjAdd(#[source] rc::err::AddProjError),
+    #[error("unable to remove projection")]
+    ProjRemove(#[source] rc::err::GetProjError),
+}
+impl From<DroneChangeError> for ItemGetDroneChangeError {
+    fn from(err: DroneChangeError) -> Self {
+        match err {
+            DroneChangeError::ItemIsNotDrone(inner) => Self::ItemIsNotDrone(inner),
+            DroneChangeError::NotMutated(inner) => Self::NotMutated(inner),
+            DroneChangeError::ProjAdd(inner) => Self::ProjAdd(inner),
+            DroneChangeError::ProjRemove(inner) => Self::ProjRemove(inner),
+        }
+    }
 }

@@ -209,15 +209,15 @@ impl ApiError {
                 },
                 // Item - drone
                 rs::err::ChangeSolEnumError::DroneAdd(err_l2) => match err_l2 {
-                    rs::err::GetFitAddDroneError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
+                    rs::err::FitGetDroneAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetDroneAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
                 },
                 rs::err::ChangeSolEnumError::DroneChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeDroneError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeDroneError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
-                    rs::err::GetItemChangeDroneError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
-                    rs::err::GetItemChangeDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
-                    rs::err::GetItemChangeDroneError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
+                    rs::err::ItemGetDroneChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetDroneChangeError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
+                    rs::err::ItemGetDroneChangeError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
+                    rs::err::ItemGetDroneChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
+                    rs::err::ItemGetDroneChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
                 },
                 // Item - fighter
                 rs::err::ChangeSolEnumError::FighterAdd(err_l2) => match err_l2 {
@@ -414,15 +414,15 @@ impl ApiError {
                     rs::err::ItemGetChargeChangeError::ItemIsNotCharge(..) => (StatusCode::BAD_REQUEST, "CHG-001"),
                 },
                 // Item - drone
-                rs::err::FitCtlCmdError::DroneAdd(rs::err::FitAddDroneError::ProjAdd(..)) => {
+                rs::err::FitCtlCmdError::DroneAdd(rs::err::DroneAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "DRN-002")
                 }
                 rs::err::FitCtlCmdError::DroneChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeDroneError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeDroneError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
-                    rs::err::GetItemChangeDroneError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
-                    rs::err::GetItemChangeDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
-                    rs::err::GetItemChangeDroneError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
+                    rs::err::ItemGetDroneChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetDroneChangeError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
+                    rs::err::ItemGetDroneChangeError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
+                    rs::err::ItemGetDroneChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
+                    rs::err::ItemGetDroneChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
                 },
                 // Item - fighter
                 rs::err::FitCtlCmdError::FighterAdd(rs::err::FitAddFighterError::ProjAdd(..)) => {
@@ -505,8 +505,8 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Drone(err_l2) => match err_l2 {
-                    rs::err::GetFitAddDroneError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
+                    rs::err::FitGetDroneAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetDroneAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
                 },
                 rs::err::ItemAddError::Fighter(err_l2) => match err_l2 {
                     rs::err::GetFitAddFighterError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
@@ -561,10 +561,10 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "CHG-001")
                 }
                 rs::err::ItemCtlError::Drone(err_l2) => match err_l2 {
-                    rs::err::ItemChangeDroneError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
-                    rs::err::ItemChangeDroneError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
-                    rs::err::ItemChangeDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
-                    rs::err::ItemChangeDroneError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
+                    rs::err::DroneChangeError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
+                    rs::err::DroneChangeError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
+                    rs::err::DroneChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
+                    rs::err::DroneChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
                 },
                 rs::err::ItemCtlError::Fighter(err_l2) => match err_l2 {
                     rs::err::ItemChangeFighterError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),

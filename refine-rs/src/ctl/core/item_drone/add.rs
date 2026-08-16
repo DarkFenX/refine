@@ -1,66 +1,165 @@
 use crate::{
-    AddMutation, AddedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, MinionState,
-    Movement, NpcProp, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddMutation, AddedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
+    ItemTypeId, MinionState, Movement, NpcProp, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
+pub struct DroneAddCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<ItemId> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdDroneAddICtxBIds,
+    shared: DroneAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdDroneAddFCtxRIds {
-    pub(in crate::ctl) fit_id: FitId,
+pub struct DroneAddCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdDroneAddICtxRIds,
+    shared: DroneAddCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+struct DroneAddCmdShared {
+    type_id: ItemTypeId,
+    state: MinionState,
+    mutation: Option<AddMutation> = None,
+    npc_prop: Option<NpcProp> = None,
+    coordinates: Option<Coordinates> = None,
+    movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneAddICtxBIds {
+pub struct DroneAddCmdCtxFit {
+    fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdDroneAddShared,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    core: DroneAddCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdDroneAddICtxRIds {
+pub struct DroneAddCmdCtxFitBr {
+    fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdDroneAddShared,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemId> = Vec::new(),
+    core: DroneAddCmdBr,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdDroneAddShared {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: MinionState,
-    pub(in crate::ctl) mutation: Option<AddMutation> = None,
-    pub(in crate::ctl) npc_prop: Option<NpcProp> = None,
-    pub(in crate::ctl) coordinates: Option<Coordinates> = None,
-    pub(in crate::ctl) movement: Option<Movement> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl DroneAddCmd {
+    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
+        Self {
+            shared: DroneAddCmdShared { type_id, state, .. },
+            ..
+        }
+    }
+    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+        self.shared.mutation = Some(mutation);
+        self
+    }
+    pub fn with_npc_prop(mut self, npc_prop: NpcProp) -> Self {
+        self.shared.npc_prop = Some(npc_prop);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+impl DroneAddCmdBr {
+    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
+        Self {
+            shared: DroneAddCmdShared { type_id, state, .. },
+            ..
+        }
+    }
+    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
+        self.shared.mutation = Some(mutation);
+        self
+    }
+    pub fn with_npc_prop(mut self, npc_prop: NpcProp) -> Self {
+        self.shared.npc_prop = Some(npc_prop);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl DroneAddCmd {
+    pub(in crate::ctl) fn into_br(self) -> DroneAddCmdBr {
+        DroneAddCmdBr {
+            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> DroneAddCmdCtxFit {
+        DroneAddCmdCtxFit { fit_id, core: self }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> DroneAddCmdCtxFitBr {
+        DroneAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl DroneAddCmdBr {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> DroneAddCmdCtxFitBr {
+        DroneAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdDroneAddFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneAddFCtxRIds, BackrefRenderError> {
-        Ok(ICmdDroneAddFCtxRIds {
+impl DroneAddCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<DroneAddCmdCtxFit, BackrefRenderError> {
+        Ok(DroneAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd.render(resps)?,
+            core: self.core.render(resps)?,
         })
     }
 }
 
-impl ICmdDroneAddICtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdDroneAddICtxRIds, BackrefRenderError> {
-        Ok(ICmdDroneAddICtxRIds {
-            shared: self.shared,
+impl DroneAddCmdBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<DroneAddCmd, BackrefRenderError> {
+        Ok(DroneAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            shared: self.shared,
         })
     }
 }
@@ -68,33 +167,8 @@ impl ICmdDroneAddICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdDroneAddFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitAddDroneError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitAddDroneError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-    #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
-}
-impl From<FitAddDroneError> for GetFitAddDroneError {
-    fn from(err: FitAddDroneError) -> Self {
-        match err {
-            FitAddDroneError::ProjAdd(inner) => Self::ProjAdd(inner),
-        }
-    }
-}
-
-impl ICmdDroneAddICtxRIds {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddDroneError> {
+impl DroneAddCmd {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, DroneAddError> {
         let mut core_drone = core_fit.add_drone(
             self.shared.type_id,
             self.shared.state,
@@ -115,9 +189,32 @@ impl ICmdDroneAddICtxRIds {
         Ok(AddedItemIdsResp::from_core_drone(core_drone))
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum FitAddDroneError {
+pub enum DroneAddError {
     #[error("failed to add projection")]
     ProjAdd(#[from] rc::err::AddProjError),
+}
+
+impl DroneAddCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, FitGetDroneAddError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetDroneAddError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+    #[error("failed to add projection")]
+    ProjAdd(#[source] rc::err::AddProjError),
+}
+impl From<DroneAddError> for FitGetDroneAddError {
+    fn from(err: DroneAddError) -> Self {
+        match err {
+            DroneAddError::ProjAdd(inner) => Self::ProjAdd(inner),
+        }
+    }
 }
