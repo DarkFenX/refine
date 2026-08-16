@@ -1,7 +1,5 @@
 use crate::{AddedFitIdResp, CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BackrefRenderError};
 
-// Full context commands
-
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -10,7 +8,6 @@ pub struct FitAddCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitAddCmdShared = FitAddCmdShared { .. },
 }
-
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitAddCmdBr {
@@ -18,7 +15,6 @@ pub struct FitAddCmdBr {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitAddCmdShared = FitAddCmdShared { .. },
 }
-
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 struct FitAddCmdShared {
     sec_status: Option<FitSecStatus> = None,
@@ -61,6 +57,18 @@ impl FitAddCmdBr {
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
         self.shared.rah_incoming_dps = Some(rah_incoming_dps);
         self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitAddCmd {
+    pub(in crate::ctl) fn into_br(self) -> FitAddCmdBr {
+        FitAddCmdBr {
+            fleet_id: self.fleet_id.map(FleetIdBr::Id),
+            shared: self.shared,
+        }
     }
 }
 

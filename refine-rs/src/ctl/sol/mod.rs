@@ -29,7 +29,6 @@ pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
 pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
 mod cmd;
-mod sub_fit_add;
 mod sub_fit_change;
 mod sub_fleet;
 mod sub_item;

@@ -183,6 +183,16 @@ pub(crate) enum SolCtlCmdRendered {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit
+impl FitAddCmd {
+    pub fn into_sol_ctl(self) -> SolCtlCmd {
+        SolCtlCmd::AddFit(self.into_br())
+    }
+}
+impl FitAddCmdBr {
+    pub fn into_sol_ctl(self) -> SolCtlCmd {
+        SolCtlCmd::AddFit(self)
+    }
+}
 impl FitRemoveCmd {
     pub fn into_sol_ctl(self, fit_id: FitIdBr) -> SolCtlCmd {
         SolCtlCmd::RemoveFit(FitRemoveCmdCtxFitBr { fit_id, core: self })
