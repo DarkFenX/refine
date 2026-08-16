@@ -8,9 +8,9 @@ pub use fleet::{
     FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr,
 };
 pub use item::{ItemGetItemRemoveError, ItemRemoveCmd, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ItemRemoveError};
-pub use item_autocharge::{GetItemChangeAutochargeError, ItemChangeAutochargeError};
-pub(in crate::ctl) use item_autocharge::{
-    ICmdAutochargeChangeFCtxBIds, ICmdAutochargeChangeFCtxRIds, ICmdAutochargeChangeICtx,
+pub use item_autocharge::{
+    AutochargeChangeCmd, AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, AutochargeChangeError,
+    ItemGetAutochargeChangeError,
 };
 pub use item_booster::{GetFitAddBoosterError, GetItemChangeBoosterError, ItemChangeBoosterError};
 pub(in crate::ctl) use item_booster::{

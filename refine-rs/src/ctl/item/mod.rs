@@ -4,10 +4,10 @@ pub use add::{
     ItemAddSubsystemCmd, ItemAddSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
 };
 pub use change::{
-    ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd,
-    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd,
-    ItemChangeModuleCmd, ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd,
-    ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd,
+    ChangeItemEnumCmd, ChangeItemEnumError, ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd,
+    ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd,
+    ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd,
+    ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd,
 };
 
 mod add;

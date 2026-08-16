@@ -1,10 +1,10 @@
 use crate::{
-    ChangedItemIdsResp, ItemChangeAutochargeCmd, ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd,
+    AutochargeChangeCmd, ChangedItemIdsResp, ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd,
     ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd,
     ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd,
     ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd,
     err::{
-        ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
+        AutochargeChangeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
         ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError,
         ItemChangeModuleError, ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError,
         ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError,
@@ -18,7 +18,7 @@ use crate::{
     serde(tag = "type", rename_all = "snake_case")
 )]
 pub enum ChangeItemEnumCmd {
-    Autocharge(ItemChangeAutochargeCmd),
+    Autocharge(AutochargeChangeCmd),
     Booster(ItemChangeBoosterCmd),
     Character(ItemChangeCharacterCmd),
     Charge(ItemChangeChargeCmd),
@@ -43,7 +43,7 @@ pub enum ChangeItemEnumCmd {
 impl ChangeItemEnumCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
         match self {
-            Self::Autocharge(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Autocharge(cmd) => Ok(cmd.execute(core_item)?),
             Self::Booster(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Charge(cmd) => Ok(cmd.inner.execute(core_item)?),
@@ -67,7 +67,7 @@ impl ChangeItemEnumCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ChangeItemEnumError {
     #[error("failed to change autocharge")]
-    Autocharge(#[from] ItemChangeAutochargeError),
+    Autocharge(#[from] AutochargeChangeError),
     #[error("failed to change booster")]
     Booster(#[from] ItemChangeBoosterError),
     #[error("failed to change character")]

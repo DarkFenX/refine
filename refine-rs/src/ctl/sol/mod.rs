@@ -1,5 +1,4 @@
 pub use cmd::{ChangeSolEnumError, SolCtlCmd};
-pub use sub_item_autocharge::SolChangeAutochargeCmd;
 pub use sub_item_booster::{SolAddBoosterCmd, SolChangeBoosterCmd};
 pub use sub_item_character::{
     ChangeCharacterError, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
@@ -26,7 +25,6 @@ pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
 pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
 mod cmd;
-mod sub_item_autocharge;
 mod sub_item_booster;
 mod sub_item_character;
 mod sub_item_charge;

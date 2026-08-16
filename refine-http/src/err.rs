@@ -168,8 +168,8 @@ impl ApiError {
                 },
                 // Item - autocharge
                 rs::err::ChangeSolEnumError::AutochargeChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeAutochargeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeAutochargeError::ItemIsNotAutocharge(..) => {
+                    rs::err::ItemGetAutochargeChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetAutochargeChangeError::ItemIsNotAutocharge(..) => {
                         (StatusCode::BAD_REQUEST, "ACH-001")
                     }
                 },
@@ -394,8 +394,8 @@ impl ApiError {
                 },
                 // Item - autocharge
                 rs::err::FitCtlCmdError::AutochargeChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeAutochargeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeAutochargeError::ItemIsNotAutocharge(..) => {
+                    rs::err::ItemGetAutochargeChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetAutochargeChangeError::ItemIsNotAutocharge(..) => {
                         (StatusCode::BAD_REQUEST, "ACH-001")
                     }
                 },
@@ -548,9 +548,9 @@ impl ApiError {
                 }
             },
             Self::ItemChange(err_l1) => match err_l1 {
-                rs::err::ChangeItemEnumError::Autocharge(rs::err::ItemChangeAutochargeError::ItemIsNotAutocharge(
-                    ..,
-                )) => (StatusCode::BAD_REQUEST, "ACH-001"),
+                rs::err::ChangeItemEnumError::Autocharge(rs::err::AutochargeChangeError::ItemIsNotAutocharge(..)) => {
+                    (StatusCode::BAD_REQUEST, "ACH-001")
+                }
                 rs::err::ChangeItemEnumError::Booster(rs::err::ItemChangeBoosterError::ItemIsNotBooster(..)) => {
                     (StatusCode::BAD_REQUEST, "BST-001")
                 }

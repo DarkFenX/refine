@@ -1,36 +1,66 @@
-use crate::{ChangedItemIdsResp, CtlCmdResps, ItemId, ItemIdBr, ctl::shared::EffectModes, err::BackrefRenderError};
+use crate::{
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ctl::shared::EffectModes,
+    err::BackrefRenderError,
+};
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdAutochargeChangeFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdAutochargeChangeICtx = ICmdAutochargeChangeICtx { .. },
-}
-pub(crate) struct ICmdAutochargeChangeFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdAutochargeChangeICtx,
-}
-
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdAutochargeChangeICtx {
-    pub(in crate::ctl) state: Option<bool> = None,
+#[derive(Default)]
+pub struct AutochargeChangeCmd {
+    state: Option<bool> = None,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes = EffectModes::new(),
+}
+
+// Extra context commands
+pub struct AutochargeChangeCmdCtxItem {
+    item_id: ItemId,
+    core: AutochargeChangeCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct AutochargeChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: AutochargeChangeCmd = AutochargeChangeCmd { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl AutochargeChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl AutochargeChangeCmd {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, item_id: impl Into<ItemIdBr>) -> AutochargeChangeCmdCtxItemBr {
+        AutochargeChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdAutochargeChangeFCtxBIds {
-    pub(in crate::ctl) fn render(
-        self,
-        resps: &CtlCmdResps,
-    ) -> Result<ICmdAutochargeChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdAutochargeChangeFCtxRIds {
+impl AutochargeChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<AutochargeChangeCmdCtxItem, BackrefRenderError> {
+        Ok(AutochargeChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -38,36 +68,11 @@ impl ICmdAutochargeChangeFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdAutochargeChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeAutochargeError> {
-        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_item)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeAutochargeError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
-    #[error(transparent)]
-    ItemIsNotAutocharge(rc::err::ItemKindMatchError),
-}
-impl From<ItemChangeAutochargeError> for GetItemChangeAutochargeError {
-    fn from(err: ItemChangeAutochargeError) -> Self {
-        match err {
-            ItemChangeAutochargeError::ItemIsNotAutocharge(inner) => Self::ItemIsNotAutocharge(inner),
-        }
-    }
-}
-
-impl ICmdAutochargeChangeICtx {
+impl AutochargeChangeCmd {
     pub(in crate::ctl) fn execute(
         self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeAutochargeError> {
+    ) -> Result<ChangedItemIdsResp, AutochargeChangeError> {
         let core_autocharge = core_item.dc_autocharge()?;
         if let Some(state) = self.state {
             core_autocharge.set_state(state);
@@ -76,9 +81,32 @@ impl ICmdAutochargeChangeICtx {
         Ok(ChangedItemIdsResp::default())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeAutochargeError {
+pub enum AutochargeChangeError {
     #[error(transparent)]
     ItemIsNotAutocharge(#[from] rc::err::ItemKindMatchError),
+}
+
+impl AutochargeChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetAutochargeChangeError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetAutochargeChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+    #[error(transparent)]
+    ItemIsNotAutocharge(rc::err::ItemKindMatchError),
+}
+impl From<AutochargeChangeError> for ItemGetAutochargeChangeError {
+    fn from(err: AutochargeChangeError) -> Self {
+        match err {
+            AutochargeChangeError::ItemIsNotAutocharge(inner) => Self::ItemIsNotAutocharge(inner),
+        }
+    }
 }
