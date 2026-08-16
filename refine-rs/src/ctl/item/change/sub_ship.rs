@@ -1,5 +1,5 @@
 use crate::{
-    ChangeItemEnumCmd, Coordinates, EffectId, EffectMode, ItemTypeId, Movement, ctl::inner::ICmdShipChangeICtx,
+    ChangeItemEnumCmd, Coordinates, EffectId, EffectMode, ItemTypeId, Movement, ctl::core::ICmdShipChangeICtx,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

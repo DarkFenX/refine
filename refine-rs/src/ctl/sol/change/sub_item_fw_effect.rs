@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    ctl::inner::{ICmdFwEffectAddFCtxBIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
+    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ctl::core::{ICmdFwEffectAddFCtxBIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ impl SolAddFwEffectCmd {
         self
     }
 }
-impl From<SolAddFwEffectCmd> for ChangeSolEnumCmd {
+impl From<SolAddFwEffectCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddFwEffectCmd) -> Self {
         Self::AddFwEffect(sub_cmd)
     }
@@ -64,7 +64,7 @@ impl SolChangeFwEffectCmd {
         self
     }
 }
-impl From<SolChangeFwEffectCmd> for ChangeSolEnumCmd {
+impl From<SolChangeFwEffectCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeFwEffectCmd) -> Self {
         Self::ChangeFwEffect(sub_cmd)
     }

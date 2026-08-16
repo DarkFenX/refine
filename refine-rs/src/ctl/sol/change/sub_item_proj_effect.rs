@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
-    ctl::inner::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
+    EffectId, EffectMode, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ctl::core::{ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ impl SolAddProjEffectCmd {
         self
     }
 }
-impl From<SolAddProjEffectCmd> for ChangeSolEnumCmd {
+impl From<SolAddProjEffectCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddProjEffectCmd) -> Self {
         Self::AddProjEffect(sub_cmd)
     }
@@ -79,7 +79,7 @@ impl SolChangeProjEffectCmd {
         self
     }
 }
-impl From<SolChangeProjEffectCmd> for ChangeSolEnumCmd {
+impl From<SolChangeProjEffectCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeProjEffectCmd) -> Self {
         Self::ChangeProjEffect(sub_cmd)
     }

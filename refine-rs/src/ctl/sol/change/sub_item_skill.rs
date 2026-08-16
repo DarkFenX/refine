@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SkillLevel,
-    ctl::inner::{ICmdSkillAddFCtxBIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
+    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SkillLevel, SolCtlCmd,
+    ctl::core::{ICmdSkillAddFCtxBIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ impl SolAddSkillCmd {
         self
     }
 }
-impl From<SolAddSkillCmd> for ChangeSolEnumCmd {
+impl From<SolAddSkillCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddSkillCmd) -> Self {
         Self::AddSkill(sub_cmd)
     }
@@ -68,7 +68,7 @@ impl SolChangeSkillCmd {
         self
     }
 }
-impl From<SolChangeSkillCmd> for ChangeSolEnumCmd {
+impl From<SolChangeSkillCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeSkillCmd) -> Self {
         Self::ChangeSkill(sub_cmd)
     }

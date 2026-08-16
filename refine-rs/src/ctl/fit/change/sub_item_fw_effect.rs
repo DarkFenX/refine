@@ -1,6 +1,6 @@
 use crate::{
     ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
-    ctl::inner::{ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
+    ctl::core::{ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

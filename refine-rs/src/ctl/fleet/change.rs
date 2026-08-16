@@ -1,6 +1,6 @@
 use crate::{
     FitId,
-    ctl::inner::{FleetChangeFleetError, ICmdFleetChangeICtxRIds},
+    ctl::core::{FleetChangeFleetError, ICmdFleetChangeICtxRIds},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

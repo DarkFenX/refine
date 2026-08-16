@@ -1,4 +1,4 @@
-use crate::ctl::inner::ICmdFleetRemoveICtx;
+use crate::ctl::core::ICmdFleetRemoveICtx;
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]

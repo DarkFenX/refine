@@ -1,7 +1,7 @@
 use crate::{
-    AddMutation, ChangeMutation, ChangeSolEnumCmd, Coordinates, EffectId, EffectMode, FitIdBackref, ItemIdBackref,
-    ItemTypeId, MinionState, Movement, NpcProp,
-    ctl::inner::{ICmdDroneAddFCtxBIds, ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
+    AddMutation, ChangeMutation, Coordinates, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
+    MinionState, Movement, NpcProp, SolCtlCmd,
+    ctl::core::{ICmdDroneAddFCtxBIds, ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +51,7 @@ impl SolAddDroneCmd {
         self
     }
 }
-impl From<SolAddDroneCmd> for ChangeSolEnumCmd {
+impl From<SolAddDroneCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddDroneCmd) -> Self {
         Self::AddDrone(sub_cmd)
     }
@@ -111,7 +111,7 @@ impl SolChangeDroneCmd {
         self
     }
 }
-impl From<SolChangeDroneCmd> for ChangeSolEnumCmd {
+impl From<SolChangeDroneCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeDroneCmd) -> Self {
         Self::ChangeDrone(sub_cmd)
     }

@@ -1,7 +1,7 @@
 use crate::{
-    AbilityId, ChangeSolEnumCmd, Coordinates, CountNz, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    MinionState, Movement, RearmMinion,
-    ctl::inner::{ICmdFighterAddFCtxBIds, ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
+    AbilityId, Coordinates, CountNz, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, MinionState,
+    Movement, RearmMinion, SolCtlCmd,
+    ctl::core::{ICmdFighterAddFCtxBIds, ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ impl SolAddFighterCmd {
         self
     }
 }
-impl From<SolAddFighterCmd> for ChangeSolEnumCmd {
+impl From<SolAddFighterCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddFighterCmd) -> Self {
         Self::AddFighter(sub_cmd)
     }
@@ -121,7 +121,7 @@ impl SolChangeFighterCmd {
         self
     }
 }
-impl From<SolChangeFighterCmd> for ChangeSolEnumCmd {
+impl From<SolChangeFighterCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeFighterCmd) -> Self {
         Self::ChangeFighter(sub_cmd)
     }

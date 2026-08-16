@@ -1,6 +1,6 @@
 use crate::{
     AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId, ServiceState,
-    ctl::inner::{ICmdServiceAddFCtxRIds, ICmdServiceAddICtx},
+    ctl::core::{ICmdServiceAddFCtxRIds, ICmdServiceAddICtx},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

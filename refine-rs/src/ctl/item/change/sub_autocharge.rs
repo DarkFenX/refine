@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ctl::inner::ICmdAutochargeChangeICtx};
+use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ctl::core::ICmdAutochargeChangeICtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]

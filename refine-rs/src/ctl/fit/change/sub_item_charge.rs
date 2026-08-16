@@ -1,4 +1,4 @@
-use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, ctl::inner::ICmdChargeChangeFCtxBIds};
+use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, ctl::core::ICmdChargeChangeFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeChargeCmd {

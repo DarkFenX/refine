@@ -1,7 +1,7 @@
 use crate::{
     AddMutation, ChangeFitEnumCmd, ChangeMutation, Coordinates, EffectId, EffectMode, ItemIdBackref, ItemTypeId,
     MinionState, Movement, NpcProp,
-    ctl::inner::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
+    ctl::core::{ICmdDroneAddICtxBIds, ICmdDroneAddShared, ICmdDroneChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

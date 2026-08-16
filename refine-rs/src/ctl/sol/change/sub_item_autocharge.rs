@@ -1,4 +1,4 @@
-use crate::{ChangeSolEnumCmd, EffectId, EffectMode, ItemIdBackref, ctl::inner::ICmdAutochargeChangeFCtxBIds};
+use crate::{EffectId, EffectMode, ItemIdBackref, SolCtlCmd, ctl::core::ICmdAutochargeChangeFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct SolChangeAutochargeCmd {
@@ -21,7 +21,7 @@ impl SolChangeAutochargeCmd {
         self
     }
 }
-impl From<SolChangeAutochargeCmd> for ChangeSolEnumCmd {
+impl From<SolChangeAutochargeCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeAutochargeCmd) -> Self {
         Self::ChangeAutocharge(sub_cmd)
     }

@@ -1,6 +1,6 @@
 use crate::{
     ChangeItemEnumCmd, ChangeMutation, EffectId, EffectMode, ItemId, ItemTypeId, ModuleState, MoveMode, OptionalReload,
-    Spool, ctl::inner::ICmdModuleChangeICtxRIds,
+    Spool, ctl::core::ICmdModuleChangeICtxRIds,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

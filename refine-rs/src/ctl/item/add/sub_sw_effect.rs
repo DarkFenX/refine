@@ -1,4 +1,4 @@
-use crate::{AddItemEnumCmd, EffectId, EffectMode, ItemTypeId, ctl::inner::ICmdSwEffectAddFCtx};
+use crate::{AddItemEnumCmd, EffectId, EffectMode, ItemTypeId, ctl::core::ICmdSwEffectAddFCtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddSwEffectCmd {

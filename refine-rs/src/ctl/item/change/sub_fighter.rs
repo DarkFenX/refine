@@ -1,6 +1,6 @@
 use crate::{
     AbilityId, ChangeItemEnumCmd, Coordinates, CountNz, EffectId, EffectMode, ItemId, ItemTypeId, MinionState,
-    Movement, RearmMinion, ctl::inner::ICmdFighterChangeICtxRIds,
+    Movement, RearmMinion, ctl::core::ICmdFighterChangeICtxRIds,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    ctl::inner::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds},
+    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ctl::core::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -35,7 +35,7 @@ impl SolAddBoosterCmd {
         self
     }
 }
-impl From<SolAddBoosterCmd> for ChangeSolEnumCmd {
+impl From<SolAddBoosterCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddBoosterCmd) -> Self {
         Self::AddBooster(sub_cmd)
     }
@@ -74,7 +74,7 @@ impl SolChangeBoosterCmd {
         self
     }
 }
-impl From<SolChangeBoosterCmd> for ChangeSolEnumCmd {
+impl From<SolChangeBoosterCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeBoosterCmd) -> Self {
         Self::ChangeBooster(sub_cmd)
     }

@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    ctl::inner::{
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ctl::core::{
         ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
         ICmdCharacterChangeFItemCtxRIds, ICmdCharacterSetFCtxBIds, ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds,
     },
@@ -34,7 +34,7 @@ impl SolSetCharacterCmd {
         self
     }
 }
-impl From<SolSetCharacterCmd> for ChangeSolEnumCmd {
+impl From<SolSetCharacterCmd> for SolCtlCmd {
     fn from(sub_cmd: SolSetCharacterCmd) -> Self {
         Self::SetCharacter(sub_cmd)
     }
@@ -74,7 +74,7 @@ impl SolChangeCharacterViaFitCmd {
         self
     }
 }
-impl From<SolChangeCharacterViaFitCmd> for ChangeSolEnumCmd {
+impl From<SolChangeCharacterViaFitCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeCharacterViaFitCmd) -> Self {
         Self::ChangeCharacter(SolChangeCharacterCmd::ViaFitId(sub_cmd))
     }
@@ -105,7 +105,7 @@ impl SolChangeCharacterViaItemCmd {
         self
     }
 }
-impl From<SolChangeCharacterViaItemCmd> for ChangeSolEnumCmd {
+impl From<SolChangeCharacterViaItemCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeCharacterViaItemCmd) -> Self {
         Self::ChangeCharacter(SolChangeCharacterCmd::ViaItemId(sub_cmd))
     }
@@ -159,7 +159,7 @@ impl SolUnsetCharacterCmd {
         }
     }
 }
-impl From<SolUnsetCharacterCmd> for ChangeSolEnumCmd {
+impl From<SolUnsetCharacterCmd> for SolCtlCmd {
     fn from(sub_cmd: SolUnsetCharacterCmd) -> Self {
         Self::UnsetCharacter(sub_cmd)
     }

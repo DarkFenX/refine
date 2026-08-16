@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, FitIdBackref, FleetIdBackref,
-    ctl::inner::{ICmdFleetAddFCtxBIds, ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
+    FitIdBackref, FleetIdBackref, SolCtlCmd,
+    ctl::core::{ICmdFleetAddFCtxBIds, ICmdFleetChangeFCtxBIds, ICmdFleetRemoveFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ impl SolAddFleetCmd {
         self
     }
 }
-impl From<SolAddFleetCmd> for ChangeSolEnumCmd {
+impl From<SolAddFleetCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddFleetCmd) -> Self {
         Self::AddFleet(sub_cmd)
     }
@@ -53,7 +53,7 @@ impl SolChangeFleetCmd {
         self
     }
 }
-impl From<SolChangeFleetCmd> for ChangeSolEnumCmd {
+impl From<SolChangeFleetCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeFleetCmd) -> Self {
         Self::ChangeFleet(sub_cmd)
     }
@@ -74,7 +74,7 @@ impl SolRemoveFleetCmd {
         }
     }
 }
-impl From<SolRemoveFleetCmd> for ChangeSolEnumCmd {
+impl From<SolRemoveFleetCmd> for SolCtlCmd {
     fn from(sub_cmd: SolRemoveFleetCmd) -> Self {
         Self::RemoveFleet(sub_cmd)
     }

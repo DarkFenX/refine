@@ -1,7 +1,7 @@
 use crate::{
     AbilityId, ChangeFitEnumCmd, Coordinates, CountNz, EffectId, EffectMode, ItemIdBackref, ItemTypeId, MinionState,
     Movement, RearmMinion,
-    ctl::inner::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
+    ctl::core::{ICmdFighterAddICtxBIds, ICmdFighterAddShared, ICmdFighterChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

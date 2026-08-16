@@ -1,7 +1,7 @@
 use crate::{
     AddItemEnumCmd, AddMode, AddMutation, EffectId, EffectMode, FitId, ItemId, ItemTypeId, ModRack, ModuleState,
     OptionalReload, Spool,
-    ctl::inner::{ICmdModuleAddFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared},
+    ctl::core::{ICmdModuleAddFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

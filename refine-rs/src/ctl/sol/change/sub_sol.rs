@@ -1,5 +1,5 @@
 use crate::{
-    ChangeSolEnumCmd, DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool, ctl::inner::ICmdSolChangeFCtx,
+    DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, SolCtlCmd, Spool, ctl::core::ICmdSolChangeFCtx,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -37,7 +37,7 @@ impl SolChangeSolCmd {
         self
     }
 }
-impl From<SolChangeSolCmd> for ChangeSolEnumCmd {
+impl From<SolChangeSolCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeSolCmd) -> Self {
         Self::ChangeSol(sub_cmd)
     }

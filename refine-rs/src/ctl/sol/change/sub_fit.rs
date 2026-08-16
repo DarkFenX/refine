@@ -1,39 +1,7 @@
 use crate::{
-    ChangeSolEnumCmd, DpsProfile, FitIdBackref, FitSecStatus, FleetIdBackref,
-    ctl::inner::{ICmdFitAddFCtxBIds, ICmdFitChangeFCtxBIds, ICmdFitRemoveFCtxBIds},
+    DpsProfile, FitIdBackref, FitSecStatus, FleetIdBackref, SolCtlCmd,
+    ctl::core::{ICmdFitChangeFCtxBIds, ICmdFitRemoveFCtxBIds},
 };
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Add
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
-pub struct SolAddFitCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdFitAddFCtxBIds = ICmdFitAddFCtxBIds { .. },
-}
-impl SolAddFitCmd {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fleet_id(mut self, fleet_id: FleetIdBackref) -> Self {
-        self.inner.fleet_id = Some(fleet_id);
-        self
-    }
-    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.inner.shared.sec_status = Some(sec_status);
-        self
-    }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
-        self.inner.shared.rah_incoming_dps = Some(rah_incoming_dps);
-        self
-    }
-}
-impl From<SolAddFitCmd> for ChangeSolEnumCmd {
-    fn from(sub_cmd: SolAddFitCmd) -> Self {
-        Self::AddFit(sub_cmd)
-    }
-}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change
@@ -62,7 +30,7 @@ impl SolChangeFitCmd {
         self
     }
 }
-impl From<SolChangeFitCmd> for ChangeSolEnumCmd {
+impl From<SolChangeFitCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeFitCmd) -> Self {
         Self::ChangeFit(sub_cmd)
     }
@@ -83,7 +51,7 @@ impl SolRemoveFitCmd {
         }
     }
 }
-impl From<SolRemoveFitCmd> for ChangeSolEnumCmd {
+impl From<SolRemoveFitCmd> for SolCtlCmd {
     fn from(sub_cmd: SolRemoveFitCmd) -> Self {
         Self::RemoveFit(sub_cmd)
     }

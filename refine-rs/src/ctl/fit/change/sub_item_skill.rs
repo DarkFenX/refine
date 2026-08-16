@@ -1,6 +1,6 @@
 use crate::{
     ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ItemTypeId, SkillLevel,
-    ctl::inner::{ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
+    ctl::core::{ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

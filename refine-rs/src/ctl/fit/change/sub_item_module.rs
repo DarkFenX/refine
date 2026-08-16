@@ -1,7 +1,7 @@
 use crate::{
     AddMode, AddMutation, ChangeFitEnumCmd, ChangeMutation, EffectId, EffectMode, ItemIdBackref, ItemTypeId, ModRack,
     ModuleState, MoveMode, OptionalReload, Spool,
-    ctl::inner::{ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
+    ctl::core::{ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

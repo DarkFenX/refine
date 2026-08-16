@@ -1,4 +1,4 @@
-use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool, ctl::inner::ICmdSolAddFCtx};
+use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool, ctl::core::ICmdSolAddFCtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]

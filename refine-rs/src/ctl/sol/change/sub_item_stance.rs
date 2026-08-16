@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    ctl::inner::{
+    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ctl::core::{
         ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
         ICmdStanceChangeFItemCtxRIds, ICmdStanceSetFCtxBIds, ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds,
     },
@@ -34,7 +34,7 @@ impl SolSetStanceCmd {
         self
     }
 }
-impl From<SolSetStanceCmd> for ChangeSolEnumCmd {
+impl From<SolSetStanceCmd> for SolCtlCmd {
     fn from(sub_cmd: SolSetStanceCmd) -> Self {
         Self::SetStance(sub_cmd)
     }
@@ -74,7 +74,7 @@ impl SolChangeStanceViaFitCmd {
         self
     }
 }
-impl From<SolChangeStanceViaFitCmd> for ChangeSolEnumCmd {
+impl From<SolChangeStanceViaFitCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeStanceViaFitCmd) -> Self {
         Self::ChangeStance(SolChangeStanceCmd::ViaFitId(sub_cmd))
     }
@@ -105,7 +105,7 @@ impl SolChangeStanceViaItemCmd {
         self
     }
 }
-impl From<SolChangeStanceViaItemCmd> for ChangeSolEnumCmd {
+impl From<SolChangeStanceViaItemCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeStanceViaItemCmd) -> Self {
         Self::ChangeStance(SolChangeStanceCmd::ViaItemId(sub_cmd))
     }
@@ -159,7 +159,7 @@ impl SolUnsetStanceCmd {
         }
     }
 }
-impl From<SolUnsetStanceCmd> for ChangeSolEnumCmd {
+impl From<SolUnsetStanceCmd> for SolCtlCmd {
     fn from(sub_cmd: SolUnsetStanceCmd) -> Self {
         Self::UnsetStance(sub_cmd)
     }

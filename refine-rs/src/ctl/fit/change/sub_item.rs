@@ -1,10 +1,14 @@
-use crate::{ChangeFitEnumCmd, ItemIdBackref, RemoveMode, ctl::inner::ICmdItemRemoveFCtxBIds};
+use crate::{ChangeFitEnumCmd, ItemIdBackref, RemoveMode, ctl::core::ICmdItemRemoveFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitRemoveItemCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdItemRemoveFCtxBIds,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveItemCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {
@@ -16,8 +20,12 @@ impl FitRemoveItemCmd {
         self
     }
 }
-impl From<FitRemoveItemCmd> for ChangeFitEnumCmd {
-    fn from(sub_cmd: FitRemoveItemCmd) -> Self {
-        Self::RemoveItem(sub_cmd)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitRemoveItemCmd {
+    pub fn into_ctl(self) -> ChangeFitEnumCmd {
+        ChangeFitEnumCmd::RemoveItem(self)
     }
 }

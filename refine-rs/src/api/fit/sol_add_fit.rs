@@ -1,8 +1,8 @@
-use crate::{AddFitCmd, Fit, FitInfo, FitInfoCmd, SolarSystem, err::AddFitError};
+use crate::{Fit, FitAddCmd, FitInfo, FitInfoCmd, SolarSystem, err::AddFitError};
 
 impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "fit-add", level = "trace", skip_all)]
-    pub async fn add_fit(&'s mut self, ctl_cmd: AddFitCmd) -> Result<Fit<'r, 's>, AddFitError> {
+    pub async fn add_fit(&'s mut self, ctl_cmd: FitAddCmd) -> Result<Fit<'r, 's>, AddFitError> {
         let ctl_cmd_resp = self
             .exec_standard_fallible(move |core_sol| ctl_cmd.execute(core_sol))
             .await?;
@@ -12,7 +12,7 @@ impl<'r, 's> SolarSystem<'r> {
     #[tracing::instrument(name = "fit-add-inf", level = "trace", skip_all)]
     pub async fn add_fit_and_get_info(
         &'s mut self,
-        ctl_cmd: AddFitCmd,
+        ctl_cmd: FitAddCmd,
         info_cmd: FitInfoCmd,
     ) -> Result<(Fit<'r, 's>, FitInfo), AddFitError> {
         let (fit_id, fit_info) = self

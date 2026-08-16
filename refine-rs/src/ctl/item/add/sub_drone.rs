@@ -1,7 +1,7 @@
 use crate::{
     AddItemEnumCmd, AddMutation, Coordinates, EffectId, EffectMode, FitId, ItemId, ItemTypeId, MinionState, Movement,
     NpcProp,
-    ctl::inner::{ICmdDroneAddFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared},
+    ctl::core::{ICmdDroneAddFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

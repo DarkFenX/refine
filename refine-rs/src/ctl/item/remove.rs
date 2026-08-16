@@ -1,6 +1,6 @@
 use crate::{
     RemoveMode,
-    ctl::inner::{ICmdItemRemoveICtx, ItemRemoveItemError},
+    ctl::core::{ICmdItemRemoveICtx, ItemRemoveItemError},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

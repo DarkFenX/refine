@@ -3,7 +3,7 @@ use super::{
     sub_item_stance::SolChangeStanceCmdRIds,
 };
 use crate::{
-    CtlCmdResp, CtlCmdResps, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
+    CtlCmdResp, CtlCmdResps, FitAddCmdBackref, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFleetCmd,
     SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
     SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
     SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFitCmd,
@@ -11,10 +11,10 @@ use crate::{
     SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd, SolChangeSkillCmd, SolChangeSolCmd, SolChangeStanceCmd,
     SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
     SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
-    ctl::inner::{
-        ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
-        ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
-        ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitAddFCtxRIds, ICmdFitChangeFCtxRIds,
+    ctl::core::{
+        FitAddCmd, ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds,
+        ICmdCharacterSetFCtxRIds, ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds,
+        ICmdDroneChangeFCtxRIds, ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdFitChangeFCtxRIds,
         ICmdFitRemoveFCtxRIds, ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds,
         ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds, ICmdImplantChangeFCtxRIds,
         ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds,
@@ -42,7 +42,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
-pub enum ChangeSolEnumCmd {
+pub enum SolCtlCmd {
     // Solar system
     ChangeSol(SolChangeSolCmd),
     // Fleet
@@ -50,7 +50,7 @@ pub enum ChangeSolEnumCmd {
     ChangeFleet(SolChangeFleetCmd),
     RemoveFleet(SolRemoveFleetCmd),
     // Fit
-    AddFit(SolAddFitCmd),
+    AddFit(FitAddCmdBackref),
     ChangeFit(SolChangeFitCmd),
     RemoveFit(SolRemoveFitCmd),
     // Item
@@ -109,7 +109,7 @@ pub enum ChangeSolEnumCmd {
     ChangeSwEffect(SolChangeSwEffectCmd),
 }
 
-pub(crate) enum ChangeSolEnumCmdRIds {
+pub(crate) enum SolCtlCmdRendered {
     // Solar system
     ChangeSol(ICmdSolChangeFCtx),
     // Fleet
@@ -117,7 +117,7 @@ pub(crate) enum ChangeSolEnumCmdRIds {
     ChangeFleet(ICmdFleetChangeFCtxRIds),
     RemoveFleet(ICmdFleetRemoveFCtxRIds),
     // Fit
-    AddFit(ICmdFitAddFCtxRIds),
+    AddFit(FitAddCmd),
     ChangeFit(ICmdFitChangeFCtxRIds),
     RemoveFit(ICmdFitRemoveFCtxRIds),
     // Item
@@ -179,73 +179,73 @@ pub(crate) enum ChangeSolEnumCmdRIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ChangeSolEnumCmd {
-    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<ChangeSolEnumCmdRIds, BackrefRenderError> {
+impl SolCtlCmd {
+    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<SolCtlCmdRendered, BackrefRenderError> {
         Ok(match self {
             // Solar system
-            Self::ChangeSol(cmd) => ChangeSolEnumCmdRIds::ChangeSol(cmd.inner),
+            Self::ChangeSol(cmd) => SolCtlCmdRendered::ChangeSol(cmd.inner),
             // Fleet
-            Self::AddFleet(cmd) => ChangeSolEnumCmdRIds::AddFleet(cmd.inner.render(resps)?),
-            Self::ChangeFleet(cmd) => ChangeSolEnumCmdRIds::ChangeFleet(cmd.inner.render(resps)?),
-            Self::RemoveFleet(cmd) => ChangeSolEnumCmdRIds::RemoveFleet(cmd.inner.render(resps)?),
+            Self::AddFleet(cmd) => SolCtlCmdRendered::AddFleet(cmd.inner.render(resps)?),
+            Self::ChangeFleet(cmd) => SolCtlCmdRendered::ChangeFleet(cmd.inner.render(resps)?),
+            Self::RemoveFleet(cmd) => SolCtlCmdRendered::RemoveFleet(cmd.inner.render(resps)?),
             // Fit
-            Self::AddFit(cmd) => ChangeSolEnumCmdRIds::AddFit(cmd.inner.render(resps)?),
-            Self::ChangeFit(cmd) => ChangeSolEnumCmdRIds::ChangeFit(cmd.inner.render(resps)?),
-            Self::RemoveFit(cmd) => ChangeSolEnumCmdRIds::RemoveFit(cmd.inner.render(resps)?),
+            Self::AddFit(cmd) => SolCtlCmdRendered::AddFit(cmd.render(resps)?),
+            Self::ChangeFit(cmd) => SolCtlCmdRendered::ChangeFit(cmd.inner.render(resps)?),
+            Self::RemoveFit(cmd) => SolCtlCmdRendered::RemoveFit(cmd.inner.render(resps)?),
             // Item
-            Self::RemoveItem(cmd) => ChangeSolEnumCmdRIds::RemoveItem(cmd.inner.render(resps)?),
+            Self::RemoveItem(cmd) => SolCtlCmdRendered::RemoveItem(cmd.inner.render(resps)?),
             // Item - autocharge
-            Self::ChangeAutocharge(cmd) => ChangeSolEnumCmdRIds::ChangeAutocharge(cmd.inner.render(resps)?),
+            Self::ChangeAutocharge(cmd) => SolCtlCmdRendered::ChangeAutocharge(cmd.inner.render(resps)?),
             // Item - booster
-            Self::AddBooster(cmd) => ChangeSolEnumCmdRIds::AddBooster(cmd.inner.render(resps)?),
-            Self::ChangeBooster(cmd) => ChangeSolEnumCmdRIds::ChangeBooster(cmd.inner.render(resps)?),
+            Self::AddBooster(cmd) => SolCtlCmdRendered::AddBooster(cmd.inner.render(resps)?),
+            Self::ChangeBooster(cmd) => SolCtlCmdRendered::ChangeBooster(cmd.inner.render(resps)?),
             // Item - character
-            Self::SetCharacter(cmd) => ChangeSolEnumCmdRIds::SetCharacter(cmd.inner.render(resps)?),
-            Self::ChangeCharacter(cmd) => ChangeSolEnumCmdRIds::ChangeCharacter(cmd.render(resps)?),
-            Self::UnsetCharacter(cmd) => ChangeSolEnumCmdRIds::UnsetCharacter(cmd.inner.render(resps)?),
+            Self::SetCharacter(cmd) => SolCtlCmdRendered::SetCharacter(cmd.inner.render(resps)?),
+            Self::ChangeCharacter(cmd) => SolCtlCmdRendered::ChangeCharacter(cmd.render(resps)?),
+            Self::UnsetCharacter(cmd) => SolCtlCmdRendered::UnsetCharacter(cmd.inner.render(resps)?),
             // Item - charge
-            Self::ChangeCharge(cmd) => ChangeSolEnumCmdRIds::ChangeCharge(cmd.inner.render(resps)?),
+            Self::ChangeCharge(cmd) => SolCtlCmdRendered::ChangeCharge(cmd.inner.render(resps)?),
             // Item - drone
-            Self::AddDrone(cmd) => ChangeSolEnumCmdRIds::AddDrone(cmd.inner.render(resps)?),
-            Self::ChangeDrone(cmd) => ChangeSolEnumCmdRIds::ChangeDrone(cmd.inner.render(resps)?),
+            Self::AddDrone(cmd) => SolCtlCmdRendered::AddDrone(cmd.inner.render(resps)?),
+            Self::ChangeDrone(cmd) => SolCtlCmdRendered::ChangeDrone(cmd.inner.render(resps)?),
             // Item - fighter
-            Self::AddFighter(cmd) => ChangeSolEnumCmdRIds::AddFighter(cmd.inner.render(resps)?),
-            Self::ChangeFighter(cmd) => ChangeSolEnumCmdRIds::ChangeFighter(cmd.inner.render(resps)?),
+            Self::AddFighter(cmd) => SolCtlCmdRendered::AddFighter(cmd.inner.render(resps)?),
+            Self::ChangeFighter(cmd) => SolCtlCmdRendered::ChangeFighter(cmd.inner.render(resps)?),
             // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => ChangeSolEnumCmdRIds::AddFwEffect(cmd.inner.render(resps)?),
-            Self::ChangeFwEffect(cmd) => ChangeSolEnumCmdRIds::ChangeFwEffect(cmd.inner.render(resps)?),
+            Self::AddFwEffect(cmd) => SolCtlCmdRendered::AddFwEffect(cmd.inner.render(resps)?),
+            Self::ChangeFwEffect(cmd) => SolCtlCmdRendered::ChangeFwEffect(cmd.inner.render(resps)?),
             // Item - implant
-            Self::AddImplant(cmd) => ChangeSolEnumCmdRIds::AddImplant(cmd.inner.render(resps)?),
-            Self::ChangeImplant(cmd) => ChangeSolEnumCmdRIds::ChangeImplant(cmd.inner.render(resps)?),
+            Self::AddImplant(cmd) => SolCtlCmdRendered::AddImplant(cmd.inner.render(resps)?),
+            Self::ChangeImplant(cmd) => SolCtlCmdRendered::ChangeImplant(cmd.inner.render(resps)?),
             // Item - module
-            Self::AddModule(cmd) => ChangeSolEnumCmdRIds::AddModule(cmd.inner.render(resps)?),
-            Self::ChangeModule(cmd) => ChangeSolEnumCmdRIds::ChangeModule(cmd.inner.render(resps)?),
+            Self::AddModule(cmd) => SolCtlCmdRendered::AddModule(cmd.inner.render(resps)?),
+            Self::ChangeModule(cmd) => SolCtlCmdRendered::ChangeModule(cmd.inner.render(resps)?),
             // Item - projected effect
-            Self::AddProjEffect(cmd) => ChangeSolEnumCmdRIds::AddProjEffect(cmd.inner.render(resps)?),
-            Self::ChangeProjEffect(cmd) => ChangeSolEnumCmdRIds::ChangeProjEffect(cmd.inner.render(resps)?),
+            Self::AddProjEffect(cmd) => SolCtlCmdRendered::AddProjEffect(cmd.inner.render(resps)?),
+            Self::ChangeProjEffect(cmd) => SolCtlCmdRendered::ChangeProjEffect(cmd.inner.render(resps)?),
             // Item - rig
-            Self::AddRig(cmd) => ChangeSolEnumCmdRIds::AddRig(cmd.inner.render(resps)?),
-            Self::ChangeRig(cmd) => ChangeSolEnumCmdRIds::ChangeRig(cmd.inner.render(resps)?),
+            Self::AddRig(cmd) => SolCtlCmdRendered::AddRig(cmd.inner.render(resps)?),
+            Self::ChangeRig(cmd) => SolCtlCmdRendered::ChangeRig(cmd.inner.render(resps)?),
             // Item - service
-            Self::AddService(cmd) => ChangeSolEnumCmdRIds::AddService(cmd.inner.render(resps)?),
-            Self::ChangeService(cmd) => ChangeSolEnumCmdRIds::ChangeService(cmd.inner.render(resps)?),
+            Self::AddService(cmd) => SolCtlCmdRendered::AddService(cmd.inner.render(resps)?),
+            Self::ChangeService(cmd) => SolCtlCmdRendered::ChangeService(cmd.inner.render(resps)?),
             // Item - ship
-            Self::SetShip(cmd) => ChangeSolEnumCmdRIds::SetShip(cmd.inner.render(resps)?),
-            Self::ChangeShip(cmd) => ChangeSolEnumCmdRIds::ChangeShip(cmd.render(resps)?),
-            Self::UnsetShip(cmd) => ChangeSolEnumCmdRIds::UnsetShip(cmd.inner.render(resps)?),
+            Self::SetShip(cmd) => SolCtlCmdRendered::SetShip(cmd.inner.render(resps)?),
+            Self::ChangeShip(cmd) => SolCtlCmdRendered::ChangeShip(cmd.render(resps)?),
+            Self::UnsetShip(cmd) => SolCtlCmdRendered::UnsetShip(cmd.inner.render(resps)?),
             // Item - skill
-            Self::AddSkill(cmd) => ChangeSolEnumCmdRIds::AddSkill(cmd.inner.render(resps)?),
-            Self::ChangeSkill(cmd) => ChangeSolEnumCmdRIds::ChangeSkill(cmd.inner.render(resps)?),
+            Self::AddSkill(cmd) => SolCtlCmdRendered::AddSkill(cmd.inner.render(resps)?),
+            Self::ChangeSkill(cmd) => SolCtlCmdRendered::ChangeSkill(cmd.inner.render(resps)?),
             // Item - stance
-            Self::SetStance(cmd) => ChangeSolEnumCmdRIds::SetStance(cmd.inner.render(resps)?),
-            Self::ChangeStance(cmd) => ChangeSolEnumCmdRIds::ChangeStance(cmd.render(resps)?),
-            Self::UnsetStance(cmd) => ChangeSolEnumCmdRIds::UnsetStance(cmd.inner.render(resps)?),
+            Self::SetStance(cmd) => SolCtlCmdRendered::SetStance(cmd.inner.render(resps)?),
+            Self::ChangeStance(cmd) => SolCtlCmdRendered::ChangeStance(cmd.render(resps)?),
+            Self::UnsetStance(cmd) => SolCtlCmdRendered::UnsetStance(cmd.inner.render(resps)?),
             // Item - subsystem
-            Self::AddSubsystem(cmd) => ChangeSolEnumCmdRIds::AddSubsystem(cmd.inner.render(resps)?),
-            Self::ChangeSubsystem(cmd) => ChangeSolEnumCmdRIds::ChangeSubsystem(cmd.inner.render(resps)?),
+            Self::AddSubsystem(cmd) => SolCtlCmdRendered::AddSubsystem(cmd.inner.render(resps)?),
+            Self::ChangeSubsystem(cmd) => SolCtlCmdRendered::ChangeSubsystem(cmd.inner.render(resps)?),
             // Item - system-wide effect
-            Self::AddSwEffect(cmd) => ChangeSolEnumCmdRIds::AddSwEffect(cmd.inner),
-            Self::ChangeSwEffect(cmd) => ChangeSolEnumCmdRIds::ChangeSwEffect(cmd.inner.render(resps)?),
+            Self::AddSwEffect(cmd) => SolCtlCmdRendered::AddSwEffect(cmd.inner),
+            Self::ChangeSwEffect(cmd) => SolCtlCmdRendered::ChangeSwEffect(cmd.inner.render(resps)?),
         })
     }
 }
@@ -253,7 +253,7 @@ impl ChangeSolEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ChangeSolEnumCmdRIds {
+impl SolCtlCmdRendered {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CtlCmdResp, ChangeSolEnumError> {
         match self {
             // Solar system

@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, ServiceState,
-    ctl::inner::{ICmdServiceAddFCtxBIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
+    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, ServiceState, SolCtlCmd,
+    ctl::core::{ICmdServiceAddFCtxBIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -26,7 +26,7 @@ impl SolAddServiceCmd {
         self
     }
 }
-impl From<SolAddServiceCmd> for ChangeSolEnumCmd {
+impl From<SolAddServiceCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddServiceCmd) -> Self {
         Self::AddService(sub_cmd)
     }
@@ -60,7 +60,7 @@ impl SolChangeServiceCmd {
         self
     }
 }
-impl From<SolChangeServiceCmd> for ChangeSolEnumCmd {
+impl From<SolChangeServiceCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeServiceCmd) -> Self {
         Self::ChangeService(sub_cmd)
     }

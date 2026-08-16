@@ -1,7 +1,7 @@
 use crate::{
-    AddMode, AddMutation, ChangeMutation, ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref,
-    ItemTypeId, ModRack, ModuleState, MoveMode, OptionalReload, Spool,
-    ctl::inner::{ICmdModuleAddFCtxBIds, ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
+    AddMode, AddMutation, ChangeMutation, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, ModRack,
+    ModuleState, MoveMode, OptionalReload, SolCtlCmd, Spool,
+    ctl::core::{ICmdModuleAddFCtxBIds, ICmdModuleAddICtxBIds, ICmdModuleAddShared, ICmdModuleChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,7 +63,7 @@ impl SolAddModuleCmd {
         self
     }
 }
-impl From<SolAddModuleCmd> for ChangeSolEnumCmd {
+impl From<SolAddModuleCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddModuleCmd) -> Self {
         Self::AddModule(sub_cmd)
     }
@@ -127,7 +127,7 @@ impl SolChangeModuleCmd {
         self
     }
 }
-impl From<SolChangeModuleCmd> for ChangeSolEnumCmd {
+impl From<SolChangeModuleCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeModuleCmd) -> Self {
         Self::ChangeModule(sub_cmd)
     }

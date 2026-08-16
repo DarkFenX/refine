@@ -1,4 +1,4 @@
-use crate::{ChangeFitEnumCmd, DpsProfile, FitSecStatus, FleetIdBackref, ctl::inner::ICmdFitChangeICtxBIds};
+use crate::{ChangeFitEnumCmd, DpsProfile, FitSecStatus, FleetIdBackref, ctl::core::ICmdFitChangeICtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -6,6 +6,10 @@ pub struct FitChangeFitCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdFitChangeICtxBIds = ICmdFitChangeICtxBIds { .. },
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeFitCmd {
     pub fn new() -> Self {
         Self::default()
@@ -23,8 +27,12 @@ impl FitChangeFitCmd {
         self
     }
 }
-impl From<FitChangeFitCmd> for ChangeFitEnumCmd {
-    fn from(sub_cmd: FitChangeFitCmd) -> Self {
-        Self::ChangeFit(sub_cmd)
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitChangeFitCmd {
+    pub fn into_ctl(self) -> ChangeFitEnumCmd {
+        ChangeFitEnumCmd::ChangeFit(self)
     }
 }

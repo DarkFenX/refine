@@ -6,9 +6,9 @@
 
 pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use ctl::{
-    AddFitCmd, AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
-    AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangeSolEnumCmd,
-    ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
+    AddFleetCmd, AddItemEnumCmd, AddMutation, AddSolCmd, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp,
+    AttrMutation, ChangeFitEnumCmd, ChangeFleetCmd, ChangeItemEnumCmd, ChangeMutation, ChangedItemIdsResp, CtlCmdResp,
+    CtlCmdResps, FitAddBoosterCmd, FitAddCmd, FitAddCmdBackref, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd,
     FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd,
     FitChangeAutochargeCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
     FitChangeFighterCmd, FitChangeFitCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd,
@@ -21,7 +21,7 @@ pub use ctl::{
     ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd, ItemChangeProjEffectCmd, ItemChangeRigCmd,
     ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd,
     ItemChangeSwEffectCmd, ItemIdBackref, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RemoveFitCmd,
-    RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFitCmd, SolAddFleetCmd,
+    RemoveFleetCmd, RemoveItemCmd, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFleetCmd,
     SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
     SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
     SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeChargeCmd,
@@ -29,8 +29,8 @@ pub use ctl::{
     SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
     SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd, SolChangeSolCmd,
     SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd,
-    SolChangeSwEffectCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd,
-    SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+    SolChangeSwEffectCmd, SolCtlCmd, SolRemoveFitCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd,
+    SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,

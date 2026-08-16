@@ -1,4 +1,4 @@
-use crate::ctl::inner::ICmdFitRemoveICtx;
+use crate::ctl::core::ICmdFitRemoveICtx;
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]

@@ -1,7 +1,7 @@
 use crate::{
-    ChangeSolEnumCmd, ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref,
-    ItemTypeId, Movement,
-    ctl::inner::{
+    ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
+    Movement, SolCtlCmd,
+    ctl::core::{
         ICmdShipChangeFFitCtxBIds, ICmdShipChangeFFitCtxRIds, ICmdShipChangeFItemCtxBIds, ICmdShipChangeFItemCtxRIds,
         ICmdShipSetFCtxBIds, ICmdShipSetICtx, ICmdShipUnsetFCtxBIds,
     },
@@ -43,7 +43,7 @@ impl SolSetShipCmd {
         self
     }
 }
-impl From<SolSetShipCmd> for ChangeSolEnumCmd {
+impl From<SolSetShipCmd> for SolCtlCmd {
     fn from(sub_cmd: SolSetShipCmd) -> Self {
         Self::SetShip(sub_cmd)
     }
@@ -91,7 +91,7 @@ impl SolChangeShipViaFitCmd {
         self
     }
 }
-impl From<SolChangeShipViaFitCmd> for ChangeSolEnumCmd {
+impl From<SolChangeShipViaFitCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeShipViaFitCmd) -> Self {
         Self::ChangeShip(SolChangeShipCmd::ViaFitId(sub_cmd))
     }
@@ -130,7 +130,7 @@ impl SolChangeShipViaItemCmd {
         self
     }
 }
-impl From<SolChangeShipViaItemCmd> for ChangeSolEnumCmd {
+impl From<SolChangeShipViaItemCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeShipViaItemCmd) -> Self {
         Self::ChangeShip(SolChangeShipCmd::ViaItemId(sub_cmd))
     }
@@ -184,7 +184,7 @@ impl SolUnsetShipCmd {
         }
     }
 }
-impl From<SolUnsetShipCmd> for ChangeSolEnumCmd {
+impl From<SolUnsetShipCmd> for SolCtlCmd {
     fn from(sub_cmd: SolUnsetShipCmd) -> Self {
         Self::UnsetShip(sub_cmd)
     }

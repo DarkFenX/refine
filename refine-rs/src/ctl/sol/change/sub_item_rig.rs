@@ -1,6 +1,6 @@
 use crate::{
-    ChangeSolEnumCmd, EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId,
-    ctl::inner::{ICmdRigAddFCtxBIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds},
+    EffectId, EffectMode, FitIdBackref, ItemIdBackref, ItemTypeId, SolCtlCmd,
+    ctl::core::{ICmdRigAddFCtxBIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +30,7 @@ impl SolAddRigCmd {
         self
     }
 }
-impl From<SolAddRigCmd> for ChangeSolEnumCmd {
+impl From<SolAddRigCmd> for SolCtlCmd {
     fn from(sub_cmd: SolAddRigCmd) -> Self {
         Self::AddRig(sub_cmd)
     }
@@ -64,7 +64,7 @@ impl SolChangeRigCmd {
         self
     }
 }
-impl From<SolChangeRigCmd> for ChangeSolEnumCmd {
+impl From<SolChangeRigCmd> for SolCtlCmd {
     fn from(sub_cmd: SolChangeRigCmd) -> Self {
         Self::ChangeRig(sub_cmd)
     }

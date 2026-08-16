@@ -1,10 +1,14 @@
-use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ctl::inner::ICmdAutochargeChangeFCtxBIds};
+use crate::{ChangeFitEnumCmd, EffectId, EffectMode, ItemIdBackref, ctl::core::ICmdAutochargeChangeFCtxBIds};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeAutochargeCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     pub(super) inner: ICmdAutochargeChangeFCtxBIds,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeAutochargeCmd {
     pub fn new(item_id: ItemIdBackref) -> Self {
         Self {

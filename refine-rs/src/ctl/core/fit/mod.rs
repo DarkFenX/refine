@@ -1,5 +1,4 @@
-pub use add::AddFitError;
-pub(in crate::ctl) use add::{ICmdFitAddFCtxBIds, ICmdFitAddFCtxRIds};
+pub use add::{AddFitError, FitAddCmd, FitAddCmdBackref};
 pub use change::{FitChangeFitError, GetFitChangeFitError};
 pub(in crate::ctl) use change::{
     ICmdFitChangeFCtxBIds, ICmdFitChangeFCtxRIds, ICmdFitChangeICtxBIds, ICmdFitChangeICtxRIds,
