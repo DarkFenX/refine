@@ -1,50 +1,110 @@
 use crate::{CtlCmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BackrefRenderError};
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFleetChangeFCtxBIds {
-    pub(in crate::ctl) fleet_id: FleetIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdFleetChangeICtxBIds = ICmdFleetChangeICtxBIds { .. },
+#[derive(Default)]
+pub struct FleetChangeCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    add_fit_ids: Vec<FitId> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_fit_ids: Vec<FitId> = Vec::new(),
 }
-pub(crate) struct ICmdFleetChangeFCtxRIds {
-    fleet_id: FleetId,
-    ictx_cmd: ICmdFleetChangeICtxRIds,
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+pub struct FleetChangeCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    add_fit_ids: Vec<FitIdBr> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_fit_ids: Vec<FitIdBr> = Vec::new(),
 }
 
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFleetChangeICtxBIds {
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_fit_ids: Vec<FitIdBr> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_fit_ids: Vec<FitIdBr> = Vec::new(),
+// Extra context commands
+pub struct FleetChangeCmdCtxFleet {
+    fleet_id: FleetId,
+    core: FleetChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFleetChangeICtxRIds {
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) add_fit_ids: Vec<FitId> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) rm_fit_ids: Vec<FitId> = Vec::new(),
+pub struct FleetChangeCmdCtxFleetBr {
+    fleet_id: FleetIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: FleetChangeCmdBr = FleetChangeCmdBr { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_add_fit_ids(mut self, add_fit_ids: impl Iterator<Item = FitId>) -> Self {
+        self.add_fit_ids.extend(add_fit_ids);
+        self
+    }
+    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl Iterator<Item = FitId>) -> Self {
+        self.rm_fit_ids.extend(rm_fit_ids);
+        self
+    }
+}
+
+impl FleetChangeCmdBr {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_add_fit_ids(mut self, add_fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+        self.add_fit_ids.extend(add_fit_ids);
+        self
+    }
+    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+        self.rm_fit_ids.extend(rm_fit_ids);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetChangeCmd {
+    fn into_br(self) -> FleetChangeCmdBr {
+        FleetChangeCmdBr {
+            add_fit_ids: self.add_fit_ids.into_iter().map(FitIdBr::Id).collect(),
+            rm_fit_ids: self.rm_fit_ids.into_iter().map(FitIdBr::Id).collect(),
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
+        FleetChangeCmdCtxFleetBr {
+            fleet_id: fleet_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl FleetChangeCmdBr {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
+        FleetChangeCmdCtxFleetBr {
+            fleet_id: fleet_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFleetChangeFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFleetChangeFCtxRIds, BackrefRenderError> {
-        Ok(ICmdFleetChangeFCtxRIds {
-            fleet_id: resps.render_fleet_id(self.fleet_id)?,
-            ictx_cmd: self.ictx_cmd.render(resps)?,
+impl FleetChangeCmdBr {
+    fn render(self, resps: &CtlCmdResps) -> Result<FleetChangeCmd, BackrefRenderError> {
+        Ok(FleetChangeCmd {
+            add_fit_ids: resps.render_fit_ids(self.add_fit_ids)?,
+            rm_fit_ids: resps.render_fit_ids(self.rm_fit_ids)?,
         })
     }
 }
 
-impl ICmdFleetChangeICtxBIds {
-    fn render(self, resps: &CtlCmdResps) -> Result<ICmdFleetChangeICtxRIds, BackrefRenderError> {
-        Ok(ICmdFleetChangeICtxRIds {
-            add_fit_ids: resps.render_fit_ids(self.add_fit_ids)?,
-            rm_fit_ids: resps.render_fit_ids(self.rm_fit_ids)?,
+impl FleetChangeCmdCtxFleetBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FleetChangeCmdCtxFleet, BackrefRenderError> {
+        Ok(FleetChangeCmdCtxFleet {
+            fleet_id: resps.render_fleet_id(self.fleet_id)?,
+            core: self.core.render(resps)?,
         })
     }
 }
@@ -52,33 +112,8 @@ impl ICmdFleetChangeICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFleetChangeFCtxRIds {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFleetChangeFleetError> {
-        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fleet)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFleetChangeFleetError {
-    #[error(transparent)]
-    FleetGet(#[from] rc::err::GetFleetError),
-    #[error("failed to add fit")]
-    FitAdd(#[source] rc::err::FleetAddFitError),
-    #[error("failed to remove fit")]
-    FitRemove(#[source] rc::err::FleetRemoveFitError),
-}
-impl From<FleetChangeFleetError> for GetFleetChangeFleetError {
-    fn from(err: FleetChangeFleetError) -> Self {
-        match err {
-            FleetChangeFleetError::FitAdd(inner) => Self::FitAdd(inner),
-            FleetChangeFleetError::FitRemove(inner) => Self::FitRemove(inner),
-        }
-    }
-}
-
-impl ICmdFleetChangeICtxRIds {
-    pub(in crate::ctl) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeFleetError> {
+impl FleetChangeCmd {
+    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeError> {
         for fit_id in self.rm_fit_ids.iter() {
             core_fleet.remove_fit(fit_id)?;
         }
@@ -88,11 +123,34 @@ impl ICmdFleetChangeICtxRIds {
         Ok(())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum FleetChangeFleetError {
+pub enum FleetChangeError {
     #[error("failed to add fit")]
     FitAdd(#[from] rc::err::FleetAddFitError),
     #[error("failed to remove fit")]
     FitRemove(#[from] rc::err::FleetRemoveFitError),
+}
+
+impl FleetChangeCmdCtxFleet {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FleetGetFleetChangeError> {
+        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        Ok(self.core.execute(&mut core_fleet)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FleetGetFleetChangeError {
+    #[error(transparent)]
+    FleetGet(#[from] rc::err::GetFleetError),
+    #[error("failed to add fit")]
+    FitAdd(#[source] rc::err::FleetAddFitError),
+    #[error("failed to remove fit")]
+    FitRemove(#[source] rc::err::FleetRemoveFitError),
+}
+impl From<FleetChangeError> for FleetGetFleetChangeError {
+    fn from(err: FleetChangeError) -> Self {
+        match err {
+            FleetChangeError::FitAdd(inner) => Self::FitAdd(inner),
+            FleetChangeError::FitRemove(inner) => Self::FitRemove(inner),
+        }
+    }
 }

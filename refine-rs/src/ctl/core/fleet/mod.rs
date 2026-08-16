@@ -1,6 +1,8 @@
 pub use add::{FleetAddCmd, FleetAddCmdBr, FleetAddError};
-pub use change::{FleetChangeFleetError, GetFleetChangeFleetError};
-pub(in crate::ctl) use change::{ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxRIds};
+pub use change::{
+    FleetChangeCmd, FleetChangeCmdBr, FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr, FleetChangeError,
+    FleetGetFleetChangeError,
+};
 pub use remove::{FleetGetFleetRemoveError, FleetRemoveCmd, FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr};
 
 mod add;

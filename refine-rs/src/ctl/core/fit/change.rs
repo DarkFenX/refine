@@ -81,7 +81,7 @@ impl FitChangeCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmd {
-    pub(in crate::ctl) fn into_br(self) -> FitChangeCmdBr {
+    fn into_br(self) -> FitChangeCmdBr {
         FitChangeCmdBr {
             fleet_id: self.fleet_id.map(FleetIdBr::Id),
             shared: self.shared,

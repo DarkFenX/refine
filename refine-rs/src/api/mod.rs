@@ -1,5 +1,5 @@
 pub use fit::{CtlFitChangeError, Fit, GetFitError, ValFitInfoArgs};
-pub use fleet::{ChangeFleetError, Fleet, GetFleetError};
+pub use fleet::{Fleet, GetFleetError};
 pub use item::{GetItemError, Item, RemoveItemError};
 pub use refine::Refine;
 #[cfg(feature = "serde")]

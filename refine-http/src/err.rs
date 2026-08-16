@@ -58,7 +58,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     FleetAdd(#[from] rs::err::FleetAddError),
     #[error(transparent)]
-    FleetChange(#[from] rs::err::ChangeFleetError),
+    FleetChange(#[from] rs::err::FleetChangeError),
     // Fit-related
     #[error(transparent)]
     PathFitParse(#[from] rs::err::ParseFitIdError),
@@ -141,9 +141,9 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FLT-003")
                 }
                 rs::err::ChangeSolEnumError::FleetChange(err_l2) => match err_l2 {
-                    rs::err::GetFleetChangeFleetError::FleetGet(..) => (StatusCode::BAD_REQUEST, "FLT-001"),
-                    rs::err::GetFleetChangeFleetError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
-                    rs::err::GetFleetChangeFleetError::FitRemove(..) => (StatusCode::BAD_REQUEST, "FLT-005"),
+                    rs::err::FleetGetFleetChangeError::FleetGet(..) => (StatusCode::BAD_REQUEST, "FLT-001"),
+                    rs::err::FleetGetFleetChangeError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
+                    rs::err::FleetGetFleetChangeError::FitRemove(..) => (StatusCode::BAD_REQUEST, "FLT-005"),
                 },
                 rs::err::ChangeSolEnumError::FleetRemove(rs::err::FleetGetFleetRemoveError::FleetGet(_)) => {
                     (StatusCode::BAD_REQUEST, "FLT-001")
@@ -368,9 +368,9 @@ impl ApiError {
             Self::FleetAdd(err) => match err {
                 rs::err::FleetAddError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-003"),
             },
-            Self::FleetChange(rs::err::ChangeFleetError(err)) => match err {
-                rs::err::FleetChangeFleetError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
-                rs::err::FleetChangeFleetError::FitRemove(..) => (StatusCode::BAD_REQUEST, "FLT-005"),
+            Self::FleetChange(err) => match err {
+                rs::err::FleetChangeError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
+                rs::err::FleetChangeError::FitRemove(..) => (StatusCode::BAD_REQUEST, "FLT-005"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Fit-related

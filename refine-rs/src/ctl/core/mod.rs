@@ -3,10 +3,10 @@ pub use fit::{
     FitChangeError, FitGetFitChangeError, FitGetFitRemoveError, FitRemoveCmd, FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr,
 };
 pub use fleet::{
-    FleetAddCmd, FleetAddCmdBr, FleetAddError, FleetChangeFleetError, FleetGetFleetRemoveError, FleetRemoveCmd,
-    FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, GetFleetChangeFleetError,
+    FleetAddCmd, FleetAddCmdBr, FleetAddError, FleetChangeCmd, FleetChangeCmdBr, FleetChangeCmdCtxFleet,
+    FleetChangeCmdCtxFleetBr, FleetChangeError, FleetGetFleetChangeError, FleetGetFleetRemoveError, FleetRemoveCmd,
+    FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr,
 };
-pub(in crate::ctl) use fleet::{ICmdFleetChangeFCtxBIds, ICmdFleetChangeFCtxRIds, ICmdFleetChangeICtxRIds};
 pub use item::{GetItemRemoveItemError, ItemRemoveItemError};
 pub(in crate::ctl) use item::{ICmdItemRemoveFCtxBIds, ICmdItemRemoveFCtxRIds, ICmdItemRemoveICtx};
 pub use item_autocharge::{GetItemChangeAutochargeError, ItemChangeAutochargeError};

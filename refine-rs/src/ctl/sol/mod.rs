@@ -1,5 +1,4 @@
 pub use cmd::{ChangeSolEnumError, SolCtlCmd};
-pub use sub_fleet::SolChangeFleetCmd;
 pub use sub_item::SolRemoveItemCmd;
 pub use sub_item_autocharge::SolChangeAutochargeCmd;
 pub use sub_item_booster::{SolAddBoosterCmd, SolChangeBoosterCmd};
@@ -28,7 +27,6 @@ pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
 pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
 mod cmd;
-mod sub_fleet;
 mod sub_item;
 mod sub_item_autocharge;
 mod sub_item_booster;

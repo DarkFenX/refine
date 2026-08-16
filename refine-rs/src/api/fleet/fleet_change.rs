@@ -1,8 +1,8 @@
-use crate::{ChangeFleetCmd, Fleet, FleetInfo, FleetInfoCmd, err::FleetChangeFleetError};
+use crate::{Fleet, FleetChangeCmd, FleetInfo, FleetInfoCmd, err::FleetChangeError};
 
 impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmd: ChangeFleetCmd) -> Result<(), ChangeFleetError> {
+    pub async fn change(&mut self, ctl_cmd: FleetChangeCmd) -> Result<(), FleetChangeError> {
         // Variables for move
         let fleet_id = self.id;
         self.sol
@@ -18,9 +18,9 @@ impl Fleet<'_, '_> {
     #[tracing::instrument(name = "flt-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        ctl_cmd: ChangeFleetCmd,
+        ctl_cmd: FleetChangeCmd,
         info_cmd: FleetInfoCmd,
-    ) -> Result<FleetInfo, ChangeFleetError> {
+    ) -> Result<FleetInfo, FleetChangeError> {
         // Variables for move
         let fleet_id = self.id;
         self.sol
@@ -35,7 +35,3 @@ impl Fleet<'_, '_> {
             .await
     }
 }
-
-#[derive(Debug, thiserror::Error)]
-#[error(transparent)]
-pub struct ChangeFleetError(#[from] pub FleetChangeFleetError);
