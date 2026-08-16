@@ -3,7 +3,7 @@ pub use sub_item_character::{FitChangeCharacterCmd, FitSetCharacterCmd, FitUnset
 pub use sub_item_drone::{FitAddDroneCmd, FitChangeDroneCmd};
 pub use sub_item_fighter::{FitAddFighterCmd, FitChangeFighterCmd};
 pub use sub_item_fw_effect::{FitAddFwEffectCmd, FitChangeFwEffectCmd};
-pub use sub_item_implant::{FitAddImplantCmd, FitChangeImplantCmd};
+pub use sub_item_implant::FitChangeImplantCmd;
 pub use sub_item_module::{FitAddModuleCmd, FitChangeModuleCmd};
 pub use sub_item_rig::{FitAddRigCmd, FitChangeRigCmd};
 pub use sub_item_service::{FitAddServiceCmd, FitChangeServiceCmd};

@@ -239,7 +239,7 @@ impl ApiError {
                     rs::err::GetItemChangeFwEffectError::ItemIsNotFwEffect(..) => (StatusCode::BAD_REQUEST, "FWE-001"),
                 },
                 // Item - implant
-                rs::err::ChangeSolEnumError::ImplantAdd(rs::err::GetFitAddImplantError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::ImplantAdd(rs::err::FitGetImplantAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::ImplantChange(err_l2) => match err_l2 {
@@ -515,7 +515,7 @@ impl ApiError {
                 rs::err::ItemAddError::FwEffect(rs::err::GetFitAddFwEffectError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddError::Implant(rs::err::GetFitAddImplantError::FitGet(..)) => {
+                rs::err::ItemAddError::Implant(rs::err::FitGetImplantAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Module(err_l2) => match err_l2 {

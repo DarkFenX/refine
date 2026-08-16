@@ -1,40 +1,4 @@
-use crate::{
-    EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, SolCtlCmd,
-    ctl::core::{ICmdImplantAddFCtxBIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxBIds},
-};
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Add
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub struct SolAddImplantCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdImplantAddFCtxBIds,
-}
-impl SolAddImplantCmd {
-    pub fn new(fit_id: FitIdBr, type_id: ItemTypeId) -> Self {
-        Self {
-            inner: ICmdImplantAddFCtxBIds {
-                fit_id,
-                ictx_cmd: ICmdImplantAddICtx { type_id, .. },
-            },
-        }
-    }
-    pub fn with_state(mut self, state: bool) -> Self {
-        self.inner.ictx_cmd.state = Some(state);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.inner.ictx_cmd.effect_modes.clear();
-        self.inner.ictx_cmd.effect_modes.extend(effect_modes);
-        self
-    }
-}
-impl From<SolAddImplantCmd> for SolCtlCmd {
-    fn from(sub_cmd: SolAddImplantCmd) -> Self {
-        Self::AddImplant(sub_cmd)
-    }
-}
+use crate::{EffectId, EffectMode, ItemIdBr, ItemTypeId, SolCtlCmd, ctl::core::ICmdImplantChangeFCtxBIds};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Change

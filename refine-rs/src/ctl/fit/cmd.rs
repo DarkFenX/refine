@@ -1,20 +1,19 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, FitAddDroneCmd,
-    FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd,
-    FitAddSkillCmd, FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
+    FitAddFighterCmd, FitAddFwEffectCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
+    FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
     FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd,
     FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd, FitSetCharacterCmd, FitSetShipCmd,
-    FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, ItemIdBr, ItemRemoveCmd,
+    FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, ImplantAddCmd, ItemIdBr, ItemRemoveCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, ICmdCharacterChangeICtx, ICmdCharacterSetICtx,
         ICmdCharacterUnsetICtx, ICmdDroneAddICtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds,
-        ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx,
-        ICmdImplantChangeFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx,
-        ICmdRigChangeFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx,
-        ICmdShipUnsetICtx, ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx,
-        ICmdStanceUnsetICtx, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem,
-        ItemRemoveCmdCtxItemBr,
+        ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantChangeFCtxRIds,
+        ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx,
+        ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx,
+        ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
+        ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
@@ -56,7 +55,7 @@ pub enum FitCtlCmd {
     AddFwEffect(FitAddFwEffectCmd),
     ChangeFwEffect(FitChangeFwEffectCmd),
     // Item - implant
-    AddImplant(FitAddImplantCmd),
+    AddImplant(ImplantAddCmd),
     ChangeImplant(FitChangeImplantCmd),
     // Item - module
     AddModule(FitAddModuleCmd),
@@ -109,7 +108,7 @@ pub(crate) enum FitCtlCmdRendered {
     AddFwEffect(ICmdFwEffectAddICtx),
     ChangeFwEffect(ICmdFwEffectChangeFCtxRIds),
     // Item - implant
-    AddImplant(ICmdImplantAddICtx),
+    AddImplant(ImplantAddCmd),
     ChangeImplant(ICmdImplantChangeFCtxRIds),
     // Item - module
     AddModule(ICmdModuleAddICtxRIds),
@@ -174,6 +173,12 @@ impl ChargeChangeCmd {
         FitCtlCmd::ChangeCharge(self.into_ctx_item_br(item_id))
     }
 }
+// Item - implant
+impl ImplantAddCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::AddImplant(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -206,7 +211,7 @@ impl FitCtlCmd {
             Self::AddFwEffect(cmd) => FitCtlCmdRendered::AddFwEffect(cmd.inner),
             Self::ChangeFwEffect(cmd) => FitCtlCmdRendered::ChangeFwEffect(cmd.inner.render(resps)?),
             // Item - implant
-            Self::AddImplant(cmd) => FitCtlCmdRendered::AddImplant(cmd.inner),
+            Self::AddImplant(cmd) => FitCtlCmdRendered::AddImplant(cmd),
             Self::ChangeImplant(cmd) => FitCtlCmdRendered::ChangeImplant(cmd.inner.render(resps)?),
             // Item - drone
             Self::AddModule(cmd) => FitCtlCmdRendered::AddModule(cmd.inner.render(resps)?),
