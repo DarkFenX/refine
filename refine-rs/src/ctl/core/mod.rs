@@ -57,10 +57,9 @@ pub(in crate::ctl) use item_proj_effect::{
     ICmdProjEffectAddFCtxBIds, ICmdProjEffectAddFCtxRIds, ICmdProjEffectAddShared, ICmdProjEffectChangeFCtxBIds,
     ICmdProjEffectChangeFCtxRIds, ICmdProjEffectChangeICtxRIds,
 };
-pub use item_rig::{GetFitAddRigError, GetItemChangeRigError, ItemChangeRigError};
-pub(in crate::ctl) use item_rig::{
-    ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds,
-    ICmdRigChangeICtx,
+pub use item_rig::{
+    FitGetRigAddError, ItemGetRigChangeError, RigAddCmd, RigAddCmdCtxFit, RigAddCmdCtxFitBr, RigChangeCmd,
+    RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, RigChangeError,
 };
 pub use item_service::{GetFitAddServiceError, GetItemChangeServiceError, ItemChangeServiceError};
 pub(in crate::ctl) use item_service::{

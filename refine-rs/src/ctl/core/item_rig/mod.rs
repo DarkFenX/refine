@@ -1,7 +1,5 @@
-pub use add::GetFitAddRigError;
-pub(in crate::ctl) use add::{ICmdRigAddFCtxBIds, ICmdRigAddFCtxRIds, ICmdRigAddICtx};
-pub use change::{GetItemChangeRigError, ItemChangeRigError};
-pub(in crate::ctl) use change::{ICmdRigChangeFCtxBIds, ICmdRigChangeFCtxRIds, ICmdRigChangeICtx};
+pub use add::{FitGetRigAddError, RigAddCmd, RigAddCmdCtxFit, RigAddCmdCtxFitBr};
+pub use change::{ItemGetRigChangeError, RigChangeCmd, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, RigChangeError};
 
 mod add;
 mod change;

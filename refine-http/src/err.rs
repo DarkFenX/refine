@@ -271,12 +271,12 @@ impl ApiError {
                     rs::err::GetItemChangeProjEffectError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
                 },
                 // Item - rig
-                rs::err::ChangeSolEnumError::RigAdd(rs::err::GetFitAddRigError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::RigAdd(rs::err::FitGetRigAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::RigChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeRigError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeRigError::ItemIsNotRig(..) => (StatusCode::BAD_REQUEST, "RIG-001"),
+                    rs::err::ItemGetRigChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetRigChangeError::ItemIsNotRig(..) => (StatusCode::BAD_REQUEST, "RIG-001"),
                 },
                 // Item - service
                 rs::err::ChangeSolEnumError::ServiceAdd(rs::err::GetFitAddServiceError::FitGet(..)) => {
@@ -457,8 +457,8 @@ impl ApiError {
                 },
                 // Item - rig
                 rs::err::FitCtlCmdError::RigChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeRigError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeRigError::ItemIsNotRig(..) => (StatusCode::BAD_REQUEST, "RIG-001"),
+                    rs::err::ItemGetRigChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetRigChangeError::ItemIsNotRig(..) => (StatusCode::BAD_REQUEST, "RIG-001"),
                 },
                 // Item - service
                 rs::err::FitCtlCmdError::ServiceChange(err_l2) => match err_l2 {
@@ -525,7 +525,7 @@ impl ApiError {
                 rs::err::ItemAddError::ProjEffect(rs::err::AddProjEffectError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "PJE-002")
                 }
-                rs::err::ItemAddError::Rig(rs::err::GetFitAddRigError::FitGet(..)) => {
+                rs::err::ItemAddError::Rig(rs::err::FitGetRigAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Service(rs::err::GetFitAddServiceError::FitGet(..)) => {
@@ -588,7 +588,7 @@ impl ApiError {
                     rs::err::ItemChangeProjEffectError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "PJE-003"),
                     rs::err::ItemChangeProjEffectError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
                 },
-                rs::err::ItemCtlError::Rig(rs::err::ItemChangeRigError::ItemIsNotRig(..)) => {
+                rs::err::ItemCtlError::Rig(rs::err::RigChangeError::ItemIsNotRig(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
                 rs::err::ItemCtlError::Service(rs::err::ItemChangeServiceError::ItemIsNotService(..)) => {

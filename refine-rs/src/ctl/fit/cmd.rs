@@ -1,27 +1,27 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, FitAddDroneCmd,
-    FitAddFighterCmd, FitAddFwEffectCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
-    FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeCmd, FitChangeDroneCmd, FitChangeFighterCmd,
-    FitChangeFwEffectCmd, FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd, FitChangeShipCmd,
-    FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd,
+    FitAddFighterCmd, FitAddFwEffectCmd, FitAddModuleCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd,
+    FitChangeCharacterCmd, FitChangeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFwEffectCmd,
+    FitChangeModuleCmd, FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd,
+    FitChangeSubsystemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
+    FitUnsetStanceCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, RigAddCmd, RigChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, ICmdCharacterChangeICtx, ICmdCharacterSetICtx,
         ICmdCharacterUnsetICtx, ICmdDroneAddICtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds,
         ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdModuleAddICtxRIds,
-        ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds,
-        ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds,
-        ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
-        ICmdSubsystemChangeFCtxRIds, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem,
-        ItemRemoveCmdCtxItemBr,
+        ICmdModuleChangeFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx,
+        ICmdShipUnsetICtx, ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx,
+        ICmdStanceUnsetICtx, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds, ImplantChangeCmdCtxItem,
+        ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, RigChangeCmdCtxItem,
+        RigChangeCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
         FitChangeCharacterError, FitChangeError, FitChangeShipError, FitChangeStanceError, GetItemChangeDroneError,
-        GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeModuleError, GetItemChangeRigError,
-        GetItemChangeServiceError, GetItemChangeSkillError, GetItemChangeSubsystemError, ItemGetAutochargeChangeError,
-        ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError,
+        GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeModuleError, GetItemChangeServiceError,
+        GetItemChangeSkillError, GetItemChangeSubsystemError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
+        ItemGetChargeChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetRigChangeError,
     },
 };
 
@@ -62,8 +62,8 @@ pub enum FitCtlCmd {
     AddModule(FitAddModuleCmd),
     ChangeModule(FitChangeModuleCmd),
     // Item - rig
-    AddRig(FitAddRigCmd),
-    ChangeRig(FitChangeRigCmd),
+    AddRig(RigAddCmd),
+    ChangeRig(RigChangeCmdCtxItemBr),
     // Item - service
     AddService(FitAddServiceCmd),
     ChangeService(FitChangeServiceCmd),
@@ -115,8 +115,8 @@ pub(crate) enum FitCtlCmdRendered {
     AddModule(ICmdModuleAddICtxRIds),
     ChangeModule(ICmdModuleChangeFCtxRIds),
     // Item - rig
-    AddRig(ICmdRigAddICtx),
-    ChangeRig(ICmdRigChangeFCtxRIds),
+    AddRig(RigAddCmd),
+    ChangeRig(RigChangeCmdCtxItem),
     // Item - service
     AddService(ICmdServiceAddICtx),
     ChangeService(ICmdServiceChangeFCtxRIds),
@@ -185,6 +185,17 @@ impl ImplantChangeCmd {
         FitCtlCmd::ChangeImplant(self.into_ctx_item_br(item_id))
     }
 }
+// Item - rig
+impl RigAddCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::AddRig(self)
+    }
+}
+impl RigChangeCmd {
+    pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
+        FitCtlCmd::ChangeRig(self.into_ctx_item_br(item_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -223,8 +234,8 @@ impl FitCtlCmd {
             Self::AddModule(cmd) => FitCtlCmdRendered::AddModule(cmd.inner.render(resps)?),
             Self::ChangeModule(cmd) => FitCtlCmdRendered::ChangeModule(cmd.inner.render(resps)?),
             // Item - rig
-            Self::AddRig(cmd) => FitCtlCmdRendered::AddRig(cmd.inner),
-            Self::ChangeRig(cmd) => FitCtlCmdRendered::ChangeRig(cmd.inner.render(resps)?),
+            Self::AddRig(cmd) => FitCtlCmdRendered::AddRig(cmd),
+            Self::ChangeRig(cmd) => FitCtlCmdRendered::ChangeRig(cmd.render(resps)?),
             // Item - service
             Self::AddService(cmd) => FitCtlCmdRendered::AddService(cmd.inner),
             Self::ChangeService(cmd) => FitCtlCmdRendered::ChangeService(cmd.inner.render(resps)?),
@@ -352,7 +363,7 @@ pub enum FitCtlCmdError {
     ModuleChange(#[from] GetItemChangeModuleError),
     // Item - rig
     #[error("failed to change rig")]
-    RigChange(#[from] GetItemChangeRigError),
+    RigChange(#[from] ItemGetRigChangeError),
     // Item - service
     #[error("failed to change service")]
     ServiceChange(#[from] GetItemChangeServiceError),
