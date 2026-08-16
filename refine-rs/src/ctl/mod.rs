@@ -1,6 +1,6 @@
 pub use core::{
     AddFitError, AddFleetError, AddProjEffectError, FitAddCmd, FitAddCmdBackref, FitAddDroneError, FitAddFighterError,
-    FitAddModuleError, FitAddSkillError, FitChangeCharacterError, FitChangeCmd, FitChangeCmdBackref, FitChangeError,
+    FitAddModuleError, FitAddSkillError, FitChangeCharacterError, FitChangeCmd, FitChangeCmdBr, FitChangeError,
     FitChangeShipError, FitChangeStanceError, FitRemoveCmd, FleetChangeFleetError, GetFitAddBoosterError,
     GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError, GetFitAddImplantError, GetFitAddModuleError,
     GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError, GetFitAddSubsystemError, GetFitChangeCharacterError,

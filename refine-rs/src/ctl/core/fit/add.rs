@@ -1,12 +1,25 @@
-use super::shared::FitAddCmdShared;
-use crate::{AddedFitIdResp, DpsProfile, FitSecStatus, FleetId};
+use crate::{AddedFitIdResp, CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBackref, err::BackrefRenderError};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitAddCmd {
-    pub(super) fleet_id: Option<FleetId> = None,
+    fleet_id: Option<FleetId> = None,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) shared: FitAddCmdShared = FitAddCmdShared { .. },
+    shared: FitAddCmdShared = FitAddCmdShared { .. },
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+pub struct FitAddCmdBackref {
+    fleet_id: Option<FleetIdBackref> = None,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: FitAddCmdShared = FitAddCmdShared { .. },
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+struct FitAddCmdShared {
+    sec_status: Option<FitSecStatus> = None,
+    rah_incoming_dps: Option<DpsProfile> = None,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -27,6 +40,39 @@ impl FitAddCmd {
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
         self.shared.rah_incoming_dps = Some(rah_incoming_dps);
         self
+    }
+}
+
+impl FitAddCmdBackref {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_fleet_id(mut self, fleet_id: FleetIdBackref) -> Self {
+        self.fleet_id = Some(fleet_id);
+        self
+    }
+    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
+        self.shared.sec_status = Some(sec_status);
+        self
+    }
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
+        self.shared.rah_incoming_dps = Some(rah_incoming_dps);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitAddCmdBackref {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FitAddCmd, BackrefRenderError> {
+        Ok(FitAddCmd {
+            shared: self.shared,
+            fleet_id: match self.fleet_id {
+                Some(fleet_id) => Some(resps.render_fleet_id(fleet_id)?),
+                None => None,
+            },
+        })
     }
 }
 

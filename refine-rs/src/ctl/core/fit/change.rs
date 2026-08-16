@@ -1,13 +1,28 @@
-use super::shared::CmdFitChangeShared;
-use crate::{DpsProfile, FitSecStatus, FleetId, TriStateField};
+use crate::{CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBackref, TriStateField, err::BackrefRenderError};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(super) fleet_id: TriStateField<FleetId> = TriStateField::Absent,
+    fleet_id: TriStateField<FleetId> = TriStateField::Absent,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) shared: CmdFitChangeShared = CmdFitChangeShared { .. },
+    shared: CmdFitChangeShared = CmdFitChangeShared { .. },
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
+pub struct FitChangeCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    fleet_id: TriStateField<FleetIdBackref> = TriStateField::Absent,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: CmdFitChangeShared = CmdFitChangeShared { .. },
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+struct CmdFitChangeShared {
+    sec_status: Option<FitSecStatus> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    rah_incoming_dps: TriStateField<DpsProfile> = TriStateField::Absent,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,6 +43,40 @@ impl FitChangeCmd {
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
         self.shared.rah_incoming_dps = rah_incoming_dps.into();
         self
+    }
+}
+
+impl FitChangeCmdBr {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBackref>) -> Self {
+        self.fleet_id = fleet_id.into();
+        self
+    }
+    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
+        self.shared.sec_status = Some(sec_status);
+        self
+    }
+    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
+        self.shared.rah_incoming_dps = rah_incoming_dps.into();
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitChangeCmdBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FitChangeCmd, BackrefRenderError> {
+        Ok(FitChangeCmd {
+            shared: self.shared,
+            fleet_id: match self.fleet_id {
+                TriStateField::Value(fleet_id) => TriStateField::Value(resps.render_fleet_id(fleet_id)?),
+                TriStateField::None => TriStateField::None,
+                TriStateField::Absent => TriStateField::Absent,
+            },
+        })
     }
 }
 

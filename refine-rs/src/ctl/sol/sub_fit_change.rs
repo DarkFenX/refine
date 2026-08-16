@@ -1,5 +1,5 @@
 use crate::{
-    CtlCmdResps, FitChangeCmd, FitChangeCmdBackref, FitId, FitIdBackref,
+    CtlCmdResps, FitChangeCmd, FitChangeCmdBr, FitId, FitIdBackref,
     err::{BackrefRenderError, FitChangeError},
 };
 
@@ -7,7 +7,7 @@ use crate::{
 pub struct SolCtlFitChangeCmdBackref {
     fit_id: FitIdBackref,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitChangeCmdBackref,
+    core: FitChangeCmdBr,
 }
 pub struct SolCtlFitChangeCmd {
     fit_id: FitId,
