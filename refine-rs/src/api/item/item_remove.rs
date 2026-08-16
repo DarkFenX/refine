@@ -1,8 +1,8 @@
-use crate::{Item, RemoveItemCmd, err::ItemRemoveItemError};
+use crate::{Item, ItemRemoveCmd, err::ItemRemoveError};
 
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-rmv", level = "trace", skip_all)]
-    pub async fn remove(self, cmd: RemoveItemCmd) -> Result<(), RemoveItemError> {
+    pub async fn remove(self, cmd: ItemRemoveCmd) -> Result<(), RemoveItemError> {
         // Variables for move
         let item_id = self.id;
         self.sol
@@ -19,4 +19,4 @@ impl Item<'_, '_> {
 
 #[derive(Debug, thiserror::Error)]
 #[error(transparent)]
-pub struct RemoveItemError(#[from] pub ItemRemoveItemError);
+pub struct RemoveItemError(#[from] pub ItemRemoveError);

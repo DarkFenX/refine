@@ -4,17 +4,17 @@ use crate::{
     FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeCmd, FitChangeDroneCmd,
     FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
     FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd,
-    FitRemoveItemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
-    FitUnsetStanceCmd,
+    FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
+    ItemIdBr, ItemRemoveCmd,
     ctl::core::{
         ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds, ICmdCharacterChangeICtx,
         ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds,
         ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx,
-        ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds, ICmdItemRemoveFCtxRIds,
-        ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx,
-        ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx,
-        ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
-        ICmdSubsystemChangeFCtxRIds,
+        ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds, ICmdModuleAddICtxRIds,
+        ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds,
+        ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds,
+        ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
+        ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
@@ -22,7 +22,7 @@ use crate::{
         GetItemChangeAutochargeError, GetItemChangeBoosterError, GetItemChangeChargeError, GetItemChangeDroneError,
         GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
         GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError, GetItemChangeSubsystemError,
-        GetItemRemoveItemError,
+        ItemGetItemRemoveError,
     },
 };
 
@@ -35,7 +35,7 @@ pub enum FitCtlCmd {
     // Fit
     ChangeFit(FitChangeCmd),
     // Item
-    RemoveItem(FitRemoveItemCmd),
+    RemoveItem(ItemRemoveCmdCtxItemBr),
     // Item - autocharge
     ChangeAutocharge(FitChangeAutochargeCmd),
     // Item - booster
@@ -88,7 +88,7 @@ pub(crate) enum FitCtlCmdRendered {
     // Fit
     ChangeFit(FitChangeCmd),
     // Item
-    RemoveItem(ICmdItemRemoveFCtxRIds),
+    RemoveItem(ItemRemoveCmdCtxItem),
     // Item - autocharge
     ChangeAutocharge(ICmdAutochargeChangeFCtxRIds),
     // Item - booster
@@ -138,6 +138,22 @@ pub(crate) enum FitCtlCmdRendered {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Fit
+impl FitChangeCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::ChangeFit(self)
+    }
+}
+// Item
+impl ItemRemoveCmd {
+    pub fn into_fit_ctl(self, fit_id: impl Into<ItemIdBr>) -> FitCtlCmd {
+        FitCtlCmd::RemoveItem(self.into_ctx_fit_br(fit_id))
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitCtlCmd {
@@ -146,7 +162,7 @@ impl FitCtlCmd {
             // Fit
             Self::ChangeFit(cmd) => FitCtlCmdRendered::ChangeFit(cmd),
             // Item
-            Self::RemoveItem(cmd) => FitCtlCmdRendered::RemoveItem(cmd.inner.render(resps)?),
+            Self::RemoveItem(cmd) => FitCtlCmdRendered::RemoveItem(cmd.render(resps)?),
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => FitCtlCmdRendered::ChangeAutocharge(cmd.inner.render(resps)?),
             // Item - booster
@@ -267,7 +283,7 @@ pub enum FitCtlCmdError {
     FitChange(#[from] FitChangeError),
     // Item
     #[error("failed to remove item")]
-    ItemRemove(#[from] GetItemRemoveItemError),
+    ItemRemove(#[from] ItemGetItemRemoveError),
     // Item - autocharge
     #[error("failed to change autocharge")]
     AutochargeChange(#[from] GetItemChangeAutochargeError),

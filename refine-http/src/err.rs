@@ -161,8 +161,8 @@ impl ApiError {
                 }
                 // Item
                 rs::err::ChangeSolEnumError::ItemRemove(err_l2) => match err_l2 {
-                    rs::err::GetItemRemoveItemError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemRemoveItemError::ItemRemove(
+                    rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetItemRemoveError::ItemRemove(
                         rs::err::core::RemoveItemError::UnremovableAutocharge,
                     ) => (StatusCode::BAD_REQUEST, "ACH-002"),
                 },
@@ -387,8 +387,8 @@ impl ApiError {
                 }
                 // Item
                 rs::err::FitCtlCmdError::ItemRemove(err_l2) => match err_l2 {
-                    rs::err::GetItemRemoveItemError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemRemoveItemError::ItemRemove(
+                    rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetItemRemoveError::ItemRemove(
                         rs::err::core::RemoveItemError::UnremovableAutocharge,
                     ) => (StatusCode::BAD_REQUEST, "ACH-002"),
                 },
@@ -613,7 +613,7 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "SWE-001")
                 }
             },
-            Self::ItemRemove(rs::err::RemoveItemError(rs::err::ItemRemoveItemError::ItemRemove(
+            Self::ItemRemove(rs::err::RemoveItemError(rs::err::ItemRemoveError::ItemRemove(
                 rs::err::core::RemoveItemError::UnremovableAutocharge,
             ))) => (StatusCode::FORBIDDEN, "ACH-002"),
         }

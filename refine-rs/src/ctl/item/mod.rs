@@ -9,8 +9,6 @@ pub use change::{
     ItemChangeModuleCmd, ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd,
     ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd,
 };
-pub use remove::RemoveItemCmd;
 
 mod add;
 mod change;
-mod remove;

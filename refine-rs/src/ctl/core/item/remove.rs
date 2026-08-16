@@ -1,31 +1,57 @@
 use crate::{CtlCmdResps, ItemId, ItemIdBr, RemoveMode, err::BackrefRenderError};
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdItemRemoveFCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdItemRemoveICtx = ICmdItemRemoveICtx { .. },
-}
-pub(crate) struct ICmdItemRemoveFCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdItemRemoveICtx,
+#[derive(Default)]
+pub struct ItemRemoveCmd {
+    rm_mode: Option<RemoveMode> = None,
 }
 
-// Commands with incomplete context
+// Extra context commands
+pub struct ItemRemoveCmdCtxItem {
+    item_id: ItemId,
+    core: ItemRemoveCmd,
+}
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdItemRemoveICtx {
-    pub(in crate::ctl) rm_mode: Option<RemoveMode> = None,
+pub struct ItemRemoveCmdCtxItemBr {
+    item_id: ItemIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: ItemRemoveCmd = ItemRemoveCmd { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemRemoveCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_rm_mode(mut self, rm_mode: RemoveMode) -> Self {
+        self.rm_mode = Some(rm_mode);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemRemoveCmd {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, item_id: impl Into<ItemIdBr>) -> ItemRemoveCmdCtxItemBr {
+        ItemRemoveCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdItemRemoveFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdItemRemoveFCtxRIds, BackrefRenderError> {
-        Ok(ICmdItemRemoveFCtxRIds {
+impl ItemRemoveCmdCtxItemBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ItemRemoveCmdCtxItem, BackrefRenderError> {
+        Ok(ItemRemoveCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -33,37 +59,35 @@ impl ICmdItemRemoveFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdItemRemoveFCtxRIds {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetItemRemoveItemError> {
-        let core_item = core_sol.get_item_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(core_item)?)
+impl ItemRemoveCmd {
+    pub(crate) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveError> {
+        core_item.remove(self.rm_mode.unwrap_or(RemoveMode::Free))?;
+        Ok(())
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum GetItemRemoveItemError {
+pub enum ItemRemoveError {
+    #[error(transparent)]
+    ItemRemove(#[from] rc::err::RemoveItemError),
+}
+
+impl ItemRemoveCmdCtxItem {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), ItemGetItemRemoveError> {
+        let core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(core_item)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetItemRemoveError {
     #[error(transparent)]
     ItemGet(#[from] rc::err::GetItemError),
     #[error(transparent)]
     ItemRemove(rc::err::RemoveItemError),
 }
-impl From<ItemRemoveItemError> for GetItemRemoveItemError {
-    fn from(err: ItemRemoveItemError) -> Self {
+impl From<ItemRemoveError> for ItemGetItemRemoveError {
+    fn from(err: ItemRemoveError) -> Self {
         match err {
-            ItemRemoveItemError::ItemRemove(inner) => Self::ItemRemove(inner),
+            ItemRemoveError::ItemRemove(inner) => Self::ItemRemove(inner),
         }
     }
-}
-
-impl ICmdItemRemoveICtx {
-    pub(in crate::ctl) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveItemError> {
-        core_item.remove(self.rm_mode.unwrap_or(RemoveMode::Free))?;
-        Ok(())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum ItemRemoveItemError {
-    #[error(transparent)]
-    ItemRemove(#[from] rc::err::RemoveItemError),
 }

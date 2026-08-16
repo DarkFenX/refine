@@ -12,11 +12,11 @@ pub use core::{
     GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
     GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeShipError,
     GetItemChangeSkillError, GetItemChangeStanceError, GetItemChangeSubsystemError, GetItemChangeSwEffectError,
-    GetItemRemoveItemError, ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError,
-    ItemChangeChargeError, ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError,
-    ItemChangeImplantError, ItemChangeModuleError, ItemChangeProjEffectError, ItemChangeRigError,
-    ItemChangeServiceError, ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError,
-    ItemChangeSwEffectError, ItemRemoveItemError, SolAddCmd, SolChangeCmd,
+    ItemChangeAutochargeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
+    ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError,
+    ItemChangeModuleError, ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError, ItemChangeShipError,
+    ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError,
+    ItemGetItemRemoveError, ItemRemoveCmd, ItemRemoveError, SolAddCmd, SolChangeCmd,
 };
 
 pub use fit::{
@@ -24,8 +24,8 @@ pub use fit::{
     FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeAutochargeCmd, FitChangeBoosterCmd,
     FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFwEffectCmd,
     FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd, FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd,
-    FitChangeStanceCmd, FitChangeSubsystemCmd, FitCtlCmd, FitCtlCmdError, FitRemoveItemCmd, FitSetCharacterCmd,
-    FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
+    FitChangeStanceCmd, FitChangeSubsystemCmd, FitCtlCmd, FitCtlCmdError, FitSetCharacterCmd, FitSetShipCmd,
+    FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
 };
 pub use item::{
     AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd,
@@ -34,7 +34,7 @@ pub use item::{
     ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd,
     ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd, ItemChangeProjEffectCmd, ItemChangeRigCmd,
     ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd,
-    ItemChangeSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, RemoveItemCmd,
+    ItemChangeSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
 };
 pub(crate) use shared::CtlCmdBr;
 pub use shared::{
@@ -49,8 +49,8 @@ pub use sol::{
     SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFwEffectCmd, SolChangeImplantCmd,
     SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd,
     SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd, SolChangeStanceCmd, SolChangeStanceViaFitCmd,
-    SolChangeStanceViaItemCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd, SolRemoveItemCmd,
-    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+    SolChangeStanceViaItemCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd, SolSetCharacterCmd,
+    SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 
 mod core;
