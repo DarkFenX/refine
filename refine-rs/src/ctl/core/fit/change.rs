@@ -1,6 +1,6 @@
-use crate::{CtlCmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BackrefRenderError};
-
-// Full context commands
+use crate::{
+    CtlCmdResps, DpsProfile, FitId, FitIdBr, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BackrefRenderError,
+};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -11,7 +11,6 @@ pub struct FitChangeCmd {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: CmdFitChangeShared = CmdFitChangeShared { .. },
 }
-
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeCmdBr {
@@ -20,12 +19,23 @@ pub struct FitChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: CmdFitChangeShared = CmdFitChangeShared { .. },
 }
-
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 struct CmdFitChangeShared {
     sec_status: Option<FitSecStatus> = None,
     #[cfg_attr(feature = "serde", serde(default))]
     rah_incoming_dps: TriStateField<DpsProfile> = TriStateField::Absent,
+}
+
+// Full context commands
+pub struct FitChangeCmdCtxFit {
+    fit_id: FitId,
+    core: FitChangeCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct FitChangeCmdCtxFitBr {
+    pub(in crate::ctl) fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    pub(in crate::ctl) core: FitChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,6 +78,18 @@ impl FitChangeCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitChangeCmd {
+    pub(in crate::ctl) fn into_br(self) -> FitChangeCmdBr {
+        FitChangeCmdBr {
+            fleet_id: self.fleet_id.map(FleetIdBr::Id),
+            shared: self.shared,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmdBr {
@@ -79,6 +101,15 @@ impl FitChangeCmdBr {
                 TriStateField::None => TriStateField::None,
                 TriStateField::Absent => TriStateField::Absent,
             },
+        })
+    }
+}
+
+impl FitChangeCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FitChangeCmdCtxFit, BackrefRenderError> {
+        Ok(FitChangeCmdCtxFit {
+            fit_id: resps.render_fit_id(self.fit_id)?,
+            core: self.core.render(resps)?,
         })
     }
 }
@@ -117,4 +148,26 @@ impl FitChangeCmd {
 pub enum FitChangeError {
     #[error("failed to set fleet")]
     FleetSet(#[from] rc::err::SetFitFleetError),
+}
+
+impl FitChangeCmdCtxFit {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetFitChangeError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit)?)
+    }
+}
+
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetFitChangeError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+    #[error("failed to set fleet")]
+    FleetSet(#[source] rc::err::SetFitFleetError),
+}
+impl From<FitChangeError> for FitGetFitChangeError {
+    fn from(err: FitChangeError) -> Self {
+        match err {
+            FitChangeError::FleetSet(inner) => Self::FleetSet(inner),
+        }
+    }
 }

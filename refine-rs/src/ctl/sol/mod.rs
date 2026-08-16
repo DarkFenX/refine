@@ -1,5 +1,4 @@
 pub use cmd::{ChangeSolEnumError, SolCtlCmd};
-pub use sub_fit_change::{SolCtlFitChangeCmd, SolCtlFitChangeCmdBr, SolCtlFitChangeError};
 pub use sub_fleet::{SolAddFleetCmd, SolChangeFleetCmd, SolRemoveFleetCmd};
 pub use sub_item::SolRemoveItemCmd;
 pub use sub_item_autocharge::SolChangeAutochargeCmd;
@@ -29,7 +28,6 @@ pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
 pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
 
 mod cmd;
-mod sub_fit_change;
 mod sub_fleet;
 mod sub_item;
 mod sub_item_autocharge;

@@ -13,6 +13,16 @@ impl<T> TriStateField<T> {
             Self::Absent => TriStateField::Absent,
         }
     }
+    pub fn map<U, F>(self, f: F) -> TriStateField<U>
+    where
+        F: FnOnce(T) -> U,
+    {
+        match self {
+            Self::Value(x) => TriStateField::Value(f(x)),
+            Self::None => TriStateField::None,
+            Self::Absent => TriStateField::Absent,
+        }
+    }
     pub fn is_absent(&self) -> bool {
         matches!(self, Self::Absent)
     }

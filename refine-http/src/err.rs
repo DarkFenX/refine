@@ -153,8 +153,8 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-003")
                 }
                 rs::err::ChangeSolEnumError::FitChange(err_l2) => match err_l2 {
-                    rs::err::SolCtlFitChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::SolCtlFitChangeError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-004"),
+                    rs::err::FitGetFitChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetFitChangeError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-004"),
                 },
                 rs::err::ChangeSolEnumError::FitRemove(rs::err::FitGetFitRemoveError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
