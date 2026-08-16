@@ -44,10 +44,9 @@ pub(in crate::ctl) use item_fw_effect::{
     ICmdFwEffectChangeFCtxRIds, ICmdFwEffectChangeICtx,
 };
 pub use item_implant::{
-    FitGetImplantAddError, GetItemChangeImplantError, ImplantAddCmd, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
-    ItemChangeImplantError,
+    FitGetImplantAddError, ImplantAddCmd, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr, ImplantChangeCmd,
+    ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ImplantChangeError, ItemGetImplantChangeError,
 };
-pub(in crate::ctl) use item_implant::{ICmdImplantChangeFCtxBIds, ICmdImplantChangeFCtxRIds, ICmdImplantChangeICtx};
 pub use item_module::{FitAddModuleError, GetFitAddModuleError, GetItemChangeModuleError, ItemChangeModuleError};
 pub(in crate::ctl) use item_module::{
     ICmdModuleAddFCtxBIds, ICmdModuleAddFCtxRIds, ICmdModuleAddICtxBIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared,

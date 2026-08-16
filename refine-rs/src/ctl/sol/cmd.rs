@@ -5,10 +5,10 @@ use super::{
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, FitAddCmd,
     FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitIdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr,
-    FleetIdBr, FleetRemoveCmd, ImplantAddCmd, ItemIdBr, ItemRemoveCmd, SolAddDroneCmd, SolAddFighterCmd,
-    SolAddFwEffectCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd,
-    SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeCharacterCmd, SolChangeCmd, SolChangeDroneCmd, SolChangeFighterCmd,
-    SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd,
+    FleetIdBr, FleetRemoveCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, SolAddDroneCmd,
+    SolAddFighterCmd, SolAddFwEffectCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
+    SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeCharacterCmd, SolChangeCmd, SolChangeDroneCmd,
+    SolChangeFighterCmd, SolChangeFwEffectCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd,
     SolChangeServiceCmd, SolChangeShipCmd, SolChangeSkillCmd, SolChangeStanceCmd, SolChangeSubsystemCmd,
     SolChangeSwEffectCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd,
     SolUnsetStanceCmd,
@@ -19,12 +19,12 @@ use crate::{
         FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr, FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr,
         ICmdCharacterSetFCtxRIds, ICmdCharacterUnsetFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
         ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds,
-        ICmdImplantChangeFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds,
-        ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds,
-        ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSkillAddFCtxRIds,
-        ICmdSkillChangeFCtxRIds, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ICmdSubsystemAddFCtxRIds,
-        ICmdSubsystemChangeFCtxRIds, ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxRIds, ImplantAddCmdCtxFit,
-        ImplantAddCmdCtxFitBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
+        ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds, ICmdProjEffectChangeFCtxRIds,
+        ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds, ICmdServiceChangeFCtxRIds,
+        ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdSkillAddFCtxRIds, ICmdSkillChangeFCtxRIds,
+        ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ICmdSubsystemAddFCtxRIds, ICmdSubsystemChangeFCtxRIds,
+        ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxRIds, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
+        ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
     },
     err::{
         AddProjEffectError, BackrefRenderError, ChangeCharacterError, ChangeShipError, ChangeStanceError, FitAddError,
@@ -33,10 +33,10 @@ use crate::{
         GetFitAddFwEffectError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
         GetFitAddSubsystemError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
         GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError, GetItemChangeDroneError,
-        GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError, GetItemChangeModuleError,
-        GetItemChangeProjEffectError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError,
-        GetItemChangeSubsystemError, GetItemChangeSwEffectError, ItemGetAutochargeChangeError,
-        ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetItemRemoveError,
+        GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeModuleError, GetItemChangeProjEffectError,
+        GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError, GetItemChangeSubsystemError,
+        GetItemChangeSwEffectError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetChargeChangeError,
+        ItemGetImplantChangeError, ItemGetItemRemoveError,
     },
 };
 
@@ -80,7 +80,7 @@ pub enum SolCtlCmd {
     ChangeFwEffect(SolChangeFwEffectCmd),
     // Item - implant
     AddImplant(ImplantAddCmdCtxFitBr),
-    ChangeImplant(SolChangeImplantCmd),
+    ChangeImplant(ImplantChangeCmdCtxItemBr),
     // Item - module
     AddModule(SolAddModuleCmd),
     ChangeModule(SolChangeModuleCmd),
@@ -147,7 +147,7 @@ pub(crate) enum SolCtlCmdRendered {
     ChangeFwEffect(ICmdFwEffectChangeFCtxRIds),
     // Item - implant
     AddImplant(ImplantAddCmdCtxFit),
-    ChangeImplant(ICmdImplantChangeFCtxRIds),
+    ChangeImplant(ImplantChangeCmdCtxItem),
     // Item - module
     AddModule(ICmdModuleAddFCtxRIds),
     ChangeModule(ICmdModuleChangeFCtxRIds),
@@ -275,6 +275,11 @@ impl ImplantAddCmd {
         SolCtlCmd::AddImplant(self.into_ctx_fit_br(fit_id))
     }
 }
+impl ImplantChangeCmd {
+    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeImplant(self.into_ctx_item_br(item_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -316,7 +321,7 @@ impl SolCtlCmd {
             Self::ChangeFwEffect(cmd) => SolCtlCmdRendered::ChangeFwEffect(cmd.inner.render(resps)?),
             // Item - implant
             Self::AddImplant(cmd) => SolCtlCmdRendered::AddImplant(cmd.render(resps)?),
-            Self::ChangeImplant(cmd) => SolCtlCmdRendered::ChangeImplant(cmd.inner.render(resps)?),
+            Self::ChangeImplant(cmd) => SolCtlCmdRendered::ChangeImplant(cmd.render(resps)?),
             // Item - module
             Self::AddModule(cmd) => SolCtlCmdRendered::AddModule(cmd.inner.render(resps)?),
             Self::ChangeModule(cmd) => SolCtlCmdRendered::ChangeModule(cmd.inner.render(resps)?),
@@ -481,7 +486,7 @@ pub enum ChangeSolEnumError {
     #[error("failed to add implant")]
     ImplantAdd(#[from] FitGetImplantAddError),
     #[error("failed to change implant")]
-    ImplantChange(#[from] GetItemChangeImplantError),
+    ImplantChange(#[from] ItemGetImplantChangeError),
     // Item - module
     #[error("failed to add module")]
     ModuleAdd(#[from] GetFitAddModuleError),

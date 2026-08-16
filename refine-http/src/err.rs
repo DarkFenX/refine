@@ -243,8 +243,8 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::ImplantChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeImplantError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeImplantError::ItemIsNotImplant(..) => (StatusCode::BAD_REQUEST, "IMP-001"),
+                    rs::err::ItemGetImplantChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetImplantChangeError::ItemIsNotImplant(..) => (StatusCode::BAD_REQUEST, "IMP-001"),
                 },
                 // Item - module
                 rs::err::ChangeSolEnumError::ModuleAdd(err_l2) => match err_l2 {
@@ -441,8 +441,8 @@ impl ApiError {
                 },
                 // Item - implant
                 rs::err::FitCtlCmdError::ImplantChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeImplantError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeImplantError::ItemIsNotImplant(..) => (StatusCode::BAD_REQUEST, "IMP-001"),
+                    rs::err::ItemGetImplantChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetImplantChangeError::ItemIsNotImplant(..) => (StatusCode::BAD_REQUEST, "IMP-001"),
                 },
                 // Item - module
                 rs::err::FitCtlCmdError::ModuleAdd(rs::err::FitAddModuleError::ProjAdd(..)) => {
@@ -574,7 +574,7 @@ impl ApiError {
                 rs::err::ItemCtlError::FwEffect(rs::err::ItemChangeFwEffectError::ItemIsNotFwEffect(_)) => {
                     (StatusCode::BAD_REQUEST, "FWE-001")
                 }
-                rs::err::ItemCtlError::Implant(rs::err::ItemChangeImplantError::ItemIsNotImplant(..)) => {
+                rs::err::ItemCtlError::Implant(rs::err::ImplantChangeError::ItemIsNotImplant(..)) => {
                     (StatusCode::BAD_REQUEST, "IMP-001")
                 }
                 rs::err::ItemCtlError::Module(err_l2) => match err_l2 {
