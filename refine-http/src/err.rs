@@ -221,14 +221,14 @@ impl ApiError {
                 },
                 // Item - fighter
                 rs::err::ChangeSolEnumError::FighterAdd(err_l2) => match err_l2 {
-                    rs::err::GetFitAddFighterError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
+                    rs::err::FitGetFighterAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetFighterAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
                 },
                 rs::err::ChangeSolEnumError::FighterChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeFighterError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeFighterError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
-                    rs::err::GetItemChangeFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
-                    rs::err::GetItemChangeFighterError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
+                    rs::err::ItemGetFighterChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetFighterChangeError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
+                    rs::err::ItemGetFighterChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
+                    rs::err::ItemGetFighterChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
                 // Item - fit-wide effect
                 rs::err::ChangeSolEnumError::FwEffectAdd(rs::err::FitGetFwEffectAddError::FitGet(..)) => {
@@ -425,14 +425,14 @@ impl ApiError {
                     rs::err::ItemGetDroneChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
                 },
                 // Item - fighter
-                rs::err::FitCtlCmdError::FighterAdd(rs::err::FitAddFighterError::ProjAdd(..)) => {
+                rs::err::FitCtlCmdError::FighterAdd(rs::err::FighterAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "FTR-002")
                 }
                 rs::err::FitCtlCmdError::FighterChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeFighterError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeFighterError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
-                    rs::err::GetItemChangeFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
-                    rs::err::GetItemChangeFighterError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
+                    rs::err::ItemGetFighterChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetFighterChangeError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
+                    rs::err::ItemGetFighterChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
+                    rs::err::ItemGetFighterChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
                 // Item - fit-wide effect
                 rs::err::FitCtlCmdError::FwEffectChange(err_l2) => match err_l2 {
@@ -509,8 +509,8 @@ impl ApiError {
                     rs::err::FitGetDroneAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
                 },
                 rs::err::ItemAddError::Fighter(err_l2) => match err_l2 {
-                    rs::err::GetFitAddFighterError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
+                    rs::err::FitGetFighterAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetFighterAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
                 },
                 rs::err::ItemAddError::FwEffect(rs::err::FitGetFwEffectAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
@@ -567,9 +567,9 @@ impl ApiError {
                     rs::err::DroneChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
                 },
                 rs::err::ItemCtlError::Fighter(err_l2) => match err_l2 {
-                    rs::err::ItemChangeFighterError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
-                    rs::err::ItemChangeFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
-                    rs::err::ItemChangeFighterError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
+                    rs::err::FighterChangeError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
+                    rs::err::FighterChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
+                    rs::err::FighterChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
                 rs::err::ItemCtlError::FwEffect(rs::err::FwEffectChangeError::ItemIsNotFwEffect(_)) => {
                     (StatusCode::BAD_REQUEST, "FWE-001")

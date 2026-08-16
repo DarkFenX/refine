@@ -4,39 +4,40 @@ use super::{
 };
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd,
-    DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitIdBr,
-    FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd,
-    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
-    ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
-    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd,
-    SolAddFighterCmd, SolChangeCharacterCmd, SolChangeCmd, SolChangeFighterCmd, SolChangeShipCmd, SolChangeStanceCmd,
-    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
-    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
+    DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
+    FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitIdBr, FitRemoveCmd, FleetAddCmdBr,
+    FleetChangeCmd, FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
+    ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr,
+    ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd,
+    ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd, SolChangeCharacterCmd, SolChangeCmd,
+    SolChangeShipCmd, SolChangeStanceCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd,
+    SolUnsetShipCmd, SolUnsetStanceCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
         BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr,
-        DroneAddCmdCtxFit, DroneAddCmdCtxFitBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr, FitChangeCmdCtxFit,
+        DroneAddCmdCtxFit, DroneAddCmdCtxFitBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr, FighterAddCmdCtxFit,
+        FighterAddCmdCtxFitBr, FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FitChangeCmdCtxFit,
         FitChangeCmdCtxFitBr, FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetAddCmd, FleetChangeCmdCtxFleet,
         FleetChangeCmdCtxFleetBr, FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, FwEffectAddCmdCtxFit,
         FwEffectAddCmdCtxFitBr, FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ICmdCharacterSetFCtxRIds,
-        ICmdCharacterUnsetFCtxRIds, ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdShipSetFCtxRIds,
-        ICmdShipUnsetFCtxRIds, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ImplantAddCmdCtxFit,
-        ImplantAddCmdCtxFitBr, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem,
-        ItemRemoveCmdCtxItemBr, ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem,
-        ModuleChangeCmdCtxItemBr, ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit,
-        RigAddCmdCtxFitBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
-        ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr,
-        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemAddCmdCtxFit, SubsystemAddCmdCtxFitBr,
-        SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
+        ICmdCharacterUnsetFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds, ICmdStanceSetFCtxRIds,
+        ICmdStanceUnsetFCtxRIds, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr, ImplantChangeCmdCtxItem,
+        ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleAddCmdCtxFit,
+        ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr, ProjEffectChangeCmdCtxItem,
+        ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit, RigAddCmdCtxFitBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr,
+        ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr,
+        SkillAddCmdCtxFit, SkillAddCmdCtxFitBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemAddCmdCtxFit,
+        SubsystemAddCmdCtxFitBr, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem,
+        SwEffectChangeCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, ChangeCharacterError, ChangeShipError, ChangeStanceError, FitAddError,
-        FitGetBoosterAddError, FitGetDroneAddError, FitGetFitChangeError, FitGetFitRemoveError, FitGetFwEffectAddError,
-        FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError,
-        FitGetSubsystemAddError, FleetAddError, FleetGetFleetChangeError, FleetGetFleetRemoveError,
-        GetFitAddFighterError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
-        GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError, GetItemChangeFighterError,
-        ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetDroneChangeError,
+        FitGetBoosterAddError, FitGetDroneAddError, FitGetFighterAddError, FitGetFitChangeError, FitGetFitRemoveError,
+        FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError,
+        FitGetSkillAddError, FitGetSubsystemAddError, FleetAddError, FleetGetFleetChangeError,
+        FleetGetFleetRemoveError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
+        GetFitUnsetCharacterError, GetFitUnsetShipError, GetFitUnsetStanceError, ItemGetAutochargeChangeError,
+        ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError,
         ItemGetFwEffectChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError,
         ItemGetProjEffectChangeError, ItemGetRigChangeError, ItemGetServiceChangeError, ItemGetSkillChangeError,
         ItemGetSubsystemChangeError, ItemGetSwEffectChangeError, ProjEffectAddError,
@@ -76,8 +77,8 @@ pub enum SolCtlCmd {
     AddDrone(DroneAddCmdCtxFitBr),
     ChangeDrone(DroneChangeCmdCtxItemBr),
     // Item - fighter
-    AddFighter(SolAddFighterCmd),
-    ChangeFighter(SolChangeFighterCmd),
+    AddFighter(FighterAddCmdCtxFitBr),
+    ChangeFighter(FighterChangeCmdCtxItemBr),
     // Item - fit-wide effect
     AddFwEffect(FwEffectAddCmdCtxFitBr),
     ChangeFwEffect(FwEffectChangeCmdCtxItemBr),
@@ -143,8 +144,8 @@ pub(crate) enum SolCtlCmdRendered {
     AddDrone(DroneAddCmdCtxFit),
     ChangeDrone(DroneChangeCmdCtxItem),
     // Item - fighter
-    AddFighter(ICmdFighterAddFCtxRIds),
-    ChangeFighter(ICmdFighterChangeFCtxRIds),
+    AddFighter(FighterAddCmdCtxFit),
+    ChangeFighter(FighterChangeCmdCtxItem),
     // Item - fit-wide effect
     AddFwEffect(FwEffectAddCmdCtxFit),
     ChangeFwEffect(FwEffectChangeCmdCtxItem),
@@ -291,6 +292,27 @@ impl DroneChangeCmd {
 impl DroneChangeCmdBr {
     pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
         SolCtlCmd::ChangeDrone(self.into_ctx_item_br(item_id))
+    }
+}
+// Item - fighter
+impl FighterAddCmd {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::AddFighter(self.into_ctx_fit_br(fit_id))
+    }
+}
+impl FighterAddCmdBr {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::AddFighter(self.into_ctx_fit_br(fit_id))
+    }
+}
+impl FighterChangeCmd {
+    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeFighter(self.into_ctx_item_br(item_id))
+    }
+}
+impl FighterChangeCmdBr {
+    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeFighter(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fit-wide effect
@@ -446,8 +468,8 @@ impl SolCtlCmd {
             Self::AddDrone(cmd) => SolCtlCmdRendered::AddDrone(cmd.render(resps)?),
             Self::ChangeDrone(cmd) => SolCtlCmdRendered::ChangeDrone(cmd.render(resps)?),
             // Item - fighter
-            Self::AddFighter(cmd) => SolCtlCmdRendered::AddFighter(cmd.inner.render(resps)?),
-            Self::ChangeFighter(cmd) => SolCtlCmdRendered::ChangeFighter(cmd.inner.render(resps)?),
+            Self::AddFighter(cmd) => SolCtlCmdRendered::AddFighter(cmd.render(resps)?),
+            Self::ChangeFighter(cmd) => SolCtlCmdRendered::ChangeFighter(cmd.render(resps)?),
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => SolCtlCmdRendered::AddFwEffect(cmd.render(resps)?),
             Self::ChangeFwEffect(cmd) => SolCtlCmdRendered::ChangeFwEffect(cmd.render(resps)?),
@@ -606,9 +628,9 @@ pub enum ChangeSolEnumError {
     DroneChange(#[from] ItemGetDroneChangeError),
     // Item - fighter
     #[error("failed to add fighter")]
-    FighterAdd(#[from] GetFitAddFighterError),
+    FighterAdd(#[from] FitGetFighterAddError),
     #[error("failed to change fighter")]
-    FighterChange(#[from] GetItemChangeFighterError),
+    FighterChange(#[from] ItemGetFighterChangeError),
     // Item - fit-wide effect
     #[error("failed to add fit-wide effect")]
     FwEffectAdd(#[from] FitGetFwEffectAddError),

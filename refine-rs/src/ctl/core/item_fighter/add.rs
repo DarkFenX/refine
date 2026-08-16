@@ -1,70 +1,177 @@
 use crate::{
-    AddedItemIdsResp, Coordinates, CountNz, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, MinionState,
-    Movement, RearmMinion,
+    AbilityId, AddedItemIdsResp, Coordinates, CountNz, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId,
+    ItemIdBr, ItemTypeId, MinionState, Movement, RearmMinion,
     ctl::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFighterAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
+pub struct FighterAddCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<ItemId> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdFighterAddICtxBIds,
+    shared: FighterAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdFighterAddFCtxRIds {
-    pub(in crate::ctl) fit_id: FitId,
+pub struct FighterAddCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdFighterAddICtxRIds,
+    shared: FighterAddCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+struct FighterAddCmdShared {
+    type_id: ItemTypeId,
+    state: MinionState,
+    count: Option<CountNz> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    abilities: Abilities = Abilities::new(),
+    rearm_minion: Option<RearmMinion> = None,
+    coordinates: Option<Coordinates> = None,
+    movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFighterAddICtxBIds {
+pub struct FighterAddCmdCtxFit {
+    fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdFighterAddShared,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    core: FighterAddCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdFighterAddICtxRIds {
+pub struct FighterAddCmdCtxFitBr {
+    fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) shared: ICmdFighterAddShared,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) proj_item_ids: Vec<ItemId> = Vec::new(),
+    core: FighterAddCmdBr,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFighterAddShared {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: MinionState,
-    pub(in crate::ctl) count: Option<CountNz> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) abilities: Abilities = Abilities::new(),
-    pub(in crate::ctl) rearm_minion: Option<RearmMinion> = None,
-    pub(in crate::ctl) coordinates: Option<Coordinates> = None,
-    pub(in crate::ctl) movement: Option<Movement> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FighterAddCmd {
+    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
+        Self {
+            shared: FighterAddCmdShared { type_id, state, .. },
+            ..
+        }
+    }
+    pub fn with_count(mut self, count: CountNz) -> Self {
+        self.shared.count = Some(count);
+        self
+    }
+    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
+        self.shared.abilities.extend(abilities);
+        self
+    }
+    pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
+        self.shared.rearm_minion = Some(rearm_minion);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+impl FighterAddCmdBr {
+    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
+        Self {
+            shared: FighterAddCmdShared { type_id, state, .. },
+            ..
+        }
+    }
+    pub fn with_count(mut self, count: CountNz) -> Self {
+        self.shared.count = Some(count);
+        self
+    }
+    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
+        self.shared.abilities.extend(abilities);
+        self
+    }
+    pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
+        self.shared.rearm_minion = Some(rearm_minion);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.shared.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.shared.movement = Some(movement);
+        self
+    }
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.proj_item_ids.extend(proj_item_ids);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.shared.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FighterAddCmd {
+    pub(in crate::ctl) fn into_br(self) -> FighterAddCmdBr {
+        FighterAddCmdBr {
+            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
+        }
+    }
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FighterAddCmdCtxFit {
+        FighterAddCmdCtxFit { fit_id, core: self }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FighterAddCmdCtxFitBr {
+        FighterAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self.into_br(),
+        }
+    }
+}
+
+impl FighterAddCmdBr {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FighterAddCmdCtxFitBr {
+        FighterAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFighterAddFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFighterAddFCtxRIds, BackrefRenderError> {
-        Ok(ICmdFighterAddFCtxRIds {
+impl FighterAddCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FighterAddCmdCtxFit, BackrefRenderError> {
+        Ok(FighterAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd.render(resps)?,
+            core: self.core.render(resps)?,
         })
     }
 }
 
-impl ICmdFighterAddICtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFighterAddICtxRIds, BackrefRenderError> {
-        Ok(ICmdFighterAddICtxRIds {
-            shared: self.shared,
+impl FighterAddCmdBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FighterAddCmd, BackrefRenderError> {
+        Ok(FighterAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            shared: self.shared,
         })
     }
 }
@@ -72,33 +179,8 @@ impl ICmdFighterAddICtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFighterAddFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitAddFighterError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit)?)
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitAddFighterError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-    #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
-}
-impl From<FitAddFighterError> for GetFitAddFighterError {
-    fn from(err: FitAddFighterError) -> Self {
-        match err {
-            FitAddFighterError::ProjAdd(inner) => Self::ProjAdd(inner),
-        }
-    }
-}
-
-impl ICmdFighterAddICtxRIds {
-    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FitAddFighterError> {
+impl FighterAddCmd {
+    pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FighterAddError> {
         let mut core_fighter = core_fit.add_fighter(
             self.shared.type_id,
             self.shared.state,
@@ -119,9 +201,32 @@ impl ICmdFighterAddICtxRIds {
         Ok(AddedItemIdsResp::from_core_fighter(core_fighter))
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum FitAddFighterError {
+pub enum FighterAddError {
     #[error("failed to add projection")]
     ProjAdd(#[from] rc::err::AddProjError),
+}
+
+impl FighterAddCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, FitGetFighterAddError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetFighterAddError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+    #[error("failed to add projection")]
+    ProjAdd(#[source] rc::err::AddProjError),
+}
+impl From<FighterAddError> for FitGetFighterAddError {
+    fn from(err: FighterAddError) -> Self {
+        match err {
+            FighterAddError::ProjAdd(inner) => Self::ProjAdd(inner),
+        }
+    }
 }

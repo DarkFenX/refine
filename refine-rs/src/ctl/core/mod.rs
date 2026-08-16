@@ -33,10 +33,10 @@ pub use item_drone::{
     DroneChangeCmdBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr, DroneChangeError, FitGetDroneAddError,
     ItemGetDroneChangeError,
 };
-pub use item_fighter::{FitAddFighterError, GetFitAddFighterError, GetItemChangeFighterError, ItemChangeFighterError};
-pub(in crate::ctl) use item_fighter::{
-    ICmdFighterAddFCtxBIds, ICmdFighterAddFCtxRIds, ICmdFighterAddICtxBIds, ICmdFighterAddICtxRIds,
-    ICmdFighterAddShared, ICmdFighterChangeFCtxBIds, ICmdFighterChangeFCtxRIds, ICmdFighterChangeICtxRIds,
+pub use item_fighter::{
+    FighterAddCmd, FighterAddCmdBr, FighterAddCmdCtxFit, FighterAddCmdCtxFitBr, FighterAddError, FighterChangeCmd,
+    FighterChangeCmdBr, FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FighterChangeError, FitGetFighterAddError,
+    ItemGetFighterChangeError,
 };
 pub use item_fw_effect::{
     FitGetFwEffectAddError, FwEffectAddCmd, FwEffectAddCmdCtxFit, FwEffectAddCmdCtxFitBr, FwEffectChangeCmd,

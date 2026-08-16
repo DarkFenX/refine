@@ -1,16 +1,16 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd,
-    DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FitAddFighterCmd, FitChangeCharacterCmd, FitChangeCmd,
-    FitChangeFighterCmd, FitChangeShipCmd, FitChangeStanceCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
-    ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr,
-    RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd, SubsystemAddCmd,
-    SubsystemChangeCmd,
+    DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
+    FighterChangeCmdBr, FitChangeCharacterCmd, FitChangeCmd, FitChangeShipCmd, FitChangeStanceCmd, FitSetCharacterCmd,
+    FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FwEffectAddCmd,
+    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
+    ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd,
+    SkillChangeCmd, SubsystemAddCmd, SubsystemChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr,
-        FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ICmdCharacterChangeICtx, ICmdCharacterSetICtx,
-        ICmdCharacterUnsetICtx, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx,
+        FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr,
+        ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdShipChangeICtx, ICmdShipSetICtx,
         ICmdShipUnsetICtx, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ImplantChangeCmdCtxItem,
         ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleChangeCmdCtxItem,
         ModuleChangeCmdCtxItemBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceChangeCmdCtxItem,
@@ -18,9 +18,9 @@ use crate::{
         SubsystemChangeCmdCtxItemBr,
     },
     err::{
-        BackrefRenderError, DroneAddError, FitAddFighterError, FitChangeCharacterError, FitChangeError,
-        FitChangeShipError, FitChangeStanceError, GetItemChangeFighterError, ItemGetAutochargeChangeError,
-        ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFwEffectChangeError,
+        BackrefRenderError, DroneAddError, FighterAddError, FitChangeCharacterError, FitChangeError,
+        FitChangeShipError, FitChangeStanceError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
+        ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError,
         ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError,
         ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
     },
@@ -51,8 +51,8 @@ pub enum FitCtlCmd {
     AddDrone(DroneAddCmdBr),
     ChangeDrone(DroneChangeCmdCtxItemBr),
     // Item - fighter
-    AddFighter(FitAddFighterCmd),
-    ChangeFighter(FitChangeFighterCmd),
+    AddFighter(FighterAddCmdBr),
+    ChangeFighter(FighterChangeCmdCtxItemBr),
     // Item - fit-wide effect
     AddFwEffect(FwEffectAddCmd),
     ChangeFwEffect(FwEffectChangeCmdCtxItemBr),
@@ -104,8 +104,8 @@ pub(crate) enum FitCtlCmdRendered {
     AddDrone(DroneAddCmd),
     ChangeDrone(DroneChangeCmdCtxItem),
     // Item - fighter
-    AddFighter(ICmdFighterAddICtxRIds),
-    ChangeFighter(ICmdFighterChangeFCtxRIds),
+    AddFighter(FighterAddCmd),
+    ChangeFighter(FighterChangeCmdCtxItem),
     // Item - fit-wide effect
     AddFwEffect(FwEffectAddCmd),
     ChangeFwEffect(FwEffectChangeCmdCtxItem),
@@ -194,6 +194,27 @@ impl DroneChangeCmd {
 impl DroneChangeCmdBr {
     pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
         FitCtlCmd::ChangeDrone(self.into_ctx_item_br(item_id))
+    }
+}
+// Item - fighter
+impl FighterAddCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::AddFighter(self.into_br())
+    }
+}
+impl FighterAddCmdBr {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::AddFighter(self)
+    }
+}
+impl FighterChangeCmd {
+    pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
+        FitCtlCmd::ChangeFighter(self.into_ctx_item_br(item_id))
+    }
+}
+impl FighterChangeCmdBr {
+    pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
+        FitCtlCmd::ChangeFighter(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fit-wide effect
@@ -309,8 +330,8 @@ impl FitCtlCmd {
             Self::AddDrone(cmd) => FitCtlCmdRendered::AddDrone(cmd.render(resps)?),
             Self::ChangeDrone(cmd) => FitCtlCmdRendered::ChangeDrone(cmd.render(resps)?),
             // Item - fighter
-            Self::AddFighter(cmd) => FitCtlCmdRendered::AddFighter(cmd.inner.render(resps)?),
-            Self::ChangeFighter(cmd) => FitCtlCmdRendered::ChangeFighter(cmd.inner.render(resps)?),
+            Self::AddFighter(cmd) => FitCtlCmdRendered::AddFighter(cmd.render(resps)?),
+            Self::ChangeFighter(cmd) => FitCtlCmdRendered::ChangeFighter(cmd.render(resps)?),
             // Item - fit-wide effect
             Self::AddFwEffect(cmd) => FitCtlCmdRendered::AddFwEffect(cmd),
             Self::ChangeFwEffect(cmd) => FitCtlCmdRendered::ChangeFwEffect(cmd.render(resps)?),
@@ -434,9 +455,9 @@ pub enum FitCtlCmdError {
     DroneChange(#[from] ItemGetDroneChangeError),
     // Item - fighter
     #[error("failed to add fighter")]
-    FighterAdd(#[from] FitAddFighterError),
+    FighterAdd(#[from] FighterAddError),
     #[error("failed to change fighter")]
-    FighterChange(#[from] GetItemChangeFighterError),
+    FighterChange(#[from] ItemGetFighterChangeError),
     // Item - fit-wide effect
     #[error("failed to change fit-wide effect")]
     FwEffectChange(#[from] ItemGetFwEffectChangeError),
