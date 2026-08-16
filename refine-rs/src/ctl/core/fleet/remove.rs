@@ -22,7 +22,7 @@ pub struct FleetRemoveCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetRemoveCmd {
     pub fn new() -> Self {
-        Self::default()
+        Self
     }
 }
 

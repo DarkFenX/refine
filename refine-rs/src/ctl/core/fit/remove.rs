@@ -22,7 +22,7 @@ pub struct FitRemoveCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveCmd {
     pub fn new() -> Self {
-        Self::default()
+        Self
     }
 }
 

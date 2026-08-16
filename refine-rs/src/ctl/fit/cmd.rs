@@ -168,12 +168,6 @@ impl BoosterChangeCmd {
         FitCtlCmd::ChangeBooster(self.into_ctx_item_br(item_id))
     }
 }
-// Item - charge
-impl ChargeChangeCmd {
-    pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
-        FitCtlCmd::ChangeCharge(self.into_ctx_item_br(item_id))
-    }
-}
 // Item - character
 impl CharacterSetCmd {
     pub fn into_fit_ctl(self) -> FitCtlCmd {
@@ -183,6 +177,12 @@ impl CharacterSetCmd {
 impl CharacterUnsetCmd {
     pub fn into_fit_ctl(self) -> FitCtlCmd {
         FitCtlCmd::UnsetCharacter(self)
+    }
+}
+// Item - charge
+impl ChargeChangeCmd {
+    pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
+        FitCtlCmd::ChangeCharge(self.into_ctx_item_br(item_id))
     }
 }
 // Item - drone

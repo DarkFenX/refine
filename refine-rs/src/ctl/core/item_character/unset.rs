@@ -22,7 +22,7 @@ pub struct CharacterUnsetCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterUnsetCmd {
     pub fn new() -> Self {
-        Self::default()
+        Self
     }
 }
 
