@@ -1,11 +1,11 @@
 use crate::{
-    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, ImplantChangeCmd,
-    ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeModuleCmd,
-    ItemChangeProjEffectCmd, ItemChangeShipCmd, ItemChangeStanceCmd, ItemChangeSwEffectCmd, RigChangeCmd,
-    ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd,
+    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, FwEffectChangeCmd, ImplantChangeCmd,
+    ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeModuleCmd, ItemChangeProjEffectCmd,
+    ItemChangeShipCmd, ItemChangeStanceCmd, ItemChangeSwEffectCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd,
+    SubsystemChangeCmd,
     err::{
-        AutochargeChangeError, BoosterChangeError, ChargeChangeError, ImplantChangeError, ItemChangeCharacterError,
-        ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeModuleError,
+        AutochargeChangeError, BoosterChangeError, ChargeChangeError, FwEffectChangeError, ImplantChangeError,
+        ItemChangeCharacterError, ItemChangeDroneError, ItemChangeFighterError, ItemChangeModuleError,
         ItemChangeProjEffectError, ItemChangeShipError, ItemChangeStanceError, ItemChangeSwEffectError, RigChangeError,
         ServiceChangeError, SkillChangeError, SubsystemChangeError,
     },
@@ -23,7 +23,7 @@ pub enum ItemCtlCmd {
     Charge(ChargeChangeCmd),
     Drone(ItemChangeDroneCmd),
     Fighter(ItemChangeFighterCmd),
-    FwEffect(ItemChangeFwEffectCmd),
+    FwEffect(FwEffectChangeCmd),
     Implant(ImplantChangeCmd),
     Module(ItemChangeModuleCmd),
     ProjEffect(ItemChangeProjEffectCmd),
@@ -47,6 +47,11 @@ impl BoosterChangeCmd {
 impl ChargeChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Charge(self)
+    }
+}
+impl FwEffectChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::FwEffect(self)
     }
 }
 impl ImplantChangeCmd {
@@ -87,7 +92,7 @@ impl ItemCtlCmd {
             Self::Charge(cmd) => Ok(cmd.execute(core_item)?),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_item)?),
-            Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::FwEffect(cmd) => Ok(cmd.execute(core_item)?),
             Self::Implant(cmd) => Ok(cmd.execute(core_item)?),
             Self::Module(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::ProjEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
@@ -117,7 +122,7 @@ pub enum ItemCtlError {
     #[error("failed to change fighter")]
     Fighter(#[from] ItemChangeFighterError),
     #[error("failed to change fit-wide effect")]
-    FwEffect(#[from] ItemChangeFwEffectError),
+    FwEffect(#[from] FwEffectChangeError),
     #[error("failed to change implant")]
     Implant(#[from] ImplantChangeError),
     #[error("failed to change module")]

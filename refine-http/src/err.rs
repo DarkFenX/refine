@@ -231,12 +231,12 @@ impl ApiError {
                     rs::err::GetItemChangeFighterError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
                 // Item - fit-wide effect
-                rs::err::ChangeSolEnumError::FwEffectAdd(rs::err::GetFitAddFwEffectError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::FwEffectAdd(rs::err::FitGetFwEffectAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::FwEffectChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeFwEffectError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeFwEffectError::ItemIsNotFwEffect(..) => (StatusCode::BAD_REQUEST, "FWE-001"),
+                    rs::err::ItemGetFwEffectChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetFwEffectChangeError::ItemIsNotFwEffect(..) => (StatusCode::BAD_REQUEST, "FWE-001"),
                 },
                 // Item - implant
                 rs::err::ChangeSolEnumError::ImplantAdd(rs::err::FitGetImplantAddError::FitGet(..)) => {
@@ -436,8 +436,8 @@ impl ApiError {
                 },
                 // Item - fit-wide effect
                 rs::err::FitCtlCmdError::FwEffectChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeFwEffectError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeFwEffectError::ItemIsNotFwEffect(..) => (StatusCode::BAD_REQUEST, "FWE-001"),
+                    rs::err::ItemGetFwEffectChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetFwEffectChangeError::ItemIsNotFwEffect(..) => (StatusCode::BAD_REQUEST, "FWE-001"),
                 },
                 // Item - implant
                 rs::err::FitCtlCmdError::ImplantChange(err_l2) => match err_l2 {
@@ -512,7 +512,7 @@ impl ApiError {
                     rs::err::GetFitAddFighterError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::GetFitAddFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
                 },
-                rs::err::ItemAddError::FwEffect(rs::err::GetFitAddFwEffectError::FitGet(..)) => {
+                rs::err::ItemAddError::FwEffect(rs::err::FitGetFwEffectAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Implant(rs::err::FitGetImplantAddError::FitGet(..)) => {
@@ -571,7 +571,7 @@ impl ApiError {
                     rs::err::ItemChangeFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
                     rs::err::ItemChangeFighterError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
-                rs::err::ItemCtlError::FwEffect(rs::err::ItemChangeFwEffectError::ItemIsNotFwEffect(_)) => {
+                rs::err::ItemCtlError::FwEffect(rs::err::FwEffectChangeError::ItemIsNotFwEffect(_)) => {
                     (StatusCode::BAD_REQUEST, "FWE-001")
                 }
                 rs::err::ItemCtlError::Implant(rs::err::ImplantChangeError::ItemIsNotImplant(..)) => {

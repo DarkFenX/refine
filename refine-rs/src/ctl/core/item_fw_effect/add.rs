@@ -1,38 +1,71 @@
 use crate::{
-    AddedItemIdsResp, CtlCmdResps, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes, err::BackrefRenderError,
+    AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdFwEffectAddFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdFwEffectAddICtx,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdFwEffectAddFCtxRIds {
-    pub(in crate::ctl) fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdFwEffectAddICtx,
+pub struct FwEffectAddCmd {
+    type_id: ItemTypeId,
+    state: Option<bool> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdFwEffectAddICtx {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: Option<bool> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+pub struct FwEffectAddCmdCtxFit {
+    fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: FwEffectAddCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct FwEffectAddCmdCtxFitBr {
+    fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: FwEffectAddCmd,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FwEffectAddCmd {
+    pub fn new(type_id: ItemTypeId) -> Self {
+        Self { type_id, .. }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FwEffectAddCmd {
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FwEffectAddCmdCtxFit {
+        FwEffectAddCmdCtxFit { fit_id, core: self }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FwEffectAddCmdCtxFitBr {
+        FwEffectAddCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFwEffectAddFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdFwEffectAddFCtxRIds, BackrefRenderError> {
-        Ok(ICmdFwEffectAddFCtxRIds {
+impl FwEffectAddCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FwEffectAddCmdCtxFit, BackrefRenderError> {
+        Ok(FwEffectAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -40,23 +73,7 @@ impl ICmdFwEffectAddFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdFwEffectAddFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitAddFwEffectError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit))
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitAddFwEffectError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-}
-
-impl ICmdFwEffectAddICtx {
+impl FwEffectAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_fw_effect = core_fit.add_fw_effect(self.type_id);
         if let Some(state) = self.state {
@@ -65,4 +82,19 @@ impl ICmdFwEffectAddICtx {
         self.effect_modes.apply(&mut core_fw_effect);
         AddedItemIdsResp::from_core_fw_effect(core_fw_effect)
     }
+}
+
+impl FwEffectAddCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, FitGetFwEffectAddError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetFwEffectAddError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
 }
