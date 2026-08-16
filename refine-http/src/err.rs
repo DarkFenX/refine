@@ -199,7 +199,7 @@ impl ApiError {
                         }
                     },
                 },
-                rs::err::ChangeSolEnumError::CharacterUnset(rs::err::GetFitUnsetCharacterError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::CharacterUnset(rs::err::FitGetCharacterUnsetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 // Item - charge

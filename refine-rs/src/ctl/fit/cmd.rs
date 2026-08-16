@@ -1,17 +1,17 @@
 use crate::{
-    AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd,
-    DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
+    AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterUnsetCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps,
+    DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
     FighterChangeCmdBr, FitChangeCharacterCmd, FitChangeCmd, FitChangeShipCmd, FitChangeStanceCmd, FitSetCharacterCmd,
-    FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FwEffectAddCmd,
-    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
-    ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd,
-    SkillChangeCmd, SubsystemAddCmd, SubsystemChangeCmd,
+    FitSetShipCmd, FitSetStanceCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FwEffectAddCmd, FwEffectChangeCmd,
+    ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd,
+    SubsystemAddCmd, SubsystemChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr,
         FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr,
-        ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdShipChangeICtx, ICmdShipSetICtx,
-        ICmdShipUnsetICtx, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ImplantChangeCmdCtxItem,
+        ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx,
+        ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ImplantChangeCmdCtxItem,
         ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleChangeCmdCtxItem,
         ModuleChangeCmdCtxItemBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceChangeCmdCtxItem,
         ServiceChangeCmdCtxItemBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemChangeCmdCtxItem,
@@ -44,7 +44,7 @@ pub enum FitCtlCmd {
     // Item - character
     SetCharacter(FitSetCharacterCmd),
     ChangeCharacter(FitChangeCharacterCmd),
-    UnsetCharacter(FitUnsetCharacterCmd),
+    UnsetCharacter(CharacterUnsetCmd),
     // Item - charge
     ChangeCharge(ChargeChangeCmdCtxItemBr),
     // Item - drone
@@ -97,7 +97,7 @@ pub(crate) enum FitCtlCmdRendered {
     // Item - character
     SetCharacter(ICmdCharacterSetICtx),
     ChangeCharacter(ICmdCharacterChangeICtx),
-    UnsetCharacter(ICmdCharacterUnsetICtx),
+    UnsetCharacter(CharacterUnsetCmd),
     // Item - charge
     ChangeCharge(ChargeChangeCmdCtxItem),
     // Item - drone
@@ -173,6 +173,12 @@ impl BoosterChangeCmd {
 impl ChargeChangeCmd {
     pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
         FitCtlCmd::ChangeCharge(self.into_ctx_item_br(item_id))
+    }
+}
+// Item - character
+impl CharacterUnsetCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::UnsetCharacter(self)
     }
 }
 // Item - drone
@@ -323,7 +329,7 @@ impl FitCtlCmd {
             // Item - character
             Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd.inner),
             Self::ChangeCharacter(cmd) => FitCtlCmdRendered::ChangeCharacter(cmd.inner),
-            Self::UnsetCharacter(cmd) => FitCtlCmdRendered::UnsetCharacter(cmd.inner),
+            Self::UnsetCharacter(cmd) => FitCtlCmdRendered::UnsetCharacter(cmd),
             // Item - charge
             Self::ChangeCharge(cmd) => FitCtlCmdRendered::ChangeCharge(cmd.render(resps)?),
             // Item - drone

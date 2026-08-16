@@ -7,8 +7,7 @@ pub(in crate::ctl) use change::{
 };
 pub use set::GetFitSetCharacterError;
 pub(in crate::ctl) use set::{ICmdCharacterSetFCtxBIds, ICmdCharacterSetFCtxRIds, ICmdCharacterSetICtx};
-pub use unset::GetFitUnsetCharacterError;
-pub(in crate::ctl) use unset::{ICmdCharacterUnsetFCtxBIds, ICmdCharacterUnsetFCtxRIds, ICmdCharacterUnsetICtx};
+pub use unset::{CharacterUnsetCmd, CharacterUnsetCmdCtxFit, CharacterUnsetCmdCtxFitBr, FitGetCharacterUnsetError};
 
 mod change;
 mod set;

@@ -1,7 +1,7 @@
 pub use cmd::{ChangeSolEnumError, SolCtlCmd};
 pub use sub_item_character::{
     ChangeCharacterError, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
-    SolSetCharacterCmd, SolUnsetCharacterCmd,
+    SolSetCharacterCmd,
 };
 pub use sub_item_ship::{
     ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,

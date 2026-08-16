@@ -2,7 +2,7 @@ use crate::{
     ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitIdBr, ItemIdBr, ItemTypeId, SolCtlCmd,
     ctl::core::{
         ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
-        ICmdCharacterChangeFItemCtxRIds, ICmdCharacterSetFCtxBIds, ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds,
+        ICmdCharacterChangeFItemCtxRIds, ICmdCharacterSetFCtxBIds, ICmdCharacterSetICtx,
     },
     err::{BackrefRenderError, GetFitChangeCharacterError, GetItemChangeCharacterError},
 };
@@ -142,25 +142,4 @@ pub enum ChangeCharacterError {
     CharacterChangeViaFit(#[from] GetFitChangeCharacterError),
     #[error(transparent)]
     CharacterChangeViaItem(#[from] GetItemChangeCharacterError),
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Unset
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub struct SolUnsetCharacterCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdCharacterUnsetFCtxBIds,
-}
-impl SolUnsetCharacterCmd {
-    pub fn new(fit_id: FitIdBr) -> Self {
-        Self {
-            inner: ICmdCharacterUnsetFCtxBIds { fit_id, .. },
-        }
-    }
-}
-impl From<SolUnsetCharacterCmd> for SolCtlCmd {
-    fn from(sub_cmd: SolUnsetCharacterCmd) -> Self {
-        Self::UnsetCharacter(sub_cmd)
-    }
 }

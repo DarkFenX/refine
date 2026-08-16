@@ -7,20 +7,20 @@
 pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use ctl::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, AutochargeChangeCmd, BoosterAddCmd,
-    BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd,
-    DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
+    BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterUnsetCmd, ChargeChangeCmd, CtlCmdResp, CtlCmdResps,
+    DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd,
     FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCharacterCmd, FitChangeCmd, FitChangeCmdBr, FitChangeShipCmd,
     FitChangeStanceCmd, FitCtlCmd, FitIdBr, FitRemoveCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd,
-    FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd,
-    ItemAddCmd, ItemChangeCharacterCmd, ItemChangeShipCmd, ItemChangeStanceCmd, ItemCtlCmd, ItemIdBr, ItemRemoveCmd,
+    FitUnsetShipCmd, FitUnsetStanceCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetIdBr,
+    FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemAddCmd,
+    ItemChangeCharacterCmd, ItemChangeShipCmd, ItemChangeStanceCmd, ItemCtlCmd, ItemIdBr, ItemRemoveCmd,
     ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
     ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd,
     RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd, SolAddCmd, SolChangeCharacterCmd,
     SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeCmd, SolChangeShipCmd, SolChangeShipViaFitCmd,
     SolChangeShipViaItemCmd, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolCtlCmd,
-    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
-    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
+    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetShipCmd, SolUnsetStanceCmd, SubsystemAddCmd,
+    SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,

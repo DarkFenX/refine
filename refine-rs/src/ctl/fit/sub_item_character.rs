@@ -1,6 +1,6 @@
 use crate::{
     EffectId, EffectMode, FitCtlCmd, ItemTypeId,
-    ctl::core::{ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx},
+    ctl::core::{ICmdCharacterChangeICtx, ICmdCharacterSetICtx},
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -63,25 +63,5 @@ impl FitChangeCharacterCmd {
 impl From<FitChangeCharacterCmd> for FitCtlCmd {
     fn from(sub_cmd: FitChangeCharacterCmd) -> Self {
         Self::ChangeCharacter(sub_cmd)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Unset
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
-pub struct FitUnsetCharacterCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(super) inner: ICmdCharacterUnsetICtx = ICmdCharacterUnsetICtx,
-}
-impl FitUnsetCharacterCmd {
-    pub fn new() -> Self {
-        Self::default()
-    }
-}
-impl From<FitUnsetCharacterCmd> for FitCtlCmd {
-    fn from(sub_cmd: FitUnsetCharacterCmd) -> Self {
-        Self::UnsetCharacter(sub_cmd)
     }
 }
