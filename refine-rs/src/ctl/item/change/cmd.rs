@@ -1,14 +1,13 @@
 use crate::{
-    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ItemChangeCharacterCmd, ItemChangeChargeCmd,
+    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, ItemChangeCharacterCmd,
     ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd,
     ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd,
     ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd,
     err::{
-        AutochargeChangeError, BoosterChangeError, ItemChangeCharacterError, ItemChangeChargeError,
-        ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError,
-        ItemChangeModuleError, ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError,
-        ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError,
-        ItemChangeSwEffectError,
+        AutochargeChangeError, BoosterChangeError, ChargeChangeError, ItemChangeCharacterError, ItemChangeDroneError,
+        ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError, ItemChangeModuleError,
+        ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError, ItemChangeShipError,
+        ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError,
     },
 };
 
@@ -21,7 +20,7 @@ pub enum ItemCtlCmd {
     Autocharge(AutochargeChangeCmd),
     Booster(BoosterChangeCmd),
     Character(ItemChangeCharacterCmd),
-    Charge(ItemChangeChargeCmd),
+    Charge(ChargeChangeCmd),
     Drone(ItemChangeDroneCmd),
     Fighter(ItemChangeFighterCmd),
     FwEffect(ItemChangeFwEffectCmd),
@@ -45,6 +44,11 @@ impl BoosterChangeCmd {
         ItemCtlCmd::Booster(self)
     }
 }
+impl ChargeChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Charge(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
@@ -55,7 +59,7 @@ impl ItemCtlCmd {
             Self::Autocharge(cmd) => Ok(cmd.execute(core_item)?),
             Self::Booster(cmd) => Ok(cmd.execute(core_item)?),
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
-            Self::Charge(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Charge(cmd) => Ok(cmd.execute(core_item)?),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::FwEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
@@ -82,7 +86,7 @@ pub enum ItemCtlError {
     #[error("failed to change character")]
     Character(#[from] ItemChangeCharacterError),
     #[error("failed to change charge")]
-    Charge(#[from] ItemChangeChargeError),
+    Charge(#[from] ChargeChangeError),
     #[error("failed to change drone")]
     Drone(#[from] ItemChangeDroneError),
     #[error("failed to change fighter")]

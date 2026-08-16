@@ -71,7 +71,7 @@ impl FleetChangeCmd {
             rm_fit_ids: self.rm_fit_ids.into_iter().map(FitIdBr::Id).collect(),
         }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
+    pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
         FleetChangeCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self.into_br(),
@@ -80,7 +80,7 @@ impl FleetChangeCmd {
 }
 
 impl FleetChangeCmdBr {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
+    pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
         FleetChangeCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

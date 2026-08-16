@@ -25,8 +25,9 @@ pub(in crate::ctl) use item_character::{
     ICmdCharacterChangeFItemCtxRIds, ICmdCharacterChangeICtx, ICmdCharacterSetFCtxBIds, ICmdCharacterSetFCtxRIds,
     ICmdCharacterSetICtx, ICmdCharacterUnsetFCtxBIds, ICmdCharacterUnsetFCtxRIds, ICmdCharacterUnsetICtx,
 };
-pub use item_charge::{GetItemChangeChargeError, ItemChangeChargeError};
-pub(in crate::ctl) use item_charge::{ICmdChargeChangeFCtxBIds, ICmdChargeChangeFCtxRIds, ICmdChargeChangeICtx};
+pub use item_charge::{
+    ChargeChangeCmd, ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, ChargeChangeError, ItemGetChargeChangeError,
+};
 pub use item_drone::{FitAddDroneError, GetFitAddDroneError, GetItemChangeDroneError, ItemChangeDroneError};
 pub(in crate::ctl) use item_drone::{
     ICmdDroneAddFCtxBIds, ICmdDroneAddFCtxRIds, ICmdDroneAddICtxBIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared,

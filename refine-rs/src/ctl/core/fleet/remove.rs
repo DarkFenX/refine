@@ -30,7 +30,7 @@ impl FleetRemoveCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetRemoveCmd {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetRemoveCmdCtxFleetBr {
+    pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetRemoveCmdCtxFleetBr {
         FleetRemoveCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

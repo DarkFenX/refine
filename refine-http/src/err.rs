@@ -204,8 +204,8 @@ impl ApiError {
                 }
                 // Item - charge
                 rs::err::ChangeSolEnumError::ChargeChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeChargeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeChargeError::ItemIsNotCharge(..) => (StatusCode::BAD_REQUEST, "CHG-001"),
+                    rs::err::ItemGetChargeChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetChargeChangeError::ItemIsNotCharge(..) => (StatusCode::BAD_REQUEST, "CHG-001"),
                 },
                 // Item - drone
                 rs::err::ChangeSolEnumError::DroneAdd(err_l2) => match err_l2 {
@@ -410,8 +410,8 @@ impl ApiError {
                 }
                 // Item - charge
                 rs::err::FitCtlCmdError::ChargeChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeChargeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeChargeError::ItemIsNotCharge(..) => (StatusCode::BAD_REQUEST, "CHG-001"),
+                    rs::err::ItemGetChargeChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetChargeChangeError::ItemIsNotCharge(..) => (StatusCode::BAD_REQUEST, "CHG-001"),
                 },
                 // Item - drone
                 rs::err::FitCtlCmdError::DroneAdd(rs::err::FitAddDroneError::ProjAdd(..)) => {
@@ -557,7 +557,7 @@ impl ApiError {
                 rs::err::ItemCtlError::Character(rs::err::ItemChangeCharacterError::ItemIsNotCharacter(..)) => {
                     (StatusCode::BAD_REQUEST, "CHR-001")
                 }
-                rs::err::ItemCtlError::Charge(rs::err::ItemChangeChargeError::ItemIsNotCharge(..)) => {
+                rs::err::ItemCtlError::Charge(rs::err::ChargeChangeError::ItemIsNotCharge(..)) => {
                     (StatusCode::BAD_REQUEST, "CHG-001")
                 }
                 rs::err::ItemCtlError::Drone(err_l2) => match err_l2 {

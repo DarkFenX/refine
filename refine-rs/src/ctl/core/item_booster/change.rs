@@ -57,7 +57,7 @@ impl BoosterChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterChangeCmd {
-    pub(in crate::ctl) fn into_ctx_fit_br(self, item_id: impl Into<ItemIdBr>) -> BoosterChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> BoosterChangeCmdCtxItemBr {
         BoosterChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self,
