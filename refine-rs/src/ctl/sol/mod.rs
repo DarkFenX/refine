@@ -11,7 +11,6 @@ pub use sub_item_proj_effect::{SolAddProjEffectCmd, SolChangeProjEffectCmd};
 pub use sub_item_ship::{
     ChangeShipError, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolSetShipCmd, SolUnsetShipCmd,
 };
-pub use sub_item_skill::{SolAddSkillCmd, SolChangeSkillCmd};
 pub use sub_item_stance::{
     ChangeStanceError, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolSetStanceCmd,
     SolUnsetStanceCmd,
@@ -26,6 +25,5 @@ mod sub_item_fw_effect;
 mod sub_item_module;
 mod sub_item_proj_effect;
 mod sub_item_ship;
-mod sub_item_skill;
 mod sub_item_stance;
 mod sub_item_sw_effect;

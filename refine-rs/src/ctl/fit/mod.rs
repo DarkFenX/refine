@@ -5,7 +5,6 @@ pub use sub_item_fighter::{FitAddFighterCmd, FitChangeFighterCmd};
 pub use sub_item_fw_effect::{FitAddFwEffectCmd, FitChangeFwEffectCmd};
 pub use sub_item_module::{FitAddModuleCmd, FitChangeModuleCmd};
 pub use sub_item_ship::{FitChangeShipCmd, FitSetShipCmd, FitUnsetShipCmd};
-pub use sub_item_skill::{FitAddSkillCmd, FitChangeSkillCmd};
 pub use sub_item_stance::{FitChangeStanceCmd, FitSetStanceCmd, FitUnsetStanceCmd};
 
 mod cmd;
@@ -15,5 +14,4 @@ mod sub_item_fighter;
 mod sub_item_fw_effect;
 mod sub_item_module;
 mod sub_item_ship;
-mod sub_item_skill;
 mod sub_item_stance;

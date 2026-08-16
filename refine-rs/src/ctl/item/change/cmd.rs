@@ -1,13 +1,13 @@
 use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ChargeChangeCmd, ImplantChangeCmd,
     ItemChangeCharacterCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeModuleCmd,
-    ItemChangeProjEffectCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSwEffectCmd,
-    RigChangeCmd, ServiceChangeCmd, SubsystemChangeCmd,
+    ItemChangeProjEffectCmd, ItemChangeShipCmd, ItemChangeStanceCmd, ItemChangeSwEffectCmd, RigChangeCmd,
+    ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, ImplantChangeError, ItemChangeCharacterError,
         ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeModuleError,
-        ItemChangeProjEffectError, ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError,
-        ItemChangeSwEffectError, RigChangeError, ServiceChangeError, SubsystemChangeError,
+        ItemChangeProjEffectError, ItemChangeShipError, ItemChangeStanceError, ItemChangeSwEffectError, RigChangeError,
+        ServiceChangeError, SkillChangeError, SubsystemChangeError,
     },
 };
 
@@ -30,7 +30,7 @@ pub enum ItemCtlCmd {
     Rig(RigChangeCmd),
     Service(ServiceChangeCmd),
     Ship(ItemChangeShipCmd),
-    Skill(ItemChangeSkillCmd),
+    Skill(SkillChangeCmd),
     Stance(ItemChangeStanceCmd),
     Subsystem(SubsystemChangeCmd),
     SwEffect(ItemChangeSwEffectCmd),
@@ -64,6 +64,11 @@ impl ServiceChangeCmd {
         ItemCtlCmd::Service(self)
     }
 }
+impl SkillChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Skill(self)
+    }
+}
 impl SubsystemChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Subsystem(self)
@@ -89,7 +94,7 @@ impl ItemCtlCmd {
             Self::Rig(cmd) => Ok(cmd.execute(core_item)?),
             Self::Service(cmd) => Ok(cmd.execute(core_item)?),
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
-            Self::Skill(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Skill(cmd) => Ok(cmd.execute(core_item)?),
             Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Subsystem(cmd) => Ok(cmd.execute(core_item)?),
             Self::SwEffect(cmd) => Ok(cmd.inner.execute(core_item)?),
@@ -126,7 +131,7 @@ pub enum ItemCtlError {
     #[error("failed to change ship")]
     Ship(#[from] ItemChangeShipError),
     #[error("failed to change skill")]
-    Skill(#[from] ItemChangeSkillError),
+    Skill(#[from] SkillChangeError),
     #[error("failed to change stance")]
     Stance(#[from] ItemChangeStanceError),
     #[error("failed to change subsystem")]

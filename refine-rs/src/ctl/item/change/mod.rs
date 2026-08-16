@@ -6,7 +6,6 @@ pub use sub_fw_effect::ItemChangeFwEffectCmd;
 pub use sub_module::ItemChangeModuleCmd;
 pub use sub_proj_effect::ItemChangeProjEffectCmd;
 pub use sub_ship::ItemChangeShipCmd;
-pub use sub_skill::ItemChangeSkillCmd;
 pub use sub_stance::ItemChangeStanceCmd;
 pub use sub_sw_effect::ItemChangeSwEffectCmd;
 
@@ -18,6 +17,5 @@ mod sub_fw_effect;
 mod sub_module;
 mod sub_proj_effect;
 mod sub_ship;
-mod sub_skill;
 mod sub_stance;
 mod sub_sw_effect;

@@ -74,10 +74,9 @@ pub(in crate::ctl) use item_ship::{
     ICmdShipChangeICtx, ICmdShipSetFCtxBIds, ICmdShipSetFCtxRIds, ICmdShipSetICtx, ICmdShipUnsetFCtxBIds,
     ICmdShipUnsetFCtxRIds, ICmdShipUnsetICtx,
 };
-pub use item_skill::{FitAddSkillError, GetFitAddSkillError, GetItemChangeSkillError, ItemChangeSkillError};
-pub(in crate::ctl) use item_skill::{
-    ICmdSkillAddFCtxBIds, ICmdSkillAddFCtxRIds, ICmdSkillAddICtx, ICmdSkillChangeFCtxBIds, ICmdSkillChangeFCtxRIds,
-    ICmdSkillChangeICtx,
+pub use item_skill::{
+    FitGetSkillAddError, ItemGetSkillChangeError, SkillAddCmd, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr, SkillAddError,
+    SkillChangeCmd, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SkillChangeError,
 };
 pub use item_stance::{
     FitChangeStanceError, GetFitChangeStanceError, GetFitSetStanceError, GetFitUnsetStanceError,

@@ -307,15 +307,15 @@ impl ApiError {
                 }
                 // Item - skill
                 rs::err::ChangeSolEnumError::SkillAdd(err_l2) => match err_l2 {
-                    rs::err::GetFitAddSkillError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddSkillError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
+                    rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
                         (StatusCode::BAD_REQUEST, "SKL-002")
                     }
                 },
                 rs::err::ChangeSolEnumError::SkillChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeSkillError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeSkillError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
-                    rs::err::GetItemChangeSkillError::TypeIdSet(
+                    rs::err::ItemGetSkillChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetSkillChangeError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
+                    rs::err::ItemGetSkillChangeError::TypeIdSet(
                         rs::err::core::SetSkillTypeIdError::SkillIdCollision(..),
                     ) => (StatusCode::BAD_REQUEST, "SKL-003"),
                 },
@@ -470,13 +470,13 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "SHP-002")
                 }
                 // Item - skill
-                rs::err::FitCtlCmdError::SkillAdd(rs::err::FitAddSkillError::SkillAdd(
+                rs::err::FitCtlCmdError::SkillAdd(rs::err::SkillAddError::SkillAdd(
                     rs::err::core::AddSkillError::SkillIdCollision(..),
                 )) => (StatusCode::BAD_REQUEST, "SKL-002"),
                 rs::err::FitCtlCmdError::SkillChange(err_l2) => match err_l2 {
-                    rs::err::GetItemChangeSkillError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::GetItemChangeSkillError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
-                    rs::err::GetItemChangeSkillError::TypeIdSet(
+                    rs::err::ItemGetSkillChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::ItemGetSkillChangeError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
+                    rs::err::ItemGetSkillChangeError::TypeIdSet(
                         rs::err::core::SetSkillTypeIdError::SkillIdCollision(..),
                     ) => (StatusCode::BAD_REQUEST, "SKL-003"),
                 },
@@ -535,8 +535,8 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Skill(err_l2) => match err_l2 {
-                    rs::err::GetFitAddSkillError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::GetFitAddSkillError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
+                    rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                    rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
                         (StatusCode::BAD_REQUEST, "SKL-002")
                     }
                 },
@@ -598,10 +598,10 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "SHP-001")
                 }
                 rs::err::ItemCtlError::Skill(err_l2) => match err_l2 {
-                    rs::err::ItemChangeSkillError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
-                    rs::err::ItemChangeSkillError::TypeIdSet(rs::err::core::SetSkillTypeIdError::SkillIdCollision(
-                        ..,
-                    )) => (StatusCode::BAD_REQUEST, "SKL-003"),
+                    rs::err::SkillChangeError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
+                    rs::err::SkillChangeError::TypeIdSet(rs::err::core::SetSkillTypeIdError::SkillIdCollision(..)) => {
+                        (StatusCode::BAD_REQUEST, "SKL-003")
+                    }
                 },
                 rs::err::ItemCtlError::Stance(rs::err::ItemChangeStanceError::ItemIsNotStance(..)) => {
                     (StatusCode::BAD_REQUEST, "STC-001")
