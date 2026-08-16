@@ -1,27 +1,28 @@
 use crate::{
-    AutochargeChangeCmd, CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
+    AutochargeChangeCmd, BoosterChangeCmd, CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
     FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
-    FitAddSubsystemCmd, FitChangeBoosterCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeCmd,
-    FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd,
-    FitChangeRigCmd, FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd,
-    FitChangeSubsystemCmd, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
-    FitUnsetStanceCmd, ItemIdBr, ItemRemoveCmd,
+    FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeCmd, FitChangeDroneCmd,
+    FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
+    FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd,
+    FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
+    ItemIdBr, ItemRemoveCmd,
     ctl::core::{
-        AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxRIds,
-        ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds,
-        ICmdDroneAddICtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds,
-        ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
-        ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx,
-        ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx,
-        ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
-        ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
+        AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
+        ICmdBoosterAddICtx, ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx,
+        ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds,
+        ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx,
+        ICmdImplantChangeFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx,
+        ICmdRigChangeFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx,
+        ICmdShipUnsetICtx, ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx,
+        ICmdStanceUnsetICtx, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem,
+        ItemRemoveCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
-        FitChangeCharacterError, FitChangeError, FitChangeShipError, FitChangeStanceError, GetItemChangeBoosterError,
-        GetItemChangeChargeError, GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError,
-        GetItemChangeImplantError, GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError,
-        GetItemChangeSkillError, GetItemChangeSubsystemError, ItemGetAutochargeChangeError, ItemGetItemRemoveError,
+        FitChangeCharacterError, FitChangeError, FitChangeShipError, FitChangeStanceError, GetItemChangeChargeError,
+        GetItemChangeDroneError, GetItemChangeFighterError, GetItemChangeFwEffectError, GetItemChangeImplantError,
+        GetItemChangeModuleError, GetItemChangeRigError, GetItemChangeServiceError, GetItemChangeSkillError,
+        GetItemChangeSubsystemError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetItemRemoveError,
     },
 };
 
@@ -39,7 +40,7 @@ pub enum FitCtlCmd {
     ChangeAutocharge(AutochargeChangeCmdCtxItemBr),
     // Item - booster
     AddBooster(FitAddBoosterCmd),
-    ChangeBooster(FitChangeBoosterCmd),
+    ChangeBooster(BoosterChangeCmdCtxItemBr),
     // Item - character
     SetCharacter(FitSetCharacterCmd),
     ChangeCharacter(FitChangeCharacterCmd),
@@ -92,7 +93,7 @@ pub(crate) enum FitCtlCmdRendered {
     ChangeAutocharge(AutochargeChangeCmdCtxItem),
     // Item - booster
     AddBooster(ICmdBoosterAddICtx),
-    ChangeBooster(ICmdBoosterChangeFCtxRIds),
+    ChangeBooster(BoosterChangeCmdCtxItem),
     // Item - character
     SetCharacter(ICmdCharacterSetICtx),
     ChangeCharacter(ICmdCharacterChangeICtx),
@@ -157,6 +158,12 @@ impl AutochargeChangeCmd {
         FitCtlCmd::ChangeAutocharge(self.into_ctx_fit_br(item_id))
     }
 }
+// Item - booster
+impl BoosterChangeCmd {
+    pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
+        FitCtlCmd::ChangeBooster(self.into_ctx_fit_br(item_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
@@ -172,7 +179,7 @@ impl FitCtlCmd {
             Self::ChangeAutocharge(cmd) => FitCtlCmdRendered::ChangeAutocharge(cmd.render(resps)?),
             // Item - booster
             Self::AddBooster(cmd) => FitCtlCmdRendered::AddBooster(cmd.inner),
-            Self::ChangeBooster(cmd) => FitCtlCmdRendered::ChangeBooster(cmd.inner.render(resps)?),
+            Self::ChangeBooster(cmd) => FitCtlCmdRendered::ChangeBooster(cmd.render(resps)?),
             // Item - character
             Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd.inner),
             Self::ChangeCharacter(cmd) => FitCtlCmdRendered::ChangeCharacter(cmd.inner),
@@ -294,7 +301,7 @@ pub enum FitCtlCmdError {
     AutochargeChange(#[from] ItemGetAutochargeChangeError),
     // Item - booster
     #[error("failed to change booster")]
-    BoosterChange(#[from] GetItemChangeBoosterError),
+    BoosterChange(#[from] ItemGetBoosterChangeError),
     // Item - character
     #[error("failed to change character")]
     CharacterChange(#[from] FitChangeCharacterError),

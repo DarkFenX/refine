@@ -12,11 +12,11 @@ pub use item_autocharge::{
     AutochargeChangeCmd, AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, AutochargeChangeError,
     ItemGetAutochargeChangeError,
 };
-pub use item_booster::{GetFitAddBoosterError, GetItemChangeBoosterError, ItemChangeBoosterError};
-pub(in crate::ctl) use item_booster::{
-    ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx, ICmdBoosterChangeFCtxBIds,
-    ICmdBoosterChangeFCtxRIds, ICmdBoosterChangeICtx,
+pub use item_booster::{
+    BoosterChangeCmd, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, BoosterChangeError, GetFitAddBoosterError,
+    ItemGetBoosterChangeError,
 };
+pub(in crate::ctl) use item_booster::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx};
 pub use item_character::{
     FitChangeCharacterError, GetFitChangeCharacterError, GetFitSetCharacterError, GetFitUnsetCharacterError,
     GetItemChangeCharacterError, ItemChangeCharacterError,

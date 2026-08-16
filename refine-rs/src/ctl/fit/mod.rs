@@ -1,5 +1,5 @@
 pub use cmd::{FitCtlCmd, FitCtlCmdError};
-pub use sub_item_booster::{FitAddBoosterCmd, FitChangeBoosterCmd};
+pub use sub_item_booster::FitAddBoosterCmd;
 pub use sub_item_character::{FitChangeCharacterCmd, FitSetCharacterCmd, FitUnsetCharacterCmd};
 pub use sub_item_charge::FitChangeChargeCmd;
 pub use sub_item_drone::{FitAddDroneCmd, FitChangeDroneCmd};

@@ -1,10 +1,10 @@
 use crate::{
-    AutochargeChangeCmd, ChangedItemIdsResp, ItemChangeBoosterCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd,
+    AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, ItemChangeCharacterCmd, ItemChangeChargeCmd,
     ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd,
     ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd,
     ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd,
     err::{
-        AutochargeChangeError, ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError,
+        AutochargeChangeError, BoosterChangeError, ItemChangeCharacterError, ItemChangeChargeError,
         ItemChangeDroneError, ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError,
         ItemChangeModuleError, ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError,
         ItemChangeShipError, ItemChangeSkillError, ItemChangeStanceError, ItemChangeSubsystemError,
@@ -19,7 +19,7 @@ use crate::{
 )]
 pub enum ChangeItemEnumCmd {
     Autocharge(AutochargeChangeCmd),
-    Booster(ItemChangeBoosterCmd),
+    Booster(BoosterChangeCmd),
     Character(ItemChangeCharacterCmd),
     Charge(ItemChangeChargeCmd),
     Drone(ItemChangeDroneCmd),
@@ -44,7 +44,7 @@ impl ChangeItemEnumCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
         match self {
             Self::Autocharge(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Booster(cmd) => Ok(cmd.inner.execute(core_item)?),
+            Self::Booster(cmd) => Ok(cmd.execute(core_item)?),
             Self::Character(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Charge(cmd) => Ok(cmd.inner.execute(core_item)?),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_item)?),
@@ -69,7 +69,7 @@ pub enum ChangeItemEnumError {
     #[error("failed to change autocharge")]
     Autocharge(#[from] AutochargeChangeError),
     #[error("failed to change booster")]
-    Booster(#[from] ItemChangeBoosterError),
+    Booster(#[from] BoosterChangeError),
     #[error("failed to change character")]
     Character(#[from] ItemChangeCharacterError),
     #[error("failed to change charge")]

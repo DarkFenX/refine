@@ -1,5 +1,5 @@
 pub use cmd::{ChangeSolEnumError, SolCtlCmd};
-pub use sub_item_booster::{SolAddBoosterCmd, SolChangeBoosterCmd};
+pub use sub_item_booster::SolAddBoosterCmd;
 pub use sub_item_character::{
     ChangeCharacterError, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
     SolSetCharacterCmd, SolUnsetCharacterCmd,
