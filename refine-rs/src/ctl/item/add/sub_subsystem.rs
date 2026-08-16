@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId,
+    EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId,
     ctl::core::{ICmdSubsystemAddFCtxRIds, ICmdSubsystemAddICtx},
 };
 
@@ -27,7 +27,7 @@ impl ItemAddSubsystemCmd {
         self
     }
 }
-impl From<ItemAddSubsystemCmd> for AddItemEnumCmd {
+impl From<ItemAddSubsystemCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddSubsystemCmd) -> Self {
         Self::Subsystem(sub_cmd)
     }

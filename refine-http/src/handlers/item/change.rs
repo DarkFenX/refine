@@ -14,7 +14,7 @@ pub(crate) async fn change_item(
     State(state): State<AppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
     WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoCmd>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::ChangeItemEnumCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::ItemCtlCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_item(state, sol_id, item_id, params, payload).await {
         Ok(resp) => (StatusCode::OK, Json(resp)).into_response(),
@@ -27,7 +27,7 @@ async fn internal_change_item(
     sol_id: String,
     item_id: String,
     params: rs::ItemInfoCmd,
-    payload: rs::ChangeItemEnumCmd,
+    payload: rs::ItemCtlCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let item_id = rs::ItemId::from_str(&item_id)?;

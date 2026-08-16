@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, Coordinates, EffectId, EffectMode, FitId, ItemTypeId, Movement,
+    Coordinates, EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId, Movement,
     ctl::core::{ICmdShipSetFCtxRIds, ICmdShipSetICtx},
 };
 
@@ -35,7 +35,7 @@ impl ItemSetShipCmd {
         self
     }
 }
-impl From<ItemSetShipCmd> for AddItemEnumCmd {
+impl From<ItemSetShipCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemSetShipCmd) -> Self {
         Self::Ship(sub_cmd)
     }

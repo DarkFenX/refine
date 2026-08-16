@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId,
+    EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId,
     ctl::core::{ICmdRigAddFCtxRIds, ICmdRigAddICtx},
 };
 
@@ -27,7 +27,7 @@ impl ItemAddRigCmd {
         self
     }
 }
-impl From<ItemAddRigCmd> for AddItemEnumCmd {
+impl From<ItemAddRigCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddRigCmd) -> Self {
         Self::Rig(sub_cmd)
     }

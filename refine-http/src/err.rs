@@ -74,9 +74,9 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathItemNotFound(#[from] rs::err::GetItemError),
     #[error(transparent)]
-    ItemAdd(#[from] rs::err::AddItemEnumError),
+    ItemAdd(#[from] rs::err::ItemAddError),
     #[error(transparent)]
-    ItemChange(#[from] rs::err::ChangeItemEnumError),
+    ItemChange(#[from] rs::err::ItemCtlError),
     #[error(transparent)]
     ItemRemove(#[from] rs::err::RemoveItemError),
 }
@@ -174,7 +174,7 @@ impl ApiError {
                     }
                 },
                 // Item - booster
-                rs::err::ChangeSolEnumError::BoosterAdd(rs::err::GetFitAddBoosterError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::BoosterAdd(rs::err::FitGetBoosterAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::BoosterChange(err_l2) => match err_l2 {
@@ -498,118 +498,118 @@ impl ApiError {
             Self::PathItemParse(..) => (StatusCode::NOT_FOUND, "ITM-002"),
             Self::PathItemNotFound(..) => (StatusCode::NOT_FOUND, "ITM-001"),
             Self::ItemAdd(err_l1) => match err_l1 {
-                rs::err::AddItemEnumError::Booster(rs::err::GetFitAddBoosterError::FitGet(..)) => {
+                rs::err::ItemAddError::Booster(rs::err::FitGetBoosterAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Character(rs::err::GetFitSetCharacterError::FitGet(..)) => {
+                rs::err::ItemAddError::Character(rs::err::GetFitSetCharacterError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Drone(err_l2) => match err_l2 {
+                rs::err::ItemAddError::Drone(err_l2) => match err_l2 {
                     rs::err::GetFitAddDroneError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::GetFitAddDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
                 },
-                rs::err::AddItemEnumError::Fighter(err_l2) => match err_l2 {
+                rs::err::ItemAddError::Fighter(err_l2) => match err_l2 {
                     rs::err::GetFitAddFighterError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::GetFitAddFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
                 },
-                rs::err::AddItemEnumError::FwEffect(rs::err::GetFitAddFwEffectError::FitGet(..)) => {
+                rs::err::ItemAddError::FwEffect(rs::err::GetFitAddFwEffectError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Implant(rs::err::GetFitAddImplantError::FitGet(..)) => {
+                rs::err::ItemAddError::Implant(rs::err::GetFitAddImplantError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Module(err_l2) => match err_l2 {
+                rs::err::ItemAddError::Module(err_l2) => match err_l2 {
                     rs::err::GetFitAddModuleError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::GetFitAddModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
                 },
-                rs::err::AddItemEnumError::ProjEffect(rs::err::AddProjEffectError::ProjAdd(..)) => {
+                rs::err::ItemAddError::ProjEffect(rs::err::AddProjEffectError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "PJE-002")
                 }
-                rs::err::AddItemEnumError::Rig(rs::err::GetFitAddRigError::FitGet(..)) => {
+                rs::err::ItemAddError::Rig(rs::err::GetFitAddRigError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Service(rs::err::GetFitAddServiceError::FitGet(..)) => {
+                rs::err::ItemAddError::Service(rs::err::GetFitAddServiceError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Ship(rs::err::GetFitSetShipError::FitGet(..)) => {
+                rs::err::ItemAddError::Ship(rs::err::GetFitSetShipError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Skill(err_l2) => match err_l2 {
+                rs::err::ItemAddError::Skill(err_l2) => match err_l2 {
                     rs::err::GetFitAddSkillError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                     rs::err::GetFitAddSkillError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
                         (StatusCode::BAD_REQUEST, "SKL-002")
                     }
                 },
-                rs::err::AddItemEnumError::Stance(rs::err::GetFitSetStanceError::FitGet(..)) => {
+                rs::err::ItemAddError::Stance(rs::err::GetFitSetStanceError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::AddItemEnumError::Subsystem(rs::err::GetFitAddSubsystemError::FitGet(..)) => {
+                rs::err::ItemAddError::Subsystem(rs::err::GetFitAddSubsystemError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
             },
             Self::ItemChange(err_l1) => match err_l1 {
-                rs::err::ChangeItemEnumError::Autocharge(rs::err::AutochargeChangeError::ItemIsNotAutocharge(..)) => {
+                rs::err::ItemCtlError::Autocharge(rs::err::AutochargeChangeError::ItemIsNotAutocharge(..)) => {
                     (StatusCode::BAD_REQUEST, "ACH-001")
                 }
-                rs::err::ChangeItemEnumError::Booster(rs::err::BoosterChangeError::ItemIsNotBooster(..)) => {
+                rs::err::ItemCtlError::Booster(rs::err::BoosterChangeError::ItemIsNotBooster(..)) => {
                     (StatusCode::BAD_REQUEST, "BST-001")
                 }
-                rs::err::ChangeItemEnumError::Character(rs::err::ItemChangeCharacterError::ItemIsNotCharacter(..)) => {
+                rs::err::ItemCtlError::Character(rs::err::ItemChangeCharacterError::ItemIsNotCharacter(..)) => {
                     (StatusCode::BAD_REQUEST, "CHR-001")
                 }
-                rs::err::ChangeItemEnumError::Charge(rs::err::ItemChangeChargeError::ItemIsNotCharge(..)) => {
+                rs::err::ItemCtlError::Charge(rs::err::ItemChangeChargeError::ItemIsNotCharge(..)) => {
                     (StatusCode::BAD_REQUEST, "CHG-001")
                 }
-                rs::err::ChangeItemEnumError::Drone(err_l2) => match err_l2 {
+                rs::err::ItemCtlError::Drone(err_l2) => match err_l2 {
                     rs::err::ItemChangeDroneError::ItemIsNotDrone(..) => (StatusCode::BAD_REQUEST, "DRN-001"),
                     rs::err::ItemChangeDroneError::NotMutated(..) => (StatusCode::BAD_REQUEST, "DRN-005"),
                     rs::err::ItemChangeDroneError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-003"),
                     rs::err::ItemChangeDroneError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "DRN-004"),
                 },
-                rs::err::ChangeItemEnumError::Fighter(err_l2) => match err_l2 {
+                rs::err::ItemCtlError::Fighter(err_l2) => match err_l2 {
                     rs::err::ItemChangeFighterError::ItemIsNotFighter(..) => (StatusCode::BAD_REQUEST, "FTR-001"),
                     rs::err::ItemChangeFighterError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
                     rs::err::ItemChangeFighterError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
-                rs::err::ChangeItemEnumError::FwEffect(rs::err::ItemChangeFwEffectError::ItemIsNotFwEffect(_)) => {
+                rs::err::ItemCtlError::FwEffect(rs::err::ItemChangeFwEffectError::ItemIsNotFwEffect(_)) => {
                     (StatusCode::BAD_REQUEST, "FWE-001")
                 }
-                rs::err::ChangeItemEnumError::Implant(rs::err::ItemChangeImplantError::ItemIsNotImplant(..)) => {
+                rs::err::ItemCtlError::Implant(rs::err::ItemChangeImplantError::ItemIsNotImplant(..)) => {
                     (StatusCode::BAD_REQUEST, "IMP-001")
                 }
-                rs::err::ChangeItemEnumError::Module(err_l2) => match err_l2 {
+                rs::err::ItemCtlError::Module(err_l2) => match err_l2 {
                     rs::err::ItemChangeModuleError::ItemIsNotModule(..) => (StatusCode::BAD_REQUEST, "MOD-001"),
                     rs::err::ItemChangeModuleError::NotMutated(..) => (StatusCode::BAD_REQUEST, "MOD-005"),
                     rs::err::ItemChangeModuleError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-003"),
                     rs::err::ItemChangeModuleError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "MOD-004"),
                 },
-                rs::err::ChangeItemEnumError::ProjEffect(err_l2) => match err_l2 {
+                rs::err::ItemCtlError::ProjEffect(err_l2) => match err_l2 {
                     rs::err::ItemChangeProjEffectError::ItemIsNotProjEffect(..) => (StatusCode::BAD_REQUEST, "PJE-001"),
                     rs::err::ItemChangeProjEffectError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "PJE-003"),
                     rs::err::ItemChangeProjEffectError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
                 },
-                rs::err::ChangeItemEnumError::Rig(rs::err::ItemChangeRigError::ItemIsNotRig(..)) => {
+                rs::err::ItemCtlError::Rig(rs::err::ItemChangeRigError::ItemIsNotRig(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
-                rs::err::ChangeItemEnumError::Service(rs::err::ItemChangeServiceError::ItemIsNotService(..)) => {
+                rs::err::ItemCtlError::Service(rs::err::ItemChangeServiceError::ItemIsNotService(..)) => {
                     (StatusCode::BAD_REQUEST, "SVC-001")
                 }
-                rs::err::ChangeItemEnumError::Ship(rs::err::ItemChangeShipError::ItemIsNotShip(..)) => {
+                rs::err::ItemCtlError::Ship(rs::err::ItemChangeShipError::ItemIsNotShip(..)) => {
                     (StatusCode::BAD_REQUEST, "SHP-001")
                 }
-                rs::err::ChangeItemEnumError::Skill(err_l2) => match err_l2 {
+                rs::err::ItemCtlError::Skill(err_l2) => match err_l2 {
                     rs::err::ItemChangeSkillError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
                     rs::err::ItemChangeSkillError::TypeIdSet(rs::err::core::SetSkillTypeIdError::SkillIdCollision(
                         ..,
                     )) => (StatusCode::BAD_REQUEST, "SKL-003"),
                 },
-                rs::err::ChangeItemEnumError::Stance(rs::err::ItemChangeStanceError::ItemIsNotStance(..)) => {
+                rs::err::ItemCtlError::Stance(rs::err::ItemChangeStanceError::ItemIsNotStance(..)) => {
                     (StatusCode::BAD_REQUEST, "STC-001")
                 }
-                rs::err::ChangeItemEnumError::Subsystem(rs::err::ItemChangeSubsystemError::ItemIsNotSubsystem(..)) => {
+                rs::err::ItemCtlError::Subsystem(rs::err::ItemChangeSubsystemError::ItemIsNotSubsystem(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
-                rs::err::ChangeItemEnumError::SwEffect(rs::err::ItemChangeSwEffectError::ItemIsNotSwEffect(_)) => {
+                rs::err::ItemCtlError::SwEffect(rs::err::ItemChangeSwEffectError::ItemIsNotSwEffect(_)) => {
                     (StatusCode::BAD_REQUEST, "SWE-001")
                 }
             },

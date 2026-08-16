@@ -1,6 +1,6 @@
 use crate::{
-    ChangeItemEnumCmd, ChangeMutation, Coordinates, EffectId, EffectMode, ItemId, ItemTypeId, MinionState, Movement,
-    NpcProp, ctl::core::ICmdDroneChangeICtxRIds,
+    ChangeMutation, Coordinates, EffectId, EffectMode, ItemCtlCmd, ItemId, ItemTypeId, MinionState, Movement, NpcProp,
+    ctl::core::ICmdDroneChangeICtxRIds,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -53,7 +53,7 @@ impl ItemChangeDroneCmd {
         self
     }
 }
-impl From<ItemChangeDroneCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeDroneCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeDroneCmd) -> Self {
         Self::Drone(sub_cmd)
     }

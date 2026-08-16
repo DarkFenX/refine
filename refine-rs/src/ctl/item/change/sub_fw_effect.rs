@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, ctl::core::ICmdFwEffectChangeICtx};
+use crate::{EffectId, EffectMode, ItemCtlCmd, ItemTypeId, ctl::core::ICmdFwEffectChangeICtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -24,7 +24,7 @@ impl ItemChangeFwEffectCmd {
         self
     }
 }
-impl From<ItemChangeFwEffectCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeFwEffectCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeFwEffectCmd) -> Self {
         Self::FwEffect(sub_cmd)
     }

@@ -17,7 +17,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
-pub enum ChangeItemEnumCmd {
+pub enum ItemCtlCmd {
     Autocharge(AutochargeChangeCmd),
     Booster(BoosterChangeCmd),
     Character(ItemChangeCharacterCmd),
@@ -38,10 +38,19 @@ pub enum ChangeItemEnumCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl BoosterChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Booster(self)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ChangeItemEnumCmd {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChangeItemEnumError> {
+impl ItemCtlCmd {
+    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemCtlError> {
         match self {
             Self::Autocharge(cmd) => Ok(cmd.execute(core_item)?),
             Self::Booster(cmd) => Ok(cmd.execute(core_item)?),
@@ -65,7 +74,7 @@ impl ChangeItemEnumCmd {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeItemEnumError {
+pub enum ItemCtlError {
     #[error("failed to change autocharge")]
     Autocharge(#[from] AutochargeChangeError),
     #[error("failed to change booster")]

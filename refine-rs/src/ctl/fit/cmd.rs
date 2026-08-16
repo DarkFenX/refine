@@ -1,5 +1,5 @@
 use crate::{
-    AutochargeChangeCmd, BoosterChangeCmd, CtlCmdResp, CtlCmdResps, FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd,
+    AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CtlCmdResp, CtlCmdResps, FitAddDroneCmd, FitAddFighterCmd,
     FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd,
     FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeCmd, FitChangeDroneCmd,
     FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
@@ -8,14 +8,13 @@ use crate::{
     ItemIdBr, ItemRemoveCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
-        ICmdBoosterAddICtx, ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx,
-        ICmdChargeChangeFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds,
-        ICmdFighterChangeFCtxRIds, ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx,
-        ICmdImplantChangeFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx,
-        ICmdRigChangeFCtxRIds, ICmdServiceAddICtx, ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx,
-        ICmdShipUnsetICtx, ICmdSkillAddICtx, ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx,
-        ICmdStanceUnsetICtx, ICmdSubsystemAddICtx, ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem,
-        ItemRemoveCmdCtxItemBr,
+        ICmdCharacterChangeICtx, ICmdCharacterSetICtx, ICmdCharacterUnsetICtx, ICmdChargeChangeFCtxRIds,
+        ICmdDroneAddICtxRIds, ICmdDroneChangeFCtxRIds, ICmdFighterAddICtxRIds, ICmdFighterChangeFCtxRIds,
+        ICmdFwEffectAddICtx, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddICtx, ICmdImplantChangeFCtxRIds,
+        ICmdModuleAddICtxRIds, ICmdModuleChangeFCtxRIds, ICmdRigAddICtx, ICmdRigChangeFCtxRIds, ICmdServiceAddICtx,
+        ICmdServiceChangeFCtxRIds, ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ICmdSkillAddICtx,
+        ICmdSkillChangeFCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetICtx, ICmdStanceUnsetICtx, ICmdSubsystemAddICtx,
+        ICmdSubsystemChangeFCtxRIds, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
     },
     err::{
         BackrefRenderError, FitAddDroneError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
@@ -39,7 +38,7 @@ pub enum FitCtlCmd {
     // Item - autocharge
     ChangeAutocharge(AutochargeChangeCmdCtxItemBr),
     // Item - booster
-    AddBooster(FitAddBoosterCmd),
+    AddBooster(BoosterAddCmd),
     ChangeBooster(BoosterChangeCmdCtxItemBr),
     // Item - character
     SetCharacter(FitSetCharacterCmd),
@@ -92,7 +91,7 @@ pub(crate) enum FitCtlCmdRendered {
     // Item - autocharge
     ChangeAutocharge(AutochargeChangeCmdCtxItem),
     // Item - booster
-    AddBooster(ICmdBoosterAddICtx),
+    AddBooster(BoosterAddCmd),
     ChangeBooster(BoosterChangeCmdCtxItem),
     // Item - character
     SetCharacter(ICmdCharacterSetICtx),
@@ -159,6 +158,11 @@ impl AutochargeChangeCmd {
     }
 }
 // Item - booster
+impl BoosterAddCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::AddBooster(self)
+    }
+}
 impl BoosterChangeCmd {
     pub fn into_fit_ctl(self, item_id: impl Into<ItemIdBr>) -> FitCtlCmd {
         FitCtlCmd::ChangeBooster(self.into_ctx_fit_br(item_id))
@@ -178,7 +182,7 @@ impl FitCtlCmd {
             // Item - autocharge
             Self::ChangeAutocharge(cmd) => FitCtlCmdRendered::ChangeAutocharge(cmd.render(resps)?),
             // Item - booster
-            Self::AddBooster(cmd) => FitCtlCmdRendered::AddBooster(cmd.inner),
+            Self::AddBooster(cmd) => FitCtlCmdRendered::AddBooster(cmd),
             Self::ChangeBooster(cmd) => FitCtlCmdRendered::ChangeBooster(cmd.render(resps)?),
             // Item - character
             Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd.inner),

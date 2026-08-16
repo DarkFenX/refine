@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, AddMode, AddMutation, EffectId, EffectMode, FitId, ItemId, ItemTypeId, ModRack, ModuleState,
+    AddMode, AddMutation, EffectId, EffectMode, FitId, ItemAddCmd, ItemId, ItemTypeId, ModRack, ModuleState,
     OptionalReload, Spool,
     ctl::core::{ICmdModuleAddFCtxRIds, ICmdModuleAddICtxRIds, ICmdModuleAddShared},
 };
@@ -54,7 +54,7 @@ impl ItemAddModuleCmd {
         self
     }
 }
-impl From<ItemAddModuleCmd> for AddItemEnumCmd {
+impl From<ItemAddModuleCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddModuleCmd) -> Self {
         Self::Module(sub_cmd)
     }

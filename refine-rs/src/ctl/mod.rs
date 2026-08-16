@@ -1,10 +1,10 @@
 pub use core::{
-    AddProjEffectError, AutochargeChangeCmd, AutochargeChangeError, BoosterChangeCmd, BoosterChangeError, FitAddCmd,
-    FitAddCmdBr, FitAddDroneError, FitAddError, FitAddFighterError, FitAddModuleError, FitAddSkillError,
-    FitChangeCharacterError, FitChangeCmd, FitChangeCmdBr, FitChangeError, FitChangeShipError, FitChangeStanceError,
-    FitGetFitChangeError, FitGetFitRemoveError, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetAddError,
-    FleetChangeCmd, FleetChangeCmdBr, FleetChangeError, FleetGetFleetChangeError, FleetGetFleetRemoveError,
-    FleetRemoveCmd, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
+    AddProjEffectError, AutochargeChangeCmd, AutochargeChangeError, BoosterAddCmd, BoosterChangeCmd,
+    BoosterChangeError, FitAddCmd, FitAddCmdBr, FitAddDroneError, FitAddError, FitAddFighterError, FitAddModuleError,
+    FitAddSkillError, FitChangeCharacterError, FitChangeCmd, FitChangeCmdBr, FitChangeError, FitChangeShipError,
+    FitChangeStanceError, FitGetBoosterAddError, FitGetFitChangeError, FitGetFitRemoveError, FitRemoveCmd, FleetAddCmd,
+    FleetAddCmdBr, FleetAddError, FleetChangeCmd, FleetChangeCmdBr, FleetChangeError, FleetGetFleetChangeError,
+    FleetGetFleetRemoveError, FleetRemoveCmd, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
     GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
     GetFitAddSubsystemError, GetFitChangeCharacterError, GetFitChangeShipError, GetFitChangeStanceError,
     GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError, GetFitUnsetCharacterError, GetFitUnsetShipError,
@@ -20,21 +20,20 @@ pub use core::{
 };
 
 pub use fit::{
-    FitAddBoosterCmd, FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd,
-    FitAddRigCmd, FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeChargeCmd,
-    FitChangeDroneCmd, FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd,
-    FitChangeRigCmd, FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd,
-    FitChangeSubsystemCmd, FitCtlCmd, FitCtlCmdError, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd,
-    FitUnsetCharacterCmd, FitUnsetShipCmd, FitUnsetStanceCmd,
+    FitAddDroneCmd, FitAddFighterCmd, FitAddFwEffectCmd, FitAddImplantCmd, FitAddModuleCmd, FitAddRigCmd,
+    FitAddServiceCmd, FitAddSkillCmd, FitAddSubsystemCmd, FitChangeCharacterCmd, FitChangeChargeCmd, FitChangeDroneCmd,
+    FitChangeFighterCmd, FitChangeFwEffectCmd, FitChangeImplantCmd, FitChangeModuleCmd, FitChangeRigCmd,
+    FitChangeServiceCmd, FitChangeShipCmd, FitChangeSkillCmd, FitChangeStanceCmd, FitChangeSubsystemCmd, FitCtlCmd,
+    FitCtlCmdError, FitSetCharacterCmd, FitSetShipCmd, FitSetStanceCmd, FitUnsetCharacterCmd, FitUnsetShipCmd,
+    FitUnsetStanceCmd,
 };
 pub use item::{
-    AddItemEnumCmd, AddItemEnumError, ChangeItemEnumCmd, ChangeItemEnumError, ItemAddBoosterCmd, ItemAddDroneCmd,
-    ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd, ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd,
-    ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd, ItemAddSwEffectCmd, ItemChangeCharacterCmd,
-    ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd, ItemChangeFwEffectCmd, ItemChangeImplantCmd,
-    ItemChangeModuleCmd, ItemChangeProjEffectCmd, ItemChangeRigCmd, ItemChangeServiceCmd, ItemChangeShipCmd,
-    ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd, ItemChangeSwEffectCmd, ItemSetCharacterCmd,
-    ItemSetShipCmd, ItemSetStanceCmd,
+    ItemAddCmd, ItemAddDroneCmd, ItemAddError, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd,
+    ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd,
+    ItemAddSwEffectCmd, ItemChangeCharacterCmd, ItemChangeChargeCmd, ItemChangeDroneCmd, ItemChangeFighterCmd,
+    ItemChangeFwEffectCmd, ItemChangeImplantCmd, ItemChangeModuleCmd, ItemChangeProjEffectCmd, ItemChangeRigCmd,
+    ItemChangeServiceCmd, ItemChangeShipCmd, ItemChangeSkillCmd, ItemChangeStanceCmd, ItemChangeSubsystemCmd,
+    ItemChangeSwEffectCmd, ItemCtlCmd, ItemCtlError, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
 };
 pub(crate) use shared::CtlCmdBr;
 pub use shared::{
@@ -42,15 +41,14 @@ pub use shared::{
     ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBr, FleetIdBr, ItemIdBr,
 };
 pub use sol::{
-    ChangeCharacterError, ChangeShipError, ChangeSolEnumError, ChangeStanceError, SolAddBoosterCmd, SolAddDroneCmd,
-    SolAddFighterCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd,
-    SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeCharacterCmd,
-    SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeDroneCmd,
-    SolChangeFighterCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd,
-    SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd,
-    SolChangeSkillCmd, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd,
-    SolChangeSwEffectCmd, SolCtlCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd,
-    SolUnsetShipCmd, SolUnsetStanceCmd,
+    ChangeCharacterError, ChangeShipError, ChangeSolEnumError, ChangeStanceError, SolAddDroneCmd, SolAddFighterCmd,
+    SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
+    SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd,
+    SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFwEffectCmd,
+    SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
+    SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd, SolChangeStanceCmd,
+    SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd,
+    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 
 mod core;

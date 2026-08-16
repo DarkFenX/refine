@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId, SkillLevel,
+    EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId, SkillLevel,
     ctl::core::{ICmdSkillAddFCtxRIds, ICmdSkillAddICtx},
 };
 
@@ -27,7 +27,7 @@ impl ItemAddSkillCmd {
         self
     }
 }
-impl From<ItemAddSkillCmd> for AddItemEnumCmd {
+impl From<ItemAddSkillCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddSkillCmd) -> Self {
         Self::Skill(sub_cmd)
     }

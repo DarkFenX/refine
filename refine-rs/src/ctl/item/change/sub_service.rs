@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, ServiceState, ctl::core::ICmdServiceChangeICtx};
+use crate::{EffectId, EffectMode, ItemCtlCmd, ItemTypeId, ServiceState, ctl::core::ICmdServiceChangeICtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -24,7 +24,7 @@ impl ItemChangeServiceCmd {
         self
     }
 }
-impl From<ItemChangeServiceCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeServiceCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeServiceCmd) -> Self {
         Self::Service(sub_cmd)
     }

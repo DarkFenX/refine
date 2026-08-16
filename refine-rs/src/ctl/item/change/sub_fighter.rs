@@ -1,6 +1,6 @@
 use crate::{
-    AbilityId, ChangeItemEnumCmd, Coordinates, CountNz, EffectId, EffectMode, ItemId, ItemTypeId, MinionState,
-    Movement, RearmMinion, ctl::core::ICmdFighterChangeICtxRIds,
+    AbilityId, Coordinates, CountNz, EffectId, EffectMode, ItemCtlCmd, ItemId, ItemTypeId, MinionState, Movement,
+    RearmMinion, ctl::core::ICmdFighterChangeICtxRIds,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -58,7 +58,7 @@ impl ItemChangeFighterCmd {
         self
     }
 }
-impl From<ItemChangeFighterCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeFighterCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeFighterCmd) -> Self {
         Self::Fighter(sub_cmd)
     }

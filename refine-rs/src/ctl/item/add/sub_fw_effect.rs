@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId,
+    EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId,
     ctl::core::{ICmdFwEffectAddFCtxRIds, ICmdFwEffectAddICtx},
 };
 
@@ -27,7 +27,7 @@ impl ItemAddFwEffectCmd {
         self
     }
 }
-impl From<ItemAddFwEffectCmd> for AddItemEnumCmd {
+impl From<ItemAddFwEffectCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddFwEffectCmd) -> Self {
         Self::FwEffect(sub_cmd)
     }

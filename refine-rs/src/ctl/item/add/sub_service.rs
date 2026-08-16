@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId, ServiceState,
+    EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId, ServiceState,
     ctl::core::{ICmdServiceAddFCtxRIds, ICmdServiceAddICtx},
 };
 
@@ -23,7 +23,7 @@ impl ItemAddServiceCmd {
         self
     }
 }
-impl From<ItemAddServiceCmd> for AddItemEnumCmd {
+impl From<ItemAddServiceCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddServiceCmd) -> Self {
         Self::Service(sub_cmd)
     }

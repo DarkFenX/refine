@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, ItemId, ItemTypeId,
+    EffectId, EffectMode, ItemAddCmd, ItemId, ItemTypeId,
     ctl::core::{ICmdProjEffectAddFCtxRIds, ICmdProjEffectAddShared},
 };
 
@@ -32,7 +32,7 @@ impl ItemAddProjEffectCmd {
         self
     }
 }
-impl From<ItemAddProjEffectCmd> for AddItemEnumCmd {
+impl From<ItemAddProjEffectCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddProjEffectCmd) -> Self {
         Self::ProjEffect(sub_cmd)
     }

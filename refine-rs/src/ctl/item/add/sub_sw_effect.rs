@@ -1,4 +1,4 @@
-use crate::{AddItemEnumCmd, EffectId, EffectMode, ItemTypeId, ctl::core::ICmdSwEffectAddFCtx};
+use crate::{EffectId, EffectMode, ItemAddCmd, ItemTypeId, ctl::core::ICmdSwEffectAddFCtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemAddSwEffectCmd {
@@ -21,7 +21,7 @@ impl ItemAddSwEffectCmd {
         self
     }
 }
-impl From<ItemAddSwEffectCmd> for AddItemEnumCmd {
+impl From<ItemAddSwEffectCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddSwEffectCmd) -> Self {
         Self::SwEffect(sub_cmd)
     }

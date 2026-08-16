@@ -1,5 +1,4 @@
-pub use add::GetFitAddBoosterError;
-pub(in crate::ctl) use add::{ICmdBoosterAddFCtxBIds, ICmdBoosterAddFCtxRIds, ICmdBoosterAddICtx};
+pub use add::{BoosterAddCmd, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr, FitGetBoosterAddError};
 pub use change::{
     BoosterChangeCmd, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, BoosterChangeError, ItemGetBoosterChangeError,
 };

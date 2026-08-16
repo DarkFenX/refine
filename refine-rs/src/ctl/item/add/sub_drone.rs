@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, AddMutation, Coordinates, EffectId, EffectMode, FitId, ItemId, ItemTypeId, MinionState, Movement,
+    AddMutation, Coordinates, EffectId, EffectMode, FitId, ItemAddCmd, ItemId, ItemTypeId, MinionState, Movement,
     NpcProp,
     ctl::core::{ICmdDroneAddFCtxRIds, ICmdDroneAddICtxRIds, ICmdDroneAddShared},
 };
@@ -48,7 +48,7 @@ impl ItemAddDroneCmd {
         self
     }
 }
-impl From<ItemAddDroneCmd> for AddItemEnumCmd {
+impl From<ItemAddDroneCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemAddDroneCmd) -> Self {
         Self::Drone(sub_cmd)
     }

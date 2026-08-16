@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, ctl::core::ICmdRigChangeICtx};
+use crate::{EffectId, EffectMode, ItemCtlCmd, ItemTypeId, ctl::core::ICmdRigChangeICtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -24,7 +24,7 @@ impl ItemChangeRigCmd {
         self
     }
 }
-impl From<ItemChangeRigCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeRigCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeRigCmd) -> Self {
         Self::Rig(sub_cmd)
     }

@@ -1,4 +1,4 @@
-use crate::{ChangeItemEnumCmd, EffectId, EffectMode, ItemTypeId, SkillLevel, ctl::core::ICmdSkillChangeICtx};
+use crate::{EffectId, EffectMode, ItemCtlCmd, ItemTypeId, SkillLevel, ctl::core::ICmdSkillChangeICtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -28,7 +28,7 @@ impl ItemChangeSkillCmd {
         self
     }
 }
-impl From<ItemChangeSkillCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeSkillCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeSkillCmd) -> Self {
         Self::Skill(sub_cmd)
     }

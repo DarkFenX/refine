@@ -1,6 +1,6 @@
 use crate::{
-    ChangeItemEnumCmd, ChangeMutation, EffectId, EffectMode, ItemId, ItemTypeId, ModuleState, MoveMode, OptionalReload,
-    Spool, ctl::core::ICmdModuleChangeICtxRIds,
+    ChangeMutation, EffectId, EffectMode, ItemCtlCmd, ItemId, ItemTypeId, ModuleState, MoveMode, OptionalReload, Spool,
+    ctl::core::ICmdModuleChangeICtxRIds,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -57,7 +57,7 @@ impl ItemChangeModuleCmd {
         self
     }
 }
-impl From<ItemChangeModuleCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeModuleCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeModuleCmd) -> Self {
         Self::Module(sub_cmd)
     }

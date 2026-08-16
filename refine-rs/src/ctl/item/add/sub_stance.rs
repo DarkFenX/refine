@@ -1,5 +1,5 @@
 use crate::{
-    AddItemEnumCmd, EffectId, EffectMode, FitId, ItemTypeId,
+    EffectId, EffectMode, FitId, ItemAddCmd, ItemTypeId,
     ctl::core::{ICmdStanceSetFCtxRIds, ICmdStanceSetICtx},
 };
 
@@ -27,7 +27,7 @@ impl ItemSetStanceCmd {
         self
     }
 }
-impl From<ItemSetStanceCmd> for AddItemEnumCmd {
+impl From<ItemSetStanceCmd> for ItemAddCmd {
     fn from(sub_cmd: ItemSetStanceCmd) -> Self {
         Self::Stance(sub_cmd)
     }

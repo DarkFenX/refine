@@ -1,6 +1,4 @@
-use crate::{
-    ChangeItemEnumCmd, Coordinates, EffectId, EffectMode, ItemTypeId, Movement, ctl::core::ICmdShipChangeICtx,
-};
+use crate::{Coordinates, EffectId, EffectMode, ItemCtlCmd, ItemTypeId, Movement, ctl::core::ICmdShipChangeICtx};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
@@ -34,7 +32,7 @@ impl ItemChangeShipCmd {
         self
     }
 }
-impl From<ItemChangeShipCmd> for ChangeItemEnumCmd {
+impl From<ItemChangeShipCmd> for ItemCtlCmd {
     fn from(sub_cmd: ItemChangeShipCmd) -> Self {
         Self::Ship(sub_cmd)
     }

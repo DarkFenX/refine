@@ -1,9 +1,10 @@
 use crate::{
-    AddedItemIdsResp, ItemAddBoosterCmd, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd,
+    AddedItemIdsResp, BoosterAddCmd, FitId, ItemAddDroneCmd, ItemAddFighterCmd, ItemAddFwEffectCmd, ItemAddImplantCmd,
     ItemAddModuleCmd, ItemAddProjEffectCmd, ItemAddRigCmd, ItemAddServiceCmd, ItemAddSkillCmd, ItemAddSubsystemCmd,
     ItemAddSwEffectCmd, ItemSetCharacterCmd, ItemSetShipCmd, ItemSetStanceCmd,
+    ctl::core::BoosterAddCmdCtxFit,
     err::{
-        AddProjEffectError, GetFitAddBoosterError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
+        AddProjEffectError, FitGetBoosterAddError, GetFitAddDroneError, GetFitAddFighterError, GetFitAddFwEffectError,
         GetFitAddImplantError, GetFitAddModuleError, GetFitAddRigError, GetFitAddServiceError, GetFitAddSkillError,
         GetFitAddSubsystemError, GetFitSetCharacterError, GetFitSetShipError, GetFitSetStanceError,
     },
@@ -14,8 +15,8 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
-pub enum AddItemEnumCmd {
-    Booster(ItemAddBoosterCmd),
+pub enum ItemAddCmd {
+    Booster(BoosterAddCmdCtxFit),
     Character(ItemSetCharacterCmd),
     Drone(ItemAddDroneCmd),
     Fighter(ItemAddFighterCmd),
@@ -33,12 +34,21 @@ pub enum AddItemEnumCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl BoosterAddCmd {
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
+        ItemAddCmd::Booster(self.into_ctx_fit(fit_id))
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl AddItemEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, AddItemEnumError> {
+impl ItemAddCmd {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddError> {
         match self {
-            Self::Booster(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Booster(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Character(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::Drone(cmd) => Ok(cmd.inner.execute(core_sol)?),
             Self::Fighter(cmd) => Ok(cmd.inner.execute(core_sol)?),
@@ -58,9 +68,9 @@ impl AddItemEnumCmd {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum AddItemEnumError {
+pub enum ItemAddError {
     #[error("failed to add booster")]
-    Booster(#[from] GetFitAddBoosterError),
+    Booster(#[from] FitGetBoosterAddError),
     #[error("failed to set character")]
     Character(#[from] GetFitSetCharacterError),
     #[error("failed to add drone")]
