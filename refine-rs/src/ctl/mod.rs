@@ -14,7 +14,8 @@ pub use core::{
     ItemChangeBoosterError, ItemChangeCharacterError, ItemChangeChargeError, ItemChangeDroneError,
     ItemChangeFighterError, ItemChangeFwEffectError, ItemChangeImplantError, ItemChangeModuleError,
     ItemChangeProjEffectError, ItemChangeRigError, ItemChangeServiceError, ItemChangeShipError, ItemChangeSkillError,
-    ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError, ItemRemoveItemError,
+    ItemChangeStanceError, ItemChangeSubsystemError, ItemChangeSwEffectError, ItemRemoveItemError, SolAddCmd,
+    SolChangeCmd,
 };
 
 pub use fit::{
@@ -41,17 +42,17 @@ pub use shared::{
     ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBackref, FleetIdBackref, ItemIdBackref,
 };
 pub use sol::{
-    AddSolCmd, ChangeCharacterError, ChangeShipError, ChangeSolEnumError, ChangeStanceError, SolAddBoosterCmd,
-    SolAddDroneCmd, SolAddFighterCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd,
-    SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd,
-    SolChangeAutochargeCmd, SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd,
-    SolChangeCharacterViaItemCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd,
-    SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd,
-    SolChangeServiceCmd, SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd,
-    SolChangeSolCmd, SolChangeStanceCmd, SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd,
-    SolChangeSwEffectCmd, SolCtlCmd, SolCtlFitChangeCmd, SolCtlFitChangeCmdBackref, SolCtlFitChangeError,
-    SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref, SolCtlFitRemoveError, SolRemoveFleetCmd, SolRemoveItemCmd,
-    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+    ChangeCharacterError, ChangeShipError, ChangeSolEnumError, ChangeStanceError, SolAddBoosterCmd, SolAddDroneCmd,
+    SolAddFighterCmd, SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd,
+    SolAddRigCmd, SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd,
+    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeCharacterViaFitCmd, SolChangeCharacterViaItemCmd,
+    SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd, SolChangeFwEffectCmd,
+    SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd,
+    SolChangeShipCmd, SolChangeShipViaFitCmd, SolChangeShipViaItemCmd, SolChangeSkillCmd, SolChangeStanceCmd,
+    SolChangeStanceViaFitCmd, SolChangeStanceViaItemCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolCtlCmd,
+    SolCtlFitChangeCmd, SolCtlFitChangeCmdBackref, SolCtlFitChangeError, SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref,
+    SolCtlFitRemoveError, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd,
+    SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
 };
 
 mod core;

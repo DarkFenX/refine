@@ -1,5 +1,5 @@
-pub(in crate::ctl) use add::ICmdSolAddFCtx;
-pub(in crate::ctl) use change::ICmdSolChangeFCtx;
+pub use add::SolAddCmd;
+pub use change::SolChangeCmd;
 
 mod add;
 mod change;

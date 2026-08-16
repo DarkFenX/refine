@@ -1,19 +1,53 @@
 use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdSolChangeFCtx {
-    pub(in crate::ctl) sec_zone: Option<SecZone> = None,
-    pub(in crate::ctl) default_incoming_dps: Option<DpsProfile> = None,
-    pub(in crate::ctl) default_spool: Option<Spool> = None,
-    pub(in crate::ctl) default_npc_prop: Option<NpcProp> = None,
-    pub(in crate::ctl) default_optional_reloads: Option<OptionalReload> = None,
-    pub(in crate::ctl) default_rearm_minions: Option<RearmMinion> = None,
+#[derive(Default)]
+pub struct SolChangeCmd {
+    sec_zone: Option<SecZone> = None,
+    default_incoming_dps: Option<DpsProfile> = None,
+    default_spool: Option<Spool> = None,
+    default_npc_prop: Option<NpcProp> = None,
+    default_optional_reloads: Option<OptionalReload> = None,
+    default_rearm_minions: Option<RearmMinion> = None,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_sec_zone(mut self, sec_zone: SecZone) -> Self {
+        self.sec_zone = Some(sec_zone);
+        self
+    }
+    pub fn with_default_incoming_dps(mut self, incoming_dps: DpsProfile) -> Self {
+        self.default_incoming_dps = Some(incoming_dps);
+        self
+    }
+    pub fn with_default_spool(mut self, spool: Spool) -> Self {
+        self.default_spool = Some(spool);
+        self
+    }
+    pub fn with_default_npc_prop(mut self, npc_prop: NpcProp) -> Self {
+        self.default_npc_prop = Some(npc_prop);
+        self
+    }
+    pub fn with_default_optional_reloads(mut self, optional_reload: OptionalReload) -> Self {
+        self.default_optional_reloads = Some(optional_reload);
+        self
+    }
+    pub fn with_default_rearm_minions(mut self, rearm_minion: RearmMinion) -> Self {
+        self.default_rearm_minions = Some(rearm_minion);
+        self
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdSolChangeFCtx {
+impl SolChangeCmd {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) {
         if let Some(sec_zone) = self.sec_zone {
             core_sol.set_sec_zone(sec_zone);

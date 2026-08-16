@@ -1,7 +1,7 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    AddSolCmd, Refine, SolInfo, SolInfoCmd, SolarSystem, SolarSystemId,
+    Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem, SolarSystemId,
     src::{SrcAlias, err::GetSrcError},
     svc::SolarSystemInnerGuarded,
 };
@@ -11,7 +11,7 @@ impl Refine {
     pub async fn add_sol(
         &self,
         src_alias: Option<SrcAlias>,
-        ctl_cmd: AddSolCmd,
+        ctl_cmd: SolAddCmd,
     ) -> Result<SolarSystem<'_>, AddSolError> {
         let inner_src = self.internal_get_src(src_alias).await?;
         // Variables for move
@@ -26,7 +26,7 @@ impl Refine {
     pub async fn add_sol_and_get_info(
         &self,
         src_alias: Option<SrcAlias>,
-        ctl_cmd: AddSolCmd,
+        ctl_cmd: SolAddCmd,
         info_cmd: SolInfoCmd,
     ) -> Result<(SolarSystem<'_>, SolInfo), AddSolError> {
         let inner_src = self.internal_get_src(src_alias).await?;

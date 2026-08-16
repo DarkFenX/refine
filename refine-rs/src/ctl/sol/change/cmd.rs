@@ -3,27 +3,26 @@ use super::{
     sub_item_stance::SolChangeStanceCmdRIds,
 };
 use crate::{
-    CtlCmdResp, CtlCmdResps, FitAddCmdBackref, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd, SolAddFleetCmd,
-    SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd, SolAddServiceCmd,
-    SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd, SolChangeBoosterCmd,
-    SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeDroneCmd, SolChangeFighterCmd, SolChangeFleetCmd,
-    SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd, SolChangeProjEffectCmd, SolChangeRigCmd,
-    SolChangeServiceCmd, SolChangeShipCmd, SolChangeSkillCmd, SolChangeSolCmd, SolChangeStanceCmd,
-    SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolRemoveFleetCmd, SolRemoveItemCmd, SolSetCharacterCmd,
-    SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
+    CtlCmdResp, CtlCmdResps, FitAddCmd, FitAddCmdBackref, SolAddBoosterCmd, SolAddDroneCmd, SolAddFighterCmd,
+    SolAddFleetCmd, SolAddFwEffectCmd, SolAddImplantCmd, SolAddModuleCmd, SolAddProjEffectCmd, SolAddRigCmd,
+    SolAddServiceCmd, SolAddSkillCmd, SolAddSubsystemCmd, SolAddSwEffectCmd, SolChangeAutochargeCmd,
+    SolChangeBoosterCmd, SolChangeCharacterCmd, SolChangeChargeCmd, SolChangeCmd, SolChangeDroneCmd,
+    SolChangeFighterCmd, SolChangeFleetCmd, SolChangeFwEffectCmd, SolChangeImplantCmd, SolChangeModuleCmd,
+    SolChangeProjEffectCmd, SolChangeRigCmd, SolChangeServiceCmd, SolChangeShipCmd, SolChangeSkillCmd,
+    SolChangeStanceCmd, SolChangeSubsystemCmd, SolChangeSwEffectCmd, SolRemoveFleetCmd, SolRemoveItemCmd,
+    SolSetCharacterCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetCharacterCmd, SolUnsetShipCmd, SolUnsetStanceCmd,
     ctl::{
         SolCtlFitChangeCmd, SolCtlFitChangeCmdBackref, SolCtlFitRemoveCmd, SolCtlFitRemoveCmdBackref,
         core::{
-            FitAddCmd, ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds,
-            ICmdCharacterSetFCtxRIds, ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds,
-            ICmdDroneChangeFCtxRIds, ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdFleetAddFCtxRIds,
-            ICmdFleetChangeFCtxRIds, ICmdFleetRemoveFCtxRIds, ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds,
-            ICmdImplantAddFCtxRIds, ICmdImplantChangeFCtxRIds, ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds,
-            ICmdModuleChangeFCtxRIds, ICmdProjEffectAddFCtxRIds, ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds,
-            ICmdRigChangeFCtxRIds, ICmdServiceAddFCtxRIds, ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds,
-            ICmdShipUnsetFCtxRIds, ICmdSkillAddFCtxRIds, ICmdSkillChangeFCtxRIds, ICmdSolChangeFCtx,
-            ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ICmdSubsystemAddFCtxRIds, ICmdSubsystemChangeFCtxRIds,
-            ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxRIds,
+            ICmdAutochargeChangeFCtxRIds, ICmdBoosterAddFCtxRIds, ICmdBoosterChangeFCtxRIds, ICmdCharacterSetFCtxRIds,
+            ICmdCharacterUnsetFCtxRIds, ICmdChargeChangeFCtxRIds, ICmdDroneAddFCtxRIds, ICmdDroneChangeFCtxRIds,
+            ICmdFighterAddFCtxRIds, ICmdFighterChangeFCtxRIds, ICmdFleetAddFCtxRIds, ICmdFleetChangeFCtxRIds,
+            ICmdFleetRemoveFCtxRIds, ICmdFwEffectAddFCtxRIds, ICmdFwEffectChangeFCtxRIds, ICmdImplantAddFCtxRIds,
+            ICmdImplantChangeFCtxRIds, ICmdItemRemoveFCtxRIds, ICmdModuleAddFCtxRIds, ICmdModuleChangeFCtxRIds,
+            ICmdProjEffectAddFCtxRIds, ICmdProjEffectChangeFCtxRIds, ICmdRigAddFCtxRIds, ICmdRigChangeFCtxRIds,
+            ICmdServiceAddFCtxRIds, ICmdServiceChangeFCtxRIds, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds,
+            ICmdSkillAddFCtxRIds, ICmdSkillChangeFCtxRIds, ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds,
+            ICmdSubsystemAddFCtxRIds, ICmdSubsystemChangeFCtxRIds, ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxRIds,
         },
     },
     err::{
@@ -47,7 +46,7 @@ use crate::{
 )]
 pub enum SolCtlCmd {
     // Solar system
-    ChangeSol(SolChangeSolCmd),
+    ChangeSol(SolChangeCmd),
     // Fleet
     AddFleet(SolAddFleetCmd),
     ChangeFleet(SolChangeFleetCmd),
@@ -114,7 +113,7 @@ pub enum SolCtlCmd {
 
 pub(crate) enum SolCtlCmdRendered {
     // Solar system
-    ChangeSol(ICmdSolChangeFCtx),
+    ChangeSol(SolChangeCmd),
     // Fleet
     AddFleet(ICmdFleetAddFCtxRIds),
     ChangeFleet(ICmdFleetChangeFCtxRIds),
@@ -186,7 +185,7 @@ impl SolCtlCmd {
     pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<SolCtlCmdRendered, BackrefRenderError> {
         Ok(match self {
             // Solar system
-            Self::ChangeSol(cmd) => SolCtlCmdRendered::ChangeSol(cmd.inner),
+            Self::ChangeSol(cmd) => SolCtlCmdRendered::ChangeSol(cmd),
             // Fleet
             Self::AddFleet(cmd) => SolCtlCmdRendered::AddFleet(cmd.inner.render(resps)?),
             Self::ChangeFleet(cmd) => SolCtlCmdRendered::ChangeFleet(cmd.inner.render(resps)?),

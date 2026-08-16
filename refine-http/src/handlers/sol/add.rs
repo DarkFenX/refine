@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) struct AddSolReqBody {
     src_alias: Option<String>,
     #[serde(flatten)]
-    cmd: rs::AddSolCmd,
+    cmd: rs::SolAddCmd,
 }
 
 pub(crate) async fn add_sol(

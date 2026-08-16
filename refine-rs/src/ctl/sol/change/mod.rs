@@ -28,7 +28,6 @@ pub use sub_item_stance::{
 };
 pub use sub_item_subsystem::{SolAddSubsystemCmd, SolChangeSubsystemCmd};
 pub use sub_item_sw_effect::{SolAddSwEffectCmd, SolChangeSwEffectCmd};
-pub use sub_sol::SolChangeSolCmd;
 
 mod cmd;
 mod sub_fit_add;

@@ -100,7 +100,7 @@ pub use item_sw_effect::{GetItemChangeSwEffectError, ItemChangeSwEffectError};
 pub(in crate::ctl) use item_sw_effect::{
     ICmdSwEffectAddFCtx, ICmdSwEffectChangeFCtxBIds, ICmdSwEffectChangeFCtxRIds, ICmdSwEffectChangeICtx,
 };
-pub(in crate::ctl) use sol::{ICmdSolAddFCtx, ICmdSolChangeFCtx};
+pub use sol::{SolAddCmd, SolChangeCmd};
 
 mod fit;
 mod fleet;
