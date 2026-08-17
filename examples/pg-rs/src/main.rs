@@ -39,13 +39,15 @@ async fn main() {
         .unwrap();
     // Main part
     let mut sol = refine
-        .add_sol(None, rs::AddSolCmd::new().with_sec_zone(rs::SecZone::WSpace))
+        .add_sol(None, rs::SolAddCmd::new().with_sec_zone(rs::SecZone::WSpace))
         .await
         .unwrap();
     let resps = sol
         .change(vec![
-            rs::SolAddFleetCmd::new().into(),
-            rs::SolAddFitCmd::new().with_fleet_id(rs::FleetIdBr::Br(0)).into(),
+            rs::FleetAddCmd::new().into_sol_ctl(),
+            rs::FitAddCmdBr::new()
+                .with_fleet_id(rs::FleetIdBr::Br(0))
+                .into_sol_ctl(),
         ])
         .await
         .unwrap();
