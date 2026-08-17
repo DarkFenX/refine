@@ -1,41 +1,81 @@
 use crate::{
-    AddedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBr, ItemTypeId, Movement, ctl::shared::EffectModes,
-    err::BackrefRenderError,
+    AddedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, Movement,
+    ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdShipSetFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdShipSetICtx,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdShipSetFCtxRIds {
-    pub(in crate::ctl) fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdShipSetICtx,
+pub struct ShipSetCmd {
+    type_id: ItemTypeId,
+    state: Option<bool> = None,
+    coordinates: Option<Coordinates> = None,
+    movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    effect_modes: EffectModes = EffectModes::new(),
 }
 
-// Commands with incomplete context
+// Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdShipSetICtx {
-    pub(in crate::ctl) type_id: ItemTypeId,
-    pub(in crate::ctl) state: Option<bool> = None,
-    pub(in crate::ctl) coordinates: Option<Coordinates> = None,
-    pub(in crate::ctl) movement: Option<Movement> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+pub struct ShipSetCmdCtxFit {
+    fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: ShipSetCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct ShipSetCmdCtxFitBr {
+    fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: ShipSetCmd,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipSetCmd {
+    pub fn new(type_id: ItemTypeId) -> Self {
+        Self { type_id, .. }
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.movement = Some(movement);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipSetCmd {
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ShipSetCmdCtxFit {
+        ShipSetCmdCtxFit { fit_id, core: self }
+    }
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ShipSetCmdCtxFitBr {
+        ShipSetCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdShipSetFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipSetFCtxRIds, BackrefRenderError> {
-        Ok(ICmdShipSetFCtxRIds {
+impl ShipSetCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ShipSetCmdCtxFit, BackrefRenderError> {
+        Ok(ShipSetCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -43,23 +83,7 @@ impl ICmdShipSetFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdShipSetFCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<AddedItemIdsResp, GetFitSetShipError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_fit))
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitSetShipError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-}
-
-impl ICmdShipSetICtx {
+impl ShipSetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_ship = core_fit.set_ship(self.type_id, self.coordinates, self.movement);
         if let Some(state) = self.state {
@@ -68,4 +92,19 @@ impl ICmdShipSetICtx {
         self.effect_modes.apply(&mut core_ship);
         AddedItemIdsResp::from_core_ship(core_ship)
     }
+}
+
+impl ShipSetCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<AddedItemIdsResp, FitGetShipSetError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetShipSetError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
 }

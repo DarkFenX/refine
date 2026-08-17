@@ -61,13 +61,9 @@ pub use item_service::{
     ServiceChangeCmd, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, ServiceChangeError,
 };
 pub use item_ship::{
-    FitChangeShipError, GetFitChangeShipError, GetFitSetShipError, GetFitUnsetShipError, GetItemChangeShipError,
-    ItemChangeShipError,
-};
-pub(in crate::ctl) use item_ship::{
-    ICmdShipChangeFFitCtxBIds, ICmdShipChangeFFitCtxRIds, ICmdShipChangeFItemCtxBIds, ICmdShipChangeFItemCtxRIds,
-    ICmdShipChangeICtx, ICmdShipSetFCtxBIds, ICmdShipSetFCtxRIds, ICmdShipSetICtx, ICmdShipUnsetFCtxBIds,
-    ICmdShipUnsetFCtxRIds, ICmdShipUnsetICtx,
+    FitGetShipChangeError, FitGetShipSetError, FitGetShipUnsetError, FitShipChangeError, ItemGetShipChangeError,
+    ItemShipChangeError, ShipChangeCmd, ShipChangeCmdCtxAny, ShipChangeCmdCtxAnyBr, ShipChangeError, ShipSetCmd,
+    ShipSetCmdCtxFit, ShipSetCmdCtxFitBr, ShipUnsetCmd, ShipUnsetCmdCtxFit, ShipUnsetCmdCtxFitBr,
 };
 pub use item_skill::{
     FitGetSkillAddError, ItemGetSkillChangeError, SkillAddCmd, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr, SkillAddError,

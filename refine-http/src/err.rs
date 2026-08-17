@@ -287,22 +287,21 @@ impl ApiError {
                     rs::err::ItemGetServiceChangeError::ItemIsNotService(..) => (StatusCode::BAD_REQUEST, "SVC-001"),
                 },
                 // Item - ship
-                rs::err::ChangeSolEnumError::ShipSet(rs::err::GetFitSetShipError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::ShipSet(rs::err::FitGetShipSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::ShipChange(err_l2) => match err_l2 {
-                    rs::err::ChangeShipError::ShipChangeViaFit(err_l3) => match err_l3 {
-                        rs::err::GetFitChangeShipError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                        rs::err::GetFitChangeShipError::FitNoShip(..) => (StatusCode::BAD_REQUEST, "SHP-002"),
+                    rs::err::ShipChangeError::ViaFit(err_l3) => match err_l3 {
+                        rs::err::FitGetShipChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                        rs::err::FitGetShipChangeError::FitNoShip(..) => (StatusCode::BAD_REQUEST, "SHP-002"),
                     },
-                    rs::err::ChangeShipError::ShipChangeViaItem(rs::err::GetItemChangeShipError::ItemGet(err_l3)) => {
-                        match err_l3 {
-                            rs::err::core::GetShipError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                            rs::err::core::GetShipError::ItemIsNotShip(..) => (StatusCode::BAD_REQUEST, "SHP-001"),
-                        }
-                    }
+                    rs::err::ShipChangeError::ViaItem(rs::err::ItemGetShipChangeError::ItemGet(err_l3)) => match err_l3
+                    {
+                        rs::err::core::GetShipError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                        rs::err::core::GetShipError::ItemIsNotShip(..) => (StatusCode::BAD_REQUEST, "SHP-001"),
+                    },
                 },
-                rs::err::ChangeSolEnumError::ShipUnset(rs::err::GetFitUnsetShipError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::ShipUnset(rs::err::FitGetShipUnsetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 // Item - skill
@@ -466,7 +465,7 @@ impl ApiError {
                     rs::err::ItemGetServiceChangeError::ItemIsNotService(..) => (StatusCode::BAD_REQUEST, "SVC-001"),
                 },
                 // Item - ship
-                rs::err::FitCtlCmdError::ShipChange(rs::err::FitChangeShipError::FitNoShip(..)) => {
+                rs::err::FitCtlCmdError::ShipChange(rs::err::FitShipChangeError::FitNoShip(..)) => {
                     (StatusCode::BAD_REQUEST, "SHP-002")
                 }
                 // Item - skill
@@ -531,7 +530,7 @@ impl ApiError {
                 rs::err::ItemAddError::Service(rs::err::FitGetServiceAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddError::Ship(rs::err::GetFitSetShipError::FitGet(..)) => {
+                rs::err::ItemAddError::Ship(rs::err::FitGetShipSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Skill(err_l2) => match err_l2 {
@@ -594,7 +593,7 @@ impl ApiError {
                 rs::err::ItemCtlError::Service(rs::err::ServiceChangeError::ItemIsNotService(..)) => {
                     (StatusCode::BAD_REQUEST, "SVC-001")
                 }
-                rs::err::ItemCtlError::Ship(rs::err::ItemChangeShipError::ItemIsNotShip(..)) => {
+                rs::err::ItemCtlError::Ship(rs::err::ItemShipChangeError::ItemIsNotShip(..)) => {
                     (StatusCode::BAD_REQUEST, "SHP-001")
                 }
                 rs::err::ItemCtlError::Skill(err_l2) => match err_l2 {

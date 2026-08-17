@@ -1,16 +1,16 @@
 use crate::{
     AddedItemIdsResp, BoosterAddCmd, CharacterSetCmd, DroneAddCmd, FighterAddCmd, FitId, FwEffectAddCmd, ImplantAddCmd,
-    ItemSetShipCmd, ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd, SkillAddCmd, StanceSetCmd,
-    SubsystemAddCmd, SwEffectAddCmd,
+    ModuleAddCmd, ProjEffectAddCmd, RigAddCmd, ServiceAddCmd, ShipSetCmd, SkillAddCmd, StanceSetCmd, SubsystemAddCmd,
+    SwEffectAddCmd,
     ctl::core::{
         BoosterAddCmdCtxFit, CharacterSetCmdCtxFit, DroneAddCmdCtxFit, FighterAddCmdCtxFit, FwEffectAddCmdCtxFit,
-        ImplantAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit, SkillAddCmdCtxFit,
-        StanceSetCmdCtxFit, SubsystemAddCmdCtxFit,
+        ImplantAddCmdCtxFit, ModuleAddCmdCtxFit, RigAddCmdCtxFit, ServiceAddCmdCtxFit, ShipSetCmdCtxFit,
+        SkillAddCmdCtxFit, StanceSetCmdCtxFit, SubsystemAddCmdCtxFit,
     },
     err::{
         FitGetBoosterAddError, FitGetCharacterSetError, FitGetDroneAddError, FitGetFighterAddError,
         FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError,
-        FitGetSkillAddError, FitGetStanceSetError, FitGetSubsystemAddError, GetFitSetShipError, ProjEffectAddError,
+        FitGetShipSetError, FitGetSkillAddError, FitGetStanceSetError, FitGetSubsystemAddError, ProjEffectAddError,
     },
 };
 
@@ -30,7 +30,7 @@ pub enum ItemAddCmd {
     ProjEffect(ProjEffectAddCmd),
     Rig(RigAddCmdCtxFit),
     Service(ServiceAddCmdCtxFit),
-    Ship(ItemSetShipCmd),
+    Ship(ShipSetCmdCtxFit),
     Skill(SkillAddCmdCtxFit),
     Stance(StanceSetCmdCtxFit),
     Subsystem(SubsystemAddCmdCtxFit),
@@ -90,6 +90,11 @@ impl ServiceAddCmd {
         ItemAddCmd::Service(self.into_ctx_fit(fit_id))
     }
 }
+impl ShipSetCmd {
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
+        ItemAddCmd::Ship(self.into_ctx_fit(fit_id))
+    }
+}
 impl SkillAddCmd {
     pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
         ItemAddCmd::Skill(self.into_ctx_fit(fit_id))
@@ -127,7 +132,7 @@ impl ItemAddCmd {
             Self::ProjEffect(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Rig(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Service(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Ship(cmd) => Ok(cmd.inner.execute(core_sol)?),
+            Self::Ship(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Skill(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Stance(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Subsystem(cmd) => Ok(cmd.execute(core_sol)?),
@@ -159,7 +164,7 @@ pub enum ItemAddError {
     #[error("failed to add service")]
     Service(#[from] FitGetServiceAddError),
     #[error("failed to set ship")]
-    Ship(#[from] GetFitSetShipError),
+    Ship(#[from] FitGetShipSetError),
     #[error("failed to add skill")]
     Skill(#[from] FitGetSkillAddError),
     #[error("failed to set stance")]

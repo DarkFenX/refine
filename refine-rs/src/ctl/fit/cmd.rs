@@ -1,23 +1,23 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
-    FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FitChangeShipCmd,
-    FitSetShipCmd, FitUnsetShipCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr,
-    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd,
-    ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd,
+    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
+    ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd,
+    ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
     SubsystemAddCmd, SubsystemChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr,
         FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr,
-        ICmdShipChangeICtx, ICmdShipSetICtx, ICmdShipUnsetICtx, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr,
-        ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr,
-        RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr,
-        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr,
+        ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
+        ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr,
+        ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr,
+        SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr,
     },
     err::{
-        BackrefRenderError, DroneAddError, FighterAddError, FitChangeError, FitChangeShipError,
-        FitCharacterChangeError, FitStanceChangeError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
+        BackrefRenderError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError,
+        FitShipChangeError, FitStanceChangeError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
         ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError,
         ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError,
         ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
@@ -67,9 +67,9 @@ pub enum FitCtlCmd {
     AddService(ServiceAddCmd),
     ChangeService(ServiceChangeCmdCtxItemBr),
     // Item - ship
-    SetShip(FitSetShipCmd),
-    ChangeShip(FitChangeShipCmd),
-    UnsetShip(FitUnsetShipCmd),
+    SetShip(ShipSetCmd),
+    ChangeShip(ShipChangeCmd),
+    UnsetShip(ShipUnsetCmd),
     // Item - skill
     AddSkill(SkillAddCmd),
     ChangeSkill(SkillChangeCmdCtxItemBr),
@@ -120,9 +120,9 @@ pub(crate) enum FitCtlCmdRendered {
     AddService(ServiceAddCmd),
     ChangeService(ServiceChangeCmdCtxItem),
     // Item - ship
-    SetShip(ICmdShipSetICtx),
-    ChangeShip(ICmdShipChangeICtx),
-    UnsetShip(ICmdShipUnsetICtx),
+    SetShip(ShipSetCmd),
+    ChangeShip(ShipChangeCmd),
+    UnsetShip(ShipUnsetCmd),
     // Item - skill
     AddSkill(SkillAddCmd),
     ChangeSkill(SkillChangeCmdCtxItem),
@@ -296,6 +296,22 @@ impl ServiceChangeCmd {
         FitCtlCmd::ChangeService(self.into_ctx_item_br(item_id))
     }
 }
+// Item - ship
+impl ShipSetCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::SetShip(self)
+    }
+}
+impl ShipChangeCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::ChangeShip(self)
+    }
+}
+impl ShipUnsetCmd {
+    pub fn into_fit_ctl(self) -> FitCtlCmd {
+        FitCtlCmd::UnsetShip(self)
+    }
+}
 // Item - skill
 impl SkillAddCmd {
     pub fn into_fit_ctl(self) -> FitCtlCmd {
@@ -378,9 +394,9 @@ impl FitCtlCmd {
             Self::AddService(cmd) => FitCtlCmdRendered::AddService(cmd),
             Self::ChangeService(cmd) => FitCtlCmdRendered::ChangeService(cmd.render(resps)?),
             // Item - ship
-            Self::SetShip(cmd) => FitCtlCmdRendered::SetShip(cmd.inner),
-            Self::ChangeShip(cmd) => FitCtlCmdRendered::ChangeShip(cmd.inner),
-            Self::UnsetShip(cmd) => FitCtlCmdRendered::UnsetShip(cmd.inner),
+            Self::SetShip(cmd) => FitCtlCmdRendered::SetShip(cmd),
+            Self::ChangeShip(cmd) => FitCtlCmdRendered::ChangeShip(cmd),
+            Self::UnsetShip(cmd) => FitCtlCmdRendered::UnsetShip(cmd),
             // Item - skill
             Self::AddSkill(cmd) => FitCtlCmdRendered::AddSkill(cmd),
             Self::ChangeSkill(cmd) => FitCtlCmdRendered::ChangeSkill(cmd.render(resps)?),
@@ -507,7 +523,7 @@ pub enum FitCtlCmdError {
     ServiceChange(#[from] ItemGetServiceChangeError),
     // Item - ship
     #[error("failed to change ship")]
-    ShipChange(#[from] FitChangeShipError),
+    ShipChange(#[from] FitShipChangeError),
     // Item - skill
     #[error("failed to add skill")]
     SkillAdd(#[from] SkillAddError),

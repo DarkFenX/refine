@@ -1,59 +1,128 @@
 use crate::{
-    ChangedItemIdsResp, Coordinates, CtlCmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, Movement,
-    ctl::shared::EffectModes, err::BackrefRenderError,
+    ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
+    Movement, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
-// Commands with full context via fit ID
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdShipChangeFFitCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdShipChangeICtx = ICmdShipChangeICtx { .. },
-}
-pub(crate) struct ICmdShipChangeFFitCtxRIds {
-    fit_id: FitId,
-    ictx_cmd: ICmdShipChangeICtx,
-}
-
-// Commands with full context via item ID
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdShipChangeFItemCtxBIds {
-    pub(in crate::ctl) item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdShipChangeICtx = ICmdShipChangeICtx { .. },
-}
-pub(crate) struct ICmdShipChangeFItemCtxRIds {
-    item_id: ItemId,
-    ictx_cmd: ICmdShipChangeICtx,
-}
-
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdShipChangeICtx {
-    pub(in crate::ctl) type_id: Option<ItemTypeId> = None,
-    pub(in crate::ctl) state: Option<bool> = None,
-    pub(in crate::ctl) coordinates: Option<Coordinates> = None,
-    pub(in crate::ctl) movement: Option<Movement> = None,
+#[derive(Default)]
+pub struct ShipChangeCmd {
+    type_id: Option<ItemTypeId> = None,
+    state: Option<bool> = None,
+    coordinates: Option<Coordinates> = None,
+    movement: Option<Movement> = None,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub(in crate::ctl) effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes = EffectModes::new(),
+}
+
+// Extra context commands
+pub enum ShipChangeCmdCtxAny {
+    Fit(ShipChangeCmdCtxFit),
+    Item(ShipChangeCmdCtxItem),
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
+pub enum ShipChangeCmdCtxAnyBr {
+    Fit(ShipChangeCmdCtxFitBr),
+    Item(ShipChangeCmdCtxItemBr),
+}
+
+// Extra context commands - fit
+pub struct ShipChangeCmdCtxFit {
+    fit_id: FitId,
+    core: ShipChangeCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct ShipChangeCmdCtxFitBr {
+    fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: ShipChangeCmd = ShipChangeCmd { .. },
+}
+
+// Extra context commands - item
+pub struct ShipChangeCmdCtxItem {
+    item_id: ItemId,
+    core: ShipChangeCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct ShipChangeCmdCtxItemBr {
+    item_id: ItemIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: ShipChangeCmd = ShipChangeCmd { .. },
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipChangeCmd {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
+        self.type_id = Some(type_id);
+        self
+    }
+    pub fn with_state(mut self, state: bool) -> Self {
+        self.state = Some(state);
+        self
+    }
+    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
+        self.coordinates = Some(coordinates);
+        self
+    }
+    pub fn with_movement(mut self, movement: Movement) -> Self {
+        self.movement = Some(movement);
+        self
+    }
+    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+        self.effect_modes.extend(effect_modes);
+        self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipChangeCmd {
+    pub(in crate::ctl) fn into_ctx_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> ShipChangeCmdCtxAnyBr {
+        ShipChangeCmdCtxAnyBr::Fit(ShipChangeCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        })
+    }
+    pub(in crate::ctl) fn into_ctx_br_via_item(self, item_id: impl Into<ItemIdBr>) -> ShipChangeCmdCtxAnyBr {
+        ShipChangeCmdCtxAnyBr::Item(ShipChangeCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        })
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdShipChangeFFitCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipChangeFFitCtxRIds, BackrefRenderError> {
-        Ok(ICmdShipChangeFFitCtxRIds {
-            fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd,
+impl ShipChangeCmdCtxAnyBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ShipChangeCmdCtxAny, BackrefRenderError> {
+        Ok(match self {
+            Self::Fit(cmd) => ShipChangeCmdCtxAny::Fit(cmd.render(resps)?),
+            Self::Item(cmd) => ShipChangeCmdCtxAny::Item(cmd.render(resps)?),
         })
     }
 }
-impl ICmdShipChangeFItemCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdShipChangeFItemCtxRIds, BackrefRenderError> {
-        Ok(ICmdShipChangeFItemCtxRIds {
+
+impl ShipChangeCmdCtxFitBr {
+    fn render(self, resps: &CtlCmdResps) -> Result<ShipChangeCmdCtxFit, BackrefRenderError> {
+        Ok(ShipChangeCmdCtxFit {
+            fit_id: resps.render_fit_id(self.fit_id)?,
+            core: self.core,
+        })
+    }
+}
+
+impl ShipChangeCmdCtxItemBr {
+    fn render(self, resps: &CtlCmdResps) -> Result<ShipChangeCmdCtxItem, BackrefRenderError> {
+        Ok(ShipChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -61,59 +130,21 @@ impl ICmdShipChangeFItemCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdShipChangeFFitCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetFitChangeShipError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        let mut core_ship = match core_fit.get_ship_mut() {
-            Some(core_ship) => core_ship,
-            None => return Err(GetFitChangeShipError::FitNoShip(core_fit.get_fit_id())),
-        };
-        Ok(self.ictx_cmd.execute(&mut core_ship))
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitChangeShipError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-    #[error("fit {0} has no ship set")]
-    FitNoShip(FitId),
-}
-
-impl ICmdShipChangeFItemCtxRIds {
-    pub(in crate::ctl) fn execute(
-        self,
-        core_sol: &mut rc::SolarSystem,
-    ) -> Result<ChangedItemIdsResp, GetItemChangeShipError> {
-        let mut core_ship = core_sol.get_ship_mut(&self.item_id)?;
-        Ok(self.ictx_cmd.execute(&mut core_ship))
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetItemChangeShipError {
-    #[error(transparent)]
-    ItemGet(#[from] rc::err::GetShipError),
-}
-
-impl ICmdShipChangeICtx {
+impl ShipChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,
         core_fit: &mut rc::FitMut,
-    ) -> Result<ChangedItemIdsResp, FitChangeShipError> {
+    ) -> Result<ChangedItemIdsResp, FitShipChangeError> {
         let mut core_ship = match core_fit.get_ship_mut() {
             Some(core_ship) => core_ship,
-            None => return Err(FitChangeShipError::FitNoShip(core_fit.get_fit_id())),
+            None => return Err(FitShipChangeError::FitNoShip(core_fit.get_fit_id())),
         };
         Ok(self.execute(&mut core_ship))
     }
     pub(in crate::ctl) fn execute_via_item(
         self,
         core_item: &mut rc::ItemMut,
-    ) -> Result<ChangedItemIdsResp, ItemChangeShipError> {
+    ) -> Result<ChangedItemIdsResp, ItemShipChangeError> {
         let core_ship = core_item.dc_ship()?;
         Ok(self.execute(core_ship))
     }
@@ -134,15 +165,68 @@ impl ICmdShipChangeICtx {
         ChangedItemIdsResp::default()
     }
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum FitChangeShipError {
+pub enum FitShipChangeError {
     #[error("fit {0} has no ship set")]
     FitNoShip(FitId),
 }
-
 #[derive(thiserror::Error, Debug)]
-pub enum ItemChangeShipError {
+pub enum ItemShipChangeError {
     #[error(transparent)]
     ItemIsNotShip(#[from] rc::err::ItemKindMatchError),
+}
+
+impl ShipChangeCmdCtxAny {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ShipChangeError> {
+        match self {
+            Self::Fit(cmd) => Ok(cmd.execute(core_sol)?),
+            Self::Item(cmd) => Ok(cmd.execute(core_sol)?),
+        }
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ShipChangeError {
+    #[error(transparent)]
+    ViaFit(#[from] FitGetShipChangeError),
+    #[error(transparent)]
+    ViaItem(#[from] ItemGetShipChangeError),
+}
+
+impl ShipChangeCmdCtxFit {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, FitGetShipChangeError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute_via_fit(&mut core_fit)?)
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetShipChangeError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+    #[error("fit {0} has no ship set")]
+    FitNoShip(FitId),
+}
+impl From<FitShipChangeError> for FitGetShipChangeError {
+    fn from(err: FitShipChangeError) -> Self {
+        match err {
+            FitShipChangeError::FitNoShip(inner) => Self::FitNoShip(inner),
+        }
+    }
+}
+
+impl ShipChangeCmdCtxItem {
+    pub(in crate::ctl) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ChangedItemIdsResp, ItemGetShipChangeError> {
+        let mut core_ship = core_sol.get_ship_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_ship))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetShipChangeError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetShipError),
 }

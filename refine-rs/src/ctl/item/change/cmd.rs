@@ -1,10 +1,10 @@
 use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, CharacterChangeCmd, ChargeChangeCmd, DroneChangeCmd,
-    FighterChangeCmd, FwEffectChangeCmd, ImplantChangeCmd, ItemChangeShipCmd, ModuleChangeCmd, ProjEffectChangeCmd,
-    RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, StanceChangeCmd, SubsystemChangeCmd, SwEffectChangeCmd,
+    FighterChangeCmd, FwEffectChangeCmd, ImplantChangeCmd, ModuleChangeCmd, ProjEffectChangeCmd, RigChangeCmd,
+    ServiceChangeCmd, ShipChangeCmd, SkillChangeCmd, StanceChangeCmd, SubsystemChangeCmd, SwEffectChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, DroneChangeError, FighterChangeError,
-        FwEffectChangeError, ImplantChangeError, ItemChangeShipError, ItemCharacterChangeError, ItemStanceChangeError,
+        FwEffectChangeError, ImplantChangeError, ItemCharacterChangeError, ItemShipChangeError, ItemStanceChangeError,
         ModuleChangeError, ProjEffectChangeError, RigChangeError, ServiceChangeError, SkillChangeError,
         SubsystemChangeError, SwEffectChangeError,
     },
@@ -28,7 +28,7 @@ pub enum ItemCtlCmd {
     ProjEffect(ProjEffectChangeCmd),
     Rig(RigChangeCmd),
     Service(ServiceChangeCmd),
-    Ship(ItemChangeShipCmd),
+    Ship(ShipChangeCmd),
     Skill(SkillChangeCmd),
     Stance(StanceChangeCmd),
     Subsystem(SubsystemChangeCmd),
@@ -98,6 +98,11 @@ impl ServiceChangeCmd {
         ItemCtlCmd::Service(self)
     }
 }
+impl ShipChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Ship(self)
+    }
+}
 impl SkillChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Skill(self)
@@ -137,7 +142,7 @@ impl ItemCtlCmd {
             Self::ProjEffect(cmd) => Ok(cmd.execute(core_item)?),
             Self::Rig(cmd) => Ok(cmd.execute(core_item)?),
             Self::Service(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
+            Self::Ship(cmd) => Ok(cmd.execute_via_item(core_item)?),
             Self::Skill(cmd) => Ok(cmd.execute(core_item)?),
             Self::Stance(cmd) => Ok(cmd.execute_via_item(core_item)?),
             Self::Subsystem(cmd) => Ok(cmd.execute(core_item)?),
@@ -173,7 +178,7 @@ pub enum ItemCtlError {
     #[error("failed to change service")]
     Service(#[from] ServiceChangeError),
     #[error("failed to change ship")]
-    Ship(#[from] ItemChangeShipError),
+    Ship(#[from] ItemShipChangeError),
     #[error("failed to change skill")]
     Skill(#[from] SkillChangeError),
     #[error("failed to change stance")]

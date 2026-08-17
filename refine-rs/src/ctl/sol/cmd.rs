@@ -1,4 +1,3 @@
-use super::sub_item_ship::SolChangeShipCmdRIds;
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
@@ -6,8 +5,8 @@ use crate::{
     FitChangeCmdBr, FitIdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd,
     FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
     ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
-    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd,
-    SolChangeCmd, SolChangeShipCmd, SolSetShipCmd, SolUnsetShipCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
+    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
     SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
@@ -18,28 +17,29 @@ use crate::{
         FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FitChangeCmdCtxFit, FitChangeCmdCtxFitBr,
         FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetAddCmd, FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr,
         FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, FwEffectAddCmdCtxFit, FwEffectAddCmdCtxFitBr,
-        FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds,
-        ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr,
-        ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem,
-        ModuleChangeCmdCtxItemBr, ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit,
-        RigAddCmdCtxFitBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
-        ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr,
-        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, StanceChangeCmdCtxAny, StanceChangeCmdCtxAnyBr,
-        StanceSetCmdCtxFit, StanceSetCmdCtxFitBr, StanceUnsetCmdCtxFit, StanceUnsetCmdCtxFitBr, SubsystemAddCmdCtxFit,
-        SubsystemAddCmdCtxFitBr, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem,
-        SwEffectChangeCmdCtxItemBr,
+        FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
+        ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
+        ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr,
+        ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit, RigAddCmdCtxFitBr,
+        RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
+        ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, ShipChangeCmdCtxAny, ShipChangeCmdCtxAnyBr,
+        ShipSetCmdCtxFit, ShipSetCmdCtxFitBr, ShipUnsetCmdCtxFit, ShipUnsetCmdCtxFitBr, SkillAddCmdCtxFit,
+        SkillAddCmdCtxFitBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, StanceChangeCmdCtxAny,
+        StanceChangeCmdCtxAnyBr, StanceSetCmdCtxFit, StanceSetCmdCtxFitBr, StanceUnsetCmdCtxFit,
+        StanceUnsetCmdCtxFitBr, SubsystemAddCmdCtxFit, SubsystemAddCmdCtxFitBr, SubsystemChangeCmdCtxItem,
+        SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
     },
     err::{
-        BackrefRenderError, ChangeShipError, CharacterChangeError, FitAddError, FitGetBoosterAddError,
-        FitGetCharacterSetError, FitGetCharacterUnsetError, FitGetDroneAddError, FitGetFighterAddError,
-        FitGetFitChangeError, FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError,
-        FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError, FitGetStanceSetError,
+        BackrefRenderError, CharacterChangeError, FitAddError, FitGetBoosterAddError, FitGetCharacterSetError,
+        FitGetCharacterUnsetError, FitGetDroneAddError, FitGetFighterAddError, FitGetFitChangeError,
+        FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError,
+        FitGetServiceAddError, FitGetShipSetError, FitGetShipUnsetError, FitGetSkillAddError, FitGetStanceSetError,
         FitGetStanceUnsetError, FitGetSubsystemAddError, FleetAddError, FleetGetFleetChangeError,
-        FleetGetFleetRemoveError, GetFitSetShipError, GetFitUnsetShipError, ItemGetAutochargeChangeError,
-        ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError,
-        ItemGetFwEffectChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError,
-        ItemGetProjEffectChangeError, ItemGetRigChangeError, ItemGetServiceChangeError, ItemGetSkillChangeError,
-        ItemGetSubsystemChangeError, ItemGetSwEffectChangeError, ProjEffectAddError, StanceChangeError,
+        FleetGetFleetRemoveError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetChargeChangeError,
+        ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError, ItemGetImplantChangeError,
+        ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetProjEffectChangeError, ItemGetRigChangeError,
+        ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ItemGetSwEffectChangeError,
+        ProjEffectAddError, ShipChangeError, StanceChangeError,
     },
 };
 
@@ -97,9 +97,9 @@ pub enum SolCtlCmd {
     AddService(ServiceAddCmdCtxFitBr),
     ChangeService(ServiceChangeCmdCtxItemBr),
     // Item - ship
-    SetShip(SolSetShipCmd),
-    ChangeShip(SolChangeShipCmd),
-    UnsetShip(SolUnsetShipCmd),
+    SetShip(ShipSetCmdCtxFitBr),
+    ChangeShip(ShipChangeCmdCtxAnyBr),
+    UnsetShip(ShipUnsetCmdCtxFitBr),
     // Item - skill
     AddSkill(SkillAddCmdCtxFitBr),
     ChangeSkill(SkillChangeCmdCtxItemBr),
@@ -164,9 +164,9 @@ pub(crate) enum SolCtlCmdRendered {
     AddService(ServiceAddCmdCtxFit),
     ChangeService(ServiceChangeCmdCtxItem),
     // Item - ship
-    SetShip(ICmdShipSetFCtxRIds),
-    ChangeShip(SolChangeShipCmdRIds),
-    UnsetShip(ICmdShipUnsetFCtxRIds),
+    SetShip(ShipSetCmdCtxFit),
+    ChangeShip(ShipChangeCmdCtxAny),
+    UnsetShip(ShipUnsetCmdCtxFit),
     // Item - skill
     AddSkill(SkillAddCmdCtxFit),
     ChangeSkill(SkillChangeCmdCtxItem),
@@ -419,6 +419,25 @@ impl ServiceChangeCmd {
         SolCtlCmd::ChangeService(self.into_ctx_item_br(item_id))
     }
 }
+// Item - ship
+impl ShipSetCmd {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::SetShip(self.into_ctx_fit_br(fit_id))
+    }
+}
+impl ShipChangeCmd {
+    pub fn into_sol_ctl_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeShip(self.into_ctx_br_via_fit(fit_id))
+    }
+    pub fn into_sol_ctl_via_item(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeShip(self.into_ctx_br_via_item(item_id))
+    }
+}
+impl ShipUnsetCmd {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::UnsetShip(self.into_ctx_fit_br(fit_id))
+    }
+}
 // Item - skill
 impl SkillAddCmd {
     pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
@@ -526,9 +545,9 @@ impl SolCtlCmd {
             Self::AddService(cmd) => SolCtlCmdRendered::AddService(cmd.render(resps)?),
             Self::ChangeService(cmd) => SolCtlCmdRendered::ChangeService(cmd.render(resps)?),
             // Item - ship
-            Self::SetShip(cmd) => SolCtlCmdRendered::SetShip(cmd.inner.render(resps)?),
+            Self::SetShip(cmd) => SolCtlCmdRendered::SetShip(cmd.render(resps)?),
             Self::ChangeShip(cmd) => SolCtlCmdRendered::ChangeShip(cmd.render(resps)?),
-            Self::UnsetShip(cmd) => SolCtlCmdRendered::UnsetShip(cmd.inner.render(resps)?),
+            Self::UnsetShip(cmd) => SolCtlCmdRendered::UnsetShip(cmd.render(resps)?),
             // Item - skill
             Self::AddSkill(cmd) => SolCtlCmdRendered::AddSkill(cmd.render(resps)?),
             Self::ChangeSkill(cmd) => SolCtlCmdRendered::ChangeSkill(cmd.render(resps)?),
@@ -700,11 +719,11 @@ pub enum ChangeSolEnumError {
     ServiceChange(#[from] ItemGetServiceChangeError),
     // Item - ship
     #[error("failed to set ship")]
-    ShipSet(#[from] GetFitSetShipError),
+    ShipSet(#[from] FitGetShipSetError),
     #[error("failed to change ship")]
-    ShipChange(#[from] ChangeShipError),
+    ShipChange(#[from] ShipChangeError),
     #[error("failed to unset ship")]
-    ShipUnset(#[from] GetFitUnsetShipError),
+    ShipUnset(#[from] FitGetShipUnsetError),
     // Item - skill
     #[error("failed to add skill")]
     SkillAdd(#[from] FitGetSkillAddError),
