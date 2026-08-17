@@ -10,3 +10,4 @@ mod get;
 mod remove;
 mod shared;
 mod switch_src;
+mod batch;
