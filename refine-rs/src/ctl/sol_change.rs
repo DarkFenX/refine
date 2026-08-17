@@ -187,306 +187,306 @@ pub(crate) enum SolCtlCmdRendered {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Solar system
 impl SolChangeCmd {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeSol(self)
     }
 }
 // Fleet
 impl FleetAddCmd {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFleet(self.into_br())
     }
 }
 impl FleetAddCmdBr {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFleet(self)
     }
 }
 impl FleetChangeCmd {
-    pub fn into_sol_ctl(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFleet(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FleetChangeCmdBr {
-    pub fn into_sol_ctl(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFleet(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FleetRemoveCmd {
-    pub fn into_sol_ctl(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::RemoveFleet(self.into_ctx_fleet_br(fleet_id))
     }
 }
 // Fit
 impl FitAddCmd {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFit(self.into_br())
     }
 }
 impl FitAddCmdBr {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFit(self)
     }
 }
 impl FitChangeCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFit(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitChangeCmdBr {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFit(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitRemoveCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::RemoveFit(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item
 impl ItemRemoveCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::RemoveItem(self.into_ctx_item_br(item_id))
     }
 }
 // Item - autocharge
 impl AutochargeChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeAutocharge(self.into_ctx_item_br(item_id))
     }
 }
 // Item - booster
 impl BoosterAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddBooster(self.into_ctx_fit_br(fit_id))
     }
 }
 impl BoosterChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeBooster(self.into_ctx_item_br(item_id))
     }
 }
 // Item - character
 impl CharacterSetCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::SetCharacter(self.into_ctx_fit_br(fit_id))
     }
 }
 impl CharacterChangeCmd {
-    pub fn into_sol_ctl_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeCharacter(self.into_ctx_br_via_fit(fit_id))
     }
-    pub fn into_sol_ctl_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeCharacter(self.into_ctx_br_via_item(item_id))
     }
 }
 impl CharacterUnsetCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::UnsetCharacter(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - charge
 impl ChargeChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeCharge(self.into_ctx_item_br(item_id))
     }
 }
 // Item - drone
 impl DroneAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddDrone(self.into_ctx_fit_br(fit_id))
     }
 }
 impl DroneAddCmdBr {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddDrone(self.into_ctx_fit_br(fit_id))
     }
 }
 impl DroneChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeDrone(self.into_ctx_item_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeDrone(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fighter
 impl FighterAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFighter(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FighterAddCmdBr {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFighter(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FighterChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFighter(self.into_ctx_item_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFighter(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fit-wide effect
 impl FwEffectAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddFwEffect(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FwEffectChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeFwEffect(self.into_ctx_item_br(item_id))
     }
 }
 // Item - implant
 impl ImplantAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddImplant(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ImplantChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeImplant(self.into_ctx_item_br(item_id))
     }
 }
 // Item - module
 impl ModuleAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddModule(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ModuleAddCmdBr {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddModule(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ModuleChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeModule(self.into_ctx_item_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeModule(self.into_ctx_item_br(item_id))
     }
 }
 // Item - projected effect
 impl ProjEffectAddCmd {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddProjEffect(self.into_br())
     }
 }
 impl ProjEffectAddCmdBr {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddProjEffect(self)
     }
 }
 impl ProjEffectChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeProjEffect(self.into_ctx_item_br(item_id))
     }
 }
 impl ProjEffectChangeCmdBr {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeProjEffect(self.into_ctx_item_br(item_id))
     }
 }
 // Item - rig
 impl RigAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddRig(self.into_ctx_fit_br(fit_id))
     }
 }
 impl RigChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeRig(self.into_ctx_item_br(item_id))
     }
 }
 // Item - service
 impl ServiceAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddService(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ServiceChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeService(self.into_ctx_item_br(item_id))
     }
 }
 // Item - ship
 impl ShipSetCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::SetShip(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ShipChangeCmd {
-    pub fn into_sol_ctl_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeShip(self.into_ctx_br_via_fit(fit_id))
     }
-    pub fn into_sol_ctl_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeShip(self.into_ctx_br_via_item(item_id))
     }
 }
 impl ShipUnsetCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::UnsetShip(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - skill
 impl SkillAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddSkill(self.into_ctx_fit_br(fit_id))
     }
 }
 impl SkillChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeSkill(self.into_ctx_item_br(item_id))
     }
 }
 // Item - stance
 impl StanceSetCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::SetStance(self.into_ctx_fit_br(fit_id))
     }
 }
 impl StanceChangeCmd {
-    pub fn into_sol_ctl_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeStance(self.into_ctx_br_via_fit(fit_id))
     }
-    pub fn into_sol_ctl_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeStance(self.into_ctx_br_via_item(item_id))
     }
 }
 impl StanceUnsetCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::UnsetStance(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - subsystem
 impl SubsystemAddCmd {
-    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddSubsystem(self.into_ctx_fit_br(fit_id))
     }
 }
 impl SubsystemChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeSubsystem(self.into_ctx_item_br(item_id))
     }
 }
 // Item - system-wide effect
 impl SwEffectAddCmd {
-    pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
+    pub fn into_sol(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::AddSwEffect(self)
     }
 }
 impl SwEffectChangeCmd {
-    pub fn into_sol_ctl(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
+    pub fn into_sol(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ChangeSwEffect(self.into_ctx_item_br(item_id))
     }
 }

@@ -39,87 +39,87 @@ pub enum ItemChangeEnumCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Autocharge(self)
     }
 }
 impl BoosterChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Booster(self)
     }
 }
 impl CharacterChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Character(self)
     }
 }
 impl ChargeChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Charge(self)
     }
 }
 impl DroneChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Drone(self)
     }
 }
 impl FighterChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Fighter(self)
     }
 }
 impl FwEffectChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::FwEffect(self)
     }
 }
 impl ImplantChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Implant(self)
     }
 }
 impl ModuleChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Module(self)
     }
 }
 impl ProjEffectChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::ProjEffect(self)
     }
 }
 impl RigChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Rig(self)
     }
 }
 impl ServiceChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Service(self)
     }
 }
 impl ShipChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Ship(self)
     }
 }
 impl SkillChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Skill(self)
     }
 }
 impl StanceChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Stance(self)
     }
 }
 impl SubsystemChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::Subsystem(self)
     }
 }
 impl SwEffectChangeCmd {
-    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+    pub fn into_item(self) -> ItemChangeEnumCmd {
         ItemChangeEnumCmd::SwEffect(self)
     }
 }
