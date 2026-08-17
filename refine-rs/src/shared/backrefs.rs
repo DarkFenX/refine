@@ -1,8 +1,8 @@
 use crate::{CmdResps, FitId, FleetId, ItemId, err::BrResolveError};
 
-pub(crate) trait CtlCmdBr {
+pub(crate) trait BrResolvable {
     type Target;
-    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError>;
+    fn br_resolve(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError>;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,10 +22,10 @@ impl From<FleetId> for FleetIdBr {
         FleetIdBr::Id(fleet_id)
     }
 }
-impl CtlCmdBr for FleetIdBr {
+impl BrResolvable for FleetIdBr {
     type Target = FleetId;
-    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
-        ctl_cmd_resps.render_fleet_id(self)
+    fn br_resolve(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        ctl_cmd_resps.resolve_fleet_id(self)
     }
 }
 
@@ -46,10 +46,10 @@ impl From<FitId> for FitIdBr {
         FitIdBr::Id(fit_id)
     }
 }
-impl CtlCmdBr for FitIdBr {
+impl BrResolvable for FitIdBr {
     type Target = FitId;
-    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
-        ctl_cmd_resps.render_fit_id(self)
+    fn br_resolve(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        ctl_cmd_resps.resolve_fit_id(self)
     }
 }
 
@@ -71,10 +71,10 @@ impl From<ItemId> for ItemIdBr {
         ItemIdBr::Id(item_id)
     }
 }
-impl CtlCmdBr for ItemIdBr {
+impl BrResolvable for ItemIdBr {
     type Target = ItemId;
-    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
-        ctl_cmd_resps.render_item_id(self)
+    fn br_resolve(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        ctl_cmd_resps.resolve_item_id(self)
     }
 }
 

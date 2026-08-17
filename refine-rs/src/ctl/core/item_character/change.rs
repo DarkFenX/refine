@@ -105,30 +105,30 @@ impl CharacterChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterChangeCmdCtxAnyBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxAny, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxAny, BrResolveError> {
         Ok(match self {
-            Self::Fit(cmd) => CharacterChangeCmdCtxAny::Fit(cmd.render(resps)?),
-            Self::Item(cmd) => CharacterChangeCmdCtxAny::Item(cmd.render(resps)?),
+            Self::Fit(cmd) => CharacterChangeCmdCtxAny::Fit(cmd.br_resolve(resps)?),
+            Self::Item(cmd) => CharacterChangeCmdCtxAny::Item(cmd.br_resolve(resps)?),
         })
     }
 }
 
 impl CharacterChangeCmdCtxFitBr {
-    fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxFit, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxFit, BrResolveError> {
         Ok(CharacterChangeCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }
 }
 
 impl CharacterChangeCmdCtxItemBr {
-    fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxItem, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxItem, BrResolveError> {
         Ok(CharacterChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core,
         })
     }

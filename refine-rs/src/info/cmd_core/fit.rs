@@ -69,10 +69,10 @@ impl FitInfoCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmdBr {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
         Ok(FitInfoCmd {
             item: InfoModes::from_compact_br(self.item, resps)?,
             shared: self.shared,

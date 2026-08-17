@@ -21,7 +21,7 @@ impl SolarSystem<'_> {
         self.exec_standard_fallible(move |core_sol| {
             let ctl_cmd_resp = ctl_cmd.execute(core_sol)?;
             let cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
-            let info_cmd = info_cmd.render(&cmd_resps)?;
+            let info_cmd = info_cmd.br_resolve(&cmd_resps)?;
             let sol_info = info_cmd.execute(sol_id, src_alias, core_sol);
             let ctl_cmd_resp = cmd_resps.into_iter().next().unwrap();
             Ok((ctl_cmd_resp, sol_info))

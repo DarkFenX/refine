@@ -96,22 +96,22 @@ impl FleetChangeCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetChangeCmdBr {
-    fn render(self, resps: &CmdResps) -> Result<FleetChangeCmd, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<FleetChangeCmd, BrResolveError> {
         Ok(FleetChangeCmd {
-            add_fit_ids: resps.render_fit_ids(self.add_fit_ids)?,
-            rm_fit_ids: resps.render_fit_ids(self.rm_fit_ids)?,
+            add_fit_ids: resps.resolve_fit_ids(self.add_fit_ids)?,
+            rm_fit_ids: resps.resolve_fit_ids(self.rm_fit_ids)?,
         })
     }
 }
 
 impl FleetChangeCmdCtxFleetBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FleetChangeCmdCtxFleet, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FleetChangeCmdCtxFleet, BrResolveError> {
         Ok(FleetChangeCmdCtxFleet {
-            fleet_id: resps.render_fleet_id(self.fleet_id)?,
-            core: self.core.render(resps)?,
+            fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }

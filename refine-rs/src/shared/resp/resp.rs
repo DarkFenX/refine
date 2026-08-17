@@ -2,7 +2,7 @@ use rc::ItemCommon;
 
 use crate::{FitId, FleetId, ItemId};
 
-#[derive(Copy, Clone)]
+#[derive(Clone)]
 pub enum CmdResp {
     AddedFleetId(AddedFleetIdResp),
     AddedFitId(AddedFitIdResp),

@@ -46,12 +46,12 @@ impl FleetRemoveCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetRemoveCmdCtxFleetBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FleetRemoveCmdCtxFleet, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FleetRemoveCmdCtxFleet, BrResolveError> {
         Ok(FleetRemoveCmdCtxFleet {
-            fleet_id: resps.render_fleet_id(self.fleet_id)?,
+            fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
             core: self.core,
         })
     }

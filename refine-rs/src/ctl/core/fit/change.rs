@@ -113,14 +113,14 @@ impl FitChangeCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitChangeCmd, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FitChangeCmd, BrResolveError> {
         Ok(FitChangeCmd {
             shared: self.shared,
             fleet_id: match self.fleet_id {
-                TriStateField::Value(fleet_id) => TriStateField::Value(resps.render_fleet_id(fleet_id)?),
+                TriStateField::Value(fleet_id) => TriStateField::Value(resps.resolve_fleet_id(fleet_id)?),
                 TriStateField::None => TriStateField::None,
                 TriStateField::Absent => TriStateField::Absent,
             },
@@ -129,10 +129,10 @@ impl FitChangeCmdBr {
 }
 
 impl FitChangeCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitChangeCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FitChangeCmdCtxFit, BrResolveError> {
         Ok(FitChangeCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
-            core: self.core.render(resps)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }

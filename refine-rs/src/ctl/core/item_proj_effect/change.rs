@@ -136,22 +136,22 @@ impl ProjEffectChangeCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ProjEffectChangeCmdCtxItem, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ProjEffectChangeCmdCtxItem, BrResolveError> {
         Ok(ProjEffectChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
-            core: self.core.render(resps)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }
 
 impl ProjEffectChangeCmdBr {
-    fn render(self, resps: &CmdResps) -> Result<ProjEffectChangeCmd, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<ProjEffectChangeCmd, BrResolveError> {
         Ok(ProjEffectChangeCmd {
-            add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
-            rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,
+            add_proj_item_ids: resps.resolve_item_ids(self.add_proj_item_ids)?,
+            rm_proj_item_ids: resps.resolve_item_ids(self.rm_proj_item_ids)?,
             shared: self.shared,
         })
     }

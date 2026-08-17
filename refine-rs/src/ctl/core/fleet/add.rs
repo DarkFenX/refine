@@ -49,12 +49,12 @@ impl FleetAddCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FleetAddCmd, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FleetAddCmd, BrResolveError> {
         Ok(FleetAddCmd {
-            fit_ids: resps.render_fit_ids(self.fit_ids)?,
+            fit_ids: resps.resolve_fit_ids(self.fit_ids)?,
         })
     }
 }

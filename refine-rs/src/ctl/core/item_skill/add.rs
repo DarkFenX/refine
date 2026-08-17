@@ -63,12 +63,12 @@ impl SkillAddCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<SkillAddCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<SkillAddCmdCtxFit, BrResolveError> {
         Ok(SkillAddCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }

@@ -46,12 +46,12 @@ impl FitRemoveCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitRemoveCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FitRemoveCmdCtxFit, BrResolveError> {
         Ok(FitRemoveCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }

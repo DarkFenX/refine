@@ -73,12 +73,12 @@ impl BoosterChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<BoosterChangeCmdCtxItem, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<BoosterChangeCmdCtxItem, BrResolveError> {
         Ok(BoosterChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core,
         })
     }

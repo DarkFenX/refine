@@ -62,12 +62,12 @@ impl ImplantAddCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ImplantAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ImplantAddCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ImplantAddCmdCtxFit, BrResolveError> {
         Ok(ImplantAddCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }

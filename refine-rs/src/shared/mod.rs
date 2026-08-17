@@ -1,4 +1,4 @@
-pub(crate) use backrefs::CtlCmdBr;
+pub(crate) use backrefs::BrResolvable;
 pub use backrefs::{FitIdBr, FleetIdBr, ItemIdBr};
 pub use resp::{
     AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BrResolveError, ChangedItemIdsResp, CmdResp, CmdResps,

@@ -62,12 +62,12 @@ impl CharacterSetCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterSetCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterSetCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<CharacterSetCmdCtxFit, BrResolveError> {
         Ok(CharacterSetCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }

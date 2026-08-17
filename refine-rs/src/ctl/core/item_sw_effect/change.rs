@@ -66,12 +66,12 @@ impl SwEffectChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<SwEffectChangeCmdCtxItem, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<SwEffectChangeCmdCtxItem, BrResolveError> {
         Ok(SwEffectChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core,
         })
     }

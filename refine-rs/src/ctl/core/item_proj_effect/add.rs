@@ -87,12 +87,12 @@ impl ProjEffectAddCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ProjEffectAddCmd, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ProjEffectAddCmd, BrResolveError> {
         Ok(ProjEffectAddCmd {
-            proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
             shared: self.shared,
         })
     }

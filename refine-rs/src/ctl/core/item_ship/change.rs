@@ -115,30 +115,30 @@ impl ShipChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmdCtxAnyBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxAny, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxAny, BrResolveError> {
         Ok(match self {
-            Self::Fit(cmd) => ShipChangeCmdCtxAny::Fit(cmd.render(resps)?),
-            Self::Item(cmd) => ShipChangeCmdCtxAny::Item(cmd.render(resps)?),
+            Self::Fit(cmd) => ShipChangeCmdCtxAny::Fit(cmd.br_resolve(resps)?),
+            Self::Item(cmd) => ShipChangeCmdCtxAny::Item(cmd.br_resolve(resps)?),
         })
     }
 }
 
 impl ShipChangeCmdCtxFitBr {
-    fn render(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxFit, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxFit, BrResolveError> {
         Ok(ShipChangeCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }
 }
 
 impl ShipChangeCmdCtxItemBr {
-    fn render(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxItem, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxItem, BrResolveError> {
         Ok(ShipChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core,
         })
     }

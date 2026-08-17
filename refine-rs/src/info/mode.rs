@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-use crate::{CmdResps, err::BrResolveError, shared::CtlCmdBr};
+use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 
 // Representation form which is more convenient for use by info builders
 #[derive(Clone)]
@@ -81,7 +81,7 @@ impl<M, I> InfoModes<M, I> {
     ) -> Result<Self, BrResolveError>
     where
         M: Copy,
-        B: CtlCmdBr<Target = I>,
+        B: BrResolvable<Target = I>,
         I: Eq + Hash,
     {
         Ok(Self {
@@ -92,7 +92,7 @@ impl<M, I> InfoModes<M, I> {
                 .flat_map(|(mode, backrefs)| {
                     backrefs
                         .into_iter()
-                        .map(move |backref| backref.render(ctl_cmd_resps).map(|id| (id, mode)))
+                        .map(move |backref| backref.br_resolve(ctl_cmd_resps).map(|id| (id, mode)))
                 })
                 .collect::<Result<_, _>>()?,
         })

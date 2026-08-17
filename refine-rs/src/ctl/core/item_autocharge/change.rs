@@ -61,12 +61,12 @@ impl AutochargeChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<AutochargeChangeCmdCtxItem, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<AutochargeChangeCmdCtxItem, BrResolveError> {
         Ok(AutochargeChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core,
         })
     }

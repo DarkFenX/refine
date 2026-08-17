@@ -105,30 +105,30 @@ impl StanceChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceChangeCmdCtxAnyBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxAny, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxAny, BrResolveError> {
         Ok(match self {
-            Self::Fit(cmd) => StanceChangeCmdCtxAny::Fit(cmd.render(resps)?),
-            Self::Item(cmd) => StanceChangeCmdCtxAny::Item(cmd.render(resps)?),
+            Self::Fit(cmd) => StanceChangeCmdCtxAny::Fit(cmd.br_resolve(resps)?),
+            Self::Item(cmd) => StanceChangeCmdCtxAny::Item(cmd.br_resolve(resps)?),
         })
     }
 }
 
 impl StanceChangeCmdCtxFitBr {
-    fn render(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxFit, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxFit, BrResolveError> {
         Ok(StanceChangeCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core,
         })
     }
 }
 
 impl StanceChangeCmdCtxItemBr {
-    fn render(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxItem, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxItem, BrResolveError> {
         Ok(StanceChangeCmdCtxItem {
-            item_id: resps.render_item_id(self.item_id)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core,
         })
     }

@@ -684,7 +684,7 @@ impl From<JsonRejection> for ApiError {
 impl From<rs::err::SolBatchError> for ApiError {
     fn from(err: rs::err::SolBatchError) -> Self {
         match err {
-            rs::err::SolBatchError::Render(index, inner) => {
+            rs::err::SolBatchError::BrResolve(index, inner) => {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
             rs::err::SolBatchError::CtlExec(index, inner) => Self::SolBatch(ApiErrorIndexed { index, error: inner }),
@@ -694,7 +694,7 @@ impl From<rs::err::SolBatchError> for ApiError {
 impl From<rs::err::FitChangeBatchError> for ApiError {
     fn from(err: rs::err::FitChangeBatchError) -> Self {
         match err {
-            rs::err::FitChangeBatchError::Render(index, inner) => {
+            rs::err::FitChangeBatchError::BrResolve(index, inner) => {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
             rs::err::FitChangeBatchError::CtlExec(index, inner) => {

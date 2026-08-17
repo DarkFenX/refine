@@ -27,8 +27,8 @@ fn execute_commands(
     let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
-            .render(&ctl_cmd_resps)
-            .map_err(|render_err| FitChangeBatchError::from_ctl_render(index, render_err))?
+            .br_resolve(&ctl_cmd_resps)
+            .map_err(|br_err| FitChangeBatchError::from_br_resolve(index, br_err))?
             .execute(core_fit)
             .map_err(|exec_err| FitChangeBatchError::from_ctl_exec(index, exec_err))?;
         ctl_cmd_resps.append(ctl_cmd_resp);
@@ -39,13 +39,13 @@ fn execute_commands(
 #[derive(Debug, thiserror::Error)]
 pub enum FitChangeBatchError {
     #[error("command #{0} failed")]
-    Render(usize, #[source] BrResolveError),
+    BrResolve(usize, #[source] BrResolveError),
     #[error("command #{0} failed")]
     CtlExec(usize, #[source] FitChangeEnumError),
 }
 impl FitChangeBatchError {
-    fn from_ctl_render(cmd_idx: usize, render_err: BrResolveError) -> Self {
-        Self::Render(cmd_idx, render_err)
+    fn from_br_resolve(cmd_idx: usize, br_err: BrResolveError) -> Self {
+        Self::BrResolve(cmd_idx, br_err)
     }
     fn from_ctl_exec(cmd_idx: usize, exec_err: FitChangeEnumError) -> Self {
         Self::CtlExec(cmd_idx, exec_err)

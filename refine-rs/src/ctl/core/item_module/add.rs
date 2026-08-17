@@ -163,21 +163,21 @@ impl ModuleAddCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ModuleAddCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ModuleAddCmdCtxFit, BrResolveError> {
         Ok(ModuleAddCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
-            core: self.core.render(resps)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }
 
 impl ModuleAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ModuleAddCmd, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ModuleAddCmd, BrResolveError> {
         Ok(ModuleAddCmd {
-            proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
             shared: self.shared,
         })
     }

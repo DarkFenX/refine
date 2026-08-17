@@ -149,21 +149,21 @@ impl DroneAddCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneAddCmdCtxFit, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<DroneAddCmdCtxFit, BrResolveError> {
         Ok(DroneAddCmdCtxFit {
-            fit_id: resps.render_fit_id(self.fit_id)?,
-            core: self.core.render(resps)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }
 
 impl DroneAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneAddCmd, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<DroneAddCmd, BrResolveError> {
         Ok(DroneAddCmd {
-            proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
+            proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
             shared: self.shared,
         })
     }

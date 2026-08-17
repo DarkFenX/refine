@@ -74,14 +74,14 @@ impl FitAddCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitAddCmd, BrResolveError> {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FitAddCmd, BrResolveError> {
         Ok(FitAddCmd {
             shared: self.shared,
             fleet_id: match self.fleet_id {
-                Some(fleet_id) => Some(resps.render_fleet_id(fleet_id)?),
+                Some(fleet_id) => Some(resps.resolve_fleet_id(fleet_id)?),
                 None => None,
             },
         })

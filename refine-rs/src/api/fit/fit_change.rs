@@ -32,7 +32,7 @@ impl Fit<'_, '_> {
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let ctl_cmd_resp = ctl_cmd.execute(&mut core_fit)?;
                 let cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
-                let info_cmd = info_cmd.render(&cmd_resps)?;
+                let info_cmd = info_cmd.br_resolve(&cmd_resps)?;
                 let fit_info = info_cmd.execute(&mut core_fit);
                 let ctl_cmd_resp = cmd_resps.into_iter().next().unwrap();
                 Ok((ctl_cmd_resp, fit_info))

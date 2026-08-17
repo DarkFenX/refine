@@ -458,61 +458,61 @@ impl SubsystemChangeCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeEnumCmdBr {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<FitChangeEnumCmd, BrResolveError> {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitChangeEnumCmd, BrResolveError> {
         Ok(match self {
             // Fit
             Self::FitChange(cmd) => FitChangeEnumCmd::FitChange(cmd),
             // Item
-            Self::ItemRemove(cmd) => FitChangeEnumCmd::ItemRemove(cmd.render(resps)?),
+            Self::ItemRemove(cmd) => FitChangeEnumCmd::ItemRemove(cmd.br_resolve(resps)?),
             // Item - autocharge
-            Self::AutochargeChange(cmd) => FitChangeEnumCmd::AutochargeChange(cmd.render(resps)?),
+            Self::AutochargeChange(cmd) => FitChangeEnumCmd::AutochargeChange(cmd.br_resolve(resps)?),
             // Item - booster
             Self::BoosterAdd(cmd) => FitChangeEnumCmd::BoosterAdd(cmd),
-            Self::BoosterChange(cmd) => FitChangeEnumCmd::BoosterChange(cmd.render(resps)?),
+            Self::BoosterChange(cmd) => FitChangeEnumCmd::BoosterChange(cmd.br_resolve(resps)?),
             // Item - character
             Self::CharacterSet(cmd) => FitChangeEnumCmd::CharacterSet(cmd),
             Self::CharacterChange(cmd) => FitChangeEnumCmd::CharacterChange(cmd),
             Self::CharacterUnset(cmd) => FitChangeEnumCmd::CharacterUnset(cmd),
             // Item - charge
-            Self::ChargeChange(cmd) => FitChangeEnumCmd::ChargeChange(cmd.render(resps)?),
+            Self::ChargeChange(cmd) => FitChangeEnumCmd::ChargeChange(cmd.br_resolve(resps)?),
             // Item - drone
-            Self::DroneAdd(cmd) => FitChangeEnumCmd::DroneAdd(cmd.render(resps)?),
-            Self::DroneChange(cmd) => FitChangeEnumCmd::DroneChange(cmd.render(resps)?),
+            Self::DroneAdd(cmd) => FitChangeEnumCmd::DroneAdd(cmd.br_resolve(resps)?),
+            Self::DroneChange(cmd) => FitChangeEnumCmd::DroneChange(cmd.br_resolve(resps)?),
             // Item - fighter
-            Self::FighterAdd(cmd) => FitChangeEnumCmd::FighterAdd(cmd.render(resps)?),
-            Self::FighterChange(cmd) => FitChangeEnumCmd::FighterChange(cmd.render(resps)?),
+            Self::FighterAdd(cmd) => FitChangeEnumCmd::FighterAdd(cmd.br_resolve(resps)?),
+            Self::FighterChange(cmd) => FitChangeEnumCmd::FighterChange(cmd.br_resolve(resps)?),
             // Item - fit-wide effect
             Self::FwEffectAdd(cmd) => FitChangeEnumCmd::FwEffectAdd(cmd),
-            Self::FwEffectChange(cmd) => FitChangeEnumCmd::FwEffectChange(cmd.render(resps)?),
+            Self::FwEffectChange(cmd) => FitChangeEnumCmd::FwEffectChange(cmd.br_resolve(resps)?),
             // Item - implant
             Self::ImplantAdd(cmd) => FitChangeEnumCmd::ImplantAdd(cmd),
-            Self::ImplantChange(cmd) => FitChangeEnumCmd::ImplantChange(cmd.render(resps)?),
+            Self::ImplantChange(cmd) => FitChangeEnumCmd::ImplantChange(cmd.br_resolve(resps)?),
             // Item - drone
-            Self::ModuleAdd(cmd) => FitChangeEnumCmd::ModuleAdd(cmd.render(resps)?),
-            Self::ModuleChange(cmd) => FitChangeEnumCmd::ModuleChange(cmd.render(resps)?),
+            Self::ModuleAdd(cmd) => FitChangeEnumCmd::ModuleAdd(cmd.br_resolve(resps)?),
+            Self::ModuleChange(cmd) => FitChangeEnumCmd::ModuleChange(cmd.br_resolve(resps)?),
             // Item - rig
             Self::RigAdd(cmd) => FitChangeEnumCmd::RigAdd(cmd),
-            Self::RigChange(cmd) => FitChangeEnumCmd::RigChange(cmd.render(resps)?),
+            Self::RigChange(cmd) => FitChangeEnumCmd::RigChange(cmd.br_resolve(resps)?),
             // Item - service
             Self::ServiceAdd(cmd) => FitChangeEnumCmd::ServiceAdd(cmd),
-            Self::ServiceChange(cmd) => FitChangeEnumCmd::ServiceChange(cmd.render(resps)?),
+            Self::ServiceChange(cmd) => FitChangeEnumCmd::ServiceChange(cmd.br_resolve(resps)?),
             // Item - ship
             Self::ShipSet(cmd) => FitChangeEnumCmd::ShipSet(cmd),
             Self::ShipChange(cmd) => FitChangeEnumCmd::ShipChange(cmd),
             Self::ShipUnset(cmd) => FitChangeEnumCmd::ShipUnset(cmd),
             // Item - skill
             Self::SkillAdd(cmd) => FitChangeEnumCmd::SkillAdd(cmd),
-            Self::SkillChange(cmd) => FitChangeEnumCmd::SkillChange(cmd.render(resps)?),
+            Self::SkillChange(cmd) => FitChangeEnumCmd::SkillChange(cmd.br_resolve(resps)?),
             // Item - stance
             Self::StanceSet(cmd) => FitChangeEnumCmd::StanceSet(cmd),
             Self::StanceChange(cmd) => FitChangeEnumCmd::StanceChange(cmd),
             Self::StanceUnset(cmd) => FitChangeEnumCmd::StanceUnset(cmd),
             // Item - subsystem
             Self::SubsystemAdd(cmd) => FitChangeEnumCmd::SubsystemAdd(cmd),
-            Self::SubsystemChange(cmd) => FitChangeEnumCmd::SubsystemChange(cmd.render(resps)?),
+            Self::SubsystemChange(cmd) => FitChangeEnumCmd::SubsystemChange(cmd.br_resolve(resps)?),
         })
     }
 }

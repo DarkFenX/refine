@@ -115,10 +115,10 @@ impl SolInfoCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Rendering
+// Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmdBr {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
         Ok(SolInfoCmd {
             fleet: InfoModes::from_compact_br(self.fleet, resps)?,
             fit: InfoModes::from_compact_br(self.fit, resps)?,
