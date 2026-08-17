@@ -11,6 +11,7 @@ use crate::{
     err::{BrResolveError, SolChangeEnumError},
 };
 
+#[derive(Clone)]
 pub(crate) enum SolHybridCmd {
     Ctl(SolChangeEnumCmd),
 }

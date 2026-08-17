@@ -9,6 +9,7 @@ use crate::{
     err::{BrResolveError, FitChangeEnumError},
 };
 
+#[derive(Clone)]
 pub(crate) enum FitHybridCmd {
     Ctl(FitChangeEnumCmd),
 }

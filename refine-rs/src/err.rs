@@ -27,7 +27,7 @@ pub use crate::{
         ProjEffectAddError, ProjEffectChangeError, RigChangeError, ServiceChangeError, ShipChangeError, SkillAddError,
         SkillChangeError, SolChangeEnumError, StanceChangeError, SubsystemChangeError, SwEffectChangeError,
     },
-    hybrid::{FitHybridError, SolHybridError},
+    hyb::{FitHybridError, SolHybridError},
     shared::BrResolveError,
 };
 
