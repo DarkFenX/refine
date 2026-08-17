@@ -34,7 +34,7 @@ pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
     ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBr, FleetIdBr, ItemIdBr,
 };
-pub use sol_change::{ChangeSolEnumError, SolCtlCmd};
+pub use sol_change::{SolCtlCmd, SolCtlError};
 
 mod core;
 mod fit_change;

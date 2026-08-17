@@ -9,9 +9,9 @@ pub use crate::{
         RemoveItemError, RemoveSolError, SolSwitchSrcError,
     },
     ctl::{
-        AutochargeChangeError, BackrefRenderError, BoosterChangeError, ChangeSolEnumError, CharacterChangeError,
-        ChargeChangeError, DroneAddError, DroneChangeError, FighterAddError, FighterChangeError, FitAddError,
-        FitChangeError, FitCharacterChangeError, FitCtlCmdError, FitGetBoosterAddError, FitGetCharacterChangeError,
+        AutochargeChangeError, BackrefRenderError, BoosterChangeError, CharacterChangeError, ChargeChangeError,
+        DroneAddError, DroneChangeError, FighterAddError, FighterChangeError, FitAddError, FitChangeError,
+        FitCharacterChangeError, FitCtlCmdError, FitGetBoosterAddError, FitGetCharacterChangeError,
         FitGetCharacterSetError, FitGetCharacterUnsetError, FitGetDroneAddError, FitGetFighterAddError,
         FitGetFitChangeError, FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError,
         FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetShipChangeError, FitGetShipSetError,
@@ -25,7 +25,8 @@ pub use crate::{
         ItemGetShipChangeError, ItemGetSkillChangeError, ItemGetStanceChangeError, ItemGetSubsystemChangeError,
         ItemGetSwEffectChangeError, ItemRemoveError, ItemShipChangeError, ItemStanceChangeError, ModuleAddError,
         ModuleChangeError, ProjEffectAddError, ProjEffectChangeError, RigChangeError, ServiceChangeError,
-        ShipChangeError, SkillAddError, SkillChangeError, StanceChangeError, SubsystemChangeError, SwEffectChangeError,
+        ShipChangeError, SkillAddError, SkillChangeError, SolCtlError, StanceChangeError, SubsystemChangeError,
+        SwEffectChangeError,
     },
 };
 

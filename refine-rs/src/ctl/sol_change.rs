@@ -569,7 +569,7 @@ impl SolCtlCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolCtlCmdRendered {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CtlCmdResp, ChangeSolEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CtlCmdResp, SolCtlError> {
         match self {
             // Solar system
             #[expect(clippy::unit_arg)]
@@ -641,7 +641,7 @@ impl SolCtlCmdRendered {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ChangeSolEnumError {
+pub enum SolCtlError {
     // Fleet
     #[error("failed to add fleet")]
     FleetAdd(#[from] FleetAddError),
