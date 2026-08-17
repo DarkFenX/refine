@@ -30,6 +30,9 @@ impl StanceUnsetCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceUnsetCmd {
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> StanceUnsetCmdCtxFit {
+        StanceUnsetCmdCtxFit { fit_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> StanceUnsetCmdCtxFitBr {
         StanceUnsetCmdCtxFitBr {
             fit_id: fit_id.into(),

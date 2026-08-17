@@ -73,6 +73,12 @@ impl CharacterChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterChangeCmd {
+    pub(in crate::ctl) fn into_ctx_via_fit(self, fit_id: FitId) -> CharacterChangeCmdCtxAny {
+        CharacterChangeCmdCtxAny::Fit(CharacterChangeCmdCtxFit { fit_id, core: self })
+    }
+    pub(in crate::ctl) fn into_ctx_via_item(self, item_id: ItemId) -> CharacterChangeCmdCtxAny {
+        CharacterChangeCmdCtxAny::Item(CharacterChangeCmdCtxItem { item_id, core: self })
+    }
     pub(in crate::ctl) fn into_ctx_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> CharacterChangeCmdCtxAnyBr {
         CharacterChangeCmdCtxAnyBr::Fit(CharacterChangeCmdCtxFitBr {
             fit_id: fit_id.into(),

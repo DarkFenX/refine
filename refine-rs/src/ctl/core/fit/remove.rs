@@ -30,6 +30,9 @@ impl FitRemoveCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitRemoveCmd {
+    pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FitRemoveCmdCtxFit {
+        FitRemoveCmdCtxFit { fit_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitRemoveCmdCtxFitBr {
         FitRemoveCmdCtxFitBr {
             fit_id: fit_id.into(),

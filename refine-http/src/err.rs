@@ -672,15 +672,13 @@ impl From<JsonRejection> for ApiError {
         Self::Json(err)
     }
 }
-impl From<rs::err::SolChangeBatchError> for ApiError {
-    fn from(err: rs::err::SolChangeBatchError) -> Self {
+impl From<rs::err::SolBatchError> for ApiError {
+    fn from(err: rs::err::SolBatchError) -> Self {
         match err {
-            rs::err::SolChangeBatchError::Render(index, inner) => {
+            rs::err::SolBatchError::Render(index, inner) => {
                 Self::BackrefRender(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolChangeBatchError::CtlExec(index, inner) => {
-                Self::SolChange(ApiErrorIndexed { index, error: inner })
-            }
+            rs::err::SolBatchError::CtlExec(index, inner) => Self::SolChange(ApiErrorIndexed { index, error: inner }),
         }
     }
 }

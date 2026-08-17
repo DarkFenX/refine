@@ -50,6 +50,9 @@ impl RigChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> RigChangeCmdCtxItem {
+        RigChangeCmdCtxItem { item_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> RigChangeCmdCtxItemBr {
         RigChangeCmdCtxItemBr {
             item_id: item_id.into(),

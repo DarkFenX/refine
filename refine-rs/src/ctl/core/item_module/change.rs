@@ -156,17 +156,20 @@ impl ModuleChangeCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleChangeCmd {
-    fn into_br(self) -> ModuleChangeCmdBr {
-        ModuleChangeCmdBr {
-            add_proj_item_ids: self.add_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            rm_proj_item_ids: self.rm_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            shared: self.shared,
-        }
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ModuleChangeCmdCtxItem {
+        ModuleChangeCmdCtxItem { item_id, core: self }
     }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ModuleChangeCmdCtxItemBr {
         ModuleChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self.into_br(),
+        }
+    }
+    fn into_br(self) -> ModuleChangeCmdBr {
+        ModuleChangeCmdBr {
+            add_proj_item_ids: self.add_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            rm_proj_item_ids: self.rm_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
         }
     }
 }

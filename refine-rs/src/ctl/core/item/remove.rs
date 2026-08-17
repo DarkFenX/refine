@@ -36,6 +36,9 @@ impl ItemRemoveCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemRemoveCmd {
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ItemRemoveCmdCtxItem {
+        ItemRemoveCmdCtxItem { item_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemRemoveCmdCtxItemBr {
         ItemRemoveCmdCtxItemBr {
             item_id: item_id.into(),

@@ -1,11 +1,11 @@
 use crate::{
-    CtlCmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
+    CtlCmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BackrefRenderError, SolChangeEnumError},
 };
 
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmds: Vec<SolChangeEnumCmdBr>) -> Result<CtlCmdResps, SolChangeBatchError> {
+    pub async fn change(&mut self, ctl_cmd: SolChangeEnumCmd) -> Result<(), SolChangeBatchError> {
         self.exec_standard_fallible(move |core_sol| {
             let ctl_cmd_resps = execute_commands(core_sol, ctl_cmds)?;
             Ok(ctl_cmd_resps)

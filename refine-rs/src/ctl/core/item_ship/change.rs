@@ -83,6 +83,12 @@ impl ShipChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmd {
+    pub(in crate::ctl) fn into_ctx_via_fit(self, fit_id: FitId) -> ShipChangeCmdCtxAny {
+        ShipChangeCmdCtxAny::Fit(ShipChangeCmdCtxFit { fit_id, core: self })
+    }
+    pub(in crate::ctl) fn into_ctx_via_item(self, item_id: ItemId) -> ShipChangeCmdCtxAny {
+        ShipChangeCmdCtxAny::Item(ShipChangeCmdCtxItem { item_id, core: self })
+    }
     pub(in crate::ctl) fn into_ctx_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> ShipChangeCmdCtxAnyBr {
         ShipChangeCmdCtxAnyBr::Fit(ShipChangeCmdCtxFitBr {
             fit_id: fit_id.into(),

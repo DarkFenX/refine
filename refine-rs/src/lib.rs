@@ -15,8 +15,8 @@ pub use ctl::{
     ItemAddEnumCmd, ItemChangeEnumCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
     ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd,
     RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
-    SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
-    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
+    SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd,
+    StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,

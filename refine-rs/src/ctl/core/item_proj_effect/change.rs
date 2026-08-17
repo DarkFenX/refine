@@ -104,17 +104,20 @@ impl ProjEffectChangeCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectChangeCmd {
-    fn into_br(self) -> ProjEffectChangeCmdBr {
-        ProjEffectChangeCmdBr {
-            add_proj_item_ids: self.add_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            rm_proj_item_ids: self.rm_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            shared: self.shared,
-        }
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ProjEffectChangeCmdCtxItem {
+        ProjEffectChangeCmdCtxItem { item_id, core: self }
     }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ProjEffectChangeCmdCtxItemBr {
         ProjEffectChangeCmdCtxItemBr {
             item_id: item_id.into(),
             core: self.into_br(),
+        }
+    }
+    fn into_br(self) -> ProjEffectChangeCmdBr {
+        ProjEffectChangeCmdBr {
+            add_proj_item_ids: self.add_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            rm_proj_item_ids: self.rm_proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
+            shared: self.shared,
         }
     }
 }

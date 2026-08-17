@@ -50,6 +50,9 @@ impl ChargeChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ChargeChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> ChargeChangeCmdCtxItem {
+        ChargeChangeCmdCtxItem { item_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ChargeChangeCmdCtxItemBr {
         ChargeChangeCmdCtxItemBr {
             item_id: item_id.into(),

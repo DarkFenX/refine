@@ -50,6 +50,9 @@ impl SwEffectChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> SwEffectChangeCmdCtxItem {
+        SwEffectChangeCmdCtxItem { item_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> SwEffectChangeCmdCtxItemBr {
         SwEffectChangeCmdCtxItemBr {
             item_id: item_id.into(),

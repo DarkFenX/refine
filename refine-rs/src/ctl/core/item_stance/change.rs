@@ -73,6 +73,12 @@ impl StanceChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceChangeCmd {
+    pub(in crate::ctl) fn into_ctx_via_fit(self, fit_id: FitId) -> StanceChangeCmdCtxAny {
+        StanceChangeCmdCtxAny::Fit(StanceChangeCmdCtxFit { fit_id, core: self })
+    }
+    pub(in crate::ctl) fn into_ctx_via_item(self, item_id: ItemId) -> StanceChangeCmdCtxAny {
+        StanceChangeCmdCtxAny::Item(StanceChangeCmdCtxItem { item_id, core: self })
+    }
     pub(in crate::ctl) fn into_ctx_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> StanceChangeCmdCtxAnyBr {
         StanceChangeCmdCtxAnyBr::Fit(StanceChangeCmdCtxFitBr {
             fit_id: fit_id.into(),

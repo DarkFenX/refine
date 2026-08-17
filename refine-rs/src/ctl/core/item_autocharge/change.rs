@@ -45,6 +45,9 @@ impl AutochargeChangeCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmd {
+    pub(in crate::ctl) fn into_ctx_item(self, item_id: ItemId) -> AutochargeChangeCmdCtxItem {
+        AutochargeChangeCmdCtxItem { item_id, core: self }
+    }
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> AutochargeChangeCmdCtxItemBr {
         AutochargeChangeCmdCtxItemBr {
             item_id: item_id.into(),
