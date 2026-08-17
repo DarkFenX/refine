@@ -22,7 +22,7 @@ pub(crate) struct SolChangeReqBody {
 #[derive(Serialize)]
 struct SolChangeResp {
     solar_system: rs::SolInfo,
-    cmd_results: rs::CtlCmdResps,
+    cmd_results: rs::CmdResps,
 }
 
 pub(crate) async fn change_sol(

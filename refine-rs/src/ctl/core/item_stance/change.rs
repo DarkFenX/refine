@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
+    ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
     ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -97,7 +97,7 @@ impl StanceChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceChangeCmdCtxAnyBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<StanceChangeCmdCtxAny, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxAny, BackrefRenderError> {
         Ok(match self {
             Self::Fit(cmd) => StanceChangeCmdCtxAny::Fit(cmd.render(resps)?),
             Self::Item(cmd) => StanceChangeCmdCtxAny::Item(cmd.render(resps)?),
@@ -106,7 +106,7 @@ impl StanceChangeCmdCtxAnyBr {
 }
 
 impl StanceChangeCmdCtxFitBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<StanceChangeCmdCtxFit, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxFit, BackrefRenderError> {
         Ok(StanceChangeCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,
@@ -115,7 +115,7 @@ impl StanceChangeCmdCtxFitBr {
 }
 
 impl StanceChangeCmdCtxItemBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<StanceChangeCmdCtxItem, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<StanceChangeCmdCtxItem, BackrefRenderError> {
         Ok(StanceChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

@@ -1,5 +1,5 @@
 use crate::{
-    AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes,
+    AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -62,7 +62,7 @@ impl CharacterSetCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterSetCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<CharacterSetCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterSetCmdCtxFit, BackrefRenderError> {
         Ok(CharacterSetCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,

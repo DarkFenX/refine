@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
+    ChangeMutation, ChangedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
     MinionState, Movement, NpcProp, TriStateField, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -175,7 +175,7 @@ impl DroneChangeCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<DroneChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneChangeCmdCtxItem, BackrefRenderError> {
         Ok(DroneChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core.render(resps)?,
@@ -184,7 +184,7 @@ impl DroneChangeCmdCtxItemBr {
 }
 
 impl DroneChangeCmdBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<DroneChangeCmd, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<DroneChangeCmd, BackrefRenderError> {
         Ok(DroneChangeCmd {
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,

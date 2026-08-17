@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, Coordinates, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
+    ChangedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
     Movement, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -107,7 +107,7 @@ impl ShipChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmdCtxAnyBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ShipChangeCmdCtxAny, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxAny, BackrefRenderError> {
         Ok(match self {
             Self::Fit(cmd) => ShipChangeCmdCtxAny::Fit(cmd.render(resps)?),
             Self::Item(cmd) => ShipChangeCmdCtxAny::Item(cmd.render(resps)?),
@@ -116,7 +116,7 @@ impl ShipChangeCmdCtxAnyBr {
 }
 
 impl ShipChangeCmdCtxFitBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<ShipChangeCmdCtxFit, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxFit, BackrefRenderError> {
         Ok(ShipChangeCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,
@@ -125,7 +125,7 @@ impl ShipChangeCmdCtxFitBr {
 }
 
 impl ShipChangeCmdCtxItemBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<ShipChangeCmdCtxItem, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<ShipChangeCmdCtxItem, BackrefRenderError> {
         Ok(ShipChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

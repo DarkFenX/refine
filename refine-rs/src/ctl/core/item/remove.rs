@@ -1,4 +1,4 @@
-use crate::{CtlCmdResps, ItemId, ItemIdBr, RemoveMode, err::BackrefRenderError};
+use crate::{CmdResps, ItemId, ItemIdBr, RemoveMode, err::BackrefRenderError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -51,7 +51,7 @@ impl ItemRemoveCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemRemoveCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ItemRemoveCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ItemRemoveCmdCtxItem, BackrefRenderError> {
         Ok(ItemRemoveCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

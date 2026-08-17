@@ -1,5 +1,5 @@
 use crate::{
-    CtlCmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem,
+    CmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BackrefRenderError, SolChangeEnumError},
 };
 
@@ -17,7 +17,7 @@ impl SolarSystem<'_> {
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,
         info_cmd: SolInfoCmdBr,
-    ) -> Result<(CtlCmdResps, SolInfo), SolChangeBatchError> {
+    ) -> Result<(CmdResps, SolInfo), SolChangeBatchError> {
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = self.get_src_alias();
@@ -33,8 +33,8 @@ impl SolarSystem<'_> {
 fn execute_commands(
     core_sol: &mut rc::SolarSystem,
     ctl_cmds: Vec<SolChangeEnumCmdBr>,
-) -> Result<CtlCmdResps, SolChangeBatchError> {
-    let mut ctl_cmd_resps = CtlCmdResps::with_capacity(ctl_cmds.len());
+) -> Result<CmdResps, SolChangeBatchError> {
+    let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
             .render(&ctl_cmd_resps)

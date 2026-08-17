@@ -1,11 +1,11 @@
 use crate::{
-    CtlCmdResps, Fit, FitChangeEnumCmdBr, FitInfo, FitInfoCmdBr,
+    CmdResps, Fit, FitChangeEnumCmdBr, FitInfo, FitInfoCmdBr,
     err::{BackrefRenderError, FitChangeEnumError},
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmds: Vec<FitChangeEnumCmdBr>) -> Result<CtlCmdResps, FitChangeBatchError> {
+    pub async fn change(&mut self, ctl_cmds: Vec<FitChangeEnumCmdBr>) -> Result<CmdResps, FitChangeBatchError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -23,7 +23,7 @@ impl Fit<'_, '_> {
         &mut self,
         ctl_cmds: Vec<FitChangeEnumCmdBr>,
         info_cmd: FitInfoCmdBr,
-    ) -> Result<(CtlCmdResps, FitInfo), FitChangeBatchError> {
+    ) -> Result<(CmdResps, FitInfo), FitChangeBatchError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -42,8 +42,8 @@ impl Fit<'_, '_> {
 fn execute_commands(
     core_fit: &mut rc::FitMut,
     ctl_cmds: Vec<FitChangeEnumCmdBr>,
-) -> Result<CtlCmdResps, FitChangeBatchError> {
-    let mut ctl_cmd_resps = CtlCmdResps::with_capacity(ctl_cmds.len());
+) -> Result<CmdResps, FitChangeBatchError> {
+    let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
             .render(&ctl_cmd_resps)

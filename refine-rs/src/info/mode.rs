@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-use crate::{CtlCmdResps, err::BackrefRenderError, shared::CtlCmdBr};
+use crate::{CmdResps, err::BackrefRenderError, shared::CtlCmdBr};
 
 // Representation form which is more convenient for use by info builders
 #[derive(Clone)]
@@ -77,7 +77,7 @@ impl<M, I> InfoModes<M, I> {
     }
     pub(in crate::info) fn from_compact_br<B>(
         compact_br: InfoModesCompact<M, B>,
-        ctl_cmd_resps: &CtlCmdResps,
+        ctl_cmd_resps: &CmdResps,
     ) -> Result<Self, BackrefRenderError>
     where
         M: Copy,

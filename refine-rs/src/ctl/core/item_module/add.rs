@@ -1,5 +1,5 @@
 use crate::{
-    AddMode, AddMutation, AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
+    AddMode, AddMutation, AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
     ItemTypeId, ModRack, ModuleState, OptionalReload, Spool, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -161,7 +161,7 @@ impl ModuleAddCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ModuleAddCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ModuleAddCmdCtxFit, BackrefRenderError> {
         Ok(ModuleAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core.render(resps)?,
@@ -170,7 +170,7 @@ impl ModuleAddCmdCtxFitBr {
 }
 
 impl ModuleAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ModuleAddCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ModuleAddCmd, BackrefRenderError> {
         Ok(ModuleAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
             shared: self.shared,

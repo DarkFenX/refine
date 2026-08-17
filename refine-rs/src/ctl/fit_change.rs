@@ -1,11 +1,11 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
-    FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd,
-    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
-    ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd,
-    ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
-    SubsystemAddCmd, SubsystemChangeCmd,
+    ChargeChangeCmd, CmdResps, CmdResp, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
+    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd, FwEffectChangeCmd,
+    ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
+    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
+    SubsystemChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr,
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr,
@@ -454,7 +454,7 @@ impl SubsystemChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeEnumCmdBr {
-    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<FitChangeEnumCmd, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<FitChangeEnumCmd, BackrefRenderError> {
         Ok(match self {
             // Fit
             Self::FitChange(cmd) => FitChangeEnumCmd::FitChange(cmd),
@@ -514,7 +514,7 @@ impl FitChangeEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeEnumCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CtlCmdResp, FitChangeEnumError> {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitChangeEnumError> {
         match self {
             // Fit
             Self::FitChange(cmd) => Ok(cmd.execute(core_fit)?.into()),

@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -65,7 +65,7 @@ impl SubsystemChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SubsystemChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SubsystemChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<SubsystemChangeCmdCtxItem, BackrefRenderError> {
         Ok(SubsystemChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

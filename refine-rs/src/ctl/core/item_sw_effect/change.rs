@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -65,7 +65,7 @@ impl SwEffectChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SwEffectChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<SwEffectChangeCmdCtxItem, BackrefRenderError> {
         Ok(SwEffectChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

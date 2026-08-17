@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
+    ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -135,7 +135,7 @@ impl ProjEffectChangeCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ProjEffectChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ProjEffectChangeCmdCtxItem, BackrefRenderError> {
         Ok(ProjEffectChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core.render(resps)?,
@@ -144,7 +144,7 @@ impl ProjEffectChangeCmdCtxItemBr {
 }
 
 impl ProjEffectChangeCmdBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<ProjEffectChangeCmd, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<ProjEffectChangeCmd, BackrefRenderError> {
         Ok(ProjEffectChangeCmd {
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,

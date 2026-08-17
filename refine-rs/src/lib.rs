@@ -36,8 +36,8 @@ pub use rc::{
     SlotIndex, Spool, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
 };
 pub use shared::{
-    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBr,
-    FleetIdBr, ItemIdBr, TriStateField,
+    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, CmdResps, CmdResp, FitIdBr, FleetIdBr,
+    ItemIdBr, TriStateField,
 };
 pub use src::{Src, SrcAlias};
 

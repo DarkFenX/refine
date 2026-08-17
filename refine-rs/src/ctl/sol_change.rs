@@ -1,14 +1,13 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
-    FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd,
-    FitChangeCmdBr, FitId, FitIdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetId, FleetIdBr,
-    FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr,
-    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd,
-    ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
-    ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd,
-    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
-    SwEffectChangeCmd,
+    ChargeChangeCmd, CmdResps, CmdResp, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
+    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitId,
+    FitIdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetId, FleetIdBr, FleetRemoveCmd,
+    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
+    ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
+    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
+    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
         BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, CharacterChangeCmdCtxAny, CharacterChangeCmdCtxAnyBr,
@@ -634,7 +633,7 @@ impl SwEffectChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeEnumCmdBr {
-    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<SolChangeEnumCmd, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<SolChangeEnumCmd, BackrefRenderError> {
         Ok(match self {
             // Solar system
             Self::SolChange(cmd) => SolChangeEnumCmd::SolChange(cmd),
@@ -708,7 +707,7 @@ impl SolChangeEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CtlCmdResp, SolChangeEnumError> {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolChangeEnumError> {
         match self {
             // Solar system
             #[expect(clippy::unit_arg)]

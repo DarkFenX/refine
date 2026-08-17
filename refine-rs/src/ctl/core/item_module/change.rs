@@ -1,7 +1,7 @@
 use rc::ItemCommon;
 
 use crate::{
-    ChangeMutation, ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ModuleState,
+    ChangeMutation, ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ModuleState,
     MoveMode, OptionalReload, Spool, TriStateField, ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -187,7 +187,7 @@ impl ModuleChangeCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ModuleChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ModuleChangeCmdCtxItem, BackrefRenderError> {
         Ok(ModuleChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core.render(resps)?,
@@ -196,7 +196,7 @@ impl ModuleChangeCmdCtxItemBr {
 }
 
 impl ModuleChangeCmdBr {
-    fn render(self, resps: &CtlCmdResps) -> Result<ModuleChangeCmd, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<ModuleChangeCmd, BackrefRenderError> {
         Ok(ModuleChangeCmd {
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,

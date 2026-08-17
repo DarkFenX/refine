@@ -1,6 +1,6 @@
 use crate::{
-    AddedItemIdsResp, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, SkillLevel,
-    ctl::shared::EffectModes, err::BackrefRenderError,
+    AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, SkillLevel, ctl::shared::EffectModes,
+    err::BackrefRenderError,
 };
 
 // Core commands
@@ -63,7 +63,7 @@ impl SkillAddCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SkillAddCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<SkillAddCmdCtxFit, BackrefRenderError> {
         Ok(SkillAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,

@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, SkillLevel,
+    ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, SkillLevel,
     ctl::shared::EffectModes, err::BackrefRenderError,
 };
 
@@ -70,7 +70,7 @@ impl SkillChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SkillChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<SkillChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<SkillChangeCmdCtxItem, BackrefRenderError> {
         Ok(SkillChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

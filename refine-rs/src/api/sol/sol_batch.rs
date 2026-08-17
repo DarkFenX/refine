@@ -1,11 +1,11 @@
 use crate::{
-    CtlCmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
+    CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BackrefRenderError, SolChangeEnumError},
 };
 
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-bat", level = "trace", skip_all)]
-    pub async fn batch(&mut self, ctl_cmds: Vec<SolChangeEnumCmdBr>) -> Result<CtlCmdResps, SolBatchError> {
+    pub async fn batch(&mut self, ctl_cmds: Vec<SolChangeEnumCmdBr>) -> Result<CmdResps, SolBatchError> {
         self.exec_standard_fallible(move |core_sol| {
             let ctl_cmd_resps = execute_commands(core_sol, ctl_cmds)?;
             Ok(ctl_cmd_resps)
@@ -17,8 +17,8 @@ impl SolarSystem<'_> {
 fn execute_commands(
     core_sol: &mut rc::SolarSystem,
     ctl_cmds: Vec<SolChangeEnumCmdBr>,
-) -> Result<CtlCmdResps, SolBatchError> {
-    let mut ctl_cmd_resps = CtlCmdResps::with_capacity(ctl_cmds.len());
+) -> Result<CmdResps, SolBatchError> {
+    let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
             .render(&ctl_cmd_resps)

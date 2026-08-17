@@ -1,5 +1,5 @@
 use crate::{
-    ChangedItemIdsResp, CtlCmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ctl::shared::EffectModes,
+    ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ctl::shared::EffectModes,
     err::BackrefRenderError,
 };
 
@@ -60,7 +60,7 @@ impl AutochargeChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<AutochargeChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<AutochargeChangeCmdCtxItem, BackrefRenderError> {
         Ok(AutochargeChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

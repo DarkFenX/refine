@@ -1,5 +1,5 @@
 use crate::{
-    AbilityId, AddedItemIdsResp, Coordinates, CountNz, CtlCmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId,
+    AbilityId, AddedItemIdsResp, CmdResps, Coordinates, CountNz, EffectId, EffectMode, FitId, FitIdBr, ItemId,
     ItemIdBr, ItemTypeId, MinionState, Movement, RearmMinion,
     ctl::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
@@ -159,7 +159,7 @@ impl FighterAddCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FighterAddCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterAddCmdCtxFit, BackrefRenderError> {
         Ok(FighterAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core.render(resps)?,
@@ -168,7 +168,7 @@ impl FighterAddCmdCtxFitBr {
 }
 
 impl FighterAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FighterAddCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterAddCmd, BackrefRenderError> {
         Ok(FighterAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
             shared: self.shared,

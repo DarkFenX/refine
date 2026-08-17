@@ -22,7 +22,7 @@ pub(crate) struct FitChangeReqBody {
 #[derive(Serialize)]
 struct FitChangeResp {
     fit: rs::FitInfo,
-    cmd_results: rs::CtlCmdResps,
+    cmd_results: rs::CmdResps,
 }
 
 pub(crate) async fn change_fit(

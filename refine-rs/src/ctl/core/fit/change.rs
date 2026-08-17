@@ -1,5 +1,5 @@
 use crate::{
-    CtlCmdResps, DpsProfile, FitId, FitIdBr, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BackrefRenderError,
+    CmdResps, DpsProfile, FitId, FitIdBr, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BackrefRenderError,
 };
 
 // Core commands
@@ -112,7 +112,7 @@ impl FitChangeCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FitChangeCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitChangeCmd, BackrefRenderError> {
         Ok(FitChangeCmd {
             shared: self.shared,
             fleet_id: match self.fleet_id {
@@ -125,7 +125,7 @@ impl FitChangeCmdBr {
 }
 
 impl FitChangeCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<FitChangeCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitChangeCmdCtxFit, BackrefRenderError> {
         Ok(FitChangeCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core.render(resps)?,

@@ -1,8 +1,8 @@
-use crate::{CtlCmdResps, FitId, FleetId, ItemId, err::BackrefRenderError};
+use crate::{CmdResps, FitId, FleetId, ItemId, err::BackrefRenderError};
 
 pub(crate) trait CtlCmdBr {
     type Target;
-    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError>;
+    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BackrefRenderError>;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,7 +24,7 @@ impl From<FleetId> for FleetIdBr {
 }
 impl CtlCmdBr for FleetIdBr {
     type Target = FleetId;
-    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
+    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BackrefRenderError> {
         ctl_cmd_resps.render_fleet_id(self)
     }
 }
@@ -48,7 +48,7 @@ impl From<FitId> for FitIdBr {
 }
 impl CtlCmdBr for FitIdBr {
     type Target = FitId;
-    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
+    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BackrefRenderError> {
         ctl_cmd_resps.render_fit_id(self)
     }
 }
@@ -73,7 +73,7 @@ impl From<ItemId> for ItemIdBr {
 }
 impl CtlCmdBr for ItemIdBr {
     type Target = ItemId;
-    fn render(self, ctl_cmd_resps: &CtlCmdResps) -> Result<Self::Target, BackrefRenderError> {
+    fn render(self, ctl_cmd_resps: &CmdResps) -> Result<Self::Target, BackrefRenderError> {
         ctl_cmd_resps.render_item_id(self)
     }
 }
