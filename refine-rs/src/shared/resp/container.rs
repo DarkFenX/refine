@@ -9,6 +9,9 @@ impl CmdResps {
     pub fn get(&self, index: usize) -> Option<&CmdResp> {
         self.data.get(index)
     }
+    pub fn iter(&self) -> impl ExactSizeIterator<Item = &CmdResp> {
+        self.data.iter()
+    }
     pub fn len(&self) -> usize {
         self.data.len()
     }
