@@ -1,13 +1,13 @@
 use crate::{
     ItemId, ItemInfo, ItemInfoMode,
-    info::{InfoModes, InfoModesInt},
+    info::{InfoModesCompact, InfoModes},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemId>,
+    item: InfoModesCompact<ItemInfoMode, ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -32,6 +32,6 @@ impl ItemInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
-        ItemInfo::from_core(core_item, &InfoModesInt::from_pub_modes(self.item))
+        ItemInfo::from_core(core_item, &InfoModes::from_compact(self.item))
     }
 }

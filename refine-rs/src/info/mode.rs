@@ -2,28 +2,12 @@ use std::{collections::HashMap, hash::Hash};
 
 use crate::{CtlCmdResps, ctl::CtlCmdBr};
 
-#[derive(Clone)]
+// Representation form which is more convenient for use by info builders
 pub(in crate::info) struct InfoModes<M, I> {
-    pub default: M,
-    pub overrides: Vec<(M, Vec<I>)>,
-}
-impl<M, I> Default for InfoModes<M, I>
-where
-    M: Default,
-{
-    fn default() -> Self {
-        Self {
-            default: M::default(),
-            overrides: Vec::new(),
-        }
-    }
-}
-
-pub(in crate::info) struct InfoModesInt<M, I> {
     default: M,
     overrides: HashMap<I, M>,
 }
-impl<M, I> InfoModesInt<M, I> {
+impl<M, I> InfoModes<M, I> {
     pub(in crate::info) fn get(&self, id: &I) -> M
     where
         M: Copy,
@@ -36,31 +20,50 @@ impl<M, I> InfoModesInt<M, I> {
     }
 }
 
+// Representation form which is compact; should be used only when it is not directly usable by info
+// builders
+#[derive(Clone)]
+pub(in crate::info) struct InfoModesCompact<M, I> {
+    pub default: M,
+    pub overrides: Vec<(M, Vec<I>)>,
+}
+impl<M, I> Default for InfoModesCompact<M, I>
+where
+    M: Default,
+{
+    fn default() -> Self {
+        Self {
+            default: M::default(),
+            overrides: Vec::new(),
+        }
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<M, I> InfoModesInt<M, I> {
-    pub(in crate::info) fn from_pub_mode(pub_mode: M) -> Self {
+impl<M, I> InfoModes<M, I> {
+    pub(in crate::info) fn from_simple(mode: M) -> Self {
         Self {
-            default: pub_mode,
+            default: mode,
             overrides: HashMap::new(),
         }
     }
-    pub(in crate::info) fn from_pub_modes(pub_modes: InfoModes<M, I>) -> Self
+    pub(in crate::info) fn from_compact(modes: InfoModesCompact<M, I>) -> Self
     where
         M: Copy,
         I: Eq + Hash,
     {
         Self {
-            default: pub_modes.default,
-            overrides: pub_modes
+            default: modes.default,
+            overrides: modes
                 .overrides
                 .into_iter()
                 .flat_map(|overrides| overrides.1.into_iter().map(move |id| (id, overrides.0)))
                 .collect(),
         }
     }
-    pub(in crate::info) fn from_pub_modes_br<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
+    pub(in crate::info) fn from_compact_br<B>(pub_modes: InfoModesCompact<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
     where
         M: Copy,
         B: CtlCmdBr<Target = I>,
@@ -96,6 +99,31 @@ mod custom_serde {
     use super::*;
 
     impl<'de, M, I> Deserialize<'de> for InfoModes<M, I>
+    where
+        M: Copy + Deserialize<'de>,
+        I: Eq + Hash + Deserialize<'de>,
+    {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            Ok(match InfoModesFormats::deserialize(deserializer)? {
+                InfoModesFormats::Simple(default) => Self {
+                    default,
+                    overrides: HashMap::new(),
+                },
+                InfoModesFormats::Extended(default, overrides) => Self {
+                    default,
+                    overrides: overrides
+                        .into_iter()
+                        .flat_map(|(mode, ids)| ids.into_iter().map(move |id| (id, mode)))
+                        .collect(),
+                },
+            })
+        }
+    }
+
+    impl<'de, M, I> Deserialize<'de> for InfoModesCompact<M, I>
     where
         M: Deserialize<'de>,
         I: Deserialize<'de>,

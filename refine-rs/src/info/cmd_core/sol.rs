@@ -1,7 +1,7 @@
 use crate::{
     CtlCmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     SolInfo, SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
-    info::{InfoModes, InfoModesInt},
+    info::{InfoModesCompact, InfoModes},
 };
 
 // Core commands
@@ -9,11 +9,11 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: InfoModes<FleetInfoMode, FleetId>,
+    fleet: InfoModesCompact<FleetInfoMode, FleetId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: InfoModes<FitInfoMode, FitId>,
+    fit: InfoModesCompact<FitInfoMode, FitId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemId>,
+    item: InfoModesCompact<ItemInfoMode, ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -21,11 +21,11 @@ pub struct SolInfoCmd {
 #[derive(Clone, Default)]
 pub struct SolInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: InfoModes<FleetInfoMode, FleetIdBr>,
+    fleet: InfoModesCompact<FleetInfoMode, FleetIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: InfoModes<FitInfoMode, FitIdBr>,
+    fit: InfoModesCompact<FitInfoMode, FitIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemIdBr>,
+    item: InfoModesCompact<ItemInfoMode, ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -122,9 +122,9 @@ impl SolInfoCmd {
             src_alias,
             core_sol,
             self.shared.sol,
-            &InfoModesInt::from_pub_modes(self.fleet),
-            &InfoModesInt::from_pub_modes(self.fit),
-            &InfoModesInt::from_pub_modes(self.item),
+            &InfoModes::from_compact(self.fleet),
+            &InfoModes::from_compact(self.fit),
+            &InfoModes::from_compact(self.item),
         )
     }
 
@@ -132,9 +132,9 @@ impl SolInfoCmd {
         SolInfoExt::try_from_core(
             core_sol,
             self.shared.sol,
-            &InfoModesInt::from_pub_modes(self.fleet),
-            &InfoModesInt::from_pub_modes(self.fit),
-            &InfoModesInt::from_pub_modes(self.item),
+            &InfoModes::from_compact(self.fleet),
+            &InfoModes::from_compact(self.fit),
+            &InfoModes::from_compact(self.item),
         )
     }
 }
@@ -152,9 +152,9 @@ impl SolInfoCmdBr {
             src_alias,
             core_sol,
             self.shared.sol,
-            &InfoModesInt::from_pub_modes_br(self.fleet, ctl_cmd_resps),
-            &InfoModesInt::from_pub_modes_br(self.fit, ctl_cmd_resps),
-            &InfoModesInt::from_pub_modes_br(self.item, ctl_cmd_resps),
+            &InfoModes::from_compact_br(self.fleet, ctl_cmd_resps),
+            &InfoModes::from_compact_br(self.fit, ctl_cmd_resps),
+            &InfoModes::from_compact_br(self.item, ctl_cmd_resps),
         )
     }
 }

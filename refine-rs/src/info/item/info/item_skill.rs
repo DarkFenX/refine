@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    SkillLevel, info::InfoModesInt,
+    SkillLevel, info::InfoModes,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -51,7 +51,7 @@ pub struct SkillInfoExt {
 impl SkillInfo {
     pub(in crate::info) fn from_core(
         core_skill: &mut rc::SkillMut,
-        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
     ) -> Self {
         let skill_id = core_skill.get_item_id();
         let skill_info_mode = item_info_modes.get(&skill_id);

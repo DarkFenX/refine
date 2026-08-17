@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemMutationInfo,
-    ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo, info::InfoModesInt,
+    ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo, info::InfoModes,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -57,7 +57,7 @@ pub struct DroneInfoExt {
 impl DroneInfo {
     pub(in crate::info) fn from_core(
         core_drone: &mut rc::DroneMut,
-        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
     ) -> Self {
         let drone_id = core_drone.get_item_id();
         let drone_info_mode = item_info_modes.get(&drone_id);

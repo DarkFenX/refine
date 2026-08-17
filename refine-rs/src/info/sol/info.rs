@@ -2,7 +2,7 @@ use rc::Lender;
 
 use crate::{
     DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, ProjEffectInfo,
-    SecZone, SolInfoMode, SolarSystemId, Spool, SwEffectInfo, info::InfoModesInt, src::SrcAlias,
+    SecZone, SolInfoMode, SolarSystemId, Spool, SwEffectInfo, info::InfoModes, src::SrcAlias,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -39,9 +39,9 @@ impl SolInfo {
         src_alias: SrcAlias,
         core_sol: &mut rc::SolarSystem,
         sol_info_mode: SolInfoMode,
-        fleet_info_modes: &InfoModesInt<FleetInfoMode, FleetId>,
-        fit_info_modes: &InfoModesInt<FitInfoMode, FitId>,
-        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+        fleet_info_modes: &InfoModes<FleetInfoMode, FleetId>,
+        fit_info_modes: &InfoModes<FitInfoMode, FitId>,
+        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
     ) -> Self {
         Self {
             id: sol_id,
@@ -72,9 +72,9 @@ impl SolInfoExt {
     pub(in crate::info) fn try_from_core(
         core_sol: &mut rc::SolarSystem,
         sol_info_mode: SolInfoMode,
-        fleet_info_modes: &InfoModesInt<FleetInfoMode, FleetId>,
-        fit_info_modes: &InfoModesInt<FitInfoMode, FitId>,
-        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+        fleet_info_modes: &InfoModes<FleetInfoMode, FleetId>,
+        fit_info_modes: &InfoModes<FitInfoMode, FitId>,
+        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
     ) -> Option<Self> {
         match sol_info_mode {
             SolInfoMode::Id => None,

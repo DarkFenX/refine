@@ -1,6 +1,6 @@
 use crate::{
     CtlCmdResps, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
-    info::{InfoModes, InfoModesInt},
+    info::{InfoModesCompact, InfoModes},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -9,7 +9,7 @@ pub struct FitInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fit: FitInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemId>,
+    item: InfoModesCompact<ItemInfoMode, ItemId>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
@@ -17,7 +17,7 @@ pub struct FitInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     fit: FitInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemIdBr>,
+    item: InfoModesCompact<ItemInfoMode, ItemIdBr>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -66,8 +66,8 @@ impl FitInfoCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
         FitInfo::from_core(
             core_fit,
-            &InfoModesInt::from_pub_mode(self.fit),
-            &InfoModesInt::from_pub_modes(self.item),
+            &InfoModes::from_simple(self.fit),
+            &InfoModes::from_compact(self.item),
         )
     }
 }
@@ -76,8 +76,8 @@ impl FitInfoCmdBr {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut, ctl_cmd_resps: &CtlCmdResps) -> FitInfo {
         FitInfo::from_core(
             core_fit,
-            &InfoModesInt::from_pub_mode(self.fit),
-            &InfoModesInt::from_pub_modes_br(self.item, ctl_cmd_resps),
+            &InfoModes::from_simple(self.fit),
+            &InfoModes::from_compact_br(self.item, ctl_cmd_resps),
         )
     }
 }

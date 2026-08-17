@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, SlotIndex,
-    info::InfoModesInt,
+    info::InfoModes,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -52,7 +52,7 @@ pub struct SubsystemInfoExt {
 impl SubsystemInfo {
     pub(in crate::info) fn from_core(
         core_subsystem: &mut rc::SubsystemMut,
-        item_info_modes: &InfoModesInt<ItemInfoMode, ItemId>,
+        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
     ) -> Self {
         let subsystem_id = core_subsystem.get_item_id();
         let subsystem_info_mode = item_info_modes.get(&subsystem_id);
