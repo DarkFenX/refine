@@ -5,9 +5,9 @@ pub(crate) use remove::remove_sol;
 pub(crate) use switch_src::switch_sol_src;
 
 mod add;
+mod batch;
 mod change;
 mod get;
 mod remove;
 mod shared;
 mod switch_src;
-mod batch;

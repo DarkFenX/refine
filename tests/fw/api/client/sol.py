@@ -220,10 +220,10 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             kwargs['json'] = body
         return Request(client=self, **kwargs)
 
-    def sol_commands_request(
+    def sol_command_request(
             self, *,
             sol_id: str,
-            commands: list[BaseCommand],
+            command: BaseCommand,
             sol_info_mode: ApiSolInfoMode | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
             fit_info_mode: ApiFitInfoMode | type[Absent],
@@ -239,7 +239,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}',
             params=params,
-            json={'commands': [c.serialize() for c in commands]})
+            json=command.serialize())
 
     # Development-specific requests
     def check_sol(self, *, sol_id: str) -> None:

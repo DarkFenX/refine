@@ -122,11 +122,11 @@ class ApiClientFit(ApiClientBase):
             method='DELETE',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}')
 
-    def fit_commands_request(
+    def fit_command_request(
             self, *,
             sol_id: str,
             fit_id: str,
-            commands: list[BaseCommand],
+            command: BaseCommand,
             fit_info_mode: ApiFitInfoMode | type[Absent],
             item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
@@ -138,4 +138,4 @@ class ApiClientFit(ApiClientBase):
             method='PATCH',
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params,
-            json={'commands': [c.serialize() for c in commands]})
+            json=command.serialize())

@@ -247,16 +247,16 @@ class Fit(AttrDict):
             fleet_id=fleet_id,
             sec_status=sec_status,
             rah_incoming_dps=rah_incoming_dps)
-        resp = self._client.fit_commands_request(
+        resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            commands=[command],
+            command=command,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            self._data = resp.json()['fit']
+            self._data = resp.json()
             return self
         return None
 
@@ -330,16 +330,16 @@ class Fit(AttrDict):
             json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitCharacterUnsetCmd()
-        resp = self._client.fit_commands_request(
+        resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            commands=[command],
+            command=command,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            self._data = resp.json()['fit']
+            self._data = resp.json()
             return self
         return None
 
@@ -583,16 +583,16 @@ class Fit(AttrDict):
             json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitShipUnsetCmd()
-        resp = self._client.fit_commands_request(
+        resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            commands=[command],
+            command=command,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            self._data = resp.json()['fit']
+            self._data = resp.json()
             return self
         return None
 
@@ -654,16 +654,16 @@ class Fit(AttrDict):
             json_predicate: dict | None = None,
     ) -> Fit | None:
         command = FitStanceUnsetCmd()
-        resp = self._client.fit_commands_request(
+        resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            commands=[command],
+            command=command,
             fit_info_mode=fit_info_mode,
             item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            self._data = resp.json()['fit']
+            self._data = resp.json()
             return self
         return None
 

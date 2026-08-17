@@ -94,7 +94,7 @@ class FitCmdCtx(BaseCmdCtx):
     ) -> None:
         # Clear temporary data first, it better be cleaned if anything fails
         self._clear_ret_datas()
-        req = self._client.fit_commands_request(
+        req = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self._fit_id,
             commands=self._commands,

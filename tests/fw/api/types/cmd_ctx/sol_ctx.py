@@ -115,7 +115,7 @@ class SolCmdCtx(BaseCmdCtx):
     ) -> None:
         # Clear temporary data first, it better be cleaned if anything fails
         self._clear_ret_datas()
-        req = self._client.sol_commands_request(
+        req = self._client.sol_command_request(
             sol_id=self._sol_id,
             commands=self._commands,
             sol_info_mode=self._sol_info_mode,

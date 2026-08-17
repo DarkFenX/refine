@@ -130,9 +130,9 @@ class SolarSystem(AttrDict):
             default_npc_prop=default_npc_prop,
             default_optional_reloads=default_optional_reloads,
             default_rearm_minions=default_rearm_minions)
-        resp = self._client.sol_commands_request(
+        resp = self._client.sol_command_request(
             sol_id=self.id,
-            commands=[command],
+            command=command,
             sol_info_mode=sol_info_mode,
             fleet_info_mode=fleet_info_mode,
             fit_info_mode=fit_info_mode,
@@ -140,7 +140,7 @@ class SolarSystem(AttrDict):
         self.check()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            self._data = resp.json()['solar_system']
+            self._data = resp.json()
         return self
 
     def validate(
