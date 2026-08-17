@@ -89,7 +89,7 @@ pub enum FitChangeEnumCmdBr {
     ItemRemove(ItemRemoveCmdCtxItemBr),
     // Item - autocharge
     AutochargeChange(AutochargeChangeCmdCtxItemBr),
-    // Item - booste
+    // Item - booster
     BoosterAdd(BoosterAddCmd),
     BoosterChange(BoosterChangeCmdCtxItemBr),
     // Item - character

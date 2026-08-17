@@ -6,18 +6,16 @@
 
 pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId};
 pub use ctl::{
-    AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, AutochargeChangeCmd, BoosterAddCmd,
-    BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
-    FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd,
-    FitChangeCmdBr, FitChangeEnumCmd, FitChangeEnumCmdBr, FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr,
-    FleetChangeCmd, FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
-    ImplantChangeCmd, ItemAddEnumCmd, ItemChangeEnumCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr,
-    ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
-    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
-    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr,
-    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
-    SwEffectChangeCmd,
+    AddMutation, AttrMutation, AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, ChangeMutation,
+    CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd, ChargeChangeCmd, DroneAddCmd, DroneAddCmdBr,
+    DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd,
+    FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitChangeEnumCmd, FitChangeEnumCmdBr, FitRemoveCmd, FleetAddCmd,
+    FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
+    ImplantChangeCmd, ItemAddEnumCmd, ItemChangeEnumCmd, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd,
+    RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
+    SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd,
+    StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
@@ -37,16 +35,19 @@ pub use rc::{
     OptionalReload, PValue, ProjRange, RearmMinion, RemoveMode, SecZone, SecZoneCorruption, ServiceState, SkillLevel,
     SlotIndex, Spool, UnitInterval, Value, ad::AdaptedDataCacher, ed::EveDataHandler,
 };
+pub use shared::{
+    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBr,
+    FleetIdBr, ItemIdBr, TriStateField,
+};
 pub use src::{Src, SrcAlias};
-pub use util::TriStateField;
 
 mod api;
 mod ctl;
 pub mod dev;
 pub mod err;
 mod info;
+mod shared;
 pub mod src;
 pub mod stats;
 mod svc;
-mod util;
 pub mod val;

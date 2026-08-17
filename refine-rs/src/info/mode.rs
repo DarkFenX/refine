@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-use crate::{CtlCmdResps, ctl::CtlCmdBr, err::BackrefRenderError};
+use crate::{CtlCmdResps, err::BackrefRenderError, shared::CtlCmdBr};
 
 // Representation form which is more convenient for use by info builders
 #[derive(Clone)]
