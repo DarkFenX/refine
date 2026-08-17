@@ -7,23 +7,24 @@ use crate::{
 #[derive(Default)]
 pub struct FitChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_id: TriStateField<FleetId> = TriStateField::Absent,
+    fleet_id: TriStateField<FleetId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: CmdFitChangeShared = CmdFitChangeShared { .. },
+    shared: CmdFitChangeShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_id: TriStateField<FleetIdBr> = TriStateField::Absent,
+    fleet_id: TriStateField<FleetIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: CmdFitChangeShared = CmdFitChangeShared { .. },
+    shared: CmdFitChangeShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
 struct CmdFitChangeShared {
-    sec_status: Option<FitSecStatus> = None,
+    sec_status: Option<FitSecStatus>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rah_incoming_dps: TriStateField<DpsProfile> = TriStateField::Absent,
+    rah_incoming_dps: TriStateField<DpsProfile>,
 }
 
 // Extra context commands

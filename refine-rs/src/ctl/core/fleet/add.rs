@@ -5,13 +5,13 @@ use crate::{AddedFleetIdResp, CtlCmdResps, FitId, FitIdBr, err::BackrefRenderErr
 #[derive(Default)]
 pub struct FleetAddCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_ids: Vec<FitId> = Vec::new(),
+    fit_ids: Vec<FitId>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FleetAddCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_ids: Vec<FitIdBr> = Vec::new(),
+    fit_ids: Vec<FitIdBr>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

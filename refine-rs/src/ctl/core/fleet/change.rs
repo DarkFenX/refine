@@ -5,17 +5,17 @@ use crate::{CtlCmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BackrefRenderE
 #[derive(Default)]
 pub struct FleetChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_fit_ids: Vec<FitId> = Vec::new(),
+    add_fit_ids: Vec<FitId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_fit_ids: Vec<FitId> = Vec::new(),
+    rm_fit_ids: Vec<FitId>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FleetChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_fit_ids: Vec<FitIdBr> = Vec::new(),
+    add_fit_ids: Vec<FitIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_fit_ids: Vec<FitIdBr> = Vec::new(),
+    rm_fit_ids: Vec<FitIdBr>,
 }
 
 // Extra context commands
@@ -27,7 +27,7 @@ pub struct FleetChangeCmdCtxFleet {
 pub struct FleetChangeCmdCtxFleetBr {
     fleet_id: FleetIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetChangeCmdBr = FleetChangeCmdBr { .. },
+    core: FleetChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

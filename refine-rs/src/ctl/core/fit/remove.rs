@@ -14,7 +14,7 @@ pub struct FitRemoveCmdCtxFit {
 pub struct FitRemoveCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitRemoveCmd = FitRemoveCmd,
+    core: FitRemoveCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

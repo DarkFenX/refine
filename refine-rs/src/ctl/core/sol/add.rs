@@ -3,12 +3,12 @@ use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct SolAddCmd {
-    sec_zone: Option<SecZone> = None,
-    default_incoming_dps: Option<DpsProfile> = None,
-    default_spool: Option<Spool> = None,
-    default_npc_prop: Option<NpcProp> = None,
-    default_optional_reloads: Option<OptionalReload> = None,
-    default_rearm_minions: Option<RearmMinion> = None,
+    sec_zone: Option<SecZone>,
+    default_incoming_dps: Option<DpsProfile>,
+    default_spool: Option<Spool>,
+    default_npc_prop: Option<NpcProp>,
+    default_optional_reloads: Option<OptionalReload>,
+    default_rearm_minions: Option<RearmMinion>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

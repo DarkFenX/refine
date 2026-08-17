@@ -14,7 +14,7 @@ pub struct FleetRemoveCmdCtxFleet {
 pub struct FleetRemoveCmdCtxFleetBr {
     fleet_id: FleetIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetRemoveCmd = FleetRemoveCmd,
+    core: FleetRemoveCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

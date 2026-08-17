@@ -4,21 +4,22 @@ use crate::{AddedFitIdResp, CtlCmdResps, DpsProfile, FitSecStatus, FleetId, Flee
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitAddCmd {
-    fleet_id: Option<FleetId> = None,
+    fleet_id: Option<FleetId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitAddCmdShared = FitAddCmdShared { .. },
+    shared: FitAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitAddCmdBr {
-    fleet_id: Option<FleetIdBr> = None,
+    fleet_id: Option<FleetIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitAddCmdShared = FitAddCmdShared { .. },
+    shared: FitAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Default)]
 struct FitAddCmdShared {
-    sec_status: Option<FitSecStatus> = None,
-    rah_incoming_dps: Option<DpsProfile> = None,
+    sec_status: Option<FitSecStatus>,
+    rah_incoming_dps: Option<DpsProfile>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
