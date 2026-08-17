@@ -1,5 +1,5 @@
 pub use fit::Fit;
-pub use fit_change::CtlFitChangeError;
+pub use fit_change::FitChangeBatchError;
 pub use info_args::ValFitInfoArgs;
 pub use sol_get_fit::FitGetError;
 

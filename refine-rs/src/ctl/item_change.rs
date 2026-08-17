@@ -15,7 +15,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
-pub enum ItemCtlCmd {
+pub enum ItemChangeEnumCmd {
     Autocharge(AutochargeChangeCmd),
     Booster(BoosterChangeCmd),
     Character(CharacterChangeCmd),
@@ -39,96 +39,96 @@ pub enum ItemCtlCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AutochargeChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Autocharge(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Autocharge(self)
     }
 }
 impl BoosterChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Booster(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Booster(self)
     }
 }
 impl CharacterChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Character(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Character(self)
     }
 }
 impl ChargeChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Charge(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Charge(self)
     }
 }
 impl DroneChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Drone(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Drone(self)
     }
 }
 impl FighterChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Fighter(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Fighter(self)
     }
 }
 impl FwEffectChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::FwEffect(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::FwEffect(self)
     }
 }
 impl ImplantChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Implant(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Implant(self)
     }
 }
 impl ModuleChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Module(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Module(self)
     }
 }
 impl ProjEffectChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::ProjEffect(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::ProjEffect(self)
     }
 }
 impl RigChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Rig(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Rig(self)
     }
 }
 impl ServiceChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Service(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Service(self)
     }
 }
 impl ShipChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Ship(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Ship(self)
     }
 }
 impl SkillChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Skill(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Skill(self)
     }
 }
 impl StanceChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Stance(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Stance(self)
     }
 }
 impl SubsystemChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::Subsystem(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::Subsystem(self)
     }
 }
 impl SwEffectChangeCmd {
-    pub fn into_item_ctl(self) -> ItemCtlCmd {
-        ItemCtlCmd::SwEffect(self)
+    pub fn into_item_ctl(self) -> ItemChangeEnumCmd {
+        ItemChangeEnumCmd::SwEffect(self)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemCtlCmd {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemCtlError> {
+impl ItemChangeEnumCmd {
+    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
         match self {
             Self::Autocharge(cmd) => Ok(cmd.execute(core_item)?),
             Self::Booster(cmd) => Ok(cmd.execute(core_item)?),
@@ -152,7 +152,7 @@ impl ItemCtlCmd {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ItemCtlError {
+pub enum ItemChangeEnumError {
     #[error("failed to change autocharge")]
     Autocharge(#[from] AutochargeChangeError),
     #[error("failed to change booster")]

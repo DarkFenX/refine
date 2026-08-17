@@ -19,7 +19,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
-pub enum ItemAddCmd {
+pub enum ItemAddEnumCmd {
     Booster(BoosterAddCmdCtxFit),
     Character(CharacterSetCmdCtxFit),
     Drone(DroneAddCmdCtxFit),
@@ -41,86 +41,86 @@ pub enum ItemAddCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Booster(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Booster(self.into_ctx_fit(fit_id))
     }
 }
 impl CharacterSetCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Character(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Character(self.into_ctx_fit(fit_id))
     }
 }
 impl DroneAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Drone(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Drone(self.into_ctx_fit(fit_id))
     }
 }
 impl FighterAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Fighter(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Fighter(self.into_ctx_fit(fit_id))
     }
 }
 impl FwEffectAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::FwEffect(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::FwEffect(self.into_ctx_fit(fit_id))
     }
 }
 impl ImplantAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Implant(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Implant(self.into_ctx_fit(fit_id))
     }
 }
 impl ModuleAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Module(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Module(self.into_ctx_fit(fit_id))
     }
 }
 impl ProjEffectAddCmd {
-    pub fn into_item_add(self) -> ItemAddCmd {
-        ItemAddCmd::ProjEffect(self)
+    pub fn into_item_add(self) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::ProjEffect(self)
     }
 }
 impl RigAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Rig(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Rig(self.into_ctx_fit(fit_id))
     }
 }
 impl ServiceAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Service(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Service(self.into_ctx_fit(fit_id))
     }
 }
 impl ShipSetCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Ship(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Ship(self.into_ctx_fit(fit_id))
     }
 }
 impl SkillAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Skill(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Skill(self.into_ctx_fit(fit_id))
     }
 }
 impl StanceSetCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Stance(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Stance(self.into_ctx_fit(fit_id))
     }
 }
 impl SubsystemAddCmd {
-    pub fn into_item_add(self, fit_id: FitId) -> ItemAddCmd {
-        ItemAddCmd::Subsystem(self.into_ctx_fit(fit_id))
+    pub fn into_item_add(self, fit_id: FitId) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::Subsystem(self.into_ctx_fit(fit_id))
     }
 }
 impl SwEffectAddCmd {
-    pub fn into_item_add(self) -> ItemAddCmd {
-        ItemAddCmd::SwEffect(self)
+    pub fn into_item_add(self) -> ItemAddEnumCmd {
+        ItemAddEnumCmd::SwEffect(self)
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemAddCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddError> {
+impl ItemAddEnumCmd {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddEnumError> {
         match self {
             Self::Booster(cmd) => Ok(cmd.execute(core_sol)?),
             Self::Character(cmd) => Ok(cmd.execute(core_sol)?),
@@ -142,7 +142,7 @@ impl ItemAddCmd {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum ItemAddError {
+pub enum ItemAddEnumError {
     #[error("failed to add booster")]
     Booster(#[from] FitGetBoosterAddError),
     #[error("failed to set character")]

@@ -14,7 +14,7 @@ pub(crate) async fn add_item(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
     WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoCmd>, ApiError>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::ItemAddCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::ItemAddEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_add_item(state, sol_id, params, payload).await {
         Ok(fit_info) => (StatusCode::CREATED, Json(fit_info)).into_response(),
@@ -26,7 +26,7 @@ async fn internal_add_item(
     state: AppState,
     sol_id: String,
     params: rs::ItemInfoCmd,
-    payload: rs::ItemAddCmd,
+    payload: rs::ItemAddEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let (_, item_info) = state

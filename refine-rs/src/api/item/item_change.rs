@@ -1,8 +1,8 @@
-use crate::{ChangedItemIdsResp, Item, ItemCtlCmd, ItemInfo, err::ItemCtlError, info::ItemInfoCmd};
+use crate::{ChangedItemIdsResp, Item, ItemChangeEnumCmd, ItemInfo, err::ItemChangeEnumError, info::ItemInfoCmd};
 
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmd: ItemCtlCmd) -> Result<ChangedItemIdsResp, ItemCtlError> {
+    pub async fn change(&mut self, ctl_cmd: ItemChangeEnumCmd) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
         // Variables for move
         let item_id = self.id;
         self.sol
@@ -16,9 +16,9 @@ impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        ctl_cmd: ItemCtlCmd,
+        ctl_cmd: ItemChangeEnumCmd,
         info_cmd: ItemInfoCmd,
-    ) -> Result<(ChangedItemIdsResp, ItemInfo), ItemCtlError> {
+    ) -> Result<(ChangedItemIdsResp, ItemInfo), ItemChangeEnumError> {
         // Variables for move
         let item_id = self.id;
         self.sol

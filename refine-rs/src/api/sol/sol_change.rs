@@ -1,11 +1,11 @@
 use crate::{
-    CtlCmdResps, SolCtlCmd, SolInfo, SolInfoCmdBr, SolarSystem,
-    err::{BackrefRenderError, SolCtlError},
+    CtlCmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem,
+    err::{BackrefRenderError, SolChangeEnumError},
 };
 
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmds: Vec<SolCtlCmd>) -> Result<CtlCmdResps, CtlSolChangeError> {
+    pub async fn change(&mut self, ctl_cmds: Vec<SolChangeEnumCmd>) -> Result<CtlCmdResps, SolChangeBatchError> {
         self.exec_standard_fallible(move |core_sol| {
             let ctl_cmd_resps = execute_commands(core_sol, ctl_cmds)?;
             Ok(ctl_cmd_resps)
@@ -15,9 +15,9 @@ impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        ctl_cmds: Vec<SolCtlCmd>,
+        ctl_cmds: Vec<SolChangeEnumCmd>,
         info_cmd: SolInfoCmdBr,
-    ) -> Result<(CtlCmdResps, SolInfo), CtlSolChangeError> {
+    ) -> Result<(CtlCmdResps, SolInfo), SolChangeBatchError> {
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = self.get_src_alias();
@@ -32,32 +32,32 @@ impl SolarSystem<'_> {
 
 fn execute_commands(
     core_sol: &mut rc::SolarSystem,
-    ctl_cmds: Vec<SolCtlCmd>,
-) -> Result<CtlCmdResps, CtlSolChangeError> {
+    ctl_cmds: Vec<SolChangeEnumCmd>,
+) -> Result<CtlCmdResps, SolChangeBatchError> {
     let mut ctl_cmd_resps = CtlCmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
         let ctl_cmd_resp = ctl_cmd
             .render(&ctl_cmd_resps)
-            .map_err(|render_err| CtlSolChangeError::from_ctl_render(index, render_err))?
+            .map_err(|render_err| SolChangeBatchError::from_ctl_render(index, render_err))?
             .execute(core_sol)
-            .map_err(|exec_err| CtlSolChangeError::from_ctl_exec(index, exec_err))?;
+            .map_err(|exec_err| SolChangeBatchError::from_ctl_exec(index, exec_err))?;
         ctl_cmd_resps.append(ctl_cmd_resp);
     }
     Ok(ctl_cmd_resps)
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum CtlSolChangeError {
+pub enum SolChangeBatchError {
     #[error("command #{0} failed")]
-    CtlRender(usize, #[source] BackrefRenderError),
+    Render(usize, #[source] BackrefRenderError),
     #[error("command #{0} failed")]
-    CtlExec(usize, #[source] SolCtlError),
+    CtlExec(usize, #[source] SolChangeEnumError),
 }
-impl CtlSolChangeError {
+impl SolChangeBatchError {
     fn from_ctl_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
-        Self::CtlRender(cmd_idx, render_err)
+        Self::Render(cmd_idx, render_err)
     }
-    fn from_ctl_exec(cmd_idx: usize, exec_err: SolCtlError) -> Self {
+    fn from_ctl_exec(cmd_idx: usize, exec_err: SolChangeEnumError) -> Self {
         Self::CtlExec(cmd_idx, exec_err)
     }
 }

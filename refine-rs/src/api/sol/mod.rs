@@ -5,7 +5,7 @@ pub use info_args::ValSolInfoArgs;
 pub use refine_add_sol::SolAddError;
 pub use refine_get_sol::SolGetError;
 pub use sol::SolarSystem;
-pub use sol_change::CtlSolChangeError;
+pub use sol_change::SolChangeBatchError;
 pub use sol_remove::SolRemoveError;
 pub use sol_switch_src::SolSwitchSrcError;
 
