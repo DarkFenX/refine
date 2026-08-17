@@ -67,7 +67,7 @@ impl FitInfoCmd {
         FitInfo::from_core(
             core_fit,
             &InfoModesInt::from_pub_mode(self.fit),
-            &InfoModesInt::from_pub_modes_regular(self.item),
+            &InfoModesInt::from_pub_modes(self.item),
         )
     }
 }
@@ -77,7 +77,7 @@ impl FitInfoCmdBr {
         FitInfo::from_core(
             core_fit,
             &InfoModesInt::from_pub_mode(self.fit),
-            &InfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
+            &InfoModesInt::from_pub_modes_br(self.item, ctl_cmd_resps),
         )
     }
 }

@@ -4,30 +4,36 @@ use crate::{
     info::{InfoModes, InfoModesInt},
 };
 
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct SolInfoCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
-    sol: SolInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
     fleet: InfoModes<FleetInfoMode, FleetId>,
     #[cfg_attr(feature = "serde", serde(default))]
     fit: InfoModes<FitInfoMode, FitId>,
     #[cfg_attr(feature = "serde", serde(default))]
     item: InfoModes<ItemInfoMode, ItemId>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: SolInfoCmdShared,
 }
-
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct SolInfoCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    sol: SolInfoMode,
     #[cfg_attr(feature = "serde", serde(default))]
     fleet: InfoModes<FleetInfoMode, FleetIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
     fit: InfoModes<FitInfoMode, FitIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
     item: InfoModes<ItemInfoMode, ItemIdBr>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: SolInfoCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Copy, Clone, Default)]
+struct SolInfoCmdShared {
+    #[cfg_attr(feature = "serde", serde(default))]
+    sol: SolInfoMode,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -38,7 +44,7 @@ impl SolInfoCmd {
         Self::default()
     }
     pub fn with_sol(mut self, mode: SolInfoMode) -> Self {
-        self.sol = mode;
+        self.shared.sol = mode;
         self
     }
     pub fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
@@ -72,7 +78,7 @@ impl SolInfoCmdBr {
         Self::default()
     }
     pub fn with_sol(mut self, mode: SolInfoMode) -> Self {
-        self.sol = mode;
+        self.shared.sol = mode;
         self
     }
     pub fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
@@ -115,20 +121,20 @@ impl SolInfoCmd {
             sol_id,
             src_alias,
             core_sol,
-            self.sol,
-            &InfoModesInt::from_pub_modes_regular(self.fleet),
-            &InfoModesInt::from_pub_modes_regular(self.fit),
-            &InfoModesInt::from_pub_modes_regular(self.item),
+            self.shared.sol,
+            &InfoModesInt::from_pub_modes(self.fleet),
+            &InfoModesInt::from_pub_modes(self.fit),
+            &InfoModesInt::from_pub_modes(self.item),
         )
     }
 
     pub(crate) fn execute_into_info_ext(self, core_sol: &mut rc::SolarSystem) -> Option<SolInfoExt> {
         SolInfoExt::try_from_core(
             core_sol,
-            self.sol,
-            &InfoModesInt::from_pub_modes_regular(self.fleet),
-            &InfoModesInt::from_pub_modes_regular(self.fit),
-            &InfoModesInt::from_pub_modes_regular(self.item),
+            self.shared.sol,
+            &InfoModesInt::from_pub_modes(self.fleet),
+            &InfoModesInt::from_pub_modes(self.fit),
+            &InfoModesInt::from_pub_modes(self.item),
         )
     }
 }
@@ -145,10 +151,10 @@ impl SolInfoCmdBr {
             sol_id,
             src_alias,
             core_sol,
-            self.sol,
-            &InfoModesInt::from_pub_modes_backref(self.fleet, ctl_cmd_resps),
-            &InfoModesInt::from_pub_modes_backref(self.fit, ctl_cmd_resps),
-            &InfoModesInt::from_pub_modes_backref(self.item, ctl_cmd_resps),
+            self.shared.sol,
+            &InfoModesInt::from_pub_modes_br(self.fleet, ctl_cmd_resps),
+            &InfoModesInt::from_pub_modes_br(self.fit, ctl_cmd_resps),
+            &InfoModesInt::from_pub_modes_br(self.item, ctl_cmd_resps),
         )
     }
 }

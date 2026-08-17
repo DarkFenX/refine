@@ -46,7 +46,7 @@ impl<M, I> InfoModesInt<M, I> {
             overrides: HashMap::new(),
         }
     }
-    pub(in crate::info) fn from_pub_modes_regular(pub_modes: InfoModes<M, I>) -> Self
+    pub(in crate::info) fn from_pub_modes(pub_modes: InfoModes<M, I>) -> Self
     where
         M: Copy,
         I: Eq + Hash,
@@ -60,7 +60,7 @@ impl<M, I> InfoModesInt<M, I> {
                 .collect(),
         }
     }
-    pub(in crate::info) fn from_pub_modes_backref<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
+    pub(in crate::info) fn from_pub_modes_br<B>(pub_modes: InfoModes<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
     where
         M: Copy,
         B: CtlCmdBr<Target = I>,

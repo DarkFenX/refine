@@ -32,6 +32,6 @@ impl ItemInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
-        ItemInfo::from_core(core_item, &InfoModesInt::from_pub_modes_regular(self.item))
+        ItemInfo::from_core(core_item, &InfoModesInt::from_pub_modes(self.item))
     }
 }

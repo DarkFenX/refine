@@ -1,10 +1,23 @@
-use crate::{FleetInfo, FleetInfoMode, info::InfoModesInt};
+use crate::{FleetId, FleetIdBr, FleetInfo, FleetInfoMode, info::InfoModesInt};
 
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone, Default)]
 pub struct FleetInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet: FleetInfoMode,
+}
+
+// Extra context commands
+#[derive(Copy, Clone)]
+pub struct FleetInfoCmdCtxFleet {
+    fleet_id: FleetId,
+    core: FleetInfoCmd,
+}
+#[derive(Copy, Clone)]
+pub struct FleetInfoCmdCtxFleetBr {
+    fleet_id: FleetIdBr,
+    core: FleetInfoCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

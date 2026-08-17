@@ -1,5 +1,5 @@
 pub use fit::{FitInfoCmd, FitInfoCmdBr};
-pub use fleet::FleetInfoCmd;
+pub use fleet::{FleetInfoCmd, FleetInfoCmdCtxFleet, FleetInfoCmdCtxFleetBr};
 pub use item::ItemInfoCmd;
 pub use sol::{SolInfoCmd, SolInfoCmdBr};
 
