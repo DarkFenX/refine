@@ -42,77 +42,77 @@ pub enum ItemAddEnumCmd {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Booster(self.into_ctx_fit(fit_id))
     }
 }
 impl CharacterSetCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Character(self.into_ctx_fit(fit_id))
     }
 }
 impl DroneAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Drone(self.into_ctx_fit(fit_id))
     }
 }
 impl FighterAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Fighter(self.into_ctx_fit(fit_id))
     }
 }
 impl FwEffectAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::FwEffect(self.into_ctx_fit(fit_id))
     }
 }
 impl ImplantAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Implant(self.into_ctx_fit(fit_id))
     }
 }
 impl ModuleAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Module(self.into_ctx_fit(fit_id))
     }
 }
 impl ProjEffectAddCmd {
-    pub fn into_item(self) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self) -> ItemAddEnumCmd {
         ItemAddEnumCmd::ProjEffect(self)
     }
 }
 impl RigAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Rig(self.into_ctx_fit(fit_id))
     }
 }
 impl ServiceAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Service(self.into_ctx_fit(fit_id))
     }
 }
 impl ShipSetCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Ship(self.into_ctx_fit(fit_id))
     }
 }
 impl SkillAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Skill(self.into_ctx_fit(fit_id))
     }
 }
 impl StanceSetCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Stance(self.into_ctx_fit(fit_id))
     }
 }
 impl SubsystemAddCmd {
-    pub fn into_item(self, fit_id: FitId) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self, fit_id: FitId) -> ItemAddEnumCmd {
         ItemAddEnumCmd::Subsystem(self.into_ctx_fit(fit_id))
     }
 }
 impl SwEffectAddCmd {
-    pub fn into_item(self) -> ItemAddEnumCmd {
+    pub fn into_item_ctl(self) -> ItemAddEnumCmd {
         ItemAddEnumCmd::SwEffect(self)
     }
 }

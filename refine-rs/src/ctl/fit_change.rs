@@ -147,312 +147,312 @@ pub enum FitChangeEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit
 impl FitChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FitChange(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FitChange(self)
     }
 }
 // Item
 impl ItemRemoveCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ItemRemove(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ItemRemove(self.into_ctx_item_br(item_id))
     }
 }
 // Item - autocharge
 impl AutochargeChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::AutochargeChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::AutochargeChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - booster
 impl BoosterAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::BoosterAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::BoosterAdd(self)
     }
 }
 impl BoosterChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::BoosterChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::BoosterChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - character
 impl CharacterSetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::CharacterSet(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::CharacterSet(self)
     }
 }
 impl CharacterChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::CharacterChange(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::CharacterChange(self)
     }
 }
 impl CharacterUnsetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::CharacterUnset(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::CharacterUnset(self)
     }
 }
 // Item - charge
 impl ChargeChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ChargeChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ChargeChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - drone
 impl DroneAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::DroneAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::DroneAdd(self.into_br())
     }
 }
 impl DroneAddCmdBr {
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::DroneAdd(self)
     }
 }
 impl DroneChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::DroneChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::DroneChange(self.into_ctx_item_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::DroneChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fighter
 impl FighterAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FighterAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FighterAdd(self.into_br())
     }
 }
 impl FighterAddCmdBr {
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FighterAdd(self)
     }
 }
 impl FighterChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FighterChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FighterChange(self.into_ctx_item_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FighterChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fit-wide effect
 impl FwEffectAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FwEffectAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FwEffectAdd(self)
     }
 }
 impl FwEffectChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FwEffectChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::FwEffectChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - implant
 impl ImplantAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ImplantAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ImplantAdd(self)
     }
 }
 impl ImplantChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ImplantChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ImplantChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - module
 impl ModuleAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ModuleAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ModuleAdd(self.into_br())
     }
 }
 impl ModuleAddCmdBr {
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ModuleAdd(self)
     }
 }
 impl ModuleChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ModuleChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - rig
 impl RigAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::RigAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::RigAdd(self)
     }
 }
 impl RigChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::RigChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::RigChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - service
 impl ServiceAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ServiceAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ServiceAdd(self)
     }
 }
 impl ServiceChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ServiceChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ServiceChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - ship
 impl ShipSetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ShipSet(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ShipSet(self)
     }
 }
 impl ShipChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ShipChange(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ShipChange(self)
     }
 }
 impl ShipUnsetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ShipUnset(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::ShipUnset(self)
     }
 }
 // Item - skill
 impl SkillAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::SkillAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::SkillAdd(self)
     }
 }
 impl SkillChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::SkillChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::SkillChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - stance
 impl StanceSetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::StanceSet(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::StanceSet(self)
     }
 }
 impl StanceChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::StanceChange(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::StanceChange(self)
     }
 }
 impl StanceUnsetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::StanceUnset(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::StanceUnset(self)
     }
 }
 // Item - subsystem
 impl SubsystemAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::SubsystemAdd(self)
     }
-    pub fn into_fit_br(self) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::SubsystemAdd(self)
     }
 }
 impl SubsystemChangeCmd {
-    pub fn into_fit(self, item_id: ItemId) -> FitChangeEnumCmd {
+    pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::SubsystemChange(self.into_ctx_item(item_id))
     }
-    pub fn into_fit_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
         FitChangeEnumCmdBr::SubsystemChange(self.into_ctx_item_br(item_id))
     }
 }
