@@ -122,23 +122,23 @@ impl SwEffectAddCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemAddEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddEnumError> {
-        match self {
-            Self::Booster(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Character(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Drone(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Fighter(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::FwEffect(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Implant(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Module(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::ProjEffect(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Rig(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Service(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Ship(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Skill(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Stance(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Subsystem(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::SwEffect(cmd) => Ok(cmd.execute(core_sol)),
-        }
+        Ok(match self {
+            Self::Booster(cmd) => cmd.execute(core_sol)?,
+            Self::Character(cmd) => cmd.execute(core_sol)?,
+            Self::Drone(cmd) => cmd.execute(core_sol)?,
+            Self::Fighter(cmd) => cmd.execute(core_sol)?,
+            Self::FwEffect(cmd) => cmd.execute(core_sol)?,
+            Self::Implant(cmd) => cmd.execute(core_sol)?,
+            Self::Module(cmd) => cmd.execute(core_sol)?,
+            Self::ProjEffect(cmd) => cmd.execute(core_sol)?,
+            Self::Rig(cmd) => cmd.execute(core_sol)?,
+            Self::Service(cmd) => cmd.execute(core_sol)?,
+            Self::Ship(cmd) => cmd.execute(core_sol)?,
+            Self::Skill(cmd) => cmd.execute(core_sol)?,
+            Self::Stance(cmd) => cmd.execute(core_sol)?,
+            Self::Subsystem(cmd) => cmd.execute(core_sol)?,
+            Self::SwEffect(cmd) => cmd.execute(core_sol),
+        })
     }
 }
 

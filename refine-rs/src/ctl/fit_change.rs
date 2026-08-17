@@ -522,61 +522,61 @@ impl FitChangeEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitChangeEnumError> {
-        match self {
+        Ok(match self {
             // Fit
-            Self::FitChange(cmd) => Ok(cmd.execute(core_fit)?.into()),
+            Self::FitChange(cmd) => cmd.execute(core_fit)?.into(),
             // Item
-            Self::ItemRemove(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::ItemRemove(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - autocharge
-            Self::AutochargeChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::AutochargeChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - booster
-            Self::BoosterAdd(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::BoosterChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::BoosterAdd(cmd) => cmd.execute(core_fit).into(),
+            Self::BoosterChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - character
-            Self::CharacterSet(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::CharacterChange(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
+            Self::CharacterSet(cmd) => cmd.execute(core_fit).into(),
+            Self::CharacterChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             #[expect(clippy::unit_arg)]
-            Self::CharacterUnset(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::CharacterUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - charge
-            Self::ChargeChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::ChargeChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - drone
-            Self::DroneAdd(cmd) => Ok(cmd.execute(core_fit)?.into()),
-            Self::DroneChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::DroneAdd(cmd) => cmd.execute(core_fit)?.into(),
+            Self::DroneChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - fighter
-            Self::FighterAdd(cmd) => Ok(cmd.execute(core_fit)?.into()),
-            Self::FighterChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::FighterAdd(cmd) => cmd.execute(core_fit)?.into(),
+            Self::FighterChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - fit-wide effect
-            Self::FwEffectAdd(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::FwEffectChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::FwEffectAdd(cmd) => cmd.execute(core_fit).into(),
+            Self::FwEffectChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - implant
-            Self::ImplantAdd(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::ImplantChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::ImplantAdd(cmd) => cmd.execute(core_fit).into(),
+            Self::ImplantChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - module
-            Self::ModuleAdd(cmd) => Ok(cmd.execute(core_fit)?.into()),
-            Self::ModuleChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::ModuleAdd(cmd) => cmd.execute(core_fit)?.into(),
+            Self::ModuleChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - rig
-            Self::RigAdd(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::RigChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::RigAdd(cmd) => cmd.execute(core_fit).into(),
+            Self::RigChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - service
-            Self::ServiceAdd(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::ServiceChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::ServiceAdd(cmd) => cmd.execute(core_fit).into(),
+            Self::ServiceChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - ship
-            Self::ShipSet(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::ShipChange(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
+            Self::ShipSet(cmd) => cmd.execute(core_fit).into(),
+            Self::ShipChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             #[expect(clippy::unit_arg)]
-            Self::ShipUnset(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::ShipUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - skill
-            Self::SkillAdd(cmd) => Ok(cmd.execute(core_fit)?.into()),
-            Self::SkillChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
+            Self::SkillAdd(cmd) => cmd.execute(core_fit)?.into(),
+            Self::SkillChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
             // Item - stance
-            Self::StanceSet(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::StanceChange(cmd) => Ok(cmd.execute_via_fit(core_fit)?.into()),
+            Self::StanceSet(cmd) => cmd.execute(core_fit).into(),
+            Self::StanceChange(cmd) => cmd.execute_via_fit(core_fit)?.into(),
             #[expect(clippy::unit_arg)]
-            Self::StanceUnset(cmd) => Ok(cmd.execute(core_fit).into()),
+            Self::StanceUnset(cmd) => cmd.execute(core_fit).into(),
             // Item - subsystem
-            Self::SubsystemAdd(cmd) => Ok(cmd.execute(core_fit).into()),
-            Self::SubsystemChange(cmd) => Ok(cmd.execute(core_fit.get_sol_mut())?.into()),
-        }
+            Self::SubsystemAdd(cmd) => cmd.execute(core_fit).into(),
+            Self::SubsystemChange(cmd) => cmd.execute(core_fit.get_sol_mut())?.into(),
+        })
     }
 }
 

@@ -130,25 +130,25 @@ impl SwEffectChangeCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemChangeEnumCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
-        match self {
-            Self::Autocharge(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Booster(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Character(cmd) => Ok(cmd.execute_via_item(core_item)?),
-            Self::Charge(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Drone(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Fighter(cmd) => Ok(cmd.execute(core_item)?),
-            Self::FwEffect(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Implant(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Module(cmd) => Ok(cmd.execute(core_item)?),
-            Self::ProjEffect(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Rig(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Service(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Ship(cmd) => Ok(cmd.execute_via_item(core_item)?),
-            Self::Skill(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Stance(cmd) => Ok(cmd.execute_via_item(core_item)?),
-            Self::Subsystem(cmd) => Ok(cmd.execute(core_item)?),
-            Self::SwEffect(cmd) => Ok(cmd.execute(core_item)?),
-        }
+        Ok(match self {
+            Self::Autocharge(cmd) => cmd.execute(core_item)?,
+            Self::Booster(cmd) => cmd.execute(core_item)?,
+            Self::Character(cmd) => cmd.execute_via_item(core_item)?,
+            Self::Charge(cmd) => cmd.execute(core_item)?,
+            Self::Drone(cmd) => cmd.execute(core_item)?,
+            Self::Fighter(cmd) => cmd.execute(core_item)?,
+            Self::FwEffect(cmd) => cmd.execute(core_item)?,
+            Self::Implant(cmd) => cmd.execute(core_item)?,
+            Self::Module(cmd) => cmd.execute(core_item)?,
+            Self::ProjEffect(cmd) => cmd.execute(core_item)?,
+            Self::Rig(cmd) => cmd.execute(core_item)?,
+            Self::Service(cmd) => cmd.execute(core_item)?,
+            Self::Ship(cmd) => cmd.execute_via_item(core_item)?,
+            Self::Skill(cmd) => cmd.execute(core_item)?,
+            Self::Stance(cmd) => cmd.execute_via_item(core_item)?,
+            Self::Subsystem(cmd) => cmd.execute(core_item)?,
+            Self::SwEffect(cmd) => cmd.execute(core_item)?,
+        })
     }
 }
 

@@ -29,9 +29,9 @@ impl SolHybridCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolHybridCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolHybridError> {
-        match self {
-            Self::Ctl(ctl_cmd) => Ok(ctl_cmd.execute(core_sol)?),
-        }
+        Ok(match self {
+            Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
+        })
     }
 }
 

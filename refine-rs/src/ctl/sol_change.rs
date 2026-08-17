@@ -715,73 +715,73 @@ impl SolChangeEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolChangeEnumError> {
-        match self {
+        Ok(match self {
             // Solar system
             #[expect(clippy::unit_arg)]
-            Self::SolChange(cmd) => Ok(cmd.execute(core_sol).into()),
+            Self::SolChange(cmd) => cmd.execute(core_sol).into(),
             // Fleet
-            Self::FleetAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::FleetChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::FleetRemove(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FleetAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FleetChange(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FleetRemove(cmd) => cmd.execute(core_sol)?.into(),
             // Fit
-            Self::FitAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::FitChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::FitRemove(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FitAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FitChange(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FitRemove(cmd) => cmd.execute(core_sol)?.into(),
             // Item
-            Self::ItemRemove(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ItemRemove(cmd) => cmd.execute(core_sol)?.into(),
             // Item - autocharge
-            Self::AutochargeChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AutochargeChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - booster
-            Self::BoosterAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::BoosterChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::BoosterAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::BoosterChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - character
-            Self::CharacterSet(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::CharacterChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::CharacterUnset(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::CharacterSet(cmd) => cmd.execute(core_sol)?.into(),
+            Self::CharacterChange(cmd) => cmd.execute(core_sol)?.into(),
+            Self::CharacterUnset(cmd) => cmd.execute(core_sol)?.into(),
             // Item - charge
-            Self::ChargeChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChargeChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - drone
-            Self::DroneAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::DroneChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::DroneAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::DroneChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - fighter
-            Self::FighterAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::FighterChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FighterAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FighterChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - fit-wide effect
-            Self::FwEffectAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::FwEffectChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FwEffectAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FwEffectChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - implant
-            Self::ImplantAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ImplantChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ImplantAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ImplantChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - module
-            Self::ModuleAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ModuleChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ModuleAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ModuleChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - projected effect
-            Self::ProjEffectAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ProjEffectChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ProjEffectAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ProjEffectChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - rig
-            Self::RigAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::RigChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RigAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::RigChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - service
-            Self::ServiceAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ServiceChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ServiceAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ServiceChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - ship
-            Self::ShipSet(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ShipChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ShipUnset(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ShipSet(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ShipChange(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ShipUnset(cmd) => cmd.execute(core_sol)?.into(),
             // Item - skill
-            Self::SkillAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::SkillChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SkillAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::SkillChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - stance
-            Self::StanceSet(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::StanceChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::StanceUnset(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::StanceSet(cmd) => cmd.execute(core_sol)?.into(),
+            Self::StanceChange(cmd) => cmd.execute(core_sol)?.into(),
+            Self::StanceUnset(cmd) => cmd.execute(core_sol)?.into(),
             // Item - subsystem
-            Self::SubsystemAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::SubsystemChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SubsystemAdd(cmd) => cmd.execute(core_sol)?.into(),
+            Self::SubsystemChange(cmd) => cmd.execute(core_sol)?.into(),
             // Item - system-wide effect
-            Self::SwEffectAdd(cmd) => Ok(cmd.execute(core_sol).into()),
-            Self::SwEffectChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
-        }
+            Self::SwEffectAdd(cmd) => cmd.execute(core_sol).into(),
+            Self::SwEffectChange(cmd) => cmd.execute(core_sol)?.into(),
+        })
     }
 }
 
