@@ -13,8 +13,10 @@ pub struct AutochargeChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct AutochargeChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: AutochargeChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

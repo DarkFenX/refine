@@ -14,6 +14,7 @@ pub struct CharacterChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 pub enum CharacterChangeCmdCtxAny {
     Fit(CharacterChangeCmdCtxFit),
     Item(CharacterChangeCmdCtxItem),
@@ -25,8 +26,10 @@ pub enum CharacterChangeCmdCtxAnyBr {
 }
 
 // Extra context commands - fit
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct CharacterChangeCmdCtxFit {
     fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: CharacterChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -37,8 +40,10 @@ pub struct CharacterChangeCmdCtxFitBr {
 }
 
 // Extra context commands - item
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct CharacterChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: CharacterChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

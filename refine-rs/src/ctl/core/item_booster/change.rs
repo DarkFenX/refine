@@ -17,8 +17,10 @@ pub struct BoosterChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct BoosterChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: BoosterChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

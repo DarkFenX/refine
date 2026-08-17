@@ -4,19 +4,21 @@ use crate::{CmdResps, ItemId, ItemIdBr, RemoveMode, err::BrResolveError};
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ItemRemoveCmd {
-    rm_mode: Option<RemoveMode> = None,
+    rm_mode: Option<RemoveMode>,
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemRemoveCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ItemRemoveCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ItemRemoveCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ItemRemoveCmd = ItemRemoveCmd { .. },
+    core: ItemRemoveCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

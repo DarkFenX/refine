@@ -14,8 +14,10 @@ pub struct ImplantChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ImplantChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ImplantChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

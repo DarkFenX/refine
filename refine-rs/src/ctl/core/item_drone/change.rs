@@ -42,8 +42,10 @@ struct DroneChangeCmdShared {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct DroneChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: DroneChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

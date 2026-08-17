@@ -6,8 +6,10 @@ use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError};
 pub struct ShipUnsetCmd;
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ShipUnsetCmdCtxFit {
     fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ShipUnsetCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

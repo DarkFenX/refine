@@ -14,6 +14,7 @@ pub struct StanceChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 pub enum StanceChangeCmdCtxAny {
     Fit(StanceChangeCmdCtxFit),
     Item(StanceChangeCmdCtxItem),
@@ -25,8 +26,10 @@ pub enum StanceChangeCmdCtxAnyBr {
 }
 
 // Extra context commands - fit
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct StanceChangeCmdCtxFit {
     fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: StanceChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -37,8 +40,10 @@ pub struct StanceChangeCmdCtxFitBr {
 }
 
 // Extra context commands - item
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct StanceChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: StanceChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

@@ -34,8 +34,10 @@ struct ProjEffectChangeCmdShared {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ProjEffectChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ProjEffectChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

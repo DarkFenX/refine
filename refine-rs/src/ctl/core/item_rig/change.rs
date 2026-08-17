@@ -14,8 +14,10 @@ pub struct RigChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct RigChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: RigChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

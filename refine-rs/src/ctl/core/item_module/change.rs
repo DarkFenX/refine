@@ -46,8 +46,10 @@ struct ModuleChangeCmdShared {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ModuleChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ModuleChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

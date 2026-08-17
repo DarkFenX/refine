@@ -6,8 +6,10 @@ use crate::{CmdResps, FleetId, FleetIdBr, err::BrResolveError};
 pub struct FleetRemoveCmd;
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FleetRemoveCmdCtxFleet {
     fleet_id: FleetId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: FleetRemoveCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

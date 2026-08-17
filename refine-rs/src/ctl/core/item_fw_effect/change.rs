@@ -14,8 +14,10 @@ pub struct FwEffectChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FwEffectChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: FwEffectChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

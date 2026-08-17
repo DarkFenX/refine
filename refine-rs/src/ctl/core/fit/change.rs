@@ -28,8 +28,10 @@ struct CmdFitChangeShared {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FitChangeCmdCtxFit {
     fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: FitChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

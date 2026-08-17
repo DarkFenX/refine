@@ -16,6 +16,7 @@ pub struct ShipChangeCmd {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 pub enum ShipChangeCmdCtxAny {
     Fit(ShipChangeCmdCtxFit),
     Item(ShipChangeCmdCtxItem),
@@ -27,8 +28,10 @@ pub enum ShipChangeCmdCtxAnyBr {
 }
 
 // Extra context commands - fit
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ShipChangeCmdCtxFit {
     fit_id: FitId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ShipChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -39,8 +42,10 @@ pub struct ShipChangeCmdCtxFitBr {
 }
 
 // Extra context commands - item
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct ShipChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: ShipChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

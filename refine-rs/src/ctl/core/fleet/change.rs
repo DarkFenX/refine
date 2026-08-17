@@ -19,8 +19,10 @@ pub struct FleetChangeCmdBr {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FleetChangeCmdCtxFleet {
     fleet_id: FleetId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: FleetChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

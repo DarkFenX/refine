@@ -44,8 +44,10 @@ struct FighterChangeCmdShared {
 }
 
 // Extra context commands
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 pub struct FighterChangeCmdCtxItem {
     item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(flatten))]
     core: FighterChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
