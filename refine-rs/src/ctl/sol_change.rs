@@ -48,6 +48,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
+#[derive(Clone)]
 pub enum SolChangeEnumCmd {
     // Solar system
     SolChange(SolChangeCmd),
@@ -120,6 +121,7 @@ pub enum SolChangeEnumCmd {
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
+#[derive(Clone)]
 pub enum SolChangeEnumCmdBr {
     // Solar system
     SolChange(SolChangeCmd),

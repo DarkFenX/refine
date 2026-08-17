@@ -2,6 +2,7 @@ use crate::{AddedItemIdsResp, EffectId, EffectMode, ItemTypeId, ctl::core::share
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct SwEffectAddCmd {
     type_id: ItemTypeId,
     state: Option<bool> = None,

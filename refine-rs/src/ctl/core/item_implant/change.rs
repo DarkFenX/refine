@@ -5,7 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct ImplantChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
@@ -15,12 +15,14 @@ pub struct ImplantChangeCmd {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ImplantChangeCmdCtxItem {
     item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ImplantChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ImplantChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

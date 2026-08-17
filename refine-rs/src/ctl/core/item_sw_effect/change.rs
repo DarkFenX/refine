@@ -5,7 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct SwEffectChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
@@ -15,12 +15,14 @@ pub struct SwEffectChangeCmd {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct SwEffectChangeCmdCtxItem {
     item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: SwEffectChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct SwEffectChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

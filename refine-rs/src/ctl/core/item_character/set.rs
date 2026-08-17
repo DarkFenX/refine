@@ -5,6 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct CharacterSetCmd {
     type_id: ItemTypeId,
     state: Option<bool> = None,
@@ -14,12 +15,14 @@ pub struct CharacterSetCmd {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct CharacterSetCmdCtxFit {
     fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: CharacterSetCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct CharacterSetCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

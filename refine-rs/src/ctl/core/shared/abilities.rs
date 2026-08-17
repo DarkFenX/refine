@@ -5,7 +5,7 @@
     derive(serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub(in crate::ctl) struct Abilities {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<serde_with::DisplayFromStr, _>"))]
     data: Vec<(rc::AbilityId, bool)>,

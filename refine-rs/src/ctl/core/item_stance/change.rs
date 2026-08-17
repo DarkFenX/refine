@@ -5,7 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct StanceChangeCmd {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
@@ -15,11 +15,13 @@ pub struct StanceChangeCmd {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
+#[derive(Clone)]
 pub enum StanceChangeCmdCtxAny {
     Fit(StanceChangeCmdCtxFit),
     Item(StanceChangeCmdCtxItem),
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
+#[derive(Clone)]
 pub enum StanceChangeCmdCtxAnyBr {
     Fit(StanceChangeCmdCtxFitBr),
     Item(StanceChangeCmdCtxItemBr),
@@ -27,12 +29,14 @@ pub enum StanceChangeCmdCtxAnyBr {
 
 // Extra context commands - fit
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct StanceChangeCmdCtxFit {
     fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: StanceChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct StanceChangeCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
@@ -41,12 +45,14 @@ pub struct StanceChangeCmdCtxFitBr {
 
 // Extra context commands - item
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct StanceChangeCmdCtxItem {
     item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: StanceChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct StanceChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

@@ -7,7 +7,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct ModuleChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<ItemId>,
@@ -17,7 +17,7 @@ pub struct ModuleChangeCmd {
     shared: ModuleChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct ModuleChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<ItemIdBr>,
@@ -27,7 +27,7 @@ pub struct ModuleChangeCmdBr {
     shared: ModuleChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct ModuleChangeCmdShared {
     type_id: Option<ItemTypeId>,
     #[cfg_attr(feature = "serde", serde(rename = "move"))]
@@ -47,12 +47,14 @@ struct ModuleChangeCmdShared {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ModuleChangeCmdCtxItem {
     item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ModuleChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ModuleChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

@@ -19,6 +19,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
+#[derive(Clone)]
 pub enum ItemAddEnumCmd {
     Booster(BoosterAddCmdCtxFit),
     Character(CharacterSetCmdCtxFit),

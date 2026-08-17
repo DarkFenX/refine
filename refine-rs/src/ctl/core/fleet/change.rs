@@ -2,7 +2,7 @@ use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FleetChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     add_fit_ids: Vec<FitId>,
@@ -10,7 +10,7 @@ pub struct FleetChangeCmd {
     rm_fit_ids: Vec<FitId>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FleetChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     add_fit_ids: Vec<FitIdBr>,
@@ -20,12 +20,14 @@ pub struct FleetChangeCmdBr {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct FleetChangeCmdCtxFleet {
     fleet_id: FleetId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FleetChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct FleetChangeCmdCtxFleetBr {
     fleet_id: FleetIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

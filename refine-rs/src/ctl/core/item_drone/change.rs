@@ -7,7 +7,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct DroneChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<ItemId>,
@@ -17,7 +17,7 @@ pub struct DroneChangeCmd {
     shared: DroneChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct DroneChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<ItemIdBr>,
@@ -27,7 +27,7 @@ pub struct DroneChangeCmdBr {
     shared: DroneChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct DroneChangeCmdShared {
     type_id: Option<ItemTypeId>,
     state: Option<MinionState>,
@@ -43,12 +43,14 @@ struct DroneChangeCmdShared {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct DroneChangeCmdCtxItem {
     item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: DroneChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct DroneChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

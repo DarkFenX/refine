@@ -4,7 +4,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FitChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet_id: TriStateField<FleetId>,
@@ -12,7 +12,7 @@ pub struct FitChangeCmd {
     shared: CmdFitChangeShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FitChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet_id: TriStateField<FleetIdBr>,
@@ -20,7 +20,7 @@ pub struct FitChangeCmdBr {
     shared: CmdFitChangeShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct CmdFitChangeShared {
     sec_status: Option<FitSecStatus>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -29,12 +29,14 @@ struct CmdFitChangeShared {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct FitChangeCmdCtxFit {
     fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FitChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct FitChangeCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

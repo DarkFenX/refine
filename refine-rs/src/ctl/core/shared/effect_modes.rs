@@ -9,7 +9,7 @@ use crate::{EffectId, EffectMode};
     derive(serde::Deserialize),
     serde(transparent)
 )]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub(in crate::ctl) struct EffectModes {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     data: Vec<(EffectId, EffectMode)>,

@@ -7,7 +7,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FighterChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<ItemId>,
@@ -17,7 +17,7 @@ pub struct FighterChangeCmd {
     shared: FighterChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FighterChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<ItemIdBr>,
@@ -27,7 +27,7 @@ pub struct FighterChangeCmdBr {
     shared: FighterChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 struct FighterChangeCmdShared {
     type_id: Option<ItemTypeId>,
     state: Option<MinionState>,
@@ -45,12 +45,14 @@ struct FighterChangeCmdShared {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct FighterChangeCmdCtxItem {
     item_id: ItemId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FighterChangeCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct FighterChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

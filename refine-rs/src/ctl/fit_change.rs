@@ -29,6 +29,7 @@ use crate::{
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
+#[derive(Clone)]
 pub enum FitChangeEnumCmd {
     // Fit
     FitChange(FitChangeCmd),
@@ -87,6 +88,7 @@ pub enum FitChangeEnumCmd {
     derive(serde::Deserialize),
     serde(tag = "type", rename_all = "snake_case")
 )]
+#[derive(Clone)]
 pub enum FitChangeEnumCmdBr {
     // Fit
     FitChange(FitChangeCmd),

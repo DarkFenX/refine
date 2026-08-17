@@ -5,6 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ModuleAddCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     proj_item_ids: Vec<ItemId> = Vec::new(),
@@ -12,6 +13,7 @@ pub struct ModuleAddCmd {
     shared: ModuleAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ModuleAddCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     proj_item_ids: Vec<ItemIdBr> = Vec::new(),
@@ -19,6 +21,7 @@ pub struct ModuleAddCmdBr {
     shared: ModuleAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 struct ModuleAddCmdShared {
     rack: ModRack,
     add_mode: AddMode,
@@ -34,12 +37,14 @@ struct ModuleAddCmdShared {
 
 // Extra context commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ModuleAddCmdCtxFit {
     fit_id: FitId,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ModuleAddCmd,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ModuleAddCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]

@@ -5,6 +5,7 @@ use crate::{
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ProjEffectAddCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     proj_item_ids: Vec<ItemId> = Vec::new(),
@@ -12,6 +13,7 @@ pub struct ProjEffectAddCmd {
     shared: ProjEffectAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 pub struct ProjEffectAddCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     proj_item_ids: Vec<ItemIdBr> = Vec::new(),
@@ -19,6 +21,7 @@ pub struct ProjEffectAddCmdBr {
     shared: ProjEffectAddCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
 struct ProjEffectAddCmdShared {
     type_id: ItemTypeId,
     state: Option<bool> = None,

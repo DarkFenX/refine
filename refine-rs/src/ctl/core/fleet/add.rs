@@ -2,13 +2,13 @@ use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBr, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FleetAddCmd {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_ids: Vec<FitId>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FleetAddCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
     fit_ids: Vec<FitIdBr>,

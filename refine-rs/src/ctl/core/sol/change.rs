@@ -1,7 +1,7 @@
 use crate::{DpsProfile, NpcProp, OptionalReload, RearmMinion, SecZone, Spool};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct SolChangeCmd {
     sec_zone: Option<SecZone>,
     default_incoming_dps: Option<DpsProfile>,
