@@ -26,7 +26,7 @@ pub use core::{
     SwEffectChangeError,
 };
 
-pub use fit_change::{FitChangeEnumCmdBr, FitChangeEnumError};
+pub use fit_change::{FitChangeEnumCmd, FitChangeEnumCmdBr, FitChangeEnumError};
 pub use item_add::{ItemAddEnumCmd, ItemAddEnumError};
 pub use item_change::{ItemChangeEnumCmd, ItemChangeEnumError};
 pub(crate) use shared::CtlCmdBr;
