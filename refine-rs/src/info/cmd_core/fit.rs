@@ -1,5 +1,5 @@
 use crate::{
-    CtlCmdResps, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
+    FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     info::{InfoModes, InfoModesCompact},
 };
 
@@ -7,17 +7,23 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct FitInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: FitInfoMode,
-    #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModesCompact<ItemInfoMode, ItemId>,
+    item: InfoModes<ItemInfoMode, ItemId>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: FitInfoCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct FitInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: FitInfoMode,
-    #[cfg_attr(feature = "serde", serde(default))]
     item: InfoModesCompact<ItemInfoMode, ItemIdBr>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: FitInfoCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Copy, Clone, Default)]
+struct FitInfoCmdShared {
+    #[cfg_attr(feature = "serde", serde(default))]
+    fit: FitInfoMode,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -28,7 +34,7 @@ impl FitInfoCmd {
         Self::default()
     }
     pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
-        self.fit = mode;
+        self.shared.fit = mode;
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
@@ -36,7 +42,9 @@ impl FitInfoCmd {
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item.overrides.push((mode, item_ids.collect()));
+        for item_id in item_ids {
+            self.item.overrides.insert(item_id, mode);
+        }
         self
     }
 }
@@ -46,7 +54,7 @@ impl FitInfoCmdBr {
         Self::default()
     }
     pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
-        self.fit = mode;
+        self.shared.fit = mode;
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
@@ -64,20 +72,6 @@ impl FitInfoCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
-        FitInfo::from_core(
-            core_fit,
-            &InfoModes::from_simple(self.fit),
-            &InfoModes::from_compact(self.item),
-        )
-    }
-}
-
-impl FitInfoCmdBr {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut, ctl_cmd_resps: &CtlCmdResps) -> FitInfo {
-        FitInfo::from_core(
-            core_fit,
-            &InfoModes::from_simple(self.fit),
-            &InfoModes::from_compact_br(self.item, ctl_cmd_resps),
-        )
+        FitInfo::from_core(core_fit, &InfoModes::from_simple(self.shared.fit), &self.item)
     }
 }

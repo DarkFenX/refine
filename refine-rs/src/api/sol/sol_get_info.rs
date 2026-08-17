@@ -5,7 +5,7 @@ impl SolarSystem<'_> {
         // Variables for move
         let sol_id = self.get_id();
         let src_alias = self.get_src_alias();
-        self.exec_standard_safe(move |core_sol| info_cmd.execute_into_info(sol_id, src_alias, core_sol))
+        self.exec_standard_safe(move |core_sol| info_cmd.execute(sol_id, src_alias, core_sol))
             .await
     }
 }

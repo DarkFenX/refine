@@ -1,6 +1,6 @@
 use std::{collections::HashMap, hash::Hash};
 
-use crate::{CtlCmdResps, ctl::CtlCmdBr};
+use crate::{CtlCmdResps, ctl::CtlCmdBr, err::BackrefRenderError};
 
 // Representation form which is more convenient for use by info builders
 #[derive(Clone)]
@@ -75,29 +75,27 @@ impl<M, I> InfoModes<M, I> {
                 .collect(),
         }
     }
-    pub(in crate::info) fn from_compact_br<B>(pub_modes: InfoModesCompact<M, B>, ctl_cmd_resps: &CtlCmdResps) -> Self
+    pub(in crate::info) fn from_compact_br<B>(
+        compact_br: InfoModesCompact<M, B>,
+        ctl_cmd_resps: &CtlCmdResps,
+    ) -> Result<Self, BackrefRenderError>
     where
         M: Copy,
         B: CtlCmdBr<Target = I>,
         I: Eq + Hash,
     {
-        // Silently skip error in rendering; worst-case just default mode will be used
-        Self {
-            default: pub_modes.default,
-            overrides: pub_modes
+        Ok(Self {
+            default: compact_br.default,
+            overrides: compact_br
                 .overrides
                 .into_iter()
-                .flat_map(|overrides| {
-                    overrides
-                        .1
+                .flat_map(|(mode, backrefs)| {
+                    backrefs
                         .into_iter()
-                        .filter_map(move |backref| match backref.render(ctl_cmd_resps) {
-                            Ok(id) => Some((id, overrides.0)),
-                            Err(..) => None,
-                        })
+                        .map(move |backref| backref.render(ctl_cmd_resps).map(|id| (id, mode)))
                 })
-                .collect(),
-        }
+                .collect::<Result<_, _>>()?,
+        })
     }
 }
 

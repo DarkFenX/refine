@@ -1,13 +1,10 @@
-use crate::{
-    ItemId, ItemInfo, ItemInfoMode,
-    info::{InfoModes, InfoModesCompact},
-};
+use crate::{ItemId, ItemInfo, ItemInfoMode, info::InfoModes};
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModesCompact<ItemInfoMode, ItemId>,
+    item: InfoModes<ItemInfoMode, ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,7 +19,9 @@ impl ItemInfoCmd {
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item.overrides.push((mode, item_ids.collect()));
+        for item_id in item_ids {
+            self.item.overrides.insert(item_id, mode);
+        }
         self
     }
 }
@@ -32,6 +31,6 @@ impl ItemInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
-        ItemInfo::from_core(core_item, &InfoModes::from_compact(self.item))
+        ItemInfo::from_core(core_item, &self.item)
     }
 }

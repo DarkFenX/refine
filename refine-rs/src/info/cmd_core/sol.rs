@@ -1,6 +1,7 @@
 use crate::{
     CtlCmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     SolInfo, SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
+    err::BackrefRenderError,
     info::{InfoModes, InfoModesCompact},
 };
 
@@ -114,15 +115,24 @@ impl SolInfoCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolInfoCmdBr {
+    pub(in crate::info) fn render(self, resps: &CtlCmdResps) -> Result<SolInfoCmd, BackrefRenderError> {
+        Ok(SolInfoCmd {
+            fleet: InfoModes::from_compact_br(self.fleet, resps)?,
+            fit: InfoModes::from_compact_br(self.fit, resps)?,
+            item: InfoModes::from_compact_br(self.item, resps)?,
+            shared: self.shared,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmd {
-    pub(crate) fn execute_into_info(
-        self,
-        sol_id: SolarSystemId,
-        src_alias: SrcAlias,
-        core_sol: &mut rc::SolarSystem,
-    ) -> SolInfo {
+    pub(crate) fn execute(self, sol_id: SolarSystemId, src_alias: SrcAlias, core_sol: &mut rc::SolarSystem) -> SolInfo {
         SolInfo::from_ids_and_core(
             sol_id,
             src_alias,
@@ -133,28 +143,7 @@ impl SolInfoCmd {
             &self.item,
         )
     }
-
     pub(crate) fn execute_into_info_ext(self, core_sol: &mut rc::SolarSystem) -> Option<SolInfoExt> {
         SolInfoExt::try_from_core(core_sol, self.shared.sol, &self.fleet, &self.fit, &self.item)
-    }
-}
-
-impl SolInfoCmdBr {
-    pub(crate) fn execute(
-        self,
-        sol_id: SolarSystemId,
-        src_alias: SrcAlias,
-        core_sol: &mut rc::SolarSystem,
-        ctl_cmd_resps: &CtlCmdResps,
-    ) -> SolInfo {
-        SolInfo::from_ids_and_core(
-            sol_id,
-            src_alias,
-            core_sol,
-            self.shared.sol,
-            &InfoModes::from_compact_br(self.fleet, ctl_cmd_resps),
-            &InfoModes::from_compact_br(self.fit, ctl_cmd_resps),
-            &InfoModes::from_compact_br(self.item, ctl_cmd_resps),
-        )
     }
 }

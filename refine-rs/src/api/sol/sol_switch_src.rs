@@ -25,7 +25,7 @@ impl SolarSystem<'_> {
         let sol_info = self
             .exec_standard_safe(move |core_sol| {
                 core_sol.set_src(&src);
-                info_cmd.execute_into_info(sol_id, src_alias, core_sol)
+                info_cmd.execute(sol_id, src_alias, core_sol)
             })
             .await;
         self.inner.set_src_alias(inner_src.get_alias());
