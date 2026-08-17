@@ -6,13 +6,21 @@ pub struct CmdResps {
     data: Vec<CmdResp>,
 }
 impl CmdResps {
-    pub fn len(&self) -> usize {
-        self.data.len()
-    }
     pub fn get(&self, index: usize) -> Option<&CmdResp> {
         self.data.get(index)
     }
-    pub fn into_iter(self) -> impl ExactSizeIterator<Item = CmdResp> {
+    pub fn len(&self) -> usize {
+        self.data.len()
+    }
+    pub fn is_empty(&self) -> bool {
+        self.data.is_empty()
+    }
+}
+impl IntoIterator for CmdResps {
+    type Item = CmdResp;
+    type IntoIter = std::vec::IntoIter<Self::Item>;
+
+    fn into_iter(self) -> Self::IntoIter {
         self.data.into_iter()
     }
 }
