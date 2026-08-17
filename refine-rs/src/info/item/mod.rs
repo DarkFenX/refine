@@ -1,4 +1,3 @@
-pub use cmd::ItemInfoCmd;
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FwEffectInfo,
@@ -9,6 +8,5 @@ pub use info::{
 };
 pub use mode::ItemInfoMode;
 
-mod cmd;
 mod info;
 mod mode;
