@@ -195,10 +195,10 @@ pub enum ItemShipChangeError {
 
 impl ShipChangeCmdCtxAny {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ChangedItemIdsResp, ShipChangeError> {
-        match self {
-            Self::Fit(cmd) => Ok(cmd.execute(core_sol)?),
-            Self::Item(cmd) => Ok(cmd.execute(core_sol)?),
-        }
+        Ok(match self {
+            Self::Fit(cmd) => cmd.execute(core_sol)?,
+            Self::Item(cmd) => cmd.execute(core_sol)?,
+        })
     }
 }
 #[derive(thiserror::Error, Debug)]
