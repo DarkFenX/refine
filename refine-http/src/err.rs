@@ -15,7 +15,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     BatchParse(ApiErrorIndexed<serde_json::Error>),
     #[error(transparent)]
-    BackrefRender(ApiErrorIndexed<rs::err::BackrefRenderError>),
+    BackrefRender(ApiErrorIndexed<rs::err::BrResolveError>),
     #[error("failed to read request body")]
     RequestRead(#[source] axum::Error),
     #[error("failed to process request body: {0}")]

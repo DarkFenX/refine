@@ -1,7 +1,7 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId,
     ctl::core::shared::{EffectModes, SideEffects},
-    err::BackrefRenderError,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -69,7 +69,7 @@ impl BoosterAddCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<BoosterAddCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<BoosterAddCmdCtxFit, BrResolveError> {
         Ok(BoosterAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,

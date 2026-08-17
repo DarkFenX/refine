@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolInfo,
     SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
-    err::BackrefRenderError,
+    err::BrResolveError,
     info::{InfoModes, InfoModesCompact},
 };
 
@@ -118,7 +118,7 @@ impl SolInfoCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmdBr {
-    pub(in crate::info) fn render(self, resps: &CmdResps) -> Result<SolInfoCmd, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
         Ok(SolInfoCmd {
             fleet: InfoModes::from_compact_br(self.fleet, resps)?,
             fit: InfoModes::from_compact_br(self.fit, resps)?,

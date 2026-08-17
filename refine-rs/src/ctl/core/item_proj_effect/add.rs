@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BackrefRenderError,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -87,7 +87,7 @@ impl ProjEffectAddCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ProjEffectAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ProjEffectAddCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ProjEffectAddCmd, BrResolveError> {
         Ok(ProjEffectAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
             shared: self.shared,

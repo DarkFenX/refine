@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BackrefRenderError,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -62,7 +62,7 @@ impl CharacterSetCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterSetCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterSetCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterSetCmdCtxFit, BrResolveError> {
         Ok(CharacterSetCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,

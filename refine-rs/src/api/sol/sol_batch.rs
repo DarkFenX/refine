@@ -1,6 +1,6 @@
 use crate::{
     CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
-    err::{BackrefRenderError, SolChangeEnumError},
+    err::{BrResolveError, SolChangeEnumError},
 };
 
 impl SolarSystem<'_> {
@@ -33,12 +33,12 @@ fn execute_commands(
 #[derive(Debug, thiserror::Error)]
 pub enum SolBatchError {
     #[error("command #{0} failed")]
-    Render(usize, #[source] BackrefRenderError),
+    Render(usize, #[source] BrResolveError),
     #[error("command #{0} failed")]
     CtlExec(usize, #[source] SolChangeEnumError),
 }
 impl SolBatchError {
-    fn from_ctl_render(cmd_idx: usize, render_err: BackrefRenderError) -> Self {
+    fn from_ctl_render(cmd_idx: usize, render_err: BrResolveError) -> Self {
         Self::Render(cmd_idx, render_err)
     }
     fn from_ctl_exec(cmd_idx: usize, exec_err: SolChangeEnumError) -> Self {

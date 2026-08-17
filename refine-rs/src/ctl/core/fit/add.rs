@@ -1,4 +1,4 @@
-use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BackrefRenderError};
+use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -77,7 +77,7 @@ impl FitAddCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitAddCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FitAddCmd, BrResolveError> {
         Ok(FitAddCmd {
             shared: self.shared,
             fleet_id: match self.fleet_id {

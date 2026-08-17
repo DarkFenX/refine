@@ -1,6 +1,6 @@
 use crate::{
     AddMutation, AddedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
-    ItemTypeId, MinionState, Movement, NpcProp, ctl::core::shared::EffectModes, err::BackrefRenderError,
+    ItemTypeId, MinionState, Movement, NpcProp, ctl::core::shared::EffectModes, err::BrResolveError,
 };
 
 // Core commands
@@ -147,7 +147,7 @@ impl DroneAddCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneAddCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneAddCmdCtxFit, BrResolveError> {
         Ok(DroneAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core.render(resps)?,
@@ -156,7 +156,7 @@ impl DroneAddCmdCtxFitBr {
 }
 
 impl DroneAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneAddCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<DroneAddCmd, BrResolveError> {
         Ok(DroneAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
             shared: self.shared,

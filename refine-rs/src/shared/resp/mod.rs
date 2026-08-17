@@ -1,5 +1,5 @@
 pub use container::CmdResps;
-pub use error::BackrefRenderError;
+pub use error::BrResolveError;
 pub use resp::{AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, CmdResp};
 
 mod container;

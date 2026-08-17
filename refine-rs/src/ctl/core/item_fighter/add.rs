@@ -2,7 +2,7 @@ use crate::{
     AbilityId, AddedItemIdsResp, CmdResps, Coordinates, CountNz, EffectId, EffectMode, FitId, FitIdBr, ItemId,
     ItemIdBr, ItemTypeId, MinionState, Movement, RearmMinion,
     ctl::core::shared::{Abilities, EffectModes},
-    err::BackrefRenderError,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -159,7 +159,7 @@ impl FighterAddCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterAddCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterAddCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterAddCmdCtxFit, BrResolveError> {
         Ok(FighterAddCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core.render(resps)?,
@@ -168,7 +168,7 @@ impl FighterAddCmdCtxFitBr {
 }
 
 impl FighterAddCmdBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterAddCmd, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterAddCmd, BrResolveError> {
         Ok(FighterAddCmd {
             proj_item_ids: resps.render_item_ids(self.proj_item_ids)?,
             shared: self.shared,

@@ -16,11 +16,11 @@ use crate::{
         SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr,
     },
     err::{
-        BackrefRenderError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError,
-        FitShipChangeError, FitStanceChangeError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError,
-        ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError,
-        ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError,
-        ItemGetServiceChangeError, ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
+        BrResolveError, DroneAddError, FighterAddError, FitChangeError, FitCharacterChangeError, FitShipChangeError,
+        FitStanceChangeError, ItemGetAutochargeChangeError, ItemGetBoosterChangeError, ItemGetChargeChangeError,
+        ItemGetDroneChangeError, ItemGetFighterChangeError, ItemGetFwEffectChangeError, ItemGetImplantChangeError,
+        ItemGetItemRemoveError, ItemGetModuleChangeError, ItemGetRigChangeError, ItemGetServiceChangeError,
+        ItemGetSkillChangeError, ItemGetSubsystemChangeError, ModuleAddError, SkillAddError,
     },
 };
 
@@ -454,7 +454,7 @@ impl SubsystemChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeEnumCmdBr {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<FitChangeEnumCmd, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<FitChangeEnumCmd, BrResolveError> {
         Ok(match self {
             // Fit
             Self::FitChange(cmd) => FitChangeEnumCmd::FitChange(cmd),

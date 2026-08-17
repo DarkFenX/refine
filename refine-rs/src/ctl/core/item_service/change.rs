@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ServiceState,
-    ctl::core::shared::EffectModes, err::BackrefRenderError,
+    ctl::core::shared::EffectModes, err::BrResolveError,
 };
 
 // Core commands
@@ -65,7 +65,7 @@ impl ServiceChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ServiceChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ServiceChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<ServiceChangeCmdCtxItem, BrResolveError> {
         Ok(ServiceChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

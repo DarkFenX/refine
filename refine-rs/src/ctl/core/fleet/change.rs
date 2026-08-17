@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BackrefRenderError};
+use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -95,7 +95,7 @@ impl FleetChangeCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetChangeCmdBr {
-    fn render(self, resps: &CmdResps) -> Result<FleetChangeCmd, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<FleetChangeCmd, BrResolveError> {
         Ok(FleetChangeCmd {
             add_fit_ids: resps.render_fit_ids(self.add_fit_ids)?,
             rm_fit_ids: resps.render_fit_ids(self.rm_fit_ids)?,
@@ -104,7 +104,7 @@ impl FleetChangeCmdBr {
 }
 
 impl FleetChangeCmdCtxFleetBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FleetChangeCmdCtxFleet, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FleetChangeCmdCtxFleet, BrResolveError> {
         Ok(FleetChangeCmdCtxFleet {
             fleet_id: resps.render_fleet_id(self.fleet_id)?,
             core: self.core.render(resps)?,

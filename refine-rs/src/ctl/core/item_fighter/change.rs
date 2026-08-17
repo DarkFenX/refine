@@ -2,7 +2,7 @@ use crate::{
     AbilityId, ChangedItemIdsResp, CmdResps, Coordinates, CountNz, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
     MinionState, Movement, RearmMinion, TriStateField,
     ctl::core::shared::{Abilities, EffectModes},
-    err::BackrefRenderError,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -185,7 +185,7 @@ impl FighterChangeCmdBr {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<FighterChangeCmdCtxItem, BrResolveError> {
         Ok(FighterChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core.render(resps)?,
@@ -194,7 +194,7 @@ impl FighterChangeCmdCtxItemBr {
 }
 
 impl FighterChangeCmdBr {
-    fn render(self, resps: &CmdResps) -> Result<FighterChangeCmd, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<FighterChangeCmd, BrResolveError> {
         Ok(FighterChangeCmd {
             add_proj_item_ids: resps.render_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.render_item_ids(self.rm_proj_item_ids)?,

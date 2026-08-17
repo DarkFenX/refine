@@ -6,6 +6,7 @@ pub use refine_add_sol::SolAddError;
 pub use refine_get_sol::SolGetError;
 pub use sol::SolarSystem;
 pub use sol_batch::SolBatchError;
+pub use sol_change::SolChangeEnumSolInfoError;
 pub use sol_remove::SolRemoveError;
 pub use sol_switch_src::SolSwitchSrcError;
 

@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBr, err::BackrefRenderError};
+use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -45,7 +45,7 @@ impl StanceUnsetCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceUnsetCmdCtxFitBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<StanceUnsetCmdCtxFit, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<StanceUnsetCmdCtxFit, BrResolveError> {
         Ok(StanceUnsetCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,

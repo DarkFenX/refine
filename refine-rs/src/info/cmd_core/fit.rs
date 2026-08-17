@@ -1,5 +1,6 @@
 use crate::{
-    FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
+    CmdResps, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
+    err::BrResolveError,
     info::{InfoModes, InfoModesCompact},
 };
 
@@ -64,6 +65,18 @@ impl FitInfoCmdBr {
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
         self.item.overrides.push((mode, item_ids.collect()));
         self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Rendering
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitInfoCmdBr {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
+        Ok(FitInfoCmd {
+            item: InfoModes::from_compact_br(self.item, resps)?,
+            shared: self.shared,
+        })
     }
 }
 

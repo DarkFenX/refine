@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
-    ctl::core::shared::EffectModes, err::BackrefRenderError,
+    ctl::core::shared::EffectModes, err::BrResolveError,
 };
 
 // Core commands
@@ -97,7 +97,7 @@ impl CharacterChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterChangeCmdCtxAnyBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxAny, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxAny, BrResolveError> {
         Ok(match self {
             Self::Fit(cmd) => CharacterChangeCmdCtxAny::Fit(cmd.render(resps)?),
             Self::Item(cmd) => CharacterChangeCmdCtxAny::Item(cmd.render(resps)?),
@@ -106,7 +106,7 @@ impl CharacterChangeCmdCtxAnyBr {
 }
 
 impl CharacterChangeCmdCtxFitBr {
-    fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxFit, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxFit, BrResolveError> {
         Ok(CharacterChangeCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
             core: self.core,
@@ -115,7 +115,7 @@ impl CharacterChangeCmdCtxFitBr {
 }
 
 impl CharacterChangeCmdCtxItemBr {
-    fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxItem, BackrefRenderError> {
+    fn render(self, resps: &CmdResps) -> Result<CharacterChangeCmdCtxItem, BrResolveError> {
         Ok(CharacterChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,

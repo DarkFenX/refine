@@ -1,5 +1,5 @@
 #[derive(Debug, thiserror::Error)]
-pub enum BackrefRenderError {
+pub enum BrResolveError {
     #[error("referenced command #{0} does not have results recorded")]
     NotFound(usize),
     #[error("referenced command #{0} exists, but does not have fit ID info")]

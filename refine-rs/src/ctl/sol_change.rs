@@ -30,7 +30,7 @@ use crate::{
         SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
     },
     err::{
-        BackrefRenderError, CharacterChangeError, FitAddError, FitGetBoosterAddError, FitGetCharacterSetError,
+        BrResolveError, CharacterChangeError, FitAddError, FitGetBoosterAddError, FitGetCharacterSetError,
         FitGetCharacterUnsetError, FitGetDroneAddError, FitGetFighterAddError, FitGetFitChangeError,
         FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError,
         FitGetServiceAddError, FitGetShipSetError, FitGetShipUnsetError, FitGetSkillAddError, FitGetStanceSetError,
@@ -633,7 +633,7 @@ impl SwEffectChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolChangeEnumCmdBr {
-    pub(crate) fn render(self, resps: &CmdResps) -> Result<SolChangeEnumCmd, BackrefRenderError> {
+    pub(crate) fn render(self, resps: &CmdResps) -> Result<SolChangeEnumCmd, BrResolveError> {
         Ok(match self {
             // Solar system
             Self::SolChange(cmd) => SolChangeEnumCmd::SolChange(cmd),

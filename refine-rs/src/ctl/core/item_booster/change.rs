@@ -1,7 +1,7 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
     ctl::core::shared::{EffectModes, SideEffects},
-    err::BackrefRenderError,
+    err::BrResolveError,
 };
 
 // Core commands
@@ -72,7 +72,7 @@ impl BoosterChangeCmd {
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BoosterChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<BoosterChangeCmdCtxItem, BackrefRenderError> {
+    pub(in crate::ctl) fn render(self, resps: &CmdResps) -> Result<BoosterChangeCmdCtxItem, BrResolveError> {
         Ok(BoosterChangeCmdCtxItem {
             item_id: resps.render_item_id(self.item_id)?,
             core: self.core,
