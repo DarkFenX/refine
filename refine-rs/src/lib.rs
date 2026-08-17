@@ -10,12 +10,12 @@ pub use ctl::{
     BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
     FighterAddCmd, FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd,
-    FitChangeCmdBr, FitChangeEnumCmd, FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd,
+    FitChangeCmdBr, FitChangeEnumCmdBr, FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd,
     FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd,
     ItemAddEnumCmd, ItemChangeEnumCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
     ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd,
     RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
-    SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
     SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
 pub use info::{

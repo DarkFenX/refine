@@ -1,11 +1,11 @@
 use crate::{
-    CtlCmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem,
+    CtlCmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BackrefRenderError, SolChangeEnumError},
 };
 
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg", level = "trace", skip_all)]
-    pub async fn change(&mut self, ctl_cmds: Vec<SolChangeEnumCmd>) -> Result<CtlCmdResps, SolChangeBatchError> {
+    pub async fn change(&mut self, ctl_cmds: Vec<SolChangeEnumCmdBr>) -> Result<CtlCmdResps, SolChangeBatchError> {
         self.exec_standard_fallible(move |core_sol| {
             let ctl_cmd_resps = execute_commands(core_sol, ctl_cmds)?;
             Ok(ctl_cmd_resps)
@@ -15,7 +15,7 @@ impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg-inf", level = "trace", skip_all)]
     pub async fn change_and_get_info(
         &mut self,
-        ctl_cmds: Vec<SolChangeEnumCmd>,
+        ctl_cmds: Vec<SolChangeEnumCmdBr>,
         info_cmd: SolInfoCmdBr,
     ) -> Result<(CtlCmdResps, SolInfo), SolChangeBatchError> {
         // Variables for move
@@ -32,7 +32,7 @@ impl SolarSystem<'_> {
 
 fn execute_commands(
     core_sol: &mut rc::SolarSystem,
-    ctl_cmds: Vec<SolChangeEnumCmd>,
+    ctl_cmds: Vec<SolChangeEnumCmdBr>,
 ) -> Result<CtlCmdResps, SolChangeBatchError> {
     let mut ctl_cmd_resps = CtlCmdResps::with_capacity(ctl_cmds.len());
     for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {

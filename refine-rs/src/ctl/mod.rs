@@ -26,7 +26,7 @@ pub use core::{
     SwEffectChangeError,
 };
 
-pub use fit_change::{FitChangeEnumCmd, FitChangeEnumError};
+pub use fit_change::{FitChangeEnumCmdBr, FitChangeEnumError};
 pub use item_add::{ItemAddEnumCmd, ItemAddEnumError};
 pub use item_change::{ItemChangeEnumCmd, ItemChangeEnumError};
 pub(crate) use shared::CtlCmdBr;
@@ -34,7 +34,7 @@ pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
     ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBr, FleetIdBr, ItemIdBr,
 };
-pub use sol_change::{SolChangeEnumCmd, SolChangeEnumError};
+pub use sol_change::{SolChangeEnumCmdBr, SolChangeEnumError};
 
 mod core;
 mod fit_change;

@@ -24,65 +24,7 @@ use crate::{
     },
 };
 
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
-)]
-pub enum FitChangeEnumCmd {
-    // Fit
-    ChangeFit(FitChangeCmd),
-    // Item
-    RemoveItem(ItemRemoveCmdCtxItemBr),
-    // Item - autocharge
-    ChangeAutocharge(AutochargeChangeCmdCtxItemBr),
-    // Item - booster
-    AddBooster(BoosterAddCmd),
-    ChangeBooster(BoosterChangeCmdCtxItemBr),
-    // Item - character
-    SetCharacter(CharacterSetCmd),
-    ChangeCharacter(CharacterChangeCmd),
-    UnsetCharacter(CharacterUnsetCmd),
-    // Item - charge
-    ChangeCharge(ChargeChangeCmdCtxItemBr),
-    // Item - drone
-    AddDrone(DroneAddCmdBr),
-    ChangeDrone(DroneChangeCmdCtxItemBr),
-    // Item - fighter
-    AddFighter(FighterAddCmdBr),
-    ChangeFighter(FighterChangeCmdCtxItemBr),
-    // Item - fit-wide effect
-    AddFwEffect(FwEffectAddCmd),
-    ChangeFwEffect(FwEffectChangeCmdCtxItemBr),
-    // Item - implant
-    AddImplant(ImplantAddCmd),
-    ChangeImplant(ImplantChangeCmdCtxItemBr),
-    // Item - module
-    AddModule(ModuleAddCmdBr),
-    ChangeModule(ModuleChangeCmdCtxItemBr),
-    // Item - rig
-    AddRig(RigAddCmd),
-    ChangeRig(RigChangeCmdCtxItemBr),
-    // Item - service
-    AddService(ServiceAddCmd),
-    ChangeService(ServiceChangeCmdCtxItemBr),
-    // Item - ship
-    SetShip(ShipSetCmd),
-    ChangeShip(ShipChangeCmd),
-    UnsetShip(ShipUnsetCmd),
-    // Item - skill
-    AddSkill(SkillAddCmd),
-    ChangeSkill(SkillChangeCmdCtxItemBr),
-    // Item - stance
-    SetStance(StanceSetCmd),
-    ChangeStance(StanceChangeCmd),
-    UnsetStance(StanceUnsetCmd),
-    // Item - subsystem
-    AddSubsystem(SubsystemAddCmd),
-    ChangeSubsystem(SubsystemChangeCmdCtxItemBr),
-}
-
-pub(crate) enum FitCtlCmdRendered {
+pub(crate) enum FitChangeEnumCmd {
     // Fit
     ChangeFit(FitChangeCmd),
     // Item
@@ -135,278 +77,336 @@ pub(crate) enum FitCtlCmdRendered {
     ChangeSubsystem(SubsystemChangeCmdCtxItem),
 }
 
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(tag = "type", rename_all = "snake_case")
+)]
+pub enum FitChangeEnumCmdBr {
+    // Fit
+    ChangeFit(FitChangeCmd),
+    // Item
+    RemoveItem(ItemRemoveCmdCtxItemBr),
+    // Item - autocharge
+    ChangeAutocharge(AutochargeChangeCmdCtxItemBr),
+    // Item - booster
+    AddBooster(BoosterAddCmd),
+    ChangeBooster(BoosterChangeCmdCtxItemBr),
+    // Item - character
+    SetCharacter(CharacterSetCmd),
+    ChangeCharacter(CharacterChangeCmd),
+    UnsetCharacter(CharacterUnsetCmd),
+    // Item - charge
+    ChangeCharge(ChargeChangeCmdCtxItemBr),
+    // Item - drone
+    AddDrone(DroneAddCmdBr),
+    ChangeDrone(DroneChangeCmdCtxItemBr),
+    // Item - fighter
+    AddFighter(FighterAddCmdBr),
+    ChangeFighter(FighterChangeCmdCtxItemBr),
+    // Item - fit-wide effect
+    AddFwEffect(FwEffectAddCmd),
+    ChangeFwEffect(FwEffectChangeCmdCtxItemBr),
+    // Item - implant
+    AddImplant(ImplantAddCmd),
+    ChangeImplant(ImplantChangeCmdCtxItemBr),
+    // Item - module
+    AddModule(ModuleAddCmdBr),
+    ChangeModule(ModuleChangeCmdCtxItemBr),
+    // Item - rig
+    AddRig(RigAddCmd),
+    ChangeRig(RigChangeCmdCtxItemBr),
+    // Item - service
+    AddService(ServiceAddCmd),
+    ChangeService(ServiceChangeCmdCtxItemBr),
+    // Item - ship
+    SetShip(ShipSetCmd),
+    ChangeShip(ShipChangeCmd),
+    UnsetShip(ShipUnsetCmd),
+    // Item - skill
+    AddSkill(SkillAddCmd),
+    ChangeSkill(SkillChangeCmdCtxItemBr),
+    // Item - stance
+    SetStance(StanceSetCmd),
+    ChangeStance(StanceChangeCmd),
+    UnsetStance(StanceUnsetCmd),
+    // Item - subsystem
+    AddSubsystem(SubsystemAddCmd),
+    ChangeSubsystem(SubsystemChangeCmdCtxItemBr),
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Fit
 impl FitChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeFit(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeFit(self)
     }
 }
 // Item
 impl ItemRemoveCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::RemoveItem(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::RemoveItem(self.into_ctx_item_br(item_id))
     }
 }
 // Item - autocharge
 impl AutochargeChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeAutocharge(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeAutocharge(self.into_ctx_item_br(item_id))
     }
 }
 // Item - booster
 impl BoosterAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddBooster(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddBooster(self)
     }
 }
 impl BoosterChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeBooster(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeBooster(self.into_ctx_item_br(item_id))
     }
 }
 // Item - character
 impl CharacterSetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::SetCharacter(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::SetCharacter(self)
     }
 }
 impl CharacterChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeCharacter(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeCharacter(self)
     }
 }
 impl CharacterUnsetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::UnsetCharacter(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::UnsetCharacter(self)
     }
 }
 // Item - charge
 impl ChargeChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeCharge(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeCharge(self.into_ctx_item_br(item_id))
     }
 }
 // Item - drone
 impl DroneAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddDrone(self.into_br())
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddDrone(self.into_br())
     }
 }
 impl DroneAddCmdBr {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddDrone(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddDrone(self)
     }
 }
 impl DroneChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeDrone(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeDrone(self.into_ctx_item_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeDrone(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeDrone(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fighter
 impl FighterAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddFighter(self.into_br())
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddFighter(self.into_br())
     }
 }
 impl FighterAddCmdBr {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddFighter(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddFighter(self)
     }
 }
 impl FighterChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeFighter(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeFighter(self.into_ctx_item_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeFighter(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeFighter(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fit-wide effect
 impl FwEffectAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddFwEffect(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddFwEffect(self)
     }
 }
 impl FwEffectChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeFwEffect(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeFwEffect(self.into_ctx_item_br(item_id))
     }
 }
 // Item - implant
 impl ImplantAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddImplant(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddImplant(self)
     }
 }
 impl ImplantChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeImplant(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeImplant(self.into_ctx_item_br(item_id))
     }
 }
 // Item - module
 impl ModuleAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddModule(self.into_br())
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddModule(self.into_br())
     }
 }
 impl ModuleAddCmdBr {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddModule(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddModule(self)
     }
 }
 impl ModuleChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeModule(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeModule(self.into_ctx_item_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeModule(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeModule(self.into_ctx_item_br(item_id))
     }
 }
 // Item - rig
 impl RigAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddRig(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddRig(self)
     }
 }
 impl RigChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeRig(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeRig(self.into_ctx_item_br(item_id))
     }
 }
 // Item - service
 impl ServiceAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddService(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddService(self)
     }
 }
 impl ServiceChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeService(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeService(self.into_ctx_item_br(item_id))
     }
 }
 // Item - ship
 impl ShipSetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::SetShip(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::SetShip(self)
     }
 }
 impl ShipChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeShip(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeShip(self)
     }
 }
 impl ShipUnsetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::UnsetShip(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::UnsetShip(self)
     }
 }
 // Item - skill
 impl SkillAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddSkill(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddSkill(self)
     }
 }
 impl SkillChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeSkill(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeSkill(self.into_ctx_item_br(item_id))
     }
 }
 // Item - stance
 impl StanceSetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::SetStance(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::SetStance(self)
     }
 }
 impl StanceChangeCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeStance(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeStance(self)
     }
 }
 impl StanceUnsetCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::UnsetStance(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::UnsetStance(self)
     }
 }
 // Item - subsystem
 impl SubsystemAddCmd {
-    pub fn into_fit(self) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::AddSubsystem(self)
+    pub fn into_fit(self) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::AddSubsystem(self)
     }
 }
 impl SubsystemChangeCmd {
-    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmd {
-        FitChangeEnumCmd::ChangeSubsystem(self.into_ctx_item_br(item_id))
+    pub fn into_fit(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
+        FitChangeEnumCmdBr::ChangeSubsystem(self.into_ctx_item_br(item_id))
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitChangeEnumCmd {
-    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<FitCtlCmdRendered, BackrefRenderError> {
+impl FitChangeEnumCmdBr {
+    pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<FitChangeEnumCmd, BackrefRenderError> {
         Ok(match self {
             // Fit
-            Self::ChangeFit(cmd) => FitCtlCmdRendered::ChangeFit(cmd),
+            Self::ChangeFit(cmd) => FitChangeEnumCmd::ChangeFit(cmd),
             // Item
-            Self::RemoveItem(cmd) => FitCtlCmdRendered::RemoveItem(cmd.render(resps)?),
+            Self::RemoveItem(cmd) => FitChangeEnumCmd::RemoveItem(cmd.render(resps)?),
             // Item - autocharge
-            Self::ChangeAutocharge(cmd) => FitCtlCmdRendered::ChangeAutocharge(cmd.render(resps)?),
+            Self::ChangeAutocharge(cmd) => FitChangeEnumCmd::ChangeAutocharge(cmd.render(resps)?),
             // Item - booster
-            Self::AddBooster(cmd) => FitCtlCmdRendered::AddBooster(cmd),
-            Self::ChangeBooster(cmd) => FitCtlCmdRendered::ChangeBooster(cmd.render(resps)?),
+            Self::AddBooster(cmd) => FitChangeEnumCmd::AddBooster(cmd),
+            Self::ChangeBooster(cmd) => FitChangeEnumCmd::ChangeBooster(cmd.render(resps)?),
             // Item - character
-            Self::SetCharacter(cmd) => FitCtlCmdRendered::SetCharacter(cmd),
-            Self::ChangeCharacter(cmd) => FitCtlCmdRendered::ChangeCharacter(cmd),
-            Self::UnsetCharacter(cmd) => FitCtlCmdRendered::UnsetCharacter(cmd),
+            Self::SetCharacter(cmd) => FitChangeEnumCmd::SetCharacter(cmd),
+            Self::ChangeCharacter(cmd) => FitChangeEnumCmd::ChangeCharacter(cmd),
+            Self::UnsetCharacter(cmd) => FitChangeEnumCmd::UnsetCharacter(cmd),
             // Item - charge
-            Self::ChangeCharge(cmd) => FitCtlCmdRendered::ChangeCharge(cmd.render(resps)?),
+            Self::ChangeCharge(cmd) => FitChangeEnumCmd::ChangeCharge(cmd.render(resps)?),
             // Item - drone
-            Self::AddDrone(cmd) => FitCtlCmdRendered::AddDrone(cmd.render(resps)?),
-            Self::ChangeDrone(cmd) => FitCtlCmdRendered::ChangeDrone(cmd.render(resps)?),
+            Self::AddDrone(cmd) => FitChangeEnumCmd::AddDrone(cmd.render(resps)?),
+            Self::ChangeDrone(cmd) => FitChangeEnumCmd::ChangeDrone(cmd.render(resps)?),
             // Item - fighter
-            Self::AddFighter(cmd) => FitCtlCmdRendered::AddFighter(cmd.render(resps)?),
-            Self::ChangeFighter(cmd) => FitCtlCmdRendered::ChangeFighter(cmd.render(resps)?),
+            Self::AddFighter(cmd) => FitChangeEnumCmd::AddFighter(cmd.render(resps)?),
+            Self::ChangeFighter(cmd) => FitChangeEnumCmd::ChangeFighter(cmd.render(resps)?),
             // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => FitCtlCmdRendered::AddFwEffect(cmd),
-            Self::ChangeFwEffect(cmd) => FitCtlCmdRendered::ChangeFwEffect(cmd.render(resps)?),
+            Self::AddFwEffect(cmd) => FitChangeEnumCmd::AddFwEffect(cmd),
+            Self::ChangeFwEffect(cmd) => FitChangeEnumCmd::ChangeFwEffect(cmd.render(resps)?),
             // Item - implant
-            Self::AddImplant(cmd) => FitCtlCmdRendered::AddImplant(cmd),
-            Self::ChangeImplant(cmd) => FitCtlCmdRendered::ChangeImplant(cmd.render(resps)?),
+            Self::AddImplant(cmd) => FitChangeEnumCmd::AddImplant(cmd),
+            Self::ChangeImplant(cmd) => FitChangeEnumCmd::ChangeImplant(cmd.render(resps)?),
             // Item - drone
-            Self::AddModule(cmd) => FitCtlCmdRendered::AddModule(cmd.render(resps)?),
-            Self::ChangeModule(cmd) => FitCtlCmdRendered::ChangeModule(cmd.render(resps)?),
+            Self::AddModule(cmd) => FitChangeEnumCmd::AddModule(cmd.render(resps)?),
+            Self::ChangeModule(cmd) => FitChangeEnumCmd::ChangeModule(cmd.render(resps)?),
             // Item - rig
-            Self::AddRig(cmd) => FitCtlCmdRendered::AddRig(cmd),
-            Self::ChangeRig(cmd) => FitCtlCmdRendered::ChangeRig(cmd.render(resps)?),
+            Self::AddRig(cmd) => FitChangeEnumCmd::AddRig(cmd),
+            Self::ChangeRig(cmd) => FitChangeEnumCmd::ChangeRig(cmd.render(resps)?),
             // Item - service
-            Self::AddService(cmd) => FitCtlCmdRendered::AddService(cmd),
-            Self::ChangeService(cmd) => FitCtlCmdRendered::ChangeService(cmd.render(resps)?),
+            Self::AddService(cmd) => FitChangeEnumCmd::AddService(cmd),
+            Self::ChangeService(cmd) => FitChangeEnumCmd::ChangeService(cmd.render(resps)?),
             // Item - ship
-            Self::SetShip(cmd) => FitCtlCmdRendered::SetShip(cmd),
-            Self::ChangeShip(cmd) => FitCtlCmdRendered::ChangeShip(cmd),
-            Self::UnsetShip(cmd) => FitCtlCmdRendered::UnsetShip(cmd),
+            Self::SetShip(cmd) => FitChangeEnumCmd::SetShip(cmd),
+            Self::ChangeShip(cmd) => FitChangeEnumCmd::ChangeShip(cmd),
+            Self::UnsetShip(cmd) => FitChangeEnumCmd::UnsetShip(cmd),
             // Item - skill
-            Self::AddSkill(cmd) => FitCtlCmdRendered::AddSkill(cmd),
-            Self::ChangeSkill(cmd) => FitCtlCmdRendered::ChangeSkill(cmd.render(resps)?),
+            Self::AddSkill(cmd) => FitChangeEnumCmd::AddSkill(cmd),
+            Self::ChangeSkill(cmd) => FitChangeEnumCmd::ChangeSkill(cmd.render(resps)?),
             // Item - stance
-            Self::SetStance(cmd) => FitCtlCmdRendered::SetStance(cmd),
-            Self::ChangeStance(cmd) => FitCtlCmdRendered::ChangeStance(cmd),
-            Self::UnsetStance(cmd) => FitCtlCmdRendered::UnsetStance(cmd),
+            Self::SetStance(cmd) => FitChangeEnumCmd::SetStance(cmd),
+            Self::ChangeStance(cmd) => FitChangeEnumCmd::ChangeStance(cmd),
+            Self::UnsetStance(cmd) => FitChangeEnumCmd::UnsetStance(cmd),
             // Item - subsystem
-            Self::AddSubsystem(cmd) => FitCtlCmdRendered::AddSubsystem(cmd),
-            Self::ChangeSubsystem(cmd) => FitCtlCmdRendered::ChangeSubsystem(cmd.render(resps)?),
+            Self::AddSubsystem(cmd) => FitChangeEnumCmd::AddSubsystem(cmd),
+            Self::ChangeSubsystem(cmd) => FitChangeEnumCmd::ChangeSubsystem(cmd.render(resps)?),
         })
     }
 }
@@ -414,7 +414,7 @@ impl FitChangeEnumCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitCtlCmdRendered {
+impl FitChangeEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CtlCmdResp, FitChangeEnumError> {
         match self {
             // Fit
