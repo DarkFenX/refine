@@ -1,29 +1,51 @@
 use crate::{CtlCmdResps, FitId, FitIdBr, err::BackrefRenderError};
 
-// Commands with full context
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(in crate::ctl) struct ICmdStanceUnsetFCtxBIds {
-    pub(in crate::ctl) fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    pub(in crate::ctl) ictx_cmd: ICmdStanceUnsetICtx = ICmdStanceUnsetICtx,
-}
-pub(crate) struct ICmdStanceUnsetFCtxRIds {
+#[derive(Default)]
+pub struct StanceUnsetCmd;
+
+// Extra context commands
+pub struct StanceUnsetCmdCtxFit {
     fit_id: FitId,
-    ictx_cmd: ICmdStanceUnsetICtx,
+    core: StanceUnsetCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub struct StanceUnsetCmdCtxFitBr {
+    fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: StanceUnsetCmd = StanceUnsetCmd,
 }
 
-// Commands with incomplete context
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-pub(crate) struct ICmdStanceUnsetICtx;
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl StanceUnsetCmd {
+    pub fn new() -> Self {
+        Self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl StanceUnsetCmd {
+    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> StanceUnsetCmdCtxFitBr {
+        StanceUnsetCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Rendering
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdStanceUnsetFCtxBIds {
-    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<ICmdStanceUnsetFCtxRIds, BackrefRenderError> {
-        Ok(ICmdStanceUnsetFCtxRIds {
+impl StanceUnsetCmdCtxFitBr {
+    pub(in crate::ctl) fn render(self, resps: &CtlCmdResps) -> Result<StanceUnsetCmdCtxFit, BackrefRenderError> {
+        Ok(StanceUnsetCmdCtxFit {
             fit_id: resps.render_fit_id(self.fit_id)?,
-            ictx_cmd: self.ictx_cmd,
+            core: self.core,
         })
     }
 }
@@ -31,24 +53,23 @@ impl ICmdStanceUnsetFCtxBIds {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ICmdStanceUnsetFCtxRIds {
-    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), GetFitUnsetStanceError> {
-        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
-        self.ictx_cmd.execute(&mut core_fit);
-        Ok(())
-    }
-}
-
-#[derive(thiserror::Error, Debug)]
-pub enum GetFitUnsetStanceError {
-    #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
-}
-
-impl ICmdStanceUnsetICtx {
+impl StanceUnsetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) {
         if let Some(core_stance) = core_fit.get_stance_mut() {
             core_stance.remove();
         }
     }
+}
+
+impl StanceUnsetCmdCtxFit {
+    pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<(), FitGetStanceUnsetError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        self.core.execute(&mut core_fit);
+        Ok(())
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetStanceUnsetError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
 }

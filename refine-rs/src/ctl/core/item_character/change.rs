@@ -174,9 +174,9 @@ impl CharacterChangeCmdCtxAny {
 #[derive(thiserror::Error, Debug)]
 pub enum CharacterChangeError {
     #[error(transparent)]
-    CharacterChangeViaFit(#[from] FitGetCharacterChangeError),
+    ViaFit(#[from] FitGetCharacterChangeError),
     #[error(transparent)]
-    CharacterChangeViaItem(#[from] ItemGetCharacterChangeError),
+    ViaItem(#[from] ItemGetCharacterChangeError),
 }
 
 impl CharacterChangeCmdCtxFit {

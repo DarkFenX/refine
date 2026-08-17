@@ -74,13 +74,10 @@ pub use item_skill::{
     SkillChangeCmd, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SkillChangeError,
 };
 pub use item_stance::{
-    FitChangeStanceError, GetFitChangeStanceError, GetFitSetStanceError, GetFitUnsetStanceError,
-    GetItemChangeStanceError, ItemChangeStanceError,
-};
-pub(in crate::ctl) use item_stance::{
-    ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
-    ICmdStanceChangeFItemCtxRIds, ICmdStanceChangeICtx, ICmdStanceSetFCtxBIds, ICmdStanceSetFCtxRIds,
-    ICmdStanceSetICtx, ICmdStanceUnsetFCtxBIds, ICmdStanceUnsetFCtxRIds, ICmdStanceUnsetICtx,
+    FitGetStanceChangeError, FitGetStanceSetError, FitGetStanceUnsetError, FitStanceChangeError,
+    ItemGetStanceChangeError, ItemStanceChangeError, StanceChangeCmd, StanceChangeCmdCtxAny, StanceChangeCmdCtxAnyBr,
+    StanceChangeError, StanceSetCmd, StanceSetCmdCtxFit, StanceSetCmdCtxFitBr, StanceUnsetCmd, StanceUnsetCmdCtxFit,
+    StanceUnsetCmdCtxFitBr,
 };
 pub use item_subsystem::{
     FitGetSubsystemAddError, ItemGetSubsystemChangeError, SubsystemAddCmd, SubsystemAddCmdCtxFit,

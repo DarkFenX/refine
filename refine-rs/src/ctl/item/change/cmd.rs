@@ -1,10 +1,10 @@
 use crate::{
     AutochargeChangeCmd, BoosterChangeCmd, ChangedItemIdsResp, CharacterChangeCmd, ChargeChangeCmd, DroneChangeCmd,
-    FighterChangeCmd, FwEffectChangeCmd, ImplantChangeCmd, ItemChangeShipCmd, ItemChangeStanceCmd, ModuleChangeCmd,
-    ProjEffectChangeCmd, RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, SubsystemChangeCmd, SwEffectChangeCmd,
+    FighterChangeCmd, FwEffectChangeCmd, ImplantChangeCmd, ItemChangeShipCmd, ModuleChangeCmd, ProjEffectChangeCmd,
+    RigChangeCmd, ServiceChangeCmd, SkillChangeCmd, StanceChangeCmd, SubsystemChangeCmd, SwEffectChangeCmd,
     err::{
         AutochargeChangeError, BoosterChangeError, ChargeChangeError, DroneChangeError, FighterChangeError,
-        FwEffectChangeError, ImplantChangeError, ItemChangeShipError, ItemChangeStanceError, ItemCharacterChangeError,
+        FwEffectChangeError, ImplantChangeError, ItemChangeShipError, ItemCharacterChangeError, ItemStanceChangeError,
         ModuleChangeError, ProjEffectChangeError, RigChangeError, ServiceChangeError, SkillChangeError,
         SubsystemChangeError, SwEffectChangeError,
     },
@@ -30,7 +30,7 @@ pub enum ItemCtlCmd {
     Service(ServiceChangeCmd),
     Ship(ItemChangeShipCmd),
     Skill(SkillChangeCmd),
-    Stance(ItemChangeStanceCmd),
+    Stance(StanceChangeCmd),
     Subsystem(SubsystemChangeCmd),
     SwEffect(SwEffectChangeCmd),
 }
@@ -103,6 +103,11 @@ impl SkillChangeCmd {
         ItemCtlCmd::Skill(self)
     }
 }
+impl StanceChangeCmd {
+    pub fn into_item_ctl(self) -> ItemCtlCmd {
+        ItemCtlCmd::Stance(self)
+    }
+}
 impl SubsystemChangeCmd {
     pub fn into_item_ctl(self) -> ItemCtlCmd {
         ItemCtlCmd::Subsystem(self)
@@ -134,7 +139,7 @@ impl ItemCtlCmd {
             Self::Service(cmd) => Ok(cmd.execute(core_item)?),
             Self::Ship(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
             Self::Skill(cmd) => Ok(cmd.execute(core_item)?),
-            Self::Stance(cmd) => Ok(cmd.inner.execute_via_item(core_item)?),
+            Self::Stance(cmd) => Ok(cmd.execute_via_item(core_item)?),
             Self::Subsystem(cmd) => Ok(cmd.execute(core_item)?),
             Self::SwEffect(cmd) => Ok(cmd.execute(core_item)?),
         }
@@ -172,7 +177,7 @@ pub enum ItemCtlError {
     #[error("failed to change skill")]
     Skill(#[from] SkillChangeError),
     #[error("failed to change stance")]
-    Stance(#[from] ItemChangeStanceError),
+    Stance(#[from] ItemStanceChangeError),
     #[error("failed to change subsystem")]
     Subsystem(#[from] SubsystemChangeError),
     #[error("failed to change system-wide effect")]

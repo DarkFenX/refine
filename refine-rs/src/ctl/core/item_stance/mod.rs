@@ -1,12 +1,9 @@
-pub use change::{FitChangeStanceError, GetFitChangeStanceError, GetItemChangeStanceError, ItemChangeStanceError};
-pub(in crate::ctl) use change::{
-    ICmdStanceChangeFFitCtxBIds, ICmdStanceChangeFFitCtxRIds, ICmdStanceChangeFItemCtxBIds,
-    ICmdStanceChangeFItemCtxRIds, ICmdStanceChangeICtx,
+pub use change::{
+    FitGetStanceChangeError, FitStanceChangeError, ItemGetStanceChangeError, ItemStanceChangeError, StanceChangeCmd,
+    StanceChangeCmdCtxAny, StanceChangeCmdCtxAnyBr, StanceChangeError,
 };
-pub use set::GetFitSetStanceError;
-pub(in crate::ctl) use set::{ICmdStanceSetFCtxBIds, ICmdStanceSetFCtxRIds, ICmdStanceSetICtx};
-pub use unset::GetFitUnsetStanceError;
-pub(in crate::ctl) use unset::{ICmdStanceUnsetFCtxBIds, ICmdStanceUnsetFCtxRIds, ICmdStanceUnsetICtx};
+pub use set::{FitGetStanceSetError, StanceSetCmd, StanceSetCmdCtxFit, StanceSetCmdCtxFitBr};
+pub use unset::{FitGetStanceUnsetError, StanceUnsetCmd, StanceUnsetCmdCtxFit, StanceUnsetCmdCtxFitBr};
 
 mod change;
 mod set;

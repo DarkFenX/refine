@@ -1,4 +1,4 @@
-use super::{sub_item_ship::SolChangeShipCmdRIds, sub_item_stance::SolChangeStanceCmdRIds};
+use super::sub_item_ship::SolChangeShipCmdRIds;
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CtlCmdResp, CtlCmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr,
@@ -7,8 +7,8 @@ use crate::{
     FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
     ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
     ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, SkillAddCmd, SkillChangeCmd,
-    SolChangeCmd, SolChangeShipCmd, SolChangeStanceCmd, SolSetShipCmd, SolSetStanceCmd, SolUnsetShipCmd,
-    SolUnsetStanceCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
+    SolChangeCmd, SolChangeShipCmd, SolSetShipCmd, SolUnsetShipCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
         BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, CharacterChangeCmdCtxAny, CharacterChangeCmdCtxAnyBr,
@@ -19,26 +19,27 @@ use crate::{
         FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetAddCmd, FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr,
         FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, FwEffectAddCmdCtxFit, FwEffectAddCmdCtxFitBr,
         FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ICmdShipSetFCtxRIds, ICmdShipUnsetFCtxRIds,
-        ICmdStanceSetFCtxRIds, ICmdStanceUnsetFCtxRIds, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
-        ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
-        ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr,
-        ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit, RigAddCmdCtxFitBr,
-        RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
+        ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr, ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr,
+        ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr, ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem,
+        ModuleChangeCmdCtxItemBr, ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit,
+        RigAddCmdCtxFitBr, RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
         ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr,
-        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SubsystemAddCmdCtxFit, SubsystemAddCmdCtxFitBr,
-        SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
+        SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, StanceChangeCmdCtxAny, StanceChangeCmdCtxAnyBr,
+        StanceSetCmdCtxFit, StanceSetCmdCtxFitBr, StanceUnsetCmdCtxFit, StanceUnsetCmdCtxFitBr, SubsystemAddCmdCtxFit,
+        SubsystemAddCmdCtxFitBr, SubsystemChangeCmdCtxItem, SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem,
+        SwEffectChangeCmdCtxItemBr,
     },
     err::{
-        BackrefRenderError, ChangeShipError, ChangeStanceError, CharacterChangeError, FitAddError,
-        FitGetBoosterAddError, FitGetCharacterSetError, FitGetCharacterUnsetError, FitGetDroneAddError,
-        FitGetFighterAddError, FitGetFitChangeError, FitGetFitRemoveError, FitGetFwEffectAddError,
-        FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError,
-        FitGetSubsystemAddError, FleetAddError, FleetGetFleetChangeError, FleetGetFleetRemoveError, GetFitSetShipError,
-        GetFitSetStanceError, GetFitUnsetShipError, GetFitUnsetStanceError, ItemGetAutochargeChangeError,
+        BackrefRenderError, ChangeShipError, CharacterChangeError, FitAddError, FitGetBoosterAddError,
+        FitGetCharacterSetError, FitGetCharacterUnsetError, FitGetDroneAddError, FitGetFighterAddError,
+        FitGetFitChangeError, FitGetFitRemoveError, FitGetFwEffectAddError, FitGetImplantAddError,
+        FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError, FitGetSkillAddError, FitGetStanceSetError,
+        FitGetStanceUnsetError, FitGetSubsystemAddError, FleetAddError, FleetGetFleetChangeError,
+        FleetGetFleetRemoveError, GetFitSetShipError, GetFitUnsetShipError, ItemGetAutochargeChangeError,
         ItemGetBoosterChangeError, ItemGetChargeChangeError, ItemGetDroneChangeError, ItemGetFighterChangeError,
         ItemGetFwEffectChangeError, ItemGetImplantChangeError, ItemGetItemRemoveError, ItemGetModuleChangeError,
         ItemGetProjEffectChangeError, ItemGetRigChangeError, ItemGetServiceChangeError, ItemGetSkillChangeError,
-        ItemGetSubsystemChangeError, ItemGetSwEffectChangeError, ProjEffectAddError,
+        ItemGetSubsystemChangeError, ItemGetSwEffectChangeError, ProjEffectAddError, StanceChangeError,
     },
 };
 
@@ -103,9 +104,9 @@ pub enum SolCtlCmd {
     AddSkill(SkillAddCmdCtxFitBr),
     ChangeSkill(SkillChangeCmdCtxItemBr),
     // Item - stance
-    SetStance(SolSetStanceCmd),
-    ChangeStance(SolChangeStanceCmd),
-    UnsetStance(SolUnsetStanceCmd),
+    SetStance(StanceSetCmdCtxFitBr),
+    ChangeStance(StanceChangeCmdCtxAnyBr),
+    UnsetStance(StanceUnsetCmdCtxFitBr),
     // Item - subsystem
     AddSubsystem(SubsystemAddCmdCtxFitBr),
     ChangeSubsystem(SubsystemChangeCmdCtxItemBr),
@@ -170,9 +171,9 @@ pub(crate) enum SolCtlCmdRendered {
     AddSkill(SkillAddCmdCtxFit),
     ChangeSkill(SkillChangeCmdCtxItem),
     // Item - stance
-    SetStance(ICmdStanceSetFCtxRIds),
-    ChangeStance(SolChangeStanceCmdRIds),
-    UnsetStance(ICmdStanceUnsetFCtxRIds),
+    SetStance(StanceSetCmdCtxFit),
+    ChangeStance(StanceChangeCmdCtxAny),
+    UnsetStance(StanceUnsetCmdCtxFit),
     // Item - subsystem
     AddSubsystem(SubsystemAddCmdCtxFit),
     ChangeSubsystem(SubsystemChangeCmdCtxItem),
@@ -429,6 +430,25 @@ impl SkillChangeCmd {
         SolCtlCmd::ChangeSkill(self.into_ctx_item_br(item_id))
     }
 }
+// Item - stance
+impl StanceSetCmd {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::SetStance(self.into_ctx_fit_br(fit_id))
+    }
+}
+impl StanceChangeCmd {
+    pub fn into_sol_ctl_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeStance(self.into_ctx_br_via_fit(fit_id))
+    }
+    pub fn into_sol_ctl_via_item(self, item_id: impl Into<ItemIdBr>) -> SolCtlCmd {
+        SolCtlCmd::ChangeStance(self.into_ctx_br_via_item(item_id))
+    }
+}
+impl StanceUnsetCmd {
+    pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
+        SolCtlCmd::UnsetStance(self.into_ctx_fit_br(fit_id))
+    }
+}
 // Item - subsystem
 impl SubsystemAddCmd {
     pub fn into_sol_ctl(self, fit_id: impl Into<FitIdBr>) -> SolCtlCmd {
@@ -513,9 +533,9 @@ impl SolCtlCmd {
             Self::AddSkill(cmd) => SolCtlCmdRendered::AddSkill(cmd.render(resps)?),
             Self::ChangeSkill(cmd) => SolCtlCmdRendered::ChangeSkill(cmd.render(resps)?),
             // Item - stance
-            Self::SetStance(cmd) => SolCtlCmdRendered::SetStance(cmd.inner.render(resps)?),
+            Self::SetStance(cmd) => SolCtlCmdRendered::SetStance(cmd.render(resps)?),
             Self::ChangeStance(cmd) => SolCtlCmdRendered::ChangeStance(cmd.render(resps)?),
-            Self::UnsetStance(cmd) => SolCtlCmdRendered::UnsetStance(cmd.inner.render(resps)?),
+            Self::UnsetStance(cmd) => SolCtlCmdRendered::UnsetStance(cmd.render(resps)?),
             // Item - subsystem
             Self::AddSubsystem(cmd) => SolCtlCmdRendered::AddSubsystem(cmd.render(resps)?),
             Self::ChangeSubsystem(cmd) => SolCtlCmdRendered::ChangeSubsystem(cmd.render(resps)?),
@@ -692,11 +712,11 @@ pub enum ChangeSolEnumError {
     SkillChange(#[from] ItemGetSkillChangeError),
     // Item - stance
     #[error("failed to set stance")]
-    StanceSet(#[from] GetFitSetStanceError),
+    StanceSet(#[from] FitGetStanceSetError),
     #[error("failed to change stance")]
-    StanceChange(#[from] ChangeStanceError),
+    StanceChange(#[from] StanceChangeError),
     #[error("failed to unset stance")]
-    StanceUnset(#[from] GetFitUnsetStanceError),
+    StanceUnset(#[from] FitGetStanceUnsetError),
     // Item - subsystem
     #[error("failed to add subsystem")]
     SubsystemAdd(#[from] FitGetSubsystemAddError),

@@ -186,18 +186,18 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::CharacterChange(err_l2) => match err_l2 {
-                    rs::err::CharacterChangeError::CharacterChangeViaFit(err_l3) => match err_l3 {
+                    rs::err::CharacterChangeError::ViaFit(err_l3) => match err_l3 {
                         rs::err::FitGetCharacterChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
                         rs::err::FitGetCharacterChangeError::FitNoCharacter(..) => (StatusCode::BAD_REQUEST, "CHR-002"),
                     },
-                    rs::err::CharacterChangeError::CharacterChangeViaItem(
-                        rs::err::ItemGetCharacterChangeError::ItemGet(err_l3),
-                    ) => match err_l3 {
-                        rs::err::core::GetCharacterError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                        rs::err::core::GetCharacterError::ItemIsNotCharacter(..) => {
-                            (StatusCode::BAD_REQUEST, "CHR-001")
+                    rs::err::CharacterChangeError::ViaItem(rs::err::ItemGetCharacterChangeError::ItemGet(err_l3)) => {
+                        match err_l3 {
+                            rs::err::core::GetCharacterError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                            rs::err::core::GetCharacterError::ItemIsNotCharacter(..) => {
+                                (StatusCode::BAD_REQUEST, "CHR-001")
+                            }
                         }
-                    },
+                    }
                 },
                 rs::err::ChangeSolEnumError::CharacterUnset(rs::err::FitGetCharacterUnsetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
@@ -320,22 +320,22 @@ impl ApiError {
                     ) => (StatusCode::BAD_REQUEST, "SKL-003"),
                 },
                 // Item - stance
-                rs::err::ChangeSolEnumError::StanceSet(rs::err::GetFitSetStanceError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::StanceSet(rs::err::FitGetStanceSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::StanceChange(err_l2) => match err_l2 {
-                    rs::err::ChangeStanceError::StanceChangeViaFit(err_l3) => match err_l3 {
-                        rs::err::GetFitChangeStanceError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                        rs::err::GetFitChangeStanceError::FitNoStance(..) => (StatusCode::BAD_REQUEST, "STC-002"),
+                    rs::err::StanceChangeError::ViaFit(err_l3) => match err_l3 {
+                        rs::err::FitGetStanceChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                        rs::err::FitGetStanceChangeError::FitNoStance(..) => (StatusCode::BAD_REQUEST, "STC-002"),
                     },
-                    rs::err::ChangeStanceError::StanceChangeViaItem(rs::err::GetItemChangeStanceError::ItemGet(
-                        err_l3,
-                    )) => match err_l3 {
-                        rs::err::core::GetStanceError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                        rs::err::core::GetStanceError::ItemIsNotStance(..) => (StatusCode::BAD_REQUEST, "STC-001"),
-                    },
+                    rs::err::StanceChangeError::ViaItem(rs::err::ItemGetStanceChangeError::ItemGet(err_l3)) => {
+                        match err_l3 {
+                            rs::err::core::GetStanceError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                            rs::err::core::GetStanceError::ItemIsNotStance(..) => (StatusCode::BAD_REQUEST, "STC-001"),
+                        }
+                    }
                 },
-                rs::err::ChangeSolEnumError::StanceUnset(rs::err::GetFitUnsetStanceError::FitGet(..)) => {
+                rs::err::ChangeSolEnumError::StanceUnset(rs::err::FitGetStanceUnsetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 // Item - subsystem
@@ -481,7 +481,7 @@ impl ApiError {
                     ) => (StatusCode::BAD_REQUEST, "SKL-003"),
                 },
                 // Item - stance
-                rs::err::FitCtlCmdError::StanceChange(rs::err::FitChangeStanceError::FitNoStance(..)) => {
+                rs::err::FitCtlCmdError::StanceChange(rs::err::FitStanceChangeError::FitNoStance(..)) => {
                     (StatusCode::BAD_REQUEST, "STC-002")
                 }
                 // Item - subsystem
@@ -540,7 +540,7 @@ impl ApiError {
                         (StatusCode::BAD_REQUEST, "SKL-002")
                     }
                 },
-                rs::err::ItemAddError::Stance(rs::err::GetFitSetStanceError::FitGet(..)) => {
+                rs::err::ItemAddError::Stance(rs::err::FitGetStanceSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddError::Subsystem(rs::err::FitGetSubsystemAddError::FitGet(..)) => {
@@ -603,7 +603,7 @@ impl ApiError {
                         (StatusCode::BAD_REQUEST, "SKL-003")
                     }
                 },
-                rs::err::ItemCtlError::Stance(rs::err::ItemChangeStanceError::ItemIsNotStance(..)) => {
+                rs::err::ItemCtlError::Stance(rs::err::ItemStanceChangeError::ItemIsNotStance(..)) => {
                     (StatusCode::BAD_REQUEST, "STC-001")
                 }
                 rs::err::ItemCtlError::Subsystem(rs::err::SubsystemChangeError::ItemIsNotSubsystem(..)) => {
