@@ -1,6 +1,6 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CmdResps, CmdResp, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
+    ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
     FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FwEffectAddCmd, FwEffectChangeCmd,
     ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
     ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,

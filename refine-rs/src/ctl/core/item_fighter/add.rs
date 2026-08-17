@@ -1,7 +1,7 @@
 use crate::{
     AbilityId, AddedItemIdsResp, CmdResps, Coordinates, CountNz, EffectId, EffectMode, FitId, FitIdBr, ItemId,
     ItemIdBr, ItemTypeId, MinionState, Movement, RearmMinion,
-    ctl::shared::{Abilities, EffectModes},
+    ctl::core::shared::{Abilities, EffectModes},
     err::BackrefRenderError,
 };
 

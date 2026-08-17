@@ -1,6 +1,6 @@
 use crate::{
     AddMode, AddMutation, AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
-    ItemTypeId, ModRack, ModuleState, OptionalReload, Spool, ctl::shared::EffectModes, err::BackrefRenderError,
+    ItemTypeId, ModRack, ModuleState, OptionalReload, Spool, ctl::core::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Core commands

@@ -84,6 +84,7 @@ pub use item_sw_effect::{
     ItemGetSwEffectChangeError, SwEffectAddCmd, SwEffectChangeCmd, SwEffectChangeCmdCtxItem,
     SwEffectChangeCmdCtxItemBr, SwEffectChangeError,
 };
+pub use shared::{AddMutation, AttrMutation, ChangeMutation};
 pub use sol::{SolAddCmd, SolChangeCmd};
 
 mod fit;
@@ -106,4 +107,5 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod shared;
 mod sol;

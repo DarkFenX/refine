@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, Movement,
-    ctl::shared::EffectModes, err::BackrefRenderError,
+    ctl::core::shared::EffectModes, err::BackrefRenderError,
 };
 
 // Core commands

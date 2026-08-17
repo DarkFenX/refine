@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
-    ctl::shared::{EffectModes, SideEffects},
+    ctl::core::shared::{EffectModes, SideEffects},
     err::BackrefRenderError,
 };
 
