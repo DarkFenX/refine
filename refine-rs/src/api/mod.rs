@@ -1,16 +1,16 @@
-pub use fit::{CtlFitChangeError, Fit, GetFitError, ValFitInfoArgs};
-pub use fleet::{Fleet, GetFleetError};
-pub use item::{GetItemError, Item, RemoveItemError};
+pub use fit::{CtlFitChangeError, Fit, FitGetError, ValFitInfoArgs};
+pub use fleet::{Fleet, FleetGetError};
+pub use item::{CtlItemRemoveError, Item, ItemGetError};
 pub use refine::Refine;
 #[cfg(feature = "serde")]
 pub use sol::ParseSolarSystemIdError;
 pub use sol::{
-    AddSolError, ChangeSolError, GetSolError, RemoveSolError, SolSwitchSrcError, SolarSystem, SolarSystemId,
+    CtlSolChangeError, SolAddError, SolGetError, SolRemoveError, SolSwitchSrcError, SolarSystem, SolarSystemId,
     ValSolInfoArgs,
 };
 pub use src::{
-    AddSrcError, GetSrcError, RemoveSrcError, Src, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError,
-    SrcInfoArgs,
+    Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcInfoArgs,
+    SrcRemoveError,
 };
 
 mod fit;

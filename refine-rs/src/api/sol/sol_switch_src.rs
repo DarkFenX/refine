@@ -1,6 +1,6 @@
 use crate::{
     SolInfo, SolInfoCmd, SolarSystem,
-    src::{SrcAlias, err::GetSrcError},
+    src::{SrcAlias, err::SrcGetError},
 };
 
 impl SolarSystem<'_> {
@@ -36,5 +36,5 @@ impl SolarSystem<'_> {
 #[derive(thiserror::Error, Debug)]
 pub enum SolSwitchSrcError {
     #[error("unable to get source")]
-    SrcGet(#[from] GetSrcError),
+    SrcGet(#[from] SrcGetError),
 }

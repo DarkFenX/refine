@@ -2,11 +2,11 @@
 pub use id::ParseSolarSystemIdError;
 pub use id::SolarSystemId;
 pub use info_args::ValSolInfoArgs;
-pub use refine_add_sol::AddSolError;
-pub use refine_get_sol::GetSolError;
+pub use refine_add_sol::SolAddError;
+pub use refine_get_sol::SolGetError;
 pub use sol::SolarSystem;
-pub use sol_change::ChangeSolError;
-pub use sol_remove::RemoveSolError;
+pub use sol_change::CtlSolChangeError;
+pub use sol_remove::SolRemoveError;
 pub use sol_switch_src::SolSwitchSrcError;
 
 mod id;

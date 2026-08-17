@@ -26,7 +26,7 @@ pub(crate) enum ApiError {
     #[error("alias \"{0}\" not found")]
     PathSrcParseMisc(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error(transparent)]
-    PathSrcNotFound(#[from] rs::src::err::GetSrcError),
+    PathSrcNotFound(#[from] rs::src::err::SrcGetError),
     #[error("alias \"{0}\" not found")]
     BodySrcParse(String, #[source] rs::src::err::SrcAliasPruneInitError),
     #[error("EVE data handler not found for requested format \"{0}\"")]
@@ -34,27 +34,27 @@ pub(crate) enum ApiError {
     #[error("EVE data handler initialization failed")]
     EdhInit(#[source] Box<dyn std::error::Error + Send + Sync>),
     #[error(transparent)]
-    SrcAdd(#[from] rs::src::err::AddSrcError),
+    SrcAdd(#[from] rs::src::err::SrcAddError),
     #[error(transparent)]
-    SrcRemove(#[from] rs::src::err::RemoveSrcError),
+    SrcRemove(#[from] rs::src::err::SrcRemoveError),
     // Solar system-related
     #[error(transparent)]
     PathSolParse(#[from] rs::err::ParseSolarSystemIdError),
     #[error(transparent)]
-    PathSolNotFound(#[from] rs::err::GetSolError),
+    PathSolNotFound(#[from] rs::err::SolGetError),
     #[error(transparent)]
-    SolAdd(#[from] rs::err::AddSolError),
+    SolAdd(#[from] rs::err::SolAddError),
     #[error(transparent)]
     SolChange(ApiErrorIndexed<rs::err::SolCtlError>),
     #[error(transparent)]
-    SolRemove(#[from] rs::err::RemoveSolError),
+    SolRemove(#[from] rs::err::SolRemoveError),
     #[error(transparent)]
     SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
     // Fleet-related
     #[error(transparent)]
     PathFleetParse(#[from] rs::err::ParseFleetIdError),
     #[error(transparent)]
-    PathFleetNotFound(#[from] rs::err::GetFleetError),
+    PathFleetNotFound(#[from] rs::err::FleetGetError),
     #[error(transparent)]
     FleetAdd(#[from] rs::err::FleetAddError),
     #[error(transparent)]
@@ -63,7 +63,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathFitParse(#[from] rs::err::ParseFitIdError),
     #[error(transparent)]
-    PathFitNotFound(#[from] rs::err::GetFitError),
+    PathFitNotFound(#[from] rs::err::FitGetError),
     #[error(transparent)]
     FitAdd(#[from] rs::err::FitAddError),
     #[error(transparent)]
@@ -72,13 +72,13 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     PathItemParse(#[from] rs::err::ParseItemIdError),
     #[error(transparent)]
-    PathItemNotFound(#[from] rs::err::GetItemError),
+    PathItemNotFound(#[from] rs::err::ItemGetError),
     #[error(transparent)]
     ItemAdd(#[from] rs::err::ItemAddError),
     #[error(transparent)]
     ItemChange(#[from] rs::err::ItemCtlError),
     #[error(transparent)]
-    ItemRemove(#[from] rs::err::RemoveItemError),
+    ItemRemove(#[from] rs::err::CtlItemRemoveError),
 }
 
 #[derive(Serialize)]
@@ -112,28 +112,28 @@ impl ApiError {
             Self::PathSrcParseOnAdd(..) => (StatusCode::FORBIDDEN, "SRC-004"),
             Self::PathSrcParseMisc(..) => (StatusCode::NOT_FOUND, "SRC-003"),
             Self::PathSrcNotFound(err) => match err {
-                rs::src::err::GetSrcError::SrcNotFound(..) => (StatusCode::NOT_FOUND, "SRC-001"),
-                rs::src::err::GetSrcError::DefaultNotDefined => (StatusCode::NOT_FOUND, "SRC-002"),
+                rs::src::err::SrcGetError::SrcNotFound(..) => (StatusCode::NOT_FOUND, "SRC-001"),
+                rs::src::err::SrcGetError::DefaultNotDefined => (StatusCode::NOT_FOUND, "SRC-002"),
             },
             Self::BodySrcParse(..) => (StatusCode::BAD_REQUEST, "SRC-005"),
             Self::EdhNotFound(..) => (StatusCode::BAD_REQUEST, "EDH-001"),
             Self::EdhInit(..) => (StatusCode::BAD_REQUEST, "EDH-002"),
             Self::SrcAdd(err) => match err {
-                rs::src::err::AddSrcError::SrcAliasNotAvailable(..) => (StatusCode::FORBIDDEN, "SRC-006"),
-                rs::src::err::AddSrcError::SrcInit(..) => (StatusCode::UNPROCESSABLE_ENTITY, "SNT-001"),
+                rs::src::err::SrcAddError::SrcAliasNotAvailable(..) => (StatusCode::FORBIDDEN, "SRC-006"),
+                rs::src::err::SrcAddError::SrcInit(..) => (StatusCode::UNPROCESSABLE_ENTITY, "SNT-001"),
             },
             Self::SrcRemove(err) => match err {
-                rs::src::err::RemoveSrcError::SrcNotFound(..) => (StatusCode::NOT_FOUND, "SRC-007"),
+                rs::src::err::SrcRemoveError::SrcNotFound(..) => (StatusCode::NOT_FOUND, "SRC-007"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Solar system-related
             ////////////////////////////////////////////////////////////////////////////////////////
             Self::PathSolParse(..) => (StatusCode::NOT_FOUND, "SOL-002"),
             Self::PathSolNotFound(err) => match err {
-                rs::err::GetSolError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-001"),
+                rs::err::SolGetError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-001"),
             },
             Self::SolAdd(err) => match err {
-                rs::err::AddSolError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
+                rs::err::SolAddError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
             Self::SolChange(err) => match &err.error {
                 // Fleets
@@ -354,7 +354,7 @@ impl ApiError {
                 },
             },
             Self::SolRemove(err) => match err {
-                rs::err::RemoveSolError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-004"),
+                rs::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-004"),
             },
             Self::SolSrcSwitch(err) => match err {
                 rs::err::SolSwitchSrcError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-005"),
@@ -612,7 +612,7 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "SWE-001")
                 }
             },
-            Self::ItemRemove(rs::err::RemoveItemError(rs::err::ItemRemoveError::ItemRemove(
+            Self::ItemRemove(rs::err::CtlItemRemoveError(rs::err::ItemRemoveError::ItemRemove(
                 rs::err::core::RemoveItemError::UnremovableAutocharge,
             ))) => (StatusCode::FORBIDDEN, "ACH-002"),
         }
@@ -672,13 +672,15 @@ impl From<JsonRejection> for ApiError {
         Self::Json(err)
     }
 }
-impl From<rs::err::ChangeSolError> for ApiError {
-    fn from(err: rs::err::ChangeSolError) -> Self {
+impl From<rs::err::CtlSolChangeError> for ApiError {
+    fn from(err: rs::err::CtlSolChangeError) -> Self {
         match err {
-            rs::err::ChangeSolError::CtlRender(index, inner) => {
+            rs::err::CtlSolChangeError::CtlRender(index, inner) => {
                 Self::BackrefRender(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::ChangeSolError::CtlExec(index, inner) => Self::SolChange(ApiErrorIndexed { index, error: inner }),
+            rs::err::CtlSolChangeError::CtlExec(index, inner) => {
+                Self::SolChange(ApiErrorIndexed { index, error: inner })
+            }
         }
     }
 }

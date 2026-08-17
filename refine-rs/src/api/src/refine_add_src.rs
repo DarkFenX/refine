@@ -15,13 +15,13 @@ impl Refine {
         make_default: bool,
         ed_handler: rc::ed::EveDataHandler,
         ad_cacher: Option<rc::ad::AdaptedDataCacher>,
-    ) -> Result<Src<'_>, AddSrcError> {
+    ) -> Result<Src<'_>, SrcAddError> {
         tracing::debug!("creating source with alias \"{alias}\", default={make_default}");
         // Source creation time is the time request was received
         let time_created = time::UtcDateTime::now();
         // Disallow creating of sources with the same name until this one is created/fails
         if !self.check_alias_availability(&alias).await {
-            return Err(AddSrcError::SrcAliasNotAvailable(alias));
+            return Err(SrcAddError::SrcAliasNotAvailable(alias));
         }
         self.lock_alias(alias).await;
         // Create source in a heavy threadpool
@@ -66,7 +66,7 @@ impl Refine {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum AddSrcError {
+pub enum SrcAddError {
     #[error("alias \"{0}\" already exists")]
     SrcAliasNotAvailable(SrcAlias),
     #[error("source initialization failed")]
@@ -79,7 +79,7 @@ pub enum AddSrcError {
 fn create_core_src(
     ed_handler: rc::ed::EveDataHandler,
     ad_cacher: Option<rc::ad::AdaptedDataCacher>,
-) -> Result<rc::Src, AddSrcError> {
+) -> Result<rc::Src, SrcAddError> {
     tracing::info!(
         "initializing new source with {:?} and {}",
         ed_handler,

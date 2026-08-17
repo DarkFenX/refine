@@ -2,7 +2,7 @@ use std::collections::hash_map::Entry;
 
 use crate::{
     Refine, SolAddCmd, SolInfo, SolInfoCmd, SolarSystem, SolarSystemId,
-    src::{SrcAlias, err::GetSrcError},
+    src::{SrcAlias, err::SrcGetError},
     svc::SolarSystemInnerGuarded,
 };
 
@@ -12,7 +12,7 @@ impl Refine {
         &self,
         src_alias: Option<SrcAlias>,
         ctl_cmd: SolAddCmd,
-    ) -> Result<SolarSystem<'_>, AddSolError> {
+    ) -> Result<SolarSystem<'_>, SolAddError> {
         let inner_src = self.internal_get_src(src_alias).await?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
@@ -28,7 +28,7 @@ impl Refine {
         src_alias: Option<SrcAlias>,
         ctl_cmd: SolAddCmd,
         info_cmd: SolInfoCmd,
-    ) -> Result<(SolarSystem<'_>, SolInfo), AddSolError> {
+    ) -> Result<(SolarSystem<'_>, SolInfo), SolAddError> {
         let inner_src = self.internal_get_src(src_alias).await?;
         // Variables for move
         let core_src = inner_src.get_core().clone();
@@ -70,7 +70,7 @@ impl Refine {
 }
 
 #[derive(thiserror::Error, Debug)]
-pub enum AddSolError {
+pub enum SolAddError {
     #[error("failed to get source")]
-    SrcGet(#[from] GetSrcError),
+    SrcGet(#[from] SrcGetError),
 }

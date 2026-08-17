@@ -1,6 +1,6 @@
 pub use item::Item;
-pub use item_remove::RemoveItemError;
-pub use sol_get_item::GetItemError;
+pub use item_remove::CtlItemRemoveError;
+pub use sol_get_item::ItemGetError;
 
 mod item;
 mod item_change;
