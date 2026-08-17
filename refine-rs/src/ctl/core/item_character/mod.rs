@@ -1,9 +1,6 @@
 pub use change::{
-    FitChangeCharacterError, GetFitChangeCharacterError, GetItemChangeCharacterError, ItemChangeCharacterError,
-};
-pub(in crate::ctl) use change::{
-    ICmdCharacterChangeFFitCtxBIds, ICmdCharacterChangeFFitCtxRIds, ICmdCharacterChangeFItemCtxBIds,
-    ICmdCharacterChangeFItemCtxRIds, ICmdCharacterChangeICtx,
+    CharacterChangeCmd, CharacterChangeCmdCtxAny, CharacterChangeCmdCtxAnyBr, CharacterChangeError,
+    FitCharacterChangeError, FitGetCharacterChangeError, ItemCharacterChangeError, ItemGetCharacterChangeError,
 };
 pub use set::{CharacterSetCmd, CharacterSetCmdCtxFit, CharacterSetCmdCtxFitBr, FitGetCharacterSetError};
 pub use unset::{CharacterUnsetCmd, CharacterUnsetCmdCtxFit, CharacterUnsetCmdCtxFitBr, FitGetCharacterUnsetError};

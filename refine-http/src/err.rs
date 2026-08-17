@@ -186,12 +186,12 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ChangeSolEnumError::CharacterChange(err_l2) => match err_l2 {
-                    rs::err::ChangeCharacterError::CharacterChangeViaFit(err_l3) => match err_l3 {
-                        rs::err::GetFitChangeCharacterError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                        rs::err::GetFitChangeCharacterError::FitNoCharacter(..) => (StatusCode::BAD_REQUEST, "CHR-002"),
+                    rs::err::CharacterChangeError::CharacterChangeViaFit(err_l3) => match err_l3 {
+                        rs::err::FitGetCharacterChangeError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+                        rs::err::FitGetCharacterChangeError::FitNoCharacter(..) => (StatusCode::BAD_REQUEST, "CHR-002"),
                     },
-                    rs::err::ChangeCharacterError::CharacterChangeViaItem(
-                        rs::err::GetItemChangeCharacterError::ItemGet(err_l3),
+                    rs::err::CharacterChangeError::CharacterChangeViaItem(
+                        rs::err::ItemGetCharacterChangeError::ItemGet(err_l3),
                     ) => match err_l3 {
                         rs::err::core::GetCharacterError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
                         rs::err::core::GetCharacterError::ItemIsNotCharacter(..) => {
@@ -405,7 +405,7 @@ impl ApiError {
                     rs::err::ItemGetBoosterChangeError::ItemIsNotBooster(..) => (StatusCode::BAD_REQUEST, "BST-001"),
                 },
                 // Item - character
-                rs::err::FitCtlCmdError::CharacterChange(rs::err::FitChangeCharacterError::FitNoCharacter(..)) => {
+                rs::err::FitCtlCmdError::CharacterChange(rs::err::FitCharacterChangeError::FitNoCharacter(..)) => {
                     (StatusCode::BAD_REQUEST, "CHR-002")
                 }
                 // Item - charge
@@ -554,7 +554,7 @@ impl ApiError {
                 rs::err::ItemCtlError::Booster(rs::err::BoosterChangeError::ItemIsNotBooster(..)) => {
                     (StatusCode::BAD_REQUEST, "BST-001")
                 }
-                rs::err::ItemCtlError::Character(rs::err::ItemChangeCharacterError::ItemIsNotCharacter(..)) => {
+                rs::err::ItemCtlError::Character(rs::err::ItemCharacterChangeError::ItemIsNotCharacter(..)) => {
                     (StatusCode::BAD_REQUEST, "CHR-001")
                 }
                 rs::err::ItemCtlError::Charge(rs::err::ChargeChangeError::ItemIsNotCharge(..)) => {
