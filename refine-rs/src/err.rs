@@ -5,8 +5,8 @@ pub use rc::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
 pub use crate::api::ParseSolarSystemIdError;
 pub use crate::{
     api::{
-        FitChangeBatchError, FitGetError, FleetGetError, ItemGetError, SolAddError, SolBatchError,
-        SolChangeEnumSolInfoError, SolGetError, SolRemoveError, SolSwitchSrcError,
+        FitChangeBatchError, FitChangeEnumFitInfoError, FitGetError, FleetGetError, ItemGetError, SolAddError,
+        SolBatchError, SolChangeEnumSolInfoError, SolGetError, SolRemoveError, SolSwitchSrcError,
     },
     ctl::{
         AutochargeChangeError, BoosterChangeError, CharacterChangeError, ChargeChangeError, DroneAddError,

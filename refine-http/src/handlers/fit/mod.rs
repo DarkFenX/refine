@@ -4,6 +4,7 @@ pub(crate) use get::get_fit;
 pub(crate) use remove::remove_fit;
 
 mod add;
+mod batch;
 mod change;
 mod get;
 mod remove;

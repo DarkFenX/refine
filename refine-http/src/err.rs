@@ -12,14 +12,15 @@ pub(crate) enum ApiError {
     Query(QueryRejection),
     #[error("{}", .0.body_text())]
     Json(JsonRejection),
-    #[error(transparent)]
-    BatchParse(ApiErrorIndexed<serde_json::Error>),
-    #[error(transparent)]
-    BackrefRender(ApiErrorIndexed<rs::err::BrResolveError>),
     #[error("failed to read request body")]
     RequestRead(#[source] axum::Error),
     #[error("failed to process request body: {0}")]
     RequestTooLarge(String),
+    // Batch-related, but not specific to any entities
+    #[error(transparent)]
+    BatchParse(ApiErrorIndexed<serde_json::Error>),
+    #[error(transparent)]
+    BatchBackrefResolve(ApiErrorIndexed<rs::err::BrResolveError>),
     // Source-related
     #[error("\"{0}\" cannot be used as a source alias")]
     PathSrcParseOnAdd(String, #[source] rs::src::err::SrcAliasPruneInitError),
@@ -45,11 +46,13 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     SolAdd(#[from] rs::err::SolAddError),
     #[error(transparent)]
-    SolChange(ApiErrorIndexed<rs::err::SolChangeEnumError>),
+    SolChange(#[from] rs::err::SolChangeEnumSolInfoError),
     #[error(transparent)]
     SolRemove(#[from] rs::err::SolRemoveError),
     #[error(transparent)]
     SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
+    #[error(transparent)]
+    SolBatch(ApiErrorIndexed<rs::err::SolChangeEnumError>),
     // Fleet-related
     #[error(transparent)]
     PathFleetParse(#[from] rs::err::ParseFleetIdError),
@@ -67,7 +70,9 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     FitAdd(#[from] rs::err::FitAddError),
     #[error(transparent)]
-    FitChange(ApiErrorIndexed<rs::err::FitChangeEnumError>),
+    FitChange(#[from] rs::err::FitChangeEnumFitInfoError),
+    #[error(transparent)]
+    FitBatch(ApiErrorIndexed<rs::err::FitChangeEnumError>),
     // Item-related
     #[error(transparent)]
     PathItemParse(#[from] rs::err::ParseItemIdError),
@@ -103,7 +108,7 @@ impl ApiError {
                 _ => (StatusCode::BAD_REQUEST, "JSN-001"),
             },
             Self::BatchParse(..) => (StatusCode::BAD_REQUEST, "JSN-002"),
-            Self::BackrefRender(..) => (StatusCode::BAD_REQUEST, "BRF-001"),
+            Self::BatchBackrefResolve(..) => (StatusCode::BAD_REQUEST, "BRF-001"),
             Self::RequestRead(..) => (StatusCode::BAD_REQUEST, "REQ-001"),
             Self::RequestTooLarge(..) => (StatusCode::PAYLOAD_TOO_LARGE, "REQ-002"),
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -135,7 +140,9 @@ impl ApiError {
             Self::SolAdd(err) => match err {
                 rs::err::SolAddError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
-            Self::SolChange(err) => match &err.error {
+            // TODO: change to expose proper error codes
+            Self::SolChange(..) => (StatusCode::BAD_REQUEST, "AAA-000"),
+            Self::SolBatch(err) => match &err.error {
                 // Fleets
                 rs::err::SolChangeEnumError::FleetAdd(rs::err::FleetAddError::FitAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "FLT-003")
@@ -379,7 +386,9 @@ impl ApiError {
             Self::FitAdd(err) => match err {
                 rs::err::FitAddError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-003"),
             },
-            Self::FitChange(err) => match &err.error {
+            // TODO: change to expose proper error codes
+            Self::FitChange(..) => (StatusCode::BAD_REQUEST, "AAA-000"),
+            Self::FitBatch(err) => match &err.error {
                 // Fit
                 rs::err::FitChangeEnumError::FitChange(rs::err::FitChangeError::FleetSet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-004")
@@ -620,9 +629,9 @@ impl ApiError {
     fn get_cmd_index(&self) -> Option<usize> {
         match self {
             Self::BatchParse(err) => Some(err.index),
-            Self::BackrefRender(err) => Some(err.index),
-            Self::SolChange(err) => Some(err.index),
-            Self::FitChange(err) => Some(err.index),
+            Self::BatchBackrefResolve(err) => Some(err.index),
+            Self::SolBatch(err) => Some(err.index),
+            Self::FitBatch(err) => Some(err.index),
             _ => None,
         }
     }
@@ -676,9 +685,9 @@ impl From<rs::err::SolBatchError> for ApiError {
     fn from(err: rs::err::SolBatchError) -> Self {
         match err {
             rs::err::SolBatchError::Render(index, inner) => {
-                Self::BackrefRender(ApiErrorIndexed { index, error: inner })
+                Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolBatchError::CtlExec(index, inner) => Self::SolChange(ApiErrorIndexed { index, error: inner }),
+            rs::err::SolBatchError::CtlExec(index, inner) => Self::SolBatch(ApiErrorIndexed { index, error: inner }),
         }
     }
 }
@@ -686,10 +695,10 @@ impl From<rs::err::FitChangeBatchError> for ApiError {
     fn from(err: rs::err::FitChangeBatchError) -> Self {
         match err {
             rs::err::FitChangeBatchError::Render(index, inner) => {
-                Self::BackrefRender(ApiErrorIndexed { index, error: inner })
+                Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
             rs::err::FitChangeBatchError::CtlExec(index, inner) => {
-                Self::FitChange(ApiErrorIndexed { index, error: inner })
+                Self::FitBatch(ApiErrorIndexed { index, error: inner })
             }
         }
     }

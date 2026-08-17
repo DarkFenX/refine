@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl Fit<'_, '_> {
-    #[tracing::instrument(name = "fit-bat", level = "trace", skip_all)]
+    #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
     pub async fn change(&mut self, ctl_cmd: FitChangeEnumCmd) -> Result<CmdResp, FitChangeEnumError> {
         // Variables for move
         let fit_id = self.id;
