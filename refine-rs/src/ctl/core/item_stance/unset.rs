@@ -14,7 +14,7 @@ pub struct StanceUnsetCmdCtxFit {
 pub struct StanceUnsetCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: StanceUnsetCmd = StanceUnsetCmd,
+    core: StanceUnsetCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

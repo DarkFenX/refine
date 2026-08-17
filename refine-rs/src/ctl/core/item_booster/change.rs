@@ -8,12 +8,12 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct BoosterChangeCmd {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<bool> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    side_effects: SideEffects = SideEffects::new(),
+    side_effects: SideEffects,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -25,7 +25,7 @@ pub struct BoosterChangeCmdCtxItem {
 pub struct BoosterChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: BoosterChangeCmd = BoosterChangeCmd { .. },
+    core: BoosterChangeCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

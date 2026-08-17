@@ -7,12 +7,12 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ShipChangeCmd {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<bool> = None,
-    coordinates: Option<Coordinates> = None,
-    movement: Option<Movement> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<bool>,
+    coordinates: Option<Coordinates>,
+    movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -35,7 +35,7 @@ pub struct ShipChangeCmdCtxFit {
 pub struct ShipChangeCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ShipChangeCmd = ShipChangeCmd { .. },
+    core: ShipChangeCmd,
 }
 
 // Extra context commands - item
@@ -47,7 +47,7 @@ pub struct ShipChangeCmdCtxItem {
 pub struct ShipChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ShipChangeCmd = ShipChangeCmd { .. },
+    core: ShipChangeCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

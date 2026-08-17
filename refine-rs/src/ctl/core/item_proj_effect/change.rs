@@ -8,29 +8,29 @@ use crate::{
 #[derive(Default)]
 pub struct ProjEffectChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    add_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ProjEffectChangeCmdShared = ProjEffectChangeCmdShared { .. },
+    shared: ProjEffectChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ProjEffectChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    add_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ProjEffectChangeCmdShared = ProjEffectChangeCmdShared { .. },
+    shared: ProjEffectChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 struct ProjEffectChangeCmdShared {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<bool> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -42,7 +42,7 @@ pub struct ProjEffectChangeCmdCtxItem {
 pub struct ProjEffectChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ProjEffectChangeCmdBr = ProjEffectChangeCmdBr { .. },
+    core: ProjEffectChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

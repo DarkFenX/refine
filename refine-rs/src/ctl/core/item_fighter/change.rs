@@ -10,37 +10,37 @@ use crate::{
 #[derive(Default)]
 pub struct FighterChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    add_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FighterChangeCmdShared = FighterChangeCmdShared { .. },
+    shared: FighterChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FighterChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    add_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FighterChangeCmdShared = FighterChangeCmdShared { .. },
+    shared: FighterChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 struct FighterChangeCmdShared {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<MinionState> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<MinionState>,
     #[cfg_attr(feature = "serde", serde(default))]
-    count: TriStateField<CountNz> = TriStateField::Absent,
+    count: TriStateField<CountNz>,
     #[cfg_attr(feature = "serde", serde(default))]
-    abilities: Abilities = Abilities::new(),
+    abilities: Abilities,
     #[cfg_attr(feature = "serde", serde(default))]
-    rearm_minion: TriStateField<RearmMinion> = TriStateField::Absent,
-    coordinates: Option<Coordinates> = None,
-    movement: Option<Movement> = None,
+    rearm_minion: TriStateField<RearmMinion>,
+    coordinates: Option<Coordinates>,
+    movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -52,7 +52,7 @@ pub struct FighterChangeCmdCtxItem {
 pub struct FighterChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FighterChangeCmdBr = FighterChangeCmdBr { .. },
+    core: FighterChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

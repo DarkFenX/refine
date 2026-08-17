@@ -10,39 +10,39 @@ use crate::{
 #[derive(Default)]
 pub struct ModuleChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    add_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ModuleChangeCmdShared = ModuleChangeCmdShared { .. },
+    shared: ModuleChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ModuleChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    add_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ModuleChangeCmdShared = ModuleChangeCmdShared { .. },
+    shared: ModuleChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 struct ModuleChangeCmdShared {
-    type_id: Option<ItemTypeId> = None,
+    type_id: Option<ItemTypeId>,
     #[cfg_attr(feature = "serde", serde(rename = "move"))]
-    move_: Option<MoveMode> = None,
-    state: Option<ModuleState> = None,
+    move_: Option<MoveMode>,
+    state: Option<ModuleState>,
     #[cfg_attr(feature = "serde", serde(default))]
-    mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    mutation: TriStateField<ChangeMutation>,
     #[cfg_attr(feature = "serde", serde(default))]
-    charge_type_id: TriStateField<ItemTypeId> = TriStateField::Absent,
+    charge_type_id: TriStateField<ItemTypeId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    spool: TriStateField<Spool> = TriStateField::Absent,
+    spool: TriStateField<Spool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    optional_reload: TriStateField<OptionalReload> = TriStateField::Absent,
+    optional_reload: TriStateField<OptionalReload>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -54,7 +54,7 @@ pub struct ModuleChangeCmdCtxItem {
 pub struct ModuleChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ModuleChangeCmdBr = ModuleChangeCmdBr { .. },
+    core: ModuleChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

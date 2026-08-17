@@ -7,9 +7,9 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct AutochargeChangeCmd {
-    state: Option<bool> = None,
+    state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -21,7 +21,7 @@ pub struct AutochargeChangeCmdCtxItem {
 pub struct AutochargeChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: AutochargeChangeCmd = AutochargeChangeCmd { .. },
+    core: AutochargeChangeCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

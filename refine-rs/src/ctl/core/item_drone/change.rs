@@ -10,35 +10,35 @@ use crate::{
 #[derive(Default)]
 pub struct DroneChangeCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemId> = Vec::new(),
+    add_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemId> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: DroneChangeCmdShared = DroneChangeCmdShared { .. },
+    shared: DroneChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct DroneChangeCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    add_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemIdBr> = Vec::new(),
+    rm_proj_item_ids: Vec<ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: DroneChangeCmdShared = DroneChangeCmdShared { .. },
+    shared: DroneChangeCmdShared,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 struct DroneChangeCmdShared {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<MinionState> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<MinionState>,
     #[cfg_attr(feature = "serde", serde(default))]
-    mutation: TriStateField<ChangeMutation> = TriStateField::Absent,
+    mutation: TriStateField<ChangeMutation>,
     #[cfg_attr(feature = "serde", serde(default))]
-    npc_prop: TriStateField<NpcProp> = TriStateField::Absent,
-    coordinates: Option<Coordinates> = None,
-    movement: Option<Movement> = None,
+    npc_prop: TriStateField<NpcProp>,
+    coordinates: Option<Coordinates>,
+    movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -50,7 +50,7 @@ pub struct DroneChangeCmdCtxItem {
 pub struct DroneChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: DroneChangeCmdBr = DroneChangeCmdBr { .. },
+    core: DroneChangeCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

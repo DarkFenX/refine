@@ -7,10 +7,10 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct ServiceChangeCmd {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<ServiceState> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<ServiceState>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -22,7 +22,7 @@ pub struct ServiceChangeCmdCtxItem {
 pub struct ServiceChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ServiceChangeCmd = ServiceChangeCmd { .. },
+    core: ServiceChangeCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

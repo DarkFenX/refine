@@ -7,10 +7,10 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct StanceChangeCmd {
-    type_id: Option<ItemTypeId> = None,
-    state: Option<bool> = None,
+    type_id: Option<ItemTypeId>,
+    state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -33,7 +33,7 @@ pub struct StanceChangeCmdCtxFit {
 pub struct StanceChangeCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: StanceChangeCmd = StanceChangeCmd { .. },
+    core: StanceChangeCmd,
 }
 
 // Extra context commands - item
@@ -45,7 +45,7 @@ pub struct StanceChangeCmdCtxItem {
 pub struct StanceChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: StanceChangeCmd = StanceChangeCmd { .. },
+    core: StanceChangeCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

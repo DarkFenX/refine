@@ -14,7 +14,7 @@ pub struct ShipUnsetCmdCtxFit {
 pub struct ShipUnsetCmdCtxFitBr {
     fit_id: FitIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ShipUnsetCmd = ShipUnsetCmd,
+    core: ShipUnsetCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

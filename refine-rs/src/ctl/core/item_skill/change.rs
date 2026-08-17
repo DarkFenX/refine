@@ -7,11 +7,11 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct SkillChangeCmd {
-    type_id: Option<ItemTypeId> = None,
-    level: Option<SkillLevel> = None,
-    state: Option<bool> = None,
+    type_id: Option<ItemTypeId>,
+    level: Option<SkillLevel>,
+    state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    effect_modes: EffectModes = EffectModes::new(),
+    effect_modes: EffectModes,
 }
 
 // Extra context commands
@@ -23,7 +23,7 @@ pub struct SkillChangeCmdCtxItem {
 pub struct SkillChangeCmdCtxItemBr {
     item_id: ItemIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: SkillChangeCmd = SkillChangeCmd { .. },
+    core: SkillChangeCmd,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
