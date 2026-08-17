@@ -60,7 +60,7 @@ pub(crate) async fn setup_server() {
         .route("/sol/{sol_id}", delete(handlers::remove_sol))
         .route("/sol/{sol_id}/src", patch(handlers::switch_sol_src))
         .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
-        .route("/sol/{sol_id}/batch", delete(handlers::batch_sol))
+        .route("/sol/{sol_id}/batch", post(handlers::batch_sol))
         // Fleet handlers
         .route("/sol/{sol_id}/fleet", post(handlers::add_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", get(handlers::get_fleet))
@@ -75,7 +75,7 @@ pub(crate) async fn setup_server() {
         .route("/sol/{sol_id}/fit/{fit_id}/stats", post(handlers::get_fit_stats))
         .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
         .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::try_fit_items))
-        .route("/sol/{sol_id}/fit/{fit_id}/batch", delete(handlers::batch_fit))
+        .route("/sol/{sol_id}/fit/{fit_id}/batch", post(handlers::batch_fit))
         // Item handlers
         .route("/sol/{sol_id}/item", post(handlers::add_item))
         .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))

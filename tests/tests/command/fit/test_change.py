@@ -28,9 +28,9 @@ def test_execution(client):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    with api_fit.commands() as api_fit_cmds:
-        api_ship = api_fit_cmds.set_ship(type_id=eve_ship_id)
-        api_drone = api_fit_cmds.add_drone(type_id=eve_drone_id)
+    with api_fit.batch() as api_fit_batch:
+        api_ship = api_fit_batch.set_ship(type_id=eve_ship_id)
+        api_drone = api_fit_batch.add_drone(type_id=eve_drone_id)
     # Verification
     assert api_ship.update().type_id == eve_ship_id
     assert api_drone.update().type_id == eve_drone_id
@@ -45,15 +45,15 @@ def test_rollback_error_execution(client):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_fit = api_sol.create_fit()
     api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, proj_item_ids=[api_tgt_ship.id])
-    with api_src_fit.commands(
+    with api_src_fit.batch(
             status_code=400,
             json_predicate={
                 'code': 'ITM-001',
                 'message': f'failed to change drone: item {api_src_drone.id} not found',
                 'cmd_index': 1},
-    ) as api_src_fit_cmds:
-        api_src_fit_cmds.remove_item(item_id=api_src_drone.id)
-        api_src_fit_cmds.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])
+    ) as api_src_fit_batch:
+        api_src_fit_batch.remove_item(item_id=api_src_drone.id)
+        api_src_fit_batch.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])
     # Verification - failing 2nd command should've reverted all the prior commands, including drone
     # removal
     assert api_src_drone.update().projs[api_tgt_ship.id] == [0, 0]
@@ -63,7 +63,7 @@ def test_rollback_error_parsing(client):
 
     def hook_req(req: Request):
         data = req.get_json()
-        del data['commands'][1]['item_id']
+        del data[1]['item_id']
         req.set_json(data=data)
 
     eve_drone_id = client.mk_eve_item()
@@ -74,13 +74,13 @@ def test_rollback_error_parsing(client):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_fit = api_sol.create_fit()
     api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, proj_item_ids=[api_tgt_ship.id])
-    with api_src_fit.commands(
+    with api_src_fit.batch(
             hook_req=hook_req,
             status_code=400,
             json_predicate={'code': 'JSN-002', 'message': 're:.+', 'cmd_index': 1},
-    ) as api_src_fit_cmds:
-        api_src_fit_cmds.remove_item(item_id=api_src_drone.id)
-        api_src_fit_cmds.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])
+    ) as api_src_fit_batch:
+        api_src_fit_batch.remove_item(item_id=api_src_drone.id)
+        api_src_fit_batch.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])
     # Verification - failing 2nd command should've reverted all the prior commands, including drone
     # removal
     assert api_src_drone.update().projs[api_tgt_ship.id] == [0, 0]

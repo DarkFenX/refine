@@ -19,7 +19,7 @@ from fw.api.commands import (
     ItemStanceSetCmd,
     ItemSubsystemAddCmd,
 )
-from fw.api.types.cmd_ctx.fit_ctx import FitCmdCtx
+from fw.api.types.batches.fit import FitCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
@@ -56,21 +56,16 @@ class Fit(AttrDict):
         self._client = client
         self._sol_id = sol_id
 
-    def commands(
+    def batch(
             self, *,
-            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
-            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: dict | None = None,
-    ) -> FitCmdCtx:
-        return FitCmdCtx(
+    ) -> FitCmdBatchCtx:
+        return FitCmdBatchCtx(
             client=self._client,
-            fit=self,
             sol_id=self._sol_id,
             fit_id=self.id,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode,
             hook_req=hook_req,
             status_code=status_code,
             json_predicate=json_predicate)

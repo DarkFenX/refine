@@ -241,6 +241,17 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             params=params,
             json=command.serialize())
 
+    def sol_command_batch_request(
+            self, *,
+            sol_id: str,
+            commands: list[BaseCommand],
+    ) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/batch',
+            json=[c.serialize() for c in commands])
+
     # Development-specific requests
     def check_sol(self, *, sol_id: str) -> None:
         resp = self.check_sol_request(sol_id=sol_id).send()

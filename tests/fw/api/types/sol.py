@@ -1,7 +1,7 @@
 import typing
 
 from fw.api.commands import ItemProjEffectAddCmd, ItemSwEffectAddCmd, SolSolChangeCmd
-from fw.api.types.cmd_ctx.sol_ctx import SolCmdCtx
+from fw.api.types.batches.sol import SolCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
@@ -31,24 +31,15 @@ class SolarSystem(AttrDict):
                 func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]})})
         self._client = client
 
-    def commands(
+    def batch(
             self, *,
-            sol_info_mode: ApiSolInfoMode | type[Absent] = ApiSolInfoMode.id,
-            fleet_info_mode: ApiFleetInfoMode | type[Absent] = Absent,
-            fit_info_mode: ApiFitInfoMode | type[Absent] = Absent,
-            item_info_mode: ApiItemInfoMode | type[Absent] = Absent,
             hook_req: ReqHook | None = None,
             status_code: int = 200,
             json_predicate: dict | None = None,
-    ) -> SolCmdCtx:
-        return SolCmdCtx(
+    ) -> SolCmdBatchCtx:
+        return SolCmdBatchCtx(
             client=self._client,
-            sol=self,
             sol_id=self.id,
-            sol_info_mode=sol_info_mode,
-            fleet_info_mode=fleet_info_mode,
-            fit_info_mode=fit_info_mode,
-            item_info_mode=item_info_mode,
             hook_req=hook_req,
             status_code=status_code,
             json_predicate=json_predicate)

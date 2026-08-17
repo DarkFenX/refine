@@ -32,8 +32,8 @@ def test_max_normal(client, consts, run_config):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    with api_sol.commands(hook_req=make_req_hook(body_size=req_body_size)) as api_sol_cmds:
-        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
+    with api_sol.batch(hook_req=make_req_hook(body_size=req_body_size)) as api_sol_batch:
+        api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
     # Verification
     assert api_fit.update(item_info_mode=consts.ApiItemInfoMode.full).ship.type_id == eve_ship_id
 
@@ -44,8 +44,8 @@ def test_max_chunked(client, consts, run_config):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    with api_sol.commands(hook_req=make_req_hook(body_size=req_body_size, chunk=True)) as api_sol_cmds:
-        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
+    with api_sol.batch(hook_req=make_req_hook(body_size=req_body_size, chunk=True)) as api_sol_batch:
+        api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
     # Verification
     assert api_fit.update(item_info_mode=consts.ApiItemInfoMode.full).ship.type_id == eve_ship_id
 
@@ -56,15 +56,15 @@ def test_error_normal(client, log, run_config):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    with api_sol.commands(
+    with api_sol.batch(
             hook_req=make_req_hook(body_size=req_body_size),
             status_code=413,
             json_predicate={
                 'code': 'REQ-002',
                 'message': f'failed to process request body: received length {req_body_size} '
                            f'is bigger than limit {run_config.max_request_body_size}'},
-    ) as api_sol_cmds:
-        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
+    ) as api_sol_batch:
+        api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
     # Verification
     api_fit.update()
     with check_no_field():
@@ -79,15 +79,15 @@ def test_error_chunked(client, log, run_config):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    with api_sol.commands(
+    with api_sol.batch(
             hook_req=make_req_hook(body_size=req_body_size, chunk=True),
             status_code=413,
             json_predicate={
                 'code': 'REQ-002',
                 'message': 'failed to process request body: received length <unknown> '
                            f'is bigger than limit {run_config.max_request_body_size}'},
-    ) as api_sol_cmds:
-        api_sol_cmds.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
+    ) as api_sol_batch:
+        api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
     # Verification
     api_fit.update()
     with check_no_field():

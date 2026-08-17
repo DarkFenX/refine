@@ -24,7 +24,7 @@ class EntityData:
     data: dict
 
 
-class BaseCmdCtx:
+class BaseCmdBatchCtx:
 
     def __init__(
             self, *,
@@ -67,9 +67,9 @@ class BaseCmdCtx:
         resp.check(status_code=self._status_code, json_predicate=self._json_predicate)
         return resp
 
-    def _fill_entity_ids(self, *, resp_data: dict) -> None:
+    def _fill_entity_ids(self, *, resp_data: list) -> None:
         # Update IDs in all the entities which were created by the commands
-        for i, cmd_result in enumerate(resp_data['cmd_results']):
+        for i, cmd_result in enumerate(resp_data):
             if i not in self._ret_datas:
                 continue
             entity_data = self._ret_datas[i]

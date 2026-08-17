@@ -53,7 +53,7 @@ from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
-from .base_ctx import BaseCmdCtx, EntityData, IdFillKind
+from .base import BaseCmdBatchCtx, EntityData, IdFillKind
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
@@ -61,33 +61,23 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfileAlias, MutaAdd, MutaChange, ReqHook
     from fw.api.types.item import Item
-    from fw.api.types.sol import SolarSystem
     from fw.consts import (
         ApiEffMode,
-        ApiFitInfoMode,
-        ApiFleetInfoMode,
-        ApiItemInfoMode,
         ApiModMvMode,
         ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
         ApiRearmMinion,
         ApiSecZone,
-        ApiSolInfoMode,
     )
 
 
-class SolCmdCtx(BaseCmdCtx):
+class SolCmdBatchCtx(BaseCmdBatchCtx):
 
     def __init__(
             self, *,
             client: ApiClient,
-            sol: SolarSystem,
             sol_id: str,
-            sol_info_mode: ApiSolInfoMode | type[Absent],
-            fleet_info_mode: ApiFleetInfoMode | type[Absent],
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
             hook_req: ReqHook | None,
             status_code: int,
             json_predicate: dict | None,
@@ -98,11 +88,6 @@ class SolCmdCtx(BaseCmdCtx):
             hook_req=hook_req,
             status_code=status_code,
             json_predicate=json_predicate)
-        self._sol = sol
-        self._sol_info_mode = sol_info_mode
-        self._fleet_info_mode = fleet_info_mode
-        self._fit_info_mode = fit_info_mode
-        self._item_info_mode = item_info_mode
 
     def __enter__(self) -> typing.Self:
         return self
@@ -115,20 +100,11 @@ class SolCmdCtx(BaseCmdCtx):
     ) -> None:
         # Clear temporary data first, it better be cleaned if anything fails
         self._clear_ret_datas()
-        req = self._client.sol_command_request(
-            sol_id=self._sol_id,
-            commands=self._commands,
-            sol_info_mode=self._sol_info_mode,
-            fit_info_mode=self._fit_info_mode,
-            fleet_info_mode=self._fleet_info_mode,
-            item_info_mode=self._item_info_mode)
+        req = self._client.sol_command_batch_request(sol_id=self._sol_id, commands=self._commands)
         resp = self._process_request(req=req)
         # In case of successful response, update entity data
         if resp.status_code == 200:
-            resp_data = resp.json()
-            # Solar system which initiated the command chain
-            self._sol._data = resp_data['solar_system']  # ruff:ignore[private-member-access]
-            self._fill_entity_ids(resp_data=resp_data)
+            self._fill_entity_ids(resp_data=resp.json())
 
     # Entity making methods are supposed to be called after command has been added
     def _make_fleet(self) -> Fleet:

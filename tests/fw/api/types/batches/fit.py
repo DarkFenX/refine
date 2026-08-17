@@ -37,37 +37,24 @@ from fw.api.commands import (
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
-from .base_ctx import BaseCmdCtx
+from .base import BaseCmdBatchCtx
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
     from fw.api.aliases import MutaAdd, MutaChange, ReqHook
-    from fw.api.types.fit import Fit
     from fw.api.types.item import Item
-    from fw.consts import (
-        ApiEffMode,
-        ApiFitInfoMode,
-        ApiItemInfoMode,
-        ApiModMvMode,
-        ApiModRmMode,
-        ApiNpcProp,
-        ApiOptionalReload,
-        ApiRearmMinion,
-    )
+    from fw.consts import ApiEffMode, ApiModMvMode, ApiModRmMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
 
 
-class FitCmdCtx(BaseCmdCtx):
+class FitCmdBatchCtx(BaseCmdBatchCtx):
 
     def __init__(
             self, *,
             client: ApiClient,
-            fit: Fit,
             sol_id: str,
             fit_id: str,
-            fit_info_mode: ApiFitInfoMode | type[Absent],
-            item_info_mode: ApiItemInfoMode | type[Absent],
             hook_req: ReqHook | None,
             status_code: int,
             json_predicate: dict | None,
@@ -78,10 +65,7 @@ class FitCmdCtx(BaseCmdCtx):
             hook_req=hook_req,
             status_code=status_code,
             json_predicate=json_predicate)
-        self._fit = fit
         self._fit_id = fit_id
-        self._fit_info_mode = fit_info_mode
-        self._item_info_mode = item_info_mode
 
     def __enter__(self) -> typing.Self:
         return self
@@ -94,19 +78,14 @@ class FitCmdCtx(BaseCmdCtx):
     ) -> None:
         # Clear temporary data first, it better be cleaned if anything fails
         self._clear_ret_datas()
-        req = self._client.fit_command_request(
+        req = self._client.fit_command_batch_request(
             sol_id=self._sol_id,
             fit_id=self._fit_id,
-            commands=self._commands,
-            fit_info_mode=self._fit_info_mode,
-            item_info_mode=self._item_info_mode)
+            commands=self._commands)
         resp = self._process_request(req=req)
         # In case of successful response, update entity data
         if resp.status_code == 200:
-            resp_data = resp.json()
-            # Fit which initiated the command chain
-            self._fit._data = resp_data['fit']  # ruff:ignore[private-member-access]
-            self._fill_entity_ids(resp_data=resp_data)
+            self._fill_entity_ids(resp_data=resp.json())
 
     # Item
     def remove_item(

@@ -139,3 +139,15 @@ class ApiClientFit(ApiClientBase):
             url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}',
             params=params,
             json=command.serialize())
+
+    def fit_command_batch_request(
+            self, *,
+            sol_id: str,
+            fit_id: str,
+            commands: list[BaseCommand],
+    ) -> Request:
+        return Request(
+            client=self,
+            method='POST',
+            url=f'{self._base_url}/sol/{sol_id}/fit/{fit_id}/batch',
+            json=[c.serialize() for c in commands])
