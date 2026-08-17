@@ -26,17 +26,19 @@ pub use core::{
     SwEffectChangeError,
 };
 
-pub use fit::{FitCtlCmd, FitCtlCmdError};
-pub use item::{ItemAddCmd, ItemAddError, ItemCtlCmd, ItemCtlError};
+pub use fit_change::{FitCtlCmd, FitCtlCmdError};
+pub use item_add::{ItemAddCmd, ItemAddError};
+pub use item_change::{ItemCtlCmd, ItemCtlError};
 pub(crate) use shared::CtlCmdBr;
 pub use shared::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, BackrefRenderError, ChangeMutation,
     ChangedItemIdsResp, CtlCmdResp, CtlCmdResps, FitIdBr, FleetIdBr, ItemIdBr,
 };
-pub use sol::{ChangeSolEnumError, SolCtlCmd};
+pub use sol_change::{ChangeSolEnumError, SolCtlCmd};
 
 mod core;
-mod fit;
-mod item;
+mod fit_change;
+mod item_add;
+mod item_change;
 mod shared;
-mod sol;
+mod sol_change;
