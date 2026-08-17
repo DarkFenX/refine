@@ -53,5 +53,5 @@ class SolSolChangeCmd(BaseSolCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_sol'
+        body['type'] = 'sol_change'
         return body
