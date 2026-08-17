@@ -34,7 +34,7 @@ impl Fit<'_, '_> {
                 let cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
                 let info_cmd = info_cmd.render(&cmd_resps)?;
                 let fit_info = info_cmd.execute(&mut core_fit);
-                let ctl_cmd_resp = cmd_resps.into_inner().into_iter().next().unwrap();
+                let ctl_cmd_resp = cmd_resps.into_iter().next().unwrap();
                 Ok((ctl_cmd_resp, fit_info))
             })
             .await

@@ -5,8 +5,14 @@ pub struct CmdResps {
     data: Vec<CmdResp>,
 }
 impl CmdResps {
+    pub fn len(&self) -> usize {
+        self.data.len()
+    }
     pub fn get(&self, index: usize) -> Option<&CmdResp> {
         self.data.get(index)
+    }
+    pub fn into_iter(self) -> impl ExactSizeIterator<Item = CmdResp> {
+        self.data.into_iter()
     }
 }
 
@@ -21,9 +27,6 @@ impl CmdResps {
     }
     pub(crate) fn with_resp(resp: CmdResp) -> Self {
         Self { data: vec![resp] }
-    }
-    pub(crate) fn into_inner(self) -> Vec<CmdResp> {
-        self.data
     }
     pub(crate) fn append(&mut self, resp: CmdResp) {
         self.data.push(resp);
