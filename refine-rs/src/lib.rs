@@ -17,6 +17,7 @@ pub use ctl::{
     SkillChangeCmd, SolAddCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd,
     StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
+pub use hybrid::SolHybridCmdBr;
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FitInfo,
@@ -45,6 +46,7 @@ mod api;
 mod ctl;
 pub mod dev;
 pub mod err;
+mod hybrid;
 mod info;
 mod shared;
 pub mod src;

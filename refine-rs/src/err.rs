@@ -6,7 +6,7 @@ pub use crate::api::ParseSolarSystemIdError;
 pub use crate::{
     api::{
         FitChangeBatchError, FitChangeEnumFitInfoError, FitGetError, FleetGetError, ItemGetError, SolAddError,
-        SolBatchError, SolChangeEnumSolInfoError, SolGetError, SolRemoveError, SolSwitchSrcError,
+        SolChangeEnumSolInfoError, SolGetError, SolHybridBatchError, SolRemoveError, SolSwitchSrcError,
     },
     ctl::{
         AutochargeChangeError, BoosterChangeError, CharacterChangeError, ChargeChangeError, DroneAddError,
@@ -27,6 +27,7 @@ pub use crate::{
         ProjEffectAddError, ProjEffectChangeError, RigChangeError, ServiceChangeError, ShipChangeError, SkillAddError,
         SkillChangeError, SolChangeEnumError, StanceChangeError, SubsystemChangeError, SwEffectChangeError,
     },
+    hybrid::SolHybridError,
     shared::BrResolveError,
 };
 

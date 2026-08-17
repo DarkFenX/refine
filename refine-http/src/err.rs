@@ -681,13 +681,15 @@ impl From<JsonRejection> for ApiError {
         Self::Json(err)
     }
 }
-impl From<rs::err::SolBatchError> for ApiError {
-    fn from(err: rs::err::SolBatchError) -> Self {
+impl From<rs::err::SolHybridBatchError> for ApiError {
+    fn from(err: rs::err::SolHybridBatchError) -> Self {
         match err {
-            rs::err::SolBatchError::BrResolve(index, inner) => {
+            rs::err::SolHybridBatchError::BrResolve(index, inner) => {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::SolBatchError::CtlExec(index, inner) => Self::SolBatch(ApiErrorIndexed { index, error: inner }),
+            rs::err::SolHybridBatchError::CtlExec(index, inner) => {
+                Self::SolBatch(ApiErrorIndexed { index, error: inner })
+            }
         }
     }
 }
