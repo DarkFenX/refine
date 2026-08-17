@@ -2,12 +2,13 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
     FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitId,
-    FitIdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetId, FleetIdBr, FleetRemoveCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
-    ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
-    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
-    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
-    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
+    FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetId, FleetIdBr,
+    FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr,
+    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd,
+    ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
+    ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd,
+    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
+    SwEffectChangeCmd,
     ctl::core::{
         AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
         BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, CharacterChangeCmdCtxAny, CharacterChangeCmdCtxAnyBr,
@@ -15,7 +16,7 @@ use crate::{
         ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneAddCmdCtxFit, DroneAddCmdCtxFitBr,
         DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr, FighterAddCmdCtxFit, FighterAddCmdCtxFitBr,
         FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FitChangeCmdCtxFit, FitChangeCmdCtxFitBr,
-        FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetAddCmd, FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr,
+        FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr,
         FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, FwEffectAddCmdCtxFit, FwEffectAddCmdCtxFitBr,
         FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
         ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
@@ -316,16 +317,16 @@ impl CharacterSetCmd {
     }
 }
 impl CharacterChangeCmd {
-    pub fn into_sol_via_fit(self, fit_id: FitId) -> SolChangeEnumCmd {
+    pub fn into_sol_ctl_via_fit(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::CharacterChange(self.into_ctx_via_fit(fit_id))
     }
-    pub fn into_sol_via_item(self, item_id: ItemId) -> SolChangeEnumCmd {
+    pub fn into_sol_ctl_via_item(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::CharacterChange(self.into_ctx_via_item(item_id))
     }
-    pub fn into_sol_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
+    pub fn into_sol_ctl_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
         SolChangeEnumCmdBr::CharacterChange(self.into_ctx_br_via_fit(fit_id))
     }
-    pub fn into_sol_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
+    pub fn into_sol_ctl_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
         SolChangeEnumCmdBr::CharacterChange(self.into_ctx_br_via_item(item_id))
     }
 }
@@ -532,16 +533,16 @@ impl ShipSetCmd {
     }
 }
 impl ShipChangeCmd {
-    pub fn into_sol_via_fit(self, fit_id: FitId) -> SolChangeEnumCmd {
+    pub fn into_sol_ctl_via_fit(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ShipChange(self.into_ctx_via_fit(fit_id))
     }
-    pub fn into_sol_via_item(self, item_id: ItemId) -> SolChangeEnumCmd {
+    pub fn into_sol_ctl_via_item(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ShipChange(self.into_ctx_via_item(item_id))
     }
-    pub fn into_sol_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
+    pub fn into_sol_ctl_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
         SolChangeEnumCmdBr::ShipChange(self.into_ctx_br_via_fit(fit_id))
     }
-    pub fn into_sol_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
+    pub fn into_sol_ctl_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
         SolChangeEnumCmdBr::ShipChange(self.into_ctx_br_via_item(item_id))
     }
 }
@@ -580,16 +581,16 @@ impl StanceSetCmd {
     }
 }
 impl StanceChangeCmd {
-    pub fn into_sol_via_fit(self, fit_id: FitId) -> SolChangeEnumCmd {
+    pub fn into_sol_ctl_via_fit(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::StanceChange(self.into_ctx_via_fit(fit_id))
     }
-    pub fn into_sol_via_item(self, item_id: ItemId) -> SolChangeEnumCmd {
+    pub fn into_sol_ctl_via_item(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::StanceChange(self.into_ctx_via_item(item_id))
     }
-    pub fn into_sol_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
+    pub fn into_sol_ctl_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
         SolChangeEnumCmdBr::StanceChange(self.into_ctx_br_via_fit(fit_id))
     }
-    pub fn into_sol_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
+    pub fn into_sol_ctl_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
         SolChangeEnumCmdBr::StanceChange(self.into_ctx_br_via_item(item_id))
     }
 }
