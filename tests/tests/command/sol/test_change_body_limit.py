@@ -16,11 +16,11 @@ def make_req_hook(*, body_size: int, chunk: bool = False) -> ReqHook:
 
     def hook_req(req: Request):
         data = req.get_json()
-        data['padding'] = ''
+        data[0]['padding'] = ''
         req.set_json(data=data)
         assert body_size >= req.get_body_size()
         data = req.get_json()
-        data['padding'] = 'a' * (body_size - req.get_body_size())
+        data[0]['padding'] = 'a' * (body_size - req.get_body_size())
         req.set_json(data=data, chunk=128 * 1024 if chunk else None)
 
     return hook_req
