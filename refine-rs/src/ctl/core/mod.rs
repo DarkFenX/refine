@@ -107,5 +107,6 @@ mod item_skill;
 mod item_stance;
 mod item_subsystem;
 mod item_sw_effect;
+mod resp;
 mod shared;
 mod sol;
