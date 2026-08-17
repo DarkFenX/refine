@@ -1,6 +1,6 @@
 use crate::{
     ItemId, ItemInfo, ItemInfoMode,
-    info::{InfoModesCompact, InfoModes},
+    info::{InfoModes, InfoModesCompact},
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

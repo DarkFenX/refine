@@ -60,10 +60,7 @@ impl ItemInfo {
     ) -> Self {
         Self::Autocharge(AutochargeInfo::from_core(core_autocharge, item_info_modes))
     }
-    fn from_core_booster(
-        core_booster: &mut rc::BoosterMut,
-        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
-    ) -> Self {
+    fn from_core_booster(core_booster: &mut rc::BoosterMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
         Self::Booster(BoosterInfo::from_core(core_booster, item_info_modes))
     }
     fn from_core_character(
@@ -78,10 +75,7 @@ impl ItemInfo {
     fn from_core_drone(core_drone: &mut rc::DroneMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
         Self::Drone(DroneInfo::from_core(core_drone, item_info_modes))
     }
-    fn from_core_fighter(
-        core_fighter: &mut rc::FighterMut,
-        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
-    ) -> Self {
+    fn from_core_fighter(core_fighter: &mut rc::FighterMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
         Self::Fighter(FighterInfo::from_core(core_fighter, item_info_modes))
     }
     fn from_core_fw_effect(
@@ -90,10 +84,7 @@ impl ItemInfo {
     ) -> Self {
         Self::FwEffect(FwEffectInfo::from_core(core_fw_effect, item_info_modes))
     }
-    fn from_core_implant(
-        core_implant: &mut rc::ImplantMut,
-        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
-    ) -> Self {
+    fn from_core_implant(core_implant: &mut rc::ImplantMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
         Self::Implant(ImplantInfo::from_core(core_implant, item_info_modes))
     }
     fn from_core_module(core_module: &mut rc::ModuleMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
@@ -108,10 +99,7 @@ impl ItemInfo {
     fn from_core_rig(core_rig: &mut rc::RigMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
         Self::Rig(RigInfo::from_core(core_rig, item_info_modes))
     }
-    fn from_core_service(
-        core_service: &mut rc::ServiceMut,
-        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
-    ) -> Self {
+    fn from_core_service(core_service: &mut rc::ServiceMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {
         Self::Service(ServiceInfo::from_core(core_service, item_info_modes))
     }
     fn from_core_ship(core_ship: &mut rc::ShipMut, item_info_modes: &InfoModes<ItemInfoMode, ItemId>) -> Self {

@@ -3,9 +3,10 @@ use std::{collections::HashMap, hash::Hash};
 use crate::{CtlCmdResps, ctl::CtlCmdBr};
 
 // Representation form which is more convenient for use by info builders
+#[derive(Clone)]
 pub(in crate::info) struct InfoModes<M, I> {
-    default: M,
-    overrides: HashMap<I, M>,
+    pub(in crate::info) default: M,
+    pub(in crate::info) overrides: HashMap<I, M>,
 }
 impl<M, I> InfoModes<M, I> {
     pub(in crate::info) fn get(&self, id: &I) -> M
@@ -19,13 +20,24 @@ impl<M, I> InfoModes<M, I> {
         }
     }
 }
+impl<M, I> Default for InfoModes<M, I>
+where
+    M: Default,
+{
+    fn default() -> Self {
+        Self {
+            default: M::default(),
+            overrides: HashMap::new(),
+        }
+    }
+}
 
 // Representation form which is compact; should be used only when it is not directly usable by info
 // builders
 #[derive(Clone)]
 pub(in crate::info) struct InfoModesCompact<M, I> {
-    pub default: M,
-    pub overrides: Vec<(M, Vec<I>)>,
+    pub(in crate::info) default: M,
+    pub(in crate::info) overrides: Vec<(M, Vec<I>)>,
 }
 impl<M, I> Default for InfoModesCompact<M, I>
 where

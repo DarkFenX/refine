@@ -9,7 +9,7 @@ pub use item::{
     ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo,
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
-use mode::{InfoModesCompact, InfoModes};
+use mode::{InfoModes, InfoModesCompact};
 pub use sol::{SolInfo, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
 

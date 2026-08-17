@@ -1,7 +1,7 @@
 use crate::{
     CtlCmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     SolInfo, SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
-    info::{InfoModesCompact, InfoModes},
+    info::{InfoModes, InfoModesCompact},
 };
 
 // Core commands
@@ -9,11 +9,11 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: InfoModesCompact<FleetInfoMode, FleetId>,
+    fleet: InfoModes<FleetInfoMode, FleetId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: InfoModesCompact<FitInfoMode, FitId>,
+    fit: InfoModes<FitInfoMode, FitId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModesCompact<ItemInfoMode, ItemId>,
+    item: InfoModes<ItemInfoMode, ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -51,16 +51,20 @@ impl SolInfoCmd {
         self.fleet.default = mode;
         self
     }
-    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, item_ids: impl Iterator<Item = FleetId>) -> Self {
-        self.fleet.overrides.push((mode, item_ids.collect()));
+    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetId>) -> Self {
+        for fleet_id in fleet_ids {
+            self.fleet.overrides.insert(fleet_id, mode);
+        }
         self
     }
     pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
         self.fit.default = mode;
         self
     }
-    pub fn with_fit_overrides(mut self, mode: FitInfoMode, item_ids: impl Iterator<Item = FitId>) -> Self {
-        self.fit.overrides.push((mode, item_ids.collect()));
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitId>) -> Self {
+        for fit_id in fit_ids {
+            self.fit.overrides.insert(fit_id, mode);
+        }
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
@@ -68,7 +72,9 @@ impl SolInfoCmd {
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item.overrides.push((mode, item_ids.collect()));
+        for item_id in item_ids {
+            self.item.overrides.insert(item_id, mode);
+        }
         self
     }
 }
@@ -85,16 +91,16 @@ impl SolInfoCmdBr {
         self.fleet.default = mode;
         self
     }
-    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, item_ids: impl Iterator<Item = FleetIdBr>) -> Self {
-        self.fleet.overrides.push((mode, item_ids.collect()));
+    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetIdBr>) -> Self {
+        self.fleet.overrides.push((mode, fleet_ids.collect()));
         self
     }
     pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
         self.fit.default = mode;
         self
     }
-    pub fn with_fit_overrides(mut self, mode: FitInfoMode, item_ids: impl Iterator<Item = FitIdBr>) -> Self {
-        self.fit.overrides.push((mode, item_ids.collect()));
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+        self.fit.overrides.push((mode, fit_ids.collect()));
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
@@ -122,20 +128,14 @@ impl SolInfoCmd {
             src_alias,
             core_sol,
             self.shared.sol,
-            &InfoModes::from_compact(self.fleet),
-            &InfoModes::from_compact(self.fit),
-            &InfoModes::from_compact(self.item),
+            &self.fleet,
+            &self.fit,
+            &self.item,
         )
     }
 
     pub(crate) fn execute_into_info_ext(self, core_sol: &mut rc::SolarSystem) -> Option<SolInfoExt> {
-        SolInfoExt::try_from_core(
-            core_sol,
-            self.shared.sol,
-            &InfoModes::from_compact(self.fleet),
-            &InfoModes::from_compact(self.fit),
-            &InfoModes::from_compact(self.item),
-        )
+        SolInfoExt::try_from_core(core_sol, self.shared.sol, &self.fleet, &self.fit, &self.item)
     }
 }
 
