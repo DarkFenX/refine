@@ -49,19 +49,25 @@ pub(crate) async fn setup_server() {
     // HTTP routing
     let router = Router::new()
         .route("/", get(handlers::root))
+        // Data source handlers
         .route("/src/{alias}", post(handlers::add_source))
         .route("/src/{alias}", get(handlers::get_source))
         .route("/src/{alias}", delete(handlers::remove_source))
+        // Solar system handlers
         .route("/sol", post(handlers::add_sol))
         .route("/sol/{sol_id}", get(handlers::get_sol))
         .route("/sol/{sol_id}", patch(handlers::change_sol))
         .route("/sol/{sol_id}", delete(handlers::remove_sol))
         .route("/sol/{sol_id}/src", patch(handlers::switch_sol_src))
+        .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
+        .route("/sol/{sol_id}/batch", delete(handlers::batch_sol))
+        // Fleet handlers
         .route("/sol/{sol_id}/fleet", post(handlers::add_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", get(handlers::get_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", patch(handlers::change_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}", delete(handlers::remove_fleet))
         .route("/sol/{sol_id}/fleet/{fleet_id}/stats", post(handlers::get_fleet_stats))
+        // Fit handlers
         .route("/sol/{sol_id}/fit", post(handlers::add_fit))
         .route("/sol/{sol_id}/fit/{fit_id}", get(handlers::get_fit))
         .route("/sol/{sol_id}/fit/{fit_id}", patch(handlers::change_fit))
@@ -69,12 +75,13 @@ pub(crate) async fn setup_server() {
         .route("/sol/{sol_id}/fit/{fit_id}/stats", post(handlers::get_fit_stats))
         .route("/sol/{sol_id}/fit/{fit_id}/validate", post(handlers::validate_fit))
         .route("/sol/{sol_id}/fit/{fit_id}/try-items", post(handlers::try_fit_items))
+        .route("/sol/{sol_id}/fit/{fit_id}/batch", delete(handlers::batch_fit))
+        // Item handlers
         .route("/sol/{sol_id}/item", post(handlers::add_item))
         .route("/sol/{sol_id}/item/{item_id}", get(handlers::get_item))
         .route("/sol/{sol_id}/item/{item_id}", patch(handlers::change_item))
         .route("/sol/{sol_id}/item/{item_id}", delete(handlers::remove_item))
         .route("/sol/{sol_id}/item/{item_id}/stats", post(handlers::get_item_stats))
-        .route("/sol/{sol_id}/validate", post(handlers::validate_sol))
         // Development-related handlers
         .route("/sol/{sol_id}/check", get(handlers::dev_check_sol))
         .route("/sol/{sol_id}/benchmark", post(handlers::dev_benchmark_sol))
