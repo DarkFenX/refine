@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem<'_> {
-    #[tracing::instrument(name = "sol-bat", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-hyb", level = "trace", skip_all)]
     pub async fn hybrid_batch(&mut self, cmds: Vec<SolHybridCmdBr>) -> Result<CmdResps, SolHybridBatchError> {
         self.exec_standard_fallible(move |core_sol| {
             let mut cmd_resps = CmdResps::with_capacity(cmds.len());

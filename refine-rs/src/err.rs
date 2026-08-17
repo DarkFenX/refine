@@ -5,7 +5,7 @@ pub use rc::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
 pub use crate::api::ParseSolarSystemIdError;
 pub use crate::{
     api::{
-        FitChangeBatchError, FitChangeEnumFitInfoError, FitGetError, FleetGetError, ItemGetError, SolAddError,
+        FitChangeEnumFitInfoError, FitGetError, FitHybridBatchError, FleetGetError, ItemGetError, SolAddError,
         SolChangeEnumSolInfoError, SolGetError, SolHybridBatchError, SolRemoveError, SolSwitchSrcError,
     },
     ctl::{
@@ -27,7 +27,7 @@ pub use crate::{
         ProjEffectAddError, ProjEffectChangeError, RigChangeError, ServiceChangeError, ShipChangeError, SkillAddError,
         SkillChangeError, SolChangeEnumError, StanceChangeError, SubsystemChangeError, SwEffectChangeError,
     },
-    hybrid::SolHybridError,
+    hybrid::{FitHybridError, SolHybridError},
     shared::BrResolveError,
 };
 

@@ -693,13 +693,13 @@ impl From<rs::err::SolHybridBatchError> for ApiError {
         }
     }
 }
-impl From<rs::err::FitChangeBatchError> for ApiError {
-    fn from(err: rs::err::FitChangeBatchError) -> Self {
+impl From<rs::err::FitHybridBatchError> for ApiError {
+    fn from(err: rs::err::FitHybridBatchError) -> Self {
         match err {
-            rs::err::FitChangeBatchError::BrResolve(index, inner) => {
+            rs::err::FitHybridBatchError::BrResolve(index, inner) => {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
-            rs::err::FitChangeBatchError::CtlExec(index, inner) => {
+            rs::err::FitHybridBatchError::CtlExec(index, inner) => {
                 Self::FitBatch(ApiErrorIndexed { index, error: inner })
             }
         }
