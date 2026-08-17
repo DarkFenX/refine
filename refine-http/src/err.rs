@@ -78,7 +78,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     ItemChange(#[from] rs::err::ItemCtlError),
     #[error(transparent)]
-    ItemRemove(#[from] rs::err::CtlItemRemoveError),
+    ItemRemove(#[from] rs::err::ItemRemoveError),
 }
 
 #[derive(Serialize)]
@@ -612,9 +612,9 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "SWE-001")
                 }
             },
-            Self::ItemRemove(rs::err::CtlItemRemoveError(rs::err::ItemRemoveError::ItemRemove(
+            Self::ItemRemove(rs::err::ItemRemoveError::ItemRemove(
                 rs::err::core::RemoveItemError::UnremovableAutocharge,
-            ))) => (StatusCode::FORBIDDEN, "ACH-002"),
+            )) => (StatusCode::FORBIDDEN, "ACH-002"),
         }
     }
     fn get_cmd_index(&self) -> Option<usize> {

@@ -1,5 +1,4 @@
 pub use item::Item;
-pub use item_remove::CtlItemRemoveError;
 pub use sol_get_item::ItemGetError;
 
 mod item;

@@ -1,6 +1,6 @@
 pub use fit::{CtlFitChangeError, Fit, FitGetError, ValFitInfoArgs};
 pub use fleet::{Fleet, FleetGetError};
-pub use item::{CtlItemRemoveError, Item, ItemGetError};
+pub use item::{Item, ItemGetError};
 pub use refine::Refine;
 #[cfg(feature = "serde")]
 pub use sol::ParseSolarSystemIdError;
