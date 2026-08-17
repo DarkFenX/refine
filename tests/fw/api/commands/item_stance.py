@@ -44,7 +44,7 @@ class FitStanceSetCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_stance'
+        body['type'] = 'stance_set'
         return body
 
 
@@ -55,7 +55,7 @@ class SolStanceSetCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_stance'
+        body['type'] = 'stance_set'
         body['fit_id'] = self.fit_id
         return body
 
@@ -77,7 +77,7 @@ class FitStanceChangeCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_stance'
+        body['type'] = 'stance_change'
         return body
 
 
@@ -88,7 +88,7 @@ class SolStanceChangeViaItemIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_stance'
+        body['type'] = 'stance_change'
         body['item_id'] = self.item_id
         return body
 
@@ -100,7 +100,7 @@ class SolStanceChangeViaFitIdCmd(BaseStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_stance'
+        body['type'] = 'stance_change'
         body['fit_id'] = self.fit_id
         return body
 
@@ -113,7 +113,7 @@ class BaseStanceUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
-        return {'type': 'unset_stance'}
+        return {'type': 'stance_unset'}
 
 
 @dataclasses.dataclass(kw_only=True)

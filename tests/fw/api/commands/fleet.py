@@ -32,7 +32,7 @@ class SolFleetAddCmd(BaseFleetAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_fleet'
+        body['type'] = 'fleet_add'
         return body
 
 
@@ -64,7 +64,7 @@ class SolFleetChangeCmd(BaseFleetChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fleet'
+        body['type'] = 'fleet_change'
         body['fleet_id'] = self.fleet_id
         return body
 
@@ -79,6 +79,6 @@ class SolFleetRemoveCmd(BaseCommand):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'remove_fleet'
+        body['type'] = 'fleet_remove'
         body['fleet_id'] = self.fleet_id
         return body

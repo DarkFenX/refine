@@ -63,7 +63,7 @@ class FitDroneAddCmd(BaseDroneAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_drone'
+        body['type'] = 'drone_add'
         return body
 
 
@@ -74,7 +74,7 @@ class SolDroneAddCmd(BaseDroneAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_drone'
+        body['type'] = 'drone_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -113,7 +113,7 @@ class FitDroneChangeCmd(BaseDroneChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_drone'
+        body['type'] = 'drone_change'
         body['item_id'] = self.item_id
         return body
 
@@ -125,6 +125,6 @@ class SolDroneChangeCmd(BaseDroneChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_drone'
+        body['type'] = 'drone_change'
         body['item_id'] = self.item_id
         return body

@@ -41,7 +41,7 @@ class FitAutochargeChangeCmd(BaseAutochargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_autocharge'
+        body['type'] = 'autocharge_change'
         body['item_id'] = self.item_id
         return body
 
@@ -53,6 +53,6 @@ class SolAutochargeChangeCmd(BaseAutochargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_autocharge'
+        body['type'] = 'autocharge_change'
         body['item_id'] = self.item_id
         return body

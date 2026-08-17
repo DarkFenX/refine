@@ -44,7 +44,7 @@ class FitImplantAddCmd(BaseImplantCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_implant'
+        body['type'] = 'implant_add'
         return body
 
 
@@ -55,7 +55,7 @@ class SolImplantAddCmd(BaseImplantCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_implant'
+        body['type'] = 'implant_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -79,7 +79,7 @@ class FitImplantChangeCmd(BaseImplantCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_implant'
+        body['type'] = 'implant_change'
         body['item_id'] = self.item_id
         return body
 
@@ -91,6 +91,6 @@ class SolImplantChangeCmd(BaseImplantCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_implant'
+        body['type'] = 'implant_change'
         body['item_id'] = self.item_id
         return body

@@ -44,7 +44,7 @@ class FitFwEffectAddCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_fw_effect'
+        body['type'] = 'fw_effect_add'
         return body
 
 
@@ -55,7 +55,7 @@ class SolFwEffectAddCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_fw_effect'
+        body['type'] = 'fw_effect_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -79,7 +79,7 @@ class FitFwEffectChangeCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fw_effect'
+        body['type'] = 'fw_effect_change'
         body['item_id'] = self.item_id
         return body
 
@@ -91,6 +91,6 @@ class SolFwEffectChangeCmd(BaseFwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fw_effect'
+        body['type'] = 'fw_effect_change'
         body['item_id'] = self.item_id
         return body

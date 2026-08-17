@@ -45,69 +45,69 @@ use crate::{
 
 pub(crate) enum SolChangeEnumCmd {
     // Solar system
-    ChangeSol(SolChangeCmd),
+    SolChange(SolChangeCmd),
     // Fleet
-    AddFleet(FleetAddCmd),
-    ChangeFleet(FleetChangeCmdCtxFleet),
-    RemoveFleet(FleetRemoveCmdCtxFleet),
+    FleetAdd(FleetAddCmd),
+    FleetChange(FleetChangeCmdCtxFleet),
+    FleetRemove(FleetRemoveCmdCtxFleet),
     // Fit
-    AddFit(FitAddCmd),
-    ChangeFit(FitChangeCmdCtxFit),
-    RemoveFit(FitRemoveCmdCtxFit),
+    FitAdd(FitAddCmd),
+    FitChange(FitChangeCmdCtxFit),
+    FitRemove(FitRemoveCmdCtxFit),
     // Item
-    RemoveItem(ItemRemoveCmdCtxItem),
+    ItemRemove(ItemRemoveCmdCtxItem),
     // Item - autocharge
-    ChangeAutocharge(AutochargeChangeCmdCtxItem),
+    AutochargeChange(AutochargeChangeCmdCtxItem),
     // Item - booster
-    AddBooster(BoosterAddCmdCtxFit),
-    ChangeBooster(BoosterChangeCmdCtxItem),
+    BoosterAdd(BoosterAddCmdCtxFit),
+    BoosterChange(BoosterChangeCmdCtxItem),
     // Item - character
-    SetCharacter(CharacterSetCmdCtxFit),
-    ChangeCharacter(CharacterChangeCmdCtxAny),
-    UnsetCharacter(CharacterUnsetCmdCtxFit),
+    CharacterSet(CharacterSetCmdCtxFit),
+    CharacterChange(CharacterChangeCmdCtxAny),
+    CharacterUnset(CharacterUnsetCmdCtxFit),
     // Item - charge
-    ChangeCharge(ChargeChangeCmdCtxItem),
+    ChargeChange(ChargeChangeCmdCtxItem),
     // Item - drone
-    AddDrone(DroneAddCmdCtxFit),
-    ChangeDrone(DroneChangeCmdCtxItem),
+    DroneAdd(DroneAddCmdCtxFit),
+    DroneChange(DroneChangeCmdCtxItem),
     // Item - fighter
-    AddFighter(FighterAddCmdCtxFit),
-    ChangeFighter(FighterChangeCmdCtxItem),
+    FighterAdd(FighterAddCmdCtxFit),
+    FighterChange(FighterChangeCmdCtxItem),
     // Item - fit-wide effect
-    AddFwEffect(FwEffectAddCmdCtxFit),
-    ChangeFwEffect(FwEffectChangeCmdCtxItem),
+    FwEffectAdd(FwEffectAddCmdCtxFit),
+    FwEffectChange(FwEffectChangeCmdCtxItem),
     // Item - implant
-    AddImplant(ImplantAddCmdCtxFit),
-    ChangeImplant(ImplantChangeCmdCtxItem),
+    ImplantAdd(ImplantAddCmdCtxFit),
+    ImplantChange(ImplantChangeCmdCtxItem),
     // Item - module
-    AddModule(ModuleAddCmdCtxFit),
-    ChangeModule(ModuleChangeCmdCtxItem),
+    ModuleAdd(ModuleAddCmdCtxFit),
+    ModuleChange(ModuleChangeCmdCtxItem),
     // Item - projected effect
-    AddProjEffect(ProjEffectAddCmd),
-    ChangeProjEffect(ProjEffectChangeCmdCtxItem),
+    ProjEffectAdd(ProjEffectAddCmd),
+    ProjEffectChange(ProjEffectChangeCmdCtxItem),
     // Item - rig
-    AddRig(RigAddCmdCtxFit),
-    ChangeRig(RigChangeCmdCtxItem),
+    RigAdd(RigAddCmdCtxFit),
+    RigChange(RigChangeCmdCtxItem),
     // Item - service
-    AddService(ServiceAddCmdCtxFit),
-    ChangeService(ServiceChangeCmdCtxItem),
+    ServiceAdd(ServiceAddCmdCtxFit),
+    ServiceChange(ServiceChangeCmdCtxItem),
     // Item - ship
-    SetShip(ShipSetCmdCtxFit),
-    ChangeShip(ShipChangeCmdCtxAny),
-    UnsetShip(ShipUnsetCmdCtxFit),
+    ShipSet(ShipSetCmdCtxFit),
+    ShipChange(ShipChangeCmdCtxAny),
+    ShipUnset(ShipUnsetCmdCtxFit),
     // Item - skill
-    AddSkill(SkillAddCmdCtxFit),
-    ChangeSkill(SkillChangeCmdCtxItem),
+    SkillAdd(SkillAddCmdCtxFit),
+    SkillChange(SkillChangeCmdCtxItem),
     // Item - stance
-    SetStance(StanceSetCmdCtxFit),
-    ChangeStance(StanceChangeCmdCtxAny),
-    UnsetStance(StanceUnsetCmdCtxFit),
+    StanceSet(StanceSetCmdCtxFit),
+    StanceChange(StanceChangeCmdCtxAny),
+    StanceUnset(StanceUnsetCmdCtxFit),
     // Item - subsystem
-    AddSubsystem(SubsystemAddCmdCtxFit),
-    ChangeSubsystem(SubsystemChangeCmdCtxItem),
+    SubsystemAdd(SubsystemAddCmdCtxFit),
+    SubsystemChange(SubsystemChangeCmdCtxItem),
     // Item - system-wide effect
-    AddSwEffect(SwEffectAddCmd),
-    ChangeSwEffect(SwEffectChangeCmdCtxItem),
+    SwEffectAdd(SwEffectAddCmd),
+    SwEffectChange(SwEffectChangeCmdCtxItem),
 }
 
 #[cfg_attr(
@@ -117,69 +117,69 @@ pub(crate) enum SolChangeEnumCmd {
 )]
 pub enum SolChangeEnumCmdBr {
     // Solar system
-    ChangeSol(SolChangeCmd),
+    SolChange(SolChangeCmd),
     // Fleet
-    AddFleet(FleetAddCmdBr),
-    ChangeFleet(FleetChangeCmdCtxFleetBr),
-    RemoveFleet(FleetRemoveCmdCtxFleetBr),
+    FleetAdd(FleetAddCmdBr),
+    FleetChange(FleetChangeCmdCtxFleetBr),
+    FleetRemove(FleetRemoveCmdCtxFleetBr),
     // Fit
-    AddFit(FitAddCmdBr),
-    ChangeFit(FitChangeCmdCtxFitBr),
-    RemoveFit(FitRemoveCmdCtxFitBr),
+    FitAdd(FitAddCmdBr),
+    FitChange(FitChangeCmdCtxFitBr),
+    FitRemove(FitRemoveCmdCtxFitBr),
     // Item
-    RemoveItem(ItemRemoveCmdCtxItemBr),
+    ItemRemove(ItemRemoveCmdCtxItemBr),
     // Item - autocharge
-    ChangeAutocharge(AutochargeChangeCmdCtxItemBr),
+    AutochargeChange(AutochargeChangeCmdCtxItemBr),
     // Item - booster
-    AddBooster(BoosterAddCmdCtxFitBr),
-    ChangeBooster(BoosterChangeCmdCtxItemBr),
+    BoosterAdd(BoosterAddCmdCtxFitBr),
+    BoosterChange(BoosterChangeCmdCtxItemBr),
     // Item - character
-    SetCharacter(CharacterSetCmdCtxFitBr),
-    ChangeCharacter(CharacterChangeCmdCtxAnyBr),
-    UnsetCharacter(CharacterUnsetCmdCtxFitBr),
+    CharacterSet(CharacterSetCmdCtxFitBr),
+    CharacterChange(CharacterChangeCmdCtxAnyBr),
+    CharacterUnset(CharacterUnsetCmdCtxFitBr),
     // Item - charge
-    ChangeCharge(ChargeChangeCmdCtxItemBr),
+    ChargeChange(ChargeChangeCmdCtxItemBr),
     // Item - drone
-    AddDrone(DroneAddCmdCtxFitBr),
-    ChangeDrone(DroneChangeCmdCtxItemBr),
+    DroneAdd(DroneAddCmdCtxFitBr),
+    DroneChange(DroneChangeCmdCtxItemBr),
     // Item - fighter
-    AddFighter(FighterAddCmdCtxFitBr),
-    ChangeFighter(FighterChangeCmdCtxItemBr),
+    FighterAdd(FighterAddCmdCtxFitBr),
+    FighterChange(FighterChangeCmdCtxItemBr),
     // Item - fit-wide effect
-    AddFwEffect(FwEffectAddCmdCtxFitBr),
-    ChangeFwEffect(FwEffectChangeCmdCtxItemBr),
+    FwEffectAdd(FwEffectAddCmdCtxFitBr),
+    FwEffectChange(FwEffectChangeCmdCtxItemBr),
     // Item - implant
-    AddImplant(ImplantAddCmdCtxFitBr),
-    ChangeImplant(ImplantChangeCmdCtxItemBr),
+    ImplantAdd(ImplantAddCmdCtxFitBr),
+    ImplantChange(ImplantChangeCmdCtxItemBr),
     // Item - module
-    AddModule(ModuleAddCmdCtxFitBr),
-    ChangeModule(ModuleChangeCmdCtxItemBr),
+    ModuleAdd(ModuleAddCmdCtxFitBr),
+    ModuleChange(ModuleChangeCmdCtxItemBr),
     // Item - projected effect
-    AddProjEffect(ProjEffectAddCmdBr),
-    ChangeProjEffect(ProjEffectChangeCmdCtxItemBr),
+    ProjEffectAdd(ProjEffectAddCmdBr),
+    ProjEffectChange(ProjEffectChangeCmdCtxItemBr),
     // Item - rig
-    AddRig(RigAddCmdCtxFitBr),
-    ChangeRig(RigChangeCmdCtxItemBr),
+    RigAdd(RigAddCmdCtxFitBr),
+    RigChange(RigChangeCmdCtxItemBr),
     // Item - service
-    AddService(ServiceAddCmdCtxFitBr),
-    ChangeService(ServiceChangeCmdCtxItemBr),
+    ServiceAdd(ServiceAddCmdCtxFitBr),
+    ServiceChange(ServiceChangeCmdCtxItemBr),
     // Item - ship
-    SetShip(ShipSetCmdCtxFitBr),
-    ChangeShip(ShipChangeCmdCtxAnyBr),
-    UnsetShip(ShipUnsetCmdCtxFitBr),
+    ShipSet(ShipSetCmdCtxFitBr),
+    ShipChange(ShipChangeCmdCtxAnyBr),
+    ShipUnset(ShipUnsetCmdCtxFitBr),
     // Item - skill
-    AddSkill(SkillAddCmdCtxFitBr),
-    ChangeSkill(SkillChangeCmdCtxItemBr),
+    SkillAdd(SkillAddCmdCtxFitBr),
+    SkillChange(SkillChangeCmdCtxItemBr),
     // Item - stance
-    SetStance(StanceSetCmdCtxFitBr),
-    ChangeStance(StanceChangeCmdCtxAnyBr),
-    UnsetStance(StanceUnsetCmdCtxFitBr),
+    StanceSet(StanceSetCmdCtxFitBr),
+    StanceChange(StanceChangeCmdCtxAnyBr),
+    StanceUnset(StanceUnsetCmdCtxFitBr),
     // Item - subsystem
-    AddSubsystem(SubsystemAddCmdCtxFitBr),
-    ChangeSubsystem(SubsystemChangeCmdCtxItemBr),
+    SubsystemAdd(SubsystemAddCmdCtxFitBr),
+    SubsystemChange(SubsystemChangeCmdCtxItemBr),
     // Item - system-wide effect
-    AddSwEffect(SwEffectAddCmd),
-    ChangeSwEffect(SwEffectChangeCmdCtxItemBr),
+    SwEffectAdd(SwEffectAddCmd),
+    SwEffectChange(SwEffectChangeCmdCtxItemBr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -188,306 +188,306 @@ pub enum SolChangeEnumCmdBr {
 // Solar system
 impl SolChangeCmd {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeSol(self)
+        SolChangeEnumCmdBr::SolChange(self)
     }
 }
 // Fleet
 impl FleetAddCmd {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFleet(self.into_br())
+        SolChangeEnumCmdBr::FleetAdd(self.into_br())
     }
 }
 impl FleetAddCmdBr {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFleet(self)
+        SolChangeEnumCmdBr::FleetAdd(self)
     }
 }
 impl FleetChangeCmd {
     pub fn into_sol_br(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFleet(self.into_ctx_fleet_br(fleet_id))
+        SolChangeEnumCmdBr::FleetChange(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FleetChangeCmdBr {
     pub fn into_sol_br(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFleet(self.into_ctx_fleet_br(fleet_id))
+        SolChangeEnumCmdBr::FleetChange(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FleetRemoveCmd {
     pub fn into_sol_br(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::RemoveFleet(self.into_ctx_fleet_br(fleet_id))
+        SolChangeEnumCmdBr::FleetRemove(self.into_ctx_fleet_br(fleet_id))
     }
 }
 // Fit
 impl FitAddCmd {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFit(self.into_br())
+        SolChangeEnumCmdBr::FitAdd(self.into_br())
     }
 }
 impl FitAddCmdBr {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFit(self)
+        SolChangeEnumCmdBr::FitAdd(self)
     }
 }
 impl FitChangeCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFit(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::FitChange(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitChangeCmdBr {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFit(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::FitChange(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitRemoveCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::RemoveFit(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::FitRemove(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item
 impl ItemRemoveCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::RemoveItem(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ItemRemove(self.into_ctx_item_br(item_id))
     }
 }
 // Item - autocharge
 impl AutochargeChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeAutocharge(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::AutochargeChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - booster
 impl BoosterAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddBooster(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::BoosterAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl BoosterChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeBooster(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::BoosterChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - character
 impl CharacterSetCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::SetCharacter(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::CharacterSet(self.into_ctx_fit_br(fit_id))
     }
 }
 impl CharacterChangeCmd {
     pub fn into_sol_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeCharacter(self.into_ctx_br_via_fit(fit_id))
+        SolChangeEnumCmdBr::CharacterChange(self.into_ctx_br_via_fit(fit_id))
     }
     pub fn into_sol_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeCharacter(self.into_ctx_br_via_item(item_id))
+        SolChangeEnumCmdBr::CharacterChange(self.into_ctx_br_via_item(item_id))
     }
 }
 impl CharacterUnsetCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::UnsetCharacter(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::CharacterUnset(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - charge
 impl ChargeChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeCharge(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ChargeChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - drone
 impl DroneAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddDrone(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::DroneAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl DroneAddCmdBr {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddDrone(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::DroneAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl DroneChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeDrone(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::DroneChange(self.into_ctx_item_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeDrone(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::DroneChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fighter
 impl FighterAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFighter(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::FighterAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FighterAddCmdBr {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFighter(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::FighterAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FighterChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFighter(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::FighterChange(self.into_ctx_item_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFighter(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::FighterChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - fit-wide effect
 impl FwEffectAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddFwEffect(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::FwEffectAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FwEffectChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeFwEffect(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::FwEffectChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - implant
 impl ImplantAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddImplant(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ImplantAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ImplantChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeImplant(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ImplantChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - module
 impl ModuleAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddModule(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ModuleAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ModuleAddCmdBr {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddModule(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ModuleAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ModuleChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeModule(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeModule(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - projected effect
 impl ProjEffectAddCmd {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddProjEffect(self.into_br())
+        SolChangeEnumCmdBr::ProjEffectAdd(self.into_br())
     }
 }
 impl ProjEffectAddCmdBr {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddProjEffect(self)
+        SolChangeEnumCmdBr::ProjEffectAdd(self)
     }
 }
 impl ProjEffectChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeProjEffect(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ProjEffectChange(self.into_ctx_item_br(item_id))
     }
 }
 impl ProjEffectChangeCmdBr {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeProjEffect(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ProjEffectChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - rig
 impl RigAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddRig(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::RigAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl RigChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeRig(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::RigChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - service
 impl ServiceAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddService(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ServiceAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ServiceChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeService(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::ServiceChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - ship
 impl ShipSetCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::SetShip(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ShipSet(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ShipChangeCmd {
     pub fn into_sol_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeShip(self.into_ctx_br_via_fit(fit_id))
+        SolChangeEnumCmdBr::ShipChange(self.into_ctx_br_via_fit(fit_id))
     }
     pub fn into_sol_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeShip(self.into_ctx_br_via_item(item_id))
+        SolChangeEnumCmdBr::ShipChange(self.into_ctx_br_via_item(item_id))
     }
 }
 impl ShipUnsetCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::UnsetShip(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::ShipUnset(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - skill
 impl SkillAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddSkill(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::SkillAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl SkillChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeSkill(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::SkillChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - stance
 impl StanceSetCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::SetStance(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::StanceSet(self.into_ctx_fit_br(fit_id))
     }
 }
 impl StanceChangeCmd {
     pub fn into_sol_br_via_fit(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeStance(self.into_ctx_br_via_fit(fit_id))
+        SolChangeEnumCmdBr::StanceChange(self.into_ctx_br_via_fit(fit_id))
     }
     pub fn into_sol_br_via_item(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeStance(self.into_ctx_br_via_item(item_id))
+        SolChangeEnumCmdBr::StanceChange(self.into_ctx_br_via_item(item_id))
     }
 }
 impl StanceUnsetCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::UnsetStance(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::StanceUnset(self.into_ctx_fit_br(fit_id))
     }
 }
 // Item - subsystem
 impl SubsystemAddCmd {
     pub fn into_sol_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddSubsystem(self.into_ctx_fit_br(fit_id))
+        SolChangeEnumCmdBr::SubsystemAdd(self.into_ctx_fit_br(fit_id))
     }
 }
 impl SubsystemChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeSubsystem(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::SubsystemChange(self.into_ctx_item_br(item_id))
     }
 }
 // Item - system-wide effect
 impl SwEffectAddCmd {
     pub fn into_sol_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::AddSwEffect(self)
+        SolChangeEnumCmdBr::SwEffectAdd(self)
     }
 }
 impl SwEffectChangeCmd {
     pub fn into_sol_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ChangeSwEffect(self.into_ctx_item_br(item_id))
+        SolChangeEnumCmdBr::SwEffectChange(self.into_ctx_item_br(item_id))
     }
 }
 
@@ -498,69 +498,69 @@ impl SolChangeEnumCmdBr {
     pub(crate) fn render(self, resps: &CtlCmdResps) -> Result<SolChangeEnumCmd, BackrefRenderError> {
         Ok(match self {
             // Solar system
-            Self::ChangeSol(cmd) => SolChangeEnumCmd::ChangeSol(cmd),
+            Self::SolChange(cmd) => SolChangeEnumCmd::SolChange(cmd),
             // Fleet
-            Self::AddFleet(cmd) => SolChangeEnumCmd::AddFleet(cmd.render(resps)?),
-            Self::ChangeFleet(cmd) => SolChangeEnumCmd::ChangeFleet(cmd.render(resps)?),
-            Self::RemoveFleet(cmd) => SolChangeEnumCmd::RemoveFleet(cmd.render(resps)?),
+            Self::FleetAdd(cmd) => SolChangeEnumCmd::FleetAdd(cmd.render(resps)?),
+            Self::FleetChange(cmd) => SolChangeEnumCmd::FleetChange(cmd.render(resps)?),
+            Self::FleetRemove(cmd) => SolChangeEnumCmd::FleetRemove(cmd.render(resps)?),
             // Fit
-            Self::AddFit(cmd) => SolChangeEnumCmd::AddFit(cmd.render(resps)?),
-            Self::ChangeFit(cmd) => SolChangeEnumCmd::ChangeFit(cmd.render(resps)?),
-            Self::RemoveFit(cmd) => SolChangeEnumCmd::RemoveFit(cmd.render(resps)?),
+            Self::FitAdd(cmd) => SolChangeEnumCmd::FitAdd(cmd.render(resps)?),
+            Self::FitChange(cmd) => SolChangeEnumCmd::FitChange(cmd.render(resps)?),
+            Self::FitRemove(cmd) => SolChangeEnumCmd::FitRemove(cmd.render(resps)?),
             // Item
-            Self::RemoveItem(cmd) => SolChangeEnumCmd::RemoveItem(cmd.render(resps)?),
+            Self::ItemRemove(cmd) => SolChangeEnumCmd::ItemRemove(cmd.render(resps)?),
             // Item - autocharge
-            Self::ChangeAutocharge(cmd) => SolChangeEnumCmd::ChangeAutocharge(cmd.render(resps)?),
+            Self::AutochargeChange(cmd) => SolChangeEnumCmd::AutochargeChange(cmd.render(resps)?),
             // Item - booster
-            Self::AddBooster(cmd) => SolChangeEnumCmd::AddBooster(cmd.render(resps)?),
-            Self::ChangeBooster(cmd) => SolChangeEnumCmd::ChangeBooster(cmd.render(resps)?),
+            Self::BoosterAdd(cmd) => SolChangeEnumCmd::BoosterAdd(cmd.render(resps)?),
+            Self::BoosterChange(cmd) => SolChangeEnumCmd::BoosterChange(cmd.render(resps)?),
             // Item - character
-            Self::SetCharacter(cmd) => SolChangeEnumCmd::SetCharacter(cmd.render(resps)?),
-            Self::ChangeCharacter(cmd) => SolChangeEnumCmd::ChangeCharacter(cmd.render(resps)?),
-            Self::UnsetCharacter(cmd) => SolChangeEnumCmd::UnsetCharacter(cmd.render(resps)?),
+            Self::CharacterSet(cmd) => SolChangeEnumCmd::CharacterSet(cmd.render(resps)?),
+            Self::CharacterChange(cmd) => SolChangeEnumCmd::CharacterChange(cmd.render(resps)?),
+            Self::CharacterUnset(cmd) => SolChangeEnumCmd::CharacterUnset(cmd.render(resps)?),
             // Item - charge
-            Self::ChangeCharge(cmd) => SolChangeEnumCmd::ChangeCharge(cmd.render(resps)?),
+            Self::ChargeChange(cmd) => SolChangeEnumCmd::ChargeChange(cmd.render(resps)?),
             // Item - drone
-            Self::AddDrone(cmd) => SolChangeEnumCmd::AddDrone(cmd.render(resps)?),
-            Self::ChangeDrone(cmd) => SolChangeEnumCmd::ChangeDrone(cmd.render(resps)?),
+            Self::DroneAdd(cmd) => SolChangeEnumCmd::DroneAdd(cmd.render(resps)?),
+            Self::DroneChange(cmd) => SolChangeEnumCmd::DroneChange(cmd.render(resps)?),
             // Item - fighter
-            Self::AddFighter(cmd) => SolChangeEnumCmd::AddFighter(cmd.render(resps)?),
-            Self::ChangeFighter(cmd) => SolChangeEnumCmd::ChangeFighter(cmd.render(resps)?),
+            Self::FighterAdd(cmd) => SolChangeEnumCmd::FighterAdd(cmd.render(resps)?),
+            Self::FighterChange(cmd) => SolChangeEnumCmd::FighterChange(cmd.render(resps)?),
             // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => SolChangeEnumCmd::AddFwEffect(cmd.render(resps)?),
-            Self::ChangeFwEffect(cmd) => SolChangeEnumCmd::ChangeFwEffect(cmd.render(resps)?),
+            Self::FwEffectAdd(cmd) => SolChangeEnumCmd::FwEffectAdd(cmd.render(resps)?),
+            Self::FwEffectChange(cmd) => SolChangeEnumCmd::FwEffectChange(cmd.render(resps)?),
             // Item - implant
-            Self::AddImplant(cmd) => SolChangeEnumCmd::AddImplant(cmd.render(resps)?),
-            Self::ChangeImplant(cmd) => SolChangeEnumCmd::ChangeImplant(cmd.render(resps)?),
+            Self::ImplantAdd(cmd) => SolChangeEnumCmd::ImplantAdd(cmd.render(resps)?),
+            Self::ImplantChange(cmd) => SolChangeEnumCmd::ImplantChange(cmd.render(resps)?),
             // Item - module
-            Self::AddModule(cmd) => SolChangeEnumCmd::AddModule(cmd.render(resps)?),
-            Self::ChangeModule(cmd) => SolChangeEnumCmd::ChangeModule(cmd.render(resps)?),
+            Self::ModuleAdd(cmd) => SolChangeEnumCmd::ModuleAdd(cmd.render(resps)?),
+            Self::ModuleChange(cmd) => SolChangeEnumCmd::ModuleChange(cmd.render(resps)?),
             // Item - projected effect
-            Self::AddProjEffect(cmd) => SolChangeEnumCmd::AddProjEffect(cmd.render(resps)?),
-            Self::ChangeProjEffect(cmd) => SolChangeEnumCmd::ChangeProjEffect(cmd.render(resps)?),
+            Self::ProjEffectAdd(cmd) => SolChangeEnumCmd::ProjEffectAdd(cmd.render(resps)?),
+            Self::ProjEffectChange(cmd) => SolChangeEnumCmd::ProjEffectChange(cmd.render(resps)?),
             // Item - rig
-            Self::AddRig(cmd) => SolChangeEnumCmd::AddRig(cmd.render(resps)?),
-            Self::ChangeRig(cmd) => SolChangeEnumCmd::ChangeRig(cmd.render(resps)?),
+            Self::RigAdd(cmd) => SolChangeEnumCmd::RigAdd(cmd.render(resps)?),
+            Self::RigChange(cmd) => SolChangeEnumCmd::RigChange(cmd.render(resps)?),
             // Item - service
-            Self::AddService(cmd) => SolChangeEnumCmd::AddService(cmd.render(resps)?),
-            Self::ChangeService(cmd) => SolChangeEnumCmd::ChangeService(cmd.render(resps)?),
+            Self::ServiceAdd(cmd) => SolChangeEnumCmd::ServiceAdd(cmd.render(resps)?),
+            Self::ServiceChange(cmd) => SolChangeEnumCmd::ServiceChange(cmd.render(resps)?),
             // Item - ship
-            Self::SetShip(cmd) => SolChangeEnumCmd::SetShip(cmd.render(resps)?),
-            Self::ChangeShip(cmd) => SolChangeEnumCmd::ChangeShip(cmd.render(resps)?),
-            Self::UnsetShip(cmd) => SolChangeEnumCmd::UnsetShip(cmd.render(resps)?),
+            Self::ShipSet(cmd) => SolChangeEnumCmd::ShipSet(cmd.render(resps)?),
+            Self::ShipChange(cmd) => SolChangeEnumCmd::ShipChange(cmd.render(resps)?),
+            Self::ShipUnset(cmd) => SolChangeEnumCmd::ShipUnset(cmd.render(resps)?),
             // Item - skill
-            Self::AddSkill(cmd) => SolChangeEnumCmd::AddSkill(cmd.render(resps)?),
-            Self::ChangeSkill(cmd) => SolChangeEnumCmd::ChangeSkill(cmd.render(resps)?),
+            Self::SkillAdd(cmd) => SolChangeEnumCmd::SkillAdd(cmd.render(resps)?),
+            Self::SkillChange(cmd) => SolChangeEnumCmd::SkillChange(cmd.render(resps)?),
             // Item - stance
-            Self::SetStance(cmd) => SolChangeEnumCmd::SetStance(cmd.render(resps)?),
-            Self::ChangeStance(cmd) => SolChangeEnumCmd::ChangeStance(cmd.render(resps)?),
-            Self::UnsetStance(cmd) => SolChangeEnumCmd::UnsetStance(cmd.render(resps)?),
+            Self::StanceSet(cmd) => SolChangeEnumCmd::StanceSet(cmd.render(resps)?),
+            Self::StanceChange(cmd) => SolChangeEnumCmd::StanceChange(cmd.render(resps)?),
+            Self::StanceUnset(cmd) => SolChangeEnumCmd::StanceUnset(cmd.render(resps)?),
             // Item - subsystem
-            Self::AddSubsystem(cmd) => SolChangeEnumCmd::AddSubsystem(cmd.render(resps)?),
-            Self::ChangeSubsystem(cmd) => SolChangeEnumCmd::ChangeSubsystem(cmd.render(resps)?),
+            Self::SubsystemAdd(cmd) => SolChangeEnumCmd::SubsystemAdd(cmd.render(resps)?),
+            Self::SubsystemChange(cmd) => SolChangeEnumCmd::SubsystemChange(cmd.render(resps)?),
             // Item - system-wide effect
-            Self::AddSwEffect(cmd) => SolChangeEnumCmd::AddSwEffect(cmd),
-            Self::ChangeSwEffect(cmd) => SolChangeEnumCmd::ChangeSwEffect(cmd.render(resps)?),
+            Self::SwEffectAdd(cmd) => SolChangeEnumCmd::SwEffectAdd(cmd),
+            Self::SwEffectChange(cmd) => SolChangeEnumCmd::SwEffectChange(cmd.render(resps)?),
         })
     }
 }
@@ -573,69 +573,69 @@ impl SolChangeEnumCmd {
         match self {
             // Solar system
             #[expect(clippy::unit_arg)]
-            Self::ChangeSol(cmd) => Ok(cmd.execute(core_sol).into()),
+            Self::SolChange(cmd) => Ok(cmd.execute(core_sol).into()),
             // Fleet
-            Self::AddFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::RemoveFleet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FleetAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FleetChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FleetRemove(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Fit
-            Self::AddFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::RemoveFit(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FitAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FitChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FitRemove(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item
-            Self::RemoveItem(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ItemRemove(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - autocharge
-            Self::ChangeAutocharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::AutochargeChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - booster
-            Self::AddBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeBooster(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::BoosterAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::BoosterChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - character
-            Self::SetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::UnsetCharacter(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::CharacterSet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::CharacterChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::CharacterUnset(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - charge
-            Self::ChangeCharge(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ChargeChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - drone
-            Self::AddDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeDrone(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::DroneAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::DroneChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fighter
-            Self::AddFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFighter(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FighterAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FighterChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - fit-wide effect
-            Self::AddFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeFwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FwEffectAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::FwEffectChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - implant
-            Self::AddImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeImplant(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ImplantAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ImplantChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - module
-            Self::AddModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeModule(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ModuleAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ModuleChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - projected effect
-            Self::AddProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeProjEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ProjEffectAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ProjEffectChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - rig
-            Self::AddRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeRig(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RigAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::RigChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - service
-            Self::AddService(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeService(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ServiceAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ServiceChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - ship
-            Self::SetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::UnsetShip(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ShipSet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ShipChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::ShipUnset(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - skill
-            Self::AddSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeSkill(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SkillAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SkillChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - stance
-            Self::SetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::UnsetStance(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::StanceSet(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::StanceChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::StanceUnset(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - subsystem
-            Self::AddSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
-            Self::ChangeSubsystem(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SubsystemAdd(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SubsystemChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
             // Item - system-wide effect
-            Self::AddSwEffect(cmd) => Ok(cmd.execute(core_sol).into()),
-            Self::ChangeSwEffect(cmd) => Ok(cmd.execute(core_sol)?.into()),
+            Self::SwEffectAdd(cmd) => Ok(cmd.execute(core_sol).into()),
+            Self::SwEffectChange(cmd) => Ok(cmd.execute(core_sol)?.into()),
         }
     }
 }

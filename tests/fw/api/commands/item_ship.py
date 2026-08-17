@@ -48,7 +48,7 @@ class FitShipSetCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_ship'
+        body['type'] = 'ship_set'
         return body
 
 
@@ -59,7 +59,7 @@ class SolShipSetCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_ship'
+        body['type'] = 'ship_set'
         body['fit_id'] = self.fit_id
         return body
 
@@ -81,7 +81,7 @@ class FitShipChangeCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_ship'
+        body['type'] = 'ship_change'
         return body
 
 
@@ -92,7 +92,7 @@ class SolShipChangeViaItemIdCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_ship'
+        body['type'] = 'ship_change'
         body['item_id'] = self.item_id
         return body
 
@@ -104,7 +104,7 @@ class SolShipChangeViaFitIdCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_ship'
+        body['type'] = 'ship_change'
         body['fit_id'] = self.fit_id
         return body
 
@@ -117,7 +117,7 @@ class BaseShipUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
-        return {'type': 'unset_ship'}
+        return {'type': 'ship_unset'}
 
 
 @dataclasses.dataclass(kw_only=True)

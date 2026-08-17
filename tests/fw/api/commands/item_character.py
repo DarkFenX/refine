@@ -44,7 +44,7 @@ class FitCharacterSetCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_character'
+        body['type'] = 'character_set'
         return body
 
 
@@ -55,7 +55,7 @@ class SolCharacterSetCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'set_character'
+        body['type'] = 'character_set'
         body['fit_id'] = self.fit_id
         return body
 
@@ -77,7 +77,7 @@ class FitCharacterChangeCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_character'
+        body['type'] = 'character_change'
         return body
 
 
@@ -88,7 +88,7 @@ class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_character'
+        body['type'] = 'character_change'
         body['item_id'] = self.item_id
         return body
 
@@ -100,7 +100,7 @@ class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_character'
+        body['type'] = 'character_change'
         body['fit_id'] = self.fit_id
         return body
 
@@ -113,7 +113,7 @@ class BaseCharacterUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
-        return {'type': 'unset_character'}
+        return {'type': 'character_unset'}
 
 
 @dataclasses.dataclass(kw_only=True)

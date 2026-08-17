@@ -65,7 +65,7 @@ class FitFighterAddCmd(BaseFighterAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_fighter'
+        body['type'] = 'fighter_add'
         return body
 
 
@@ -76,7 +76,7 @@ class SolFighterAddCmd(BaseFighterAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_fighter'
+        body['type'] = 'fighter_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -113,7 +113,7 @@ class FitFighterChangeCmd(BaseFighterChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fighter'
+        body['type'] = 'fighter_change'
         body['item_id'] = self.item_id
         return body
 
@@ -125,6 +125,6 @@ class SolFighterChangeCmd(BaseFighterChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fighter'
+        body['type'] = 'fighter_change'
         body['item_id'] = self.item_id
         return body

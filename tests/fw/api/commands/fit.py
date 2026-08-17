@@ -32,7 +32,7 @@ class SolFitAddCmd(BaseFitCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_fit'
+        body['type'] = 'fit_add'
         return body
 
 
@@ -49,7 +49,7 @@ class FitFitChangeCmd(BaseFitCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fit'
+        body['type'] = 'fit_change'
         return body
 
 
@@ -60,7 +60,7 @@ class SolFitChangeCmd(BaseFitCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_fit'
+        body['type'] = 'fit_change'
         body['fit_id'] = self.fit_id
         return body
 
@@ -75,6 +75,6 @@ class SolFitRemoveCmd(BaseCommand):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'remove_fit'
+        body['type'] = 'fit_remove'
         body['fit_id'] = self.fit_id
         return body

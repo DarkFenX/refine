@@ -52,7 +52,7 @@ class SolProjEffectAddCmd(BaseProjEffectAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_proj_effect'
+        body['type'] = 'proj_effect_add'
         return body
 
 
@@ -88,6 +88,6 @@ class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_proj_effect'
+        body['type'] = 'proj_effect_change'
         body['item_id'] = self.item_id
         return body

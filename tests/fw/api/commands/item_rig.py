@@ -44,7 +44,7 @@ class FitRigAddCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_rig'
+        body['type'] = 'rig_add'
         return body
 
 
@@ -55,7 +55,7 @@ class SolRigAddCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_rig'
+        body['type'] = 'rig_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -79,7 +79,7 @@ class FitRigChangeCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_rig'
+        body['type'] = 'rig_change'
         body['item_id'] = self.item_id
         return body
 
@@ -91,6 +91,6 @@ class SolRigChangeCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_rig'
+        body['type'] = 'rig_change'
         body['item_id'] = self.item_id
         return body

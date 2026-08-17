@@ -41,7 +41,7 @@ class SolSwEffectAddCmd(BaseSwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_sw_effect'
+        body['type'] = 'sw_effect_add'
         return body
 
 
@@ -64,6 +64,6 @@ class SolSwEffectChangeCmd(BaseSwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_sw_effect'
+        body['type'] = 'sw_effect_change'
         body['item_id'] = self.item_id
         return body

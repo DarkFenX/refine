@@ -34,7 +34,7 @@ class FitItemRemoveCmd(BaseItemRemoveCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'remove_item'
+        body['type'] = 'item_remove'
         body['item_id'] = self.item_id
         return body
 
@@ -46,6 +46,6 @@ class SolItemRemoveCmd(BaseItemRemoveCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'remove_item'
+        body['type'] = 'item_remove'
         body['item_id'] = self.item_id
         return body

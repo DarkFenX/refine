@@ -46,7 +46,7 @@ class FitBoosterAddCmd(BaseBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_booster'
+        body['type'] = 'booster_add'
         return body
 
 
@@ -57,7 +57,7 @@ class SolBoosterAddCmd(BaseBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_booster'
+        body['type'] = 'booster_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -81,7 +81,7 @@ class FitBoosterChangeCmd(BaseBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_booster'
+        body['type'] = 'booster_change'
         body['item_id'] = self.item_id
         return body
 
@@ -93,6 +93,6 @@ class SolBoosterChangeCmd(BaseBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_booster'
+        body['type'] = 'booster_change'
         body['item_id'] = self.item_id
         return body

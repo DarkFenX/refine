@@ -67,7 +67,7 @@ class FitModuleAddCmd(BaseModuleAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_module'
+        body['type'] = 'module_add'
         return body
 
 
@@ -78,7 +78,7 @@ class SolModuleAddCmd(BaseModuleAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_module'
+        body['type'] = 'module_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -119,7 +119,7 @@ class FitModuleChangeCmd(BaseModuleChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_module'
+        body['type'] = 'module_change'
         body['item_id'] = self.item_id
         return body
 
@@ -131,6 +131,6 @@ class SolModuleChangeCmd(BaseModuleChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_module'
+        body['type'] = 'module_change'
         body['item_id'] = self.item_id
         return body

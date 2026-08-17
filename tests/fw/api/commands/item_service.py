@@ -44,7 +44,7 @@ class FitServiceAddCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_service'
+        body['type'] = 'service_add'
         return body
 
 
@@ -55,7 +55,7 @@ class SolServiceAddCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_service'
+        body['type'] = 'service_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -79,7 +79,7 @@ class FitServiceChangeCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_service'
+        body['type'] = 'service_change'
         body['item_id'] = self.item_id
         return body
 
@@ -91,6 +91,6 @@ class SolServiceChangeCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_service'
+        body['type'] = 'service_change'
         body['item_id'] = self.item_id
         return body

@@ -44,7 +44,7 @@ class FitSubsystemAddCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_subsystem'
+        body['type'] = 'subsystem_add'
         return body
 
 
@@ -55,7 +55,7 @@ class SolSubsystemAddCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'add_subsystem'
+        body['type'] = 'subsystem_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -79,7 +79,7 @@ class FitSubsystemChangeCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_subsystem'
+        body['type'] = 'subsystem_change'
         body['item_id'] = self.item_id
         return body
 
@@ -91,6 +91,6 @@ class SolSubsystemChangeCmd(BaseSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'change_subsystem'
+        body['type'] = 'subsystem_change'
         body['item_id'] = self.item_id
         return body
