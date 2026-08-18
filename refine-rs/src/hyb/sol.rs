@@ -11,6 +11,7 @@ use crate::{
     err::{BrResolveError, SolChangeEnumError, SolInfoEnumError},
     info::SolInfoEnumCmd,
     svc::SolCtx,
+    trial::{FitTryItemsCmdBr, SolTryItemsEnumCmd, SolTryItemsEnumCmdBr, err::SolTryItemsEnumError},
     val::{FitValCmdBr, SolValCmdBr, SolValEnumCmd, SolValEnumCmdBr, err::SolValEnumError},
 };
 
@@ -19,6 +20,7 @@ pub(crate) enum SolHybridCmd {
     Ctl(SolChangeEnumCmd),
     Info(SolInfoEnumCmd),
     Val(SolValEnumCmd),
+    TryItems(SolTryItemsEnumCmd),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
@@ -27,6 +29,7 @@ pub enum SolHybridCmdBr {
     Ctl(SolChangeEnumCmdBr),
     Info(SolInfoEnumCmdBr),
     Val(SolValEnumCmdBr),
+    TryItems(SolTryItemsEnumCmdBr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -309,6 +312,12 @@ impl FitValCmdBr {
         SolHybridCmdBr::Val(self.into_sol_val_br(fit_id))
     }
 }
+// Try items
+impl FitTryItemsCmdBr {
+    pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::TryItems(self.into_sol_try_br(fit_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
@@ -319,6 +328,7 @@ impl SolHybridCmdBr {
             Self::Ctl(ctl_cmd) => SolHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => SolHybridCmd::Info(info_cmd.br_resolve(resps)?),
             Self::Val(info_cmd) => SolHybridCmd::Val(info_cmd.br_resolve(resps)?),
+            Self::TryItems(info_cmd) => SolHybridCmd::TryItems(info_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -332,6 +342,7 @@ impl SolHybridCmd {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
             Self::Info(info_cmd) => info_cmd.execute(ctx, core_sol)?,
             Self::Val(info_cmd) => info_cmd.execute(core_sol)?,
+            Self::TryItems(info_cmd) => info_cmd.execute(core_sol)?,
         })
     }
 }
@@ -344,4 +355,6 @@ pub enum SolHybridError {
     Info(#[from] SolInfoEnumError),
     #[error(transparent)]
     Val(#[from] SolValEnumError),
+    #[error(transparent)]
+    TryItems(#[from] SolTryItemsEnumError),
 }

@@ -117,13 +117,13 @@ impl FitTryItemsCmdCtxFit {
     pub(in crate::trial) fn execute(
         self,
         core_sol: &mut rc::SolarSystem,
-    ) -> Result<Vec<ItemTypeId>, FitGetFitValError> {
+    ) -> Result<Vec<ItemTypeId>, FitGetFitTryItemsError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }
 }
 #[derive(thiserror::Error, Debug)]
-pub enum FitGetFitValError {
+pub enum FitGetFitTryItemsError {
     #[error(transparent)]
     FitGet(#[from] rc::err::GetFitError),
 }

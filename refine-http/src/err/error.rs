@@ -58,6 +58,8 @@ pub(crate) enum ApiError {
     SolBatchInfo(ApiErrorIndexed<rs::err::SolInfoEnumError>),
     #[error(transparent)]
     SolBatchVal(ApiErrorIndexed<rs::val::err::SolValEnumError>),
+    #[error(transparent)]
+    SolBatchTryItems(ApiErrorIndexed<rs::trial::err::SolTryItemsEnumError>),
     // Fleet-related
     #[error(transparent)]
     PathFleetParse(#[from] rs::err::ParseFleetIdError),
@@ -128,6 +130,9 @@ impl From<rs::err::SolHybridBatchError> for ApiError {
             }
             rs::err::SolHybridBatchError::ValExec(index, inner) => {
                 Self::SolBatchVal(ApiErrorIndexed { index, error: inner })
+            }
+            rs::err::SolHybridBatchError::TryItemsExec(index, inner) => {
+                Self::SolBatchTryItems(ApiErrorIndexed { index, error: inner })
             }
         }
     }
