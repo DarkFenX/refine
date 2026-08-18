@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr, ItemInfo, ItemInfoMode,
     err::BrResolveError,
-    shared::{BrResolvable, OverridableCompact, OverridableMap},
+    shared::{OverridableCompact, OverridableMap},
 };
 
 // Core commands
@@ -91,7 +91,7 @@ impl ItemInfoCmdBr {
 impl ItemInfoCmdCtxItemBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmdCtxItem, BrResolveError> {
         Ok(ItemInfoCmdCtxItem {
-            item_id: self.item_id.br_resolve(resps)?,
+            item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core.br_resolve(resps)?,
         })
     }

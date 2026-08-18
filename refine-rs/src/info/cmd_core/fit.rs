@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     err::BrResolveError,
-    shared::{BrResolvable, OverridableCompact, OverridableMap},
+    shared::{OverridableCompact, OverridableMap},
 };
 
 // Core commands
@@ -110,7 +110,7 @@ impl FitInfoCmdBr {
 impl FitInfoCmdCtxFitBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmdCtxFit, BrResolveError> {
         Ok(FitInfoCmdCtxFit {
-            fit_id: self.fit_id.br_resolve(resps)?,
+            fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core.br_resolve(resps)?,
         })
     }

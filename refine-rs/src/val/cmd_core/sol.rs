@@ -1,5 +1,7 @@
 use crate::{
-    FitId, FitIdBr, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    err::BrResolveError,
+    shared::val_options_br_resolve,
     val::{SolValInfo, ValInfoMode, ValOptions},
 };
 
@@ -63,6 +65,19 @@ impl SolValCmdBr {
     pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
         self.shared.info_mode = info_mode;
         self
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolValCmdBr {
+    pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<SolValCmd, BrResolveError> {
+        Ok(SolValCmd {
+            options: val_options_br_resolve(self.options, resps)?,
+            fit_ids: resps.resolve_fit_ids(self.fit_ids)?,
+            shared: self.shared,
+        })
     }
 }
 

@@ -2,7 +2,7 @@ pub use cmd_core::{FitValCmd, FitValCmdBr, SolValCmd, SolValCmdBr};
 pub use fit_try_items::TryFitItemsCmd;
 pub use fit_val::FitValInfo;
 pub use info_mode::ValInfoMode;
-pub use rc::val::{ValOptions, ValResultFit as FitValInfoDetails, ValResultSol as SolValInfoDetails};
+pub use rc::val::{ValEnabled, ValOptions, ValResultFit as FitValInfoDetails, ValResultSol as SolValInfoDetails};
 pub use sol_val::SolValInfo;
 
 mod cmd_core;

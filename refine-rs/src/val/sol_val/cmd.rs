@@ -45,14 +45,14 @@ impl FitValCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// impl SolValEnumCmdBr {
-//     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolValEnumCmd, BrResolveError> {
-//         Ok(match self {
-//             Self::SolValidate(cmd) => SolValEnumCmd::SolValidate(cmd.br_resolve(resps)?),
-//             Self::FitValidate(cmd) => SolValEnumCmd::FitValidate(cmd.br_resolve(resps)?),
-//         })
-//     }
-// }
+impl SolValEnumCmdBr {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolValEnumCmd, BrResolveError> {
+        Ok(match self {
+            Self::SolValidate(cmd) => SolValEnumCmd::SolValidate(cmd.br_resolve(resps)?),
+            Self::FitValidate(cmd) => SolValEnumCmd::FitValidate(cmd.br_resolve(resps)?),
+        })
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution

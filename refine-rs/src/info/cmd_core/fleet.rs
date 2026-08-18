@@ -1,8 +1,4 @@
-use crate::{
-    CmdResps, FleetId, FleetIdBr, FleetInfo, FleetInfoMode,
-    err::BrResolveError,
-    shared::{BrResolvable, OverridableMap},
-};
+use crate::{CmdResps, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, err::BrResolveError, shared::OverridableMap};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -57,7 +53,7 @@ impl FleetInfoCmd {
 impl FleetInfoCmdCtxFleetBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<FleetInfoCmdCtxFleet, BrResolveError> {
         Ok(FleetInfoCmdCtxFleet {
-            fleet_id: self.fleet_id.br_resolve(resps)?,
+            fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
             core: self.core,
         })
     }
