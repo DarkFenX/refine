@@ -46,6 +46,7 @@ if typing.TYPE_CHECKING:
 
     from fw.api import ApiClient
     from fw.api.aliases import InfoMode, MutaAdd, MutaChange, ReqHook
+    from fw.api.types.fit import Fit
     from fw.api.types.item import Item
     from fw.consts import ApiEffMode, ApiModMvMode, ApiModRmMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
 
@@ -87,7 +88,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         resp = self._process_request(req=req)
         # In case of successful response, update entity data
         if resp.status_code == 200:
-            self._fill_entity_ids(resp_data=resp.json())
+            self._fill_entity_data(resp_data=resp.json())
 
     ################################################################################################
     # Control
@@ -601,18 +602,20 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             fit_mode: InfoMode | type[Absent] = Absent,
             item_mode: InfoMode | type[Absent] = Absent,
-    ) -> None:
+    ) -> Fit:
         command = FitInfoFitCmd(
             fit_mode=fit_mode,
             item_mode=item_mode)
         self._commands.append(command)
+        return self._make_fit_info()
 
     def get_item_info(
             self, *,
             item_id: str,
             item_mode: InfoMode | type[Absent] = Absent,
-    ) -> None:
+    ) -> Item:
         command = FitInfoItemCmd(
             item_id=item_id,
             item_mode=item_mode)
         self._commands.append(command)
+        return self._make_item_info()

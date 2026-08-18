@@ -57,7 +57,7 @@ from fw.api.types.fleet import Fleet
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
-from .base import BaseCmdBatchCtx, EntityData, IdFillKind
+from .base import BaseCmdBatchCtx, DataFillKind, EntityData
 
 if typing.TYPE_CHECKING:
     from types import TracebackType
@@ -65,6 +65,7 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, ReqHook
     from fw.api.types.item import Item
+    from fw.api.types.sol import SolarSystem
     from fw.consts import (
         ApiEffMode,
         ApiModMvMode,
@@ -108,20 +109,33 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         resp = self._process_request(req=req)
         # In case of successful response, update entity data
         if resp.status_code == 200:
-            self._fill_entity_ids(resp_data=resp.json())
+            self._fill_entity_data(resp_data=resp.json())
 
     # Entity making methods are supposed to be called after command has been added
     def _make_fleet(self) -> Fleet:
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
-        self._ret_datas[index] = EntityData(kind=IdFillKind.regular, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.id_regular, data=data)
         return Fleet(client=self._client, data=data, sol_id=self._sol_id)
 
     def _make_fit(self) -> Fit:
         index = len(self._commands) - 1
         data = {'id': f'#{index}'}
-        self._ret_datas[index] = EntityData(kind=IdFillKind.regular, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.id_regular, data=data)
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
+
+    def _make_sol_info(self) -> SolarSystem:
+        from fw.api.types.sol import SolarSystem  # ruff:ignore[import-outside-top-level]
+        index = len(self._commands) - 1
+        data = {}
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        return SolarSystem(client=self._client, data=data)
+
+    def _make_fleet_info(self) -> Fleet:
+        index = len(self._commands) - 1
+        data = {}
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        return Fleet(client=self._client, data=data, sol_id=self._sol_id)
 
     ################################################################################################
     # Control
@@ -853,42 +867,46 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fleet_mode: InfoMode | type[Absent] = Absent,
             fit_mode: InfoMode | type[Absent] = Absent,
             item_mode: InfoMode | type[Absent] = Absent,
-    ) -> None:
+    ) -> SolarSystem:
         command = SolInfoSolCmd(
             sol_mode=sol_mode,
             fleet_mode=fleet_mode,
             fit_mode=fit_mode,
             item_mode=item_mode)
         self._commands.append(command)
+        return self._make_sol_info()
 
     def get_fleet_info(
             self, *,
             fleet_id: str,
             fleet_mode: InfoMode | type[Absent] = Absent,
-    ) -> None:
+    ) -> Fleet:
         command = SolInfoFleetCmd(
             fleet_id=fleet_id,
             fleet_mode=fleet_mode)
         self._commands.append(command)
+        return self._make_fleet_info()
 
     def get_fit_info(
             self, *,
             fit_id: str,
             fit_mode: InfoMode | type[Absent] = Absent,
             item_mode: InfoMode | type[Absent] = Absent,
-    ) -> None:
+    ) -> Fit:
         command = SolInfoFitCmd(
             fit_id=fit_id,
             fit_mode=fit_mode,
             item_mode=item_mode)
         self._commands.append(command)
+        return self._make_fit_info()
 
     def get_item_info(
             self, *,
             item_id: str,
             item_mode: InfoMode | type[Absent] = Absent,
-    ) -> None:
+    ) -> Item:
         command = SolInfoItemCmd(
             item_id=item_id,
             item_mode=item_mode)
         self._commands.append(command)
+        return self._make_item_info()

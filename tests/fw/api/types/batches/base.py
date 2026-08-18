@@ -8,19 +8,21 @@ if typing.TYPE_CHECKING:
     from fw.api import ApiClient
     from fw.api.aliases import ReqHook
     from fw.api.commands import BaseCommand
+    from fw.api.types.fit import Fit
     from fw.request import Request
     from fw.response import Response
 
 
 @enum.unique
-class IdFillKind(enum.StrEnum):
-    regular = 'regular'
-    charge = 'charge'
+class DataFillKind(enum.StrEnum):
+    copy = 'copy'
+    id_regular = 'id_regular'
+    id_charge = 'id_charge'
 
 
 @dataclasses.dataclass(kw_only=True)
 class EntityData:
-    kind: IdFillKind
+    kind: DataFillKind
     data: dict
 
 
@@ -46,13 +48,26 @@ class BaseCmdBatchCtx:
     def _make_item(self) -> Item:
         index = len(self._commands) - 1
         data = {'id': f'#{index}', 'charge': {'id': f'#{index}c'}}
-        self._ret_datas[index] = EntityData(kind=IdFillKind.regular, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.id_regular, data=data)
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
     def _make_item_charge(self) -> Item:
         index = len(self._commands) - 1
         data = {'id': f'#{index}c'}
-        self._ret_datas[index] = EntityData(kind=IdFillKind.charge, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.id_charge, data=data)
+        return Item(client=self._client, data=data, sol_id=self._sol_id)
+
+    def _make_fit_info(self) -> Fit:
+        from fw.api.types.fit import Fit  # ruff:ignore[import-outside-top-level]
+        index = len(self._commands) - 1
+        data = {}
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        return Fit(client=self._client, data=data, sol_id=self._sol_id)
+
+    def _make_item_info(self) -> Item:
+        index = len(self._commands) - 1
+        data = {}
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
     def _clear_ret_datas(self) -> None:
@@ -67,17 +82,24 @@ class BaseCmdBatchCtx:
         resp.check(status_code=self._status_code, json_predicate=self._json_predicate)
         return resp
 
-    def _fill_entity_ids(self, *, resp_data: list) -> None:
+    def _fill_entity_data(self, *, resp_data: list) -> None:
         # Update IDs in all the entities which were created by the commands
         for i, cmd_result in enumerate(resp_data):
             if i not in self._ret_datas:
                 continue
             entity_data = self._ret_datas[i]
             match entity_data.kind:
-                case IdFillKind.regular:
+                case DataFillKind.copy:
+                    self.__copy_entity_data(entity_data=entity_data, cmd_result=cmd_result)
+                case DataFillKind.id_regular:
                     self.__fill_entity_ids_regular(entity_data=entity_data, cmd_result=cmd_result)
-                case IdFillKind.charge:
+                case DataFillKind.id_charge:
                     self.__fill_entity_ids_charge(entity_data=entity_data, cmd_result=cmd_result)
+
+    @staticmethod
+    def __copy_entity_data(*, entity_data: EntityData, cmd_result: dict) -> None:
+        entity_data.data.clear()
+        entity_data.data.update(cmd_result)
 
     @staticmethod
     def __fill_entity_ids_regular(*, entity_data: EntityData, cmd_result: dict) -> None:
