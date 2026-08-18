@@ -85,6 +85,33 @@ impl FitInfoCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitInfoCmd {
+    pub(in crate::info) fn into_ctx_item_br(self, fit_id: impl Into<FitIdBr>) -> FitInfoCmdCtxFitBr {
+        FitInfoCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self.into_br(),
+        }
+    }
+    fn into_br(self) -> FitInfoCmdBr {
+        FitInfoCmdBr {
+            item: self.item.into_compact_br(),
+            shared: self.shared,
+        }
+    }
+}
+
+impl FitInfoCmdBr {
+    pub(in crate::info) fn into_ctx_item_br(self, fit_id: impl Into<FitIdBr>) -> FitInfoCmdCtxFitBr {
+        FitInfoCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmdBr {

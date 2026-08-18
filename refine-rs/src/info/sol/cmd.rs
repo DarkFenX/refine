@@ -1,5 +1,6 @@
 use crate::{
-    CmdResp, CmdResps, SolInfoCmd, SolInfoCmdBr,
+    CmdResp, CmdResps, FitIdBr, FitInfoCmd, FitInfoCmdBr, FleetIdBr, FleetInfoCmd, ItemIdBr, ItemInfoCmd,
+    ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
     err::BrResolveError,
     info::cmd_core::{
         FitInfoCmdCtxFit, FitInfoCmdCtxFitBr, FleetInfoCmdCtxFleet, FleetInfoCmdCtxFleetBr, ItemInfoCmdCtxItem,
@@ -32,13 +33,38 @@ pub enum SolInfoEnumCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmd {
-    pub fn into_sol_ctl_br(self) -> SolInfoEnumCmdBr {
+    pub fn into_sol_inf_br(self) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::SolInfo(self.into_br())
     }
 }
 impl SolInfoCmdBr {
     pub fn into_sol_inf_br(self) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::SolInfo(self)
+    }
+}
+impl FleetInfoCmd {
+    pub fn into_sol_inf_br(self, fleet_id: impl Into<FleetIdBr>) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::FleetInfo(self.into_ctx_item_br(fleet_id))
+    }
+}
+impl FitInfoCmd {
+    pub fn into_sol_inf_br(self, fit_id: impl Into<FitIdBr>) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::FitInfo(self.into_ctx_item_br(fit_id))
+    }
+}
+impl FitInfoCmdBr {
+    pub fn into_sol_inf_br(self, fit_id: impl Into<FitIdBr>) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::FitInfo(self.into_ctx_item_br(fit_id))
+    }
+}
+impl ItemInfoCmd {
+    pub fn into_sol_inf_br(self, item_id: impl Into<ItemIdBr>) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::ItemInfo(self.into_ctx_item_br(item_id))
+    }
+}
+impl ItemInfoCmdBr {
+    pub fn into_sol_inf_br(self, item_id: impl Into<ItemIdBr>) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::ItemInfo(self.into_ctx_item_br(item_id))
     }
 }
 
