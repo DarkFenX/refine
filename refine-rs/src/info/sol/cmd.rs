@@ -31,6 +31,16 @@ pub enum SolInfoEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolInfoCmd {
+    pub fn into_sol_ctl_br(self) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::SolInfo(self.into_br())
+    }
+}
+impl SolInfoCmdBr {
+    pub fn into_sol_inf_br(self) -> SolInfoEnumCmdBr {
+        SolInfoEnumCmdBr::SolInfo(self)
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
@@ -49,16 +59,16 @@ impl SolInfoEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolInfoEnumCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
-        Ok(match self {
-            Self::SolInfo(cmd) => cmd.execute(core_sol).into(),
-            Self::FleetInfo(cmd) => cmd.execute(core_sol).into(),
-            Self::FitInfo(cmd) => cmd.execute(core_sol).into(),
-            Self::ItemInfo(cmd) => cmd.execute(core_sol).into(),
-        })
-    }
-}
+// impl SolInfoEnumCmd {
+//     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
+//         Ok(match self {
+//             Self::SolInfo(cmd) => cmd.execute(core_sol).into(),
+//             Self::FleetInfo(cmd) => cmd.execute(core_sol).into(),
+//             Self::FitInfo(cmd) => cmd.execute(core_sol).into(),
+//             Self::ItemInfo(cmd) => cmd.execute(core_sol).into(),
+//         })
+//     }
+// }
 
 #[derive(thiserror::Error, Debug)]
 pub enum SolInfoEnumError {}

@@ -97,6 +97,19 @@ impl<M, I> InfoModes<M, I> {
                 .collect::<Result<_, _>>()?,
         })
     }
+    pub(in crate::info) fn into_compact_br<B>(self) -> InfoModesCompact<M, B>
+    where
+        B: From<I>,
+    {
+        InfoModesCompact {
+            default: self.default,
+            overrides: self
+                .overrides
+                .into_iter()
+                .map(|(id, mode)| (mode, vec![id.into()]))
+                .collect(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
