@@ -5,10 +5,11 @@ use axum::{
     response::IntoResponse,
 };
 use axum_extra::extract::WithRejection;
+use serde::Deserialize;
 
 use crate::{err::ApiError, state::AppState};
 
-#[derive(serde::Deserialize)]
+#[derive(Deserialize)]
 pub(crate) struct AddSrcReqBody {
     data_version: String,
     data_format: String,

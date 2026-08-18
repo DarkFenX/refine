@@ -8,12 +8,13 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
+use super::shared::ItemParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn change_item(
     State(state): State<AppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoCmd>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<ItemParams>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::ItemChangeEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_item(state, sol_id, item_id, params, payload).await {
@@ -26,7 +27,7 @@ async fn internal_change_item(
     state: AppState,
     sol_id: String,
     item_id: String,
-    params: rs::ItemInfoCmd,
+    params: ItemParams,
     payload: rs::ItemChangeEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -37,7 +38,7 @@ async fn internal_change_item(
         .await?
         .get_item(item_id)
         .await?
-        .change_and_get_info(payload, params)
+        .change_and_get_info(payload, params.into_cmd())
         .await?;
     Ok(item_info)
 }

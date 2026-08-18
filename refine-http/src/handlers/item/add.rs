@@ -8,12 +8,13 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
+use super::shared::ItemParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn add_item(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::ItemInfoCmd>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<ItemParams>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::ItemAddEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_add_item(state, sol_id, params, payload).await {
@@ -25,7 +26,7 @@ pub(crate) async fn add_item(
 async fn internal_add_item(
     state: AppState,
     sol_id: String,
-    params: rs::ItemInfoCmd,
+    params: ItemParams,
     payload: rs::ItemAddEnumCmd,
 ) -> Result<rs::ItemInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -33,7 +34,7 @@ async fn internal_add_item(
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .add_item_and_get_info(payload, params)
+        .add_item_and_get_info(payload, params.into_cmd())
         .await?;
     Ok(item_info)
 }

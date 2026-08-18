@@ -10,13 +10,13 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemId>,
+    item_mode: InfoModes<ItemInfoMode, ItemId>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ItemInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModesCompact<ItemInfoMode, ItemIdBr>,
+    item_mode: InfoModesCompact<ItemInfoMode, ItemIdBr>,
 }
 
 // Extra context commands
@@ -41,12 +41,12 @@ impl ItemInfoCmd {
         Self::default()
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item.default = mode;
+        self.item_mode.default = mode;
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
         for item_id in item_ids {
-            self.item.overrides.insert(item_id, mode);
+            self.item_mode.overrides.insert(item_id, mode);
         }
         self
     }
@@ -57,11 +57,11 @@ impl ItemInfoCmdBr {
         Self::default()
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item.default = mode;
+        self.item_mode.default = mode;
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.item.overrides.push((mode, item_ids.collect()));
+        self.item_mode.overrides.push((mode, item_ids.collect()));
         self
     }
 }
@@ -78,7 +78,7 @@ impl ItemInfoCmd {
     }
     fn into_br(self) -> ItemInfoCmdBr {
         ItemInfoCmdBr {
-            item: self.item.into_compact_br(),
+            item_mode: self.item_mode.into_compact_br(),
         }
     }
 }
@@ -98,7 +98,7 @@ impl ItemInfoCmdBr {
 impl ItemInfoCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmd, BrResolveError> {
         Ok(ItemInfoCmd {
-            item: InfoModes::from_compact_br(self.item, resps)?,
+            item_mode: InfoModes::from_compact_br(self.item_mode, resps)?,
         })
     }
 }
@@ -117,7 +117,7 @@ impl ItemInfoCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
-        ItemInfo::from_core(core_item, &self.item)
+        ItemInfo::from_core(core_item, &self.item_mode)
     }
 }
 

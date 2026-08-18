@@ -7,7 +7,7 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct FleetInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet: FleetInfoMode,
+    fleet_mode: FleetInfoMode,
 }
 
 // Extra context commands
@@ -32,7 +32,7 @@ impl FleetInfoCmd {
         Self::default()
     }
     pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
-        self.fleet = mode;
+        self.fleet_mode = mode;
         self
     }
 }
@@ -66,7 +66,7 @@ impl FleetInfoCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
-        FleetInfo::from_core(core_fleet, &InfoModes::from_simple(self.fleet))
+        FleetInfo::from_core(core_fleet, &InfoModes::from_simple(self.fleet_mode))
     }
 }
 

@@ -8,12 +8,13 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
+use super::shared::FleetParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn get_fleet(
     State(state): State<AppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::FleetInfoCmd>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<FleetParams>, ApiError>,
 ) -> impl IntoResponse {
     match internal_get_fleet(state, sol_id, fleet_id, params).await {
         Ok(fleet_info) => (StatusCode::OK, Json(fleet_info)).into_response(),
@@ -25,7 +26,7 @@ async fn internal_get_fleet(
     state: AppState,
     sol_id: String,
     fleet_id: String,
-    params: rs::FleetInfoCmd,
+    params: FleetParams,
 ) -> Result<rs::FleetInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;
@@ -35,7 +36,7 @@ async fn internal_get_fleet(
         .await?
         .get_fleet(fleet_id)
         .await?
-        .get_info(params)
+        .get_info(params.into_cmd())
         .await;
     Ok(fleet_info)
 }

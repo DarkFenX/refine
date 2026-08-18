@@ -9,7 +9,7 @@ use axum::{
 use axum_extra::extract::WithRejection;
 use serde::Deserialize;
 
-use super::shared::parse_src_alias_from_body;
+use super::shared::{SolParams, parse_src_alias_from_body};
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Deserialize)]
@@ -20,7 +20,7 @@ pub(crate) struct ChangeSolSrcReqBody {
 pub(crate) async fn switch_sol_src(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoCmd>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<SolParams>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<ChangeSolSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_switch_sol_src(state, sol_id, params, payload).await {
@@ -32,7 +32,7 @@ pub(crate) async fn switch_sol_src(
 async fn internal_switch_sol_src(
     state: AppState,
     sol_id: String,
-    params: rs::SolInfoCmd,
+    params: SolParams,
     payload: ChangeSolSrcReqBody,
 ) -> Result<rs::SolInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -41,7 +41,7 @@ async fn internal_switch_sol_src(
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .switch_src_and_get_info(src_alias, params)
+        .switch_src_and_get_info(src_alias, params.into_cmd())
         .await?;
     Ok(sol_info)
 }

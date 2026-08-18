@@ -10,7 +10,7 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct FitInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModes<ItemInfoMode, ItemId>,
+    item_mode: InfoModes<ItemInfoMode, ItemId>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitInfoCmdShared,
 }
@@ -18,7 +18,7 @@ pub struct FitInfoCmd {
 #[derive(Clone, Default)]
 pub struct FitInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    item: InfoModesCompact<ItemInfoMode, ItemIdBr>,
+    item_mode: InfoModesCompact<ItemInfoMode, ItemIdBr>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitInfoCmdShared,
 }
@@ -26,7 +26,7 @@ pub struct FitInfoCmdBr {
 #[derive(Copy, Clone, Default)]
 struct FitInfoCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit: FitInfoMode,
+    fit_mode: FitInfoMode,
 }
 
 // Extra context commands
@@ -51,16 +51,16 @@ impl FitInfoCmd {
         Self::default()
     }
     pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
-        self.shared.fit = mode;
+        self.shared.fit_mode = mode;
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item.default = mode;
+        self.item_mode.default = mode;
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
         for item_id in item_ids {
-            self.item.overrides.insert(item_id, mode);
+            self.item_mode.overrides.insert(item_id, mode);
         }
         self
     }
@@ -71,15 +71,15 @@ impl FitInfoCmdBr {
         Self::default()
     }
     pub fn with_fit(mut self, mode: FitInfoMode) -> Self {
-        self.shared.fit = mode;
+        self.shared.fit_mode = mode;
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item.default = mode;
+        self.item_mode.default = mode;
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.item.overrides.push((mode, item_ids.collect()));
+        self.item_mode.overrides.push((mode, item_ids.collect()));
         self
     }
 }
@@ -90,7 +90,7 @@ impl FitInfoCmdBr {
 impl FitInfoCmd {
     pub(in crate::info) fn into_br(self) -> FitInfoCmdBr {
         FitInfoCmdBr {
-            item: self.item.into_compact_br(),
+            item_mode: self.item_mode.into_compact_br(),
             shared: self.shared,
         }
     }
@@ -117,7 +117,7 @@ impl FitInfoCmdBr {
 impl FitInfoCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
         Ok(FitInfoCmd {
-            item: InfoModes::from_compact_br(self.item, resps)?,
+            item_mode: InfoModes::from_compact_br(self.item_mode, resps)?,
             shared: self.shared,
         })
     }
@@ -137,7 +137,7 @@ impl FitInfoCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
-        FitInfo::from_core(core_fit, &InfoModes::from_simple(self.shared.fit), &self.item)
+        FitInfo::from_core(core_fit, &InfoModes::from_simple(self.shared.fit_mode), &self.item_mode)
     }
 }
 

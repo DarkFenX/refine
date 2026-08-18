@@ -8,12 +8,13 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
+use super::shared::FitParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn add_fit(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::FitInfoCmd>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<FitParams>, ApiError>,
     WithRejection(payload, _): WithRejection<Option<Json<rs::FitAddCmd>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
@@ -26,7 +27,7 @@ pub(crate) async fn add_fit(
 async fn internal_add_fit(
     state: AppState,
     sol_id: String,
-    params: rs::FitInfoCmd,
+    params: FitParams,
     payload: rs::FitAddCmd,
 ) -> Result<rs::FitInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -34,7 +35,7 @@ async fn internal_add_fit(
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .add_fit_and_get_info(payload, params)
+        .add_fit_and_get_info(payload, params.into_cmd())
         .await?;
     Ok(fit_info)
 }

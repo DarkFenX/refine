@@ -9,6 +9,7 @@ use crate::{
     svc::SolCtx,
 };
 
+#[expect(clippy::enum_variant_names)]
 #[derive(Clone)]
 pub(crate) enum SolInfoEnumCmd {
     SolInfo(SolInfoCmd),

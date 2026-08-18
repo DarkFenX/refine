@@ -8,12 +8,13 @@ use axum::{
 };
 use axum_extra::extract::WithRejection;
 
+use super::shared::SolParams;
 use crate::{err::ApiError, state::AppState};
 
 pub(crate) async fn change_sol(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::SolInfoCmdBr>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<SolParams>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<rs::SolChangeEnumCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_change_sol(state, sol_id, params, payload).await {
@@ -25,7 +26,7 @@ pub(crate) async fn change_sol(
 async fn internal_change_sol(
     state: AppState,
     sol_id: String,
-    params: rs::SolInfoCmdBr,
+    params: SolParams,
     payload: rs::SolChangeEnumCmd,
 ) -> Result<rs::SolInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
@@ -33,7 +34,7 @@ async fn internal_change_sol(
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .change_and_get_info(payload, params)
+        .change_and_get_info(payload, params.into_cmd_br())
         .await?;
     Ok(sol_info)
 }
