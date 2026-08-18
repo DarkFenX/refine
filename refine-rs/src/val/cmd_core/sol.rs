@@ -1,5 +1,5 @@
 use crate::{
-    FitId,
+    FitId, ItemId,
     val::{SolValInfo, ValInfoMode, ValOptions},
 };
 
@@ -8,7 +8,7 @@ use crate::{
 #[derive(Default)]
 pub struct SolValCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    options: ValOptions,
+    options: ValOptions<ItemId>,
     #[cfg_attr(feature = "serde", serde(default))]
     fit_ids: Vec<FitId>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -22,7 +22,7 @@ impl SolValCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_options(mut self, options: ValOptions) -> Self {
+    pub fn with_options(mut self, options: ValOptions<ItemId>) -> Self {
         self.options = options;
         self
     }

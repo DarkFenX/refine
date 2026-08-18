@@ -1,11 +1,14 @@
-use crate::val::{FitValInfo, ValInfoMode, ValOptions};
+use crate::{
+    ItemId,
+    val::{FitValInfo, ValInfoMode, ValOptions},
+};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct FitValCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    options: ValOptions,
+    options: ValOptions<ItemId>,
     #[cfg_attr(feature = "serde", serde(default))]
     info_mode: ValInfoMode,
 }
@@ -17,7 +20,7 @@ impl FitValCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_options(mut self, options: ValOptions) -> Self {
+    pub fn with_options(mut self, options: ValOptions<ItemId>) -> Self {
         self.options = options;
         self
     }
