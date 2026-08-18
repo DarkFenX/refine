@@ -87,7 +87,7 @@ impl FitValCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FitValCmd, BrResolveError> {
+    pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<FitValCmd, BrResolveError> {
         Ok(FitValCmd {
             options: val_options_br_resolve(self.options, resps)?,
             shared: self.shared,

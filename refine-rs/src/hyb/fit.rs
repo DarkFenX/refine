@@ -8,12 +8,14 @@ use crate::{
     SubsystemChangeCmd,
     err::{BrResolveError, FitChangeEnumError, FitInfoEnumError},
     info::FitInfoEnumCmd,
+    val::{FitValCmdBr, FitValEnumCmd, FitValEnumCmdBr},
 };
 
 #[derive(Clone)]
 pub(crate) enum FitHybridCmd {
     Ctl(FitChangeEnumCmd),
     Info(FitInfoEnumCmd),
+    Val(FitValEnumCmd),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
@@ -21,6 +23,7 @@ pub(crate) enum FitHybridCmd {
 pub enum FitHybridCmdBr {
     Ctl(FitChangeEnumCmdBr),
     Info(FitInfoEnumCmdBr),
+    Val(FitValEnumCmdBr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -219,6 +222,12 @@ impl ItemInfoCmdBr {
         FitHybridCmdBr::Info(self.into_fit_inf_br(item_id))
     }
 }
+// Info
+impl FitValCmdBr {
+    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
+        FitHybridCmdBr::Val(self.into_fit_val_br())
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
@@ -228,6 +237,7 @@ impl FitHybridCmdBr {
         Ok(match self {
             Self::Ctl(ctl_cmd) => FitHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => FitHybridCmd::Info(info_cmd.br_resolve(resps)?),
+            Self::Val(info_cmd) => FitHybridCmd::Val(info_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -240,6 +250,7 @@ impl FitHybridCmd {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_fit)?,
             Self::Info(info_cmd) => info_cmd.execute(core_fit)?,
+            Self::Val(info_cmd) => info_cmd.execute(core_fit),
         })
     }
 }
