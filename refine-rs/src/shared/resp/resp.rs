@@ -1,5 +1,5 @@
 use crate::{
-    FitId, FitInfo, FleetId, FleetInfo, ItemId, ItemInfo, SolInfo,
+    FitId, FitInfo, FleetId, FleetInfo, ItemId, ItemInfo, ItemTypeId, SolInfo,
     val::{FitValResult, SolValResult},
 };
 
@@ -16,6 +16,7 @@ pub enum CmdResp {
     ItemInfo(Box<ItemInfo>),
     SolVal(Box<SolValResult>),
     FitVal(Box<FitValResult>),
+    TryItems(Vec<ItemTypeId>),
     // Misc
     NoData,
 }
@@ -182,6 +183,7 @@ mod custom_serde {
                 Self::ItemInfo(inner) => inner.serialize(serializer),
                 Self::SolVal(inner) => inner.serialize(serializer),
                 Self::FitVal(inner) => inner.serialize(serializer),
+                Self::TryItems(inner) => inner.serialize(serializer),
                 // Command response has custom serialization implementation just for the NoData
                 // variant to be serialized as {} in JSON instead of null
                 Self::NoData => {
