@@ -54,6 +54,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Forward conversions, from "external" to "internal" form
 impl<M, I> InfoModes<M, I> {
     pub(in crate::info) fn from_simple(mode: M) -> Self {
         Self {
@@ -117,18 +118,23 @@ where
         .sum()
 }
 
+// Backward conversion
 impl<M, I> InfoModes<M, I> {
     pub(in crate::info) fn into_compact_br<B>(self) -> InfoModesCompact<M, B>
     where
+        M: Eq + Hash,
         B: From<I>,
     {
+        let mut rev_map: HashMap<M, Vec<B>> = HashMap::new();
+        for (id, mode) in self.overrides.into_iter() {
+            if mode == self.default {
+                continue;
+            }
+            rev_map.entry(mode).or_default().push(id.into());
+        }
         InfoModesCompact {
             default: self.default,
-            overrides: self
-                .overrides
-                .into_iter()
-                .map(|(id, mode)| (mode, vec![id.into()]))
-                .collect(),
+            overrides: rev_map.into_iter().collect(),
         }
     }
 }
