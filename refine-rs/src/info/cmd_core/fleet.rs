@@ -69,3 +69,15 @@ impl FleetInfoCmd {
         FleetInfo::from_core(core_fleet, &InfoModes::from_simple(self.fleet))
     }
 }
+
+impl FleetInfoCmdCtxFleet {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FleetInfo, FleetGetFleetInfoError> {
+        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
+        Ok(self.core.execute(&mut core_fleet))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FleetGetFleetInfoError {
+    #[error(transparent)]
+    FleetGet(#[from] rc::err::GetFleetError),
+}

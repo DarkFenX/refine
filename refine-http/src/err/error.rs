@@ -53,7 +53,9 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     SolSrcSwitch(#[from] rs::err::SolSwitchSrcError),
     #[error(transparent)]
-    SolBatch(ApiErrorIndexed<rs::err::SolChangeEnumError>),
+    SolBatchCtl(ApiErrorIndexed<rs::err::SolChangeEnumError>),
+    #[error(transparent)]
+    SolBatchInfo(ApiErrorIndexed<rs::err::SolInfoEnumError>),
     // Fleet-related
     #[error(transparent)]
     PathFleetParse(#[from] rs::err::ParseFleetIdError),
@@ -73,7 +75,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     FitChange(#[from] rs::err::FitChangeEnumFitInfoError),
     #[error(transparent)]
-    FitBatch(ApiErrorIndexed<rs::err::FitChangeEnumError>),
+    FitBatchCtl(ApiErrorIndexed<rs::err::FitChangeEnumError>),
     // Item-related
     #[error(transparent)]
     PathItemParse(#[from] rs::err::ParseItemIdError),
@@ -115,7 +117,10 @@ impl From<rs::err::SolHybridBatchError> for ApiError {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
             rs::err::SolHybridBatchError::CtlExec(index, inner) => {
-                Self::SolBatch(ApiErrorIndexed { index, error: inner })
+                Self::SolBatchCtl(ApiErrorIndexed { index, error: inner })
+            }
+            rs::err::SolHybridBatchError::InfoExec(index, inner) => {
+                Self::SolBatchInfo(ApiErrorIndexed { index, error: inner })
             }
         }
     }
@@ -127,7 +132,7 @@ impl From<rs::err::FitHybridBatchError> for ApiError {
                 Self::BatchBackrefResolve(ApiErrorIndexed { index, error: inner })
             }
             rs::err::FitHybridBatchError::CtlExec(index, inner) => {
-                Self::FitBatch(ApiErrorIndexed { index, error: inner })
+                Self::FitBatchCtl(ApiErrorIndexed { index, error: inner })
             }
         }
     }

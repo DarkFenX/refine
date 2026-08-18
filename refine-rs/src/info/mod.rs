@@ -1,4 +1,7 @@
-pub use cmd_core::{FitInfoCmd, FitInfoCmdBr, FleetInfoCmd, ItemInfoCmd, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr};
+pub use cmd_core::{
+    FitGetFitInfoError, FitInfoCmd, FitInfoCmdBr, FleetGetFleetInfoError, FleetInfoCmd, ItemGetItemInfoError,
+    ItemInfoCmd, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
+};
 pub use fit::{FitInfo, FitInfoExt, FitInfoMode};
 pub use fleet::{FleetInfo, FleetInfoExt, FleetInfoMode};
 pub use item::{
@@ -10,7 +13,8 @@ pub use item::{
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 use mode::{InfoModes, InfoModesCompact};
-pub use sol::{SolInfo, SolInfoExt, SolInfoMode};
+pub(crate) use sol::SolInfoEnumCmd;
+pub use sol::{SolInfo, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
 
 mod cmd_core;

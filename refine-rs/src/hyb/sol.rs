@@ -2,24 +2,30 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
     FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr,
-    FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetIdBr, FleetRemoveCmd,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
-    ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd,
-    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
-    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd,
-    StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
-    err::{BrResolveError, SolChangeEnumError},
+    FitIdBr, FitInfoCmd, FitInfoCmdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr,
+    FleetIdBr, FleetInfoCmd, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd,
+    ItemIdBr, ItemInfoCmd, ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd,
+    RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
+    SkillChangeCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr,
+    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
+    SwEffectChangeCmd,
+    err::{BrResolveError, SolChangeEnumError, SolInfoEnumError},
+    info::SolInfoEnumCmd,
+    svc::SolCtx,
 };
 
 #[derive(Clone)]
 pub(crate) enum SolHybridCmd {
     Ctl(SolChangeEnumCmd),
+    Info(SolInfoEnumCmd),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 #[derive(Clone)]
 pub enum SolHybridCmdBr {
     Ctl(SolChangeEnumCmdBr),
+    Info(SolInfoEnumCmdBr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -330,6 +336,45 @@ impl SwEffectChangeCmd {
         SolHybridCmdBr::Ctl(self.into_sol_ctl_br(item_id))
     }
 }
+// Info - solar system
+impl SolInfoCmd {
+    pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br())
+    }
+}
+impl SolInfoCmdBr {
+    pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br())
+    }
+}
+// Info - fleet
+impl FleetInfoCmd {
+    pub fn into_sol_hyb_br(self, fleet_id: impl Into<FleetIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br(fleet_id))
+    }
+}
+// Info - fit
+impl FitInfoCmd {
+    pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br(fit_id))
+    }
+}
+impl FitInfoCmdBr {
+    pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br(fit_id))
+    }
+}
+// Info - item
+impl ItemInfoCmd {
+    pub fn into_sol_hyb_br(self, item_id: impl Into<ItemIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br(item_id))
+    }
+}
+impl ItemInfoCmdBr {
+    pub fn into_sol_hyb_br(self, item_id: impl Into<ItemIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Info(self.into_sol_inf_br(item_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
@@ -338,6 +383,7 @@ impl SolHybridCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolHybridCmd, BrResolveError> {
         Ok(match self {
             Self::Ctl(ctl_cmd) => SolHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
+            Self::Info(info_cmd) => SolHybridCmd::Info(info_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -346,9 +392,10 @@ impl SolHybridCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolHybridCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolHybridError> {
+    pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolHybridError> {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
+            Self::Info(info_cmd) => info_cmd.execute(ctx, core_sol)?,
         })
     }
 }
@@ -357,4 +404,6 @@ impl SolHybridCmd {
 pub enum SolHybridError {
     #[error(transparent)]
     Ctl(#[from] SolChangeEnumError),
+    #[error(transparent)]
+    Info(#[from] SolInfoEnumError),
 }

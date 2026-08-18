@@ -1,4 +1,4 @@
-pub(crate) use sol::{SolMapGuarded, SolOwnedMutexGuard, SolarSystemInnerGuarded};
+pub(crate) use sol::{SolCtx, SolMapGuarded, SolOwnedMutexGuard, SolarSystemInnerGuarded};
 pub(crate) use src::{SrcAliasDataGuarded, SrcAliasLocksGuarded, SrcInnerGuarded};
 pub(crate) use tpool::ThreadPool;
 

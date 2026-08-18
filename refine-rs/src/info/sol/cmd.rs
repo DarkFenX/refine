@@ -1,11 +1,12 @@
 use crate::{
     CmdResp, CmdResps, FitIdBr, FitInfoCmd, FitInfoCmdBr, FleetIdBr, FleetInfoCmd, ItemIdBr, ItemInfoCmd,
     ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
-    err::BrResolveError,
+    err::{BrResolveError, FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
     info::cmd_core::{
         FitInfoCmdCtxFit, FitInfoCmdCtxFitBr, FleetInfoCmdCtxFleet, FleetInfoCmdCtxFleetBr, ItemInfoCmdCtxItem,
         ItemInfoCmdCtxItemBr,
     },
+    svc::SolCtx,
 };
 
 #[derive(Clone)]
@@ -85,16 +86,23 @@ impl SolInfoEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// impl SolInfoEnumCmd {
-//     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp,
-// SolInfoEnumError> {         Ok(match self {
-//             Self::SolInfo(cmd) => cmd.execute(core_sol).into(),
-//             Self::FleetInfo(cmd) => cmd.execute(core_sol).into(),
-//             Self::FitInfo(cmd) => cmd.execute(core_sol).into(),
-//             Self::ItemInfo(cmd) => cmd.execute(core_sol).into(),
-//         })
-//     }
-// }
+impl SolInfoEnumCmd {
+    pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
+        Ok(match self {
+            Self::SolInfo(cmd) => cmd.execute(ctx.sol_id, ctx.src_alias, core_sol).into(),
+            Self::FleetInfo(cmd) => cmd.execute(core_sol)?.into(),
+            Self::FitInfo(cmd) => cmd.execute(core_sol)?.into(),
+            Self::ItemInfo(cmd) => cmd.execute(core_sol)?.into(),
+        })
+    }
+}
 
 #[derive(thiserror::Error, Debug)]
-pub enum SolInfoEnumError {}
+pub enum SolInfoEnumError {
+    #[error(transparent)]
+    Fleet(#[from] FleetGetFleetInfoError),
+    #[error(transparent)]
+    Fit(#[from] FitGetFitInfoError),
+    #[error(transparent)]
+    Item(#[from] ItemGetItemInfoError),
+}

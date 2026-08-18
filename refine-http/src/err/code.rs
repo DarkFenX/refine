@@ -49,7 +49,18 @@ impl ApiError {
                 rs::err::SolChangeEnumSolInfoError::Change(err_l2) => sol_change_enum(err_l2),
                 rs::err::SolChangeEnumSolInfoError::InfoBrResolve(..) => (StatusCode::BAD_REQUEST, "BRF-002"),
             },
-            Self::SolBatch(err) => sol_change_enum(&err.error),
+            Self::SolBatchCtl(err) => sol_change_enum(&err.error),
+            Self::SolBatchInfo(err) => match &err.error {
+                rs::err::SolInfoEnumError::Fleet(rs::err::FleetGetFleetInfoError::FleetGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "FLT-001")
+                }
+                rs::err::SolInfoEnumError::Fit(rs::err::FitGetFitInfoError::FitGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "FIT-001")
+                }
+                rs::err::SolInfoEnumError::Item(rs::err::ItemGetItemInfoError::ItemGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "ITM-001")
+                }
+            },
             Self::SolRemove(err) => match err {
                 rs::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-004"),
             },
@@ -80,7 +91,7 @@ impl ApiError {
                 rs::err::FitChangeEnumFitInfoError::Change(err_l2) => fit_change_enum(err_l2),
                 rs::err::FitChangeEnumFitInfoError::InfoBrResolve(..) => (StatusCode::BAD_REQUEST, "BRF-003"),
             },
-            Self::FitBatch(err) => fit_change_enum(&err.error),
+            Self::FitBatchCtl(err) => fit_change_enum(&err.error),
             ////////////////////////////////////////////////////////////////////////////////////////
             // Item-related
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -211,8 +222,9 @@ impl ApiError {
         match self {
             Self::BatchParse(err) => Some(err.index),
             Self::BatchBackrefResolve(err) => Some(err.index),
-            Self::SolBatch(err) => Some(err.index),
-            Self::FitBatch(err) => Some(err.index),
+            Self::SolBatchCtl(err) => Some(err.index),
+            Self::SolBatchInfo(err) => Some(err.index),
+            Self::FitBatchCtl(err) => Some(err.index),
             _ => None,
         }
     }

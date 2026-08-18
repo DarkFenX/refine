@@ -120,3 +120,15 @@ impl ItemInfoCmd {
         ItemInfo::from_core(core_item, &self.item)
     }
 }
+
+impl ItemInfoCmdCtxItem {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ItemInfo, ItemGetItemInfoError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetItemInfoError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
+}

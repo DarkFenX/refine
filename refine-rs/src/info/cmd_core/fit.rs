@@ -140,3 +140,15 @@ impl FitInfoCmd {
         FitInfo::from_core(core_fit, &InfoModes::from_simple(self.shared.fit), &self.item)
     }
 }
+
+impl FitInfoCmdCtxFit {
+    pub(in crate::info) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitInfo, FitGetFitInfoError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetFitInfoError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
+}

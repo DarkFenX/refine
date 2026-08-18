@@ -1,4 +1,4 @@
-use crate::{FitId, FleetId, ItemId};
+use crate::{FitId, FitInfo, FleetId, FleetInfo, ItemId, ItemInfo, SolInfo};
 
 #[derive(Clone)]
 pub enum CmdResp {
@@ -6,6 +6,12 @@ pub enum CmdResp {
     AddedFitId(AddedFitIdResp),
     AddedItemIds(AddedItemIdsResp),
     ChangedItemIds(ChangedItemIdsResp),
+    // Large variants (e.g. fit is more than 500 bytes)
+    SolInfo(Box<SolInfo>),
+    FleetInfo(Box<FleetInfo>),
+    FitInfo(Box<FitInfo>),
+    ItemInfo(Box<ItemInfo>),
+    // Misc
     NoData,
 }
 impl CmdResp {
@@ -31,6 +37,30 @@ impl CmdResp {
         match self {
             Self::AddedItemIds(resp) => resp.charge_item_id,
             Self::ChangedItemIds(resp) => resp.charge_item_id,
+            _ => None,
+        }
+    }
+    pub fn get_sol_info(&self) -> Option<&SolInfo> {
+        match self {
+            Self::SolInfo(info) => Some(info),
+            _ => None,
+        }
+    }
+    pub fn get_fleet_info(&self) -> Option<&FleetInfo> {
+        match self {
+            Self::FleetInfo(info) => Some(info),
+            _ => None,
+        }
+    }
+    pub fn get_fit_info(&self) -> Option<&FitInfo> {
+        match self {
+            Self::FitInfo(info) => Some(info),
+            _ => None,
+        }
+    }
+    pub fn get_item_info(&self) -> Option<&ItemInfo> {
+        match self {
+            Self::ItemInfo(info) => Some(info),
             _ => None,
         }
     }
@@ -91,6 +121,26 @@ impl From<ChangedItemIdsResp> for CmdResp {
         CmdResp::ChangedItemIds(resp)
     }
 }
+impl From<SolInfo> for CmdResp {
+    fn from(info: SolInfo) -> Self {
+        CmdResp::SolInfo(Box::new(info))
+    }
+}
+impl From<FleetInfo> for CmdResp {
+    fn from(info: FleetInfo) -> Self {
+        CmdResp::FleetInfo(Box::new(info))
+    }
+}
+impl From<FitInfo> for CmdResp {
+    fn from(info: FitInfo) -> Self {
+        CmdResp::FitInfo(Box::new(info))
+    }
+}
+impl From<ItemInfo> for CmdResp {
+    fn from(info: ItemInfo) -> Self {
+        CmdResp::ItemInfo(Box::new(info))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
@@ -111,6 +161,10 @@ mod custom_serde {
                 Self::AddedFitId(inner) => inner.serialize(serializer),
                 Self::AddedItemIds(inner) => inner.serialize(serializer),
                 Self::ChangedItemIds(inner) => inner.serialize(serializer),
+                Self::SolInfo(inner) => inner.serialize(serializer),
+                Self::FleetInfo(inner) => inner.serialize(serializer),
+                Self::FitInfo(inner) => inner.serialize(serializer),
+                Self::ItemInfo(inner) => inner.serialize(serializer),
                 // Command response has custom serialization implementation just for the NoData
                 // variant to be serialized as {} in JSON instead of null
                 Self::NoData => {

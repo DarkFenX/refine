@@ -1,4 +1,4 @@
-use super::inner::SolarSystemInner;
+use super::{ctx::SolCtx, inner::SolarSystemInner};
 use crate::SolarSystem;
 
 impl<'r> SolarSystem<'r> {
@@ -30,12 +30,20 @@ impl<'r> SolarSystem<'r> {
         F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
         R: Send + 'static,
     {
+        self.exec_standard_safe_ctx(move |_ctx, core_sol| func(core_sol)).await
+    }
+    pub(crate) async fn exec_standard_safe_ctx<F, R>(&mut self, func: F) -> R
+    where
+        F: FnOnce(SolCtx, &mut rc::SolarSystem) -> R + Send + 'static,
+        R: Send + 'static,
+    {
+        let ctx = self.get_ctx();
         let mut core_sol = self.take_core().unwrap();
         let (core_sol, result) = self
             .refine
             .tpool
             .exec_standard(move || {
-                let result = func(&mut core_sol);
+                let result = func(ctx, &mut core_sol);
                 (core_sol, result)
             })
             .await;
@@ -48,13 +56,23 @@ impl<'r> SolarSystem<'r> {
         T: Send + 'static,
         E: Send + 'static,
     {
+        self.exec_standard_fallible_ctx(move |_ctx, core_sol| func(core_sol))
+            .await
+    }
+    pub(crate) async fn exec_standard_fallible_ctx<F, T, E>(&mut self, func: F) -> Result<T, E>
+    where
+        F: FnOnce(SolCtx, &mut rc::SolarSystem) -> Result<T, E> + Send + 'static,
+        T: Send + 'static,
+        E: Send + 'static,
+    {
+        let ctx = self.get_ctx();
         let mut core_sol = self.take_core().unwrap();
         let core_sol_backup = core_sol.clone();
         match self
             .refine
             .tpool
             .exec_standard(move || {
-                let ret = func(&mut core_sol)?;
+                let ret = func(ctx, &mut core_sol)?;
                 Ok((core_sol, ret))
             })
             .await
@@ -109,6 +127,12 @@ impl<'r> SolarSystem<'r> {
 // Helpers
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<'r> SolarSystem<'r> {
+    fn get_ctx(&self) -> SolCtx {
+        SolCtx {
+            sol_id: self.get_id(),
+            src_alias: self.get_src_alias(),
+        }
+    }
     fn take_core(&mut self) -> Option<Box<rc::SolarSystem>> {
         self.inner.take_core()
     }
