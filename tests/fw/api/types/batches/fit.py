@@ -33,6 +33,8 @@ from fw.api.commands import (
     FitCtlStanceUnsetCmd,
     FitCtlSubsystemAddCmd,
     FitCtlSubsystemChangeCmd,
+    FitInfoFitCmd,
+    FitInfoItemCmd,
 )
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
@@ -43,7 +45,7 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import MutaAdd, MutaChange, ReqHook
+    from fw.api.aliases import InfoMode, MutaAdd, MutaChange, ReqHook
     from fw.api.types.item import Item
     from fw.consts import ApiEffMode, ApiModMvMode, ApiModRmMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
 
@@ -87,6 +89,9 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         if resp.status_code == 200:
             self._fill_entity_ids(resp_data=resp.json())
 
+    ################################################################################################
+    # Control
+    ################################################################################################
     # Item
     def remove_item(
             self, *,
@@ -587,4 +592,27 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    ################################################################################################
+    # Info
+    ################################################################################################
+    def get_fit_info(
+            self, *,
+            fit_mode: InfoMode | type[Absent] = Absent,
+            item_mode: InfoMode | type[Absent] = Absent,
+    ) -> None:
+        command = FitInfoFitCmd(
+            fit_mode=fit_mode,
+            item_mode=item_mode)
+        self._commands.append(command)
+
+    def get_item_info(
+            self, *,
+            item_id: str,
+            item_mode: InfoMode | type[Absent] = Absent,
+    ) -> None:
+        command = FitInfoItemCmd(
+            item_id=item_id,
+            item_mode=item_mode)
         self._commands.append(command)

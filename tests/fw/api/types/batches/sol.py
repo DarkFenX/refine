@@ -47,6 +47,10 @@ from fw.api.commands import (
     SolCtlSubsystemChangeCmd,
     SolCtlSwEffectAddCmd,
     SolCtlSwEffectChangeCmd,
+    SolInfoFitCmd,
+    SolInfoFleetCmd,
+    SolInfoItemCmd,
+    SolInfoSolCmd,
 )
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
@@ -59,7 +63,7 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfileAlias, MutaAdd, MutaChange, ReqHook
+    from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, ReqHook
     from fw.api.types.item import Item
     from fw.consts import (
         ApiEffMode,
@@ -119,6 +123,9 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._ret_datas[index] = EntityData(kind=IdFillKind.regular, data=data)
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
 
+    ################################################################################################
+    # Control
+    ################################################################################################
     # Sol
     def change_sol(
             self, *,
@@ -835,4 +842,53 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
+        self._commands.append(command)
+
+    ################################################################################################
+    # Info
+    ################################################################################################
+    def get_sol_info(
+            self, *,
+            sol_mode: InfoMode | type[Absent] = Absent,
+            fleet_mode: InfoMode | type[Absent] = Absent,
+            fit_mode: InfoMode | type[Absent] = Absent,
+            item_mode: InfoMode | type[Absent] = Absent,
+    ) -> None:
+        command = SolInfoSolCmd(
+            sol_mode=sol_mode,
+            fleet_mode=fleet_mode,
+            fit_mode=fit_mode,
+            item_mode=item_mode)
+        self._commands.append(command)
+
+    def get_fleet_info(
+            self, *,
+            fleet_id: str,
+            fleet_mode: InfoMode | type[Absent] = Absent,
+    ) -> None:
+        command = SolInfoFleetCmd(
+            fleet_id=fleet_id,
+            fleet_mode=fleet_mode)
+        self._commands.append(command)
+
+    def get_fit_info(
+            self, *,
+            fit_id: str,
+            fit_mode: InfoMode | type[Absent] = Absent,
+            item_mode: InfoMode | type[Absent] = Absent,
+    ) -> None:
+        command = SolInfoFitCmd(
+            fit_id=fit_id,
+            fit_mode=fit_mode,
+            item_mode=item_mode)
+        self._commands.append(command)
+
+    def get_item_info(
+            self, *,
+            item_id: str,
+            item_mode: InfoMode | type[Absent] = Absent,
+    ) -> None:
+        command = SolInfoItemCmd(
+            item_id=item_id,
+            item_mode=item_mode)
         self._commands.append(command)

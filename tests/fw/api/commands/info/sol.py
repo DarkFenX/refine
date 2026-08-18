@@ -10,9 +10,8 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolInfoFleetCmd(BaseCommand):
+class SolInfoSolCmd(BaseCommand):
 
-    fleet_id: str
     sol_mode: InfoMode | type[Absent]
     fleet_mode: InfoMode | type[Absent]
     fit_mode: InfoMode | type[Absent]
