@@ -60,8 +60,8 @@ impl SolInfoEnumCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // impl SolInfoEnumCmd {
-//     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
-//         Ok(match self {
+//     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp,
+// SolInfoEnumError> {         Ok(match self {
 //             Self::SolInfo(cmd) => cmd.execute(core_sol).into(),
 //             Self::FleetInfo(cmd) => cmd.execute(core_sol).into(),
 //             Self::FitInfo(cmd) => cmd.execute(core_sol).into(),

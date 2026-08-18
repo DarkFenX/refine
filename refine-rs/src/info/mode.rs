@@ -66,41 +66,58 @@ impl<M, I> InfoModes<M, I> {
         M: Copy + PartialEq,
         I: Eq + Hash,
     {
-        Self {
-            default: modes.default,
-            overrides: modes
-                .overrides
-                .into_iter()
-                .filter_map(|(over_mode, over_ids)| match over_mode == modes.default {
-                    true => None,
-                    false => Some(over_ids.into_iter().map(move |over_id| (over_id, over_mode))),
-                })
-                .flatten()
-                .collect(),
+        let default = modes.default;
+        let mut overrides = HashMap::with_capacity(calc_needed_space(&modes.overrides, default));
+        for (over_mode, over_ids) in modes.overrides {
+            // Getter falls back to default, do not add entries with it
+            if over_mode == default {
+                continue;
+            }
+            for over_id in over_ids {
+                overrides.insert(over_id, over_mode);
+            }
         }
+        Self { default, overrides }
     }
     pub(in crate::info) fn from_compact_br<B>(
         compact_br: InfoModesCompact<M, B>,
         ctl_cmd_resps: &CmdResps,
     ) -> Result<Self, BrResolveError>
     where
-        M: Copy,
+        M: Copy + PartialEq,
         B: BrResolvable<Target = I>,
         I: Eq + Hash,
     {
-        Ok(Self {
-            default: compact_br.default,
-            overrides: compact_br
-                .overrides
-                .into_iter()
-                .flat_map(|(mode, backrefs)| {
-                    backrefs
-                        .into_iter()
-                        .map(move |backref| backref.br_resolve(ctl_cmd_resps).map(|id| (id, mode)))
-                })
-                .collect::<Result<_, _>>()?,
-        })
+        let default = compact_br.default;
+        let mut overrides = HashMap::with_capacity(calc_needed_space(&compact_br.overrides, default));
+        for (over_mode, over_backrefs) in compact_br.overrides {
+            // Getter falls back to default, do not add entries with it
+            if over_mode == default {
+                continue;
+            }
+            for over_backref in over_backrefs {
+                overrides.insert(over_backref.br_resolve(ctl_cmd_resps)?, over_mode);
+            }
+        }
+        Ok(Self { default, overrides })
     }
+}
+
+// This repeats filtering done in actual converting methods
+fn calc_needed_space<M, I>(overrides: &[(M, Vec<I>)], default: M) -> usize
+where
+    M: Copy + PartialEq,
+{
+    overrides
+        .iter()
+        .filter_map(|(mode, ids)| match *mode == default {
+            true => None,
+            false => Some(ids.len()),
+        })
+        .sum()
+}
+
+impl<M, I> InfoModes<M, I> {
     pub(in crate::info) fn into_compact_br<B>(self) -> InfoModesCompact<M, B>
     where
         B: From<I>,
