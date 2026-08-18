@@ -16,15 +16,13 @@ impl<'r> SolarSystem<'r> {
     ///
     ///   Note that for a command to be safe, solar system state does not have to be exactly equal
     ///   to what it was before command execution. Failed operations can increment ID counters, but
-    ///   it since it does not affect anything but IDs of newly created entities, it is considered
+    ///   since it does not affect anything but IDs of newly created entities, it is considered
     ///   safe.
     ///
     /// - fallible methods have to back solar system up, and restore its state in case of failure.
     ///   Commands executed by those methods could have rollback code in case of errors, but it is
     ///   too hard to write, and is likely to become a source of bugs. Cloning is easier, and is
     ///   fast enough.
-    ///
-    /// - rollback methods always back system up and restore it, regardless of results.
     pub(crate) async fn exec_standard_safe<F, R>(&mut self, func: F) -> R
     where
         F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
@@ -86,16 +84,6 @@ impl<'r> SolarSystem<'r> {
                 Err(error)
             }
         }
-    }
-    pub(crate) async fn exec_standard_rollback<F, R>(&mut self, func: F) -> R
-    where
-        F: FnOnce(&mut rc::SolarSystem) -> R + Send + 'static,
-        R: Send + 'static,
-    {
-        // Not actually rolling back, just cloning sol and sending it in, which is effectively the
-        // same
-        let mut core_sol = self.inner.core_sol.as_ref().unwrap().as_ref().clone();
-        self.refine.tpool.exec_standard(move || func(&mut core_sol)).await
     }
     pub(crate) async fn exec_heavy_safe<F, R>(&mut self, func: F) -> R
     where

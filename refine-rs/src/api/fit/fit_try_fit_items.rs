@@ -5,10 +5,8 @@ impl Fit<'_, '_> {
     pub async fn try_items(&mut self, try_cmd: FitTryItemsCmd) -> Vec<ItemTypeId> {
         // Variables for move
         let fit_id = self.id;
-        // Try-fit-items method is modifying sol state even if it does not fail - due to how charge
-        // checks are done. Always roll sol state back because of that
         self.sol
-            .exec_standard_rollback(move |core_sol| {
+            .exec_standard_safe(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the fit before we get it here
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 try_cmd.execute(&mut core_fit)

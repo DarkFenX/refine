@@ -109,7 +109,11 @@ impl FitTryItemsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitTryItemsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Vec<ItemTypeId> {
-        core_fit.try_fit_items(&self.shared.type_ids, &self.val_options)
+        // Execute in cloned sol, since at the present time try_fit_items changes its state
+        let fit_id = core_fit.get_fit_id();
+        let mut cloned_sol = core_fit.get_sol().clone();
+        let mut cloned_fit = cloned_sol.get_fit_mut(&fit_id).unwrap();
+        cloned_fit.try_fit_items(&self.shared.type_ids, &self.val_options)
     }
 }
 
