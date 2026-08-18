@@ -1,9 +1,11 @@
 use crate::{
-    CmdResps, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
+    CmdResps, FitId, FitIdBr, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     err::BrResolveError,
     info::{InfoModes, InfoModesCompact},
+    shared::BrResolvable,
 };
 
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct FitInfoCmd {
@@ -25,6 +27,20 @@ pub struct FitInfoCmdBr {
 struct FitInfoCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
     fit: FitInfoMode,
+}
+
+// Extra context commands
+#[derive(Clone)]
+pub struct FitInfoCmdCtxFit {
+    fit_id: FitId,
+    core: FitInfoCmd,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone)]
+pub struct FitInfoCmdCtxFitBr {
+    fit_id: FitIdBr,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    core: FitInfoCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -76,6 +92,15 @@ impl FitInfoCmdBr {
         Ok(FitInfoCmd {
             item: InfoModes::from_compact_br(self.item, resps)?,
             shared: self.shared,
+        })
+    }
+}
+
+impl FitInfoCmdCtxFitBr {
+    pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmdCtxFit, BrResolveError> {
+        Ok(FitInfoCmdCtxFit {
+            fit_id: self.fit_id.br_resolve(resps)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }

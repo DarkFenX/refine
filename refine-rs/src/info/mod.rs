@@ -1,4 +1,4 @@
-pub use cmd_core::{FitInfoCmd, FitInfoCmdBr, FleetInfoCmd, ItemInfoCmd, SolInfoCmd, SolInfoCmdBr};
+pub use cmd_core::{FitInfoCmd, FitInfoCmdBr, FleetInfoCmd, ItemInfoCmd, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr};
 pub use fit::{FitInfo, FitInfoExt, FitInfoMode};
 pub use fleet::{FleetInfo, FleetInfoExt, FleetInfoMode};
 pub use item::{

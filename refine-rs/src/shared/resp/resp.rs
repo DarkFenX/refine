@@ -1,5 +1,3 @@
-use rc::ItemCommon;
-
 use crate::{FitId, FleetId, ItemId};
 
 #[derive(Clone)]
