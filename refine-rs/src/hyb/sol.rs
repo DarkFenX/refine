@@ -11,12 +11,14 @@ use crate::{
     err::{BrResolveError, SolChangeEnumError, SolInfoEnumError},
     info::SolInfoEnumCmd,
     svc::SolCtx,
+    val::{FitValCmdBr, SolValCmdBr, SolValEnumCmd, SolValEnumCmdBr, err::SolValEnumError},
 };
 
 #[derive(Clone)]
 pub(crate) enum SolHybridCmd {
     Ctl(SolChangeEnumCmd),
     Info(SolInfoEnumCmd),
+    Val(SolValEnumCmd),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
@@ -24,6 +26,7 @@ pub(crate) enum SolHybridCmd {
 pub enum SolHybridCmdBr {
     Ctl(SolChangeEnumCmdBr),
     Info(SolInfoEnumCmdBr),
+    Val(SolValEnumCmdBr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -295,6 +298,17 @@ impl ItemInfoCmdBr {
         SolHybridCmdBr::Info(self.into_sol_inf_br(item_id))
     }
 }
+// Validation
+impl SolValCmdBr {
+    pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
+        SolHybridCmdBr::Val(self.into_sol_val_br())
+    }
+}
+impl FitValCmdBr {
+    pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Val(self.into_sol_val_br(fit_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
@@ -304,6 +318,7 @@ impl SolHybridCmdBr {
         Ok(match self {
             Self::Ctl(ctl_cmd) => SolHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => SolHybridCmd::Info(info_cmd.br_resolve(resps)?),
+            Self::Val(info_cmd) => SolHybridCmd::Val(info_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -316,6 +331,7 @@ impl SolHybridCmd {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
             Self::Info(info_cmd) => info_cmd.execute(ctx, core_sol)?,
+            Self::Val(info_cmd) => info_cmd.execute(core_sol)?,
         })
     }
 }
@@ -326,4 +342,6 @@ pub enum SolHybridError {
     Ctl(#[from] SolChangeEnumError),
     #[error(transparent)]
     Info(#[from] SolInfoEnumError),
+    #[error(transparent)]
+    Val(#[from] SolValEnumError),
 }

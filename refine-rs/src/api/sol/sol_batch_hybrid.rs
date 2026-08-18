@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, SolHybridCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError, SolHybridError, SolInfoEnumError},
+    val::err::SolValEnumError,
 };
 
 impl SolarSystem<'_> {
@@ -30,6 +31,8 @@ pub enum SolHybridBatchError {
     CtlExec(usize, #[source] SolChangeEnumError),
     #[error("command #{0} failed")]
     InfoExec(usize, #[source] SolInfoEnumError),
+    #[error("command #{0} failed")]
+    ValExec(usize, #[source] SolValEnumError),
 }
 impl SolHybridBatchError {
     fn from_br_resolve(cmd_idx: usize, br_err: BrResolveError) -> Self {
@@ -39,6 +42,7 @@ impl SolHybridBatchError {
         match exec_err {
             SolHybridError::Ctl(ctl_err) => Self::CtlExec(cmd_idx, ctl_err),
             SolHybridError::Info(info_err) => Self::InfoExec(cmd_idx, info_err),
+            SolHybridError::Val(val_err) => Self::ValExec(cmd_idx, val_err),
         }
     }
 }

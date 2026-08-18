@@ -61,6 +61,11 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
             },
+            Self::SolBatchVal(err) => match &err.error {
+                rs::val::err::SolValEnumError::Fit(rs::val::err::FitGetFitValError::FitGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "FIT-001")
+                }
+            },
             Self::SolRemove(err) => match err {
                 rs::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-004"),
             },
