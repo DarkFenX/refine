@@ -1,8 +1,8 @@
-use crate::{Fit, ItemTypeId, trial::TryFitItemsCmd};
+use crate::{Fit, ItemTypeId, trial::FitTryItemsCmd};
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-try", level = "trace", skip_all)]
-    pub async fn try_fit_items(&mut self, try_cmd: TryFitItemsCmd) -> Vec<ItemTypeId> {
+    pub async fn try_items(&mut self, try_cmd: FitTryItemsCmd) -> Vec<ItemTypeId> {
         // Variables for move
         let fit_id = self.id;
         // Try-fit-items method is modifying sol state even if it does not fail - due to how charge
