@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseChargeCmd(BaseCommand):
+class BaseCtlChargeCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseChargeCmd(BaseCommand):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemChargeChangeCmd(BaseChargeCmd):
+class ItemCtlChargeChangeCmd(BaseCtlChargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -37,7 +37,7 @@ class ItemChargeChangeCmd(BaseChargeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitChargeChangeCmd(BaseChargeCmd):
+class FitCtlChargeChangeCmd(BaseCtlChargeCmd):
 
     item_id: str
 
@@ -49,7 +49,7 @@ class FitChargeChangeCmd(BaseChargeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolChargeChangeCmd(BaseChargeCmd):
+class SolCtlChargeChangeCmd(BaseCtlChargeCmd):
 
     item_id: str
 

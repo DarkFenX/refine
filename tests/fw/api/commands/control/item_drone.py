@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseDroneCmd(BaseCommand):
+class BaseCtlDroneCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: ApiMinionState | type[Absent]
@@ -34,7 +34,7 @@ class BaseDroneCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseDroneAddCmd(BaseDroneCmd):
+class BaseCtlDroneAddCmd(BaseCtlDroneCmd):
 
     mutation: MutaAdd | type[Absent]
     proj_item_ids: list[str] | type[Absent]
@@ -47,7 +47,7 @@ class BaseDroneAddCmd(BaseDroneCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemDroneAddCmd(BaseDroneAddCmd):
+class ItemCtlDroneAddCmd(BaseCtlDroneAddCmd):
 
     fit_id: str
 
@@ -59,7 +59,7 @@ class ItemDroneAddCmd(BaseDroneAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitDroneAddCmd(BaseDroneAddCmd):
+class FitCtlDroneAddCmd(BaseCtlDroneAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -68,7 +68,7 @@ class FitDroneAddCmd(BaseDroneAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolDroneAddCmd(BaseDroneAddCmd):
+class SolCtlDroneAddCmd(BaseCtlDroneAddCmd):
 
     fit_id: str
 
@@ -83,7 +83,7 @@ class SolDroneAddCmd(BaseDroneAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseDroneChangeCmd(BaseDroneCmd):
+class BaseCtlDroneChangeCmd(BaseCtlDroneCmd):
 
     mutation: MutaAdd | MutaChange | type[Absent] | None
     add_proj_item_ids: list[str] | type[Absent]
@@ -98,7 +98,7 @@ class BaseDroneChangeCmd(BaseDroneCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemDroneChangeCmd(BaseDroneChangeCmd):
+class ItemCtlDroneChangeCmd(BaseCtlDroneChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -107,7 +107,7 @@ class ItemDroneChangeCmd(BaseDroneChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitDroneChangeCmd(BaseDroneChangeCmd):
+class FitCtlDroneChangeCmd(BaseCtlDroneChangeCmd):
 
     item_id: str
 
@@ -119,7 +119,7 @@ class FitDroneChangeCmd(BaseDroneChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolDroneChangeCmd(BaseDroneChangeCmd):
+class SolCtlDroneChangeCmd(BaseCtlDroneChangeCmd):
 
     item_id: str
 

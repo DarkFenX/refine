@@ -1,52 +1,52 @@
 import typing
 
 from fw.api.commands import (
-    SolAutochargeChangeCmd,
-    SolBoosterAddCmd,
-    SolBoosterChangeCmd,
-    SolCharacterChangeViaFitIdCmd,
-    SolCharacterChangeViaItemIdCmd,
-    SolCharacterSetCmd,
-    SolCharacterUnsetCmd,
-    SolChargeChangeCmd,
-    SolDroneAddCmd,
-    SolDroneChangeCmd,
-    SolFighterAddCmd,
-    SolFighterChangeCmd,
-    SolFitAddCmd,
-    SolFitChangeCmd,
-    SolFitRemoveCmd,
-    SolFleetAddCmd,
-    SolFleetChangeCmd,
-    SolFleetRemoveCmd,
-    SolFwEffectAddCmd,
-    SolFwEffectChangeCmd,
-    SolImplantAddCmd,
-    SolImplantChangeCmd,
-    SolItemRemoveCmd,
-    SolModuleAddCmd,
-    SolModuleChangeCmd,
-    SolProjEffectAddCmd,
-    SolProjEffectChangeCmd,
-    SolRigAddCmd,
-    SolRigChangeCmd,
-    SolServiceAddCmd,
-    SolServiceChangeCmd,
-    SolShipChangeViaFitIdCmd,
-    SolShipChangeViaItemIdCmd,
-    SolShipSetCmd,
-    SolShipUnsetCmd,
-    SolSkillAddCmd,
-    SolSkillChangeCmd,
-    SolSolChangeCmd,
-    SolStanceChangeViaFitIdCmd,
-    SolStanceChangeViaItemIdCmd,
-    SolStanceSetCmd,
-    SolStanceUnsetCmd,
-    SolSubsystemAddCmd,
-    SolSubsystemChangeCmd,
-    SolSwEffectAddCmd,
-    SolSwEffectChangeCmd,
+    SolCtlAutochargeChangeCmd,
+    SolCtlBoosterAddCmd,
+    SolCtlBoosterChangeCmd,
+    SolCtlCharacterChangeViaFitIdCmd,
+    SolCtlCharacterChangeViaItemIdCmd,
+    SolCtlCharacterSetCmd,
+    SolCtlCharacterUnsetCmd,
+    SolCtlChargeChangeCmd,
+    SolCtlDroneAddCmd,
+    SolCtlDroneChangeCmd,
+    SolCtlFighterAddCmd,
+    SolCtlFighterChangeCmd,
+    SolCtlFitAddCmd,
+    SolCtlFitChangeCmd,
+    SolCtlFitRemoveCmd,
+    SolCtlFleetAddCmd,
+    SolCtlFleetChangeCmd,
+    SolCtlFleetRemoveCmd,
+    SolCtlFwEffectAddCmd,
+    SolCtlFwEffectChangeCmd,
+    SolCtlImplantAddCmd,
+    SolCtlImplantChangeCmd,
+    SolCtlItemRemoveCmd,
+    SolCtlModuleAddCmd,
+    SolCtlModuleChangeCmd,
+    SolCtlProjEffectAddCmd,
+    SolCtlProjEffectChangeCmd,
+    SolCtlRigAddCmd,
+    SolCtlRigChangeCmd,
+    SolCtlServiceAddCmd,
+    SolCtlServiceChangeCmd,
+    SolCtlShipChangeViaFitIdCmd,
+    SolCtlShipChangeViaItemIdCmd,
+    SolCtlShipSetCmd,
+    SolCtlShipUnsetCmd,
+    SolCtlSkillAddCmd,
+    SolCtlSkillChangeCmd,
+    SolCtlSolChangeCmd,
+    SolCtlStanceChangeViaFitIdCmd,
+    SolCtlStanceChangeViaItemIdCmd,
+    SolCtlStanceSetCmd,
+    SolCtlStanceUnsetCmd,
+    SolCtlSubsystemAddCmd,
+    SolCtlSubsystemChangeCmd,
+    SolCtlSwEffectAddCmd,
+    SolCtlSwEffectChangeCmd,
 )
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
@@ -129,7 +129,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             default_optional_reloads: ApiOptionalReload | type[Absent] = Absent,
             default_rearm_minions: ApiRearmMinion | type[Absent] = Absent,
     ) -> None:
-        command = SolSolChangeCmd(
+        command = SolCtlSolChangeCmd(
             sec_zone=sec_zone,
             default_incoming_dps=default_incoming_dps,
             default_spool=default_spool,
@@ -143,7 +143,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             self, *,
             fit_ids: list[str] | type[Absent] = Absent,
     ) -> Fleet:
-        command = SolFleetAddCmd(fit_ids=fit_ids)
+        command = SolCtlFleetAddCmd(fit_ids=fit_ids)
         self._commands.append(command)
         return self._make_fleet()
 
@@ -153,14 +153,14 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             add_fit_ids: list[str] | type[Absent] = Absent,
             rm_fit_ids: list[str] | type[Absent] = Absent,
     ) -> None:
-        command = SolFleetChangeCmd(
+        command = SolCtlFleetChangeCmd(
             fleet_id=fleet_id,
             add_fit_ids=add_fit_ids,
             rm_fit_ids=rm_fit_ids)
         self._commands.append(command)
 
     def remove_fleet(self, *, fleet_id: str) -> None:
-        command = SolFleetRemoveCmd(fleet_id=fleet_id)
+        command = SolCtlFleetRemoveCmd(fleet_id=fleet_id)
         self._commands.append(command)
 
     # Fit
@@ -170,7 +170,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             sec_status: float | type[Absent] = Absent,
             rah_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
     ) -> Fit:
-        command = SolFitAddCmd(
+        command = SolCtlFitAddCmd(
             fleet_id=fleet_id,
             sec_status=sec_status,
             rah_incoming_dps=rah_incoming_dps)
@@ -184,7 +184,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             sec_status: float | type[Absent] = Absent,
             rah_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
     ) -> None:
-        command = SolFitChangeCmd(
+        command = SolCtlFitChangeCmd(
             fit_id=fit_id,
             fleet_id=fleet_id,
             sec_status=sec_status,
@@ -192,7 +192,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     def remove_fit(self, *, fit_id: str) -> None:
-        command = SolFitRemoveCmd(fit_id=fit_id)
+        command = SolCtlFitRemoveCmd(fit_id=fit_id)
         self._commands.append(command)
 
     # Item
@@ -201,7 +201,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id: str,
             rm_mode: ApiModRmMode | type[Absent] = Absent,
     ) -> None:
-        command = SolItemRemoveCmd(
+        command = SolCtlItemRemoveCmd(
             item_id=item_id,
             rm_mode=rm_mode)
         self._commands.append(command)
@@ -213,7 +213,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolAutochargeChangeCmd(
+        command = SolCtlAutochargeChangeCmd(
             item_id=item_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -228,7 +228,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             side_effects: dict[int | str, bool] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolBoosterAddCmd(
+        command = SolCtlBoosterAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -245,7 +245,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             side_effects: dict[int | str, bool] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolBoosterChangeCmd(
+        command = SolCtlBoosterChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -261,7 +261,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolCharacterSetCmd(
+        command = SolCtlCharacterSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -276,7 +276,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolCharacterChangeViaFitIdCmd(
+        command = SolCtlCharacterChangeViaFitIdCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -290,7 +290,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolCharacterChangeViaItemIdCmd(
+        command = SolCtlCharacterChangeViaItemIdCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -298,7 +298,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     def unset_character(self, *, fit_id: str) -> None:
-        command = SolCharacterUnsetCmd(fit_id=fit_id)
+        command = SolCtlCharacterUnsetCmd(fit_id=fit_id)
         self._commands.append(command)
 
     # Item - charge
@@ -309,7 +309,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolChargeChangeCmd(
+        command = SolCtlChargeChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -329,7 +329,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolDroneAddCmd(
+        command = SolCtlDroneAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -355,7 +355,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolDroneChangeCmd(
+        command = SolCtlDroneChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -382,7 +382,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolFighterAddCmd(
+        command = SolCtlFighterAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -410,7 +410,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolFighterChangeCmd(
+        command = SolCtlFighterChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -432,7 +432,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolFwEffectAddCmd(
+        command = SolCtlFwEffectAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -447,7 +447,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolFwEffectChangeCmd(
+        command = SolCtlFwEffectChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -462,7 +462,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolImplantAddCmd(
+        command = SolCtlImplantAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -477,7 +477,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolImplantChangeCmd(
+        command = SolCtlImplantChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -499,7 +499,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolModuleAddCmd(
+        command = SolCtlModuleAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             rack=rack,
@@ -528,7 +528,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolModuleChangeCmd(
+        command = SolCtlModuleChangeCmd(
             item_id=item_id,
             type_id=type_id,
             move=move,
@@ -551,7 +551,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolProjEffectAddCmd(
+        command = SolCtlProjEffectAddCmd(
             type_id=type_id,
             state=state,
             proj_item_ids=proj_item_ids,
@@ -568,7 +568,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolProjEffectChangeCmd(
+        command = SolCtlProjEffectChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -585,7 +585,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolRigAddCmd(
+        command = SolCtlRigAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -600,7 +600,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolRigChangeCmd(
+        command = SolCtlRigChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -615,7 +615,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: ApiServiceState = ApiServiceState.offline,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolServiceAddCmd(
+        command = SolCtlServiceAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -630,7 +630,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: ApiServiceState | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolServiceChangeCmd(
+        command = SolCtlServiceChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -647,7 +647,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolShipSetCmd(
+        command = SolCtlShipSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -666,7 +666,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolShipChangeViaFitIdCmd(
+        command = SolCtlShipChangeViaFitIdCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -684,7 +684,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolShipChangeViaItemIdCmd(
+        command = SolCtlShipChangeViaItemIdCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -694,7 +694,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     def unset_ship(self, *, fit_id: str) -> None:
-        command = SolShipUnsetCmd(fit_id=fit_id)
+        command = SolCtlShipUnsetCmd(fit_id=fit_id)
         self._commands.append(command)
 
     # Item - skill
@@ -706,7 +706,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolSkillAddCmd(
+        command = SolCtlSkillAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             level=level,
@@ -723,7 +723,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolSkillChangeCmd(
+        command = SolCtlSkillChangeCmd(
             item_id=item_id,
             type_id=type_id,
             level=level,
@@ -739,7 +739,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolStanceSetCmd(
+        command = SolCtlStanceSetCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -754,7 +754,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolStanceChangeViaFitIdCmd(
+        command = SolCtlStanceChangeViaFitIdCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -768,7 +768,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolStanceChangeViaItemIdCmd(
+        command = SolCtlStanceChangeViaItemIdCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -776,7 +776,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     def unset_stance(self, *, fit_id: str) -> None:
-        command = SolStanceUnsetCmd(fit_id=fit_id)
+        command = SolCtlStanceUnsetCmd(fit_id=fit_id)
         self._commands.append(command)
 
     # Item - subsystem
@@ -787,7 +787,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolSubsystemAddCmd(
+        command = SolCtlSubsystemAddCmd(
             fit_id=fit_id,
             type_id=type_id,
             state=state,
@@ -802,7 +802,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolSubsystemChangeCmd(
+        command = SolCtlSubsystemChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -816,7 +816,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = SolSwEffectAddCmd(
+        command = SolCtlSwEffectAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -830,7 +830,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = SolSwEffectChangeCmd(
+        command = SolCtlSwEffectChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,

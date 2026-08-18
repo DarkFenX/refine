@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseServiceCmd(BaseCommand):
+class BaseCtlServiceCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: ApiServiceState | type[Absent]
@@ -28,7 +28,7 @@ class BaseServiceCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemServiceAddCmd(BaseServiceCmd):
+class ItemCtlServiceAddCmd(BaseCtlServiceCmd):
 
     fit_id: str
 
@@ -40,7 +40,7 @@ class ItemServiceAddCmd(BaseServiceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitServiceAddCmd(BaseServiceCmd):
+class FitCtlServiceAddCmd(BaseCtlServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class FitServiceAddCmd(BaseServiceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolServiceAddCmd(BaseServiceCmd):
+class SolCtlServiceAddCmd(BaseCtlServiceCmd):
 
     fit_id: str
 
@@ -64,7 +64,7 @@ class SolServiceAddCmd(BaseServiceCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemServiceChangeCmd(BaseServiceCmd):
+class ItemCtlServiceChangeCmd(BaseCtlServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -73,7 +73,7 @@ class ItemServiceChangeCmd(BaseServiceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitServiceChangeCmd(BaseServiceCmd):
+class FitCtlServiceChangeCmd(BaseCtlServiceCmd):
 
     item_id: str
 
@@ -85,7 +85,7 @@ class FitServiceChangeCmd(BaseServiceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolServiceChangeCmd(BaseServiceCmd):
+class SolCtlServiceChangeCmd(BaseCtlServiceCmd):
 
     item_id: str
 

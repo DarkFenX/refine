@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseSwEffectCmd(BaseCommand):
+class BaseCtlSwEffectCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseSwEffectCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSwEffectAddCmd(BaseSwEffectCmd):
+class ItemCtlSwEffectAddCmd(BaseCtlSwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -37,7 +37,7 @@ class ItemSwEffectAddCmd(BaseSwEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSwEffectAddCmd(BaseSwEffectCmd):
+class SolCtlSwEffectAddCmd(BaseCtlSwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class SolSwEffectAddCmd(BaseSwEffectCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSwEffectChangeCmd(BaseSwEffectCmd):
+class ItemCtlSwEffectChangeCmd(BaseCtlSwEffectCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -58,7 +58,7 @@ class ItemSwEffectChangeCmd(BaseSwEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSwEffectChangeCmd(BaseSwEffectCmd):
+class SolCtlSwEffectChangeCmd(BaseCtlSwEffectCmd):
 
     item_id: str
 

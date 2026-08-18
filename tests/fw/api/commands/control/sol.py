@@ -11,7 +11,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseSolCmd(BaseCommand):
+class BaseCtlSolCmd(BaseCommand):
 
     sec_zone: ApiSecZone | type[Absent]
     default_incoming_dps: DpsProfileAlias | type[Absent]
@@ -35,7 +35,7 @@ class BaseSolCmd(BaseCommand):
 # Creating
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class RootSolCreateCmd(BaseSolCmd):
+class RootCtlSolCreateCmd(BaseCtlSolCmd):
 
     src_alias: str | type[Absent]
 
@@ -49,7 +49,7 @@ class RootSolCreateCmd(BaseSolCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class SolSolChangeCmd(BaseSolCmd):
+class SolCtlSolChangeCmd(BaseCtlSolCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()

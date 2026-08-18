@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseSkillCmd(BaseCommand):
+class BaseCtlSkillCmd(BaseCommand):
 
     type_id: int | type[Absent]
     level: int | type[Absent]
@@ -30,7 +30,7 @@ class BaseSkillCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSkillAddCmd(BaseSkillCmd):
+class ItemCtlSkillAddCmd(BaseCtlSkillCmd):
 
     fit_id: str
 
@@ -42,7 +42,7 @@ class ItemSkillAddCmd(BaseSkillCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSkillAddCmd(BaseSkillCmd):
+class FitCtlSkillAddCmd(BaseCtlSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -51,7 +51,7 @@ class FitSkillAddCmd(BaseSkillCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSkillAddCmd(BaseSkillCmd):
+class SolCtlSkillAddCmd(BaseCtlSkillCmd):
 
     fit_id: str
 
@@ -66,7 +66,7 @@ class SolSkillAddCmd(BaseSkillCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSkillChangeCmd(BaseSkillCmd):
+class ItemCtlSkillChangeCmd(BaseCtlSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -75,7 +75,7 @@ class ItemSkillChangeCmd(BaseSkillCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSkillChangeCmd(BaseSkillCmd):
+class FitCtlSkillChangeCmd(BaseCtlSkillCmd):
 
     item_id: str
 
@@ -87,7 +87,7 @@ class FitSkillChangeCmd(BaseSkillCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSkillChangeCmd(BaseSkillCmd):
+class SolCtlSkillChangeCmd(BaseCtlSkillCmd):
 
     item_id: str
 

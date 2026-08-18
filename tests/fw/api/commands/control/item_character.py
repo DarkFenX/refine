@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseCharacterCmd(BaseCommand):
+class BaseCtlCharacterCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseCharacterCmd(BaseCommand):
 # Setting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemCharacterSetCmd(BaseCharacterCmd):
+class ItemCtlCharacterSetCmd(BaseCtlCharacterCmd):
 
     fit_id: str
 
@@ -40,7 +40,7 @@ class ItemCharacterSetCmd(BaseCharacterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitCharacterSetCmd(BaseCharacterCmd):
+class FitCtlCharacterSetCmd(BaseCtlCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class FitCharacterSetCmd(BaseCharacterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolCharacterSetCmd(BaseCharacterCmd):
+class SolCtlCharacterSetCmd(BaseCtlCharacterCmd):
 
     fit_id: str
 
@@ -64,7 +64,7 @@ class SolCharacterSetCmd(BaseCharacterCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemCharacterChangeCmd(BaseCharacterCmd):
+class ItemCtlCharacterChangeCmd(BaseCtlCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -73,7 +73,7 @@ class ItemCharacterChangeCmd(BaseCharacterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitCharacterChangeCmd(BaseCharacterCmd):
+class FitCtlCharacterChangeCmd(BaseCtlCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -82,7 +82,7 @@ class FitCharacterChangeCmd(BaseCharacterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
+class SolCtlCharacterChangeViaItemIdCmd(BaseCtlCharacterCmd):
 
     item_id: str
 
@@ -94,7 +94,7 @@ class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
+class SolCtlCharacterChangeViaFitIdCmd(BaseCtlCharacterCmd):
 
     fit_id: str
 
@@ -109,7 +109,7 @@ class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
 # Unsetting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseCharacterUnsetCmd(BaseCommand):
+class BaseCtlCharacterUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
@@ -117,12 +117,12 @@ class BaseCharacterUnsetCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitCharacterUnsetCmd(BaseCharacterUnsetCmd):
+class FitCtlCharacterUnsetCmd(BaseCtlCharacterUnsetCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolCharacterUnsetCmd(BaseCharacterUnsetCmd):
+class SolCtlCharacterUnsetCmd(BaseCtlCharacterUnsetCmd):
 
     fit_id: str
 

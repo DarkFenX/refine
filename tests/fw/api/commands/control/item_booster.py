@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseBoosterCmd(BaseCommand):
+class BaseCtlBoosterCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -30,7 +30,7 @@ class BaseBoosterCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemBoosterAddCmd(BaseBoosterCmd):
+class ItemCtlBoosterAddCmd(BaseCtlBoosterCmd):
 
     fit_id: str
 
@@ -42,7 +42,7 @@ class ItemBoosterAddCmd(BaseBoosterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterAddCmd(BaseBoosterCmd):
+class FitCtlBoosterAddCmd(BaseCtlBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -51,7 +51,7 @@ class FitBoosterAddCmd(BaseBoosterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterAddCmd(BaseBoosterCmd):
+class SolCtlBoosterAddCmd(BaseCtlBoosterCmd):
 
     fit_id: str
 
@@ -66,7 +66,7 @@ class SolBoosterAddCmd(BaseBoosterCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemBoosterChangeCmd(BaseBoosterCmd):
+class ItemCtlBoosterChangeCmd(BaseCtlBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -75,7 +75,7 @@ class ItemBoosterChangeCmd(BaseBoosterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterChangeCmd(BaseBoosterCmd):
+class FitCtlBoosterChangeCmd(BaseCtlBoosterCmd):
 
     item_id: str
 
@@ -87,7 +87,7 @@ class FitBoosterChangeCmd(BaseBoosterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterChangeCmd(BaseBoosterCmd):
+class SolCtlBoosterChangeCmd(BaseCtlBoosterCmd):
 
     item_id: str
 

@@ -1,7 +1,7 @@
 import typing
 
 from fw import eve
-from fw.api.commands import RootSolCreateCmd
+from fw.api.commands import RootCtlSolCreateCmd
 from fw.api.types import SolarSystem, ValOptions
 from fw.consts import ApiSolInfoMode
 from fw.request import Request
@@ -53,7 +53,7 @@ class ApiClientSol(ApiClientBase, eve.EveDataManager):
             if data is Default:
                 data = self._get_default_eve_data()
             src_alias = data.alias
-        body = RootSolCreateCmd(
+        body = RootCtlSolCreateCmd(
             src_alias=src_alias,
             sec_zone=sec_zone,
             default_incoming_dps=default_incoming_dps,

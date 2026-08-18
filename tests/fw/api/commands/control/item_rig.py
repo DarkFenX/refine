@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseRigCmd(BaseCommand):
+class BaseCtlRigCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseRigCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemRigAddCmd(BaseRigCmd):
+class ItemCtlRigAddCmd(BaseCtlRigCmd):
 
     fit_id: str
 
@@ -40,7 +40,7 @@ class ItemRigAddCmd(BaseRigCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitRigAddCmd(BaseRigCmd):
+class FitCtlRigAddCmd(BaseCtlRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class FitRigAddCmd(BaseRigCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolRigAddCmd(BaseRigCmd):
+class SolCtlRigAddCmd(BaseCtlRigCmd):
 
     fit_id: str
 
@@ -64,7 +64,7 @@ class SolRigAddCmd(BaseRigCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemRigChangeCmd(BaseRigCmd):
+class ItemCtlRigChangeCmd(BaseCtlRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -73,7 +73,7 @@ class ItemRigChangeCmd(BaseRigCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitRigChangeCmd(BaseRigCmd):
+class FitCtlRigChangeCmd(BaseCtlRigCmd):
 
     item_id: str
 
@@ -85,7 +85,7 @@ class FitRigChangeCmd(BaseRigCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolRigChangeCmd(BaseRigCmd):
+class SolCtlRigChangeCmd(BaseCtlRigCmd):
 
     item_id: str
 

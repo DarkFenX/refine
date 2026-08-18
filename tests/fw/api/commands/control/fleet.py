@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 # Adding
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseFleetAddCmd(BaseCommand):
+class BaseCtlFleetAddCmd(BaseCommand):
 
     fit_ids: list[str] | type[Absent]
 
@@ -23,12 +23,12 @@ class BaseFleetAddCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FleetFleetAddCmd(BaseFleetAddCmd):
+class FleetCtlFleetAddCmd(BaseCtlFleetAddCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFleetAddCmd(BaseFleetAddCmd):
+class SolCtlFleetAddCmd(BaseCtlFleetAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -40,7 +40,7 @@ class SolFleetAddCmd(BaseFleetAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseFleetChangeCmd(BaseCommand):
+class BaseCtlFleetChangeCmd(BaseCommand):
 
     add_fit_ids: list[str] | type[Absent]
     rm_fit_ids: list[str] | type[Absent]
@@ -53,12 +53,12 @@ class BaseFleetChangeCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FleetFleetChangeCmd(BaseFleetChangeCmd):
+class FleetCtlFleetChangeCmd(BaseCtlFleetChangeCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFleetChangeCmd(BaseFleetChangeCmd):
+class SolCtlFleetChangeCmd(BaseCtlFleetChangeCmd):
 
     fleet_id: str
 
@@ -73,7 +73,7 @@ class SolFleetChangeCmd(BaseFleetChangeCmd):
 # Removing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class SolFleetRemoveCmd(BaseCommand):
+class SolCtlFleetRemoveCmd(BaseCommand):
 
     fleet_id: str
 

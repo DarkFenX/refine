@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseFighterCmd(BaseCommand):
+class BaseCtlFighterCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: ApiMinionState | type[Absent]
@@ -38,7 +38,7 @@ class BaseFighterCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseFighterAddCmd(BaseFighterCmd):
+class BaseCtlFighterAddCmd(BaseCtlFighterCmd):
 
     proj_item_ids: list[str] | type[Absent]
 
@@ -49,7 +49,7 @@ class BaseFighterAddCmd(BaseFighterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemFighterAddCmd(BaseFighterAddCmd):
+class ItemCtlFighterAddCmd(BaseCtlFighterAddCmd):
 
     fit_id: str
 
@@ -61,7 +61,7 @@ class ItemFighterAddCmd(BaseFighterAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFighterAddCmd(BaseFighterAddCmd):
+class FitCtlFighterAddCmd(BaseCtlFighterAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -70,7 +70,7 @@ class FitFighterAddCmd(BaseFighterAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFighterAddCmd(BaseFighterAddCmd):
+class SolCtlFighterAddCmd(BaseCtlFighterAddCmd):
 
     fit_id: str
 
@@ -85,7 +85,7 @@ class SolFighterAddCmd(BaseFighterAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseFighterChangeCmd(BaseFighterCmd):
+class BaseCtlFighterChangeCmd(BaseCtlFighterCmd):
 
     add_proj_item_ids: list[str] | type[Absent]
     rm_proj_item_ids: list[str] | type[Absent]
@@ -98,7 +98,7 @@ class BaseFighterChangeCmd(BaseFighterCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemFighterChangeCmd(BaseFighterChangeCmd):
+class ItemCtlFighterChangeCmd(BaseCtlFighterChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -107,7 +107,7 @@ class ItemFighterChangeCmd(BaseFighterChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFighterChangeCmd(BaseFighterChangeCmd):
+class FitCtlFighterChangeCmd(BaseCtlFighterChangeCmd):
 
     item_id: str
 
@@ -119,7 +119,7 @@ class FitFighterChangeCmd(BaseFighterChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFighterChangeCmd(BaseFighterChangeCmd):
+class SolCtlFighterChangeCmd(BaseCtlFighterChangeCmd):
 
     item_id: str
 

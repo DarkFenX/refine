@@ -12,7 +12,7 @@ if typing.TYPE_CHECKING:
 # Removal
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseItemRemoveCmd(BaseCommand):
+class BaseCtlItemRemoveCmd(BaseCommand):
 
     rm_mode: ApiModRmMode | type[Absent]
 
@@ -23,12 +23,12 @@ class BaseItemRemoveCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemItemRemoveCmd(BaseItemRemoveCmd):
+class ItemCtlItemRemoveCmd(BaseCtlItemRemoveCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitItemRemoveCmd(BaseItemRemoveCmd):
+class FitCtlItemRemoveCmd(BaseCtlItemRemoveCmd):
 
     item_id: str
 
@@ -40,7 +40,7 @@ class FitItemRemoveCmd(BaseItemRemoveCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolItemRemoveCmd(BaseItemRemoveCmd):
+class SolCtlItemRemoveCmd(BaseCtlItemRemoveCmd):
 
     item_id: str
 

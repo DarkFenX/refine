@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseAutochargeCmd(BaseCommand):
+class BaseCtlAutochargeCmd(BaseCommand):
 
     state: bool | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
@@ -26,7 +26,7 @@ class BaseAutochargeCmd(BaseCommand):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemAutochargeChangeCmd(BaseAutochargeCmd):
+class ItemCtlAutochargeChangeCmd(BaseCtlAutochargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -35,7 +35,7 @@ class ItemAutochargeChangeCmd(BaseAutochargeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitAutochargeChangeCmd(BaseAutochargeCmd):
+class FitCtlAutochargeChangeCmd(BaseCtlAutochargeCmd):
 
     item_id: str
 
@@ -47,7 +47,7 @@ class FitAutochargeChangeCmd(BaseAutochargeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolAutochargeChangeCmd(BaseAutochargeCmd):
+class SolCtlAutochargeChangeCmd(BaseCtlAutochargeCmd):
 
     item_id: str
 

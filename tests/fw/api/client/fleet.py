@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import FleetFleetAddCmd, FleetFleetChangeCmd
+from fw.api.commands import FleetCtlFleetAddCmd, FleetCtlFleetChangeCmd
 from fw.api.types import FleetStatsOptions
 from fw.request import Request
 from fw.util import Absent, conditional_insert
@@ -48,7 +48,7 @@ class ApiClientFleet(ApiClientBase):
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
         # Body
-        body = FleetFleetAddCmd(fit_ids=fit_ids).serialize()
+        body = FleetCtlFleetAddCmd(fit_ids=fit_ids).serialize()
         # Params
         params = {}
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
@@ -71,7 +71,7 @@ class ApiClientFleet(ApiClientBase):
             rm_fit_ids: list[str] | type[Absent],
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
     ) -> Request:
-        body = FleetFleetChangeCmd(
+        body = FleetCtlFleetChangeCmd(
             add_fit_ids=add_fit_ids,
             rm_fit_ids=rm_fit_ids).serialize()
         params = {}

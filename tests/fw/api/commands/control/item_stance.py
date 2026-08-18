@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseStanceCmd(BaseCommand):
+class BaseCtlStanceCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseStanceCmd(BaseCommand):
 # Setting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemStanceSetCmd(BaseStanceCmd):
+class ItemCtlStanceSetCmd(BaseCtlStanceCmd):
 
     fit_id: str
 
@@ -40,7 +40,7 @@ class ItemStanceSetCmd(BaseStanceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitStanceSetCmd(BaseStanceCmd):
+class FitCtlStanceSetCmd(BaseCtlStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class FitStanceSetCmd(BaseStanceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolStanceSetCmd(BaseStanceCmd):
+class SolCtlStanceSetCmd(BaseCtlStanceCmd):
 
     fit_id: str
 
@@ -64,7 +64,7 @@ class SolStanceSetCmd(BaseStanceCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemStanceChangeCmd(BaseStanceCmd):
+class ItemCtlStanceChangeCmd(BaseCtlStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -73,7 +73,7 @@ class ItemStanceChangeCmd(BaseStanceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitStanceChangeCmd(BaseStanceCmd):
+class FitCtlStanceChangeCmd(BaseCtlStanceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -82,7 +82,7 @@ class FitStanceChangeCmd(BaseStanceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolStanceChangeViaItemIdCmd(BaseStanceCmd):
+class SolCtlStanceChangeViaItemIdCmd(BaseCtlStanceCmd):
 
     item_id: str
 
@@ -94,7 +94,7 @@ class SolStanceChangeViaItemIdCmd(BaseStanceCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolStanceChangeViaFitIdCmd(BaseStanceCmd):
+class SolCtlStanceChangeViaFitIdCmd(BaseCtlStanceCmd):
 
     fit_id: str
 
@@ -109,7 +109,7 @@ class SolStanceChangeViaFitIdCmd(BaseStanceCmd):
 # Unsetting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseStanceUnsetCmd(BaseCommand):
+class BaseCtlStanceUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
@@ -117,12 +117,12 @@ class BaseStanceUnsetCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitStanceUnsetCmd(BaseStanceUnsetCmd):
+class FitCtlStanceUnsetCmd(BaseCtlStanceUnsetCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolStanceUnsetCmd(BaseStanceUnsetCmd):
+class SolCtlStanceUnsetCmd(BaseCtlStanceUnsetCmd):
 
     fit_id: str
 

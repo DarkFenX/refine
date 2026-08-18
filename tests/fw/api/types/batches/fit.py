@@ -1,38 +1,38 @@
 import typing
 
 from fw.api.commands import (
-    FitAutochargeChangeCmd,
-    FitBoosterAddCmd,
-    FitBoosterChangeCmd,
-    FitCharacterChangeCmd,
-    FitCharacterSetCmd,
-    FitCharacterUnsetCmd,
-    FitChargeChangeCmd,
-    FitDroneAddCmd,
-    FitDroneChangeCmd,
-    FitFighterAddCmd,
-    FitFighterChangeCmd,
-    FitFwEffectAddCmd,
-    FitFwEffectChangeCmd,
-    FitImplantAddCmd,
-    FitImplantChangeCmd,
-    FitItemRemoveCmd,
-    FitModuleAddCmd,
-    FitModuleChangeCmd,
-    FitRigAddCmd,
-    FitRigChangeCmd,
-    FitServiceAddCmd,
-    FitServiceChangeCmd,
-    FitShipChangeCmd,
-    FitShipSetCmd,
-    FitShipUnsetCmd,
-    FitSkillAddCmd,
-    FitSkillChangeCmd,
-    FitStanceChangeCmd,
-    FitStanceSetCmd,
-    FitStanceUnsetCmd,
-    FitSubsystemAddCmd,
-    FitSubsystemChangeCmd,
+    FitCtlAutochargeChangeCmd,
+    FitCtlBoosterAddCmd,
+    FitCtlBoosterChangeCmd,
+    FitCtlCharacterChangeCmd,
+    FitCtlCharacterSetCmd,
+    FitCtlCharacterUnsetCmd,
+    FitCtlChargeChangeCmd,
+    FitCtlDroneAddCmd,
+    FitCtlDroneChangeCmd,
+    FitCtlFighterAddCmd,
+    FitCtlFighterChangeCmd,
+    FitCtlFwEffectAddCmd,
+    FitCtlFwEffectChangeCmd,
+    FitCtlImplantAddCmd,
+    FitCtlImplantChangeCmd,
+    FitCtlItemRemoveCmd,
+    FitCtlModuleAddCmd,
+    FitCtlModuleChangeCmd,
+    FitCtlRigAddCmd,
+    FitCtlRigChangeCmd,
+    FitCtlServiceAddCmd,
+    FitCtlServiceChangeCmd,
+    FitCtlShipChangeCmd,
+    FitCtlShipSetCmd,
+    FitCtlShipUnsetCmd,
+    FitCtlSkillAddCmd,
+    FitCtlSkillChangeCmd,
+    FitCtlStanceChangeCmd,
+    FitCtlStanceSetCmd,
+    FitCtlStanceUnsetCmd,
+    FitCtlSubsystemAddCmd,
+    FitCtlSubsystemChangeCmd,
 )
 from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
@@ -93,7 +93,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id: str,
             rm_mode: ApiModRmMode | type[Absent] = Absent,
     ) -> None:
-        command = FitItemRemoveCmd(
+        command = FitCtlItemRemoveCmd(
             item_id=item_id,
             rm_mode=rm_mode)
         self._commands.append(command)
@@ -105,7 +105,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitAutochargeChangeCmd(
+        command = FitCtlAutochargeChangeCmd(
             item_id=item_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -119,7 +119,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             side_effects: dict[int | str, bool] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitBoosterAddCmd(
+        command = FitCtlBoosterAddCmd(
             type_id=type_id,
             state=state,
             side_effects=process_effect_map_request(effect_map=side_effects),
@@ -135,7 +135,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             side_effects: dict[int | str, bool] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitBoosterChangeCmd(
+        command = FitCtlBoosterChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -150,7 +150,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitCharacterSetCmd(
+        command = FitCtlCharacterSetCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -163,14 +163,14 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitCharacterChangeCmd(
+        command = FitCtlCharacterChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
 
     def unset_character(self) -> None:
-        command = FitCharacterUnsetCmd()
+        command = FitCtlCharacterUnsetCmd()
         self._commands.append(command)
 
     # Item - charge
@@ -181,7 +181,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitChargeChangeCmd(
+        command = FitCtlChargeChangeCmd(
             type_id=type_id,
             item_id=item_id,
             state=state,
@@ -200,7 +200,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitDroneAddCmd(
+        command = FitCtlDroneAddCmd(
             type_id=type_id,
             state=state,
             mutation=process_muta_add_request(mutation=mutation),
@@ -225,7 +225,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitDroneChangeCmd(
+        command = FitCtlDroneChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -251,7 +251,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitFighterAddCmd(
+        command = FitCtlFighterAddCmd(
             type_id=type_id,
             state=state,
             count=count,
@@ -278,7 +278,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitFighterChangeCmd(
+        command = FitCtlFighterChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -299,7 +299,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitFwEffectAddCmd(
+        command = FitCtlFwEffectAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -313,7 +313,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitFwEffectChangeCmd(
+        command = FitCtlFwEffectChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -327,7 +327,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitImplantAddCmd(
+        command = FitCtlImplantAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -341,7 +341,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitImplantChangeCmd(
+        command = FitCtlImplantChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -362,7 +362,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitModuleAddCmd(
+        command = FitCtlModuleAddCmd(
             type_id=type_id,
             rack=rack,
             add_mode=add_mode,
@@ -390,7 +390,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitModuleChangeCmd(
+        command = FitCtlModuleChangeCmd(
             item_id=item_id,
             type_id=type_id,
             move=move,
@@ -412,7 +412,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitRigAddCmd(
+        command = FitCtlRigAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -426,7 +426,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitRigChangeCmd(
+        command = FitCtlRigChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -440,7 +440,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: ApiServiceState = ApiServiceState.offline,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitServiceAddCmd(
+        command = FitCtlServiceAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -454,7 +454,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: ApiServiceState | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitServiceChangeCmd(
+        command = FitCtlServiceChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,
@@ -470,7 +470,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitShipSetCmd(
+        command = FitCtlShipSetCmd(
             type_id=type_id,
             state=state,
             coordinates=coordinates,
@@ -487,7 +487,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             movement: tuple[float, float, float] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitShipChangeCmd(
+        command = FitCtlShipChangeCmd(
             type_id=type_id,
             state=state,
             coordinates=coordinates,
@@ -496,7 +496,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         self._commands.append(command)
 
     def unset_ship(self) -> None:
-        command = FitShipUnsetCmd()
+        command = FitCtlShipUnsetCmd()
         self._commands.append(command)
 
     # Item - skill
@@ -507,7 +507,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitSkillAddCmd(
+        command = FitCtlSkillAddCmd(
             type_id=type_id,
             level=level,
             state=state,
@@ -523,7 +523,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitSkillChangeCmd(
+        command = FitCtlSkillChangeCmd(
             item_id=item_id,
             type_id=type_id,
             level=level,
@@ -538,7 +538,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitStanceSetCmd(
+        command = FitCtlStanceSetCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -551,14 +551,14 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitStanceChangeCmd(
+        command = FitCtlStanceChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         self._commands.append(command)
 
     def unset_stance(self) -> None:
-        command = FitStanceUnsetCmd()
+        command = FitCtlStanceUnsetCmd()
         self._commands.append(command)
 
     # Item - subsystem
@@ -568,7 +568,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
-        command = FitSubsystemAddCmd(
+        command = FitCtlSubsystemAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -582,7 +582,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state: bool | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> None:
-        command = FitSubsystemChangeCmd(
+        command = FitCtlSubsystemChangeCmd(
             item_id=item_id,
             type_id=type_id,
             state=state,

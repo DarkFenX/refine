@@ -1,23 +1,23 @@
 import typing
 
 from fw.api.commands import (
-    ItemAutochargeChangeCmd,
-    ItemBoosterChangeCmd,
-    ItemCharacterChangeCmd,
-    ItemChargeChangeCmd,
-    ItemDroneChangeCmd,
-    ItemFighterChangeCmd,
-    ItemFwEffectChangeCmd,
-    ItemImplantChangeCmd,
-    ItemModuleChangeCmd,
-    ItemProjEffectChangeCmd,
-    ItemRigChangeCmd,
-    ItemServiceChangeCmd,
-    ItemShipChangeCmd,
-    ItemSkillChangeCmd,
-    ItemStanceChangeCmd,
-    ItemSubsystemChangeCmd,
-    ItemSwEffectChangeCmd,
+    ItemCtlAutochargeChangeCmd,
+    ItemCtlBoosterChangeCmd,
+    ItemCtlCharacterChangeCmd,
+    ItemCtlChargeChangeCmd,
+    ItemCtlDroneChangeCmd,
+    ItemCtlFighterChangeCmd,
+    ItemCtlFwEffectChangeCmd,
+    ItemCtlImplantChangeCmd,
+    ItemCtlModuleChangeCmd,
+    ItemCtlProjEffectChangeCmd,
+    ItemCtlRigChangeCmd,
+    ItemCtlServiceChangeCmd,
+    ItemCtlShipChangeCmd,
+    ItemCtlSkillChangeCmd,
+    ItemCtlStanceChangeCmd,
+    ItemCtlSubsystemChangeCmd,
+    ItemCtlSwEffectChangeCmd,
 )
 from fw.api.types.helpers import (
     attr_http_to_fw,
@@ -133,7 +133,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemAutochargeChangeCmd(
+        command = ItemCtlAutochargeChangeCmd(
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
         resp = self._client.item_command_change_request(
@@ -158,7 +158,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemBoosterChangeCmd(
+        command = ItemCtlBoosterChangeCmd(
             type_id=type_id,
             state=state,
             side_effects=process_effect_map_request(effect_map=side_effects),
@@ -184,7 +184,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemCharacterChangeCmd(
+        command = ItemCtlCharacterChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -209,7 +209,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemChargeChangeCmd(
+        command = ItemCtlChargeChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -240,7 +240,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemDroneChangeCmd(
+        command = ItemCtlDroneChangeCmd(
             type_id=type_id,
             state=state,
             mutation=process_muta_change_request(mutation=mutation),
@@ -278,7 +278,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemFighterChangeCmd(
+        command = ItemCtlFighterChangeCmd(
             type_id=type_id,
             state=state,
             count=count,
@@ -310,7 +310,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemFwEffectChangeCmd(
+        command = ItemCtlFwEffectChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -335,7 +335,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemImplantChangeCmd(
+        command = ItemCtlImplantChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -367,7 +367,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemModuleChangeCmd(
+        command = ItemCtlModuleChangeCmd(
             type_id=type_id,
             move=move,
             state=state,
@@ -401,7 +401,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemProjEffectChangeCmd(
+        command = ItemCtlProjEffectChangeCmd(
             type_id=type_id,
             state=state,
             add_proj_item_ids=add_proj_item_ids,
@@ -428,7 +428,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemRigChangeCmd(
+        command = ItemCtlRigChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -453,7 +453,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemServiceChangeCmd(
+        command = ItemCtlServiceChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -480,7 +480,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemShipChangeCmd(
+        command = ItemCtlShipChangeCmd(
             type_id=type_id,
             state=state,
             coordinates=coordinates,
@@ -508,7 +508,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemSkillChangeCmd(
+        command = ItemCtlSkillChangeCmd(
             type_id=type_id,
             level=level,
             state=state,
@@ -534,7 +534,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemStanceChangeCmd(
+        command = ItemCtlStanceChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -559,7 +559,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemSubsystemChangeCmd(
+        command = ItemCtlSubsystemChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))
@@ -584,7 +584,7 @@ class Item(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemSwEffectChangeCmd(
+        command = ItemCtlSwEffectChangeCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))

@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseImplantCmd(BaseCommand):
+class BaseCtlImplantCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseImplantCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemImplantAddCmd(BaseImplantCmd):
+class ItemCtlImplantAddCmd(BaseCtlImplantCmd):
 
     fit_id: str
 
@@ -40,7 +40,7 @@ class ItemImplantAddCmd(BaseImplantCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitImplantAddCmd(BaseImplantCmd):
+class FitCtlImplantAddCmd(BaseCtlImplantCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class FitImplantAddCmd(BaseImplantCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolImplantAddCmd(BaseImplantCmd):
+class SolCtlImplantAddCmd(BaseCtlImplantCmd):
 
     fit_id: str
 
@@ -64,7 +64,7 @@ class SolImplantAddCmd(BaseImplantCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemImplantChangeCmd(BaseImplantCmd):
+class ItemCtlImplantChangeCmd(BaseCtlImplantCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -73,7 +73,7 @@ class ItemImplantChangeCmd(BaseImplantCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitImplantChangeCmd(BaseImplantCmd):
+class FitCtlImplantChangeCmd(BaseCtlImplantCmd):
 
     item_id: str
 
@@ -85,7 +85,7 @@ class FitImplantChangeCmd(BaseImplantCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolImplantChangeCmd(BaseImplantCmd):
+class SolCtlImplantChangeCmd(BaseCtlImplantCmd):
 
     item_id: str
 

@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseShipCmd(BaseCommand):
+class BaseCtlShipCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -32,7 +32,7 @@ class BaseShipCmd(BaseCommand):
 # Setting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemShipSetCmd(BaseShipCmd):
+class ItemCtlShipSetCmd(BaseCtlShipCmd):
 
     fit_id: str
 
@@ -44,7 +44,7 @@ class ItemShipSetCmd(BaseShipCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitShipSetCmd(BaseShipCmd):
+class FitCtlShipSetCmd(BaseCtlShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -53,7 +53,7 @@ class FitShipSetCmd(BaseShipCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipSetCmd(BaseShipCmd):
+class SolCtlShipSetCmd(BaseCtlShipCmd):
 
     fit_id: str
 
@@ -68,7 +68,7 @@ class SolShipSetCmd(BaseShipCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemShipChangeCmd(BaseShipCmd):
+class ItemCtlShipChangeCmd(BaseCtlShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -77,7 +77,7 @@ class ItemShipChangeCmd(BaseShipCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitShipChangeCmd(BaseShipCmd):
+class FitCtlShipChangeCmd(BaseCtlShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -86,7 +86,7 @@ class FitShipChangeCmd(BaseShipCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipChangeViaItemIdCmd(BaseShipCmd):
+class SolCtlShipChangeViaItemIdCmd(BaseCtlShipCmd):
 
     item_id: str
 
@@ -98,7 +98,7 @@ class SolShipChangeViaItemIdCmd(BaseShipCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipChangeViaFitIdCmd(BaseShipCmd):
+class SolCtlShipChangeViaFitIdCmd(BaseCtlShipCmd):
 
     fit_id: str
 
@@ -113,7 +113,7 @@ class SolShipChangeViaFitIdCmd(BaseShipCmd):
 # Unsetting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseShipUnsetCmd(BaseCommand):
+class BaseCtlShipUnsetCmd(BaseCommand):
 
     @typing.override
     def serialize(self) -> dict:
@@ -121,12 +121,12 @@ class BaseShipUnsetCmd(BaseCommand):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitShipUnsetCmd(BaseShipUnsetCmd):
+class FitCtlShipUnsetCmd(BaseCtlShipUnsetCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipUnsetCmd(BaseShipUnsetCmd):
+class SolCtlShipUnsetCmd(BaseCtlShipUnsetCmd):
 
     fit_id: str
 

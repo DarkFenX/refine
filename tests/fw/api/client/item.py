@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import ItemItemRemoveCmd
+from fw.api.commands import ItemCtlItemRemoveCmd
 from fw.api.types import ItemStatsOptions
 from fw.request import Request
 from fw.util import conditional_insert
@@ -35,7 +35,7 @@ class ApiClientItem(ApiClientBase):
             item_id: str,
             rm_mode: ApiModRmMode | type[Absent],
     ) -> Request:
-        body = ItemItemRemoveCmd(rm_mode=rm_mode).serialize()
+        body = ItemCtlItemRemoveCmd(rm_mode=rm_mode).serialize()
         kwargs = {'method': 'DELETE', 'url': f'{self._base_url}/sol/{sol_id}/item/{item_id}'}
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header

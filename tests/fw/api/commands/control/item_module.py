@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleCmd(BaseCommand):
+class BaseCtlModuleCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: ApiModuleState | type[Absent]
@@ -34,7 +34,7 @@ class BaseModuleCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleAddCmd(BaseModuleCmd):
+class BaseCtlModuleAddCmd(BaseCtlModuleCmd):
 
     rack: ApiRack
     add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent]
@@ -51,7 +51,7 @@ class BaseModuleAddCmd(BaseModuleCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemModuleAddCmd(BaseModuleAddCmd):
+class ItemCtlModuleAddCmd(BaseCtlModuleAddCmd):
 
     fit_id: str
 
@@ -63,7 +63,7 @@ class ItemModuleAddCmd(BaseModuleAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitModuleAddCmd(BaseModuleAddCmd):
+class FitCtlModuleAddCmd(BaseCtlModuleAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -72,7 +72,7 @@ class FitModuleAddCmd(BaseModuleAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolModuleAddCmd(BaseModuleAddCmd):
+class SolCtlModuleAddCmd(BaseCtlModuleAddCmd):
 
     fit_id: str
 
@@ -87,7 +87,7 @@ class SolModuleAddCmd(BaseModuleAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleChangeCmd(BaseModuleCmd):
+class BaseCtlModuleChangeCmd(BaseCtlModuleCmd):
 
     move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent]
     mutation: MutaAdd | MutaChange | type[Absent] | None
@@ -104,7 +104,7 @@ class BaseModuleChangeCmd(BaseModuleCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemModuleChangeCmd(BaseModuleChangeCmd):
+class ItemCtlModuleChangeCmd(BaseCtlModuleChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -113,7 +113,7 @@ class ItemModuleChangeCmd(BaseModuleChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitModuleChangeCmd(BaseModuleChangeCmd):
+class FitCtlModuleChangeCmd(BaseCtlModuleChangeCmd):
 
     item_id: str
 
@@ -125,7 +125,7 @@ class FitModuleChangeCmd(BaseModuleChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolModuleChangeCmd(BaseModuleChangeCmd):
+class SolCtlModuleChangeCmd(BaseCtlModuleChangeCmd):
 
     item_id: str
 

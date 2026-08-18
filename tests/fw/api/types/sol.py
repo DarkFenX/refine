@@ -1,6 +1,6 @@
 import typing
 
-from fw.api.commands import ItemProjEffectAddCmd, ItemSwEffectAddCmd, SolSolChangeCmd
+from fw.api.commands import ItemCtlProjEffectAddCmd, ItemCtlSwEffectAddCmd, SolCtlSolChangeCmd
 from fw.api.types.batches.sol import SolCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.fit import Fit
@@ -114,7 +114,7 @@ class SolarSystem(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> SolarSystem:
-        command = SolSolChangeCmd(
+        command = SolCtlSolChangeCmd(
             sec_zone=sec_zone,
             default_incoming_dps=default_incoming_dps,
             default_spool=default_spool,
@@ -338,7 +338,7 @@ class SolarSystem(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemProjEffectAddCmd(
+        command = ItemCtlProjEffectAddCmd(
             type_id=type_id,
             state=state,
             proj_item_ids=proj_item_ids,
@@ -362,7 +362,7 @@ class SolarSystem(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemSwEffectAddCmd(
+        command = ItemCtlSwEffectAddCmd(
             type_id=type_id,
             state=state,
             effect_modes=process_effect_map_request(effect_map=effect_modes))

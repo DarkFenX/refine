@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseProjEffectCmd(BaseCommand):
+class BaseCtlProjEffectCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseProjEffectCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseProjEffectAddCmd(BaseProjEffectCmd):
+class BaseCtlProjEffectAddCmd(BaseCtlProjEffectCmd):
 
     proj_item_ids: list[str] | type[Absent]
 
@@ -39,7 +39,7 @@ class BaseProjEffectAddCmd(BaseProjEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemProjEffectAddCmd(BaseProjEffectAddCmd):
+class ItemCtlProjEffectAddCmd(BaseCtlProjEffectAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -48,7 +48,7 @@ class ItemProjEffectAddCmd(BaseProjEffectAddCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolProjEffectAddCmd(BaseProjEffectAddCmd):
+class SolCtlProjEffectAddCmd(BaseCtlProjEffectAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -60,7 +60,7 @@ class SolProjEffectAddCmd(BaseProjEffectAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseProjEffectChangeCmd(BaseProjEffectCmd):
+class BaseCtlProjEffectChangeCmd(BaseCtlProjEffectCmd):
 
     add_proj_item_ids: list[str] | type[Absent]
     rm_proj_item_ids: list[str] | type[Absent]
@@ -73,7 +73,7 @@ class BaseProjEffectChangeCmd(BaseProjEffectCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
+class ItemCtlProjEffectChangeCmd(BaseCtlProjEffectChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -82,7 +82,7 @@ class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
+class SolCtlProjEffectChangeCmd(BaseCtlProjEffectChangeCmd):
 
     item_id: str
 

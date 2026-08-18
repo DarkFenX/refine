@@ -1,23 +1,23 @@
 import typing
 
 from fw.api.commands import (
-    FitCharacterUnsetCmd,
-    FitFitChangeCmd,
-    FitShipUnsetCmd,
-    FitStanceUnsetCmd,
-    ItemBoosterAddCmd,
-    ItemCharacterSetCmd,
-    ItemDroneAddCmd,
-    ItemFighterAddCmd,
-    ItemFwEffectAddCmd,
-    ItemImplantAddCmd,
-    ItemModuleAddCmd,
-    ItemRigAddCmd,
-    ItemServiceAddCmd,
-    ItemShipSetCmd,
-    ItemSkillAddCmd,
-    ItemStanceSetCmd,
-    ItemSubsystemAddCmd,
+    FitCtlCharacterUnsetCmd,
+    FitCtlFitChangeCmd,
+    FitCtlShipUnsetCmd,
+    FitCtlStanceUnsetCmd,
+    ItemCtlBoosterAddCmd,
+    ItemCtlCharacterSetCmd,
+    ItemCtlDroneAddCmd,
+    ItemCtlFighterAddCmd,
+    ItemCtlFwEffectAddCmd,
+    ItemCtlImplantAddCmd,
+    ItemCtlModuleAddCmd,
+    ItemCtlRigAddCmd,
+    ItemCtlServiceAddCmd,
+    ItemCtlShipSetCmd,
+    ItemCtlSkillAddCmd,
+    ItemCtlStanceSetCmd,
+    ItemCtlSubsystemAddCmd,
 )
 from fw.api.types.batches.fit import FitCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
@@ -238,7 +238,7 @@ class Fit(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Fit | None:
-        command = FitFitChangeCmd(
+        command = FitCtlFitChangeCmd(
             fleet_id=fleet_id,
             sec_status=sec_status,
             rah_incoming_dps=rah_incoming_dps)
@@ -277,7 +277,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemBoosterAddCmd(
+        command = ItemCtlBoosterAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -302,7 +302,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemCharacterSetCmd(
+        command = ItemCtlCharacterSetCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -324,7 +324,7 @@ class Fit(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Fit | None:
-        command = FitCharacterUnsetCmd()
+        command = FitCtlCharacterUnsetCmd()
         resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
@@ -352,7 +352,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemDroneAddCmd(
+        command = ItemCtlDroneAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -387,7 +387,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemFighterAddCmd(
+        command = ItemCtlFighterAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -417,7 +417,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemFwEffectAddCmd(
+        command = ItemCtlFwEffectAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -441,7 +441,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemImplantAddCmd(
+        command = ItemCtlImplantAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -472,7 +472,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemModuleAddCmd(
+        command = ItemCtlModuleAddCmd(
             fit_id=self.id,
             type_id=type_id,
             rack=rack,
@@ -503,7 +503,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemRigAddCmd(
+        command = ItemCtlRigAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -527,7 +527,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemServiceAddCmd(
+        command = ItemCtlServiceAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -553,7 +553,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemShipSetCmd(
+        command = ItemCtlShipSetCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -577,7 +577,7 @@ class Fit(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Fit | None:
-        command = FitShipUnsetCmd()
+        command = FitCtlShipUnsetCmd()
         resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
@@ -601,7 +601,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemSkillAddCmd(
+        command = ItemCtlSkillAddCmd(
             fit_id=self.id,
             type_id=type_id,
             level=level,
@@ -626,7 +626,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemStanceSetCmd(
+        command = ItemCtlStanceSetCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,
@@ -648,7 +648,7 @@ class Fit(AttrDict):
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Fit | None:
-        command = FitStanceUnsetCmd()
+        command = FitCtlStanceUnsetCmd()
         resp = self._client.fit_command_request(
             sol_id=self._sol_id,
             fit_id=self.id,
@@ -671,7 +671,7 @@ class Fit(AttrDict):
             status_code: int = 201,
             json_predicate: dict | None = None,
     ) -> Item | None:
-        command = ItemSubsystemAddCmd(
+        command = ItemCtlSubsystemAddCmd(
             fit_id=self.id,
             type_id=type_id,
             state=state,

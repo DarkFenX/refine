@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseSubsystemCmd(BaseCommand):
+class BaseCtlSubsystemCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -28,7 +28,7 @@ class BaseSubsystemCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSubsystemAddCmd(BaseSubsystemCmd):
+class ItemCtlSubsystemAddCmd(BaseCtlSubsystemCmd):
 
     fit_id: str
 
@@ -40,7 +40,7 @@ class ItemSubsystemAddCmd(BaseSubsystemCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSubsystemAddCmd(BaseSubsystemCmd):
+class FitCtlSubsystemAddCmd(BaseCtlSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -49,7 +49,7 @@ class FitSubsystemAddCmd(BaseSubsystemCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSubsystemAddCmd(BaseSubsystemCmd):
+class SolCtlSubsystemAddCmd(BaseCtlSubsystemCmd):
 
     fit_id: str
 
@@ -64,7 +64,7 @@ class SolSubsystemAddCmd(BaseSubsystemCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSubsystemChangeCmd(BaseSubsystemCmd):
+class ItemCtlSubsystemChangeCmd(BaseCtlSubsystemCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -73,7 +73,7 @@ class ItemSubsystemChangeCmd(BaseSubsystemCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSubsystemChangeCmd(BaseSubsystemCmd):
+class FitCtlSubsystemChangeCmd(BaseCtlSubsystemCmd):
 
     item_id: str
 
@@ -85,7 +85,7 @@ class FitSubsystemChangeCmd(BaseSubsystemCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSubsystemChangeCmd(BaseSubsystemCmd):
+class SolCtlSubsystemChangeCmd(BaseCtlSubsystemCmd):
 
     item_id: str
 

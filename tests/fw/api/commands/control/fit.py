@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseFitCmd(BaseCommand):
+class BaseCtlFitCmd(BaseCommand):
 
     fleet_id: str | type[Absent] | None
     sec_status: float | type[Absent]
@@ -28,7 +28,7 @@ class BaseFitCmd(BaseCommand):
 # Adding
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class SolFitAddCmd(BaseFitCmd):
+class SolCtlFitAddCmd(BaseCtlFitCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -37,7 +37,7 @@ class SolFitAddCmd(BaseFitCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFitAddCmd(BaseFitCmd):
+class FitCtlFitAddCmd(BaseCtlFitCmd):
     ...
 
 
@@ -45,7 +45,7 @@ class FitFitAddCmd(BaseFitCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class FitFitChangeCmd(BaseFitCmd):
+class FitCtlFitChangeCmd(BaseCtlFitCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -54,7 +54,7 @@ class FitFitChangeCmd(BaseFitCmd):
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFitChangeCmd(BaseFitCmd):
+class SolCtlFitChangeCmd(BaseCtlFitCmd):
 
     fit_id: str
 
@@ -69,7 +69,7 @@ class SolFitChangeCmd(BaseFitCmd):
 # Removing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class SolFitRemoveCmd(BaseCommand):
+class SolCtlFitRemoveCmd(BaseCommand):
 
     fit_id: str
 
