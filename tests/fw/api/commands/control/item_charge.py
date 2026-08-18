@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseRigCmd(BaseCommand):
+class BaseChargeCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -25,72 +25,36 @@ class BaseRigCmd(BaseCommand):
 
 
 ####################################################################################################
-# Addition
-####################################################################################################
-@dataclasses.dataclass(kw_only=True)
-class ItemRigAddCmd(BaseRigCmd):
-
-    fit_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'rig'
-        body['fit_id'] = self.fit_id
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class FitRigAddCmd(BaseRigCmd):
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'rig_add'
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class SolRigAddCmd(BaseRigCmd):
-
-    fit_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'rig_add'
-        body['fit_id'] = self.fit_id
-        return body
-
-
-####################################################################################################
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemRigChangeCmd(BaseRigCmd):
+class ItemChargeChangeCmd(BaseChargeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'rig'
+        body['type'] = 'charge'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitRigChangeCmd(BaseRigCmd):
+class FitChargeChangeCmd(BaseChargeCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'rig_change'
+        body['type'] = 'charge_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolRigChangeCmd(BaseRigCmd):
+class SolChargeChangeCmd(BaseChargeCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'rig_change'
+        body['type'] = 'charge_change'
         body['item_id'] = self.item_id
         return body

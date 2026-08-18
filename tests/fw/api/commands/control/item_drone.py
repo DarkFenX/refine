@@ -1,27 +1,29 @@
 import dataclasses
 import typing
 
-from fw.util import conditional_insert
-from .base import BaseCommand
+from fw.api.commands import BaseCommand
+from fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiEffMode
-    from fw.util import Absent
+    from fw.api.aliases import MutaAdd, MutaChange
+    from fw.consts import ApiEffMode, ApiMinionState, ApiNpcProp
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseShipCmd(BaseCommand):
+class BaseDroneCmd(BaseCommand):
 
     type_id: int | type[Absent]
-    state: bool | type[Absent]
+    state: ApiMinionState | type[Absent]
+    npc_prop: ApiNpcProp | type[Absent] | None
     coordinates: tuple[float, float, float] | type[Absent]
     movement: tuple[float, float, float] | type[Absent]
-    effect_modes: dict[str, ApiEffMode] | type[Absent]
+    effect_modes: dict[int | str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
+        conditional_insert(container=body, path=['npc_prop'], value=self.npc_prop)
         conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
         conditional_insert(container=body, path=['movement'], value=self.movement)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
@@ -29,37 +31,50 @@ class BaseShipCmd(BaseCommand):
 
 
 ####################################################################################################
-# Setting
+# Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemShipSetCmd(BaseShipCmd):
+class BaseDroneAddCmd(BaseDroneCmd):
+
+    mutation: MutaAdd | type[Absent]
+    proj_item_ids: list[str] | type[Absent]
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        conditional_insert(container=body, path=['mutation'], value=self.mutation)
+        conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class ItemDroneAddCmd(BaseDroneAddCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'ship'
+        body['type'] = 'drone'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitShipSetCmd(BaseShipCmd):
+class FitDroneAddCmd(BaseDroneAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'ship_set'
+        body['type'] = 'drone_add'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipSetCmd(BaseShipCmd):
+class SolDroneAddCmd(BaseDroneAddCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'ship_set'
+        body['type'] = 'drone_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -68,69 +83,48 @@ class SolShipSetCmd(BaseShipCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemShipChangeCmd(BaseShipCmd):
+class BaseDroneChangeCmd(BaseDroneCmd):
+
+    mutation: MutaAdd | MutaChange | type[Absent] | None
+    add_proj_item_ids: list[str] | type[Absent]
+    rm_proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'ship'
+        conditional_insert(container=body, path=['mutation'], value=self.mutation)
+        conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
+        conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitShipChangeCmd(BaseShipCmd):
+class ItemDroneChangeCmd(BaseDroneChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'ship_change'
+        body['type'] = 'drone'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipChangeViaItemIdCmd(BaseShipCmd):
+class FitDroneChangeCmd(BaseDroneChangeCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'ship_change'
+        body['type'] = 'drone_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolShipChangeViaFitIdCmd(BaseShipCmd):
+class SolDroneChangeCmd(BaseDroneChangeCmd):
 
-    fit_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'ship_change'
-        body['fit_id'] = self.fit_id
-        return body
-
-
-####################################################################################################
-# Unsetting
-####################################################################################################
-@dataclasses.dataclass(kw_only=True)
-class BaseShipUnsetCmd(BaseCommand):
-
-    @typing.override
-    def serialize(self) -> dict:
-        return {'type': 'ship_unset'}
-
-
-@dataclasses.dataclass(kw_only=True)
-class FitShipUnsetCmd(BaseShipUnsetCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class SolShipUnsetCmd(BaseShipUnsetCmd):
-
-    fit_id: str
+    item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['fit_id'] = self.fit_id
+        body['type'] = 'drone_change'
+        body['item_id'] = self.item_id
         return body

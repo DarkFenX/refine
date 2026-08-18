@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseCharacterCmd(BaseCommand):
+class BaseRigCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -25,37 +25,37 @@ class BaseCharacterCmd(BaseCommand):
 
 
 ####################################################################################################
-# Setting
+# Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemCharacterSetCmd(BaseCharacterCmd):
+class ItemRigAddCmd(BaseRigCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'character'
+        body['type'] = 'rig'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitCharacterSetCmd(BaseCharacterCmd):
+class FitRigAddCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'character_set'
+        body['type'] = 'rig_add'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolCharacterSetCmd(BaseCharacterCmd):
+class SolRigAddCmd(BaseRigCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'character_set'
+        body['type'] = 'rig_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -64,69 +64,33 @@ class SolCharacterSetCmd(BaseCharacterCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemCharacterChangeCmd(BaseCharacterCmd):
+class ItemRigChangeCmd(BaseRigCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'character'
+        body['type'] = 'rig'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitCharacterChangeCmd(BaseCharacterCmd):
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'character_change'
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
+class FitRigChangeCmd(BaseRigCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'character_change'
+        body['type'] = 'rig_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
+class SolRigChangeCmd(BaseRigCmd):
 
-    fit_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'character_change'
-        body['fit_id'] = self.fit_id
-        return body
-
-
-####################################################################################################
-# Unsetting
-####################################################################################################
-@dataclasses.dataclass(kw_only=True)
-class BaseCharacterUnsetCmd(BaseCommand):
-
-    @typing.override
-    def serialize(self) -> dict:
-        return {'type': 'character_unset'}
-
-
-@dataclasses.dataclass(kw_only=True)
-class FitCharacterUnsetCmd(BaseCharacterUnsetCmd):
-    ...
-
-
-@dataclasses.dataclass(kw_only=True)
-class SolCharacterUnsetCmd(BaseCharacterUnsetCmd):
-
-    fit_id: str
+    item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['fit_id'] = self.fit_id
+        body['type'] = 'rig_change'
+        body['item_id'] = self.item_id
         return body

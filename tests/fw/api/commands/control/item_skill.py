@@ -1,24 +1,26 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiEffMode, ApiServiceState
+    from fw.consts import ApiEffMode
     from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseServiceCmd(BaseCommand):
+class BaseSkillCmd(BaseCommand):
 
     type_id: int | type[Absent]
-    state: ApiServiceState | type[Absent]
+    level: int | type[Absent]
+    state: bool | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
+        conditional_insert(container=body, path=['level'], value=self.level)
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
@@ -28,34 +30,34 @@ class BaseServiceCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemServiceAddCmd(BaseServiceCmd):
+class ItemSkillAddCmd(BaseSkillCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'service'
+        body['type'] = 'skill'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitServiceAddCmd(BaseServiceCmd):
+class FitSkillAddCmd(BaseSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'service_add'
+        body['type'] = 'skill_add'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolServiceAddCmd(BaseServiceCmd):
+class SolSkillAddCmd(BaseSkillCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'service_add'
+        body['type'] = 'skill_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -64,33 +66,33 @@ class SolServiceAddCmd(BaseServiceCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemServiceChangeCmd(BaseServiceCmd):
+class ItemSkillChangeCmd(BaseSkillCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'service'
+        body['type'] = 'skill'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitServiceChangeCmd(BaseServiceCmd):
+class FitSkillChangeCmd(BaseSkillCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'service_change'
+        body['type'] = 'skill_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolServiceChangeCmd(BaseServiceCmd):
+class SolSkillChangeCmd(BaseSkillCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'service_change'
+        body['type'] = 'skill_change'
         body['item_id'] = self.item_id
         return body

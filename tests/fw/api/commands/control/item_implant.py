@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,7 +10,7 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseChargeCmd(BaseCommand):
+class BaseImplantCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
@@ -25,36 +25,72 @@ class BaseChargeCmd(BaseCommand):
 
 
 ####################################################################################################
-# Changing
+# Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemChargeChangeCmd(BaseChargeCmd):
+class ItemImplantAddCmd(BaseImplantCmd):
+
+    fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'charge'
+        body['type'] = 'implant'
+        body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitChargeChangeCmd(BaseChargeCmd):
+class FitImplantAddCmd(BaseImplantCmd):
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'implant_add'
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolImplantAddCmd(BaseImplantCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'implant_add'
+        body['fit_id'] = self.fit_id
+        return body
+
+
+####################################################################################################
+# Changing
+####################################################################################################
+@dataclasses.dataclass(kw_only=True)
+class ItemImplantChangeCmd(BaseImplantCmd):
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'implant'
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitImplantChangeCmd(BaseImplantCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'charge_change'
+        body['type'] = 'implant_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolChargeChangeCmd(BaseChargeCmd):
+class SolImplantChangeCmd(BaseImplantCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'charge_change'
+        body['type'] = 'implant_change'
         body['item_id'] = self.item_id
         return body

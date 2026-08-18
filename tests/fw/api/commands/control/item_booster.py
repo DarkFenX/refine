@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,18 +10,18 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseSkillCmd(BaseCommand):
+class BaseBoosterCmd(BaseCommand):
 
     type_id: int | type[Absent]
-    level: int | type[Absent]
     state: bool | type[Absent]
+    side_effects: dict[str, bool] | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
-        conditional_insert(container=body, path=['level'], value=self.level)
         conditional_insert(container=body, path=['state'], value=self.state)
+        conditional_insert(container=body, path=['side_effects'], value=self.side_effects)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
 
@@ -30,34 +30,34 @@ class BaseSkillCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSkillAddCmd(BaseSkillCmd):
+class ItemBoosterAddCmd(BaseBoosterCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'skill'
+        body['type'] = 'booster'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSkillAddCmd(BaseSkillCmd):
+class FitBoosterAddCmd(BaseBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'skill_add'
+        body['type'] = 'booster_add'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSkillAddCmd(BaseSkillCmd):
+class SolBoosterAddCmd(BaseBoosterCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'skill_add'
+        body['type'] = 'booster_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -66,33 +66,33 @@ class SolSkillAddCmd(BaseSkillCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemSkillChangeCmd(BaseSkillCmd):
+class ItemBoosterChangeCmd(BaseBoosterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'skill'
+        body['type'] = 'booster'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitSkillChangeCmd(BaseSkillCmd):
+class FitBoosterChangeCmd(BaseBoosterCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'skill_change'
+        body['type'] = 'booster_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolSkillChangeCmd(BaseSkillCmd):
+class SolBoosterChangeCmd(BaseBoosterCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'skill_change'
+        body['type'] = 'booster_change'
         body['item_id'] = self.item_id
         return body

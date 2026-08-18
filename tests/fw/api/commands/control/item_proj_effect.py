@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,18 +10,16 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseBoosterCmd(BaseCommand):
+class BaseProjEffectCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
-    side_effects: dict[str, bool] | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['side_effects'], value=self.side_effects)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
 
@@ -30,35 +28,31 @@ class BaseBoosterCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemBoosterAddCmd(BaseBoosterCmd):
+class BaseProjEffectAddCmd(BaseProjEffectCmd):
 
-    fit_id: str
+    proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'booster'
-        body['fit_id'] = self.fit_id
+        conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterAddCmd(BaseBoosterCmd):
+class ItemProjEffectAddCmd(BaseProjEffectAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'booster_add'
+        body['type'] = 'proj_effect'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolBoosterAddCmd(BaseBoosterCmd):
-
-    fit_id: str
+class SolProjEffectAddCmd(BaseProjEffectAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'booster_add'
-        body['fit_id'] = self.fit_id
+        body['type'] = 'proj_effect_add'
         return body
 
 
@@ -66,33 +60,34 @@ class SolBoosterAddCmd(BaseBoosterCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemBoosterChangeCmd(BaseBoosterCmd):
+class BaseProjEffectChangeCmd(BaseProjEffectCmd):
+
+    add_proj_item_ids: list[str] | type[Absent]
+    rm_proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'booster'
+        conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
+        conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitBoosterChangeCmd(BaseBoosterCmd):
+class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'proj_effect'
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'booster_change'
-        body['item_id'] = self.item_id
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class SolBoosterChangeCmd(BaseBoosterCmd):
-
-    item_id: str
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        body['type'] = 'booster_change'
+        body['type'] = 'proj_effect_change'
         body['item_id'] = self.item_id
         return body

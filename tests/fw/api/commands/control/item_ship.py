@@ -1,8 +1,8 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
     from fw.consts import ApiEffMode
@@ -10,49 +10,57 @@ if typing.TYPE_CHECKING:
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseProjEffectCmd(BaseCommand):
+class BaseShipCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
+    coordinates: tuple[float, float, float] | type[Absent]
+    movement: tuple[float, float, float] | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
+        conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
+        conditional_insert(container=body, path=['movement'], value=self.movement)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
 
 
 ####################################################################################################
-# Addition
+# Setting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseProjEffectAddCmd(BaseProjEffectCmd):
+class ItemShipSetCmd(BaseShipCmd):
 
-    proj_item_ids: list[str] | type[Absent]
+    fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
+        body['type'] = 'ship'
+        body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemProjEffectAddCmd(BaseProjEffectAddCmd):
+class FitShipSetCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'proj_effect'
+        body['type'] = 'ship_set'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolProjEffectAddCmd(BaseProjEffectAddCmd):
+class SolShipSetCmd(BaseShipCmd):
+
+    fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'proj_effect_add'
+        body['type'] = 'ship_set'
+        body['fit_id'] = self.fit_id
         return body
 
 
@@ -60,34 +68,69 @@ class SolProjEffectAddCmd(BaseProjEffectAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseProjEffectChangeCmd(BaseProjEffectCmd):
-
-    add_proj_item_ids: list[str] | type[Absent]
-    rm_proj_item_ids: list[str] | type[Absent]
+class ItemShipChangeCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
-        conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
+        body['type'] = 'ship'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemProjEffectChangeCmd(BaseProjEffectChangeCmd):
+class FitShipChangeCmd(BaseShipCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'proj_effect'
+        body['type'] = 'ship_change'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolProjEffectChangeCmd(BaseProjEffectChangeCmd):
+class SolShipChangeViaItemIdCmd(BaseShipCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'proj_effect_change'
+        body['type'] = 'ship_change'
         body['item_id'] = self.item_id
+        return body
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolShipChangeViaFitIdCmd(BaseShipCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['type'] = 'ship_change'
+        body['fit_id'] = self.fit_id
+        return body
+
+
+####################################################################################################
+# Unsetting
+####################################################################################################
+@dataclasses.dataclass(kw_only=True)
+class BaseShipUnsetCmd(BaseCommand):
+
+    @typing.override
+    def serialize(self) -> dict:
+        return {'type': 'ship_unset'}
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitShipUnsetCmd(BaseShipUnsetCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolShipUnsetCmd(BaseShipUnsetCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
         return body

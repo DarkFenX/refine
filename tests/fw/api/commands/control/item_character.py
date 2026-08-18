@@ -1,82 +1,61 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiEffMode, ApiMinionState, ApiRearmMinion
+    from fw.consts import ApiEffMode
     from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseFighterCmd(BaseCommand):
+class BaseCharacterCmd(BaseCommand):
 
     type_id: int | type[Absent]
-    state: ApiMinionState | type[Absent]
-    count: int | type[Absent] | None
-    abilities: dict[int, bool] | type[Absent]
-    rearm_minion: ApiRearmMinion | type[Absent] | None
-    coordinates: tuple[float, float, float] | type[Absent]
-    movement: tuple[float, float, float] | type[Absent]
+    state: bool | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['count'], value=self.count)
-        conditional_insert(container=body, path=['abilities'], value=self.abilities)
-        conditional_insert(container=body, path=['rearm_minion'], value=self.rearm_minion)
-        conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
-        conditional_insert(container=body, path=['movement'], value=self.movement)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
 
 
 ####################################################################################################
-# Addition
+# Setting
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseFighterAddCmd(BaseFighterCmd):
-
-    proj_item_ids: list[str] | type[Absent]
-
-    def serialize(self) -> dict:
-        body = super().serialize()
-        conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
-        return body
-
-
-@dataclasses.dataclass(kw_only=True)
-class ItemFighterAddCmd(BaseFighterAddCmd):
+class ItemCharacterSetCmd(BaseCharacterCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'fighter'
+        body['type'] = 'character'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFighterAddCmd(BaseFighterAddCmd):
+class FitCharacterSetCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'fighter_add'
+        body['type'] = 'character_set'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFighterAddCmd(BaseFighterAddCmd):
+class SolCharacterSetCmd(BaseCharacterCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'fighter_add'
+        body['type'] = 'character_set'
         body['fit_id'] = self.fit_id
         return body
 
@@ -85,46 +64,69 @@ class SolFighterAddCmd(BaseFighterAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseFighterChangeCmd(BaseFighterCmd):
-
-    add_proj_item_ids: list[str] | type[Absent]
-    rm_proj_item_ids: list[str] | type[Absent]
+class ItemCharacterChangeCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
-        conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
+        body['type'] = 'character'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemFighterChangeCmd(BaseFighterChangeCmd):
+class FitCharacterChangeCmd(BaseCharacterCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'fighter'
+        body['type'] = 'character_change'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitFighterChangeCmd(BaseFighterChangeCmd):
+class SolCharacterChangeViaItemIdCmd(BaseCharacterCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'fighter_change'
+        body['type'] = 'character_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolFighterChangeCmd(BaseFighterChangeCmd):
+class SolCharacterChangeViaFitIdCmd(BaseCharacterCmd):
 
-    item_id: str
+    fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'fighter_change'
-        body['item_id'] = self.item_id
+        body['type'] = 'character_change'
+        body['fit_id'] = self.fit_id
+        return body
+
+
+####################################################################################################
+# Unsetting
+####################################################################################################
+@dataclasses.dataclass(kw_only=True)
+class BaseCharacterUnsetCmd(BaseCommand):
+
+    @typing.override
+    def serialize(self) -> dict:
+        return {'type': 'character_unset'}
+
+
+@dataclasses.dataclass(kw_only=True)
+class FitCharacterUnsetCmd(BaseCharacterUnsetCmd):
+    ...
+
+
+@dataclasses.dataclass(kw_only=True)
+class SolCharacterUnsetCmd(BaseCharacterUnsetCmd):
+
+    fit_id: str
+
+    def serialize(self) -> dict:
+        body = super().serialize()
+        body['fit_id'] = self.fit_id
         return body

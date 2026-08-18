@@ -1,31 +1,35 @@
 import dataclasses
 import typing
 
-from fw.util import Absent, conditional_insert
-from .base import BaseCommand
+from fw.api.commands import BaseCommand
+from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import MutaAdd, MutaChange
-    from fw.consts import ApiEffMode, ApiModAddMode, ApiModMvMode, ApiModuleState, ApiOptionalReload, ApiRack
+    from fw.consts import ApiEffMode, ApiMinionState, ApiRearmMinion
+    from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleCmd(BaseCommand):
+class BaseFighterCmd(BaseCommand):
 
     type_id: int | type[Absent]
-    state: ApiModuleState | type[Absent]
-    charge_type_id: int | type[Absent] | None
-    spool: str | type[Absent] | None
-    optional_reload: ApiOptionalReload | type[Absent] | None
+    state: ApiMinionState | type[Absent]
+    count: int | type[Absent] | None
+    abilities: dict[int, bool] | type[Absent]
+    rearm_minion: ApiRearmMinion | type[Absent] | None
+    coordinates: tuple[float, float, float] | type[Absent]
+    movement: tuple[float, float, float] | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['charge_type_id'], value=self.charge_type_id)
-        conditional_insert(container=body, path=['spool'], value=self.spool)
-        conditional_insert(container=body, path=['optional_reload'], value=self.optional_reload)
+        conditional_insert(container=body, path=['count'], value=self.count)
+        conditional_insert(container=body, path=['abilities'], value=self.abilities)
+        conditional_insert(container=body, path=['rearm_minion'], value=self.rearm_minion)
+        conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
+        conditional_insert(container=body, path=['movement'], value=self.movement)
         conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
         return body
 
@@ -34,51 +38,45 @@ class BaseModuleCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleAddCmd(BaseModuleCmd):
+class BaseFighterAddCmd(BaseFighterCmd):
 
-    rack: ApiRack
-    add_mode: ApiModAddMode | dict[ApiModAddMode, int] | type[Absent]
-    mutation: MutaAdd | type[Absent]
     proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['rack'], value=self.rack)
-        conditional_insert(container=body, path=['add_mode'], value=self.add_mode)
-        conditional_insert(container=body, path=['mutation'], value=self.mutation)
         conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemModuleAddCmd(BaseModuleAddCmd):
+class ItemFighterAddCmd(BaseFighterAddCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'module'
+        body['type'] = 'fighter'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitModuleAddCmd(BaseModuleAddCmd):
+class FitFighterAddCmd(BaseFighterAddCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'module_add'
+        body['type'] = 'fighter_add'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolModuleAddCmd(BaseModuleAddCmd):
+class SolFighterAddCmd(BaseFighterAddCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'module_add'
+        body['type'] = 'fighter_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -87,50 +85,46 @@ class SolModuleAddCmd(BaseModuleAddCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class BaseModuleChangeCmd(BaseModuleCmd):
+class BaseFighterChangeCmd(BaseFighterCmd):
 
-    move: ApiModMvMode | dict[ApiModMvMode, int] | type[Absent]
-    mutation: MutaAdd | MutaChange | type[Absent] | None
     add_proj_item_ids: list[str] | type[Absent]
     rm_proj_item_ids: list[str] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['move'], value=self.move)
-        conditional_insert(container=body, path=['mutation'], value=self.mutation)
         conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
         conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class ItemModuleChangeCmd(BaseModuleChangeCmd):
+class ItemFighterChangeCmd(BaseFighterChangeCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'module'
+        body['type'] = 'fighter'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitModuleChangeCmd(BaseModuleChangeCmd):
+class FitFighterChangeCmd(BaseFighterChangeCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'module_change'
+        body['type'] = 'fighter_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolModuleChangeCmd(BaseModuleChangeCmd):
+class SolFighterChangeCmd(BaseFighterChangeCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'module_change'
+        body['type'] = 'fighter_change'
         body['item_id'] = self.item_id
         return body

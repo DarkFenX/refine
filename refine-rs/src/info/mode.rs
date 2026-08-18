@@ -2,7 +2,8 @@ use std::{collections::HashMap, hash::Hash};
 
 use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 
-// Representation form which is more convenient for use by info builders
+// Representation form which is more convenient for use by info builders; should be used on commands
+// which are directly executable (i.e. commands with backreferences resolved into IDs)
 #[derive(Clone)]
 pub(in crate::info) struct InfoModes<M, I> {
     pub(in crate::info) default: M,
@@ -33,7 +34,7 @@ where
 }
 
 // Representation form which is compact; should be used only when it is not directly usable by info
-// builders
+// builders (e.g. command with backreferences)
 #[derive(Clone)]
 pub(in crate::info) struct InfoModesCompact<M, I> {
     pub(in crate::info) default: M,

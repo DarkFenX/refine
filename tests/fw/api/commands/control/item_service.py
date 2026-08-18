@@ -1,19 +1,19 @@
 import dataclasses
 import typing
 
+from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
-from .base import BaseCommand
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiEffMode
+    from fw.consts import ApiEffMode, ApiServiceState
     from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseImplantCmd(BaseCommand):
+class BaseServiceCmd(BaseCommand):
 
     type_id: int | type[Absent]
-    state: bool | type[Absent]
+    state: ApiServiceState | type[Absent]
     effect_modes: dict[str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
@@ -28,34 +28,34 @@ class BaseImplantCmd(BaseCommand):
 # Addition
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemImplantAddCmd(BaseImplantCmd):
+class ItemServiceAddCmd(BaseServiceCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'implant'
+        body['type'] = 'service'
         body['fit_id'] = self.fit_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitImplantAddCmd(BaseImplantCmd):
+class FitServiceAddCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'implant_add'
+        body['type'] = 'service_add'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolImplantAddCmd(BaseImplantCmd):
+class SolServiceAddCmd(BaseServiceCmd):
 
     fit_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'implant_add'
+        body['type'] = 'service_add'
         body['fit_id'] = self.fit_id
         return body
 
@@ -64,33 +64,33 @@ class SolImplantAddCmd(BaseImplantCmd):
 # Changing
 ####################################################################################################
 @dataclasses.dataclass(kw_only=True)
-class ItemImplantChangeCmd(BaseImplantCmd):
+class ItemServiceChangeCmd(BaseServiceCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'implant'
+        body['type'] = 'service'
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitImplantChangeCmd(BaseImplantCmd):
+class FitServiceChangeCmd(BaseServiceCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'implant_change'
+        body['type'] = 'service_change'
         body['item_id'] = self.item_id
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolImplantChangeCmd(BaseImplantCmd):
+class SolServiceChangeCmd(BaseServiceCmd):
 
     item_id: str
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'implant_change'
+        body['type'] = 'service_change'
         body['item_id'] = self.item_id
         return body
