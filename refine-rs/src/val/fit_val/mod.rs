@@ -1,3 +1,3 @@
-pub use info::FitValInfo;
+pub use info::FitValResult;
 
 mod info;

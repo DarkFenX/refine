@@ -35,7 +35,7 @@ async fn internal_validate_fit(
     fit_id: String,
     params: ValParams,
     payload: FitValReqBody,
-) -> Result<rs::val::FitValInfo, ApiError> {
+) -> Result<rs::val::FitValResult, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let val_info = state

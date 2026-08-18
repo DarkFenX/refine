@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::val_options_br_resolve,
-    val::{SolValInfo, ValInfoMode, ValOptions},
+    val::{SolValResult, ValInfoMode, ValOptions},
 };
 
 // Core commands
@@ -85,19 +85,19 @@ impl SolValCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolValCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolValInfo {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolValResult {
         let core_options = rc::val::ValOptionsSol {
             fit_ids: self.fit_ids,
             options: self.options,
         };
         match self.shared.info_mode {
-            ValInfoMode::Simple => SolValInfo {
+            ValInfoMode::Simple => SolValResult {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,
             },
             ValInfoMode::Detailed => {
                 let details = core_sol.validate_verbose(&core_options);
-                SolValInfo {
+                SolValResult {
                     passed: details.all_passed(),
                     details: Some(details),
                 }

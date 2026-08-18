@@ -1,11 +1,11 @@
-use crate::val::FitValInfoDetails;
+use crate::val::FitValResultDetails;
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct FitValInfo {
+pub struct FitValResult {
     pub passed: bool,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "custom_serde::skip_details"))]
-    pub details: Option<FitValInfoDetails>,
+    pub details: Option<FitValResultDetails>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -15,7 +15,7 @@ pub struct FitValInfo {
 mod custom_serde {
     use super::*;
 
-    pub(super) fn skip_details(details: &Option<FitValInfoDetails>) -> bool {
+    pub(super) fn skip_details(details: &Option<FitValResultDetails>) -> bool {
         match details {
             Some(details) => details.all_passed(),
             None => true,

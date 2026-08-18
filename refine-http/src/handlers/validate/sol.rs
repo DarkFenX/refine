@@ -38,7 +38,7 @@ async fn internal_validate_sol(
     sol_id: String,
     params: ValParams,
     payload: SolValReqBody,
-) -> Result<rs::val::SolValInfo, ApiError> {
+) -> Result<rs::val::SolValResult, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let val_info = state
         .get_refine()

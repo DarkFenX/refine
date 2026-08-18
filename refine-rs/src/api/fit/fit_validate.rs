@@ -1,11 +1,11 @@
 use crate::{
     Fit,
-    val::{FitValCmd, FitValInfo},
+    val::{FitValCmd, FitValResult},
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-val", level = "trace", skip_all)]
-    pub async fn validate(&mut self, val_cmd: FitValCmd) -> FitValInfo {
+    pub async fn validate(&mut self, val_cmd: FitValCmd) -> FitValResult {
         // Variables for move
         let fit_id = self.id;
         self.sol

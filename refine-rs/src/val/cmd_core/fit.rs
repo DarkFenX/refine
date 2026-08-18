@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::val_options_br_resolve,
-    val::{FitValInfo, ValInfoMode, ValOptions},
+    val::{FitValResult, ValInfoMode, ValOptions},
 };
 
 // Core commands
@@ -87,7 +87,7 @@ impl FitValCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmdBr {
-    pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<FitValCmd, BrResolveError> {
+    fn br_resolve(self, resps: &CmdResps) -> Result<FitValCmd, BrResolveError> {
         Ok(FitValCmd {
             options: val_options_br_resolve(self.options, resps)?,
             shared: self.shared,
@@ -108,19 +108,31 @@ impl FitValCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValInfo {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValResult {
         match self.shared.info_mode {
-            ValInfoMode::Simple => FitValInfo {
+            ValInfoMode::Simple => FitValResult {
                 passed: core_fit.validate_fast(&self.options),
                 details: None,
             },
             ValInfoMode::Detailed => {
                 let details = core_fit.validate_verbose(&self.options);
-                FitValInfo {
+                FitValResult {
                     passed: details.all_passed(),
                     details: Some(details),
                 }
             }
         }
     }
+}
+
+impl FitValCmdCtxFit {
+    pub(in crate::val) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitValResult, FitGetFitValError> {
+        let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
+        Ok(self.core.execute(&mut core_fit))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum FitGetFitValError {
+    #[error(transparent)]
+    FitGet(#[from] rc::err::GetFitError),
 }
