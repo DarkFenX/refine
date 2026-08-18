@@ -13,7 +13,7 @@ pub use item::{
     ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo,
     StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
-use mode::{InfoModes, InfoModesCompact};
+use overridable::{InfoModes, InfoModesCompact};
 pub(crate) use sol::SolInfoEnumCmd;
 pub use sol::{SolInfo, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoExt, SolInfoMode};
 pub use src::{SrcInfo, SrcInfoExt, SrcInfoMode};
@@ -22,6 +22,6 @@ mod cmd_core;
 mod fit;
 mod fleet;
 mod item;
-mod mode;
+mod overridable;
 mod sol;
 mod src;

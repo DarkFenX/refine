@@ -8,5 +8,6 @@ if typing.TYPE_CHECKING:
 type DpsProfileAlias = tuple[float, float, float, float] | tuple[float, float, float, float, tuple[float, float] | None]
 type MutaAdd = int | tuple[int, dict[int | str, float | str]]
 type MutaChange = dict[int | str, float | str | None]
+type InfoMode = str | tuple[str, list[tuple[str, list[str]]]]
 
 type ReqHook = Callable[[Request], None]
