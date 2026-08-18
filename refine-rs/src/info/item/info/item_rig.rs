@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    info::InfoModes,
+    info::OverridableMap,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,7 +50,7 @@ pub struct RigInfoExt {
 impl RigInfo {
     pub(in crate::info) fn from_core(
         core_rig: &mut rc::RigMut,
-        item_info_modes: &InfoModes<ItemInfoMode, ItemId>,
+        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
     ) -> Self {
         let rig_id = core_rig.get_item_id();
         let rig_info_mode = item_info_modes.get(&rig_id);

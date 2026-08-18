@@ -1,5 +1,6 @@
 use crate::{
-    CmdResps, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, err::BrResolveError, info::InfoModes, shared::BrResolvable,
+    CmdResps, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, err::BrResolveError, info::OverridableMap,
+    shared::BrResolvable,
 };
 
 // Core commands
@@ -66,7 +67,7 @@ impl FleetInfoCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
-        FleetInfo::from_core(core_fleet, &InfoModes::from_simple(self.fleet_mode))
+        FleetInfo::from_core(core_fleet, &OverridableMap::from_default(self.fleet_mode))
     }
 }
 

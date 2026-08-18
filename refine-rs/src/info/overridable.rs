@@ -5,15 +5,15 @@ use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 // Representation form which is more convenient for use by info builders; should be used on commands
 // which are directly executable (i.e. commands with backreferences resolved into IDs)
 #[derive(Clone)]
-pub(in crate::info) struct InfoModes<M, I> {
-    pub(in crate::info) default: M,
-    pub(in crate::info) overrides: HashMap<I, M>,
+pub(in crate::info) struct OverridableMap<K, V> {
+    pub(in crate::info) default: V,
+    pub(in crate::info) overrides: HashMap<K, V>,
 }
-impl<M, I> InfoModes<M, I> {
-    pub(in crate::info) fn get(&self, id: &I) -> M
+impl<K, V> OverridableMap<K, V> {
+    pub(in crate::info) fn get(&self, id: &K) -> V
     where
-        M: Copy,
-        I: Eq + Hash,
+        K: Eq + Hash,
+        V: Copy,
     {
         match self.overrides.get(id) {
             Some(mode) => *mode,
@@ -21,13 +21,13 @@ impl<M, I> InfoModes<M, I> {
         }
     }
 }
-impl<M, I> Default for InfoModes<M, I>
+impl<K, V> Default for OverridableMap<K, V>
 where
-    M: Default,
+    V: Default,
 {
     fn default() -> Self {
         Self {
-            default: M::default(),
+            default: V::default(),
             overrides: HashMap::new(),
         }
     }
@@ -36,17 +36,17 @@ where
 // Representation form which is compact; should be used only when it is not directly usable by info
 // builders (e.g. command with backreferences)
 #[derive(Clone)]
-pub(in crate::info) struct InfoModesCompact<M, I> {
-    pub(in crate::info) default: M,
-    pub(in crate::info) overrides: Vec<(M, Vec<I>)>,
+pub(in crate::info) struct OverridableCompact<K, V> {
+    pub(in crate::info) default: V,
+    pub(in crate::info) overrides: Vec<(V, Vec<K>)>,
 }
-impl<M, I> Default for InfoModesCompact<M, I>
+impl<K, V> Default for OverridableCompact<K, V>
 where
-    M: Default,
+    V: Default,
 {
     fn default() -> Self {
         Self {
-            default: M::default(),
+            default: V::default(),
             overrides: Vec::new(),
         }
     }
@@ -56,42 +56,42 @@ where
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Forward conversions, from "external" to "internal" form
-impl<M, I> InfoModes<M, I> {
-    pub(in crate::info) fn from_simple(mode: M) -> Self {
+impl<K, V> OverridableMap<K, V> {
+    pub(in crate::info) fn from_default(default: V) -> Self {
         Self {
-            default: mode,
+            default,
             overrides: HashMap::new(),
         }
     }
-    pub(in crate::info) fn from_compact(modes: InfoModesCompact<M, I>) -> Self
+    pub(in crate::info) fn from_compact(compact: OverridableCompact<K, V>) -> Self
     where
-        M: Copy + PartialEq,
-        I: Eq + Hash,
+        K: Eq + Hash,
+        V: Copy + PartialEq,
     {
-        let default = modes.default;
-        let mut overrides = HashMap::with_capacity(calc_needed_space(&modes.overrides, default));
-        for (over_mode, over_ids) in modes.overrides {
+        let default = compact.default;
+        let mut overrides = HashMap::with_capacity(calc_needed_space(default, &compact.overrides));
+        for (value, keys) in compact.overrides {
             // Getter falls back to default, do not add entries with it
-            if over_mode == default {
+            if value == default {
                 continue;
             }
-            for over_id in over_ids {
-                overrides.insert(over_id, over_mode);
+            for key in keys {
+                overrides.insert(key, value);
             }
         }
         Self { default, overrides }
     }
     pub(in crate::info) fn from_compact_br<B>(
-        compact_br: InfoModesCompact<M, B>,
+        compact_br: OverridableCompact<B, V>,
         ctl_cmd_resps: &CmdResps,
     ) -> Result<Self, BrResolveError>
     where
-        M: Copy + PartialEq,
-        B: BrResolvable<Target = I>,
-        I: Eq + Hash,
+        K: Eq + Hash,
+        V: Copy + PartialEq,
+        B: BrResolvable<Target = K>,
     {
         let default = compact_br.default;
-        let mut overrides = HashMap::with_capacity(calc_needed_space(&compact_br.overrides, default));
+        let mut overrides = HashMap::with_capacity(calc_needed_space(default, &compact_br.overrides));
         for (over_mode, over_backrefs) in compact_br.overrides {
             // Getter falls back to default, do not add entries with it
             if over_mode == default {
@@ -106,9 +106,9 @@ impl<M, I> InfoModes<M, I> {
 }
 
 // This repeats filtering done in actual converting methods
-fn calc_needed_space<M, I>(overrides: &[(M, Vec<I>)], default: M) -> usize
+fn calc_needed_space<K, V>(default: V, overrides: &[(V, Vec<K>)]) -> usize
 where
-    M: Copy + PartialEq,
+    V: Copy + PartialEq,
 {
     overrides
         .iter()
@@ -120,20 +120,20 @@ where
 }
 
 // Backward conversion
-impl<M, I> InfoModes<M, I> {
-    pub(in crate::info) fn into_compact_br<B>(self) -> InfoModesCompact<M, B>
+impl<K, V> OverridableMap<K, V> {
+    pub(in crate::info) fn into_compact_br<B>(self) -> OverridableCompact<B, V>
     where
-        M: Eq + Hash,
-        B: From<I>,
+        V: Eq + Hash,
+        B: From<K>,
     {
-        let mut rev_map: HashMap<M, Vec<B>> = HashMap::new();
-        for (id, mode) in self.overrides.into_iter() {
-            if mode == self.default {
+        let mut rev_map: HashMap<V, Vec<B>> = HashMap::new();
+        for (id, value) in self.overrides.into_iter() {
+            if value == self.default {
                 continue;
             }
-            rev_map.entry(mode).or_default().push(id.into());
+            rev_map.entry(value).or_default().push(id.into());
         }
-        InfoModesCompact {
+        OverridableCompact {
             default: self.default,
             overrides: rev_map.into_iter().collect(),
         }
@@ -149,21 +149,21 @@ mod custom_serde {
 
     use super::*;
 
-    impl<'de, M, I> Deserialize<'de> for InfoModes<M, I>
+    impl<'de, K, V> Deserialize<'de> for OverridableMap<K, V>
     where
-        M: Copy + Deserialize<'de>,
-        I: Eq + Hash + Deserialize<'de>,
+        K: Eq + Hash + Deserialize<'de>,
+        V: Copy + Deserialize<'de>,
     {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            Ok(match InfoModesFormats::deserialize(deserializer)? {
-                InfoModesFormats::Simple(default) => Self {
+            Ok(match OverridableFormats::deserialize(deserializer)? {
+                OverridableFormats::Simple(default) => Self {
                     default,
                     overrides: HashMap::new(),
                 },
-                InfoModesFormats::Extended(default, overrides) => Self {
+                OverridableFormats::Extended(default, overrides) => Self {
                     default,
                     overrides: overrides
                         .into_iter()
@@ -174,29 +174,29 @@ mod custom_serde {
         }
     }
 
-    impl<'de, M, I> Deserialize<'de> for InfoModesCompact<M, I>
+    impl<'de, K, V> Deserialize<'de> for OverridableCompact<K, V>
     where
-        M: Deserialize<'de>,
-        I: Deserialize<'de>,
+        V: Deserialize<'de>,
+        K: Deserialize<'de>,
     {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
         {
-            Ok(match InfoModesFormats::deserialize(deserializer)? {
-                InfoModesFormats::Simple(default) => Self {
+            Ok(match OverridableFormats::deserialize(deserializer)? {
+                OverridableFormats::Simple(default) => Self {
                     default,
                     overrides: Vec::new(),
                 },
-                InfoModesFormats::Extended(default, overrides) => Self { default, overrides },
+                OverridableFormats::Extended(default, overrides) => Self { default, overrides },
             })
         }
     }
 
     #[derive(serde::Deserialize)]
     #[serde(untagged)]
-    enum InfoModesFormats<M, I> {
-        Simple(M),
-        Extended(M, Vec<(M, Vec<I>)>),
+    enum OverridableFormats<K, V> {
+        Simple(V),
+        Extended(V, Vec<(V, Vec<K>)>),
     }
 }

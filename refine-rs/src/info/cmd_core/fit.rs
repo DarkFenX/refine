@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FitInfo, FitInfoMode, ItemId, ItemIdBr, ItemInfoMode,
     err::BrResolveError,
-    info::{InfoModes, InfoModesCompact},
+    info::{OverridableCompact, OverridableMap},
     shared::BrResolvable,
 };
 
@@ -10,7 +10,7 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct FitInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: InfoModes<ItemInfoMode, ItemId>,
+    item_mode: OverridableMap<ItemId, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitInfoCmdShared,
 }
@@ -18,7 +18,7 @@ pub struct FitInfoCmd {
 #[derive(Clone, Default)]
 pub struct FitInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: InfoModesCompact<ItemInfoMode, ItemIdBr>,
+    item_mode: OverridableCompact<ItemIdBr, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: FitInfoCmdShared,
 }
@@ -117,7 +117,7 @@ impl FitInfoCmdBr {
 impl FitInfoCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
         Ok(FitInfoCmd {
-            item_mode: InfoModes::from_compact_br(self.item_mode, resps)?,
+            item_mode: OverridableMap::from_compact_br(self.item_mode, resps)?,
             shared: self.shared,
         })
     }
@@ -137,7 +137,11 @@ impl FitInfoCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitInfo {
-        FitInfo::from_core(core_fit, &InfoModes::from_simple(self.shared.fit_mode), &self.item_mode)
+        FitInfo::from_core(
+            core_fit,
+            &OverridableMap::from_default(self.shared.fit_mode),
+            &self.item_mode,
+        )
     }
 }
 

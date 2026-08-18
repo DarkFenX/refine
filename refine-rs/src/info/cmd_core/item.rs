@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr, ItemInfo, ItemInfoMode,
     err::BrResolveError,
-    info::{InfoModes, InfoModesCompact},
+    info::{OverridableCompact, OverridableMap},
     shared::BrResolvable,
 };
 
@@ -10,13 +10,13 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: InfoModes<ItemInfoMode, ItemId>,
+    item_mode: OverridableMap<ItemId, ItemInfoMode>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ItemInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: InfoModesCompact<ItemInfoMode, ItemIdBr>,
+    item_mode: OverridableCompact<ItemIdBr, ItemInfoMode>,
 }
 
 // Extra context commands
@@ -98,7 +98,7 @@ impl ItemInfoCmdBr {
 impl ItemInfoCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmd, BrResolveError> {
         Ok(ItemInfoCmd {
-            item_mode: InfoModes::from_compact_br(self.item_mode, resps)?,
+            item_mode: OverridableMap::from_compact_br(self.item_mode, resps)?,
         })
     }
 }

@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolInfo,
     SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
     err::BrResolveError,
-    info::{InfoModes, InfoModesCompact},
+    info::{OverridableCompact, OverridableMap},
 };
 
 // Core commands
@@ -10,11 +10,11 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_mode: InfoModes<FleetInfoMode, FleetId>,
+    fleet_mode: OverridableMap<FleetId, FleetInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_mode: InfoModes<FitInfoMode, FitId>,
+    fit_mode: OverridableMap<FitId, FitInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: InfoModes<ItemInfoMode, ItemId>,
+    item_mode: OverridableMap<ItemId, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -22,11 +22,11 @@ pub struct SolInfoCmd {
 #[derive(Clone, Default)]
 pub struct SolInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_mode: InfoModesCompact<FleetInfoMode, FleetIdBr>,
+    fleet_mode: OverridableCompact<FleetIdBr, FleetInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_mode: InfoModesCompact<FitInfoMode, FitIdBr>,
+    fit_mode: OverridableCompact<FitIdBr, FitInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: InfoModesCompact<ItemInfoMode, ItemIdBr>,
+    item_mode: OverridableCompact<ItemIdBr, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -134,9 +134,9 @@ impl SolInfoCmd {
 impl SolInfoCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
         Ok(SolInfoCmd {
-            fleet_mode: InfoModes::from_compact_br(self.fleet_mode, resps)?,
-            fit_mode: InfoModes::from_compact_br(self.fit_mode, resps)?,
-            item_mode: InfoModes::from_compact_br(self.item_mode, resps)?,
+            fleet_mode: OverridableMap::from_compact_br(self.fleet_mode, resps)?,
+            fit_mode: OverridableMap::from_compact_br(self.fit_mode, resps)?,
+            item_mode: OverridableMap::from_compact_br(self.item_mode, resps)?,
             shared: self.shared,
         })
     }
