@@ -28,3 +28,4 @@ mod fit;
 mod fleet;
 mod info_details;
 mod item;
+mod cmd_core;
