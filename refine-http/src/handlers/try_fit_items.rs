@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn try_fit_items(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    WithRejection(Json(payload), _): WithRejection<Json<rs::val::TryFitItemsCmd>, ApiError>,
+    WithRejection(Json(payload), _): WithRejection<Json<rs::trial::TryFitItemsCmd>, ApiError>,
 ) -> impl IntoResponse {
     match internal_try_fit_items(state, sol_id, fit_id, payload).await {
         Ok(fittable) => (StatusCode::OK, Json(fittable)).into_response(),
@@ -25,7 +25,7 @@ async fn internal_try_fit_items(
     state: AppState,
     sol_id: String,
     fit_id: String,
-    payload: rs::val::TryFitItemsCmd,
+    payload: rs::trial::TryFitItemsCmd,
 ) -> Result<Vec<rs::ItemTypeId>, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;

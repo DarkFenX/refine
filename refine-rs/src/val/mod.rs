@@ -1,18 +1,16 @@
 pub use cmd_core::{FitValCmd, FitValCmdBr, SolValCmd, SolValCmdBr};
-pub use fit_try_items::TryFitItemsCmd;
-pub(crate) use fit_val::FitValEnumCmd;
-pub use fit_val::{FitValEnumCmdBr, FitValResult};
+pub(crate) use fit::FitValEnumCmd;
+pub use fit::{FitValEnumCmdBr, FitValResult};
 pub use info_mode::ValInfoMode;
 pub use rc::val::{ValEnabled, ValOptions, ValResultFit as FitValResultDetails, ValResultSol as SolValResultDetails};
-pub(crate) use sol_val::SolValEnumCmd;
-pub use sol_val::{SolValEnumCmdBr, SolValResult};
+pub(crate) use sol::SolValEnumCmd;
+pub use sol::{SolValEnumCmdBr, SolValResult};
 
 mod cmd_core;
-mod fit_try_items;
-mod fit_val;
+mod fit;
 mod info_mode;
-mod sol_val;
+mod sol;
 
 pub mod err {
-    pub use crate::val::{cmd_core::FitGetFitValError, sol_val::SolValEnumError};
+    pub use crate::val::{cmd_core::FitGetFitValError, sol::SolValEnumError};
 }

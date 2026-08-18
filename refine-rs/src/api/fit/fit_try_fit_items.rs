@@ -1,4 +1,4 @@
-use crate::{Fit, ItemTypeId, val::TryFitItemsCmd};
+use crate::{Fit, ItemTypeId, trial::TryFitItemsCmd};
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-try", level = "trace", skip_all)]

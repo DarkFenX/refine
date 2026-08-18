@@ -52,4 +52,5 @@ mod shared;
 pub mod src;
 pub mod stats;
 mod svc;
+pub mod trial;
 pub mod val;
