@@ -18,9 +18,13 @@ pub struct ValOptionsSol {
 }
 
 /// Validation options.
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct ValOptions {
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct ValOptions<I = ItemId> {
     /// True to have all validations enabled by default, false to have them disabled.
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::val_default"))]
     pub default: bool = true,
@@ -30,280 +34,290 @@ pub struct ValOptions {
     /// Fails for any items which are not loaded. Items can become not loaded when they were added
     /// to a fit, but current data source does not have an EVE item with corresponding type ID.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub not_loaded_item: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub not_loaded_item: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Any EVE item usually can be represented by a single item kind in the lib. For example, an
     /// item from Implant category with "boosterness" attribute is a booster. This validation checks
     /// relations between user-defined item kind and item kind detected for a backing EVE item.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_kind: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub item_kind: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when a direct skill requirement is not satisfied for an item.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub skill_reqs: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub skill_reqs: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Implants/boosters
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when multiple implants attempt to take the same slot.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub implant_slot_index: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub implant_slot_index: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when multiple boosters attempt to take the same slot.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub booster_slot_index: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub booster_slot_index: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Shared between mod-alike items
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when items take more CPU than ship can produce.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cpu: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub cpu: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when items take more PG than ship can produce.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub powergrid: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub powergrid: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// When a fit has any items which can be fit to specific set of ships (identified by ship list
     /// and ship group list), and ship does not fall into it, this validation is failed for those
     /// items.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ship_limit: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub ship_limit: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// When an item has limit on how many items from its group can be fitted, and count of fitted
     /// items exceeds that, this validation fails.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub max_group_fitted: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub max_group_fitted: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// When an item has limit on how many items from its group can be online, and count of online
     /// items exceeds that, this validation fails.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub max_group_online: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub max_group_online: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// When an item has limit on how many items from its group can be active, and count of active
     /// items exceeds that, this validation fails.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub max_group_active: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub max_group_active: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// When an item has limit on how many items with the same type ID can be fitted, and count of
     /// fitted items exceeds that, this validation fails.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub max_type_fitted: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub max_type_fitted: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Checks that structure items are not fit to a ship fit, and ship items are not fit to a
     /// structure fit. Type of fit is defined by its ship kind.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_vs_ship_kind: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub item_vs_ship_kind: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Modules
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// If any of high slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub high_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub high_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// If any of medium slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub mid_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub mid_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// If any of low slot modules occupy slots with indices higher than ship supports, this
     /// validation fails, only for those modules.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub low_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub low_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// If count of taken turret slots is higher than ship provides, this validation fails for all
     /// modules which need a turret slot.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub turret_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub turret_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// If count of taken launcher slots is higher than ship provides, this validation fails for all
     /// modules which need a launcher slot.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launcher_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launcher_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// If any module has state higher than it supports (e.g. active bulkhead), this validation
     /// fails.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub module_state: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub module_state: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when any capital modules (large-volume modules) are fit to subcapital ships.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub capital_module: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub capital_module: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any items overloaded, and overload skill requirement is not satisfied.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub overload_skill: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub overload_skill: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when any item consumes more cap than ship has. Only on-fit items which consume cap are
     /// considered for this, anything else (e.g. incoming neutralizers) are ignored.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unusable_cap: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unusable_cap: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Charges
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Some modules restrict charges which can be loaded into them by group; if charge from
     /// disallowed group is loaded, validation fails for charge.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charge_group: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub charge_group: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Some charges restrict into which modules they can be loaded by module group; if charge from
     /// disallowed group is loaded, validation fails for charge.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charge_parent_group: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub charge_parent_group: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Some charges and modules have charge size set. When a module specifies it, and has a charge
     /// without size or with mismatching size loaded, this validation fails for the charge.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charge_size: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub charge_size: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when volume of a single charge is larger than capacity of a module it's loaded into.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charge_volume: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub charge_volume: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Rigs
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more rigs than ship has rig slots.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub rig_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub rig_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when rigs take more calibration than ship can produce.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub calibration: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub calibration: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Ships and rigs specify rig size; when those mismatch, this validation fails for rigs.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub rig_size: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub rig_size: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Services
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more services than ship/structure has service slots.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub service_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub service_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // T3 subsystems/stances
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fit has more subsystems than ship has subsystem slots.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub subsystem_slot_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub subsystem_slot_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when multiple subsystems attempt to take the same slot.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub subsystem_slot_index: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub subsystem_slot_index: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when a ship which can't have a stance but has one.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ship_stance: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub ship_stance: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Drones
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when drones take more volume than ship's drone bay has.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub drone_bay_volume: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub drone_bay_volume: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space drones than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_drone_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_drone_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when in-space drones take more bandwidth than ship provides.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub drone_bandwidth: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub drone_bandwidth: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any drones when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_drone_slot: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_drone_slot: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any drones which take more bandwidth than ship provides.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_drone_bandwidth: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_drone_bandwidth: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Ship can limit which drone groups can be put into its drone bay. If it does, and drones from
     /// mismatching groups are fit, this validation fails for those drones.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub drone_group: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub drone_group: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Fighters
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when fighters take more volume than ship's fighter bay has.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub fighter_bay_volume: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub fighter_bay_volume: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space light fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_light_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_light_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space heavy fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_heavy_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_heavy_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space support fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_support_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_support_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space standup light fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_st_light_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_st_light_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space standup heavy fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_st_heavy_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_st_heavy_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has more in-space standup support fighters than ship supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_st_support_fighter_count: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub launched_st_support_fighter_count: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any light fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_light_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_light_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any heavy fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_heavy_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_heavy_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any support fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_support_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_support_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any standup light fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_st_light_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_st_light_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any standup heavy fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_st_heavy_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_st_heavy_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has any standup support fighters when ship supports none.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub unlaunchable_st_support_fighter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub unlaunchable_st_support_fighter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails for fighter squads which have more fighters than squad supports.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub fighter_squad_size: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub fighter_squad_size: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, destination side
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when any modules are active but their activation is blocked (e.g. scrambled MWDs).
     #[cfg_attr(feature = "serde", serde(default))]
-    pub activation_blocked: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub activation_blocked: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when any items have running effects which are stopped by external factors (e.g.
     /// scrambled fighter MWD).
     #[cfg_attr(feature = "serde", serde(default))]
-    pub effect_stopper: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub effect_stopper: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// When a cloak is active and something blocks it (weather, modules incompatible with cloaking
     /// like sieges, multiple cloaks fit to ship), this validation fails.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cloaking_blocked: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub cloaking_blocked: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Projection, source side
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when item defines which targets it can be applied to, but some of its targets do not
     /// belong to it.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub projectee_filter: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub projectee_filter: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when item is marked as assistive, and is applied to a target which is immune to
     /// assistance.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub assist_immunity: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub assist_immunity: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when item is marked as offensive, and is applied to a target which is immune to
     /// offense.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub offense_immunity: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub offense_immunity: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when item's effect can be resisted, and is applied to a target which completely
     /// resists its effect.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub resist_immunity: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub resist_immunity: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Sec zone
     ////////////////////////////////////////////////////////////////////////////////////////////////
     /// Fails when some items are not allowed to be fitted in current sol security zone.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sec_zone_fitted: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub sec_zone_fitted: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when some items are not allowed to be online in current sol security zone.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sec_zone_online: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub sec_zone_online: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when some items are not allowed to be active in current sol security zone.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sec_zone_active: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub sec_zone_active: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has items which cannot be onlined in current sol security zone.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sec_zone_unonlineable: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub sec_zone_unonlineable: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when fit has items which cannot be activated in current sol security zone.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sec_zone_unactivable: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub sec_zone_unactivable: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
     /// Fails when some effects are not allowed to run in current sol security zone.
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sec_zone_effect: DefOptionExt<ValEnabled> = DefOptionExt::Default,
+    pub sec_zone_effect: DefOptionExt<ValEnabled<I>> = DefOptionExt::Default,
+}
+impl<I> Default for ValOptions<I> {
+    fn default() -> Self {
+        Self { .. }
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(transparent))]
-#[derive(Clone, Default)]
-pub struct ValEnabled {
+#[derive(Clone)]
+pub struct ValEnabled<I = ItemId> {
     /// Known failures of a validation.
     ///
     /// Every validation failure is attached to an item. Items listed here will not be returned as
     /// validation failures. If all validation's failures are known, it is passed.
-    pub kfs: Vec<ItemId> = Vec::new(),
+    pub kfs: Vec<I> = Vec::new(),
+}
+impl<I> Default for ValEnabled<I> {
+    fn default() -> Self {
+        Self { .. }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
