@@ -1,4 +1,4 @@
-pub use cmd_core::{FitValCmd, SolValCmd};
+pub use cmd_core::{FitValCmd, FitValCmdBr, SolValCmd, SolValCmdBr};
 pub use fit_try_items::TryFitItemsCmd;
 pub use fit_val::FitValInfo;
 pub use info_mode::ValInfoMode;

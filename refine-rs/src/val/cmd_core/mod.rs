@@ -1,5 +1,5 @@
-pub use fit::FitValCmd;
-pub use sol::SolValCmd;
+pub use fit::{FitValCmd, FitValCmdBr, FitValCmdCtxFit, FitValCmdCtxFitBr};
+pub use sol::{SolValCmd, SolValCmdBr};
 
 mod fit;
 mod sol;

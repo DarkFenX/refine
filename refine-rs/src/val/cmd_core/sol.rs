@@ -1,16 +1,28 @@
 use crate::{
-    FitId, ItemId,
+    FitId, FitIdBr, ItemId, ItemIdBr,
     val::{SolValInfo, ValInfoMode, ValOptions},
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct SolValCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
     options: ValOptions<ItemId>,
-    #[cfg_attr(feature = "serde", serde(default))]
     fit_ids: Vec<FitId>,
+    shared: SolValCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone, Default)]
+pub struct SolValCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    options: ValOptions<ItemIdBr>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    fit_ids: Vec<FitIdBr>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: SolValCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone, Default)]
+struct SolValCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
     info_mode: ValInfoMode,
 }
@@ -31,7 +43,25 @@ impl SolValCmd {
         self
     }
     pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
-        self.info_mode = info_mode;
+        self.shared.info_mode = info_mode;
+        self
+    }
+}
+
+impl SolValCmdBr {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_options(mut self, options: ValOptions<ItemIdBr>) -> Self {
+        self.options = options;
+        self
+    }
+    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+        self.fit_ids.extend(fit_ids);
+        self
+    }
+    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+        self.shared.info_mode = info_mode;
         self
     }
 }
@@ -45,7 +75,7 @@ impl SolValCmd {
             fit_ids: self.fit_ids,
             options: self.options,
         };
-        match self.info_mode {
+        match self.shared.info_mode {
             ValInfoMode::Simple => SolValInfo {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,
