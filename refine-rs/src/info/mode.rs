@@ -63,7 +63,7 @@ impl<M, I> InfoModes<M, I> {
     }
     pub(in crate::info) fn from_compact(modes: InfoModesCompact<M, I>) -> Self
     where
-        M: Copy,
+        M: Copy + PartialEq,
         I: Eq + Hash,
     {
         Self {
@@ -71,7 +71,11 @@ impl<M, I> InfoModes<M, I> {
             overrides: modes
                 .overrides
                 .into_iter()
-                .flat_map(|overrides| overrides.1.into_iter().map(move |id| (id, overrides.0)))
+                .filter_map(|(over_mode, over_ids)| match over_mode == modes.default {
+                    true => None,
+                    false => Some(over_ids.into_iter().map(move |over_id| (over_id, over_mode))),
+                })
+                .flatten()
                 .collect(),
         }
     }
