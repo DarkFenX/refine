@@ -4,7 +4,6 @@ use crate::{
     trial::{FitTryItemsCmd, FitTryItemsCmdBr},
 };
 
-#[expect(clippy::enum_variant_names)]
 #[derive(Clone)]
 pub(crate) enum FitTryItemsEnumCmd {
     FitTryItems(FitTryItemsCmd),

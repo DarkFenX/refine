@@ -8,7 +8,6 @@ use crate::{
     },
 };
 
-#[expect(clippy::enum_variant_names)]
 #[derive(Clone)]
 pub(crate) enum SolTryItemsEnumCmd {
     FitTryItems(FitTryItemsCmdCtxFit),

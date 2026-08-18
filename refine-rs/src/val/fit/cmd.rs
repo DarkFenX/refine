@@ -4,7 +4,6 @@ use crate::{
     val::{FitValCmd, FitValCmdBr},
 };
 
-#[expect(clippy::enum_variant_names)]
 #[derive(Clone)]
 pub(crate) enum FitValEnumCmd {
     FitValidate(FitValCmd),
