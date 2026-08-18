@@ -68,20 +68,6 @@ impl ItemInfoCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemInfoCmd {
-    pub(in crate::info) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemInfoCmdCtxItemBr {
-        ItemInfoCmdCtxItemBr {
-            item_id: item_id.into(),
-            core: self.into_br(),
-        }
-    }
-    fn into_br(self) -> ItemInfoCmdBr {
-        ItemInfoCmdBr {
-            item_mode: self.item_mode.into_compact_br(),
-        }
-    }
-}
-
 impl ItemInfoCmdBr {
     pub(in crate::info) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemInfoCmdCtxItemBr {
         ItemInfoCmdCtxItemBr {

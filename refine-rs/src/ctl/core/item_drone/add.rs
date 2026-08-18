@@ -122,20 +122,8 @@ impl DroneAddCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneAddCmd {
-    pub(in crate::ctl) fn into_br(self) -> DroneAddCmdBr {
-        DroneAddCmdBr {
-            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            shared: self.shared,
-        }
-    }
     pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> DroneAddCmdCtxFit {
         DroneAddCmdCtxFit { fit_id, core: self }
-    }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> DroneAddCmdCtxFitBr {
-        DroneAddCmdCtxFitBr {
-            fit_id: fit_id.into(),
-            core: self.into_br(),
-        }
     }
 }
 

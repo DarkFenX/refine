@@ -228,9 +228,6 @@ impl DroneAddCmd {
     pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::DroneAdd(self)
     }
-    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::DroneAdd(self.into_br())
-    }
 }
 impl DroneAddCmdBr {
     pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
@@ -240,9 +237,6 @@ impl DroneAddCmdBr {
 impl DroneChangeCmd {
     pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::DroneChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::DroneChange(self.into_ctx_item_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
@@ -255,9 +249,6 @@ impl FighterAddCmd {
     pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FighterAdd(self)
     }
-    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::FighterAdd(self.into_br())
-    }
 }
 impl FighterAddCmdBr {
     pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
@@ -267,9 +258,6 @@ impl FighterAddCmdBr {
 impl FighterChangeCmd {
     pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::FighterChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::FighterChange(self.into_ctx_item_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
@@ -316,9 +304,6 @@ impl ModuleAddCmd {
     pub fn into_fit_ctl(self) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ModuleAdd(self)
     }
-    pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::ModuleAdd(self.into_br())
-    }
 }
 impl ModuleAddCmdBr {
     pub fn into_fit_ctl_br(self) -> FitChangeEnumCmdBr {
@@ -328,9 +313,6 @@ impl ModuleAddCmdBr {
 impl ModuleChangeCmd {
     pub fn into_fit_ctl(self, item_id: ItemId) -> FitChangeEnumCmd {
         FitChangeEnumCmd::ModuleChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_fit_ctl_br(self, item_id: impl Into<ItemIdBr>) -> FitChangeEnumCmdBr {
-        FitChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {

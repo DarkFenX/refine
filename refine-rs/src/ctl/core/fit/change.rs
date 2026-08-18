@@ -89,18 +89,6 @@ impl FitChangeCmd {
     pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FitChangeCmdCtxFit {
         FitChangeCmdCtxFit { fit_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitChangeCmdCtxFitBr {
-        FitChangeCmdCtxFitBr {
-            fit_id: fit_id.into(),
-            core: self.into_br(),
-        }
-    }
-    fn into_br(self) -> FitChangeCmdBr {
-        FitChangeCmdBr {
-            fleet_id: self.fleet_id.map(FleetIdBr::Id),
-            shared: self.shared,
-        }
-    }
 }
 
 impl FitChangeCmdBr {

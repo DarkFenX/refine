@@ -58,8 +58,8 @@ impl FitValCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // impl SolInfoEnumCmd {
-//     pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
-//         Ok(match self {
+//     pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp,
+// SolInfoEnumError> {         Ok(match self {
 //             Self::SolInfo(cmd) => cmd.execute(ctx.sol_id, ctx.src_alias, core_sol).into(),
 //             Self::FleetInfo(cmd) => cmd.execute(core_sol)?.into(),
 //             Self::FitInfo(cmd) => cmd.execute(core_sol)?.into(),

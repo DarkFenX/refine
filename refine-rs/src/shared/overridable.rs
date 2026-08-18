@@ -55,7 +55,6 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Forward conversions, from "external" to "internal" form
 impl<K, V> OverridableMap<K, V> {
     pub(crate) fn from_default(default: V) -> Self {
         Self {
@@ -117,27 +116,6 @@ where
             false => Some(ids.len()),
         })
         .sum()
-}
-
-// Backward conversion
-impl<K, V> OverridableMap<K, V> {
-    pub(crate) fn into_compact_br<B>(self) -> OverridableCompact<B, V>
-    where
-        V: Eq + Hash,
-        B: From<K>,
-    {
-        let mut rev_map: HashMap<V, Vec<B>> = HashMap::new();
-        for (id, value) in self.overrides.into_iter() {
-            if value == self.default {
-                continue;
-            }
-            rev_map.entry(value).or_default().push(id.into());
-        }
-        OverridableCompact {
-            default: self.default,
-            overrides: rev_map.into_iter().collect(),
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

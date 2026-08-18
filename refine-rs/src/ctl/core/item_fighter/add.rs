@@ -134,20 +134,8 @@ impl FighterAddCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterAddCmd {
-    pub(in crate::ctl) fn into_br(self) -> FighterAddCmdBr {
-        FighterAddCmdBr {
-            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            shared: self.shared,
-        }
-    }
     pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> FighterAddCmdCtxFit {
         FighterAddCmdCtxFit { fit_id, core: self }
-    }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FighterAddCmdCtxFitBr {
-        FighterAddCmdCtxFitBr {
-            fit_id: fit_id.into(),
-            core: self.into_br(),
-        }
     }
 }
 

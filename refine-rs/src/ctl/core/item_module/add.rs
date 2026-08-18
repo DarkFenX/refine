@@ -136,20 +136,8 @@ impl ModuleAddCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ModuleAddCmd {
-    pub(in crate::ctl) fn into_br(self) -> ModuleAddCmdBr {
-        ModuleAddCmdBr {
-            proj_item_ids: self.proj_item_ids.into_iter().map(ItemIdBr::Id).collect(),
-            shared: self.shared,
-        }
-    }
     pub(in crate::ctl) fn into_ctx_fit(self, fit_id: FitId) -> ModuleAddCmdCtxFit {
         ModuleAddCmdCtxFit { fit_id, core: self }
-    }
-    pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ModuleAddCmdCtxFitBr {
-        ModuleAddCmdCtxFitBr {
-            fit_id: fit_id.into(),
-            core: self.into_br(),
-        }
     }
 }
 

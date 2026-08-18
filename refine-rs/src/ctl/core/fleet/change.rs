@@ -72,18 +72,6 @@ impl FleetChangeCmd {
     pub(in crate::ctl) fn into_ctx_fleet(self, fleet_id: FleetId) -> FleetChangeCmdCtxFleet {
         FleetChangeCmdCtxFleet { fleet_id, core: self }
     }
-    pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
-        FleetChangeCmdCtxFleetBr {
-            fleet_id: fleet_id.into(),
-            core: self.into_br(),
-        }
-    }
-    fn into_br(self) -> FleetChangeCmdBr {
-        FleetChangeCmdBr {
-            add_fit_ids: self.add_fit_ids.into_iter().map(FitIdBr::Id).collect(),
-            rm_fit_ids: self.rm_fit_ids.into_iter().map(FitIdBr::Id).collect(),
-        }
-    }
 }
 
 impl FleetChangeCmdBr {

@@ -1,9 +1,8 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
-    ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
-    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FitChangeEnumCmd, FitChangeEnumCmdBr,
-    FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd,
-    ItemIdBr, ItemInfoCmd, ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmdBr, DroneChangeCmdBr, FighterAddCmdBr, FighterChangeCmdBr,
+    FitChangeCmd, FitChangeEnumCmd, FitChangeEnumCmdBr, FitInfoCmdBr, FitInfoEnumCmdBr, FwEffectAddCmd,
+    FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmdBr,
     ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
     ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
     SubsystemChangeCmd,
@@ -79,19 +78,9 @@ impl ChargeChangeCmd {
     }
 }
 // Item - drone
-impl DroneAddCmd {
-    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
-        FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
-    }
-}
 impl DroneAddCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
-    }
-}
-impl DroneChangeCmd {
-    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
-        FitHybridCmdBr::Ctl(self.into_fit_ctl_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
@@ -100,19 +89,9 @@ impl DroneChangeCmdBr {
     }
 }
 // Item - fighter
-impl FighterAddCmd {
-    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
-        FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
-    }
-}
 impl FighterAddCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
-    }
-}
-impl FighterChangeCmd {
-    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
-        FitHybridCmdBr::Ctl(self.into_fit_ctl_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
@@ -143,19 +122,9 @@ impl ImplantChangeCmd {
     }
 }
 // Item - module
-impl ModuleAddCmd {
-    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
-        FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
-    }
-}
 impl ModuleAddCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br())
-    }
-}
-impl ModuleChangeCmd {
-    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
-        FitHybridCmdBr::Ctl(self.into_fit_ctl_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {
@@ -239,21 +208,10 @@ impl SubsystemChangeCmd {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br(item_id))
     }
 }
-// Info - fit
-impl FitInfoCmd {
-    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
-        FitHybridCmdBr::Info(self.into_fit_inf_br())
-    }
-}
+// Info
 impl FitInfoCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
         FitHybridCmdBr::Info(self.into_fit_inf_br())
-    }
-}
-// Info - item
-impl ItemInfoCmd {
-    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
-        FitHybridCmdBr::Info(self.into_fit_inf_br(item_id))
     }
 }
 impl ItemInfoCmdBr {

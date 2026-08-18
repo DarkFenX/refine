@@ -207,9 +207,6 @@ impl FleetAddCmd {
     pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::FleetAdd(self)
     }
-    pub fn into_sol_ctl_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::FleetAdd(self.into_br())
-    }
 }
 impl FleetAddCmdBr {
     pub fn into_sol_ctl_br(self) -> SolChangeEnumCmdBr {
@@ -219,9 +216,6 @@ impl FleetAddCmdBr {
 impl FleetChangeCmd {
     pub fn into_sol_ctl(self, fleet_id: FleetId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::FleetChange(self.into_ctx_fleet(fleet_id))
-    }
-    pub fn into_sol_ctl_br(self, fleet_id: impl Into<FleetIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::FleetChange(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FleetChangeCmdBr {
@@ -242,9 +236,6 @@ impl FitAddCmd {
     pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::FitAdd(self)
     }
-    pub fn into_sol_ctl_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::FitAdd(self.into_br())
-    }
 }
 impl FitAddCmdBr {
     pub fn into_sol_ctl_br(self) -> SolChangeEnumCmdBr {
@@ -254,9 +245,6 @@ impl FitAddCmdBr {
 impl FitChangeCmd {
     pub fn into_sol_ctl(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::FitChange(self.into_ctx_fit(fit_id))
-    }
-    pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::FitChange(self.into_ctx_fit_br(fit_id))
     }
 }
 impl FitChangeCmdBr {
@@ -352,9 +340,6 @@ impl DroneAddCmd {
     pub fn into_sol_ctl(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::DroneAdd(self.into_ctx_fit(fit_id))
     }
-    pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::DroneAdd(self.into_ctx_fit_br(fit_id))
-    }
 }
 impl DroneAddCmdBr {
     pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
@@ -364,9 +349,6 @@ impl DroneAddCmdBr {
 impl DroneChangeCmd {
     pub fn into_sol_ctl(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::DroneChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_sol_ctl_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::DroneChange(self.into_ctx_item_br(item_id))
     }
 }
 impl DroneChangeCmdBr {
@@ -379,9 +361,6 @@ impl FighterAddCmd {
     pub fn into_sol_ctl(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::FighterAdd(self.into_ctx_fit(fit_id))
     }
-    pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::FighterAdd(self.into_ctx_fit_br(fit_id))
-    }
 }
 impl FighterAddCmdBr {
     pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
@@ -391,9 +370,6 @@ impl FighterAddCmdBr {
 impl FighterChangeCmd {
     pub fn into_sol_ctl(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::FighterChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_sol_ctl_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::FighterChange(self.into_ctx_item_br(item_id))
     }
 }
 impl FighterChangeCmdBr {
@@ -440,9 +416,6 @@ impl ModuleAddCmd {
     pub fn into_sol_ctl(self, fit_id: FitId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ModuleAdd(self.into_ctx_fit(fit_id))
     }
-    pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ModuleAdd(self.into_ctx_fit_br(fit_id))
-    }
 }
 impl ModuleAddCmdBr {
     pub fn into_sol_ctl_br(self, fit_id: impl Into<FitIdBr>) -> SolChangeEnumCmdBr {
@@ -452,9 +425,6 @@ impl ModuleAddCmdBr {
 impl ModuleChangeCmd {
     pub fn into_sol_ctl(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ModuleChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_sol_ctl_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ModuleChange(self.into_ctx_item_br(item_id))
     }
 }
 impl ModuleChangeCmdBr {
@@ -467,9 +437,6 @@ impl ProjEffectAddCmd {
     pub fn into_sol_ctl(self) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ProjEffectAdd(self)
     }
-    pub fn into_sol_ctl_br(self) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ProjEffectAdd(self.into_br())
-    }
 }
 impl ProjEffectAddCmdBr {
     pub fn into_sol_ctl_br(self) -> SolChangeEnumCmdBr {
@@ -479,9 +446,6 @@ impl ProjEffectAddCmdBr {
 impl ProjEffectChangeCmd {
     pub fn into_sol_ctl(self, item_id: ItemId) -> SolChangeEnumCmd {
         SolChangeEnumCmd::ProjEffectChange(self.into_ctx_item(item_id))
-    }
-    pub fn into_sol_ctl_br(self, item_id: impl Into<ItemIdBr>) -> SolChangeEnumCmdBr {
-        SolChangeEnumCmdBr::ProjEffectChange(self.into_ctx_item_br(item_id))
     }
 }
 impl ProjEffectChangeCmdBr {

@@ -1,6 +1,6 @@
 use crate::{
-    CmdResp, CmdResps, FitIdBr, FitInfoCmd, FitInfoCmdBr, FleetIdBr, FleetInfoCmd, ItemIdBr, ItemInfoCmd,
-    ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
+    CmdResp, CmdResps, FitIdBr, FitInfoCmdBr, FleetIdBr, FleetInfoCmd, ItemIdBr, ItemInfoCmdBr, SolInfoCmd,
+    SolInfoCmdBr,
     err::{BrResolveError, FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
     info::cmd_core::{
         FitInfoCmdCtxFit, FitInfoCmdCtxFitBr, FleetInfoCmdCtxFleet, FleetInfoCmdCtxFleetBr, ItemInfoCmdCtxItem,
@@ -36,11 +36,6 @@ pub enum SolInfoEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
-impl SolInfoCmd {
-    pub(crate) fn into_sol_inf_br(self) -> SolInfoEnumCmdBr {
-        SolInfoEnumCmdBr::SolInfo(self.into_br())
-    }
-}
 impl SolInfoCmdBr {
     pub(crate) fn into_sol_inf_br(self) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::SolInfo(self)
@@ -51,19 +46,9 @@ impl FleetInfoCmd {
         SolInfoEnumCmdBr::FleetInfo(self.into_ctx_item_br(fleet_id))
     }
 }
-impl FitInfoCmd {
-    pub(crate) fn into_sol_inf_br(self, fit_id: impl Into<FitIdBr>) -> SolInfoEnumCmdBr {
-        SolInfoEnumCmdBr::FitInfo(self.into_ctx_item_br(fit_id))
-    }
-}
 impl FitInfoCmdBr {
     pub(crate) fn into_sol_inf_br(self, fit_id: impl Into<FitIdBr>) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::FitInfo(self.into_ctx_item_br(fit_id))
-    }
-}
-impl ItemInfoCmd {
-    pub(crate) fn into_sol_inf_br(self, item_id: impl Into<ItemIdBr>) -> SolInfoEnumCmdBr {
-        SolInfoEnumCmdBr::ItemInfo(self.into_ctx_item_br(item_id))
     }
 }
 impl ItemInfoCmdBr {
