@@ -7,7 +7,7 @@ use axum::{
     response::IntoResponse,
 };
 use axum_extra::extract::WithRejection;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::{
     err::{ApiError, ApiErrorIndexed},
@@ -17,10 +17,6 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(transparent)]
 pub(crate) struct SolBatchReqBody(Vec<serde_json::Value>);
-
-#[derive(Serialize)]
-#[serde(transparent)]
-struct SolBatchResp(rs::CmdResps);
 
 pub(crate) async fn batch_sol(
     State(state): State<AppState>,
@@ -37,7 +33,7 @@ async fn internal_batch_sol(
     state: AppState,
     sol_id: String,
     payload: SolBatchReqBody,
-) -> Result<SolBatchResp, ApiError> {
+) -> Result<rs::CmdResps, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let mut cmds = Vec::with_capacity(payload.0.len());
     for (index, raw_cmd) in payload.0.into_iter().enumerate() {
@@ -47,5 +43,5 @@ async fn internal_batch_sol(
         }
     }
     let cmd_resps = state.get_refine().get_sol(sol_id).await?.hybrid_batch(cmds).await?;
-    Ok(SolBatchResp(cmd_resps))
+    Ok(cmd_resps)
 }

@@ -1,4 +1,4 @@
-pub use fit::{Fit, FitChangeEnumFitInfoError, FitGetError, FitHybridBatchError, ValFitInfoArgs};
+pub use fit::{Fit, FitChangeEnumFitInfoError, FitGetError, FitHybridBatchError};
 pub use fleet::{Fleet, FleetGetError};
 pub use item::{Item, ItemGetError};
 pub use refine::Refine;
@@ -6,7 +6,7 @@ pub use refine::Refine;
 pub use sol::ParseSolarSystemIdError;
 pub use sol::{
     SolAddError, SolChangeEnumSolInfoError, SolGetError, SolHybridBatchError, SolRemoveError, SolSwitchSrcError,
-    SolarSystem, SolarSystemId, ValSolInfoArgs,
+    SolarSystem, SolarSystemId,
 };
 pub use src::{
     Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcInfoArgs,

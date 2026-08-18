@@ -7,7 +7,7 @@ use axum::{
     response::IntoResponse,
 };
 use axum_extra::extract::WithRejection;
-use serde::{Deserialize, Serialize};
+use serde::Deserialize;
 
 use crate::{
     err::{ApiError, ApiErrorIndexed},
@@ -17,10 +17,6 @@ use crate::{
 #[derive(Deserialize)]
 #[serde(transparent)]
 pub(crate) struct FitBatchReqBody(Vec<serde_json::Value>);
-
-#[derive(Serialize)]
-#[serde(transparent)]
-struct FitBatchResp(rs::CmdResps);
 
 pub(crate) async fn batch_fit(
     State(state): State<AppState>,
@@ -38,7 +34,7 @@ async fn internal_batch_fit(
     sol_id: String,
     fit_id: String,
     payload: FitBatchReqBody,
-) -> Result<FitBatchResp, ApiError> {
+) -> Result<rs::CmdResps, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let mut cmds = Vec::with_capacity(payload.0.len());
@@ -56,5 +52,5 @@ async fn internal_batch_fit(
         .await?
         .hybrid_batch(cmds)
         .await?;
-    Ok(FitBatchResp(cmd_resps))
+    Ok(cmd_resps)
 }

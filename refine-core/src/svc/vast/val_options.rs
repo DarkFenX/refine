@@ -8,7 +8,7 @@ use crate::{
 
 /// Solar system validation options.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ValOptionsSol {
     /// Fit IDs to validate.
     #[cfg_attr(feature = "serde", serde(default))]
@@ -19,7 +19,7 @@ pub struct ValOptionsSol {
 
 /// Validation options.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ValOptions {
     /// True to have all validations enabled by default, false to have them disabled.
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::val_default"))]

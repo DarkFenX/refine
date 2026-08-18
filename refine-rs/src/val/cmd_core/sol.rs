@@ -3,17 +3,22 @@ use crate::{
     val::{SolValInfo, ValInfoMode, ValOptions},
 };
 
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
-pub struct ValidateSolCmd {
-    options: ValOptions = ValOptions { default: true, .. },
-    fit_ids: Vec<FitId> = Vec::new(),
+pub struct SolValCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    options: ValOptions,
+    #[cfg_attr(feature = "serde", serde(default))]
+    fit_ids: Vec<FitId>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    info_mode: ValInfoMode,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ValidateSolCmd {
+impl SolValCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -22,8 +27,11 @@ impl ValidateSolCmd {
         self
     }
     pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitId>) -> Self {
-        self.fit_ids.clear();
         self.fit_ids.extend(fit_ids);
+        self
+    }
+    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+        self.info_mode = info_mode;
         self
     }
 }
@@ -31,13 +39,13 @@ impl ValidateSolCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ValidateSolCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem, val_info_mode: ValInfoMode) -> SolValInfo {
+impl SolValCmd {
+    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolValInfo {
         let core_options = rc::val::ValOptionsSol {
             fit_ids: self.fit_ids,
             options: self.options,
         };
-        match val_info_mode {
+        match self.info_mode {
             ValInfoMode::Simple => SolValInfo {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,

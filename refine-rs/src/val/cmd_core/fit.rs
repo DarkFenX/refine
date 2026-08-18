@@ -1,16 +1,19 @@
 use crate::val::{FitValInfo, ValInfoMode, ValOptions};
 
+// Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
-pub struct ValidateFitCmd {
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    options: ValOptions = ValOptions { default: true, .. },
+pub struct FitValCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    options: ValOptions,
+    #[cfg_attr(feature = "serde", serde(default))]
+    info_mode: ValInfoMode,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ValidateFitCmd {
+impl FitValCmd {
     pub fn new() -> Self {
         Self::default()
     }
@@ -18,14 +21,18 @@ impl ValidateFitCmd {
         self.options = options;
         self
     }
+    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+        self.info_mode = info_mode;
+        self
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ValidateFitCmd {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut, val_info_mode: ValInfoMode) -> FitValInfo {
-        match val_info_mode {
+impl FitValCmd {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValInfo {
+        match self.info_mode {
             ValInfoMode::Simple => FitValInfo {
                 passed: core_fit.validate_fast(&self.options),
                 details: None,

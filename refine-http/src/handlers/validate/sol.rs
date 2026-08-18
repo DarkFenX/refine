@@ -7,14 +7,24 @@ use axum::{
     response::IntoResponse,
 };
 use axum_extra::extract::WithRejection;
+use serde::Deserialize;
 
+use super::shared::ValParams;
 use crate::{err::ApiError, state::AppState};
+
+#[derive(Default, Deserialize)]
+pub(crate) struct SolValReqBody {
+    #[serde(default)]
+    options: rs::val::ValOptions,
+    #[serde(default)]
+    fit_ids: Vec<rs::FitId>,
+}
 
 pub(crate) async fn validate_sol(
     State(state): State<AppState>,
     Path(sol_id): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::val::ValSolInfoArgs>, ApiError>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::val::ValidateSolCmd>>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<ValParams>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<SolValReqBody>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_validate_sol(state, sol_id, params, payload).await {
@@ -26,15 +36,20 @@ pub(crate) async fn validate_sol(
 async fn internal_validate_sol(
     state: AppState,
     sol_id: String,
-    params: rs::val::ValSolInfoArgs,
-    payload: rs::val::ValidateSolCmd,
+    params: ValParams,
+    payload: SolValReqBody,
 ) -> Result<rs::val::SolValInfo, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let val_info = state
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .validate(payload, params)
+        .validate(
+            rs::val::SolValCmd::new()
+                .with_options(payload.options)
+                .with_fit_ids(payload.fit_ids.into_iter())
+                .with_info_mode(params.validation),
+        )
         .await;
     Ok(val_info)
 }
