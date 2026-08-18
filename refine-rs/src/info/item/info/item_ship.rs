@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
-    Modification, Movement, info::OverridableMap,
+    Modification, Movement, shared::OverridableMap,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

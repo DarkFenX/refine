@@ -6,7 +6,7 @@ use crate::ItemKind;
 use crate::{
     AttrId, ChargeInfo, Count, EffectId, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
     ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState,
-    RangedProjInfo, TriStateField, info::OverridableMap,
+    RangedProjInfo, TriStateField, shared::OverridableMap,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

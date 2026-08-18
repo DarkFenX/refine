@@ -1,7 +1,7 @@
 use crate::{
     AutochargeInfo, BoosterInfo, CharacterInfo, ChargeInfo, DroneInfo, FighterInfo, FwEffectInfo, ImplantInfo, ItemId,
     ItemInfoMode, ModuleInfo, ProjEffectInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo, SubsystemInfo,
-    SwEffectInfo, info::OverridableMap,
+    SwEffectInfo, shared::OverridableMap,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize), serde(untagged))]

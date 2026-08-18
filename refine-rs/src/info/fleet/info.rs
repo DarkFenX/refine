@@ -1,6 +1,6 @@
 use rc::Lender;
 
-use crate::{FitId, FleetId, FleetInfoMode, info::OverridableMap};
+use crate::{FitId, FleetId, FleetInfoMode, shared::OverridableMap};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]

@@ -1,8 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr, ItemInfo, ItemInfoMode,
     err::BrResolveError,
-    info::{OverridableCompact, OverridableMap},
-    shared::BrResolvable,
+    shared::{BrResolvable, OverridableCompact, OverridableMap},
 };
 
 // Core commands

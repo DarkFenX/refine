@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolInfo,
     SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
     err::BrResolveError,
-    info::{OverridableCompact, OverridableMap},
+    shared::{OverridableCompact, OverridableMap},
 };
 
 // Core commands

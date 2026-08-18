@@ -2,7 +2,7 @@ use rc::Lender;
 
 use crate::{
     DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, ProjEffectInfo,
-    SecZone, SolInfoMode, SolarSystemId, Spool, SwEffectInfo, info::OverridableMap, src::SrcAlias,
+    SecZone, SolInfoMode, SolarSystemId, Spool, SwEffectInfo, shared::OverridableMap, src::SrcAlias,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

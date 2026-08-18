@@ -5,12 +5,12 @@ use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 // Representation form which is more convenient for use by info builders; should be used on commands
 // which are directly executable (i.e. commands with backreferences resolved into IDs)
 #[derive(Clone)]
-pub(in crate::info) struct OverridableMap<K, V> {
-    pub(in crate::info) default: V,
-    pub(in crate::info) overrides: HashMap<K, V>,
+pub(crate) struct OverridableMap<K, V> {
+    pub(crate) default: V,
+    pub(crate) overrides: HashMap<K, V>,
 }
 impl<K, V> OverridableMap<K, V> {
-    pub(in crate::info) fn get(&self, id: &K) -> V
+    pub(crate) fn get(&self, id: &K) -> V
     where
         K: Eq + Hash,
         V: Copy,
@@ -36,9 +36,9 @@ where
 // Representation form which is compact; should be used only when it is not directly usable by info
 // builders (e.g. command with backreferences)
 #[derive(Clone)]
-pub(in crate::info) struct OverridableCompact<K, V> {
-    pub(in crate::info) default: V,
-    pub(in crate::info) overrides: Vec<(V, Vec<K>)>,
+pub(crate) struct OverridableCompact<K, V> {
+    pub(crate) default: V,
+    pub(crate) overrides: Vec<(V, Vec<K>)>,
 }
 impl<K, V> Default for OverridableCompact<K, V>
 where
@@ -57,13 +57,13 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Forward conversions, from "external" to "internal" form
 impl<K, V> OverridableMap<K, V> {
-    pub(in crate::info) fn from_default(default: V) -> Self {
+    pub(crate) fn from_default(default: V) -> Self {
         Self {
             default,
             overrides: HashMap::new(),
         }
     }
-    pub(in crate::info) fn from_compact(compact: OverridableCompact<K, V>) -> Self
+    pub(crate) fn from_compact(compact: OverridableCompact<K, V>) -> Self
     where
         K: Eq + Hash,
         V: Copy + PartialEq,
@@ -81,7 +81,7 @@ impl<K, V> OverridableMap<K, V> {
         }
         Self { default, overrides }
     }
-    pub(in crate::info) fn from_compact_br<B>(
+    pub(crate) fn from_compact_br<B>(
         compact_br: OverridableCompact<B, V>,
         ctl_cmd_resps: &CmdResps,
     ) -> Result<Self, BrResolveError>
@@ -121,7 +121,7 @@ where
 
 // Backward conversion
 impl<K, V> OverridableMap<K, V> {
-    pub(in crate::info) fn into_compact_br<B>(self) -> OverridableCompact<B, V>
+    pub(crate) fn into_compact_br<B>(self) -> OverridableCompact<B, V>
     where
         V: Eq + Hash,
         B: From<K>,

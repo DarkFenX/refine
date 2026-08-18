@@ -3,7 +3,7 @@ use rc::Lender;
 use crate::{
     BoosterInfo, CharacterInfo, DpsProfile, DroneInfo, FighterInfo, FitId, FitInfoMode, FitSecStatus, FleetId,
     FwEffectInfo, ImplantInfo, ItemId, ItemInfoMode, ModuleInfo, RigInfo, ServiceInfo, ShipInfo, SkillInfo, StanceInfo,
-    SubsystemInfo, info::OverridableMap,
+    SubsystemInfo, shared::OverridableMap,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]

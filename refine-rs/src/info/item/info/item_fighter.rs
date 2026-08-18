@@ -6,7 +6,7 @@ use crate::ItemKind;
 use crate::{
     AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, EffectId, FighterCountInfo, FitId, ItemAttrValues,
     ItemEffectInfo, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState, Modification, Movement,
-    RangedProjInfo, info::OverridableMap,
+    RangedProjInfo, shared::OverridableMap,
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
