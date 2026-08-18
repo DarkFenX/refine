@@ -1,6 +1,6 @@
 use crate::{
     CmdResps, Fit, FitHybridCmdBr,
-    err::{BrResolveError, FitChangeEnumError, FitHybridError},
+    err::{BrResolveError, FitChangeEnumError, FitHybridError, FitInfoEnumError},
 };
 
 impl Fit<'_, '_> {
@@ -34,6 +34,8 @@ pub enum FitHybridBatchError {
     BrResolve(usize, #[source] BrResolveError),
     #[error("command #{0} failed")]
     CtlExec(usize, #[source] FitChangeEnumError),
+    #[error("command #{0} failed")]
+    InfoExec(usize, #[source] FitInfoEnumError),
 }
 impl FitHybridBatchError {
     fn from_br_resolve(cmd_idx: usize, br_err: BrResolveError) -> Self {
@@ -42,6 +44,7 @@ impl FitHybridBatchError {
     fn from_exec(cmd_idx: usize, exec_err: FitHybridError) -> Self {
         match exec_err {
             FitHybridError::Ctl(ctl_err) => Self::CtlExec(cmd_idx, ctl_err),
+            FitHybridError::Info(info_err) => Self::InfoExec(cmd_idx, info_err),
         }
     }
 }

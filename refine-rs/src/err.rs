@@ -28,7 +28,7 @@ pub use crate::{
         SkillChangeError, SolChangeEnumError, StanceChangeError, SubsystemChangeError, SwEffectChangeError,
     },
     hyb::{FitHybridError, SolHybridError},
-    info::{FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError, SolInfoEnumError},
+    info::{FitGetFitInfoError, FitInfoEnumError, FleetGetFleetInfoError, ItemGetItemInfoError, SolInfoEnumError},
     shared::BrResolveError,
 };
 

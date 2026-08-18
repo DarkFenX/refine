@@ -76,6 +76,8 @@ pub(crate) enum ApiError {
     FitChange(#[from] rs::err::FitChangeEnumFitInfoError),
     #[error(transparent)]
     FitBatchCtl(ApiErrorIndexed<rs::err::FitChangeEnumError>),
+    #[error(transparent)]
+    FitBatchInfo(ApiErrorIndexed<rs::err::FitInfoEnumError>),
     // Item-related
     #[error(transparent)]
     PathItemParse(#[from] rs::err::ParseItemIdError),
@@ -133,6 +135,9 @@ impl From<rs::err::FitHybridBatchError> for ApiError {
             }
             rs::err::FitHybridBatchError::CtlExec(index, inner) => {
                 Self::FitBatchCtl(ApiErrorIndexed { index, error: inner })
+            }
+            rs::err::FitHybridBatchError::InfoExec(index, inner) => {
+                Self::FitBatchInfo(ApiErrorIndexed { index, error: inner })
             }
         }
     }

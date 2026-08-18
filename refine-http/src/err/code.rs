@@ -92,6 +92,11 @@ impl ApiError {
                 rs::err::FitChangeEnumFitInfoError::InfoBrResolve(..) => (StatusCode::BAD_REQUEST, "BRF-003"),
             },
             Self::FitBatchCtl(err) => fit_change_enum(&err.error),
+            Self::FitBatchInfo(err) => match &err.error {
+                rs::err::FitInfoEnumError::Item(rs::err::ItemGetItemInfoError::ItemGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "ITM-001")
+                }
+            },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Item-related
             ////////////////////////////////////////////////////////////////////////////////////////
@@ -225,6 +230,7 @@ impl ApiError {
             Self::SolBatchCtl(err) => Some(err.index),
             Self::SolBatchInfo(err) => Some(err.index),
             Self::FitBatchCtl(err) => Some(err.index),
+            Self::FitBatchInfo(err) => Some(err.index),
             _ => None,
         }
     }

@@ -2,7 +2,8 @@ pub use cmd_core::{
     FitGetFitInfoError, FitInfoCmd, FitInfoCmdBr, FleetGetFleetInfoError, FleetInfoCmd, ItemGetItemInfoError,
     ItemInfoCmd, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
 };
-pub use fit::{FitInfo, FitInfoExt, FitInfoMode};
+pub(crate) use fit::FitInfoEnumCmd;
+pub use fit::{FitInfo, FitInfoEnumCmdBr, FitInfoEnumError, FitInfoExt, FitInfoMode};
 pub use fleet::{FleetInfo, FleetInfoExt, FleetInfoMode};
 pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,

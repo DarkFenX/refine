@@ -2,22 +2,26 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
     FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitChangeCmd, FitChangeEnumCmd, FitChangeEnumCmdBr,
-    FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr, ItemRemoveCmd, ModuleAddCmd,
-    ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd,
-    ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd,
-    StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd,
-    err::{BrResolveError, FitChangeEnumError},
+    FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd,
+    ItemIdBr, ItemInfoCmd, ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ModuleChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
+    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
+    SubsystemChangeCmd,
+    err::{BrResolveError, FitChangeEnumError, FitInfoEnumError},
+    info::FitInfoEnumCmd,
 };
 
 #[derive(Clone)]
 pub(crate) enum FitHybridCmd {
     Ctl(FitChangeEnumCmd),
+    Info(FitInfoEnumCmd),
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
 #[derive(Clone)]
 pub enum FitHybridCmdBr {
     Ctl(FitChangeEnumCmdBr),
+    Info(FitInfoEnumCmdBr),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -235,6 +239,28 @@ impl SubsystemChangeCmd {
         FitHybridCmdBr::Ctl(self.into_fit_ctl_br(item_id))
     }
 }
+// Info - fit
+impl FitInfoCmd {
+    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
+        FitHybridCmdBr::Info(self.into_fit_inf_br())
+    }
+}
+impl FitInfoCmdBr {
+    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
+        FitHybridCmdBr::Info(self.into_fit_inf_br())
+    }
+}
+// Info - item
+impl ItemInfoCmd {
+    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
+        FitHybridCmdBr::Info(self.into_fit_inf_br(item_id))
+    }
+}
+impl ItemInfoCmdBr {
+    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
+        FitHybridCmdBr::Info(self.into_fit_inf_br(item_id))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
@@ -243,6 +269,7 @@ impl FitHybridCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitHybridCmd, BrResolveError> {
         Ok(match self {
             Self::Ctl(ctl_cmd) => FitHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
+            Self::Info(info_cmd) => FitHybridCmd::Info(info_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -254,6 +281,7 @@ impl FitHybridCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitHybridError> {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_fit)?,
+            Self::Info(info_cmd) => info_cmd.execute(core_fit)?,
         })
     }
 }
@@ -262,4 +290,6 @@ impl FitHybridCmd {
 pub enum FitHybridError {
     #[error(transparent)]
     Ctl(#[from] FitChangeEnumError),
+    #[error(transparent)]
+    Info(#[from] FitInfoEnumError),
 }
