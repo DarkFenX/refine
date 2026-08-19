@@ -439,29 +439,29 @@ impl<I> ValOptions<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> ValOptions<I> {
-    pub fn try_map_ids<J, E, F>(self, mut func: F) -> Result<ValOptions<J>, E>
+impl<I1> ValOptions<I1> {
+    pub fn try_map_ids<I2, E, M>(self, mut item_mapper: M) -> Result<ValOptions<I2>, E>
     where
-        F: FnMut(I) -> Result<J, E>,
+        M: FnMut(I1) -> Result<I2, E>,
     {
-        let mut mapped_overrides = Vec::with_capacity(self.overrides.len());
+        let mut new_overrides = Vec::with_capacity(self.overrides.len());
         for (kind, option) in self.overrides {
-            let mapped_option = match option {
+            let new_option = match option {
                 OptionExt::Disabled => OptionExt::Disabled,
                 OptionExt::Enabled => OptionExt::Enabled,
                 OptionExt::EnabledExtended(enabled) => {
                     let mut kfs = Vec::with_capacity(enabled.kfs.len());
                     for kf in enabled.kfs {
-                        kfs.push(func(kf)?);
+                        kfs.push(item_mapper(kf)?);
                     }
                     OptionExt::EnabledExtended(ValEnabled { kfs })
                 }
             };
-            mapped_overrides.push((kind, mapped_option));
+            new_overrides.push((kind, new_option));
         }
         Ok(ValOptions {
             default: self.default,
-            overrides: mapped_overrides,
+            overrides: new_overrides,
         })
     }
 }

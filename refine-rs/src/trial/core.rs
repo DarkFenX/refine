@@ -1,7 +1,4 @@
-use crate::{
-    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResolveError, shared::val_options_br_resolve,
-    val::ValOptions,
-};
+use crate::{CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResolveError, val::ValOptions};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -89,7 +86,9 @@ impl FitTryItemsCmdBr {
 impl FitTryItemsCmdBr {
     pub(in crate::trial) fn br_resolve(self, resps: &CmdResps) -> Result<FitTryItemsCmd, BrResolveError> {
         Ok(FitTryItemsCmd {
-            val_options: val_options_br_resolve(self.val_options, resps)?,
+            val_options: self
+                .val_options
+                .try_map_ids(|item_id_br| resps.resolve_item_id(item_id_br))?,
             shared: self.shared,
         })
     }

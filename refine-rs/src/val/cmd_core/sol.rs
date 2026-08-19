@@ -1,7 +1,6 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::val_options_br_resolve,
     val::{SolValResult, ValOptions, ValResultMode},
 };
 
@@ -74,7 +73,9 @@ impl SolValCmdBr {
 impl SolValCmdBr {
     pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<SolValCmd, BrResolveError> {
         Ok(SolValCmd {
-            options: val_options_br_resolve(self.options, resps)?,
+            options: self
+                .options
+                .try_map_ids(|item_id_br| resps.resolve_item_id(item_id_br))?,
             fit_ids: resps.resolve_fit_ids(self.fit_ids)?,
             shared: self.shared,
         })
