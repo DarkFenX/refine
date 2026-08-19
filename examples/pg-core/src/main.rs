@@ -276,7 +276,7 @@ fn test_nphoon(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
         fit.add_drone(ItemTypeId::from_i32(2446), MinionState::InBay, None, None); // T2 ogre
     }
 
-    let val_options = ValOptions::new();
+    let val_options = ValOptions::new(true);
     // Generated from pyfa
     let items = vec![
         178, 179, 180, 181, 182, 183, 184, 185, 186, 187, 188, 189, 190, 191, 192, 193, 194, 195, 196, 197, 198, 199,

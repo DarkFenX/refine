@@ -6,6 +6,7 @@
 #![feature(option_reduce)]
 #![feature(never_type)]
 #![feature(integer_casts)]
+#![feature(exact_size_is_empty)]
 #![feature(const_trait_impl)]
 #![feature(const_cmp)]
 #![feature(const_ops)]

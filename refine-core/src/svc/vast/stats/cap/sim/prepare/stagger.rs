@@ -14,14 +14,25 @@ use crate::{
     util::RMapVec,
 };
 
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct StatCapSimStagger {
-    pub default: bool = false,
-    pub exception_item_ids: Vec<ItemId> = Vec::new(),
+    default: bool = false,
+    exception_item_ids: Vec<ItemId> = Vec::new(),
+}
+const impl Default for StatCapSimStagger {
+    fn default() -> Self {
+        Self { .. }
+    }
 }
 impl StatCapSimStagger {
     pub fn new(default: bool) -> Self {
         Self { default, .. }
+    }
+    pub fn with_exception_item_ids(mut self, exception_item_ids: impl ExactSizeIterator<Item = ItemId>) {
+        if !exception_item_ids.is_empty() {
+            self.exception_item_ids.reserve(exception_item_ids.len());
+            self.exception_item_ids.extend(exception_item_ids);
+        }
     }
 }
 

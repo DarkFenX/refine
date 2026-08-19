@@ -24,13 +24,9 @@ impl<I> Default for ValOptions<I> {
     }
 }
 impl<I> ValOptions<I> {
-    pub fn new() -> Self {
-        Self::default()
-    }
     /// True to have all validations enabled by default, false to have them disabled.
-    pub fn with_default(mut self, default: bool) -> Self {
-        self.default = default;
-        self
+    pub fn new(default: bool) -> Self {
+        Self { default, .. }
     }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
@@ -519,7 +515,7 @@ mod custom_serde {
                 where
                     A: MapAccess<'de>,
                 {
-                    let mut options = ValOptions::new();
+                    let mut options = ValOptions::default();
                     while let Some(key) = map.next_key()? {
                         match key {
                             FieldKind::Default => {
