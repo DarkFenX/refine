@@ -4,9 +4,13 @@ use crate::{
 };
 
 /// Capacitor change sources which will be considered for cap balance stats.
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Copy, Clone)]
-pub struct StatCapBlcSrcKinds {
+pub struct StatCapBlcSrcKinds<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::src_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -14,7 +18,7 @@ pub struct StatCapBlcSrcKinds {
     #[cfg_attr(feature = "serde", serde(default))]
     cap_injectors: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    nosfs: DefOptionExt<StatCapBlcNosfs> = DefOptionExt::Default,
+    nosfs: DefOptionExt<StatCapBlcNosfs<I>> = DefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
     consumers: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -22,12 +26,12 @@ pub struct StatCapBlcSrcKinds {
     #[cfg_attr(feature = "serde", serde(default))]
     incoming_neuts: DefOption = DefOption::Default,
 }
-const impl Default for StatCapBlcSrcKinds {
+const impl<I> Default for StatCapBlcSrcKinds<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
-impl StatCapBlcSrcKinds {
+impl<I> StatCapBlcSrcKinds<I> {
     /// True to have all supported sources enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self { default, .. }
@@ -40,7 +44,7 @@ impl StatCapBlcSrcKinds {
         self.cap_injectors = enabled.into();
         self
     }
-    pub fn with_nosfs(mut self, option: OptionExt<StatCapBlcNosfs>) -> Self {
+    pub fn with_nosfs(mut self, option: OptionExt<StatCapBlcNosfs<I>>) -> Self {
         self.nosfs = option.into();
         self
     }
@@ -65,10 +69,19 @@ pub struct StatCapBlcRegen {
     pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(0.25),
 }
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
-pub struct StatCapBlcNosfs {
-    pub projectee_item_id: Option<ItemId> = None,
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
+#[derive(Copy, Clone)]
+pub struct StatCapBlcNosfs<I = ItemId> {
+    pub projectee_item_id: Option<I> = None,
+}
+impl<I> Default for StatCapBlcNosfs<I> {
+    fn default() -> Self {
+        Self { .. }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

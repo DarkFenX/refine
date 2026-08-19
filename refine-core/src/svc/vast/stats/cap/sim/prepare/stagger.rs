@@ -15,20 +15,20 @@ use crate::{
 };
 
 #[derive(Clone)]
-pub struct StatCapSimStagger {
+pub struct StatCapSimStagger<I = ItemId> {
     default: bool = false,
-    exception_item_ids: Vec<ItemId> = Vec::new(),
+    exception_item_ids: Vec<I> = Vec::new(),
 }
-const impl Default for StatCapSimStagger {
+const impl<I> Default for StatCapSimStagger<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
-impl StatCapSimStagger {
+impl<I> StatCapSimStagger<I> {
     pub fn new(default: bool) -> Self {
         Self { default, .. }
     }
-    pub fn with_exception_item_ids(mut self, exception_item_ids: impl Iterator<Item = ItemId>) -> Self {
+    pub fn with_exception_item_ids(mut self, exception_item_ids: impl Iterator<Item = I>) -> Self {
         self.exception_item_ids.extend(exception_item_ids);
         self
     }
@@ -111,7 +111,10 @@ mod custom_serde {
 
     use super::*;
 
-    impl<'de> Deserialize<'de> for StatCapSimStagger {
+    impl<'de, I> Deserialize<'de> for StatCapSimStagger<I>
+    where
+        I: Deserialize<'de>,
+    {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
@@ -128,8 +131,8 @@ mod custom_serde {
 
     #[derive(serde::Deserialize)]
     #[serde(untagged)]
-    enum StatCapSimStaggerFormats {
+    enum StatCapSimStaggerFormats<I> {
         Simple(bool),
-        Extended(bool, Vec<ItemId>),
+        Extended(bool, Vec<I>),
     }
 }
