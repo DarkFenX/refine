@@ -9,7 +9,7 @@ use crate::{
         Vast,
         vast::{
             ValShipKind, VastFitData,
-            validators::{ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored},
+            val::{ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValSrqSkillStored},
         },
     },
     ud::{UData, UFitId, UItem, UItemId, UModule, UShipKind},

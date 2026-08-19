@@ -21,6 +21,7 @@ pub use rc::{
     },
 };
 
+mod cmd_core;
 mod cmd_opts;
 pub mod err;
 mod fatal;
@@ -28,4 +29,3 @@ mod fit;
 mod fleet;
 mod info_details;
 mod item;
-mod cmd_core;

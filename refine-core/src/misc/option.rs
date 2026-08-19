@@ -1,4 +1,4 @@
-/// An option which can inherit .
+/// An option which can inherit default value from elsewhere.
 #[derive(Copy, Clone, Default)]
 pub enum DefOption {
     #[default]
@@ -7,7 +7,7 @@ pub enum DefOption {
     Enabled,
 }
 
-/// An option which can have some default value.
+/// An option which can inherit default value from elsewhere, plus extended setting support.
 #[derive(Copy, Clone, Default)]
 pub enum DefOptionExt<T> {
     #[default]
@@ -15,6 +15,28 @@ pub enum DefOptionExt<T> {
     Disabled,
     Enabled,
     EnabledExtended(T),
+}
+
+/// An option which can have extended settings.
+#[derive(Copy, Clone)]
+pub enum OptionExt<T> {
+    Disabled,
+    Enabled,
+    EnabledExtended(T),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<T> DefOptionExt<T> {
+    pub(crate) fn into_option_ext(self) -> Option<OptionExt<T>> {
+        match self {
+            DefOptionExt::Default => None,
+            DefOptionExt::Disabled => Some(OptionExt::Disabled),
+            DefOptionExt::Enabled => Some(OptionExt::Enabled),
+            DefOptionExt::EnabledExtended(inner) => Some(OptionExt::EnabledExtended(inner)),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -9,7 +9,7 @@ use crate::{
     rd::{REffectId, REffectLocalOpcSpec, REffectProjOpcSpec, RItemListId, RItemShipLimit},
     svc::vast::{
         ValShipKind,
-        validators::{
+        val::{
             EffectSecZoneInfo, ValFighterSquadSizeFighterStored, ValItemKindItemStored, ValModuleStateModuleStored,
             ValSrqSkillStored,
         },

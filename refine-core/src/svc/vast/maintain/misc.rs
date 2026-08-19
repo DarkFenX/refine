@@ -3,7 +3,7 @@ use std::collections::hash_map::Entry;
 use crate::{
     svc::{
         Vast,
-        vast::validators::{ValFighterSquadSizeFighterStored, ValSrqSkillStored},
+        vast::val::{ValFighterSquadSizeFighterStored, ValSrqSkillStored},
     },
     ud::{UData, UFighter, UItemId, USkill},
     util::RMap,

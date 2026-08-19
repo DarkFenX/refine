@@ -1,6 +1,7 @@
 #![feature(default_field_values)]
 #![feature(error_reporter)]
 #![feature(structural_match)]
+#![feature(variant_count)]
 #![feature(step_trait)]
 #![feature(option_reduce)]
 #![feature(never_type)]
@@ -96,8 +97,8 @@ pub use def::VERSION;
 pub use lender::Lender;
 pub use misc::{
     BreacherProfile, DefOption, DefOptionExt, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemNpcPropInfo,
-    ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionalReload, RearmMinion, SecZone,
-    SecZoneCorruption, Spool,
+    ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionExt, OptionalReload,
+    RearmMinion, SecZone, SecZoneCorruption, Spool,
 };
 pub use num::{Count, CountNz, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::SolarSystem;

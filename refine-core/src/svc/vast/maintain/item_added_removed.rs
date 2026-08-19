@@ -1,7 +1,7 @@
 use std::collections::hash_map::Entry;
 
 use crate::{
-    svc::vast::{Vast, validators::ValSrqSkillStored},
+    svc::vast::{Vast, val::ValSrqSkillStored},
     ud::{UData, UItem, UItemId},
     util::RMap,
 };

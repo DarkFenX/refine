@@ -1,7 +1,7 @@
 use crate::{
     ModuleState,
     rd::RState,
-    svc::{Vast, vast::validators::ValModuleStateModuleStored},
+    svc::{Vast, vast::val::ValModuleStateModuleStored},
     ud::{UItem, UItemId},
 };
 

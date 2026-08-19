@@ -9,25 +9,22 @@ pub use stats::{
     StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim, StatWarpSpeedError,
 };
 pub(crate) use stats::{StatCapBlcNosfsOptionsInt, StatCapBlcSrcKindsInt, StatCapSimStaggerInt};
-use val_options::ValOptionInt;
-pub use val_options::{ValEnabled, ValOptions, ValOptionsSol};
-pub(crate) use val_options::{ValOptionsInt, ValOptionsSolInt};
-pub use val_result::{ValResultFit, ValResultSol};
-pub use validators::{
+pub use val::{
     ValActivationBlockedFail, ValCapitalModFail, ValCapitalModInfo, ValChargeGroupChargeInfo, ValChargeGroupFail,
     ValChargeParentGroupChargeInfo, ValChargeParentGroupFail, ValChargeSizeChargeInfo, ValChargeSizeFail,
     ValChargeVolumeChargeInfo, ValChargeVolumeFail, ValCloakingBlockedFail, ValDroneGroupFail, ValDroneGroupInfo,
     ValEffectSecZoneEffectInfo, ValEffectSecZoneFail, ValEffectSecZoneItemInfo, ValEffectStopperFail,
-    ValEffectStopperItemInfo, ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail,
+    ValEffectStopperItemInfo, ValEnabled, ValFighterSquadSizeFail, ValFighterSquadSizeFighterInfo, ValItemKindFail,
     ValItemKindItemInfo, ValItemSecZoneFail, ValItemSecZoneItemInfo, ValItemVsShipKindFail, ValItemVsShipKindItemInfo,
     ValMaxGroupFail, ValMaxGroupGroupInfo, ValMaxGroupItemInfo, ValMaxTypeFail, ValMaxTypeItemInfo, ValMaxTypeTypeInfo,
-    ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOverloadSkillFail, ValOverloadSkillItemInfo,
-    ValProjFilterFail, ValProjFilterItemInfo, ValProjImmunityFail, ValProjImmunityItemInfo, ValResourceFail,
-    ValResourceItemInfo, ValRigSizeFail, ValRigSizeItemInfo, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo,
-    ValShipStanceFail, ValSlotCountFail, ValSlotIndexFail, ValSlotIndexSlotInfo, ValSrqFail, ValSrqItemInfo,
-    ValSrqSkillInfo, ValUnusableCapFail, ValUnusableCapItemInfo, ValUnusableResFail, ValUnusableResItemInfo,
-    ValUnusableSlotFail,
+    ValModuleStateFail, ValModuleStateModuleInfo, ValNotLoadedItemFail, ValOptions, ValOptionsSol,
+    ValOverloadSkillFail, ValOverloadSkillItemInfo, ValProjFilterFail, ValProjFilterItemInfo, ValProjImmunityFail,
+    ValProjImmunityItemInfo, ValResourceFail, ValResourceItemInfo, ValResultFit, ValResultSol, ValRigSizeFail,
+    ValRigSizeItemInfo, ValShipKind, ValShipLimitFail, ValShipLimitItemInfo, ValShipStanceFail, ValSlotCountFail,
+    ValSlotIndexFail, ValSlotIndexSlotInfo, ValSrqFail, ValSrqItemInfo, ValSrqSkillInfo, ValUnusableCapFail,
+    ValUnusableCapItemInfo, ValUnusableResFail, ValUnusableResItemInfo, ValUnusableSlotFail,
 };
+pub(crate) use val::{ValOptionsInt, ValOptionsSolInt};
 pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 
@@ -35,9 +32,6 @@ mod aggr;
 mod maintain;
 mod shared;
 mod stats;
-mod val_options;
-mod val_result;
-mod validators;
+mod val;
 mod vast;
 mod vaste_debug;
-mod vaste_validate;
