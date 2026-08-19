@@ -1,5 +1,5 @@
 pub use cmd::GetFleetStatsCmd;
-pub use info::FleetStats;
+pub use result::FleetStats;
 
 mod cmd;
-mod info;
+mod result;

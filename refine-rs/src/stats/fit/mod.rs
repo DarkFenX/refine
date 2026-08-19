@@ -1,5 +1,5 @@
 pub use cmd::GetFitStatsCmd;
-pub use info::FitStats;
+pub use result::FitStats;
 
 mod cmd;
-mod info;
+mod result;

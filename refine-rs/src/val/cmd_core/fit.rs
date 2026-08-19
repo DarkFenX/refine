@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::val_options_br_resolve,
-    val::{FitValResult, ValInfoMode, ValOptions},
+    val::{FitValResult, ValOptions, ValResultMode},
 };
 
 // Core commands
@@ -23,7 +23,7 @@ pub struct FitValCmdBr {
 #[derive(Clone, Default)]
 struct FitValCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
-    info_mode: ValInfoMode,
+    info_mode: ValResultMode,
 }
 
 // Extra context commands
@@ -51,7 +51,7 @@ impl FitValCmd {
         self.options = options;
         self
     }
-    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
         self.shared.info_mode = info_mode;
         self
     }
@@ -65,7 +65,7 @@ impl FitValCmdBr {
         self.options = options;
         self
     }
-    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
         self.shared.info_mode = info_mode;
         self
     }
@@ -110,11 +110,11 @@ impl FitValCmdCtxFitBr {
 impl FitValCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValResult {
         match self.shared.info_mode {
-            ValInfoMode::Simple => FitValResult {
+            ValResultMode::Simple => FitValResult {
                 passed: core_fit.validate_fast(&self.options),
                 details: None,
             },
-            ValInfoMode::Detailed => {
+            ValResultMode::Detailed => {
                 let details = core_fit.validate_verbose(&self.options);
                 FitValResult {
                     passed: details.all_passed(),

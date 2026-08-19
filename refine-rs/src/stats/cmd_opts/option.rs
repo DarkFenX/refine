@@ -1,5 +1,16 @@
+/// A stat option which can have extended settings.
+#[derive(Clone)]
+pub enum StatOptionExt<T> {
+    Disabled,
+    Enabled,
+    EnabledExtended(Vec<T>),
+}
+
+// Internal counterparts of public options. Public API spells "fall back to the default flag" as an
+// option which is simply not set, while these carry it as an explicit value - that is how it is
+// stored, and how it arrives on the wire.
 #[derive(Copy, Clone, Default)]
-pub enum StatOption {
+pub(crate) enum StatDefOption {
     #[default]
     Default,
     Disabled,
@@ -7,7 +18,7 @@ pub enum StatOption {
 }
 
 #[derive(Clone, Default)]
-pub enum StatOptionExt<T> {
+pub(crate) enum StatDefOptionExt<T> {
     #[default]
     Default,
     Disabled,
@@ -16,9 +27,31 @@ pub enum StatOptionExt<T> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl From<bool> for StatDefOption {
+    fn from(enabled: bool) -> Self {
+        match enabled {
+            true => Self::Enabled,
+            false => Self::Disabled,
+        }
+    }
+}
+
+impl<T> From<StatOptionExt<T>> for StatDefOptionExt<T> {
+    fn from(option: StatOptionExt<T>) -> Self {
+        match option {
+            StatOptionExt::Disabled => Self::Disabled,
+            StatOptionExt::Enabled => Self::Enabled,
+            StatOptionExt::EnabledExtended(inner) => Self::EnabledExtended(inner),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatOption {
+impl StatDefOption {
     pub(in crate::stats) fn into_enabled(self, default: bool) -> bool {
         match self {
             Self::Default => default,
@@ -28,7 +61,7 @@ impl StatOption {
     }
 }
 
-impl<T> StatOptionExt<T> {
+impl<T> StatDefOptionExt<T> {
     pub(in crate::stats) fn into_enabled(self, default: bool) -> Option<Vec<T>>
     where
         T: Default,
@@ -54,7 +87,7 @@ mod custom_serde {
 
     use super::*;
 
-    impl<'de> Deserialize<'de> for StatOption {
+    impl<'de> Deserialize<'de> for StatDefOption {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where
             D: Deserializer<'de>,
@@ -62,7 +95,7 @@ mod custom_serde {
             struct VisitorImpl;
 
             impl<'de> Visitor<'de> for VisitorImpl {
-                type Value = StatOption;
+                type Value = StatDefOption;
 
                 fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
                     formatter.write_str("bool or null")
@@ -95,7 +128,7 @@ mod custom_serde {
         }
     }
 
-    impl<'de, T> Deserialize<'de> for StatOptionExt<T>
+    impl<'de, T> Deserialize<'de> for StatDefOptionExt<T>
     where
         T: Deserialize<'de>,
     {
@@ -104,9 +137,9 @@ mod custom_serde {
             D: Deserializer<'de>,
         {
             Ok(match StatOptionExtFormats::deserialize(deserializer)? {
-                StatOptionExtFormats::Simple(StatOption::Default) => Self::Default,
-                StatOptionExtFormats::Simple(StatOption::Disabled) => Self::Disabled,
-                StatOptionExtFormats::Simple(StatOption::Enabled) => Self::Enabled,
+                StatOptionExtFormats::Simple(StatDefOption::Default) => Self::Default,
+                StatOptionExtFormats::Simple(StatDefOption::Disabled) => Self::Disabled,
+                StatOptionExtFormats::Simple(StatDefOption::Enabled) => Self::Enabled,
                 StatOptionExtFormats::Extended(data) => Self::EnabledExtended(data),
             })
         }
@@ -115,7 +148,7 @@ mod custom_serde {
     #[derive(serde::Deserialize)]
     #[serde(untagged)]
     enum StatOptionExtFormats<T> {
-        Simple(StatOption),
+        Simple(StatDefOption),
         Extended(T),
     }
 }

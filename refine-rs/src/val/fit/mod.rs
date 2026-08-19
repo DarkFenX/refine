@@ -1,6 +1,6 @@
 pub(crate) use cmd::FitValEnumCmd;
 pub use cmd::FitValEnumCmdBr;
-pub use info::FitValResult;
+pub use result::FitValResult;
 
 mod cmd;
-mod info;
+mod result;

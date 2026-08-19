@@ -1,10 +1,11 @@
 use crate::{
     PValue, Value,
     stats::{
-        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatErrorFatality, StatInJam, StatJump, StatMining,
-        StatOption, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-        StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
+        FitStats, StatCapSim, StatDefOption, StatDefOptionExt, StatDmg, StatEhp, StatErps, StatErrorFatality,
+        StatInJam, StatJump, StatMining, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps,
+        StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+        StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps,
+        StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
     },
 };
@@ -13,137 +14,399 @@ use crate::{
 #[derive(Default)]
 pub struct GetFitStatsCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub default: bool = true,
+    default: bool = true,
     // Fit output stats
     #[cfg_attr(feature = "serde", serde(default))]
-    pub dmg: StatOptionExt<StatOptionFitDmg> = StatOptionExt::Default,
+    dmg: StatDefOptionExt<StatOptionFitDmg> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub mps: StatOptionExt<StatOptionFitMining> = StatOptionExt::Default,
+    mps: StatDefOptionExt<StatOptionFitMining> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub outgoing_nps: StatOptionExt<StatOptionFitOutNps> = StatOptionExt::Default,
+    outgoing_nps: StatDefOptionExt<StatOptionFitOutNps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub outgoing_rps: StatOptionExt<StatOptionFitOutRps> = StatOptionExt::Default,
+    outgoing_rps: StatDefOptionExt<StatOptionFitOutRps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub outgoing_cps: StatOptionExt<StatOptionFitOutCps> = StatOptionExt::Default,
+    outgoing_cps: StatDefOptionExt<StatOptionFitOutCps> = StatDefOptionExt::Default,
     // Fit resources
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cpu: StatOption = StatOption::Default,
+    cpu: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub powergrid: StatOption = StatOption::Default,
+    powergrid: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub calibration: StatOption = StatOption::Default,
+    calibration: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub drone_bay_volume: StatOption = StatOption::Default,
+    drone_bay_volume: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub drone_bandwidth: StatOption = StatOption::Default,
+    drone_bandwidth: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub fighter_bay_volume: StatOption = StatOption::Default,
+    fighter_bay_volume: StatDefOption = StatDefOption::Default,
     // Fit slots
     #[cfg_attr(feature = "serde", serde(default))]
-    pub high_slots: StatOption = StatOption::Default,
+    high_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub mid_slots: StatOption = StatOption::Default,
+    mid_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub low_slots: StatOption = StatOption::Default,
+    low_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub turret_slots: StatOption = StatOption::Default,
+    turret_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launcher_slots: StatOption = StatOption::Default,
+    launcher_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub rig_slots: StatOption = StatOption::Default,
+    rig_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub service_slots: StatOption = StatOption::Default,
+    service_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub subsystem_slots: StatOption = StatOption::Default,
+    subsystem_slots: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_drones: StatOption = StatOption::Default,
+    launched_drones: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_fighters: StatOption = StatOption::Default,
+    launched_fighters: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_light_fighters: StatOption = StatOption::Default,
+    launched_light_fighters: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_heavy_fighters: StatOption = StatOption::Default,
+    launched_heavy_fighters: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_support_fighters: StatOption = StatOption::Default,
+    launched_support_fighters: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_st_light_fighters: StatOption = StatOption::Default,
+    launched_st_light_fighters: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_st_heavy_fighters: StatOption = StatOption::Default,
+    launched_st_heavy_fighters: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub launched_st_support_fighters: StatOption = StatOption::Default,
+    launched_st_support_fighters: StatDefOption = StatDefOption::Default,
     // Ship tank
     #[cfg_attr(feature = "serde", serde(default))]
-    pub resists: StatOption = StatOption::Default,
+    resists: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub hp: StatOption = StatOption::Default,
+    hp: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub ehp: StatOptionExt<StatOptionEhp> = StatOptionExt::Default,
+    ehp: StatDefOptionExt<StatOptionEhp> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub wc_ehp: StatOption = StatOption::Default,
+    wc_ehp: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub rps: StatOptionExt<StatOptionRps> = StatOptionExt::Default,
+    rps: StatDefOptionExt<StatOptionRps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub erps: StatOptionExt<StatOptionErps> = StatOptionExt::Default,
+    erps: StatDefOptionExt<StatOptionErps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub breach_resist: StatOption = StatOption::Default,
+    breach_resist: StatDefOption = StatDefOption::Default,
     // Ship cap
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cap_amount: StatOption = StatOption::Default,
+    cap_amount: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cap_balance: StatOptionExt<StatOptionCapBlc> = StatOptionExt::Default,
+    cap_balance: StatDefOptionExt<StatOptionCapBlc> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cap_sim: StatOptionExt<StatOptionCapSim> = StatOptionExt::Default,
+    cap_sim: StatDefOptionExt<StatOptionCapSim> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub neut_resist: StatOption = StatOption::Default,
+    neut_resist: StatDefOption = StatDefOption::Default,
     // Ship sensors
     #[cfg_attr(feature = "serde", serde(default))]
-    pub locks: StatOption = StatOption::Default,
+    locks: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub lock_range: StatOption = StatOption::Default,
+    lock_range: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub scan_res: StatOption = StatOption::Default,
+    scan_res: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sensors: StatOption = StatOption::Default,
+    sensors: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub dscan_range: StatOption = StatOption::Default,
+    dscan_range: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub probing_size: StatOption = StatOption::Default,
+    probing_size: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub incoming_jam: StatOptionExt<StatOptionIncomingJam> = StatOptionExt::Default,
+    incoming_jam: StatDefOptionExt<StatOptionIncomingJam> = StatDefOptionExt::Default,
     // Ship mobility
     #[cfg_attr(feature = "serde", serde(default))]
-    pub speed: StatOption = StatOption::Default,
+    speed: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub agility: StatOption = StatOption::Default,
+    agility: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub align_time: StatOption = StatOption::Default,
+    align_time: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub sig_radius: StatOption = StatOption::Default,
+    sig_radius: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
+    mass: StatDefOptionExt<StatOptionMass> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub warp_speed: StatOption = StatOption::Default,
+    warp_speed: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub max_warp_range: StatOption = StatOption::Default,
+    max_warp_range: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub jump: StatOptionExt<StatOptionJump> = StatOptionExt::Default,
+    jump: StatDefOptionExt<StatOptionJump> = StatDefOptionExt::Default,
     // Ship misc stats
     #[cfg_attr(feature = "serde", serde(default))]
-    pub drone_control_range: StatOption = StatOption::Default,
+    drone_control_range: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_warp: StatOption = StatOption::Default,
+    can_warp: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_jump_gate: StatOption = StatOption::Default,
+    can_jump_gate: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_jump_wormhole: StatOption = StatOption::Default,
+    can_jump_wormhole: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_jump_drive: StatOption = StatOption::Default,
+    can_jump_drive: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_dock_station: StatOption = StatOption::Default,
+    can_dock_station: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_dock_citadel: StatOption = StatOption::Default,
+    can_dock_citadel: StatDefOption = StatDefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub can_tether: StatOption = StatOption::Default,
+    can_tether: StatDefOption = StatDefOption::Default,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl GetFitStatsCmd {
+    /// True to have all supported stats enabled by default, false to have them disabled.
+    pub fn new(default: bool) -> Self {
+        Self { default, .. }
+    }
+    // Fit output stats
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg>) -> Self {
+        self.dmg = option.into();
+        self
+    }
+    pub fn with_mps(mut self, option: StatOptionExt<StatOptionFitMining>) -> Self {
+        self.mps = option.into();
+        self
+    }
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps>) -> Self {
+        self.outgoing_nps = option.into();
+        self
+    }
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps>) -> Self {
+        self.outgoing_rps = option.into();
+        self
+    }
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps>) -> Self {
+        self.outgoing_cps = option.into();
+        self
+    }
+    // Fit resources
+    pub fn with_cpu(mut self, enabled: bool) -> Self {
+        self.cpu = enabled.into();
+        self
+    }
+    pub fn with_powergrid(mut self, enabled: bool) -> Self {
+        self.powergrid = enabled.into();
+        self
+    }
+    pub fn with_calibration(mut self, enabled: bool) -> Self {
+        self.calibration = enabled.into();
+        self
+    }
+    pub fn with_drone_bay_volume(mut self, enabled: bool) -> Self {
+        self.drone_bay_volume = enabled.into();
+        self
+    }
+    pub fn with_drone_bandwidth(mut self, enabled: bool) -> Self {
+        self.drone_bandwidth = enabled.into();
+        self
+    }
+    pub fn with_fighter_bay_volume(mut self, enabled: bool) -> Self {
+        self.fighter_bay_volume = enabled.into();
+        self
+    }
+    // Fit slots
+    pub fn with_high_slots(mut self, enabled: bool) -> Self {
+        self.high_slots = enabled.into();
+        self
+    }
+    pub fn with_mid_slots(mut self, enabled: bool) -> Self {
+        self.mid_slots = enabled.into();
+        self
+    }
+    pub fn with_low_slots(mut self, enabled: bool) -> Self {
+        self.low_slots = enabled.into();
+        self
+    }
+    pub fn with_turret_slots(mut self, enabled: bool) -> Self {
+        self.turret_slots = enabled.into();
+        self
+    }
+    pub fn with_launcher_slots(mut self, enabled: bool) -> Self {
+        self.launcher_slots = enabled.into();
+        self
+    }
+    pub fn with_rig_slots(mut self, enabled: bool) -> Self {
+        self.rig_slots = enabled.into();
+        self
+    }
+    pub fn with_service_slots(mut self, enabled: bool) -> Self {
+        self.service_slots = enabled.into();
+        self
+    }
+    pub fn with_subsystem_slots(mut self, enabled: bool) -> Self {
+        self.subsystem_slots = enabled.into();
+        self
+    }
+    pub fn with_launched_drones(mut self, enabled: bool) -> Self {
+        self.launched_drones = enabled.into();
+        self
+    }
+    pub fn with_launched_fighters(mut self, enabled: bool) -> Self {
+        self.launched_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_light_fighters(mut self, enabled: bool) -> Self {
+        self.launched_light_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_heavy_fighters(mut self, enabled: bool) -> Self {
+        self.launched_heavy_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_support_fighters(mut self, enabled: bool) -> Self {
+        self.launched_support_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_st_light_fighters(mut self, enabled: bool) -> Self {
+        self.launched_st_light_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_st_heavy_fighters(mut self, enabled: bool) -> Self {
+        self.launched_st_heavy_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_st_support_fighters(mut self, enabled: bool) -> Self {
+        self.launched_st_support_fighters = enabled.into();
+        self
+    }
+    // Ship tank
+    pub fn with_resists(mut self, enabled: bool) -> Self {
+        self.resists = enabled.into();
+        self
+    }
+    pub fn with_hp(mut self, enabled: bool) -> Self {
+        self.hp = enabled.into();
+        self
+    }
+    pub fn with_ehp(mut self, option: StatOptionExt<StatOptionEhp>) -> Self {
+        self.ehp = option.into();
+        self
+    }
+    pub fn with_wc_ehp(mut self, enabled: bool) -> Self {
+        self.wc_ehp = enabled.into();
+        self
+    }
+    pub fn with_rps(mut self, option: StatOptionExt<StatOptionRps>) -> Self {
+        self.rps = option.into();
+        self
+    }
+    pub fn with_erps(mut self, option: StatOptionExt<StatOptionErps>) -> Self {
+        self.erps = option.into();
+        self
+    }
+    pub fn with_breach_resist(mut self, enabled: bool) -> Self {
+        self.breach_resist = enabled.into();
+        self
+    }
+    // Ship cap
+    pub fn with_cap_amount(mut self, enabled: bool) -> Self {
+        self.cap_amount = enabled.into();
+        self
+    }
+    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc>) -> Self {
+        self.cap_balance = option.into();
+        self
+    }
+    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim>) -> Self {
+        self.cap_sim = option.into();
+        self
+    }
+    pub fn with_neut_resist(mut self, enabled: bool) -> Self {
+        self.neut_resist = enabled.into();
+        self
+    }
+    // Ship sensors
+    pub fn with_locks(mut self, enabled: bool) -> Self {
+        self.locks = enabled.into();
+        self
+    }
+    pub fn with_lock_range(mut self, enabled: bool) -> Self {
+        self.lock_range = enabled.into();
+        self
+    }
+    pub fn with_scan_res(mut self, enabled: bool) -> Self {
+        self.scan_res = enabled.into();
+        self
+    }
+    pub fn with_sensors(mut self, enabled: bool) -> Self {
+        self.sensors = enabled.into();
+        self
+    }
+    pub fn with_dscan_range(mut self, enabled: bool) -> Self {
+        self.dscan_range = enabled.into();
+        self
+    }
+    pub fn with_probing_size(mut self, enabled: bool) -> Self {
+        self.probing_size = enabled.into();
+        self
+    }
+    pub fn with_incoming_jam(mut self, option: StatOptionExt<StatOptionIncomingJam>) -> Self {
+        self.incoming_jam = option.into();
+        self
+    }
+    // Ship mobility
+    pub fn with_speed(mut self, enabled: bool) -> Self {
+        self.speed = enabled.into();
+        self
+    }
+    pub fn with_agility(mut self, enabled: bool) -> Self {
+        self.agility = enabled.into();
+        self
+    }
+    pub fn with_align_time(mut self, enabled: bool) -> Self {
+        self.align_time = enabled.into();
+        self
+    }
+    pub fn with_sig_radius(mut self, enabled: bool) -> Self {
+        self.sig_radius = enabled.into();
+        self
+    }
+    pub fn with_mass(mut self, option: StatOptionExt<StatOptionMass>) -> Self {
+        self.mass = option.into();
+        self
+    }
+    pub fn with_warp_speed(mut self, enabled: bool) -> Self {
+        self.warp_speed = enabled.into();
+        self
+    }
+    pub fn with_max_warp_range(mut self, enabled: bool) -> Self {
+        self.max_warp_range = enabled.into();
+        self
+    }
+    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJump>) -> Self {
+        self.jump = option.into();
+        self
+    }
+    // Ship misc stats
+    pub fn with_drone_control_range(mut self, enabled: bool) -> Self {
+        self.drone_control_range = enabled.into();
+        self
+    }
+    pub fn with_can_warp(mut self, enabled: bool) -> Self {
+        self.can_warp = enabled.into();
+        self
+    }
+    pub fn with_can_jump_gate(mut self, enabled: bool) -> Self {
+        self.can_jump_gate = enabled.into();
+        self
+    }
+    pub fn with_can_jump_wormhole(mut self, enabled: bool) -> Self {
+        self.can_jump_wormhole = enabled.into();
+        self
+    }
+    pub fn with_can_jump_drive(mut self, enabled: bool) -> Self {
+        self.can_jump_drive = enabled.into();
+        self
+    }
+    pub fn with_can_dock_station(mut self, enabled: bool) -> Self {
+        self.can_dock_station = enabled.into();
+        self
+    }
+    pub fn with_can_dock_citadel(mut self, enabled: bool) -> Self {
+        self.can_dock_citadel = enabled.into();
+        self
+    }
+    pub fn with_can_tether(mut self, enabled: bool) -> Self {
+        self.can_tether = enabled.into();
+        self
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -152,9 +415,7 @@ pub struct GetFitStatsCmd {
 impl GetFitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit output stats
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if let Some(options) = self.dmg.into_enabled(self.default) {
             stats.dmg = get_dmg_stats(core_fit, options);
         }
@@ -170,9 +431,7 @@ impl GetFitStatsCmd {
         if let Some(options) = self.outgoing_rps.into_enabled(self.default) {
             stats.outgoing_rps = get_outgoing_rps_stats(core_fit, options);
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit resources
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cpu.into_enabled(self.default) {
             stats.cpu = StatResult::from_stat(core_fit.get_stat_cpu());
         }
@@ -191,9 +450,7 @@ impl GetFitStatsCmd {
         if self.fighter_bay_volume.into_enabled(self.default) {
             stats.fighter_bay_volume = StatResult::from_stat(core_fit.get_stat_fighter_bay_volume());
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Fit slots
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.high_slots.into_enabled(self.default) {
             stats.high_slots = StatResult::from_stat(core_fit.get_stat_high_slots());
         }
@@ -243,9 +500,7 @@ impl GetFitStatsCmd {
             stats.launched_st_support_fighters =
                 StatResult::from_stat(core_fit.get_stat_launched_st_support_fighters());
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship tank
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.resists.into_enabled(self.default) {
             stats.resists = StatResult::from_result_outer(core_fit.get_stat_resists());
         }
@@ -267,9 +522,7 @@ impl GetFitStatsCmd {
         if self.breach_resist.into_enabled(self.default) {
             stats.breach_resist = StatResult::from_result_outer(core_fit.get_stat_breach_resist());
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship cap
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.cap_amount.into_enabled(self.default) {
             stats.cap_amount = StatResult::from_result_outer(core_fit.get_stat_cap_amount());
         }
@@ -282,9 +535,7 @@ impl GetFitStatsCmd {
         if self.neut_resist.into_enabled(self.default) {
             stats.neut_resist = StatResult::from_result_outer(core_fit.get_stat_neut_resist());
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship sensors
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.locks.into_enabled(self.default) {
             stats.locks = StatResult::from_result_outer(core_fit.get_stat_locks());
         }
@@ -306,9 +557,7 @@ impl GetFitStatsCmd {
         if let Some(options) = self.incoming_jam.into_enabled(self.default) {
             stats.incoming_jam = get_incoming_jam_stats(core_fit, options);
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship mobility
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.speed.into_enabled(self.default) {
             stats.speed = StatResult::from_result_outer(core_fit.get_stat_speed());
         }
@@ -333,9 +582,7 @@ impl GetFitStatsCmd {
         if let Some(options) = self.jump.into_enabled(self.default) {
             stats.jump = get_jump_stats(core_fit, options);
         }
-        ////////////////////////////////////////////////////////////////////////////////////////////
         // Ship misc stats
-        ////////////////////////////////////////////////////////////////////////////////////////////
         if self.drone_control_range.into_enabled(self.default) {
             stats.drone_control_range = StatResult::from_result_outer(core_fit.get_stat_drone_control_range());
         }
@@ -365,7 +612,7 @@ impl GetFitStatsCmd {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Fit output stats
+// Execution getters - fit output stats
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_dmg_stats(
     core_fit: &mut rc::FitMut,
@@ -455,7 +702,7 @@ fn get_outgoing_cps_stats(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ship tank
+// Execution getters - ship tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_ehp_stats(
     core_fit: &mut rc::FitMut,
@@ -498,7 +745,7 @@ fn get_erps_stats(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ship cap
+// Execution getters - ship cap
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_cap_balance_stats(
     core_fit: &mut rc::FitMut,
@@ -539,7 +786,7 @@ fn get_cap_sim_stats(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ship sensors
+// Execution getters - ship sensors
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_incoming_jam_stats(
     core_fit: &mut rc::FitMut,
@@ -556,7 +803,7 @@ fn get_incoming_jam_stats(
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Ship mobility
+// Execution getters - ship mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_mass_stats(
     core_fit: &mut rc::FitMut,

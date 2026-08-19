@@ -44,7 +44,7 @@ async fn main() {
         .unwrap();
     let resps = sol
         .hybrid_batch(vec![
-            rs::FleetAddCmd::new().into_sol_hyb_br(),
+            rs::FleetAddCmdBr::new().into_sol_hyb_br(),
             rs::FitAddCmdBr::new()
                 .with_fleet_id(rs::FleetIdBr::Br(0))
                 .into_sol_hyb_br(),

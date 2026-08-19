@@ -1,5 +1,5 @@
 pub use cmd::GetItemStatsCmd;
-pub use info::ItemStats;
+pub use result::ItemStats;
 
 mod cmd;
-mod info;
+mod result;

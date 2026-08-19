@@ -1,8 +1,9 @@
 use crate::{
     PValue,
     stats::{
-        FleetStats, StatDmg, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
+        FleetStats, StatDefOptionExt, StatDmg, StatMining, StatOptionExt, StatOptionFitDmg, StatOptionFitMining,
+        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult,
+        err::StatFleetAppliedError,
     },
 };
 
@@ -10,19 +11,53 @@ use crate::{
 #[derive(Default)]
 pub struct GetFleetStatsCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub default: bool = true,
+    default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub dmg: StatOptionExt<StatOptionFitDmg> = StatOptionExt::Default,
+    dmg: StatDefOptionExt<StatOptionFitDmg> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub mps: StatOptionExt<StatOptionFitMining> = StatOptionExt::Default,
+    mps: StatDefOptionExt<StatOptionFitMining> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub outgoing_nps: StatOptionExt<StatOptionFitOutNps> = StatOptionExt::Default,
+    outgoing_nps: StatDefOptionExt<StatOptionFitOutNps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub outgoing_rps: StatOptionExt<StatOptionFitOutRps> = StatOptionExt::Default,
+    outgoing_rps: StatDefOptionExt<StatOptionFitOutRps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub outgoing_cps: StatOptionExt<StatOptionFitOutCps> = StatOptionExt::Default,
+    outgoing_cps: StatDefOptionExt<StatOptionFitOutCps> = StatDefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub mass: StatOptionExt<StatOptionMass> = StatOptionExt::Default,
+    mass: StatDefOptionExt<StatOptionMass> = StatDefOptionExt::Default,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl GetFleetStatsCmd {
+    /// True to have all supported stats enabled by default, false to have them disabled.
+    pub fn new(default: bool) -> Self {
+        Self { default, .. }
+    }
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg>) -> Self {
+        self.dmg = option.into();
+        self
+    }
+    pub fn with_mps(mut self, option: StatOptionExt<StatOptionFitMining>) -> Self {
+        self.mps = option.into();
+        self
+    }
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps>) -> Self {
+        self.outgoing_nps = option.into();
+        self
+    }
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps>) -> Self {
+        self.outgoing_rps = option.into();
+        self
+    }
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps>) -> Self {
+        self.outgoing_cps = option.into();
+        self
+    }
+    pub fn with_mass(mut self, option: StatOptionExt<StatOptionMass>) -> Self {
+        self.mass = option.into();
+        self
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

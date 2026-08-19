@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::val_options_br_resolve,
-    val::{SolValResult, ValInfoMode, ValOptions},
+    val::{SolValResult, ValOptions, ValResultMode},
 };
 
 // Core commands
@@ -26,7 +26,7 @@ pub struct SolValCmdBr {
 #[derive(Clone, Default)]
 struct SolValCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
-    info_mode: ValInfoMode,
+    info_mode: ValResultMode,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +44,7 @@ impl SolValCmd {
         self.fit_ids.extend(fit_ids);
         self
     }
-    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
         self.shared.info_mode = info_mode;
         self
     }
@@ -62,7 +62,7 @@ impl SolValCmdBr {
         self.fit_ids.extend(fit_ids);
         self
     }
-    pub fn with_info_mode(mut self, info_mode: ValInfoMode) -> Self {
+    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
         self.shared.info_mode = info_mode;
         self
     }
@@ -91,11 +91,11 @@ impl SolValCmd {
             options: self.options,
         };
         match self.shared.info_mode {
-            ValInfoMode::Simple => SolValResult {
+            ValResultMode::Simple => SolValResult {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,
             },
-            ValInfoMode::Detailed => {
+            ValResultMode::Detailed => {
                 let details = core_sol.validate_verbose(&core_options);
                 SolValResult {
                     passed: details.all_passed(),
