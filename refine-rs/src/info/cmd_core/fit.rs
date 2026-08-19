@@ -58,9 +58,7 @@ impl FitInfoCmd {
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        for item_id in item_ids {
-            self.item_mode.overrides.insert(item_id, mode);
-        }
+        self.item_mode.overrides.extend(item_ids.map(|item_id| (item_id, mode)));
         self
     }
 }

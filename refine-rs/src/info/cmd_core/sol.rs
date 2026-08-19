@@ -53,9 +53,7 @@ impl SolInfoCmd {
         self
     }
     pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetId>) -> Self {
-        for fleet_id in fleet_ids {
-            self.fleet_mode.overrides.insert(fleet_id, mode);
-        }
+        self.fleet_mode.overrides.extend(fleet_ids.map(|fleet_id| (fleet_id, mode)));
         self
     }
     pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
@@ -63,9 +61,7 @@ impl SolInfoCmd {
         self
     }
     pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitId>) -> Self {
-        for fit_id in fit_ids {
-            self.fit_mode.overrides.insert(fit_id, mode);
-        }
+        self.fit_mode.overrides.extend(fit_ids.map(|fit_id| (fit_id, mode)));
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
@@ -73,9 +69,7 @@ impl SolInfoCmd {
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        for item_id in item_ids {
-            self.item_mode.overrides.insert(item_id, mode);
-        }
+        self.item_mode.overrides.extend(item_ids.map(|item_id| (item_id, mode)));
         self
     }
 }

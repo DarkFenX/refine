@@ -10,7 +10,6 @@ impl AddMutation {
         Self { mutator_id, .. }
     }
     pub fn with_attrs(mut self, attrs: impl Iterator<Item = (AttrId, AttrMutation)>) -> Self {
-        self.attrs.clear();
         self.attrs.extend(attrs);
         self
     }
@@ -30,7 +29,6 @@ impl ChangeMutation {
         self
     }
     pub fn with_attrs(mut self, attrs: impl Iterator<Item = (AttrId, Option<AttrMutation>)>) -> Self {
-        self.attrs.clear();
         self.attrs.extend(attrs);
         self
     }
