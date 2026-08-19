@@ -25,9 +25,9 @@ where
     K: Eq + Hash,
     V: Copy,
 {
-    pub(crate) fn get(&self, id: &K) -> V {
-        match self.overrides.get(id) {
-            Some(mode) => *mode,
+    pub(crate) fn get(&self, key: &K) -> V {
+        match self.overrides.get(key) {
+            Some(value) => *value,
             None => self.default,
         }
     }
@@ -36,6 +36,47 @@ where
     }
     pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
         self.overrides.extend(keys.map(|key| (key, value)))
+    }
+}
+
+// Representation form which takes space, but is easy to query. This version should be used for
+// relatively large or non-copiable values.
+#[derive(Clone)]
+pub(crate) struct OvrdMapHeavy<K, V> {
+    default: V,
+    override_refs: HashMap<K, usize>,
+    override_vals: Vec<V>,
+}
+impl<K, V> Default for OvrdMapHeavy<K, V>
+where
+    V: Default,
+{
+    fn default() -> Self {
+        Self {
+            default: V::default(),
+            override_refs: HashMap::new(),
+            override_vals: Vec::new(),
+        }
+    }
+}
+impl<K, V> OvrdMapHeavy<K, V>
+where
+    K: Eq + Hash,
+    V: Copy,
+{
+    pub(crate) fn get(&self, key: &K) -> &V {
+        match self.override_refs.get(key) {
+            Some(index) => &self.override_vals[*index],
+            None => &self.default,
+        }
+    }
+    pub(crate) fn set_default(&mut self, default: V) {
+        self.default = default;
+    }
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
+        let index = self.override_vals.len();
+        self.override_vals.push(value);
+        self.override_refs.extend(keys.map(|key| (key, index)));
     }
 }
 
@@ -125,9 +166,9 @@ where
 {
     overrides
         .iter()
-        .filter_map(|(mode, ids)| match *mode == default {
+        .filter_map(|(value, keys)| match *value == default {
             true => None,
-            false => Some(ids.len()),
+            false => Some(keys.len()),
         })
         .sum()
 }
@@ -159,7 +200,7 @@ mod custom_serde {
                     default,
                     overrides: overrides
                         .into_iter()
-                        .flat_map(|(mode, ids)| ids.into_iter().map(move |id| (id, mode)))
+                        .flat_map(|(value, keys)| keys.into_iter().map(move |key| (key, value)))
                         .collect(),
                 },
             })
