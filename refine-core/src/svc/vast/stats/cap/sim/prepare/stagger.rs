@@ -29,10 +29,8 @@ impl StatCapSimStagger {
         Self { default, .. }
     }
     pub fn with_exception_item_ids(mut self, exception_item_ids: impl ExactSizeIterator<Item = ItemId>) {
-        if !exception_item_ids.is_empty() {
-            self.exception_item_ids.reserve(exception_item_ids.len());
-            self.exception_item_ids.extend(exception_item_ids);
-        }
+        self.exception_item_ids.reserve(exception_item_ids.len());
+        self.exception_item_ids.extend(exception_item_ids);
     }
 }
 
