@@ -10,12 +10,12 @@ use crate::stats::{
     serde(
         default,
         bound(deserialize = "
-        C::Repr<StatOptionFitDmg>: Default + serde::Deserialize<'de>,
-        C::Repr<StatOptionFitMining>: Default + serde::Deserialize<'de>,
-        C::Repr<StatOptionFitOutNps>: Default + serde::Deserialize<'de>,
-        C::Repr<StatOptionFitOutRps>: Default + serde::Deserialize<'de>,
-        C::Repr<StatOptionFitOutCps>: Default + serde::Deserialize<'de>,
-        C::Repr<StatOptionMass>: Default + serde::Deserialize<'de>")
+        X::Repr<StatOptionFitDmg>: Default + serde::Deserialize<'de>,
+        X::Repr<StatOptionFitMining>: Default + serde::Deserialize<'de>,
+        X::Repr<StatOptionFitOutNps>: Default + serde::Deserialize<'de>,
+        X::Repr<StatOptionFitOutRps>: Default + serde::Deserialize<'de>,
+        X::Repr<StatOptionFitOutCps>: Default + serde::Deserialize<'de>,
+        X::Repr<StatOptionMass>: Default + serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
