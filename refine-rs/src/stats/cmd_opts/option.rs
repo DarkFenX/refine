@@ -6,19 +6,21 @@ pub enum StatOptionExt<T> {
     EnabledExtended(Vec<T>),
 }
 
-// Internal counterparts of public options. Public API spells "fall back to the default flag" as an
-// option which is simply not set, while these carry it as an explicit value - that is how it is
-// stored, and how it arrives on the wire.
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-public
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Internal counterpart for public options where default field is present, bool version
 #[derive(Copy, Clone, Default)]
-pub(crate) enum StatDefOption {
+pub(in crate::stats) enum StatDefOption {
     #[default]
     Default,
     Disabled,
     Enabled,
 }
 
+// Internal counterpart for public options where default field is present, StatOptionExt version
 #[derive(Clone, Default)]
-pub(crate) enum StatDefOptionExt<T> {
+pub(in crate::stats) enum StatDefOptionExt<T> {
     #[default]
     Default,
     Disabled,
@@ -136,18 +138,18 @@ mod custom_serde {
         where
             D: Deserializer<'de>,
         {
-            Ok(match StatOptionExtFormats::deserialize(deserializer)? {
-                StatOptionExtFormats::Simple(StatDefOption::Default) => Self::Default,
-                StatOptionExtFormats::Simple(StatDefOption::Disabled) => Self::Disabled,
-                StatOptionExtFormats::Simple(StatDefOption::Enabled) => Self::Enabled,
-                StatOptionExtFormats::Extended(data) => Self::EnabledExtended(data),
+            Ok(match StatDefOptionExtFormats::deserialize(deserializer)? {
+                StatDefOptionExtFormats::Simple(StatDefOption::Default) => Self::Default,
+                StatDefOptionExtFormats::Simple(StatDefOption::Disabled) => Self::Disabled,
+                StatDefOptionExtFormats::Simple(StatDefOption::Enabled) => Self::Enabled,
+                StatDefOptionExtFormats::Extended(data) => Self::EnabledExtended(data),
             })
         }
     }
 
     #[derive(serde::Deserialize)]
     #[serde(untagged)]
-    enum StatOptionExtFormats<T> {
+    enum StatDefOptionExtFormats<T> {
         Simple(StatDefOption),
         Extended(T),
     }

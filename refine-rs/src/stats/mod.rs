@@ -1,4 +1,4 @@
-pub(crate) use cmd_opts::{StatDefOption, StatDefOptionExt};
+use cmd_opts::{StatDefOption, StatDefOptionExt};
 pub use cmd_opts::{
     StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
     StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
