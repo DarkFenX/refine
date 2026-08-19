@@ -350,7 +350,7 @@ fn get_cap_balance_stats(
 ) -> StatResult<Value, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match core_fit.get_stat_cap_balance(&option.src_kinds, option.time) {
+        match core_fit.get_stat_cap_balance(option.src_kinds, option.time) {
             Ok(stat) => stats.push(Ok(stat)),
             Err(err) => match err.is_fatal() {
                 true => return StatResult::Error(err),
@@ -369,8 +369,7 @@ fn get_cap_sim_stats(
         match core_fit.get_stat_cap_sim(
             option.cap_perc,
             option.optional_reloads,
-            // Core takes it by value, and borrowed options are the only thing available here
-            option.stagger.clone(),
+            &option.stagger,
             option.nosf_projectee_item_id.as_ref(),
         ) {
             Ok(stat) => stats.push(Ok(stat)),

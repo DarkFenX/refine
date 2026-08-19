@@ -12,7 +12,7 @@ impl<'s> FitMut<'s> {
     }
     pub fn get_stat_cap_balance(
         &mut self,
-        src_kinds: &StatCapBlcSrcKinds,
+        src_kinds: StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, StatFitShipAppliedError<!>> {
         Ok(self
@@ -23,7 +23,7 @@ impl<'s> FitMut<'s> {
         &mut self,
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
-        stagger: StatCapSimStagger,
+        stagger: &StatCapSimStagger,
         nosf_projectee_item_id: Option<&ItemId>,
     ) -> Result<StatCapSim, StatFitShipAppliedError<!>> {
         Ok(self

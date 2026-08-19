@@ -418,12 +418,12 @@ pub trait ItemMutCommon: ItemCommon {
     }
     fn get_stat_cap_balance(
         &mut self,
-        src_kinds: &StatCapBlcSrcKinds,
+        src_kinds: StatCapBlcSrcKinds,
         time_options: StatTimeOptions,
     ) -> Result<Value, StatItemAppliedError<!>> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
-        let src_kinds = StatCapBlcSrcKindsInt::from_pub(src_kinds, &sol.u_data)?;
+        let src_kinds = StatCapBlcSrcKindsInt::from_pub(&src_kinds, &sol.u_data)?;
         sol.svc
             .get_stat_item_cap_balance(&mut CseqMap::new(), &sol.u_data, item_uid, src_kinds, time_options)
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items))
@@ -432,7 +432,7 @@ pub trait ItemMutCommon: ItemCommon {
         &mut self,
         cap_perc: UnitInterval,
         optional_reloads: Option<OptionalReload>,
-        stagger: StatCapSimStagger,
+        stagger: &StatCapSimStagger,
         nosf_projectee_item_id: Option<&ItemId>,
     ) -> Result<StatCapSim, StatItemAppliedError<!>> {
         let item_uid = self.get_uid();
@@ -448,7 +448,7 @@ pub trait ItemMutCommon: ItemCommon {
                 item_uid,
                 cap_perc,
                 optional_reloads,
-                &StatCapSimStaggerInt::from_pub(sol, &stagger),
+                &StatCapSimStaggerInt::from_pub(sol, stagger),
                 nosf_projectee_item_uid,
             )
             .map_err(|e| StatItemAppliedError::from_svc_err(e, &sol.u_data.items))
