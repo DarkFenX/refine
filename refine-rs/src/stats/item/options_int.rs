@@ -28,7 +28,7 @@ use crate::stats::{
     )
 )]
 #[derive(Clone)]
-pub(in crate::stats) struct StatItemOptionsInt<O: StatOptionKind> {
+pub(in crate::stats) struct ItemStatsOptionsInt<O: StatOptionKind> {
     // Output
     pub(in crate::stats) dmg: O::Ext<StatOptionItemDmg>,
     pub(in crate::stats) mps: O::Ext<StatOptionItemMining>,
@@ -75,7 +75,7 @@ pub(in crate::stats) struct StatItemOptionsInt<O: StatOptionKind> {
     pub(in crate::stats) can_dock_citadel: O::Reg,
     pub(in crate::stats) can_tether: O::Reg,
 }
-impl<O> Default for StatItemOptionsInt<O>
+impl<O> Default for ItemStatsOptionsInt<O>
 where
     O: StatOptionKind,
     O::Ext<StatOptionItemDmg>: Default,
@@ -147,9 +147,9 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatItemOptionsInt<StatOptionRaw> {
-    pub(in crate::stats) fn resolve(self, default: bool) -> StatItemOptionsInt<StatOptionResolved> {
-        StatItemOptionsInt {
+impl ItemStatsOptionsInt<StatOptionRaw> {
+    pub(in crate::stats) fn resolve(self, default: bool) -> ItemStatsOptionsInt<StatOptionResolved> {
+        ItemStatsOptionsInt {
             // Output
             dmg: self.dmg.into_enabled(default),
             mps: self.mps.into_enabled(default),

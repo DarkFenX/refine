@@ -1,10 +1,10 @@
 use crate::{
     Fit,
-    stats::{StatFitOptions, StatFitResult},
+    stats::{FitStatsOptions, FitStatsResult},
 };
 
 impl Fit<'_, '_> {
-    pub async fn get_stats(&mut self, stat_opts: StatFitOptions) -> StatFitResult {
+    pub async fn get_stats(&mut self, stat_opts: FitStatsOptions) -> FitStatsResult {
         // Variables for move
         let fit_id = self.id;
         self.sol

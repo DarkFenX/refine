@@ -1,10 +1,10 @@
 use crate::{
     Item,
-    stats::{StatItemOptions, StatItemResult},
+    stats::{ItemStatsOptions, ItemStatsResult},
 };
 
 impl Item<'_, '_> {
-    pub async fn get_stats(&mut self, stat_opts: StatItemOptions) -> StatItemResult {
+    pub async fn get_stats(&mut self, stat_opts: ItemStatsOptions) -> ItemStatsResult {
         // Variables for move
         let item_id = self.id;
         self.sol

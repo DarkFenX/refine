@@ -1,26 +1,26 @@
 use crate::stats::{
-    StatFleetResult, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-    StatOptionFitOutRps, StatOptionMass, fleet::StatFleetOptionsInt, option::StatOptionRaw,
+    FleetStatsResult, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+    StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptionsInt, option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Default)]
-pub struct StatFleetOptions {
+pub struct FleetStatsOptions {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: StatFleetOptionsInt<StatOptionRaw>,
+    options: FleetStatsOptionsInt<StatOptionRaw>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatFleetOptions {
+impl FleetStatsOptions {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
             default,
-            options: StatFleetOptionsInt::default(),
+            options: FleetStatsOptionsInt::default(),
         }
     }
     pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg>) -> Self {
@@ -52,8 +52,8 @@ impl StatFleetOptions {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatFleetOptions {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> StatFleetResult {
+impl FleetStatsOptions {
+    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStatsResult {
         self.options.resolve(self.default).execute(core_fleet)
     }
 }

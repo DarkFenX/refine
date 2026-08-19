@@ -1,27 +1,27 @@
 use crate::stats::{
-    StatFitResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+    FitStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
     StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-    StatOptionJump, StatOptionMass, StatOptionRps, fit::StatFitOptionsInt, option::StatOptionRaw,
+    StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsInt, option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Default)]
-pub struct StatFitOptions {
+pub struct FitStatsOptions {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: StatFitOptionsInt<StatOptionRaw>,
+    options: FitStatsOptionsInt<StatOptionRaw>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatFitOptions {
+impl FitStatsOptions {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
             default,
-            options: StatFitOptionsInt::default(),
+            options: FitStatsOptionsInt::default(),
         }
     }
     // Fit output stats
@@ -281,8 +281,8 @@ impl StatFitOptions {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatFitOptions {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> StatFitResult {
+impl FitStatsOptions {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResult {
         self.options.resolve(self.default).execute(core_fit)
     }
 }

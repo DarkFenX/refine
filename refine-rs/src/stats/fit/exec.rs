@@ -1,13 +1,13 @@
 use crate::{
     PValue, Value,
     stats::{
-        StatCapSim, StatDmg, StatEhp, StatErps, StatFitResult, StatInJam, StatJump, StatMining, StatOptionCapBlc,
+        FitStatsResult, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
         StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump, StatOptionMass, StatOptionRps,
         StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         fatal::StatErrorFatality,
-        fit::StatFitOptionsInt,
+        fit::FitStatsOptionsInt,
         option::StatOptionResolved,
     },
 };
@@ -15,9 +15,9 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatFitOptionsInt<StatOptionResolved> {
-    pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> StatFitResult {
-        let mut stats = StatFitResult { .. };
+impl FitStatsOptionsInt<StatOptionResolved> {
+    pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStatsResult {
+        let mut stats = FitStatsResult { .. };
         // Fit output stats
         if let Some(options) = self.dmg.as_ref() {
             stats.dmg = get_dmg_stats(core_fit, options);

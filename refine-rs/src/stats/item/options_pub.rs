@@ -1,28 +1,28 @@
 use crate::stats::{
-    StatItemResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
+    ItemStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
     StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
-    StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::StatItemOptionsInt,
+    StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsInt,
     option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Default)]
-pub struct StatItemOptions {
+pub struct ItemStatsOptions {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: StatItemOptionsInt<StatOptionRaw>,
+    options: ItemStatsOptionsInt<StatOptionRaw>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatItemOptions {
+impl ItemStatsOptions {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
             default,
-            options: StatItemOptionsInt::default(),
+            options: ItemStatsOptionsInt::default(),
         }
     }
     // Output
@@ -192,8 +192,8 @@ impl StatItemOptions {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl StatItemOptions {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> StatItemResult {
+impl ItemStatsOptions {
+    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResult {
         self.options.resolve(self.default).execute(core_item)
     }
 }

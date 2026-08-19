@@ -12,7 +12,7 @@ use crate::{
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
-pub struct StatFitResult {
+pub struct FitStatsResult {
     // Fit output stats
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub dmg: StatResult<StatDmg, !, StatFitAppliedError> = StatResult::NotRequested,
