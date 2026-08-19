@@ -12,11 +12,13 @@ impl ADataGenerator {
         self.move_basic_attrs();
     }
     fn move_basic_attrs(&mut self) {
-        let mut seen_pks = RSet::new();
-        for item_attr in self.e_data.item_attrs.data.iter() {
-            let pk = item_attr.get_pk();
-            seen_pks.insert(pk);
-        }
+        let seen_pks: RSet<_> = self
+            .e_data
+            .item_attrs
+            .data
+            .iter()
+            .map(|item_attr| item_attr.get_pk())
+            .collect();
         let attr_eids = self.e_data.attrs.data.iter().map(|v| v.id).collect();
         for item in self.e_data.items.data.iter() {
             move_basic_attr(

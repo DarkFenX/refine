@@ -37,9 +37,8 @@ impl AdgSupport {
         self.fill_standalone_data();
     }
     fn fill_group_categories(&mut self, e_data: &EData) {
-        for grp in e_data.groups.data.iter() {
-            self.grp_cat_map.insert(grp.id, grp.category_id);
-        }
+        self.grp_cat_map
+            .extend(e_data.groups.data.iter().map(|grp| (grp.id, grp.category_id)));
     }
     fn fill_attr_units(&mut self, e_data: &EData) {
         for attr in e_data.attrs.data.iter() {

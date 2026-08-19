@@ -27,32 +27,24 @@ impl ADataGenerator {
                 }
             };
             let mut a_mods = Vec::new();
-            for e_item_mod in e_buff.item_mods.iter() {
-                a_mods.push(ABuffModifier {
-                    affectee_filter: ABuffAffecteeFilter::Direct,
-                    affectee_attr_id: AAttrId::from_eid(e_item_mod.attr_id),
-                });
-            }
-            for e_loc_mod in e_buff.loc_mods.iter() {
-                a_mods.push(ABuffModifier {
-                    affectee_filter: ABuffAffecteeFilter::Loc,
-                    affectee_attr_id: AAttrId::from_eid(e_loc_mod.attr_id),
-                });
-            }
-            for e_locgroup_mod in e_buff.locgroup_mods.iter() {
-                a_mods.push(ABuffModifier {
-                    affectee_filter: ABuffAffecteeFilter::LocGrp(AItemGrpId::from_eid(e_locgroup_mod.group_id)),
-                    affectee_attr_id: AAttrId::from_eid(e_locgroup_mod.attr_id),
-                });
-            }
-            for e_locsrq_mod in e_buff.locsrq_mods.iter() {
-                a_mods.push(ABuffModifier {
-                    affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::ItemId(AItemId::from_eid(
-                        e_locsrq_mod.skill_id,
-                    ))),
-                    affectee_attr_id: AAttrId::from_eid(e_locsrq_mod.attr_id),
-                });
-            }
+            a_mods.extend(e_buff.item_mods.iter().map(|e_item_mod| ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::Direct,
+                affectee_attr_id: AAttrId::from_eid(e_item_mod.attr_id),
+            }));
+            a_mods.extend(e_buff.loc_mods.iter().map(|e_loc_mod| ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::Loc,
+                affectee_attr_id: AAttrId::from_eid(e_loc_mod.attr_id),
+            }));
+            a_mods.extend(e_buff.locgroup_mods.iter().map(|e_locgroup_mod| ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::LocGrp(AItemGrpId::from_eid(e_locgroup_mod.group_id)),
+                affectee_attr_id: AAttrId::from_eid(e_locgroup_mod.attr_id),
+            }));
+            a_mods.extend(e_buff.locsrq_mods.iter().map(|e_locsrq_mod| ABuffModifier {
+                affectee_filter: ABuffAffecteeFilter::LocSrq(AModifierSrq::ItemId(AItemId::from_eid(
+                    e_locsrq_mod.skill_id,
+                ))),
+                affectee_attr_id: AAttrId::from_eid(e_locsrq_mod.attr_id),
+            }));
             let a_buff = ABuff {
                 id: ABuffId::from_eid(e_buff.id),
                 aggr_mode,
