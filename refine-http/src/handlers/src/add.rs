@@ -7,6 +7,7 @@ use axum::{
 use axum_extra::extract::WithRejection;
 use serde::Deserialize;
 
+use super::shared::SrcParams;
 use crate::{err::ApiError, state::AppState};
 
 #[derive(Deserialize)]
@@ -20,7 +21,7 @@ pub(crate) struct AddSrcReqBody {
 pub(crate) async fn add_source(
     State(state): State<AppState>,
     Path(src_alias): Path<String>,
-    WithRejection(Query(params), _): WithRejection<Query<rs::src::SrcInfoArgs>, ApiError>,
+    WithRejection(Query(params), _): WithRejection<Query<SrcParams>, ApiError>,
     WithRejection(Json(payload), _): WithRejection<Json<AddSrcReqBody>, ApiError>,
 ) -> impl IntoResponse {
     match internal_add_source(state, src_alias, params, payload).await {
@@ -32,7 +33,7 @@ pub(crate) async fn add_source(
 async fn internal_add_source(
     state: AppState,
     src_alias: String,
-    params: rs::src::SrcInfoArgs,
+    params: SrcParams,
     payload: AddSrcReqBody,
 ) -> Result<rs::src::SrcInfo, ApiError> {
     let src_alias =
@@ -56,5 +57,5 @@ async fn internal_add_source(
         .get_refine()
         .add_src(src_alias, make_default, ed_handler, ad_cacher)
         .await?;
-    Ok(src.get_info(params).await)
+    Ok(src.get_info(params.into_info_mode()).await)
 }

@@ -9,8 +9,7 @@ pub use sol::{
     SolarSystem, SolarSystemId,
 };
 pub use src::{
-    Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcInfoArgs,
-    SrcRemoveError,
+    Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError,
 };
 
 mod fit;
