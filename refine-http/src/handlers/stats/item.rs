@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn get_item_stats(
     State(state): State<AppState>,
     Path((sol_id, item_id)): Path<(String, String)>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::stats::GetItemStatsCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::stats::StatItemOptions>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_get_item_stats(state, sol_id, item_id, payload).await {
@@ -26,8 +26,8 @@ async fn internal_get_item_stats(
     state: AppState,
     sol_id: String,
     item_id: String,
-    payload: rs::stats::GetItemStatsCmd,
-) -> Result<rs::stats::ItemStats, ApiError> {
+    payload: rs::stats::StatItemOptions,
+) -> Result<rs::stats::StatItemResult, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let item_id = rs::ItemId::from_str(&item_id)?;
     let item_stats = state

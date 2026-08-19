@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn get_fleet_stats(
     State(state): State<AppState>,
     Path((sol_id, fleet_id)): Path<(String, String)>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::stats::GetFleetStatsCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::stats::StatFleetOptions>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_get_fleet_stats(state, sol_id, fleet_id, payload).await {
@@ -26,8 +26,8 @@ async fn internal_get_fleet_stats(
     state: AppState,
     sol_id: String,
     fleet_id: String,
-    payload: rs::stats::GetFleetStatsCmd,
-) -> Result<rs::stats::FleetStats, ApiError> {
+    payload: rs::stats::StatFleetOptions,
+) -> Result<rs::stats::StatFleetResult, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;
     let fleet_stats = state

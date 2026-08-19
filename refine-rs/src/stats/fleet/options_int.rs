@@ -19,7 +19,7 @@ use crate::stats::{
     )
 )]
 #[derive(Clone)]
-pub(in crate::stats) struct FleetStatsOptions<O: StatOptionKind> {
+pub(in crate::stats) struct StatFleetOptionsInt<O: StatOptionKind> {
     pub(in crate::stats) dmg: O::Ext<StatOptionFitDmg>,
     pub(in crate::stats) mps: O::Ext<StatOptionFitMining>,
     pub(in crate::stats) outgoing_nps: O::Ext<StatOptionFitOutNps>,
@@ -27,7 +27,7 @@ pub(in crate::stats) struct FleetStatsOptions<O: StatOptionKind> {
     pub(in crate::stats) outgoing_cps: O::Ext<StatOptionFitOutCps>,
     pub(in crate::stats) mass: O::Ext<StatOptionMass>,
 }
-impl<O> Default for FleetStatsOptions<O>
+impl<O> Default for StatFleetOptionsInt<O>
 where
     O: StatOptionKind,
     O::Ext<StatOptionFitDmg>: Default,
@@ -52,9 +52,9 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsOptions<StatOptionRaw> {
-    pub(in crate::stats) fn resolve(self, default: bool) -> FleetStatsOptions<StatOptionResolved> {
-        FleetStatsOptions {
+impl StatFleetOptionsInt<StatOptionRaw> {
+    pub(in crate::stats) fn resolve(self, default: bool) -> StatFleetOptionsInt<StatOptionResolved> {
+        StatFleetOptionsInt {
             dmg: self.dmg.into_enabled(default),
             mps: self.mps.into_enabled(default),
             outgoing_nps: self.outgoing_nps.into_enabled(default),

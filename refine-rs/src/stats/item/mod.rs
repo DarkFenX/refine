@@ -1,8 +1,8 @@
-pub use cmd::GetItemStatsCmd;
-pub(in crate::stats) use options::ItemStatsOptions;
-pub use result::ItemStats;
+pub(in crate::stats) use options_int::StatItemOptionsInt;
+pub use options_pub::StatItemOptions;
+pub use result::StatItemResult;
 
-mod cmd;
 mod exec;
-mod options;
+mod options_int;
+mod options_pub;
 mod result;

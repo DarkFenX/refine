@@ -1,8 +1,8 @@
-pub use cmd::GetFleetStatsCmd;
-pub(in crate::stats) use options::FleetStatsOptions;
-pub use result::FleetStats;
+pub(in crate::stats) use options_int::StatFleetOptionsInt;
+pub use options_pub::StatFleetOptions;
+pub use result::StatFleetResult;
 
-mod cmd;
 mod exec;
-mod options;
+mod options_int;
+mod options_pub;
 mod result;

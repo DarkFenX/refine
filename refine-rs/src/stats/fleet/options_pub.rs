@@ -1,26 +1,26 @@
 use crate::stats::{
-    FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-    StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptions, option::StatOptionRaw,
+    StatFleetResult, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+    StatOptionFitOutRps, StatOptionMass, fleet::StatFleetOptionsInt, option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Default)]
-pub struct GetFleetStatsCmd {
+pub struct StatFleetOptions {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: FleetStatsOptions<StatOptionRaw>,
+    options: StatFleetOptionsInt<StatOptionRaw>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl GetFleetStatsCmd {
+impl StatFleetOptions {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
             default,
-            options: FleetStatsOptions::default(),
+            options: StatFleetOptionsInt::default(),
         }
     }
     pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg>) -> Self {
@@ -52,8 +52,8 @@ impl GetFleetStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl GetFleetStatsCmd {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
+impl StatFleetOptions {
+    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> StatFleetResult {
         self.options.resolve(self.default).execute(core_fleet)
     }
 }

@@ -1,51 +1,141 @@
 use crate::stats::{
-    ItemStats, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
-    StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-    StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptions, option::StatOptionRaw,
+    StatFitResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+    StatOptionJump, StatOptionMass, StatOptionRps, fit::StatFitOptionsInt, option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Default)]
-pub struct GetItemStatsCmd {
+pub struct StatFitOptions {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: ItemStatsOptions<StatOptionRaw>,
+    options: StatFitOptionsInt<StatOptionRaw>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl GetItemStatsCmd {
+impl StatFitOptions {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
             default,
-            options: ItemStatsOptions::default(),
+            options: StatFitOptionsInt::default(),
         }
     }
-    // Output
-    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionItemDmg>) -> Self {
+    // Fit output stats
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg>) -> Self {
         self.options.dmg = option.into();
         self
     }
-    pub fn with_mps(mut self, option: StatOptionExt<StatOptionItemMining>) -> Self {
+    pub fn with_mps(mut self, option: StatOptionExt<StatOptionFitMining>) -> Self {
         self.options.mps = option.into();
         self
     }
-    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionItemOutNps>) -> Self {
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps>) -> Self {
         self.options.outgoing_nps = option.into();
         self
     }
-    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionItemOutRps>) -> Self {
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps>) -> Self {
         self.options.outgoing_rps = option.into();
         self
     }
-    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCps>) -> Self {
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps>) -> Self {
         self.options.outgoing_cps = option.into();
         self
     }
-    // Tank
+    // Fit resources
+    pub fn with_cpu(mut self, enabled: bool) -> Self {
+        self.options.cpu = enabled.into();
+        self
+    }
+    pub fn with_powergrid(mut self, enabled: bool) -> Self {
+        self.options.powergrid = enabled.into();
+        self
+    }
+    pub fn with_calibration(mut self, enabled: bool) -> Self {
+        self.options.calibration = enabled.into();
+        self
+    }
+    pub fn with_drone_bay_volume(mut self, enabled: bool) -> Self {
+        self.options.drone_bay_volume = enabled.into();
+        self
+    }
+    pub fn with_drone_bandwidth(mut self, enabled: bool) -> Self {
+        self.options.drone_bandwidth = enabled.into();
+        self
+    }
+    pub fn with_fighter_bay_volume(mut self, enabled: bool) -> Self {
+        self.options.fighter_bay_volume = enabled.into();
+        self
+    }
+    // Fit slots
+    pub fn with_high_slots(mut self, enabled: bool) -> Self {
+        self.options.high_slots = enabled.into();
+        self
+    }
+    pub fn with_mid_slots(mut self, enabled: bool) -> Self {
+        self.options.mid_slots = enabled.into();
+        self
+    }
+    pub fn with_low_slots(mut self, enabled: bool) -> Self {
+        self.options.low_slots = enabled.into();
+        self
+    }
+    pub fn with_turret_slots(mut self, enabled: bool) -> Self {
+        self.options.turret_slots = enabled.into();
+        self
+    }
+    pub fn with_launcher_slots(mut self, enabled: bool) -> Self {
+        self.options.launcher_slots = enabled.into();
+        self
+    }
+    pub fn with_rig_slots(mut self, enabled: bool) -> Self {
+        self.options.rig_slots = enabled.into();
+        self
+    }
+    pub fn with_service_slots(mut self, enabled: bool) -> Self {
+        self.options.service_slots = enabled.into();
+        self
+    }
+    pub fn with_subsystem_slots(mut self, enabled: bool) -> Self {
+        self.options.subsystem_slots = enabled.into();
+        self
+    }
+    pub fn with_launched_drones(mut self, enabled: bool) -> Self {
+        self.options.launched_drones = enabled.into();
+        self
+    }
+    pub fn with_launched_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_light_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_light_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_heavy_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_heavy_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_support_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_support_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_st_light_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_st_light_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_st_heavy_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_st_heavy_fighters = enabled.into();
+        self
+    }
+    pub fn with_launched_st_support_fighters(mut self, enabled: bool) -> Self {
+        self.options.launched_st_support_fighters = enabled.into();
+        self
+    }
+    // Ship tank
     pub fn with_resists(mut self, enabled: bool) -> Self {
         self.options.resists = enabled.into();
         self
@@ -74,7 +164,7 @@ impl GetItemStatsCmd {
         self.options.breach_resist = enabled.into();
         self
     }
-    // Cap
+    // Ship cap
     pub fn with_cap_amount(mut self, enabled: bool) -> Self {
         self.options.cap_amount = enabled.into();
         self
@@ -91,7 +181,7 @@ impl GetItemStatsCmd {
         self.options.neut_resist = enabled.into();
         self
     }
-    // Sensors
+    // Ship sensors
     pub fn with_locks(mut self, enabled: bool) -> Self {
         self.options.locks = enabled.into();
         self
@@ -120,7 +210,7 @@ impl GetItemStatsCmd {
         self.options.incoming_jam = option.into();
         self
     }
-    // Mobility
+    // Ship mobility
     pub fn with_speed(mut self, enabled: bool) -> Self {
         self.options.speed = enabled.into();
         self
@@ -153,7 +243,7 @@ impl GetItemStatsCmd {
         self.options.jump = option.into();
         self
     }
-    // Misc
+    // Ship misc stats
     pub fn with_drone_control_range(mut self, enabled: bool) -> Self {
         self.options.drone_control_range = enabled.into();
         self
@@ -191,9 +281,9 @@ impl GetItemStatsCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl GetItemStatsCmd {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStats {
-        self.options.resolve(self.default).execute(core_item)
+impl StatFitOptions {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> StatFitResult {
+        self.options.resolve(self.default).execute(core_fit)
     }
 }
 

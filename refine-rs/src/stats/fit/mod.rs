@@ -1,8 +1,8 @@
-pub use cmd::GetFitStatsCmd;
-pub(in crate::stats) use options::FitStatsOptions;
-pub use result::FitStats;
+pub(in crate::stats) use options_int::StatFitOptionsInt;
+pub use options_pub::StatFitOptions;
+pub use result::StatFitResult;
 
-mod cmd;
 mod exec;
-mod options;
+mod options_int;
+mod options_pub;
 mod result;

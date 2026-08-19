@@ -13,7 +13,7 @@ use crate::{err::ApiError, state::AppState};
 pub(crate) async fn get_fit_stats(
     State(state): State<AppState>,
     Path((sol_id, fit_id)): Path<(String, String)>,
-    WithRejection(payload, _): WithRejection<Option<Json<rs::stats::GetFitStatsCmd>>, ApiError>,
+    WithRejection(payload, _): WithRejection<Option<Json<rs::stats::StatFitOptions>>, ApiError>,
 ) -> impl IntoResponse {
     let Json(payload) = payload.unwrap_or_default();
     match internal_get_fit_stats(state, sol_id, fit_id, payload).await {
@@ -26,8 +26,8 @@ async fn internal_get_fit_stats(
     state: AppState,
     sol_id: String,
     fit_id: String,
-    payload: rs::stats::GetFitStatsCmd,
-) -> Result<rs::stats::FitStats, ApiError> {
+    payload: rs::stats::StatFitOptions,
+) -> Result<rs::stats::StatFitResult, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let fit_stats = state
