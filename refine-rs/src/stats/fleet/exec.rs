@@ -3,7 +3,7 @@ use crate::{
     stats::{
         FleetStats, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
-        fleet::FleetStatsOptions, option_support::StatOptionResolved,
+        fleet::FleetStatsOptions, option::StatOptionResolved,
     },
 };
 

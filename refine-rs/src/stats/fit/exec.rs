@@ -8,7 +8,7 @@ use crate::{
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         fatal::StatErrorFatality,
         fit::FitStatsOptions,
-        option_support::StatOptionResolved,
+        option::StatOptionResolved,
     },
 };
 

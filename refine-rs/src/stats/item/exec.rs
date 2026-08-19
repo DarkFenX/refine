@@ -10,7 +10,7 @@ use crate::{
         err::{StatItemAppliedError, StatItemError, StatJumpError},
         fatal::StatErrorFatality,
         item::ItemStatsOptions,
-        option_support::StatOptionResolved,
+        option::StatOptionResolved,
     },
 };
 

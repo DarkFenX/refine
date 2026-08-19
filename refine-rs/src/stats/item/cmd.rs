@@ -1,7 +1,7 @@
 use crate::stats::{
     ItemStats, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
     StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-    StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptions, option_support::StatOptionRaw,
+    StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptions, option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]

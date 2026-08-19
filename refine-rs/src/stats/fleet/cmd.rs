@@ -1,6 +1,6 @@
 use crate::stats::{
     FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-    StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptions, option_support::StatOptionRaw,
+    StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptions, option::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]

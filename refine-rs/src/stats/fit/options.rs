@@ -2,7 +2,7 @@ use crate::stats::{
     StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
     StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
     StatOptionMass, StatOptionRps,
-    option_support::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+    option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
 };
 
 #[cfg_attr(

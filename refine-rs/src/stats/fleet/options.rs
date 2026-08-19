@@ -1,7 +1,7 @@
 use crate::stats::{
     StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
     StatOptionMass,
-    option_support::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+    option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
 };
 
 #[cfg_attr(
