@@ -3,11 +3,11 @@ use crate::{
     stats::{
         FleetStats, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
-        fleet::FleetStatsOptions, option_support::StatOptionExtResolved,
+        fleet::FleetStatsOptions, option_support::StatOptionResolved,
     },
 };
 
-impl FleetStatsOptions<StatOptionExtResolved> {
+impl FleetStatsOptions<StatOptionResolved> {
     pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         let mut stats = FleetStats { .. };
         if let Some(options) = self.dmg.as_ref() {

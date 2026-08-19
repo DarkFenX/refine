@@ -1,7 +1,7 @@
 use crate::stats::{
     StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
     StatOptionMass,
-    option_support::{StatOptionExtKind, StatOptionExtRaw, StatOptionExtResolved},
+    option_support::{StatOptionKind, StatOptionRaw, StatOptionResolved},
 };
 
 #[cfg_attr(
@@ -10,32 +10,32 @@ use crate::stats::{
     serde(
         default,
         bound(deserialize = "
-        X::Repr<StatOptionFitDmg>: Default + serde::Deserialize<'de>,
-        X::Repr<StatOptionFitMining>: Default + serde::Deserialize<'de>,
-        X::Repr<StatOptionFitOutNps>: Default + serde::Deserialize<'de>,
-        X::Repr<StatOptionFitOutRps>: Default + serde::Deserialize<'de>,
-        X::Repr<StatOptionFitOutCps>: Default + serde::Deserialize<'de>,
-        X::Repr<StatOptionMass>: Default + serde::Deserialize<'de>")
+        O::Ext<StatOptionFitDmg>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitMining>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutNps>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutRps>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutCps>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionMass>: Default + serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
-pub(in crate::stats) struct FleetStatsOptions<X: StatOptionExtKind> {
-    pub(in crate::stats) dmg: X::Repr<StatOptionFitDmg>,
-    pub(in crate::stats) mps: X::Repr<StatOptionFitMining>,
-    pub(in crate::stats) outgoing_nps: X::Repr<StatOptionFitOutNps>,
-    pub(in crate::stats) outgoing_rps: X::Repr<StatOptionFitOutRps>,
-    pub(in crate::stats) outgoing_cps: X::Repr<StatOptionFitOutCps>,
-    pub(in crate::stats) mass: X::Repr<StatOptionMass>,
+pub(in crate::stats) struct FleetStatsOptions<O: StatOptionKind> {
+    pub(in crate::stats) dmg: O::Ext<StatOptionFitDmg>,
+    pub(in crate::stats) mps: O::Ext<StatOptionFitMining>,
+    pub(in crate::stats) outgoing_nps: O::Ext<StatOptionFitOutNps>,
+    pub(in crate::stats) outgoing_rps: O::Ext<StatOptionFitOutRps>,
+    pub(in crate::stats) outgoing_cps: O::Ext<StatOptionFitOutCps>,
+    pub(in crate::stats) mass: O::Ext<StatOptionMass>,
 }
-impl<X> Default for FleetStatsOptions<X>
+impl<O> Default for FleetStatsOptions<O>
 where
-    X: StatOptionExtKind,
-    X::Repr<StatOptionFitDmg>: Default,
-    X::Repr<StatOptionFitMining>: Default,
-    X::Repr<StatOptionFitOutNps>: Default,
-    X::Repr<StatOptionFitOutRps>: Default,
-    X::Repr<StatOptionFitOutCps>: Default,
-    X::Repr<StatOptionMass>: Default,
+    O: StatOptionKind,
+    O::Ext<StatOptionFitDmg>: Default,
+    O::Ext<StatOptionFitMining>: Default,
+    O::Ext<StatOptionFitOutNps>: Default,
+    O::Ext<StatOptionFitOutRps>: Default,
+    O::Ext<StatOptionFitOutCps>: Default,
+    O::Ext<StatOptionMass>: Default,
 {
     fn default() -> Self {
         Self {
@@ -52,8 +52,8 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsOptions<StatOptionExtRaw> {
-    pub(in crate::stats) fn resolve(self, default: bool) -> FleetStatsOptions<StatOptionExtResolved> {
+impl FleetStatsOptions<StatOptionRaw> {
+    pub(in crate::stats) fn resolve(self, default: bool) -> FleetStatsOptions<StatOptionResolved> {
         FleetStatsOptions {
             dmg: self.dmg.into_enabled(default),
             mps: self.mps.into_enabled(default),

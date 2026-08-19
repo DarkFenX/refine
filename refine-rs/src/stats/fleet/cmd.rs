@@ -1,6 +1,6 @@
 use crate::stats::{
     FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-    StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptions, option_support::StatOptionExtRaw,
+    StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptions, option_support::StatOptionRaw,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
@@ -9,7 +9,7 @@ pub struct GetFleetStatsCmd {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: FleetStatsOptions<StatOptionExtRaw>,
+    options: FleetStatsOptions<StatOptionRaw>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
