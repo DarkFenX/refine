@@ -240,13 +240,17 @@ class SolarSystem(AttrDict):
             self, *,
             fleet_id: str,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Fleet | None:
         resp = self._client.get_fleet_request(
             sol_id=self.id,
             fleet_id=fleet_id,
-            fleet_info_mode=fleet_info_mode).send()
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
         self.check()
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:

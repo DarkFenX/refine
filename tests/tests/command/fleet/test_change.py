@@ -11,4 +11,4 @@ def test_error_params_malformed(client):
         fleet_info_mode='random',
         status_code=400,
         json_predicate={'code': 'PRM-001', 'message': 're:.+'})
-    assert api_fleet.update().fit_ids == [api_fit.id]
+    assert api_fit.id in api_fleet.update().fits

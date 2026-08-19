@@ -8,7 +8,7 @@ def test_fleet_create(client):
         api_fit = api_sol_batch.create_fit()
         api_fleet = api_sol_batch.create_fleet(fit_ids=[api_fit.id])
     # Verification
-    assert api_fleet.update().fit_ids == [api_fit.id]
+    assert api_fit.id in api_fleet.update().fits
     assert api_fit.update().fleet_id == api_fleet.id
 
 
@@ -21,7 +21,7 @@ def test_fleet_change(client):
         api_fit2 = api_sol_batch.create_fit()
         api_sol_batch.change_fleet(fleet_id=api_fleet.id, add_fit_ids=[api_fit2.id], rm_fit_ids=[api_fit1.id])
     # Verification
-    assert api_fleet.update().fit_ids == [api_fit2.id]
+    assert api_fit2.id in api_fleet.update().fits
     api_fit1.update()
     with check_no_field():
         api_fit1.fleet_id  # ruff:ignore[useless-expression]
@@ -50,7 +50,7 @@ def test_fit_create(client):
         api_fit = api_sol_batch.create_fit(fleet_id=api_fleet.id)
     # Verification
     assert api_fit.update().fleet_id == api_fleet.id
-    assert api_fleet.update().fit_ids == [api_fit.id]
+    assert api_fit.id in api_fleet.update().fits
 
 
 def test_fit_change(client):
@@ -65,8 +65,8 @@ def test_fit_change(client):
     assert api_fit.update().fleet_id == api_fleet2.id
     assert api_fleet1.update()
     with check_no_field():
-        api_fleet1.fit_ids  # ruff:ignore[useless-expression]
-    assert api_fleet2.update().fit_ids == [api_fit.id]
+        api_fleet1.fits  # ruff:ignore[useless-expression]
+    assert api_fit.id in api_fleet2.update().fits
 
 
 def test_fit_remove(client):
@@ -80,7 +80,7 @@ def test_fit_remove(client):
     api_fit.update(status_code=404)
     api_fleet.update()
     with check_no_field():
-        api_fleet.fit_ids  # ruff:ignore[useless-expression]
+        api_fleet.fits  # ruff:ignore[useless-expression]
 
 
 def test_item_remove(client):

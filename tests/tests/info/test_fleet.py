@@ -24,14 +24,14 @@ def test_fit(client):
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet.update()
-    assert len(api_fleet.fit_ids) == 1
-    assert api_fit.id in api_fleet.fit_ids
+    assert len(api_fleet.fits) == 1
+    assert api_fit.id in api_fleet.fits
     # Action
     api_fleet.change(rm_fit_ids=[api_fit.id])
     # Verification
     api_fleet.update()
     with check_no_field():
-        api_fleet.fit_ids  # ruff:ignore[useless-expression]
+        api_fleet.fits  # ruff:ignore[useless-expression]
 
 
 def test_error_no_fleet_full(client, consts):
