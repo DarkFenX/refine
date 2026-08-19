@@ -2,8 +2,8 @@ use crate::{AttrId, ItemTypeId, UnitInterval, Value};
 
 #[derive(Clone)]
 pub struct AddMutation {
-    pub mutator_id: ItemTypeId,
-    pub attrs: Vec<(AttrId, AttrMutation)> = Vec::new(),
+    pub(in crate::ctl::core) mutator_id: ItemTypeId,
+    pub(in crate::ctl::core) attrs: Vec<(AttrId, AttrMutation)> = Vec::new(),
 }
 impl AddMutation {
     pub fn new(mutator_id: ItemTypeId) -> Self {
@@ -17,8 +17,8 @@ impl AddMutation {
 
 #[derive(Clone, Default)]
 pub struct ChangeMutation {
-    pub mutator_id: Option<ItemTypeId> = None,
-    pub attrs: Vec<(AttrId, Option<AttrMutation>)> = Vec::new(),
+    pub(in crate::ctl::core) mutator_id: Option<ItemTypeId> = None,
+    pub(in crate::ctl::core) attrs: Vec<(AttrId, Option<AttrMutation>)> = Vec::new(),
 }
 impl ChangeMutation {
     pub fn new() -> Self {
