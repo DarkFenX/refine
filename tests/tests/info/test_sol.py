@@ -1,7 +1,7 @@
 """
 Here we check availability of info of various items via solar system info endpoint.
 """
-
+from conftest import consts
 from fw import check_no_field
 from fw.util import Absent
 
@@ -38,14 +38,28 @@ def test_src_alias(client, consts):
     assert api_sol.update(sol_info_mode=consts.ApiSolInfoMode.full).src_alias == eve_data.alias
 
 
-def test_fleet(client):
+def test_fleet(client, consts):
+    eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_fleet = api_sol.create_fleet()
-    api_sol.update()
+    api_fit = api_sol.create_fit(fleet_id=api_fleet.id)
+    api_item = api_fit.set_character(type_id=eve_item_id)
+    api_sol.update(
+        sol_info_mode=consts.ApiSolInfoMode.full,
+        fleet_info_mode=consts.ApiFleetInfoMode.full,
+        fit_info_mode=consts.ApiFitInfoMode.full,
+        item_info_mode=consts.ApiItemInfoMode.id)
+    # Fleet info contains fit info, but fit info has just IDs in the fleet container
     assert len(api_sol.fleets) == 1
     assert api_fleet.id in api_sol.fleets
     assert api_sol.fleets[api_fleet.id].id == api_fleet.id
+    api_fit_via_fleet = api_sol.fleets[api_fleet.id].fits[api_fit.id]
+    with check_no_field():
+        api_fit_via_fleet.character
+    # But fit has full info as requested in the fit container
+    assert api_sol.fits[api_fit.id].character.id == api_item.id
+    # Remove fleet and check that fleets container is empty
     api_fleet.remove()
     api_sol.update()
     with check_no_field():
