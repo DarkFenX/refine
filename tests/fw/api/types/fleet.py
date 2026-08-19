@@ -1,7 +1,8 @@
 import typing
 
-from fw.consts import ApiFleetInfoMode
-from fw.util import Absent, AttrDict
+from fw.api.types.fit import Fit
+from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
+from fw.util import Absent, AttrDict, AttrHookDef
 from .stats import FleetStats
 
 if typing.TYPE_CHECKING:
@@ -12,20 +13,26 @@ if typing.TYPE_CHECKING:
 class Fleet(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
-        super().__init__(data=data)
+        super().__init__(data=data, hooks={
+            'fits': AttrHookDef(
+                func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]})})
         self._client = client
         self._sol_id = sol_id
 
     def update(
             self, *,
             fleet_info_mode: ApiFleetInfoMode | type[Absent] = ApiFleetInfoMode.full,
+            fit_info_mode: ApiFitInfoMode | type[Absent] = ApiFitInfoMode.id,
+            item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> Fleet | None:
         resp = self._client.get_fleet_request(
             sol_id=self._sol_id,
             fleet_id=self.id,
-            fleet_info_mode=fleet_info_mode).send()
+            fleet_info_mode=fleet_info_mode,
+            fit_info_mode=fit_info_mode,
+            item_info_mode=item_info_mode).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:

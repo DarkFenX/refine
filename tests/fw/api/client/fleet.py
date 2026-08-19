@@ -7,7 +7,7 @@ from fw.util import Absent, conditional_insert
 from .base import ApiClientBase
 
 if typing.TYPE_CHECKING:
-    from fw.consts import ApiFleetInfoMode
+    from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode
 
 
 class ApiClientFleet(ApiClientBase):
@@ -17,9 +17,13 @@ class ApiClientFleet(ApiClientBase):
             sol_id: str,
             fleet_id: str,
             fleet_info_mode: ApiFleetInfoMode | type[Absent],
+            fit_info_mode: ApiFitInfoMode | type[Absent],
+            item_info_mode: ApiItemInfoMode | type[Absent],
     ) -> Request:
         params = {}
         conditional_insert(container=params, path=['fleet'], value=fleet_info_mode)
+        conditional_insert(container=params, path=['fit'], value=fit_info_mode)
+        conditional_insert(container=params, path=['item'], value=item_info_mode)
         return Request(
             client=self,
             method='GET',
