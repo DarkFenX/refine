@@ -1,6 +1,6 @@
 pub use cmd_core::{
-    FitGetFitInfoError, FitInfoCmd, FitInfoCmdBr, FleetGetFleetInfoError, FleetInfoCmd, ItemGetItemInfoError,
-    ItemInfoCmd, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
+    FitGetFitInfoError, FitInfoCmd, FitInfoCmdBr, FleetGetFleetInfoError, FleetInfoCmd, FleetInfoCmdBr,
+    ItemGetItemInfoError, ItemInfoCmd, ItemInfoCmdBr, SolInfoCmd, SolInfoCmdBr,
 };
 pub(crate) use fit::FitInfoEnumCmd;
 pub use fit::{FitInfo, FitInfoEnumCmdBr, FitInfoEnumError, FitInfoExt, FitInfoMode};

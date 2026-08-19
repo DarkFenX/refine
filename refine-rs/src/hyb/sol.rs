@@ -2,7 +2,7 @@ use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmdBr, DroneChangeCmdBr, FighterAddCmdBr, FighterChangeCmdBr,
     FitAddCmdBr, FitChangeCmdBr, FitIdBr, FitInfoCmdBr, FitRemoveCmd, FleetAddCmdBr, FleetChangeCmdBr, FleetIdBr,
-    FleetInfoCmd, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr,
+    FleetInfoCmdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemIdBr,
     ItemInfoCmdBr, ItemRemoveCmd, ModuleAddCmdBr, ModuleChangeCmdBr, ProjEffectAddCmdBr, ProjEffectChangeCmdBr,
     RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd,
     SkillChangeCmd, SolChangeCmd, SolChangeEnumCmd, SolChangeEnumCmdBr, SolInfoCmdBr, SolInfoEnumCmdBr,
@@ -286,7 +286,7 @@ impl SolInfoCmdBr {
         SolHybridCmdBr::Info(self.into_sol_inf_br())
     }
 }
-impl FleetInfoCmd {
+impl FleetInfoCmdBr {
     pub fn into_sol_hyb_br(self, fleet_id: impl Into<FleetIdBr>) -> SolHybridCmdBr {
         SolHybridCmdBr::Info(self.into_sol_inf_br(fleet_id))
     }

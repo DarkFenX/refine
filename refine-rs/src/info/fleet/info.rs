@@ -1,6 +1,6 @@
 use rc::Lender;
 
-use crate::{FitId, FleetId, FleetInfoMode, shared::OverridableMap};
+use crate::{FitId, FitInfo, FitInfoMode, FleetId, FleetInfoMode, ItemId, ItemInfoMode, shared::OverridableMap};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -14,7 +14,7 @@ pub struct FleetInfo {
 #[derive(Clone)]
 pub struct FleetInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
-    pub fit_ids: Vec<FitId>,
+    pub fits: Vec<FitInfo>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -24,6 +24,8 @@ impl FleetInfo {
     pub(in crate::info) fn from_core(
         core_fleet: &mut rc::FleetMut,
         fleet_info_modes: &OverridableMap<FleetId, FleetInfoMode>,
+        fit_info_modes: &OverridableMap<FitId, FitInfoMode>,
+        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
     ) -> Self {
         let fleet_id = core_fleet.get_fleet_id();
         let fleet_info_mode = fleet_info_modes.get(&fleet_id);
@@ -32,9 +34,11 @@ impl FleetInfo {
             extended: match fleet_info_mode {
                 FleetInfoMode::Id => None,
                 FleetInfoMode::Full => Some(FleetInfoExt {
-                    fit_ids: core_fleet
+                    fits: core_fleet
                         .iter_fits_mut()
-                        .map_into_iter(|core_fit| core_fit.get_fit_id())
+                        .map_into_iter(|mut core_fit| {
+                            FitInfo::from_core(&mut core_fit, fit_info_modes, item_info_modes)
+                        })
                         .collect(),
                 }),
             },

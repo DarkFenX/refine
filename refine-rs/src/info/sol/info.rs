@@ -79,9 +79,18 @@ impl SolInfoExt {
         match sol_info_mode {
             SolInfoMode::Id => None,
             SolInfoMode::Full => Some(Self {
+                // Force fits in fleets to use ID mode regardless of passed preference. The
+                // preference will be used for fits themselves
                 fleets: core_sol
                     .iter_fleets_mut()
-                    .map_into_iter(|mut core_fleet| FleetInfo::from_core(&mut core_fleet, fleet_info_modes))
+                    .map_into_iter(|mut core_fleet| {
+                        FleetInfo::from_core(
+                            &mut core_fleet,
+                            fleet_info_modes,
+                            &OverridableMap::from_default(FitInfoMode::Id),
+                            &OverridableMap::from_default(ItemInfoMode::Id),
+                        )
+                    })
                     .collect(),
                 fits: core_sol
                     .iter_fits_mut()

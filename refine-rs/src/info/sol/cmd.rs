@@ -1,5 +1,5 @@
 use crate::{
-    CmdResp, CmdResps, FitIdBr, FitInfoCmdBr, FleetIdBr, FleetInfoCmd, ItemIdBr, ItemInfoCmdBr, SolInfoCmd,
+    CmdResp, CmdResps, FitIdBr, FitInfoCmdBr, FleetIdBr, FleetInfoCmdBr, ItemIdBr, ItemInfoCmdBr, SolInfoCmd,
     SolInfoCmdBr,
     err::{BrResolveError, FitGetFitInfoError, FleetGetFleetInfoError, ItemGetItemInfoError},
     info::cmd_core::{
@@ -41,7 +41,7 @@ impl SolInfoCmdBr {
         SolInfoEnumCmdBr::SolInfo(self)
     }
 }
-impl FleetInfoCmd {
+impl FleetInfoCmdBr {
     pub(crate) fn into_sol_inf_br(self, fleet_id: impl Into<FleetIdBr>) -> SolInfoEnumCmdBr {
         SolInfoEnumCmdBr::FleetInfo(self.into_ctx_item_br(fleet_id))
     }

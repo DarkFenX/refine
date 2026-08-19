@@ -1,9 +1,34 @@
-use crate::{CmdResps, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, err::BrResolveError, shared::OverridableMap};
+use crate::{
+    CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfo, FleetInfoMode, ItemId, ItemIdBr,
+    ItemInfoMode,
+    err::BrResolveError,
+    shared::{OverridableCompact, OverridableMap},
+};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct FleetInfoCmd {
+    #[cfg_attr(feature = "serde", serde(default))]
+    fit_mode: OverridableMap<FitId, FitInfoMode>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    item_mode: OverridableMap<ItemId, ItemInfoMode>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: FleetInfoCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Clone, Default)]
+pub struct FleetInfoCmdBr {
+    #[cfg_attr(feature = "serde", serde(default))]
+    fit_mode: OverridableCompact<FitIdBr, FitInfoMode>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    item_mode: OverridableCompact<ItemIdBr, ItemInfoMode>,
+    #[cfg_attr(feature = "serde", serde(flatten))]
+    shared: FleetInfoCmdShared,
+}
+#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[derive(Copy, Clone, Default)]
+struct FleetInfoCmdShared {
     #[cfg_attr(feature = "serde", serde(default))]
     fleet_mode: FleetInfoMode,
 }
@@ -19,7 +44,7 @@ pub struct FleetInfoCmdCtxFleet {
 pub struct FleetInfoCmdCtxFleetBr {
     fleet_id: FleetIdBr,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetInfoCmd,
+    core: FleetInfoCmdBr,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -30,7 +55,49 @@ impl FleetInfoCmd {
         Self::default()
     }
     pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
-        self.fleet_mode = mode;
+        self.shared.fleet_mode = mode;
+        self
+    }
+    pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
+        self.fit_mode.default = mode;
+        self
+    }
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitId>) -> Self {
+        self.fit_mode.overrides.extend(fit_ids.map(|fit_id| (fit_id, mode)));
+        self
+    }
+    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+        self.item_mode.default = mode;
+        self
+    }
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
+        self.item_mode.overrides.extend(item_ids.map(|item_id| (item_id, mode)));
+        self
+    }
+}
+
+impl FleetInfoCmdBr {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_fleet(mut self, mode: FleetInfoMode) -> Self {
+        self.shared.fleet_mode = mode;
+        self
+    }
+    pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
+        self.fit_mode.default = mode;
+        self
+    }
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+        self.fit_mode.overrides.push((mode, fit_ids.collect()));
+        self
+    }
+    pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
+        self.item_mode.default = mode;
+        self
+    }
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+        self.item_mode.overrides.push((mode, item_ids.collect()));
         self
     }
 }
@@ -38,7 +105,7 @@ impl FleetInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetInfoCmd {
+impl FleetInfoCmdBr {
     pub(in crate::info) fn into_ctx_item_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetInfoCmdCtxFleetBr {
         FleetInfoCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
@@ -50,11 +117,21 @@ impl FleetInfoCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetInfoCmdBr {
+    fn br_resolve(self, resps: &CmdResps) -> Result<FleetInfoCmd, BrResolveError> {
+        Ok(FleetInfoCmd {
+            fit_mode: OverridableMap::from_compact_br(self.fit_mode, resps)?,
+            item_mode: OverridableMap::from_compact_br(self.item_mode, resps)?,
+            shared: self.shared,
+        })
+    }
+}
+
 impl FleetInfoCmdCtxFleetBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<FleetInfoCmdCtxFleet, BrResolveError> {
         Ok(FleetInfoCmdCtxFleet {
             fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
-            core: self.core,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }
@@ -64,7 +141,12 @@ impl FleetInfoCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetInfo {
-        FleetInfo::from_core(core_fleet, &OverridableMap::from_default(self.fleet_mode))
+        FleetInfo::from_core(
+            core_fleet,
+            &OverridableMap::from_default(self.shared.fleet_mode),
+            &self.fit_mode,
+            &self.item_mode,
+        )
     }
 }
 

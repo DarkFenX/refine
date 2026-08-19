@@ -53,7 +53,9 @@ impl SolInfoCmd {
         self
     }
     pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetId>) -> Self {
-        self.fleet_mode.overrides.extend(fleet_ids.map(|fleet_id| (fleet_id, mode)));
+        self.fleet_mode
+            .overrides
+            .extend(fleet_ids.map(|fleet_id| (fleet_id, mode)));
         self
     }
     pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
