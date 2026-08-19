@@ -3,12 +3,13 @@ use rc::ItemMutCommon;
 use crate::{
     PValue, Value,
     stats::{
-        ItemStats, StatCapSim, StatDefOption, StatDefOptionExt, StatDmg, StatEhp, StatErps, StatErrorFatality,
-        StatInJam, StatJump, StatMining, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps,
-        StatOptionExt, StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps,
-        StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps,
-        StatResult, StatRps,
+        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
+        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam, StatOptionItemDmg,
+        StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
+        StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatItemAppliedError, StatItemError, StatJumpError},
+        fatal::StatErrorFatality,
+        option_support::{StatDefOption, StatDefOptionExt},
     },
 };
 
@@ -18,7 +19,7 @@ use crate::{
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct GetItemStatsCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     // Output
     #[cfg_attr(feature = "serde", serde(default))]
@@ -697,5 +698,15 @@ where
         StatItemError::ItemNotLoaded(err) => StatItemAppliedError::ItemNotLoaded(err),
         StatItemError::UnsupportedStat(err) => StatItemAppliedError::UnsupportedStat(err),
         StatItemError::StatSpecific(err) => StatItemAppliedError::StatSpecific(err),
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    pub(super) fn stat_default() -> bool {
+        true
     }
 }

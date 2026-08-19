@@ -1,14 +1,13 @@
-use cmd_opts::{StatDefOption, StatDefOptionExt};
 pub use cmd_opts::{
-    StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-    StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-    StatOptionJump, StatOptionMass, StatOptionRps,
+    StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
+    StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionItemDmg,
+    StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
+    StatOptionMass, StatOptionRps,
 };
-use fatal::StatErrorFatality;
 pub use fit::{FitStats, GetFitStatsCmd};
 pub use fleet::{FleetStats, GetFleetStatsCmd};
 pub use item::{GetItemStatsCmd, ItemStats};
+pub use option_support::StatOptionExt;
 pub use rc::{
     CtlAffectors as StatAffectors,
     stats::{
@@ -29,4 +28,5 @@ mod fatal;
 mod fit;
 mod fleet;
 mod item;
+mod option_support;
 mod result_details;

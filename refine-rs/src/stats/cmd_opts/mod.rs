@@ -11,8 +11,6 @@ pub use opt_out_rps::{StatOptionFitOutRps, StatOptionItemOutRps};
 pub use opt_tank_ehp::StatOptionEhp;
 pub use opt_tank_erps::StatOptionErps;
 pub use opt_tank_rps::StatOptionRps;
-pub use option::StatOptionExt;
-pub(in crate::stats) use option::{StatDefOption, StatDefOptionExt};
 
 mod opt_cap_blc;
 mod opt_cap_sim;
@@ -27,4 +25,3 @@ mod opt_out_rps;
 mod opt_tank_ehp;
 mod opt_tank_erps;
 mod opt_tank_rps;
-mod option;

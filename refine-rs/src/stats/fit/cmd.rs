@@ -1,19 +1,20 @@
 use crate::{
     PValue, Value,
     stats::{
-        FitStats, StatCapSim, StatDefOption, StatDefOptionExt, StatDmg, StatEhp, StatErps, StatErrorFatality,
-        StatInJam, StatJump, StatMining, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps,
-        StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-        StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump, StatOptionMass, StatOptionRps, StatOutReps,
-        StatResult, StatRps,
+        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
+        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg, StatOptionFitMining,
+        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
+        StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
+        fatal::StatErrorFatality,
+        option_support::{StatDefOption, StatDefOptionExt},
     },
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Default)]
 pub struct GetFitStatsCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
+    #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     // Fit output stats
     #[cfg_attr(feature = "serde", serde(default))]
@@ -830,4 +831,14 @@ fn get_jump_stats(
         }
     }
     StatResult::Result(stats)
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    pub(super) fn stat_default() -> bool {
+        true
+    }
 }
