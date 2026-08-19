@@ -44,10 +44,10 @@ impl<'s> FitMut<'s> {
             ..
         };
         let shield_perc_peak = UnitInterval::from_f64_clamped(0.25);
-        let dmg_item_kinds = StatDmgItemKinds { default: true, .. };
-        let mining_item_kinds = StatMiningItemKinds { default: true, .. };
-        let neut_item_kinds = StatNeutItemKinds { default: true, .. };
-        let rr_item_kinds = StatOutRepItemKinds { default: true, .. };
+        let dmg_item_kinds = StatDmgItemKinds::new(true);
+        let mining_item_kinds = StatMiningItemKinds::new(true);
+        let neut_item_kinds = StatNeutItemKinds::new(true);
+        let rr_item_kinds = StatOutRepItemKinds::new(true);
         let cap_src_kinds_all = StatCapBlcSrcKindsInt {
             regen: Some(StatCapBlcRegen::default()),
             cap_injectors: true,

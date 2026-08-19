@@ -4,7 +4,7 @@ use crate::stats::{StatItemStateOptions, StatMiningItemKinds, StatMiningResource
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionFitMining {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_kinds: StatMiningItemKinds = StatMiningItemKinds { .. },
+    pub item_kinds: StatMiningItemKinds = StatMiningItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]

@@ -7,7 +7,7 @@ use crate::{
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionFitOutNps {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_kinds: StatNeutItemKinds = StatNeutItemKinds { .. },
+    pub item_kinds: StatNeutItemKinds = StatNeutItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub time: StatTimeOptions = StatTimeOptions::default(),
     pub projectee_item_id: Option<ItemId> = None,

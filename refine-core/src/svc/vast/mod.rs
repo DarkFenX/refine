@@ -29,9 +29,9 @@ pub(in crate::svc) use vast::Vast;
 use vast::VastFitData;
 
 mod aggr;
+mod debug;
 mod maintain;
 mod shared;
 mod stats;
 mod val;
 mod vast;
-mod vaste_debug;

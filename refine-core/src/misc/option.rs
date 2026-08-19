@@ -1,22 +1,3 @@
-/// An option which can inherit default value from elsewhere.
-#[derive(Copy, Clone, Default)]
-pub enum DefOption {
-    #[default]
-    Default,
-    Disabled,
-    Enabled,
-}
-
-/// An option which can inherit default value from elsewhere, plus extended setting support.
-#[derive(Copy, Clone, Default)]
-pub enum DefOptionExt<T> {
-    #[default]
-    Default,
-    Disabled,
-    Enabled,
-    EnabledExtended(T),
-}
-
 /// An option which can have extended settings.
 #[derive(Copy, Clone)]
 pub enum OptionExt<T> {
@@ -26,22 +7,16 @@ pub enum OptionExt<T> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<T> DefOptionExt<T> {
-    pub(crate) fn into_option_ext(self) -> Option<OptionExt<T>> {
-        match self {
-            DefOptionExt::Default => None,
-            DefOptionExt::Disabled => Some(OptionExt::Disabled),
-            DefOptionExt::Enabled => Some(OptionExt::Enabled),
-            DefOptionExt::EnabledExtended(inner) => Some(OptionExt::EnabledExtended(inner)),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Internal counterpart for public options where default field is present, bool version
+#[derive(Copy, Clone, Default)]
+pub(crate) enum DefOption {
+    #[default]
+    Default,
+    Disabled,
+    Enabled,
+}
 impl DefOption {
     pub(crate) fn is_enabled(&self, default: bool) -> bool {
         match self {
@@ -52,6 +27,15 @@ impl DefOption {
     }
 }
 
+// Internal counterpart for public options where default field is present, OptionExt version
+#[derive(Copy, Clone, Default)]
+pub(crate) enum DefOptionExt<T> {
+    #[default]
+    Default,
+    Disabled,
+    Enabled,
+    EnabledExtended(T),
+}
 impl<T> DefOptionExt<T> {
     pub(crate) fn is_enabled(&self, default: bool) -> Option<T>
     where
@@ -65,6 +49,38 @@ impl<T> DefOptionExt<T> {
             Self::Disabled => None,
             Self::Enabled => Some(T::default()),
             Self::EnabledExtended(settings) => Some(*settings),
+        }
+    }
+    // Used internally be deserializers
+    #[cfg(feature = "serde")]
+    pub(crate) fn into_option_ext(self) -> Option<OptionExt<T>> {
+        match self {
+            Self::Default => None,
+            Self::Disabled => Some(OptionExt::Disabled),
+            Self::Enabled => Some(OptionExt::Enabled),
+            Self::EnabledExtended(inner) => Some(OptionExt::EnabledExtended(inner)),
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl From<bool> for DefOption {
+    fn from(enabled: bool) -> Self {
+        match enabled {
+            true => Self::Enabled,
+            false => Self::Disabled,
+        }
+    }
+}
+
+impl<T> From<OptionExt<T>> for DefOptionExt<T> {
+    fn from(option: OptionExt<T>) -> Self {
+        match option {
+            OptionExt::Disabled => Self::Disabled,
+            OptionExt::Enabled => Self::Enabled,
+            OptionExt::EnabledExtended(inner) => Self::EnabledExtended(inner),
         }
     }
 }

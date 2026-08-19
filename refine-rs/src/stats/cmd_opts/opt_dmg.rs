@@ -7,7 +7,7 @@ use crate::{
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionFitDmg {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_kinds: StatDmgItemKinds = StatDmgItemKinds { .. },
+    pub item_kinds: StatDmgItemKinds = StatDmgItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]

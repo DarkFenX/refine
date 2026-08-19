@@ -4,7 +4,7 @@ use crate::stats::{StatCapBlcSrcKinds, StatTimeOptions, StatTimeOptionsSim};
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionCapBlc {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub src_kinds: StatCapBlcSrcKinds = StatCapBlcSrcKinds { default: true, .. },
+    pub src_kinds: StatCapBlcSrcKinds = StatCapBlcSrcKinds::default(),
     // Unlike other stats, default is sim mode over burst mode
     #[cfg_attr(feature = "serde", serde(default = "time_default"))]
     pub time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),

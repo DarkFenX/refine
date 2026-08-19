@@ -2,29 +2,77 @@ use crate::{DefOption, nd::NEffectDmgKind, rd::REffect, ud::UItem};
 
 /// Items which will be included in damage stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct StatDmgItemKinds {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::kind_default"))]
-    pub default: bool = true,
+    default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub turret: DefOption = DefOption::Default,
+    turret: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub missile: DefOption = DefOption::Default,
+    missile: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub breacher: DefOption = DefOption::Default,
+    breacher: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub vorton: DefOption = DefOption::Default,
+    vorton: DefOption = DefOption::Default,
     /// LR fighter bomb damage is triggered by this flag as well
     #[cfg_attr(feature = "serde", serde(default))]
-    pub bomb: DefOption = DefOption::Default,
+    bomb: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub smartbomb: DefOption = DefOption::Default,
+    smartbomb: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub superweapon: DefOption = DefOption::Default,
+    superweapon: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub minion_mobile: DefOption = DefOption::Default,
+    minion_mobile: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub minion_static: DefOption = DefOption::Default,
+    minion_static: DefOption = DefOption::Default,
+}
+const impl Default for StatDmgItemKinds {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+impl StatDmgItemKinds {
+    /// True to have all supported item kinds enabled by default, false to have them disabled.
+    pub fn new(default: bool) -> Self {
+        Self { default, .. }
+    }
+    pub fn with_turret(mut self, enabled: bool) -> Self {
+        self.turret = enabled.into();
+        self
+    }
+    pub fn with_missile(mut self, enabled: bool) -> Self {
+        self.missile = enabled.into();
+        self
+    }
+    pub fn with_breacher(mut self, enabled: bool) -> Self {
+        self.breacher = enabled.into();
+        self
+    }
+    pub fn with_vorton(mut self, enabled: bool) -> Self {
+        self.vorton = enabled.into();
+        self
+    }
+    /// LR fighter bomb damage is triggered by this flag as well
+    pub fn with_bomb(mut self, enabled: bool) -> Self {
+        self.bomb = enabled.into();
+        self
+    }
+    pub fn with_smartbomb(mut self, enabled: bool) -> Self {
+        self.smartbomb = enabled.into();
+        self
+    }
+    pub fn with_superweapon(mut self, enabled: bool) -> Self {
+        self.superweapon = enabled.into();
+        self
+    }
+    pub fn with_minion_mobile(mut self, enabled: bool) -> Self {
+        self.minion_mobile = enabled.into();
+        self
+    }
+    pub fn with_minion_static(mut self, enabled: bool) -> Self {
+        self.minion_static = enabled.into();
+        self
+    }
 }
 impl StatDmgItemKinds {
     pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem, r_effect: &REffect) -> bool {

@@ -2,18 +2,45 @@ use crate::{DefOption, nd::NEffectNeutKind, rd::REffect};
 
 /// Items which will be included in neut stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct StatNeutItemKinds {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::kind_default"))]
-    pub default: bool = true,
+    default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub module: DefOption = DefOption::Default,
+    module: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub minion: DefOption = DefOption::Default,
+    minion: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub bomb: DefOption = DefOption::Default,
+    bomb: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub side_effect: DefOption = DefOption::Default,
+    side_effect: DefOption = DefOption::Default,
+}
+const impl Default for StatNeutItemKinds {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+impl StatNeutItemKinds {
+    /// True to have all supported item kinds enabled by default, false to have them disabled.
+    pub fn new(default: bool) -> Self {
+        Self { default, .. }
+    }
+    pub fn with_module(mut self, enabled: bool) -> Self {
+        self.module = enabled.into();
+        self
+    }
+    pub fn with_minion(mut self, enabled: bool) -> Self {
+        self.minion = enabled.into();
+        self
+    }
+    pub fn with_bomb(mut self, enabled: bool) -> Self {
+        self.bomb = enabled.into();
+        self
+    }
+    pub fn with_side_effect(mut self, enabled: bool) -> Self {
+        self.side_effect = enabled.into();
+        self
+    }
 }
 impl StatNeutItemKinds {
     pub(in crate::svc::vast) fn resolve(&self, r_effect: &REffect) -> bool {

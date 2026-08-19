@@ -1,26 +1,61 @@
 use crate::{
-    DefOption, DefOptionExt, ItemId, UnitInterval,
+    DefOption, DefOptionExt, ItemId, OptionExt, UnitInterval,
     ud::{ProjecteeUidError, UData, UItemId},
 };
 
 /// Capacitor change sources which will be considered for cap balance stats.
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub struct StatCapBlcSrcKinds {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::src_default"))]
-    pub default: bool = true,
+    default: bool = true,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub regen: DefOptionExt<StatCapBlcRegen> = DefOptionExt::Default,
+    regen: DefOptionExt<StatCapBlcRegen> = DefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub cap_injectors: DefOption = DefOption::Default,
+    cap_injectors: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub nosfs: DefOptionExt<StatCapBlcNosfs> = DefOptionExt::Default,
+    nosfs: DefOptionExt<StatCapBlcNosfs> = DefOptionExt::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub consumers: DefOption = DefOption::Default,
+    consumers: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub incoming_transfers: DefOption = DefOption::Default,
+    incoming_transfers: DefOption = DefOption::Default,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub incoming_neuts: DefOption = DefOption::Default,
+    incoming_neuts: DefOption = DefOption::Default,
+}
+const impl Default for StatCapBlcSrcKinds {
+    fn default() -> Self {
+        Self { .. }
+    }
+}
+impl StatCapBlcSrcKinds {
+    /// True to have all supported sources enabled by default, false to have them disabled.
+    pub fn new(default: bool) -> Self {
+        Self { default, .. }
+    }
+    pub fn with_regen(mut self, option: OptionExt<StatCapBlcRegen>) -> Self {
+        self.regen = option.into();
+        self
+    }
+    pub fn with_cap_injectors(mut self, enabled: bool) -> Self {
+        self.cap_injectors = enabled.into();
+        self
+    }
+    pub fn with_nosfs(mut self, option: OptionExt<StatCapBlcNosfs>) -> Self {
+        self.nosfs = option.into();
+        self
+    }
+    pub fn with_consumers(mut self, enabled: bool) -> Self {
+        self.consumers = enabled.into();
+        self
+    }
+    pub fn with_incoming_transfers(mut self, enabled: bool) -> Self {
+        self.incoming_transfers = enabled.into();
+        self
+    }
+    pub fn with_incoming_neuts(mut self, enabled: bool) -> Self {
+        self.incoming_neuts = enabled.into();
+        self
+    }
 }
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]

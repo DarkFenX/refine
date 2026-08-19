@@ -96,10 +96,11 @@ pub use api::{
 pub use def::VERSION;
 pub use lender::Lender;
 pub use misc::{
-    BreacherProfile, DefOption, DefOptionExt, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemNpcPropInfo,
-    ItemOptionalReloadInfo, ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionExt, OptionalReload,
-    RearmMinion, SecZone, SecZoneCorruption, Spool,
+    BreacherProfile, DpsProfile, EffectMode, FighterCountInfo, ItemKind, ItemNpcPropInfo, ItemOptionalReloadInfo,
+    ItemRearmMinionInfo, ItemSpoolInfo, ModRack, NpcProp, OptionExt, OptionalReload, RearmMinion, SecZone,
+    SecZoneCorruption, Spool,
 };
+pub(crate) use misc::{DefOption, DefOptionExt};
 pub use num::{Count, CountNz, FitSecStatus, Index, PValue, SkillLevel, SlotIndex, UnitInterval, Value};
 pub use sol::SolarSystem;
 pub use src::Src;
