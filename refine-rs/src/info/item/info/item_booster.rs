@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    SideEffectInfo, SlotIndex, shared::OverridableMap,
+    SideEffectInfo, SlotIndex, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -58,7 +58,7 @@ pub struct BoosterInfoExt {
 impl BoosterInfo {
     pub(in crate::info) fn from_core(
         core_booster: &mut rc::BoosterMut,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let booster_id = core_booster.get_item_id();
         let booster_info_mode = item_info_modes.get(&booster_id);

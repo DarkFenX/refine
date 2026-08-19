@@ -2,26 +2,14 @@ use std::{collections::HashMap, hash::Hash};
 
 use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 
-// Representation form which is more convenient for use by info builders; should be used on commands
-// which are directly executable (i.e. commands with backreferences resolved into IDs)
+// Representation form which takes space, but is easy to query. This version should be used for
+// relatively small copiable values.
 #[derive(Clone)]
-pub(crate) struct OverridableMap<K, V> {
-    pub(crate) default: V,
-    pub(crate) overrides: HashMap<K, V>,
+pub(crate) struct OvrdMapLight<K, V> {
+    default: V,
+    overrides: HashMap<K, V>,
 }
-impl<K, V> OverridableMap<K, V> {
-    pub(crate) fn get(&self, id: &K) -> V
-    where
-        K: Eq + Hash,
-        V: Copy,
-    {
-        match self.overrides.get(id) {
-            Some(mode) => *mode,
-            None => self.default,
-        }
-    }
-}
-impl<K, V> Default for OverridableMap<K, V>
+impl<K, V> Default for OvrdMapLight<K, V>
 where
     V: Default,
 {
@@ -32,15 +20,33 @@ where
         }
     }
 }
-
-// Representation form which is compact; should be used only when it is not directly usable by info
-// builders (e.g. command with backreferences)
-#[derive(Clone)]
-pub(crate) struct OverridableCompact<K, V> {
-    pub(crate) default: V,
-    pub(crate) overrides: Vec<(V, Vec<K>)>,
+impl<K, V> OvrdMapLight<K, V>
+where
+    K: Eq + Hash,
+    V: Copy,
+{
+    pub(crate) fn get(&self, id: &K) -> V {
+        match self.overrides.get(id) {
+            Some(mode) => *mode,
+            None => self.default,
+        }
+    }
+    pub(crate) fn set_default(&mut self, default: V) {
+        self.default = default;
+    }
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
+        self.overrides.extend(keys.map(|key| (key, value)))
+    }
 }
-impl<K, V> Default for OverridableCompact<K, V>
+
+// Representation form which is compact; it is hard to use work with it directly, so types which are
+// often queried should be converted into something else.
+#[derive(Clone)]
+pub(crate) struct OvrdCompact<K, V> {
+    default: V,
+    overrides: Vec<(V, Vec<K>)>,
+}
+impl<K, V> Default for OvrdCompact<K, V>
 where
     V: Default,
 {
@@ -51,18 +57,26 @@ where
         }
     }
 }
+impl<K, V> OvrdCompact<K, V> {
+    pub(crate) fn set_default(&mut self, default: V) {
+        self.default = default;
+    }
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
+        self.overrides.push((value, keys.collect()))
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<K, V> OverridableMap<K, V> {
+impl<K, V> OvrdMapLight<K, V> {
     pub(crate) fn from_default(default: V) -> Self {
         Self {
             default,
             overrides: HashMap::new(),
         }
     }
-    pub(crate) fn from_compact(compact: OverridableCompact<K, V>) -> Self
+    pub(crate) fn from_compact(compact: OvrdCompact<K, V>) -> Self
     where
         K: Eq + Hash,
         V: Copy + PartialEq,
@@ -81,7 +95,7 @@ impl<K, V> OverridableMap<K, V> {
         Self { default, overrides }
     }
     pub(crate) fn from_compact_br<B>(
-        compact_br: OverridableCompact<B, V>,
+        compact_br: OvrdCompact<B, V>,
         ctl_cmd_resps: &CmdResps,
     ) -> Result<Self, BrResolveError>
     where
@@ -127,7 +141,7 @@ mod custom_serde {
 
     use super::*;
 
-    impl<'de, K, V> Deserialize<'de> for OverridableMap<K, V>
+    impl<'de, K, V> Deserialize<'de> for OvrdMapLight<K, V>
     where
         K: Eq + Hash + Deserialize<'de>,
         V: Copy + Deserialize<'de>,
@@ -152,7 +166,7 @@ mod custom_serde {
         }
     }
 
-    impl<'de, K, V> Deserialize<'de> for OverridableCompact<K, V>
+    impl<'de, K, V> Deserialize<'de> for OvrdCompact<K, V>
     where
         V: Deserialize<'de>,
         K: Deserialize<'de>,

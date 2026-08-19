@@ -1,6 +1,6 @@
 use rc::Lender;
 
-use crate::{FitId, FitInfo, FitInfoMode, FleetId, FleetInfoMode, ItemId, ItemInfoMode, shared::OverridableMap};
+use crate::{FitId, FitInfo, FitInfoMode, FleetId, FleetInfoMode, ItemId, ItemInfoMode, shared::OvrdMapLight};
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]
@@ -23,9 +23,9 @@ pub struct FleetInfoExt {
 impl FleetInfo {
     pub(in crate::info) fn from_core(
         core_fleet: &mut rc::FleetMut,
-        fleet_info_modes: &OverridableMap<FleetId, FleetInfoMode>,
-        fit_info_modes: &OverridableMap<FitId, FitInfoMode>,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
+        fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let fleet_id = core_fleet.get_fleet_id();
         let fleet_info_mode = fleet_info_modes.get(&fleet_id);

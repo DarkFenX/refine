@@ -2,7 +2,7 @@ use rc::Lender;
 
 use crate::{
     DpsProfile, FitId, FitInfo, FitInfoMode, FleetId, FleetInfo, FleetInfoMode, ItemId, ItemInfoMode, ProjEffectInfo,
-    SecZone, SolInfoMode, SolarSystemId, Spool, SwEffectInfo, shared::OverridableMap, src::SrcAlias,
+    SecZone, SolInfoMode, SolarSystemId, Spool, SwEffectInfo, shared::OvrdMapLight, src::SrcAlias,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -39,9 +39,9 @@ impl SolInfo {
         src_alias: SrcAlias,
         core_sol: &mut rc::SolarSystem,
         sol_info_mode: SolInfoMode,
-        fleet_info_modes: &OverridableMap<FleetId, FleetInfoMode>,
-        fit_info_modes: &OverridableMap<FitId, FitInfoMode>,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
+        fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         Self {
             id: sol_id,
@@ -72,9 +72,9 @@ impl SolInfoExt {
     pub(in crate::info) fn try_from_core(
         core_sol: &mut rc::SolarSystem,
         sol_info_mode: SolInfoMode,
-        fleet_info_modes: &OverridableMap<FleetId, FleetInfoMode>,
-        fit_info_modes: &OverridableMap<FitId, FitInfoMode>,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        fleet_info_modes: &OvrdMapLight<FleetId, FleetInfoMode>,
+        fit_info_modes: &OvrdMapLight<FitId, FitInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Option<Self> {
         match sol_info_mode {
             SolInfoMode::Id => None,
@@ -87,8 +87,8 @@ impl SolInfoExt {
                         FleetInfo::from_core(
                             &mut core_fleet,
                             fleet_info_modes,
-                            &OverridableMap::from_default(FitInfoMode::Id),
-                            &OverridableMap::from_default(ItemInfoMode::Id),
+                            &OvrdMapLight::from_default(FitInfoMode::Id),
+                            &OvrdMapLight::from_default(ItemInfoMode::Id),
                         )
                     })
                     .collect(),

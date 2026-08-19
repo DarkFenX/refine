@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    shared::OverridableMap,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,7 +50,7 @@ pub struct CharacterInfoExt {
 impl CharacterInfo {
     pub(in crate::info) fn from_core(
         core_character: &mut rc::CharacterMut,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let character_id = core_character.get_item_id();
         let character_info_mode = item_info_modes.get(&character_id);

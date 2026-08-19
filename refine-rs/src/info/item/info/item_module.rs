@@ -6,7 +6,7 @@ use crate::ItemKind;
 use crate::{
     AttrId, ChargeInfo, Count, EffectId, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
     ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState,
-    RangedProjInfo, TriStateField, shared::OverridableMap,
+    RangedProjInfo, TriStateField, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -66,7 +66,7 @@ pub struct ModuleInfoExt {
 impl ModuleInfo {
     pub(in crate::info) fn from_core(
         core_module: &mut rc::ModuleMut,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let module_id = core_module.get_item_id();
         let module_info_mode = item_info_modes.get(&module_id);

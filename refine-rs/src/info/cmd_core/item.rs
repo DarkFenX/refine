@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr, ItemInfo, ItemInfoMode,
     err::BrResolveError,
-    shared::{OverridableCompact, OverridableMap},
+    shared::{OvrdCompact, OvrdMapLight},
 };
 
 // Core commands
@@ -9,13 +9,13 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct ItemInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: OverridableMap<ItemId, ItemInfoMode>,
+    item_mode: OvrdMapLight<ItemId, ItemInfoMode>,
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
 pub struct ItemInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: OverridableCompact<ItemIdBr, ItemInfoMode>,
+    item_mode: OvrdCompact<ItemIdBr, ItemInfoMode>,
 }
 
 // Extra context commands
@@ -40,11 +40,11 @@ impl ItemInfoCmd {
         Self::default()
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item_mode.default = mode;
+        self.item_mode.set_default(mode);
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item_mode.overrides.extend(item_ids.map(|item_id| (item_id, mode)));
+        self.item_mode.add_overrides(mode, item_ids);
         self
     }
 }
@@ -54,11 +54,11 @@ impl ItemInfoCmdBr {
         Self::default()
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item_mode.default = mode;
+        self.item_mode.set_default(mode);
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.item_mode.overrides.push((mode, item_ids.collect()));
+        self.item_mode.add_overrides(mode, item_ids);
         self
     }
 }
@@ -81,7 +81,7 @@ impl ItemInfoCmdBr {
 impl ItemInfoCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmd, BrResolveError> {
         Ok(ItemInfoCmd {
-            item_mode: OverridableMap::from_compact_br(self.item_mode, resps)?,
+            item_mode: OvrdMapLight::from_compact_br(self.item_mode, resps)?,
         })
     }
 }

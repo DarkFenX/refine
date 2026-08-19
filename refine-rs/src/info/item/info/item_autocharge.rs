@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    shared::OverridableMap,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -52,7 +52,7 @@ pub struct AutochargeInfoExt {
 impl AutochargeInfo {
     pub(super) fn from_core(
         core_autocharge: &mut rc::AutochargeMut,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let autocharge_id = core_autocharge.get_item_id();
         let autocharge_info_mode = item_info_modes.get(&autocharge_id);

@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolInfo,
     SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
     err::BrResolveError,
-    shared::{OverridableCompact, OverridableMap},
+    shared::{OvrdCompact, OvrdMapLight},
 };
 
 // Core commands
@@ -10,11 +10,11 @@ use crate::{
 #[derive(Clone, Default)]
 pub struct SolInfoCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_mode: OverridableMap<FleetId, FleetInfoMode>,
+    fleet_mode: OvrdMapLight<FleetId, FleetInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_mode: OverridableMap<FitId, FitInfoMode>,
+    fit_mode: OvrdMapLight<FitId, FitInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: OverridableMap<ItemId, ItemInfoMode>,
+    item_mode: OvrdMapLight<ItemId, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -22,11 +22,11 @@ pub struct SolInfoCmd {
 #[derive(Clone, Default)]
 pub struct SolInfoCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_mode: OverridableCompact<FleetIdBr, FleetInfoMode>,
+    fleet_mode: OvrdCompact<FleetIdBr, FleetInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_mode: OverridableCompact<FitIdBr, FitInfoMode>,
+    fit_mode: OvrdCompact<FitIdBr, FitInfoMode>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_mode: OverridableCompact<ItemIdBr, ItemInfoMode>,
+    item_mode: OvrdCompact<ItemIdBr, ItemInfoMode>,
     #[cfg_attr(feature = "serde", serde(flatten))]
     shared: SolInfoCmdShared,
 }
@@ -49,29 +49,27 @@ impl SolInfoCmd {
         self
     }
     pub fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
-        self.fleet_mode.default = mode;
+        self.fleet_mode.set_default(mode);
         self
     }
     pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetId>) -> Self {
-        self.fleet_mode
-            .overrides
-            .extend(fleet_ids.map(|fleet_id| (fleet_id, mode)));
+        self.fleet_mode.add_overrides(mode, fleet_ids);
         self
     }
     pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
-        self.fit_mode.default = mode;
+        self.fit_mode.set_default(mode);
         self
     }
     pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitId>) -> Self {
-        self.fit_mode.overrides.extend(fit_ids.map(|fit_id| (fit_id, mode)));
+        self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item_mode.default = mode;
+        self.item_mode.set_default(mode);
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item_mode.overrides.extend(item_ids.map(|item_id| (item_id, mode)));
+        self.item_mode.add_overrides(mode, item_ids);
         self
     }
 }
@@ -85,27 +83,27 @@ impl SolInfoCmdBr {
         self
     }
     pub fn with_fleet_default(mut self, mode: FleetInfoMode) -> Self {
-        self.fleet_mode.default = mode;
+        self.fleet_mode.set_default(mode);
         self
     }
     pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetIdBr>) -> Self {
-        self.fleet_mode.overrides.push((mode, fleet_ids.collect()));
+        self.fleet_mode.add_overrides(mode, fleet_ids);
         self
     }
     pub fn with_fit_default(mut self, mode: FitInfoMode) -> Self {
-        self.fit_mode.default = mode;
+        self.fit_mode.set_default(mode);
         self
     }
     pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
-        self.fit_mode.overrides.push((mode, fit_ids.collect()));
+        self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
     pub fn with_item_default(mut self, mode: ItemInfoMode) -> Self {
-        self.item_mode.default = mode;
+        self.item_mode.set_default(mode);
         self
     }
     pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.item_mode.overrides.push((mode, item_ids.collect()));
+        self.item_mode.add_overrides(mode, item_ids);
         self
     }
 }
@@ -116,9 +114,9 @@ impl SolInfoCmdBr {
 impl SolInfoCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
         Ok(SolInfoCmd {
-            fleet_mode: OverridableMap::from_compact_br(self.fleet_mode, resps)?,
-            fit_mode: OverridableMap::from_compact_br(self.fit_mode, resps)?,
-            item_mode: OverridableMap::from_compact_br(self.item_mode, resps)?,
+            fleet_mode: OvrdMapLight::from_compact_br(self.fleet_mode, resps)?,
+            fit_mode: OvrdMapLight::from_compact_br(self.fit_mode, resps)?,
+            item_mode: OvrdMapLight::from_compact_br(self.item_mode, resps)?,
             shared: self.shared,
         })
     }

@@ -1,6 +1,6 @@
 pub(crate) use backrefs::BrResolvable;
 pub use backrefs::{FitIdBr, FleetIdBr, ItemIdBr};
-pub(crate) use overridable::{OverridableCompact, OverridableMap};
+pub(crate) use overridable::{OvrdCompact, OvrdMapLight};
 pub use resp::{
     AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, BrResolveError, ChangedItemIdsResp, CmdResp, CmdResps,
 };

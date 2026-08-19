@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    ServiceState, shared::OverridableMap,
+    ServiceState, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -50,7 +50,7 @@ pub struct ServiceInfoExt {
 impl ServiceInfo {
     pub(in crate::info) fn from_core(
         core_service: &mut rc::ServiceMut,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let service_id = core_service.get_item_id();
         let service_info_mode = item_info_modes.get(&service_id);

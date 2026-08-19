@@ -5,7 +5,7 @@ use super::shared::{get_attrs, get_effects, get_mods};
 use crate::ItemKind;
 use crate::{
     AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
-    Modification, Movement, shared::OverridableMap,
+    Modification, Movement, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -52,7 +52,7 @@ pub struct ShipInfoExt {
 impl ShipInfo {
     pub(in crate::info) fn from_core(
         core_ship: &mut rc::ShipMut,
-        item_info_modes: &OverridableMap<ItemId, ItemInfoMode>,
+        item_info_modes: &OvrdMapLight<ItemId, ItemInfoMode>,
     ) -> Self {
         let ship_id = core_ship.get_item_id();
         let ship_info_mode = item_info_modes.get(&ship_id);
