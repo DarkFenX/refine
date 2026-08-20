@@ -1,5 +1,5 @@
 pub(in crate::stats) use options_int::FleetStatsOptionsInt;
-pub use options_pub::FleetStatsOptions;
+pub use options_pub::{FleetStatsOptions, FleetStatsOptionsBr};
 pub use result::FleetStatsResult;
 
 mod exec;
