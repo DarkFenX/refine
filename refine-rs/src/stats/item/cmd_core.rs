@@ -80,9 +80,9 @@ impl ItemStatsCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResp {
-        let resolved_options = self.item_options.stat_resolve();
-        let item_result = resolved_options.execute(core_item);
-        ItemStatsResp { item: item_result }
+        ItemStatsResp {
+            item: self.item_options.stat_resolve().execute(core_item),
+        }
     }
 }
 

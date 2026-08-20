@@ -24,8 +24,8 @@ where
     F: Clone,
     I: Clone,
 {
-    #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
-    default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
+    default: bool = false,
     #[cfg_attr(feature = "serde", serde(flatten))]
     options: ItemStatsOptionsInt<StatOptionRaw, F, I>,
 }
@@ -228,7 +228,7 @@ where
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptionsBr {
-    pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsOptions, BrResolveError> {
+    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsOptions, BrResolveError> {
         Ok(ItemStatsOptions {
             default: self.default,
             options: self.options.br_resolve(resps)?,
@@ -242,15 +242,5 @@ impl ItemStatsOptionsBr {
 impl ItemStatsOptions {
     pub(super) fn stat_resolve(self) -> ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
         self.options.stat_resolve(self.default)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    pub(super) fn stat_default() -> bool {
-        true
     }
 }

@@ -19,8 +19,8 @@ pub struct FleetStatsOptions<I = ItemId>
 where
     I: Clone,
 {
-    #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
-    default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
+    default: bool = false,
     #[cfg_attr(feature = "serde", serde(flatten))]
     options: FleetStatsOptionsInt<StatOptionRaw, I>,
 }
@@ -85,15 +85,5 @@ where
 impl FleetStatsOptions {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         self.options.stat_resolve(self.default).execute(core_fleet)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    pub(super) fn stat_default() -> bool {
-        true
     }
 }

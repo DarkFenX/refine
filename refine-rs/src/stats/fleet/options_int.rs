@@ -24,12 +24,12 @@ where
     O: StatOptionKind,
     I: Clone,
 {
-    pub(in crate::stats) dmg: O::Ext<StatOptionFitDmg<I>>,
-    pub(in crate::stats) mps: O::Ext<StatOptionFitMining>,
-    pub(in crate::stats) outgoing_nps: O::Ext<StatOptionFitOutNps<I>>,
-    pub(in crate::stats) outgoing_rps: O::Ext<StatOptionFitOutRps<I>>,
-    pub(in crate::stats) outgoing_cps: O::Ext<StatOptionFitOutCps<I>>,
-    pub(in crate::stats) mass: O::Ext<StatOptionMass>,
+    pub(super) dmg: O::Ext<StatOptionFitDmg<I>>,
+    pub(super) mps: O::Ext<StatOptionFitMining>,
+    pub(super) outgoing_nps: O::Ext<StatOptionFitOutNps<I>>,
+    pub(super) outgoing_rps: O::Ext<StatOptionFitOutRps<I>>,
+    pub(super) outgoing_cps: O::Ext<StatOptionFitOutCps<I>>,
+    pub(super) mass: O::Ext<StatOptionMass>,
 }
 impl<O, I> Default for FleetStatsOptionsInt<O, I>
 where

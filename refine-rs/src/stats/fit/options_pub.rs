@@ -21,8 +21,8 @@ where
     F: Clone,
     I: Clone,
 {
-    #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
-    default: bool = true,
+    #[cfg_attr(feature = "serde", serde(default))]
+    default: bool = false,
     #[cfg_attr(feature = "serde", serde(flatten))]
     options: FitStatsOptionsInt<StatOptionRaw, F, I>,
 }
@@ -317,15 +317,5 @@ where
 impl FitStatsOptions {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
         self.options.stat_resolve(self.default).execute(core_fit)
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Custom de/serialization
-////////////////////////////////////////////////////////////////////////////////////////////////////
-#[cfg(feature = "serde")]
-mod custom_serde {
-    pub(super) fn stat_default() -> bool {
-        true
     }
 }
