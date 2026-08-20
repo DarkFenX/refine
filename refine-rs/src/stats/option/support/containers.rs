@@ -1,3 +1,5 @@
+use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
+
 /// A stat option which can have extended settings.
 #[derive(Clone)]
 pub enum StatOptionExt<T> {
@@ -51,10 +53,33 @@ impl<T> From<StatOptionExt<T>> for StatDefOptionExt<T> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Non-public
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I1, I2> StatDefOptionExt<I1>
+where
+    I1: BrResolvable<Target = I2>,
+{
+    pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<StatDefOptionExt<I2>, BrResolveError> {
+        Ok(match self {
+            Self::Default => StatDefOptionExt::Default,
+            Self::Disabled => StatDefOptionExt::Disabled,
+            Self::Enabled => StatDefOptionExt::Enabled,
+            Self::EnabledExtended(inner) => {
+                let mut resolved_inner = Vec::with_capacity(inner.len());
+                for option in inner.into_iter() {
+                    resolved_inner.push(option.br_resolve(resps)?);
+                }
+                StatDefOptionExt::EnabledExtended(resolved_inner)
+            }
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatDefOption {
-    pub(in crate::stats) fn into_enabled(self, default: bool) -> bool {
+    pub(in crate::stats) fn stat_resolve(self, default: bool) -> bool {
         match self {
             Self::Default => default,
             Self::Disabled => false,
@@ -64,7 +89,7 @@ impl StatDefOption {
 }
 
 impl<T> StatDefOptionExt<T> {
-    pub(in crate::stats) fn into_enabled(self, default: bool) -> Option<Vec<T>>
+    pub(in crate::stats) fn stat_resolve(self, default: bool) -> Option<Vec<T>>
     where
         T: Default,
     {

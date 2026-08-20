@@ -55,20 +55,20 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
+// Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FleetStatsOptionsInt<StatOptionRaw, I>
 where
     I: Clone,
 {
-    pub(in crate::stats) fn resolve(self, default: bool) -> FleetStatsOptionsInt<StatOptionResolved, I> {
+    pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsInt<StatOptionResolved, I> {
         FleetStatsOptionsInt {
-            dmg: self.dmg.into_enabled(default),
-            mps: self.mps.into_enabled(default),
-            outgoing_nps: self.outgoing_nps.into_enabled(default),
-            outgoing_rps: self.outgoing_rps.into_enabled(default),
-            outgoing_cps: self.outgoing_cps.into_enabled(default),
-            mass: self.mass.into_enabled(default),
+            dmg: self.dmg.stat_resolve(default),
+            mps: self.mps.stat_resolve(default),
+            outgoing_nps: self.outgoing_nps.stat_resolve(default),
+            outgoing_rps: self.outgoing_rps.stat_resolve(default),
+            outgoing_cps: self.outgoing_cps.stat_resolve(default),
+            mass: self.mass.stat_resolve(default),
         }
     }
 }

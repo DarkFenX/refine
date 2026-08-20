@@ -76,6 +76,12 @@ impl CmdResps {
         }
         Ok(item_ids)
     }
+    pub(crate) fn resolve_item_id_opt(&self, item_id: Option<ItemIdBr>) -> Result<Option<ItemId>, BrResolveError> {
+        Ok(match item_id {
+            Some(item_id) => Some(self.resolve_item_id(item_id)?),
+            None => None,
+        })
+    }
     // Private methods
     fn get_fleet_id(&self, index: usize) -> Result<FleetId, BrResolveError> {
         let resp = self.get_resp(index)?;

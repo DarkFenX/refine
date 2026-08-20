@@ -84,7 +84,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptions {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStatsResult {
-        self.options.resolve(self.default).execute(core_fleet)
+        self.options.stat_resolve(self.default).execute(core_fleet)
     }
 }
 

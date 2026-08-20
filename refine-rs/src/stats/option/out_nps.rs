@@ -1,5 +1,7 @@
 use crate::{
-    ItemId,
+    CmdResps, ItemId, ItemIdBr,
+    err::BrResolveError,
+    shared::BrResolvable,
     stats::{StatItemChargeOptions, StatItemStateOptions, StatNeutItemKinds, StatTimeOptions},
 };
 
@@ -32,5 +34,33 @@ pub struct StatOptionItemOutNps<I = ItemId> {
 impl<I> Default for StatOptionItemOutNps<I> {
     fn default() -> Self {
         Self { .. }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl BrResolvable for StatOptionFitOutNps<ItemIdBr> {
+    type Target = StatOptionFitOutNps<ItemId>;
+
+    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        Ok(Self::Target {
+            item_kinds: self.item_kinds,
+            time: self.time,
+            projectee_item_id: resps.resolve_item_id_opt(self.projectee_item_id)?,
+        })
+    }
+}
+
+impl BrResolvable for StatOptionItemOutNps<ItemIdBr> {
+    type Target = StatOptionItemOutNps<ItemId>;
+
+    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        Ok(Self::Target {
+            time: self.time,
+            charges: self.charges,
+            state: self.state,
+            projectee_item_id: resps.resolve_item_id_opt(self.projectee_item_id)?,
+        })
     }
 }

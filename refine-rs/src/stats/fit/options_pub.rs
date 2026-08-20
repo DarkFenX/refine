@@ -317,7 +317,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptions {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResult {
-        self.options.resolve(self.default).execute(core_fit)
+        self.options.stat_resolve(self.default).execute(core_fit)
     }
 }
 

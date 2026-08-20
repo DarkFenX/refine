@@ -54,3 +54,14 @@ impl ItemStatsCmdBr {
         self
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemStatsCmdBr {
+    fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsCmd, BrResolveError> {
+        Ok(ItemStatsCmd {
+            item_options: self.item_options.br_resolve(resps)?,
+        })
+    }
+}

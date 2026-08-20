@@ -1,5 +1,6 @@
 use crate::{
-    FitId, FitIdBr, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    err::BrResolveError,
     stats::{
         ItemStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
         StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
@@ -223,11 +224,23 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemStatsOptionsBr {
+    pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsOptions, BrResolveError> {
+        Ok(ItemStatsOptions {
+            default: self.default,
+            options: self.options.br_resolve(resps)?,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptions {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResult {
-        self.options.resolve(self.default).execute(core_item)
+        self.options.stat_resolve(self.default).execute(core_item)
     }
 }
 
