@@ -180,8 +180,8 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
             breach_resist: self.breach_resist,
             // Cap
             cap_amount: self.cap_amount,
-            cap_balance: self.cap_balance,
-            cap_sim: self.cap_sim,
+            cap_balance: self.cap_balance.br_resolve(resps)?,
+            cap_sim: self.cap_sim.br_resolve(resps)?,
             neut_resist: self.neut_resist,
             // Sensors
             locks: self.locks,
@@ -199,7 +199,7 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
             mass: self.mass,
             warp_speed: self.warp_speed,
             max_warp_range: self.max_warp_range,
-            jump: self.jump,
+            jump: self.jump.br_resolve(resps)?,
             // Misc
             drone_control_range: self.drone_control_range,
             can_warp: self.can_warp,

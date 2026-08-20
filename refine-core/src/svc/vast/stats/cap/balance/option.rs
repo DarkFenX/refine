@@ -85,6 +85,36 @@ impl<I> Default for StatCapBlcNosfs<I> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I1> StatCapBlcSrcKinds<I1> {
+    pub fn try_map_ids<I2, E, M>(self, mut item_mapper: M) -> Result<StatCapBlcSrcKinds<I2>, E>
+    where
+        M: FnMut(I1) -> Result<I2, E>,
+    {
+        Ok(StatCapBlcSrcKinds {
+            default: self.default,
+            regen: self.regen,
+            cap_injectors: self.cap_injectors,
+            nosfs: match self.nosfs {
+                DefOptionExt::Default => DefOptionExt::Default,
+                DefOptionExt::Disabled => DefOptionExt::Disabled,
+                DefOptionExt::Enabled => DefOptionExt::Enabled,
+                DefOptionExt::EnabledExtended(nosfs) => DefOptionExt::EnabledExtended(StatCapBlcNosfs {
+                    projectee_item_id: match nosfs.projectee_item_id {
+                        Some(projectee_item_id) => Some(item_mapper(projectee_item_id)?),
+                        None => None,
+                    },
+                }),
+            },
+            consumers: self.consumers,
+            incoming_transfers: self.incoming_transfers,
+            incoming_neuts: self.incoming_neuts,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Internal-only
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Copy, Clone)]

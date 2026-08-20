@@ -35,6 +35,25 @@ impl<I> StatCapSimStagger<I> {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I1> StatCapSimStagger<I1> {
+    pub fn try_map_ids<I2, E, M>(self, mut item_mapper: M) -> Result<StatCapSimStagger<I2>, E>
+    where
+        M: FnMut(I1) -> Result<I2, E>,
+    {
+        let mut exception_item_ids = Vec::with_capacity(self.exception_item_ids.len());
+        for exception_item_id in self.exception_item_ids {
+            exception_item_ids.push(item_mapper(exception_item_id)?);
+        }
+        Ok(StatCapSimStagger {
+            default: self.default,
+            exception_item_ids,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Internal representation
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
