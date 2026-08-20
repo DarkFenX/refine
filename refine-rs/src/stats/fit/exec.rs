@@ -1,5 +1,5 @@
 use crate::{
-    PValue, Value,
+    FitId, ItemId, PValue, Value,
     stats::{
         FitStatsResult, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
         StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
@@ -15,7 +15,7 @@ use crate::{
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptionsInt<StatOptionResolved> {
+impl FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
     pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStatsResult {
         let mut stats = FitStatsResult { .. };
         // Fit output stats

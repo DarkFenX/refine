@@ -1,7 +1,7 @@
 use rc::ItemMutCommon;
 
 use crate::{
-    PValue, Value,
+    FitId, ItemId, PValue, Value,
     stats::{
         ItemStatsResult, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
         StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
@@ -14,7 +14,7 @@ use crate::{
     },
 };
 
-impl ItemStatsOptionsInt<StatOptionResolved> {
+impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
     pub(in crate::stats) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStatsResult {
         let mut stats = ItemStatsResult { .. };
         // Output

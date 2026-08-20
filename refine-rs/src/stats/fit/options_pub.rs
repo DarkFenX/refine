@@ -1,22 +1,56 @@
-use crate::stats::{
-    FitStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-    StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsInt, option::StatOptionRaw,
+use crate::{
+    FitId, FitIdBr, ItemId, ItemIdBr,
+    stats::{
+        FitStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
+        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
+        StatOptionIncomingJam, StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsInt,
+        option::StatOptionRaw,
+    },
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
-#[derive(Clone, Default)]
-pub struct FitStatsOptions {
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(
+        default,
+        bound(deserialize = "FitStatsOptionsInt<StatOptionRaw, F, I>: Default + serde::Deserialize<'de>")
+    )
+)]
+#[derive(Clone)]
+pub struct FitStatsOptions<F = FitId, I = ItemId>
+where
+    F: Clone,
+    I: Clone,
+{
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: FitStatsOptionsInt<StatOptionRaw>,
+    options: FitStatsOptionsInt<StatOptionRaw, F, I>,
 }
+impl<F, I> Default for FitStatsOptions<F, I>
+where
+    F: Clone,
+    I: Clone,
+    FitStatsOptionsInt<StatOptionRaw, F, I>: Default,
+{
+    fn default() -> Self {
+        Self {
+            options: Default::default(),
+            ..
+        }
+    }
+}
+
+pub type FitStatsOptionsBr = FitStatsOptions<FitIdBr, ItemIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptions {
+impl<F, I> FitStatsOptions<F, I>
+where
+    F: Clone,
+    I: Clone,
+{
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
@@ -25,7 +59,7 @@ impl FitStatsOptions {
         }
     }
     // Fit output stats
-    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg>) -> Self {
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg<I>>) -> Self {
         self.options.dmg = option.into();
         self
     }
@@ -33,15 +67,15 @@ impl FitStatsOptions {
         self.options.mps = option.into();
         self
     }
-    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps>) -> Self {
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps<I>>) -> Self {
         self.options.outgoing_nps = option.into();
         self
     }
-    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps>) -> Self {
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps<I>>) -> Self {
         self.options.outgoing_rps = option.into();
         self
     }
-    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps>) -> Self {
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps<I>>) -> Self {
         self.options.outgoing_cps = option.into();
         self
     }
@@ -169,11 +203,11 @@ impl FitStatsOptions {
         self.options.cap_amount = enabled.into();
         self
     }
-    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc>) -> Self {
+    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc<I>>) -> Self {
         self.options.cap_balance = option.into();
         self
     }
-    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim>) -> Self {
+    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim<I>>) -> Self {
         self.options.cap_sim = option.into();
         self
     }
@@ -239,7 +273,7 @@ impl FitStatsOptions {
         self.options.max_warp_range = enabled.into();
         self
     }
-    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJump>) -> Self {
+    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJump<F>>) -> Self {
         self.options.jump = option.into();
         self
     }

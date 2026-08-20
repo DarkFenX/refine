@@ -1,6 +1,6 @@
-pub use fit::{FitStatsOptions, FitStatsResult};
+pub use fit::{FitStatsOptions, FitStatsOptionsBr, FitStatsResult};
 pub use fleet::{FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResult};
-pub use item::{ItemStatsOptions, ItemStatsResult};
+pub use item::{ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResult};
 pub use option::{
     StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
     StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,

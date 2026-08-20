@@ -1,5 +1,5 @@
 use crate::{
-    PValue,
+    ItemId, PValue,
     stats::{
         FleetStatsResult, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
@@ -7,7 +7,7 @@ use crate::{
     },
 };
 
-impl FleetStatsOptionsInt<StatOptionResolved> {
+impl FleetStatsOptionsInt<StatOptionResolved, ItemId> {
     pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::FleetMut) -> FleetStatsResult {
         let mut stats = FleetStatsResult { .. };
         if let Some(options) = self.dmg.as_ref() {

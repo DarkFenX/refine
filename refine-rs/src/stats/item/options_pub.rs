@@ -1,23 +1,56 @@
-use crate::stats::{
-    ItemStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
-    StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
-    StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsInt,
-    option::StatOptionRaw,
+use crate::{
+    FitId, FitIdBr, ItemId, ItemIdBr,
+    stats::{
+        ItemStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
+        StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
+        StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsInt,
+        option::StatOptionRaw,
+    },
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
-#[derive(Clone, Default)]
-pub struct ItemStatsOptions {
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(
+        default,
+        bound(deserialize = "ItemStatsOptionsInt<StatOptionRaw, F, I>: Default + serde::Deserialize<'de>")
+    )
+)]
+#[derive(Clone)]
+pub struct ItemStatsOptions<F = FitId, I = ItemId>
+where
+    F: Clone,
+    I: Clone,
+{
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    options: ItemStatsOptionsInt<StatOptionRaw>,
+    options: ItemStatsOptionsInt<StatOptionRaw, F, I>,
 }
+impl<F, I> Default for ItemStatsOptions<F, I>
+where
+    F: Clone,
+    I: Clone,
+    ItemStatsOptionsInt<StatOptionRaw, F, I>: Default,
+{
+    fn default() -> Self {
+        Self {
+            options: Default::default(),
+            ..
+        }
+    }
+}
+
+pub type ItemStatsOptionsBr = ItemStatsOptions<FitIdBr, ItemIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemStatsOptions {
+impl<F, I> ItemStatsOptions<F, I>
+where
+    F: Clone,
+    I: Clone,
+{
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {
@@ -26,7 +59,7 @@ impl ItemStatsOptions {
         }
     }
     // Output
-    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionItemDmg>) -> Self {
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionItemDmg<I>>) -> Self {
         self.options.dmg = option.into();
         self
     }
@@ -34,15 +67,15 @@ impl ItemStatsOptions {
         self.options.mps = option.into();
         self
     }
-    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionItemOutNps>) -> Self {
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionItemOutNps<I>>) -> Self {
         self.options.outgoing_nps = option.into();
         self
     }
-    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionItemOutRps>) -> Self {
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionItemOutRps<I>>) -> Self {
         self.options.outgoing_rps = option.into();
         self
     }
-    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCps>) -> Self {
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCps<I>>) -> Self {
         self.options.outgoing_cps = option.into();
         self
     }
@@ -80,11 +113,11 @@ impl ItemStatsOptions {
         self.options.cap_amount = enabled.into();
         self
     }
-    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc>) -> Self {
+    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc<I>>) -> Self {
         self.options.cap_balance = option.into();
         self
     }
-    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim>) -> Self {
+    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim<I>>) -> Self {
         self.options.cap_sim = option.into();
         self
     }
@@ -150,7 +183,7 @@ impl ItemStatsOptions {
         self.options.max_warp_range = enabled.into();
         self
     }
-    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJump>) -> Self {
+    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJump<F>>) -> Self {
         self.options.jump = option.into();
         self
     }

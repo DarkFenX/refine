@@ -12,29 +12,34 @@ use crate::stats::{
         default,
         bound(deserialize = "
         O::Reg: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitDmg>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitDmg<I>>: Default + serde::Deserialize<'de>,
         O::Ext<StatOptionFitMining>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutNps>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutRps>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutCps>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutNps<I>>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutRps<I>>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutCps<I>>: Default + serde::Deserialize<'de>,
         O::Ext<StatOptionEhp>: Default + serde::Deserialize<'de>,
         O::Ext<StatOptionRps>: Default + serde::Deserialize<'de>,
         O::Ext<StatOptionErps>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionCapBlc>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionCapSim>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionCapBlc<I>>: Default + serde::Deserialize<'de>,
+        O::Ext<StatOptionCapSim<I>>: Default + serde::Deserialize<'de>,
         O::Ext<StatOptionIncomingJam>: Default + serde::Deserialize<'de>,
         O::Ext<StatOptionMass>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionJump>: Default + serde::Deserialize<'de>")
+        O::Ext<StatOptionJump<F>>: Default + serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
-pub(in crate::stats) struct FitStatsOptionsInt<O: StatOptionKind> {
+pub(in crate::stats) struct FitStatsOptionsInt<O, F, I>
+where
+    O: StatOptionKind,
+    F: Clone,
+    I: Clone,
+{
     // Fit output stats
-    pub(in crate::stats) dmg: O::Ext<StatOptionFitDmg>,
+    pub(in crate::stats) dmg: O::Ext<StatOptionFitDmg<I>>,
     pub(in crate::stats) mps: O::Ext<StatOptionFitMining>,
-    pub(in crate::stats) outgoing_nps: O::Ext<StatOptionFitOutNps>,
-    pub(in crate::stats) outgoing_rps: O::Ext<StatOptionFitOutRps>,
-    pub(in crate::stats) outgoing_cps: O::Ext<StatOptionFitOutCps>,
+    pub(in crate::stats) outgoing_nps: O::Ext<StatOptionFitOutNps<I>>,
+    pub(in crate::stats) outgoing_rps: O::Ext<StatOptionFitOutRps<I>>,
+    pub(in crate::stats) outgoing_cps: O::Ext<StatOptionFitOutCps<I>>,
     // Fit resources
     pub(in crate::stats) cpu: O::Reg,
     pub(in crate::stats) powergrid: O::Reg,
@@ -69,8 +74,8 @@ pub(in crate::stats) struct FitStatsOptionsInt<O: StatOptionKind> {
     pub(in crate::stats) breach_resist: O::Reg,
     // Ship cap
     pub(in crate::stats) cap_amount: O::Reg,
-    pub(in crate::stats) cap_balance: O::Ext<StatOptionCapBlc>,
-    pub(in crate::stats) cap_sim: O::Ext<StatOptionCapSim>,
+    pub(in crate::stats) cap_balance: O::Ext<StatOptionCapBlc<I>>,
+    pub(in crate::stats) cap_sim: O::Ext<StatOptionCapSim<I>>,
     pub(in crate::stats) neut_resist: O::Reg,
     // Ship sensors
     pub(in crate::stats) locks: O::Reg,
@@ -88,7 +93,7 @@ pub(in crate::stats) struct FitStatsOptionsInt<O: StatOptionKind> {
     pub(in crate::stats) mass: O::Ext<StatOptionMass>,
     pub(in crate::stats) warp_speed: O::Reg,
     pub(in crate::stats) max_warp_range: O::Reg,
-    pub(in crate::stats) jump: O::Ext<StatOptionJump>,
+    pub(in crate::stats) jump: O::Ext<StatOptionJump<F>>,
     // Ship misc stats
     pub(in crate::stats) drone_control_range: O::Reg,
     pub(in crate::stats) can_warp: O::Reg,
@@ -99,22 +104,24 @@ pub(in crate::stats) struct FitStatsOptionsInt<O: StatOptionKind> {
     pub(in crate::stats) can_dock_citadel: O::Reg,
     pub(in crate::stats) can_tether: O::Reg,
 }
-impl<O> Default for FitStatsOptionsInt<O>
+impl<O, F, I> Default for FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    O::Ext<StatOptionFitDmg>: Default,
+    F: Clone,
+    I: Clone,
+    O::Ext<StatOptionFitDmg<I>>: Default,
     O::Ext<StatOptionFitMining>: Default,
-    O::Ext<StatOptionFitOutNps>: Default,
-    O::Ext<StatOptionFitOutRps>: Default,
-    O::Ext<StatOptionFitOutCps>: Default,
+    O::Ext<StatOptionFitOutNps<I>>: Default,
+    O::Ext<StatOptionFitOutRps<I>>: Default,
+    O::Ext<StatOptionFitOutCps<I>>: Default,
     O::Ext<StatOptionEhp>: Default,
     O::Ext<StatOptionRps>: Default,
     O::Ext<StatOptionErps>: Default,
-    O::Ext<StatOptionCapBlc>: Default,
-    O::Ext<StatOptionCapSim>: Default,
+    O::Ext<StatOptionCapBlc<I>>: Default,
+    O::Ext<StatOptionCapSim<I>>: Default,
     O::Ext<StatOptionIncomingJam>: Default,
     O::Ext<StatOptionMass>: Default,
-    O::Ext<StatOptionJump>: Default,
+    O::Ext<StatOptionJump<F>>: Default,
     O::Reg: Default,
 {
     fn default() -> Self {
@@ -195,8 +202,12 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptionsInt<StatOptionRaw> {
-    pub(in crate::stats) fn resolve(self, default: bool) -> FitStatsOptionsInt<StatOptionResolved> {
+impl<F, I> FitStatsOptionsInt<StatOptionRaw, F, I>
+where
+    F: Clone,
+    I: Clone,
+{
+    pub(in crate::stats) fn resolve(self, default: bool) -> FitStatsOptionsInt<StatOptionResolved, F, I> {
         FitStatsOptionsInt {
             // Fit output stats
             dmg: self.dmg.into_enabled(default),

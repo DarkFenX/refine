@@ -1,5 +1,5 @@
 pub(in crate::stats) use options_int::ItemStatsOptionsInt;
-pub use options_pub::ItemStatsOptions;
+pub use options_pub::{ItemStatsOptions, ItemStatsOptionsBr};
 pub use result::ItemStatsResult;
 
 mod exec;

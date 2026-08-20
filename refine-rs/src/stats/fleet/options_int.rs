@@ -1,10 +1,7 @@
-use crate::{
-    ItemId,
-    stats::{
-        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
-        StatOptionMass,
-        option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
-    },
+use crate::stats::{
+    StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
+    StatOptionMass,
+    option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
 };
 
 #[cfg_attr(
@@ -22,7 +19,7 @@ use crate::{
     )
 )]
 #[derive(Clone)]
-pub(in crate::stats) struct FleetStatsOptionsInt<O, I = ItemId>
+pub(in crate::stats) struct FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
     I: Clone,

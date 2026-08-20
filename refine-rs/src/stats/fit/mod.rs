@@ -1,5 +1,5 @@
 pub(in crate::stats) use options_int::FitStatsOptionsInt;
-pub use options_pub::FitStatsOptions;
+pub use options_pub::{FitStatsOptions, FitStatsOptionsBr};
 pub use result::FitStatsResult;
 
 mod exec;
