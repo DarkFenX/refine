@@ -1,10 +1,10 @@
 use crate::{
     Fleet,
-    stats::{FleetStatsOptions, FleetStatsResult},
+    stats::{FleetStats, FleetStatsOptions},
 };
 
 impl Fleet<'_, '_> {
-    pub async fn get_stats(&mut self, stat_opts: FleetStatsOptions) -> FleetStatsResult {
+    pub async fn get_stats(&mut self, stat_opts: FleetStatsOptions) -> FleetStats {
         // Variables for move
         let fleet_id = self.id;
         self.sol

@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
-    stats::{ItemStatsOptions, ItemStatsOptionsBr},
+    stats::{ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp},
 };
 
 // Core commands
@@ -64,4 +64,36 @@ impl ItemStatsCmdBr {
             item_options: self.item_options.br_resolve(resps)?,
         })
     }
+}
+
+impl ItemStatsCmdCtxItemBr {
+    fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsCmdCtxItem, BrResolveError> {
+        Ok(ItemStatsCmdCtxItem {
+            item_id: resps.resolve_item_id(self.item_id)?,
+            core: self.core.br_resolve(resps)?,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Execution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemStatsCmd {
+    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResp {
+        let resolved_options = self.item_options.stat_resolve();
+        let item_result = resolved_options.execute(core_item);
+        ItemStatsResp { item: item_result }
+    }
+}
+
+impl ItemStatsCmdCtxItem {
+    fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ItemStatsResp, ItemGetItemStatsError> {
+        let mut core_item = core_sol.get_item_mut(&self.item_id)?;
+        Ok(self.core.execute(&mut core_item))
+    }
+}
+#[derive(thiserror::Error, Debug)]
+pub enum ItemGetItemStatsError {
+    #[error(transparent)]
+    ItemGet(#[from] rc::err::GetItemError),
 }

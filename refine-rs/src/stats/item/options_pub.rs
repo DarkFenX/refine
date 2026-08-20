@@ -2,10 +2,11 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
-        ItemStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
-        StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
-        StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsInt,
-        option::StatOptionRaw,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
+        StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
+        StatOptionJump, StatOptionMass, StatOptionRps,
+        item::ItemStatsOptionsInt,
+        option::{StatOptionRaw, StatOptionResolved},
     },
 };
 
@@ -236,11 +237,11 @@ impl ItemStatsOptionsBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Execution
+// Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptions {
-    pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemStatsResult {
-        self.options.stat_resolve(self.default).execute(core_item)
+    pub(super) fn stat_resolve(self) -> ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+        self.options.stat_resolve(self.default)
     }
 }
 

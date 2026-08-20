@@ -3,7 +3,7 @@ use rc::ItemMutCommon;
 use crate::{
     FitId, ItemId, PValue, Value,
     stats::{
-        ItemStatsResult, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
+        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
         StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
         StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
         StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
@@ -15,8 +15,8 @@ use crate::{
 };
 
 impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
-    pub(in crate::stats) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStatsResult {
-        let mut stats = ItemStatsResult { .. };
+    pub(super) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStats {
+        let mut stats = ItemStats { .. };
         // Output
         if let Some(options) = self.dmg.as_ref() {
             stats.dmg = get_dmg_stats(core_item, options);

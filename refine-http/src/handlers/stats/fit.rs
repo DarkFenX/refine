@@ -27,7 +27,7 @@ async fn internal_get_fit_stats(
     sol_id: String,
     fit_id: String,
     payload: rs::stats::FitStatsOptions,
-) -> Result<rs::stats::FitStatsResult, ApiError> {
+) -> Result<rs::stats::FitStats, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fit_id = rs::FitId::from_str(&fit_id)?;
     let fit_stats = state

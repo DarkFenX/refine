@@ -1,8 +1,8 @@
 use crate::{
     ItemId, ItemIdBr,
     stats::{
-        FleetStatsResult, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptionsInt, option::StatOptionRaw,
+        FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+        StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptionsInt, option::StatOptionRaw,
     },
 };
 
@@ -83,7 +83,7 @@ where
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptions {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStatsResult {
+    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         self.options.stat_resolve(self.default).execute(core_fleet)
     }
 }

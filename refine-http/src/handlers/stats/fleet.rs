@@ -27,7 +27,7 @@ async fn internal_get_fleet_stats(
     sol_id: String,
     fleet_id: String,
     payload: rs::stats::FleetStatsOptions,
-) -> Result<rs::stats::FleetStatsResult, ApiError> {
+) -> Result<rs::stats::FleetStats, ApiError> {
     let sol_id = rs::SolarSystemId::from_str(&sol_id)?;
     let fleet_id = rs::FleetId::from_str(&fleet_id)?;
     let fleet_stats = state

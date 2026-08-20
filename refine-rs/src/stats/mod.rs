@@ -1,6 +1,6 @@
-pub use fit::{FitStatsOptions, FitStatsOptionsBr, FitStatsResult};
-pub use fleet::{FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResult};
-pub use item::{ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResult};
+pub use fit::{FitStats, FitStatsOptions, FitStatsOptionsBr};
+pub use fleet::{FleetStats, FleetStatsOptions, FleetStatsOptionsBr};
+pub use item::{ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp};
 pub use option::{
     StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
     StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
@@ -20,7 +20,6 @@ pub use rc::{
 };
 pub use result_details::{StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult};
 
-mod cmd_core;
 pub mod err;
 mod fatal;
 mod fit;

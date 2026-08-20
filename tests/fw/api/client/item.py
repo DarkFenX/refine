@@ -55,7 +55,7 @@ class ApiClientItem(ApiClientBase):
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
         if isinstance(options, ItemStatsOptions):
-            kwargs['json'] = options.to_dict()
+            kwargs['json'] = {'item_options': options.to_dict()}
         return Request(client=self, **kwargs)
 
     # Auxiliary methods

@@ -1,15 +1,15 @@
 use crate::{
     ItemId, PValue,
     stats::{
-        FleetStatsResult, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
+        FleetStats, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
         StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
         fleet::FleetStatsOptionsInt, option::StatOptionResolved,
     },
 };
 
 impl FleetStatsOptionsInt<StatOptionResolved, ItemId> {
-    pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::FleetMut) -> FleetStatsResult {
-        let mut stats = FleetStatsResult { .. };
+    pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::FleetMut) -> FleetStats {
+        let mut stats = FleetStats { .. };
         if let Some(options) = self.dmg.as_ref() {
             stats.dmg = get_dmg_stats(core_fleet, options);
         }

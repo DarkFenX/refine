@@ -82,4 +82,6 @@ class Fleet(AttrDict):
             options=options).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
-        return FleetStats(data=resp.json())
+        if resp.status_code == 200:
+            return FleetStats(data=resp.json())
+        return None

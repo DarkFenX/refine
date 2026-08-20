@@ -1,10 +1,9 @@
 use crate::{
     FitId, FitIdBr, ItemId, ItemIdBr,
     stats::{
-        FitStatsResult, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt,
-        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
-        StatOptionIncomingJam, StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsInt,
-        option::StatOptionRaw,
+        FitStats, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+        StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+        StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsInt, option::StatOptionRaw,
     },
 };
 
@@ -316,7 +315,7 @@ where
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptions {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResult {
+    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
         self.options.stat_resolve(self.default).execute(core_fit)
     }
 }
