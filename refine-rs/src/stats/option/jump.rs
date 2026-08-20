@@ -32,7 +32,6 @@ impl<F> Default for StatOptionJump<F> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BrResolvable for StatOptionJump<FitIdBr> {
     type Target = StatOptionJump<FitId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             range: self.range,

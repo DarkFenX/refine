@@ -32,7 +32,7 @@ use crate::{
     )
 )]
 #[derive(Clone)]
-pub(in crate::stats) struct ItemStatsOptionsInt<O, F, I>
+pub(super) struct ItemStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
     F: Clone,
@@ -159,7 +159,7 @@ where
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
-    pub(in crate::stats) fn br_resolve(
+    pub(super) fn br_resolve(
         self,
         resps: &CmdResps,
     ) -> Result<ItemStatsOptionsInt<StatOptionRaw, FitId, ItemId>, BrResolveError> {
@@ -217,10 +217,7 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
-    pub(in crate::stats) fn stat_resolve(
-        self,
-        default: bool,
-    ) -> ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+    pub(super) fn stat_resolve(self, default: bool) -> ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
         ItemStatsOptionsInt {
             // Output
             dmg: self.dmg.stat_resolve(default),

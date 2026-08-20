@@ -42,7 +42,6 @@ impl<I> Default for StatOptionItemOutNps<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BrResolvable for StatOptionFitOutNps<ItemIdBr> {
     type Target = StatOptionFitOutNps<ItemId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             item_kinds: self.item_kinds,
@@ -54,7 +53,6 @@ impl BrResolvable for StatOptionFitOutNps<ItemIdBr> {
 
 impl BrResolvable for StatOptionItemOutNps<ItemIdBr> {
     type Target = StatOptionItemOutNps<ItemId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             time: self.time,

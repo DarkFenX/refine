@@ -1,3 +1,4 @@
+use super::options_int::FitStatsOptionsInt;
 use crate::{
     FitId, ItemId, PValue, Value,
     stats::{
@@ -7,7 +8,6 @@ use crate::{
         StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         fatal::StatErrorFatality,
-        fit::FitStatsOptionsInt,
         option::StatOptionResolved,
     },
 };
@@ -16,7 +16,7 @@ use crate::{
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
-    pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
+    pub(super) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
         // Fit output stats
         if let Some(options) = self.dmg.as_ref() {

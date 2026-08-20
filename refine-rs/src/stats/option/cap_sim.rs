@@ -28,7 +28,6 @@ impl<I> Default for StatOptionCapSim<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BrResolvable for StatOptionCapSim<ItemIdBr> {
     type Target = StatOptionCapSim<ItemId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             cap_perc: self.cap_perc,

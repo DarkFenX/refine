@@ -1,9 +1,12 @@
+use super::options_int::FitStatsOptionsInt;
 use crate::{
-    FitId, FitIdBr, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    err::BrResolveError,
     stats::{
-        FitStats, StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsInt, option::StatOptionRaw,
+        StatOptionJump, StatOptionMass, StatOptionRps,
+        option::{StatOptionRaw, StatOptionResolved},
     },
 };
 
@@ -312,10 +315,22 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Execution
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitStatsOptionsBr {
+    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsOptions, BrResolveError> {
+        Ok(FitStatsOptions {
+            default: self.default,
+            options: self.options.br_resolve(resps)?,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptions {
-    pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStats {
-        self.options.stat_resolve(self.default).execute(core_fit)
+    pub(super) fn stat_resolve(self) -> FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+        self.options.stat_resolve(self.default)
     }
 }

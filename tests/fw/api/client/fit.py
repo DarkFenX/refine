@@ -43,7 +43,7 @@ class ApiClientFit(ApiClientBase):
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
         if options is not Absent:
-            kwargs['json'] = options.to_dict()
+            kwargs['json'] = {'fit_options': options.to_dict()}
         return Request(client=self, **kwargs)
 
     def validate_fit_request(

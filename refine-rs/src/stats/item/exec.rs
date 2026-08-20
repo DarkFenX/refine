@@ -1,5 +1,6 @@
 use rc::ItemMutCommon;
 
+use super::options_int::ItemStatsOptionsInt;
 use crate::{
     FitId, ItemId, PValue, Value,
     stats::{
@@ -9,7 +10,6 @@ use crate::{
         StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatItemAppliedError, StatItemError, StatJumpError},
         fatal::StatErrorFatality,
-        item::ItemStatsOptionsInt,
         option::StatOptionResolved,
     },
 };

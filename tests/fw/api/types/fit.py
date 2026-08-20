@@ -111,7 +111,7 @@ class Fit(AttrDict):
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
         if resp.status_code == 200:
-            return FitStats(data=resp.json())
+            return FitStats(data=resp.json()['fit'])
         return None
 
     def validate(

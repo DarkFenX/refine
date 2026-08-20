@@ -2,6 +2,33 @@ use std::{collections::HashMap, hash::Hash};
 
 use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 
+// Representation form which is compact; it is hard to use work with it directly, so types which are
+// often queried should be converted into something else.
+#[derive(Clone)]
+pub(crate) struct OvrdCompact<K, V> {
+    default: V,
+    overrides: Vec<(V, Vec<K>)>,
+}
+impl<K, V> Default for OvrdCompact<K, V>
+where
+    V: Default,
+{
+    fn default() -> Self {
+        Self {
+            default: V::default(),
+            overrides: Vec::new(),
+        }
+    }
+}
+impl<K, V> OvrdCompact<K, V> {
+    pub(crate) fn set_default(&mut self, default: V) {
+        self.default = default;
+    }
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
+        self.overrides.push((value, keys.collect()))
+    }
+}
+
 // Representation form which takes space, but is easy to query. This version should be used for
 // relatively small copiable values.
 #[derive(Clone)]
@@ -80,30 +107,28 @@ where
     }
 }
 
-// Representation form which is compact; it is hard to use work with it directly, so types which are
-// often queried should be converted into something else.
-#[derive(Clone)]
-pub(crate) struct OvrdCompact<K, V> {
-    default: V,
-    overrides: Vec<(V, Vec<K>)>,
-}
-impl<K, V> Default for OvrdCompact<K, V>
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<K1, K2, V1, V2> OvrdCompact<K1, V1>
 where
-    V: Default,
+    K1: BrResolvable<Target = K2>,
+    V1: BrResolvable<Target = V2>,
 {
-    fn default() -> Self {
-        Self {
-            default: V::default(),
-            overrides: Vec::new(),
+    pub(crate) fn br_resolve(self, cmd_resps: &CmdResps) -> Result<OvrdCompact<K2, V2>, BrResolveError> {
+        let mut overrides = Vec::with_capacity(self.overrides.len());
+        for override_ in self.overrides.into_iter() {
+            let value = override_.0.br_resolve(cmd_resps)?;
+            let mut keys = Vec::with_capacity(override_.1.len());
+            for key in override_.1.into_iter() {
+                keys.push(key.br_resolve(cmd_resps)?);
+            }
+            overrides.push((value, keys))
         }
-    }
-}
-impl<K, V> OvrdCompact<K, V> {
-    pub(crate) fn set_default(&mut self, default: V) {
-        self.default = default;
-    }
-    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
-        self.overrides.push((value, keys.collect()))
+        Ok(OvrdCompact {
+            default: self.default.br_resolve(cmd_resps)?,
+            overrides,
+        })
     }
 }
 

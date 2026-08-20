@@ -29,7 +29,6 @@ impl<I> Default for StatOptionCapBlc<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BrResolvable for StatOptionCapBlc<ItemIdBr> {
     type Target = StatOptionCapBlc<ItemId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             src_kinds: self.src_kinds.try_map_ids(|item_id| resps.resolve_item_id(item_id))?,

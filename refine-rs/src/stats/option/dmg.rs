@@ -46,7 +46,6 @@ impl<I> Default for StatOptionItemDmg<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl BrResolvable for StatOptionFitDmg<ItemIdBr> {
     type Target = StatOptionFitDmg<ItemId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             item_kinds: self.item_kinds,
@@ -59,7 +58,6 @@ impl BrResolvable for StatOptionFitDmg<ItemIdBr> {
 
 impl BrResolvable for StatOptionItemDmg<ItemIdBr> {
     type Target = StatOptionItemDmg<ItemId>;
-
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             time: self.time,

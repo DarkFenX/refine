@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
+    shared::BrResolvable,
     stats::{ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp},
 };
 
