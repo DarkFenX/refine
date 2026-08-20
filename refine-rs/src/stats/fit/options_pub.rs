@@ -5,7 +5,7 @@ use crate::stats::{
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
-#[derive(Default)]
+#[derive(Clone, Default)]
 pub struct FitStatsOptions {
     #[cfg_attr(feature = "serde", serde(default = "custom_serde::stat_default"))]
     default: bool = true,

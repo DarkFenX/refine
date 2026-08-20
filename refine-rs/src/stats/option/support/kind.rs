@@ -13,6 +13,7 @@ pub(in crate::stats) trait StatOptionKind {
         T: Clone;
 }
 
+#[derive(Copy, Clone)]
 pub(in crate::stats) struct StatOptionRaw;
 impl StatOptionKind for StatOptionRaw {
     type Reg = StatDefOption;
