@@ -7,11 +7,15 @@ use super::containers::{StatDefOption, StatDefOptionExt};
 // Technically, it is necessary only for the extended option, but since we have it already, it is
 // good to use for the regular option as well.
 pub(in crate::stats) trait StatOptionKind {
-    type Reg: Clone;
-    type Ext<T>: Clone
+    type Reg: StatOptionRepr;
+    type Ext<T>: StatOptionRepr
     where
         T: Clone;
 }
+
+// Carries extra bounds which all container types need to have
+pub(in crate::stats) trait StatOptionRepr: Clone + Default {}
+impl<T> StatOptionRepr for T where T: Clone + Default {}
 
 #[derive(Copy, Clone)]
 pub(in crate::stats) struct StatOptionRaw;

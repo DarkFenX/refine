@@ -15,20 +15,20 @@ use crate::{
     serde(
         default,
         bound(deserialize = "
-        O::Reg: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitDmg<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitMining>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutNps<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutRps<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutCps<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionEhp>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionRps>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionErps>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionCapBlc<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionCapSim<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionIncomingJam>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionMass>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionJump<F>>: Default + serde::Deserialize<'de>")
+        O::Reg: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitDmg<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitMining>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutNps<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutRps<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutCps<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionEhp>: serde::Deserialize<'de>,
+        O::Ext<StatOptionRps>: serde::Deserialize<'de>,
+        O::Ext<StatOptionErps>: serde::Deserialize<'de>,
+        O::Ext<StatOptionCapBlc<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionCapSim<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionIncomingJam>: serde::Deserialize<'de>,
+        O::Ext<StatOptionMass>: serde::Deserialize<'de>,
+        O::Ext<StatOptionJump<F>>: serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
@@ -113,20 +113,6 @@ where
     O: StatOptionKind,
     F: Clone,
     I: Clone,
-    O::Ext<StatOptionFitDmg<I>>: Default,
-    O::Ext<StatOptionFitMining>: Default,
-    O::Ext<StatOptionFitOutNps<I>>: Default,
-    O::Ext<StatOptionFitOutRps<I>>: Default,
-    O::Ext<StatOptionFitOutCps<I>>: Default,
-    O::Ext<StatOptionEhp>: Default,
-    O::Ext<StatOptionRps>: Default,
-    O::Ext<StatOptionErps>: Default,
-    O::Ext<StatOptionCapBlc<I>>: Default,
-    O::Ext<StatOptionCapSim<I>>: Default,
-    O::Ext<StatOptionIncomingJam>: Default,
-    O::Ext<StatOptionMass>: Default,
-    O::Ext<StatOptionJump<F>>: Default,
-    O::Reg: Default,
 {
     fn default() -> Self {
         Self {

@@ -10,12 +10,12 @@ use crate::stats::{
     serde(
         default,
         bound(deserialize = "
-        O::Ext<StatOptionFitDmg<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitMining>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutNps<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutRps<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutCps<I>>: Default + serde::Deserialize<'de>,
-        O::Ext<StatOptionMass>: Default + serde::Deserialize<'de>")
+        O::Ext<StatOptionFitDmg<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitMining>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutNps<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutRps<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionFitOutCps<I>>: serde::Deserialize<'de>,
+        O::Ext<StatOptionMass>: serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
@@ -35,12 +35,6 @@ impl<O, I> Default for FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
     I: Clone,
-    O::Ext<StatOptionFitDmg<I>>: Default,
-    O::Ext<StatOptionFitMining>: Default,
-    O::Ext<StatOptionFitOutNps<I>>: Default,
-    O::Ext<StatOptionFitOutRps<I>>: Default,
-    O::Ext<StatOptionFitOutCps<I>>: Default,
-    O::Ext<StatOptionMass>: Default,
 {
     fn default() -> Self {
         Self {
