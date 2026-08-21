@@ -1,8 +1,8 @@
 use itertools::Itertools;
 
 use crate::{
-    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, ItemAttrValues, ItemEffectInfo, ItemTypeId,
-    Modification, OptionalReload, PValue, SolarSystem, UnitInterval, Value,
+    AttrId, Count, CtlAffectors, DpsProfile, EffectId, EffectMode, Fit, FitMut, ItemAttrValues, ItemEffectInfo,
+    ItemTypeId, Modification, OptionalReload, PValue, SolarSystem, UnitInterval, Value,
     api::{AffectionDir, ItemSealed, active_stat_prepare, active_stat_rollback},
     err::{
         GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
@@ -29,6 +29,11 @@ use crate::{
 #[expect(private_bounds)]
 pub trait ItemCommon: ItemSealed {
     fn get_sol(&self) -> &SolarSystem;
+    fn get_fit(&self) -> Option<Fit<'_>> {
+        let sol = self.get_sol();
+        let u_item = sol.u_data.items.get(self.get_uid());
+        u_item.get_fit_uid().map(|fit_uid| Fit::new(sol, fit_uid))
+    }
     fn get_item_id(&self) -> ItemId {
         self.get_sol().u_data.items.ext_id_by_int_id(self.get_uid())
     }
@@ -62,6 +67,12 @@ pub trait ItemCommon: ItemSealed {
 /// Methods shared by every mutated item kind.
 pub trait ItemMutCommon: ItemCommon {
     fn get_sol_mut(&mut self) -> &mut SolarSystem;
+    fn get_fit_mut(&mut self) -> Option<FitMut<'_>> {
+        let item_uid = self.get_uid();
+        let sol = self.get_sol_mut();
+        let u_item = sol.u_data.items.get(item_uid);
+        u_item.get_fit_uid().map(|fit_uid| FitMut::new(sol, fit_uid))
+    }
     fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrValues, GetItemAttrError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();

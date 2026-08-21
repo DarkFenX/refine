@@ -115,7 +115,7 @@ impl FitStatsCmd {
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
         let items = match item_options.get_default().is_any_stat_requested() {
             true => get_fit_item_stats(core_fit, &item_options),
-            false => get_overridden_item_stats(core_fit, &item_options),
+            false => get_fit_item_stats_ovrd(core_fit, &item_options),
         };
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),
@@ -136,10 +136,11 @@ fn get_fit_item_stats(
         })
         .collect()
 }
-fn get_overridden_item_stats(
+fn get_fit_item_stats_ovrd(
     core_fit: &mut rc::FitMut,
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
 ) -> Vec<(ItemId, ItemStats)> {
+    let fit_id = core_fit.get_fit_id();
     let core_sol = core_fit.get_sol_mut();
     let mut stats = Vec::with_capacity(item_options.override_len());
     for (item_id, options) in item_options.iter_overrides() {
@@ -149,6 +150,9 @@ fn get_overridden_item_stats(
         let Ok(mut core_item) = core_sol.get_item_mut(&item_id) else {
             continue;
         };
+        if core_item.get_fit().map(|core_item_fit| core_item_fit.get_fit_id()) != Some(fit_id) {
+            continue;
+        }
         stats.push((item_id, options.execute(&mut core_item)));
     }
     stats
