@@ -11,14 +11,7 @@ use crate::{
     },
 };
 
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>")
-    )
-)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Clone)]
 pub struct ItemStatsOptions<F = FitId, I = ItemId>
 {

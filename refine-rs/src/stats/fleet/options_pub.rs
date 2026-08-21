@@ -9,11 +9,7 @@ use crate::{
     },
 };
 
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Deserialize),
-    serde(default, bound(deserialize = "I: serde::Deserialize<'de>"))
-)]
+#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Clone)]
 pub struct FleetStatsOptions<I = ItemId>
 {
