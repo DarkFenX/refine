@@ -29,7 +29,7 @@ impl UItemVec {
     }
     pub(crate) fn slot_count(&self) -> usize {
         match self.data.last_key_value() {
-            Some((pos, _)) => pos.into_usize() + 1,
+            Some((pos, _)) => pos.into_usize().saturating_add(1),
             None => 0,
         }
     }
@@ -168,7 +168,7 @@ impl UItemVec {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 struct SlotIter<I>
 where
-    I: Iterator<Item = (Index, UItemId)>,
+    I: ExactSizeIterator<Item = (Index, UItemId)>,
 {
     taken_slot_iter: I,
     next_taken: Option<(Index, UItemId)>,
@@ -177,7 +177,7 @@ where
 }
 impl<I> SlotIter<I>
 where
-    I: Iterator<Item = (Index, UItemId)>,
+    I: ExactSizeIterator<Item = (Index, UItemId)>,
 {
     fn new(mut taken_slot_iter: I, slot_count: usize) -> Self {
         let next_taken = taken_slot_iter.next();
@@ -191,7 +191,7 @@ where
 }
 impl<I> Iterator for SlotIter<I>
 where
-    I: Iterator<Item = (Index, UItemId)>,
+    I: ExactSizeIterator<Item = (Index, UItemId)>,
 {
     type Item = Option<UItemId>;
 
@@ -209,12 +209,10 @@ where
             None => None,
         }
     }
-}
-impl<I> ExactSizeIterator for SlotIter<I>
-where
-    I: Iterator<Item = (Index, UItemId)>,
-{
-    fn len(&self) -> usize {
-        self.slot_count
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.slot_count - self.current.into_usize();
+        (remaining, Some(remaining))
     }
 }
+impl<I> ExactSizeIterator for SlotIter<I> where I: ExactSizeIterator<Item = (Index, UItemId)> {}
