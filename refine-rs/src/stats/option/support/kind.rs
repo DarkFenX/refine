@@ -9,7 +9,9 @@ use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
 // "default" field defined elsewhere. Resolved form is default value + stored option combined.
 pub(in crate::stats) trait StatOptionKind {
     type Regular: Clone + Default;
-    type Extended<T>: Clone + Default
+    type Extended<T>: Default;
+    // Extra method just to hide Clone trait bound in other places
+    fn clone_extended<T>(option: &Self::Extended<T>) -> Self::Extended<T>
     where
         T: Clone;
 }
@@ -18,20 +20,26 @@ pub(in crate::stats) trait StatOptionKind {
 pub(in crate::stats) struct StatOptionRaw;
 impl StatOptionKind for StatOptionRaw {
     type Regular = StatDefOption;
-    type Extended<T>
-        = StatDefOptionExt<T>
+    type Extended<T> = StatDefOptionExt<T>;
+    fn clone_extended<T>(option: &Self::Extended<T>) -> Self::Extended<T>
     where
-        T: Clone;
+        T: Clone,
+    {
+        option.clone()
+    }
 }
 
 #[derive(Copy, Clone)]
 pub(in crate::stats) struct StatOptionResolved;
 impl StatOptionKind for StatOptionResolved {
     type Regular = bool;
-    type Extended<T>
-        = Option<Vec<T>>
+    type Extended<T> = Option<Vec<T>>;
+    fn clone_extended<T>(option: &Self::Extended<T>) -> Self::Extended<T>
     where
-        T: Clone;
+        T: Clone,
+    {
+        option.clone()
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,21 +67,19 @@ where
 
 pub(in crate::stats) struct StatOptionExtended<O, T>(O::Extended<T>)
 where
-    O: StatOptionKind,
-    T: Clone;
+    O: StatOptionKind;
 impl<O, T> Clone for StatOptionExtended<O, T>
 where
     O: StatOptionKind,
     T: Clone,
 {
     fn clone(&self) -> Self {
-        Self(self.0.clone())
+        Self(O::clone_extended(&self.0))
     }
 }
 impl<O, T> Default for StatOptionExtended<O, T>
 where
     O: StatOptionKind,
-    T: Clone,
 {
     fn default() -> Self {
         Self(Default::default())
@@ -89,10 +95,7 @@ impl From<bool> for StatOptionRegular<StatOptionRaw> {
     }
 }
 
-impl<T> From<StatOptionExt<T>> for StatOptionExtended<StatOptionRaw, T>
-where
-    T: Clone,
-{
+impl<T> From<StatOptionExt<T>> for StatOptionExtended<StatOptionRaw, T> {
     fn from(option: StatOptionExt<T>) -> Self {
         Self(StatDefOptionExt::from_non_default(option))
     }
@@ -103,8 +106,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<B, T> StatOptionExtended<StatOptionRaw, B>
 where
-    B: Clone + BrResolvable<Target = T>,
-    T: Clone,
+    B: BrResolvable<Target = T>,
 {
     pub(in crate::stats) fn br_resolve(
         self,
@@ -125,7 +127,7 @@ impl StatOptionRegular<StatOptionRaw> {
 
 impl<T> StatOptionExtended<StatOptionRaw, T>
 where
-    T: Clone + Default,
+    T: Default,
 {
     pub(in crate::stats) fn stat_resolve(self, default: bool) -> StatOptionExtended<StatOptionResolved, T> {
         StatOptionExtended(self.0.stat_resolve(default))
@@ -141,10 +143,7 @@ impl StatOptionRegular<StatOptionResolved> {
     }
 }
 
-impl<T> StatOptionExtended<StatOptionResolved, T>
-where
-    T: Clone,
-{
+impl<T> StatOptionExtended<StatOptionResolved, T> {
     pub(in crate::stats) fn is_enabled(&self) -> bool {
         self.0.is_some()
     }
@@ -171,7 +170,7 @@ mod custom_serde {
             D: Deserializer<'de>;
         fn deserialize_extended<'de, T, D>(deserializer: D) -> Result<Self::Extended<T>, D::Error>
         where
-            T: Clone + Deserialize<'de>,
+            T: Deserialize<'de>,
             D: Deserializer<'de>;
     }
 
@@ -184,7 +183,7 @@ mod custom_serde {
         }
         fn deserialize_extended<'de, T, D>(deserializer: D) -> Result<Self::Extended<T>, D::Error>
         where
-            T: Clone + Deserialize<'de>,
+            T: Deserialize<'de>,
             D: Deserializer<'de>,
         {
             StatDefOptionExt::deserialize(deserializer)
@@ -206,7 +205,7 @@ mod custom_serde {
     impl<'de, O, T> Deserialize<'de> for StatOptionExtended<O, T>
     where
         O: DeStatOptionKind,
-        T: Clone + Deserialize<'de>,
+        T: Deserialize<'de>,
     {
         fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
         where

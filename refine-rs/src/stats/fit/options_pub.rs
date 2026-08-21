@@ -15,25 +15,18 @@ use crate::{
     derive(serde::Deserialize),
     serde(
         default,
-        bound(deserialize = "F: Clone + serde::Deserialize<'de>, I: Clone + serde::Deserialize<'de>")
+        bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
 pub struct FitStatsOptions<F = FitId, I = ItemId>
-where
-    F: Clone,
-    I: Clone,
 {
     #[cfg_attr(feature = "serde", serde(default))]
     default: bool = false,
     #[cfg_attr(feature = "serde", serde(flatten))]
     options: FitStatsOptionsInt<StatOptionRaw, F, I>,
 }
-impl<F, I> Default for FitStatsOptions<F, I>
-where
-    F: Clone,
-    I: Clone,
-{
+impl<F, I> Default for FitStatsOptions<F, I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
@@ -47,11 +40,7 @@ pub type FitStatsOptionsBr = FitStatsOptions<FitIdBr, ItemIdBr>;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> FitStatsOptions<F, I>
-where
-    F: Clone,
-    I: Clone,
-{
+impl<F, I> FitStatsOptions<F, I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {

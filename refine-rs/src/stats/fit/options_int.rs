@@ -16,17 +16,13 @@ use crate::{
     derive(serde::Deserialize),
     serde(
         default,
-        bound(
-            deserialize = "O: DeStatOptionKind, F: Clone + serde::Deserialize<'de>, I: Clone + serde::Deserialize<'de>"
-        )
+        bound(deserialize = "O: DeStatOptionKind, F: serde::Deserialize<'de>, I: serde::Deserialize<'de>")
     )
 )]
 #[derive(Clone)]
 pub(in crate::stats) struct FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: Clone,
-    I: Clone,
 {
     // Fit output stats
     pub(super) dmg: StatOptionExtended<O, StatOptionFitDmg<I>>,
@@ -101,8 +97,6 @@ where
 impl<O, F, I> Default for FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: Clone,
-    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -264,11 +258,7 @@ impl FitStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> FitStatsOptionsInt<StatOptionRaw, F, I>
-where
-    F: Clone,
-    I: Clone,
-{
+impl<F, I> FitStatsOptionsInt<StatOptionRaw, F, I> {
     pub(super) fn stat_resolve(self, default: bool) -> FitStatsOptionsInt<StatOptionResolved, F, I> {
         FitStatsOptionsInt {
             // Fit output stats

@@ -12,22 +12,17 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(default, bound(deserialize = "I: Clone + serde::Deserialize<'de>"))
+    serde(default, bound(deserialize = "I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
 pub struct FleetStatsOptions<I = ItemId>
-where
-    I: Clone,
 {
     #[cfg_attr(feature = "serde", serde(default))]
     default: bool = false,
     #[cfg_attr(feature = "serde", serde(flatten))]
     options: FleetStatsOptionsInt<StatOptionRaw, I>,
 }
-impl<I> Default for FleetStatsOptions<I>
-where
-    I: Clone,
-{
+impl<I> Default for FleetStatsOptions<I> {
     fn default() -> Self {
         Self {
             options: Default::default(),
@@ -41,10 +36,7 @@ pub type FleetStatsOptionsBr = FleetStatsOptions<ItemIdBr>;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FleetStatsOptions<I>
-where
-    I: Clone,
-{
+impl<I> FleetStatsOptions<I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self {

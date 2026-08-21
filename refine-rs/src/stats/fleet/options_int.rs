@@ -13,16 +13,12 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "O: DeStatOptionKind, I: Clone + serde::Deserialize<'de>")
-    )
+    serde(default, bound(deserialize = "O: DeStatOptionKind, I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
 pub(in crate::stats) struct FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
-    I: Clone,
 {
     pub(super) dmg: StatOptionExtended<O, StatOptionFitDmg<I>>,
     pub(super) mps: StatOptionExtended<O, StatOptionFitMining>,
@@ -34,7 +30,6 @@ where
 impl<O, I> Default for FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
-    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -70,10 +65,7 @@ impl FleetStatsOptionsInt<StatOptionRaw, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FleetStatsOptionsInt<StatOptionRaw, I>
-where
-    I: Clone,
-{
+impl<I> FleetStatsOptionsInt<StatOptionRaw, I> {
     pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsInt<StatOptionResolved, I> {
         FleetStatsOptionsInt {
             dmg: self.dmg.stat_resolve(default),
