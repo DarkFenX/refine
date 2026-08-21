@@ -67,48 +67,24 @@ impl UFit {
             self.mods_low.iter_uids(),
         )
     }
-    pub(crate) fn all_direct_items(&self) -> Vec<UItemId> {
-        // Calculate capacity
-        let mut capacity = 0;
-        if self.character.is_some() {
-            capacity += 1;
-        }
-        capacity += self.skills.len();
-        capacity += self.implants.len();
-        capacity += self.boosters.len();
-        if self.ship.is_some() {
-            capacity += 1;
-        }
-        if self.stance.is_some() {
-            capacity += 1;
-        }
-        capacity += self.subsystems.len();
-        capacity += self.mods_high.item_count();
-        capacity += self.mods_mid.item_count();
-        capacity += self.mods_low.item_count();
-        capacity += self.rigs.len();
-        capacity += self.services.len();
-        capacity += self.drones.len();
-        capacity += self.fighters.len();
-        capacity += self.fw_effects.len();
-        // Fill the data
-        let mut items = Vec::with_capacity(capacity);
-        conditional_push(&mut items, self.character);
-        items.extend(self.skills.values().map(|v| v.skill_uid));
-        items.extend(self.implants.iter());
-        items.extend(self.boosters.iter());
-        conditional_push(&mut items, self.ship);
-        conditional_push(&mut items, self.stance);
-        items.extend(self.subsystems.iter());
-        items.extend(self.mods_high.iter_uids());
-        items.extend(self.mods_mid.iter_uids());
-        items.extend(self.mods_low.iter_uids());
-        items.extend(self.rigs.iter());
-        items.extend(self.services.iter());
-        items.extend(self.drones.iter());
-        items.extend(self.fighters.iter());
-        items.extend(self.fw_effects.iter());
-        items
+    pub(crate) fn iter_direct_items(&self) -> impl Iterator<Item = UItemId> {
+        chain!(
+            self.character,
+            self.skills.values().map(|v| v.skill_uid),
+            self.implants.iter().copied(),
+            self.boosters.iter().copied(),
+            self.ship,
+            self.stance,
+            self.subsystems.iter().copied(),
+            self.mods_high.iter_uids(),
+            self.mods_mid.iter_uids(),
+            self.mods_low.iter_uids(),
+            self.rigs.iter().copied(),
+            self.services.iter().copied(),
+            self.drones.iter().copied(),
+            self.fighters.iter().copied(),
+            self.fw_effects.iter().copied(),
+        )
     }
 }
 impl LibNamed for UFit {
@@ -119,11 +95,5 @@ impl LibNamed for UFit {
 impl LibGetId<FitId> for UFit {
     fn lib_get_id(&self) -> FitId {
         self.id
-    }
-}
-
-fn conditional_push(items: &mut Vec<UItemId>, opt_value: Option<UItemId>) {
-    if let Some(value) = opt_value {
-        items.push(value)
     }
 }
