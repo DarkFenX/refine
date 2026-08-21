@@ -2,6 +2,7 @@ pub use item::{Item, ItemMut};
 pub use item_get::GetItemError;
 pub use item_remove::RemoveItemError;
 
+mod fit_iter_items;
 mod item;
 mod item_downcast;
 mod item_get;

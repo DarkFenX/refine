@@ -11,8 +11,8 @@ use lender::{Lender, Lending, unsafe_assume_covariance};
 
 use crate::{
     api::{
-        AutochargeMut, BoosterMut, DroneMut, FighterMut, FitMut, FleetMut, FwEffectMut, ImplantMut, ProjEffectMut,
-        RigMut, ServiceMut, SkillMut, SubsystemMut, SwEffectMut,
+        AutochargeMut, BoosterMut, DroneMut, FighterMut, FitMut, FleetMut, FwEffectMut, ImplantMut, ItemMut,
+        ProjEffectMut, RigMut, ServiceMut, SkillMut, SubsystemMut, SwEffectMut,
     },
     sol::SolarSystem,
     ud::{UFitId, UFleetId, UItemId},
@@ -107,6 +107,22 @@ impl New for FitMut<'_> {
     }
 }
 // Implementations for items
+impl RefFamily for ItemMut<'_> {
+    type Ref<'s> = ItemMut<'s>;
+    #[inline(always)]
+    fn __check_covariance<'long: 'short, 'short>(
+        proof: CovariantProof<Self::Ref<'long>>,
+    ) -> CovariantProof<Self::Ref<'short>> {
+        proof
+    }
+}
+impl New for ItemMut<'_> {
+    type UId = UItemId;
+    fn new_new(sol: &mut SolarSystem, uid: Self::UId) -> Self::Ref<'_> {
+        ItemMut::__check_covariance(CovariantProof::new());
+        ItemMut::new(sol, uid)
+    }
+}
 impl RefFamily for AutochargeMut<'_> {
     type Ref<'s> = AutochargeMut<'s>;
     #[inline(always)]
