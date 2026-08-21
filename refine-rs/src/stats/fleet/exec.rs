@@ -10,22 +10,22 @@ use crate::{
 impl FleetStatsOptionsInt<StatOptionResolved, ItemId> {
     pub(in crate::stats) fn execute(&self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         let mut stats = FleetStats { .. };
-        if let Some(options) = self.dmg.as_ref() {
+        if let Some(options) = self.dmg.get() {
             stats.dmg = get_dmg_stats(core_fleet, options);
         }
-        if let Some(options) = self.mps.as_ref() {
+        if let Some(options) = self.mps.get() {
             stats.mps = get_mps_stats(core_fleet, options);
         }
-        if let Some(options) = self.outgoing_nps.as_ref() {
+        if let Some(options) = self.outgoing_nps.get() {
             stats.outgoing_nps = get_outgoing_nps_stats(core_fleet, options);
         }
-        if let Some(options) = self.outgoing_cps.as_ref() {
+        if let Some(options) = self.outgoing_cps.get() {
             stats.outgoing_cps = get_outgoing_cps_stats(core_fleet, options);
         }
-        if let Some(options) = self.outgoing_rps.as_ref() {
+        if let Some(options) = self.outgoing_rps.get() {
             stats.outgoing_rps = get_outgoing_rps_stats(core_fleet, options);
         }
-        if let Some(options) = self.mass.as_ref() {
+        if let Some(options) = self.mass.get() {
             stats.mass = get_mass_stats(core_fleet, options);
         }
         stats

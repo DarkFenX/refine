@@ -1,6 +1,6 @@
 use super::options_int::ItemStatsOptionsInt;
 use crate::{
-    CmdResps, FitId, FitIdBr, IdType, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::BrResolvable,
     stats::{
@@ -14,13 +14,16 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(default, bound(deserialize = ""))
+    serde(
+        default,
+        bound(deserialize = "F: Clone + serde::Deserialize<'de>, I: Clone + serde::Deserialize<'de>")
+    )
 )]
 #[derive(Clone)]
 pub struct ItemStatsOptions<F = FitId, I = ItemId>
 where
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     #[cfg_attr(feature = "serde", serde(default))]
     default: bool = false,
@@ -29,9 +32,8 @@ where
 }
 impl<F, I> Default for ItemStatsOptions<F, I>
 where
-    F: IdType,
-    I: IdType,
-    ItemStatsOptionsInt<StatOptionRaw, F, I>: Default,
+    F: Clone,
+    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -48,8 +50,8 @@ pub type ItemStatsOptionsBr = ItemStatsOptions<FitIdBr, ItemIdBr>;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> ItemStatsOptions<F, I>
 where
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {

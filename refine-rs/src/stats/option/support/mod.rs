@@ -1,5 +1,9 @@
 pub use containers::StatOptionExt;
-pub(in crate::stats) use kind::{StatOptionKind, StatOptionRaw, StatOptionResolved};
+#[cfg(feature = "serde")]
+pub(in crate::stats) use kind::DeStatOptionKind;
+pub(in crate::stats) use kind::{
+    StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionRegular, StatOptionResolved,
+};
 
 mod containers;
 mod kind;

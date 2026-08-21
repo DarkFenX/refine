@@ -1,35 +1,40 @@
+#[cfg(feature = "serde")]
+use crate::stats::option::DeStatOptionKind;
 use crate::{
-    CmdResps, IdType, ItemId, ItemIdBr,
+    CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
         StatOptionMass,
-        option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+        option::{StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionResolved},
     },
 };
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(default, bound(deserialize = ""))
+    serde(
+        default,
+        bound(deserialize = "O: DeStatOptionKind, I: Clone + serde::Deserialize<'de>")
+    )
 )]
 #[derive(Clone)]
 pub(in crate::stats) struct FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
-    I: IdType,
+    I: Clone,
 {
-    pub(super) dmg: O::Ext<StatOptionFitDmg<I>>,
-    pub(super) mps: O::Ext<StatOptionFitMining>,
-    pub(super) outgoing_nps: O::Ext<StatOptionFitOutNps<I>>,
-    pub(super) outgoing_rps: O::Ext<StatOptionFitOutRps<I>>,
-    pub(super) outgoing_cps: O::Ext<StatOptionFitOutCps<I>>,
-    pub(super) mass: O::Ext<StatOptionMass>,
+    pub(super) dmg: StatOptionExtended<O, StatOptionFitDmg<I>>,
+    pub(super) mps: StatOptionExtended<O, StatOptionFitMining>,
+    pub(super) outgoing_nps: StatOptionExtended<O, StatOptionFitOutNps<I>>,
+    pub(super) outgoing_rps: StatOptionExtended<O, StatOptionFitOutRps<I>>,
+    pub(super) outgoing_cps: StatOptionExtended<O, StatOptionFitOutCps<I>>,
+    pub(super) mass: StatOptionExtended<O, StatOptionMass>,
 }
 impl<O, I> Default for FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
-    I: IdType,
+    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -67,7 +72,7 @@ impl FleetStatsOptionsInt<StatOptionRaw, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FleetStatsOptionsInt<StatOptionRaw, I>
 where
-    I: IdType,
+    I: Clone,
 {
     pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsInt<StatOptionResolved, I> {
         FleetStatsOptionsInt {

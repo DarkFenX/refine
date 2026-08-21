@@ -1,77 +1,84 @@
+#[cfg(feature = "serde")]
+use crate::stats::option::DeStatOptionKind;
 use crate::{
-    CmdResps, FitId, FitIdBr, IdType, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
         StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
         StatOptionMass, StatOptionRps,
-        option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+        option::{StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionRegular, StatOptionResolved},
     },
 };
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(default, bound(deserialize = ""))
+    serde(
+        default,
+        bound(
+            deserialize = "O: DeStatOptionKind, F: Clone + serde::Deserialize<'de>, I: Clone + serde::Deserialize<'de>"
+        )
+    )
 )]
 #[derive(Clone)]
 pub(in crate::stats) struct ItemStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     // Output
-    pub(super) dmg: O::Ext<StatOptionItemDmg<I>>,
-    pub(super) mps: O::Ext<StatOptionItemMining>,
-    pub(super) outgoing_nps: O::Ext<StatOptionItemOutNps<I>>,
-    pub(super) outgoing_rps: O::Ext<StatOptionItemOutRps<I>>,
-    pub(super) outgoing_cps: O::Ext<StatOptionItemOutCps<I>>,
+    pub(super) dmg: StatOptionExtended<O, StatOptionItemDmg<I>>,
+    pub(super) mps: StatOptionExtended<O, StatOptionItemMining>,
+    pub(super) outgoing_nps: StatOptionExtended<O, StatOptionItemOutNps<I>>,
+    pub(super) outgoing_rps: StatOptionExtended<O, StatOptionItemOutRps<I>>,
+    pub(super) outgoing_cps: StatOptionExtended<O, StatOptionItemOutCps<I>>,
     // Tank
-    pub(super) resists: O::Reg,
-    pub(super) hp: O::Reg,
-    pub(super) ehp: O::Ext<StatOptionEhp>,
-    pub(super) wc_ehp: O::Reg,
-    pub(super) rps: O::Ext<StatOptionRps>,
-    pub(super) erps: O::Ext<StatOptionErps>,
-    pub(super) breach_resist: O::Reg,
+    pub(super) resists: StatOptionRegular<O>,
+    pub(super) hp: StatOptionRegular<O>,
+    pub(super) ehp: StatOptionExtended<O, StatOptionEhp>,
+    pub(super) wc_ehp: StatOptionRegular<O>,
+    pub(super) rps: StatOptionExtended<O, StatOptionRps>,
+    pub(super) erps: StatOptionExtended<O, StatOptionErps>,
+    pub(super) breach_resist: StatOptionRegular<O>,
     // Cap
-    pub(super) cap_amount: O::Reg,
-    pub(super) cap_balance: O::Ext<StatOptionCapBlc<I>>,
-    pub(super) cap_sim: O::Ext<StatOptionCapSim<I>>,
-    pub(super) neut_resist: O::Reg,
+    pub(super) cap_amount: StatOptionRegular<O>,
+    pub(super) cap_balance: StatOptionExtended<O, StatOptionCapBlc<I>>,
+    pub(super) cap_sim: StatOptionExtended<O, StatOptionCapSim<I>>,
+    pub(super) neut_resist: StatOptionRegular<O>,
     // Sensors
-    pub(super) locks: O::Reg,
-    pub(super) lock_range: O::Reg,
-    pub(super) scan_res: O::Reg,
-    pub(super) sensors: O::Reg,
-    pub(super) dscan_range: O::Reg,
-    pub(super) probing_size: O::Reg,
-    pub(super) incoming_jam: O::Ext<StatOptionIncomingJam>,
+    pub(super) locks: StatOptionRegular<O>,
+    pub(super) lock_range: StatOptionRegular<O>,
+    pub(super) scan_res: StatOptionRegular<O>,
+    pub(super) sensors: StatOptionRegular<O>,
+    pub(super) dscan_range: StatOptionRegular<O>,
+    pub(super) probing_size: StatOptionRegular<O>,
+    pub(super) incoming_jam: StatOptionExtended<O, StatOptionIncomingJam>,
     // Mobility
-    pub(super) speed: O::Reg,
-    pub(super) agility: O::Reg,
-    pub(super) align_time: O::Reg,
-    pub(super) sig_radius: O::Reg,
-    pub(super) mass: O::Ext<StatOptionMass>,
-    pub(super) warp_speed: O::Reg,
-    pub(super) max_warp_range: O::Reg,
-    pub(super) jump: O::Ext<StatOptionJump<F>>,
+    pub(super) speed: StatOptionRegular<O>,
+    pub(super) agility: StatOptionRegular<O>,
+    pub(super) align_time: StatOptionRegular<O>,
+    pub(super) sig_radius: StatOptionRegular<O>,
+    pub(super) mass: StatOptionExtended<O, StatOptionMass>,
+    pub(super) warp_speed: StatOptionRegular<O>,
+    pub(super) max_warp_range: StatOptionRegular<O>,
+    pub(super) jump: StatOptionExtended<O, StatOptionJump<F>>,
     // Misc
-    pub(super) drone_control_range: O::Reg,
-    pub(super) can_warp: O::Reg,
-    pub(super) can_jump_gate: O::Reg,
-    pub(super) can_jump_wormhole: O::Reg,
-    pub(super) can_jump_drive: O::Reg,
-    pub(super) can_dock_station: O::Reg,
-    pub(super) can_dock_citadel: O::Reg,
-    pub(super) can_tether: O::Reg,
+    pub(super) drone_control_range: StatOptionRegular<O>,
+    pub(super) can_warp: StatOptionRegular<O>,
+    pub(super) can_jump_gate: StatOptionRegular<O>,
+    pub(super) can_jump_wormhole: StatOptionRegular<O>,
+    pub(super) can_jump_drive: StatOptionRegular<O>,
+    pub(super) can_dock_station: StatOptionRegular<O>,
+    pub(super) can_dock_citadel: StatOptionRegular<O>,
+    pub(super) can_tether: StatOptionRegular<O>,
 }
 impl<O, F, I> Default for ItemStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -242,49 +249,49 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
-        self.dmg.is_some() ||
-        self.mps.is_some() ||
-        self.outgoing_nps.is_some() ||
-        self.outgoing_rps.is_some() ||
-        self.outgoing_cps.is_some() ||
+        self.dmg.is_enabled() ||
+        self.mps.is_enabled() ||
+        self.outgoing_nps.is_enabled() ||
+        self.outgoing_rps.is_enabled() ||
+        self.outgoing_cps.is_enabled() ||
         // Tank
-        self.resists ||
-        self.hp ||
-        self.ehp.is_some() ||
-        self.wc_ehp ||
-        self.rps.is_some() ||
-        self.erps.is_some() ||
-        self.breach_resist ||
+        self.resists.is_enabled() ||
+        self.hp.is_enabled() ||
+        self.ehp.is_enabled() ||
+        self.wc_ehp.is_enabled() ||
+        self.rps.is_enabled() ||
+        self.erps.is_enabled() ||
+        self.breach_resist.is_enabled() ||
         // Cap
-        self.cap_amount ||
-        self.cap_balance.is_some() ||
-        self.cap_sim.is_some() ||
-        self.neut_resist ||
+        self.cap_amount.is_enabled() ||
+        self.cap_balance.is_enabled() ||
+        self.cap_sim.is_enabled() ||
+        self.neut_resist.is_enabled() ||
         // Sensors
-        self.locks ||
-        self.lock_range ||
-        self.scan_res ||
-        self.sensors ||
-        self.dscan_range ||
-        self.probing_size ||
-        self.incoming_jam.is_some() ||
+        self.locks.is_enabled() ||
+        self.lock_range.is_enabled() ||
+        self.scan_res.is_enabled() ||
+        self.sensors.is_enabled() ||
+        self.dscan_range.is_enabled() ||
+        self.probing_size.is_enabled() ||
+        self.incoming_jam.is_enabled() ||
         // Mobility
-        self.speed ||
-        self.agility ||
-        self.align_time ||
-        self.sig_radius ||
-        self.mass.is_some() ||
-        self.warp_speed ||
-        self.max_warp_range ||
-        self.jump.is_some() ||
+        self.speed.is_enabled() ||
+        self.agility.is_enabled() ||
+        self.align_time.is_enabled() ||
+        self.sig_radius.is_enabled() ||
+        self.mass.is_enabled() ||
+        self.warp_speed.is_enabled() ||
+        self.max_warp_range.is_enabled() ||
+        self.jump.is_enabled() ||
         // Misc
-        self.drone_control_range ||
-        self.can_warp ||
-        self.can_jump_gate ||
-        self.can_jump_wormhole ||
-        self.can_jump_drive ||
-        self.can_dock_station ||
-        self.can_dock_citadel ||
-        self.can_tether
+        self.drone_control_range.is_enabled() ||
+        self.can_warp.is_enabled() ||
+        self.can_jump_gate.is_enabled() ||
+        self.can_jump_wormhole.is_enabled() ||
+        self.can_jump_drive.is_enabled() ||
+        self.can_dock_station.is_enabled() ||
+        self.can_dock_citadel.is_enabled() ||
+        self.can_tether.is_enabled()
     }
 }

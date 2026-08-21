@@ -1,101 +1,108 @@
+#[cfg(feature = "serde")]
+use crate::stats::option::DeStatOptionKind;
 use crate::{
-    CmdResps, FitId, FitIdBr, IdType, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
         StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
         StatOptionMass, StatOptionRps,
-        option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+        option::{StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionRegular, StatOptionResolved},
     },
 };
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(default, bound(deserialize = ""))
+    serde(
+        default,
+        bound(
+            deserialize = "O: DeStatOptionKind, F: Clone + serde::Deserialize<'de>, I: Clone + serde::Deserialize<'de>"
+        )
+    )
 )]
 #[derive(Clone)]
 pub(in crate::stats) struct FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     // Fit output stats
-    pub(super) dmg: O::Ext<StatOptionFitDmg<I>>,
-    pub(super) mps: O::Ext<StatOptionFitMining>,
-    pub(super) outgoing_nps: O::Ext<StatOptionFitOutNps<I>>,
-    pub(super) outgoing_rps: O::Ext<StatOptionFitOutRps<I>>,
-    pub(super) outgoing_cps: O::Ext<StatOptionFitOutCps<I>>,
+    pub(super) dmg: StatOptionExtended<O, StatOptionFitDmg<I>>,
+    pub(super) mps: StatOptionExtended<O, StatOptionFitMining>,
+    pub(super) outgoing_nps: StatOptionExtended<O, StatOptionFitOutNps<I>>,
+    pub(super) outgoing_rps: StatOptionExtended<O, StatOptionFitOutRps<I>>,
+    pub(super) outgoing_cps: StatOptionExtended<O, StatOptionFitOutCps<I>>,
     // Fit resources
-    pub(super) cpu: O::Reg,
-    pub(super) powergrid: O::Reg,
-    pub(super) calibration: O::Reg,
-    pub(super) drone_bay_volume: O::Reg,
-    pub(super) drone_bandwidth: O::Reg,
-    pub(super) fighter_bay_volume: O::Reg,
+    pub(super) cpu: StatOptionRegular<O>,
+    pub(super) powergrid: StatOptionRegular<O>,
+    pub(super) calibration: StatOptionRegular<O>,
+    pub(super) drone_bay_volume: StatOptionRegular<O>,
+    pub(super) drone_bandwidth: StatOptionRegular<O>,
+    pub(super) fighter_bay_volume: StatOptionRegular<O>,
     // Fit slots
-    pub(super) high_slots: O::Reg,
-    pub(super) mid_slots: O::Reg,
-    pub(super) low_slots: O::Reg,
-    pub(super) turret_slots: O::Reg,
-    pub(super) launcher_slots: O::Reg,
-    pub(super) rig_slots: O::Reg,
-    pub(super) service_slots: O::Reg,
-    pub(super) subsystem_slots: O::Reg,
-    pub(super) launched_drones: O::Reg,
-    pub(super) launched_fighters: O::Reg,
-    pub(super) launched_light_fighters: O::Reg,
-    pub(super) launched_heavy_fighters: O::Reg,
-    pub(super) launched_support_fighters: O::Reg,
-    pub(super) launched_st_light_fighters: O::Reg,
-    pub(super) launched_st_heavy_fighters: O::Reg,
-    pub(super) launched_st_support_fighters: O::Reg,
+    pub(super) high_slots: StatOptionRegular<O>,
+    pub(super) mid_slots: StatOptionRegular<O>,
+    pub(super) low_slots: StatOptionRegular<O>,
+    pub(super) turret_slots: StatOptionRegular<O>,
+    pub(super) launcher_slots: StatOptionRegular<O>,
+    pub(super) rig_slots: StatOptionRegular<O>,
+    pub(super) service_slots: StatOptionRegular<O>,
+    pub(super) subsystem_slots: StatOptionRegular<O>,
+    pub(super) launched_drones: StatOptionRegular<O>,
+    pub(super) launched_fighters: StatOptionRegular<O>,
+    pub(super) launched_light_fighters: StatOptionRegular<O>,
+    pub(super) launched_heavy_fighters: StatOptionRegular<O>,
+    pub(super) launched_support_fighters: StatOptionRegular<O>,
+    pub(super) launched_st_light_fighters: StatOptionRegular<O>,
+    pub(super) launched_st_heavy_fighters: StatOptionRegular<O>,
+    pub(super) launched_st_support_fighters: StatOptionRegular<O>,
     // Ship tank
-    pub(super) resists: O::Reg,
-    pub(super) hp: O::Reg,
-    pub(super) ehp: O::Ext<StatOptionEhp>,
-    pub(super) wc_ehp: O::Reg,
-    pub(super) rps: O::Ext<StatOptionRps>,
-    pub(super) erps: O::Ext<StatOptionErps>,
-    pub(super) breach_resist: O::Reg,
+    pub(super) resists: StatOptionRegular<O>,
+    pub(super) hp: StatOptionRegular<O>,
+    pub(super) ehp: StatOptionExtended<O, StatOptionEhp>,
+    pub(super) wc_ehp: StatOptionRegular<O>,
+    pub(super) rps: StatOptionExtended<O, StatOptionRps>,
+    pub(super) erps: StatOptionExtended<O, StatOptionErps>,
+    pub(super) breach_resist: StatOptionRegular<O>,
     // Ship cap
-    pub(super) cap_amount: O::Reg,
-    pub(super) cap_balance: O::Ext<StatOptionCapBlc<I>>,
-    pub(super) cap_sim: O::Ext<StatOptionCapSim<I>>,
-    pub(super) neut_resist: O::Reg,
+    pub(super) cap_amount: StatOptionRegular<O>,
+    pub(super) cap_balance: StatOptionExtended<O, StatOptionCapBlc<I>>,
+    pub(super) cap_sim: StatOptionExtended<O, StatOptionCapSim<I>>,
+    pub(super) neut_resist: StatOptionRegular<O>,
     // Ship sensors
-    pub(super) locks: O::Reg,
-    pub(super) lock_range: O::Reg,
-    pub(super) scan_res: O::Reg,
-    pub(super) sensors: O::Reg,
-    pub(super) dscan_range: O::Reg,
-    pub(super) probing_size: O::Reg,
-    pub(super) incoming_jam: O::Ext<StatOptionIncomingJam>,
+    pub(super) locks: StatOptionRegular<O>,
+    pub(super) lock_range: StatOptionRegular<O>,
+    pub(super) scan_res: StatOptionRegular<O>,
+    pub(super) sensors: StatOptionRegular<O>,
+    pub(super) dscan_range: StatOptionRegular<O>,
+    pub(super) probing_size: StatOptionRegular<O>,
+    pub(super) incoming_jam: StatOptionExtended<O, StatOptionIncomingJam>,
     // Ship mobility
-    pub(super) speed: O::Reg,
-    pub(super) agility: O::Reg,
-    pub(super) align_time: O::Reg,
-    pub(super) sig_radius: O::Reg,
-    pub(super) mass: O::Ext<StatOptionMass>,
-    pub(super) warp_speed: O::Reg,
-    pub(super) max_warp_range: O::Reg,
-    pub(super) jump: O::Ext<StatOptionJump<F>>,
+    pub(super) speed: StatOptionRegular<O>,
+    pub(super) agility: StatOptionRegular<O>,
+    pub(super) align_time: StatOptionRegular<O>,
+    pub(super) sig_radius: StatOptionRegular<O>,
+    pub(super) mass: StatOptionExtended<O, StatOptionMass>,
+    pub(super) warp_speed: StatOptionRegular<O>,
+    pub(super) max_warp_range: StatOptionRegular<O>,
+    pub(super) jump: StatOptionExtended<O, StatOptionJump<F>>,
     // Ship misc stats
-    pub(super) drone_control_range: O::Reg,
-    pub(super) can_warp: O::Reg,
-    pub(super) can_jump_gate: O::Reg,
-    pub(super) can_jump_wormhole: O::Reg,
-    pub(super) can_jump_drive: O::Reg,
-    pub(super) can_dock_station: O::Reg,
-    pub(super) can_dock_citadel: O::Reg,
-    pub(super) can_tether: O::Reg,
+    pub(super) drone_control_range: StatOptionRegular<O>,
+    pub(super) can_warp: StatOptionRegular<O>,
+    pub(super) can_jump_gate: StatOptionRegular<O>,
+    pub(super) can_jump_wormhole: StatOptionRegular<O>,
+    pub(super) can_jump_drive: StatOptionRegular<O>,
+    pub(super) can_dock_station: StatOptionRegular<O>,
+    pub(super) can_dock_citadel: StatOptionRegular<O>,
+    pub(super) can_tether: StatOptionRegular<O>,
 }
 impl<O, F, I> Default for FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -259,8 +266,8 @@ impl FitStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FitStatsOptionsInt<StatOptionRaw, F, I>
 where
-    F: IdType,
-    I: IdType,
+    F: Clone,
+    I: Clone,
 {
     pub(super) fn stat_resolve(self, default: bool) -> FitStatsOptionsInt<StatOptionResolved, F, I> {
         FitStatsOptionsInt {

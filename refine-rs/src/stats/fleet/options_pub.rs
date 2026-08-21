@@ -1,5 +1,5 @@
 use crate::{
-    CmdResps, IdType, ItemId, ItemIdBr,
+    CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
@@ -12,12 +12,12 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(default, bound(deserialize = ""))
+    serde(default, bound(deserialize = "I: Clone + serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
 pub struct FleetStatsOptions<I = ItemId>
 where
-    I: IdType,
+    I: Clone,
 {
     #[cfg_attr(feature = "serde", serde(default))]
     default: bool = false,
@@ -26,8 +26,7 @@ where
 }
 impl<I> Default for FleetStatsOptions<I>
 where
-    I: IdType,
-    FleetStatsOptionsInt<StatOptionRaw, I>: Default,
+    I: Clone,
 {
     fn default() -> Self {
         Self {
@@ -44,7 +43,7 @@ pub type FleetStatsOptionsBr = FleetStatsOptions<ItemIdBr>;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FleetStatsOptions<I>
 where
-    I: IdType,
+    I: Clone,
 {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
