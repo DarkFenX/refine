@@ -120,8 +120,8 @@ impl FleetInfoCmdBr {
 impl FleetInfoCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<FleetInfoCmd, BrResolveError> {
         Ok(FleetInfoCmd {
-            fit_mode: OvrdMapLight::from_compact_br(self.fit_mode, resps)?,
-            item_mode: OvrdMapLight::from_compact_br(self.item_mode, resps)?,
+            fit_mode: OvrdMapLight::from_compact_with_br_resolution(self.fit_mode, resps)?,
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
             shared: self.shared,
         })
     }

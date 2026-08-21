@@ -81,7 +81,7 @@ impl ItemInfoCmdBr {
 impl ItemInfoCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmd, BrResolveError> {
         Ok(ItemInfoCmd {
-            item_mode: OvrdMapLight::from_compact_br(self.item_mode, resps)?,
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
         })
     }
 }

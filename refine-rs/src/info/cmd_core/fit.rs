@@ -99,7 +99,7 @@ impl FitInfoCmdBr {
 impl FitInfoCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
         Ok(FitInfoCmd {
-            item_mode: OvrdMapLight::from_compact_br(self.item_mode, resps)?,
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
             shared: self.shared,
         })
     }

@@ -176,7 +176,7 @@ impl<K, V> OvrdMapLight<K, V> {
         }
         Self { default, overrides }
     }
-    pub(crate) fn from_compact_br<B>(
+    pub(crate) fn from_compact_with_br_resolution<B>(
         compact_br: OvrdCompact<B, V>,
         ctl_cmd_resps: &CmdResps,
     ) -> Result<Self, BrResolveError>

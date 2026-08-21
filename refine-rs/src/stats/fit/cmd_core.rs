@@ -1,3 +1,5 @@
+use rc::{ItemCommon, Lender};
+
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
@@ -109,7 +111,10 @@ impl FitStatsCmd {
         let item_options = OvrdMapHeavy::from_compact(self.item_options);
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),
-            items: Vec::new(),
+            items: core_fit.iter_items_mut().map_into_iter(|core_item| {
+                let item_id = core_item.get_item_id();
+                let x = item_options.get(&item_id);
+            }),
         }
     }
 }

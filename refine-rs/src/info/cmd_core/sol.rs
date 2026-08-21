@@ -114,9 +114,9 @@ impl SolInfoCmdBr {
 impl SolInfoCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
         Ok(SolInfoCmd {
-            fleet_mode: OvrdMapLight::from_compact_br(self.fleet_mode, resps)?,
-            fit_mode: OvrdMapLight::from_compact_br(self.fit_mode, resps)?,
-            item_mode: OvrdMapLight::from_compact_br(self.item_mode, resps)?,
+            fleet_mode: OvrdMapLight::from_compact_with_br_resolution(self.fleet_mode, resps)?,
+            fit_mode: OvrdMapLight::from_compact_with_br_resolution(self.fit_mode, resps)?,
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
             shared: self.shared,
         })
     }
