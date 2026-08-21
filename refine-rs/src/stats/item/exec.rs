@@ -1,8 +1,7 @@
 use rc::ItemMutCommon;
 
-use super::options_int::ItemStatsOptionsInt;
 use crate::{
-    FitId, ItemId, PValue, Value,
+    PValue, Value,
     stats::{
         ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
         StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
@@ -10,11 +9,11 @@ use crate::{
         StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatItemAppliedError, StatItemError, StatJumpError},
         fatal::StatErrorFatality,
-        option::StatOptionResolved,
+        item::ItemStatsOptionsResolved,
     },
 };
 
-impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+impl ItemStatsOptionsResolved {
     pub(in crate::stats) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStats {
         let mut stats = ItemStats { .. };
         // Output

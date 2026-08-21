@@ -1,5 +1,5 @@
 pub use cmd_core::{ItemGetItemStatsError, ItemStatsCmd, ItemStatsCmdBr, ItemStatsCmdCtxItem, ItemStatsCmdCtxItemBr};
-pub(in crate::stats) use options_int::ItemStatsOptionsInt;
+pub(in crate::stats) use options_int::{ItemStatsOptionsInt, ItemStatsOptionsResolved};
 pub use options_pub::{ItemStatsOptions, ItemStatsOptionsBr};
 pub use result::{ItemStats, ItemStatsResp};
 

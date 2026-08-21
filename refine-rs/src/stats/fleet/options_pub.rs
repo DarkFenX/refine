@@ -4,8 +4,8 @@ use crate::{
     stats::{
         FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
         StatOptionFitOutRps, StatOptionMass,
-        fleet::FleetStatsOptionsInt,
-        option::{StatOptionRaw, StatOptionResolved},
+        fleet::{FleetStatsOptionsInt, FleetStatsOptionsResolved},
+        option::StatOptionRaw,
     },
 };
 
@@ -91,12 +91,12 @@ impl FleetStatsOptionsBr {
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptions {
-    pub(super) fn stat_resolve(self) -> FleetStatsOptionsInt<StatOptionResolved, ItemId> {
+    pub(super) fn stat_resolve(self) -> FleetStatsOptionsResolved {
         self.options.stat_resolve(self.default)
     }
 }
 
-impl From<FleetStatsOptions<ItemId>> for FleetStatsOptionsInt<StatOptionResolved, ItemId> {
+impl From<FleetStatsOptions<ItemId>> for FleetStatsOptionsResolved {
     fn from(value: FleetStatsOptions<ItemId>) -> Self {
         value.options.stat_resolve(value.default)
     }

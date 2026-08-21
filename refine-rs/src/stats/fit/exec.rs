@@ -1,6 +1,5 @@
-use super::options_int::FitStatsOptionsInt;
 use crate::{
-    FitId, ItemId, PValue, Value,
+    PValue, Value,
     stats::{
         FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
         StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
@@ -8,14 +7,14 @@ use crate::{
         StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         fatal::StatErrorFatality,
-        option::StatOptionResolved,
+        fit::FitStatsOptionsResolved,
     },
 };
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+impl FitStatsOptionsResolved {
     pub(super) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
         // Fit output stats

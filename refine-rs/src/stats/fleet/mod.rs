@@ -1,4 +1,4 @@
-pub(in crate::stats) use options_int::FleetStatsOptionsInt;
+pub(in crate::stats) use options_int::{FleetStatsOptionsInt, FleetStatsOptionsResolved};
 pub use options_pub::{FleetStatsOptions, FleetStatsOptionsBr};
 pub use result::FleetStats;
 

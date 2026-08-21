@@ -1,4 +1,3 @@
-use super::options_int::FitStatsOptionsInt;
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
@@ -6,7 +5,8 @@ use crate::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
         StatOptionJump, StatOptionMass, StatOptionRps,
-        option::{StatOptionRaw, StatOptionResolved},
+        fit::{FitStatsOptionsInt, FitStatsOptionsResolved},
+        option::StatOptionRaw,
     },
 };
 
@@ -311,12 +311,12 @@ impl FitStatsOptionsBr {
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptions {
-    pub(super) fn stat_resolve(self) -> FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+    pub(super) fn stat_resolve(self) -> FitStatsOptionsResolved {
         self.options.stat_resolve(self.default)
     }
 }
 
-impl From<FitStatsOptions<FitId, ItemId>> for FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+impl From<FitStatsOptions<FitId, ItemId>> for FitStatsOptionsResolved {
     fn from(value: FitStatsOptions<FitId, ItemId>) -> Self {
         value.options.stat_resolve(value.default)
     }

@@ -10,6 +10,8 @@ use crate::{
     },
 };
 
+pub(in crate::stats) type FleetStatsOptionsResolved = FleetStatsOptionsInt<StatOptionResolved, ItemId>;
+
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -65,8 +67,8 @@ impl FleetStatsOptionsInt<StatOptionRaw, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FleetStatsOptionsInt<StatOptionRaw, I> {
-    pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsInt<StatOptionResolved, I> {
+impl FleetStatsOptionsInt<StatOptionRaw, ItemId> {
+    pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsResolved {
         FleetStatsOptionsInt {
             dmg: self.dmg.stat_resolve(default),
             mps: self.mps.stat_resolve(default),

@@ -11,6 +11,8 @@ use crate::{
     },
 };
 
+pub(in crate::stats) type ItemStatsOptionsResolved = ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId>;
+
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -187,7 +189,7 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
-    pub(super) fn stat_resolve(self, default: bool) -> ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+    pub(super) fn stat_resolve(self, default: bool) -> ItemStatsOptionsResolved {
         ItemStatsOptionsInt {
             // Output
             dmg: self.dmg.stat_resolve(default),
@@ -241,7 +243,7 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Anything-requested check
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+impl ItemStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
         self.dmg.is_enabled() ||
         self.mps.is_enabled() ||

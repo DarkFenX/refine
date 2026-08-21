@@ -5,8 +5,8 @@ use crate::{
     err::BrResolveError,
     shared::{OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
-        item::ItemStatsOptionsInt, option::StatOptionResolved,
+        FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStats, ItemStatsOptions, ItemStatsOptionsBr,
+        item::ItemStatsOptionsResolved,
     },
 };
 
@@ -111,37 +111,47 @@ impl FitStatsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResp {
-        let items_options: OvrdMapHeavy<_, ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId>> =
+        let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
-        let items = match items_options.get_default().is_any_stat_requested() {
-            true => core_fit
-                .iter_items_mut()
-                .map_into_iter(|mut core_item| {
-                    let item_id = core_item.get_item_id();
-                    let item_stats = items_options.get(&item_id).execute(&mut core_item);
-                    (item_id, item_stats)
-                })
-                .collect(),
-            false => {
-                let core_sol = core_fit.get_sol_mut();
-                let mut results = Vec::with_capacity(items_options.override_len());
-                for (item_id, item_options) in items_options.iter_overrides() {
-                    if !item_options.is_any_stat_requested() {
-                        continue;
-                    }
-                    let Ok(mut core_item) = core_sol.get_item_mut(&item_id) else {
-                        continue;
-                    };
-                    results.push((item_id, item_options.execute(&mut core_item)));
-                }
-                results
-            }
+        let items = match item_options.get_default().is_any_stat_requested() {
+            true => get_fit_item_stats(core_fit, &item_options),
+            false => get_overridden_item_stats(core_fit, &item_options),
         };
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),
             items,
         }
     }
+}
+fn get_fit_item_stats(
+    core_fit: &mut rc::FitMut,
+    item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
+) -> Vec<(ItemId, ItemStats)> {
+    core_fit
+        .iter_items_mut()
+        .map_into_iter(|mut core_item| {
+            let item_id = core_item.get_item_id();
+            let item_stats = item_options.get(&item_id).execute(&mut core_item);
+            (item_id, item_stats)
+        })
+        .collect()
+}
+fn get_overridden_item_stats(
+    core_fit: &mut rc::FitMut,
+    item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
+) -> Vec<(ItemId, ItemStats)> {
+    let core_sol = core_fit.get_sol_mut();
+    let mut stats = Vec::with_capacity(item_options.override_len());
+    for (item_id, options) in item_options.iter_overrides() {
+        if !options.is_any_stat_requested() {
+            continue;
+        }
+        let Ok(mut core_item) = core_sol.get_item_mut(&item_id) else {
+            continue;
+        };
+        stats.push((item_id, options.execute(&mut core_item)));
+    }
+    stats
 }
 
 impl FitStatsCmdCtxFit {

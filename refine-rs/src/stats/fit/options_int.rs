@@ -11,6 +11,8 @@ use crate::{
     },
 };
 
+pub(in crate::stats) type FitStatsOptionsResolved = FitStatsOptionsInt<StatOptionResolved, FitId, ItemId>;
+
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -258,8 +260,8 @@ impl FitStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> FitStatsOptionsInt<StatOptionRaw, F, I> {
-    pub(super) fn stat_resolve(self, default: bool) -> FitStatsOptionsInt<StatOptionResolved, F, I> {
+impl FitStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
+    pub(super) fn stat_resolve(self, default: bool) -> FitStatsOptionsResolved {
         FitStatsOptionsInt {
             // Fit output stats
             dmg: self.dmg.stat_resolve(default),
