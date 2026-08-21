@@ -14,6 +14,7 @@ use crate::{
 #[derive(Clone)]
 pub struct FitStatsResp {
     pub fit: FitStats,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub items: Vec<(ItemId, ItemStats)>,
 }
 
