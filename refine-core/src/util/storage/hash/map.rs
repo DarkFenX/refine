@@ -171,8 +171,8 @@ impl<K, V> Map<K, V, rustc_hash::FxSeededState> {
             data: HashMap::with_hasher(rustc_hash::FxSeededState::with_seed(0)),
         }
     }
-    // Used only in deserialization
-    #[cfg(any(feature = "serde", feature = "serde-ad"))]
+    // Used only in adapted data deserialization
+    #[cfg(feature = "serde-ad")]
     pub(crate) fn const_with_capacity(capacity: usize) -> Self {
         Self {
             data: HashMap::with_capacity_and_hasher(capacity, rustc_hash::FxSeededState::with_seed(0)),
