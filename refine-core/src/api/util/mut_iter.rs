@@ -7,7 +7,7 @@
 //! tl;dr: a bunch of hacks to make it work. See <https://github.com/WanderLanz/Lender/issues/37>
 //! for more info.
 
-use lender::{Lender, Lending, unsafe_assume_covariance};
+use lender::{ExactSizeLender, Lender, Lending, unsafe_assume_covariance};
 
 use crate::{
     api::{
@@ -59,7 +59,13 @@ where
         self.index += 1;
         Some(T::new_new(self.sol, uid))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.uids.len() - self.index;
+        (remaining, Some(remaining))
+    }
 }
+impl<'iter, T> ExactSizeLender for MutIter<'iter, T> where T: New {}
 
 pub trait RefFamily {
     type Ref<'a>;

@@ -1,4 +1,4 @@
-use lender::{Lender, Lending, check_covariance};
+use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{
     ad::AAbilId,
@@ -35,18 +35,24 @@ impl<'iter> Lender for AbilityIter<'iter> {
         self.index += 1;
         Some(AbilityMut::new(self.sol, self.fighter_uid, abil_aid))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.abil_aids.len() - self.index;
+        (remaining, Some(remaining))
+    }
 }
+impl<'iter> ExactSizeLender for AbilityIter<'iter> {}
 
 impl<'s> Fighter<'s> {
     /// Iterates over fighter's abilities.
-    pub fn iter_abilities(&self) -> impl Iterator<Item = Ability<'_>> {
+    pub fn iter_abilities(&self) -> impl ExactSizeIterator<Item = Ability<'_>> {
         iter_abils(self.sol, self.uid)
     }
 }
 
 impl<'s> FighterMut<'s> {
     /// Iterates over fighter's abilities.
-    pub fn iter_abilities(&self) -> impl Iterator<Item = Ability<'_>> {
+    pub fn iter_abilities(&self) -> impl ExactSizeIterator<Item = Ability<'_>> {
         iter_abils(self.sol, self.uid)
     }
     /// Iterates over fighter's abilities.
@@ -56,7 +62,7 @@ impl<'s> FighterMut<'s> {
     }
 }
 
-fn iter_abils(sol: &SolarSystem, fighter_uid: UItemId) -> impl Iterator<Item = Ability<'_>> {
+fn iter_abils(sol: &SolarSystem, fighter_uid: UItemId) -> impl ExactSizeIterator<Item = Ability<'_>> {
     get_abil_aids(sol, fighter_uid)
         .into_iter()
         .map(move |abil_aid| Ability::new(sol, fighter_uid, abil_aid))

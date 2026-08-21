@@ -1,4 +1,4 @@
-use lender::{Lender, Lending, check_covariance};
+use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use super::shared::get_fit_rack;
 use crate::{
@@ -33,7 +33,13 @@ impl<'iter> Lender for ModuleIter<'iter> {
         self.index += 1;
         Some(module_uid.map(|module_uid| ModuleMut::new(self.sol, module_uid)))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.module_uids.len() - self.index;
+        (remaining, Some(remaining))
+    }
 }
+impl<'iter> ExactSizeLender for ModuleIter<'iter> {}
 
 impl<'s> Fit<'s> {
     pub fn iter_modules(&self, rack: ModRack) -> impl ExactSizeIterator<Item = Option<Module<'_>>> {

@@ -1,4 +1,4 @@
-use lender::{Lender, Lending, check_covariance};
+use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use super::shared::get_se_chance_attr_aid_by_effect_rid;
 use crate::{
@@ -36,7 +36,13 @@ impl<'iter> Lender for SideEffectIter<'iter> {
         self.index += 1;
         Some(SideEffectMut::new(self.sol, self.item_uid, effect_id, attr_id))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.effects_with_chances.len() - self.index;
+        (remaining, Some(remaining))
+    }
 }
+impl<'iter> ExactSizeLender for SideEffectIter<'iter> {}
 
 impl<'s> Booster<'s> {
     /// Iterates over booster's side effects.

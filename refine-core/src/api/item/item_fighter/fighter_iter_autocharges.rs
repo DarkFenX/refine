@@ -5,13 +5,13 @@ use crate::{
 };
 
 impl<'s> Fighter<'s> {
-    pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge<'_>> {
+    pub fn iter_autocharges(&self) -> impl ExactSizeIterator<Item = Autocharge<'_>> {
         iter_autocharges(self.sol, self.uid)
     }
 }
 
 impl<'s> FighterMut<'s> {
-    pub fn iter_autocharges(&self) -> impl Iterator<Item = Autocharge<'_>> {
+    pub fn iter_autocharges(&self) -> impl ExactSizeIterator<Item = Autocharge<'_>> {
         iter_autocharges(self.sol, self.uid)
     }
     pub fn iter_autocharges_mut(&mut self) -> MutIter<'_, AutochargeMut<'_>> {
@@ -21,7 +21,7 @@ impl<'s> FighterMut<'s> {
     }
 }
 
-fn iter_autocharges(sol: &SolarSystem, fighter_uid: UItemId) -> impl Iterator<Item = Autocharge<'_>> {
+fn iter_autocharges(sol: &SolarSystem, fighter_uid: UItemId) -> impl ExactSizeIterator<Item = Autocharge<'_>> {
     let u_fighter = sol.u_data.items.get(fighter_uid).dc_fighter().unwrap();
     let autocharge_uids = u_fighter.get_autocharges().values();
     autocharge_uids.map(|autocharge_uid| Autocharge::new(sol, autocharge_uid))

@@ -1,4 +1,4 @@
-use lender::{Lender, Lending, check_covariance};
+use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{
     ad::AAttrId,
@@ -104,7 +104,13 @@ impl<'iter> Lender for RawMAttrIter<'iter> {
         self.index += 1;
         Some(RawMAttrMut::new(self.sol, self.item_uid, attr_aid))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.attr_aids.len() - self.index;
+        (remaining, Some(remaining))
+    }
 }
+impl<'iter> ExactSizeLender for RawMAttrIter<'iter> {}
 
 fn raw_mutated_attr_id_iter(sol: &SolarSystem, item_uid: UItemId) -> impl ExactSizeIterator<Item = AAttrId> {
     sol.u_data

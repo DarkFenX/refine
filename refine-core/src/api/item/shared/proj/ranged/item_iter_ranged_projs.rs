@@ -1,4 +1,4 @@
-use lender::{Lender, Lending, check_covariance};
+use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 
 use crate::{RangedProj, RangedProjMut, SolarSystem, api::item::shared::proj::iter_projectee_uids, ud::UItemId};
 
@@ -31,7 +31,13 @@ impl<'iter> Lender for RangedProjIter<'iter> {
         self.index += 1;
         Some(RangedProjMut::new(self.sol, self.item_uid, projectee_uid))
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = self.projectee_uids.len() - self.index;
+        (remaining, Some(remaining))
+    }
 }
+impl<'iter> ExactSizeLender for RangedProjIter<'iter> {}
 
 pub(in crate::api) fn iter_ranged_projs(
     sol: &SolarSystem,

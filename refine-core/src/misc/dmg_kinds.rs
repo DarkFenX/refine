@@ -8,7 +8,7 @@ pub(crate) struct DmgKinds<T> {
     pub(crate) explosive: T,
 }
 impl<T> DmgKinds<T> {
-    pub(crate) fn iter(&self) -> impl Iterator<Item = &T> {
+    pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = &T> {
         DmgKindsIter::new(self)
     }
     pub(crate) fn get_total(&self) -> T
@@ -82,4 +82,16 @@ impl<'a, T> Iterator for DmgKindsIter<'a, T> {
             State5::Five => None,
         }
     }
+
+    fn size_hint(&self) -> (usize, Option<usize>) {
+        let remaining = match self.state {
+            State5::One => 4,
+            State5::Two => 3,
+            State5::Three => 2,
+            State5::Four => 1,
+            State5::Five => 0,
+        };
+        (remaining, Some(remaining))
+    }
 }
+impl<T> ExactSizeIterator for DmgKindsIter<'_, T> {}
