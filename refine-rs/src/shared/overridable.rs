@@ -90,12 +90,6 @@ impl<K, V> OvrdMapHeavy<K, V>
 where
     K: Eq + Hash,
 {
-    pub(crate) fn get(&self, key: &K) -> &V {
-        match self.override_refs.get(key) {
-            Some(index) => &self.override_vals[*index],
-            None => &self.default,
-        }
-    }
     pub(crate) fn set_default(&mut self, default: V) {
         self.default = default;
     }
@@ -103,6 +97,26 @@ where
         let index = self.override_vals.len();
         self.override_vals.push(value);
         self.override_refs.extend(keys.map(|key| (key, index)));
+    }
+    pub(crate) fn get(&self, key: &K) -> &V {
+        match self.override_refs.get(key) {
+            Some(index) => &self.override_vals[*index],
+            None => &self.default,
+        }
+    }
+    pub(crate) fn get_default(&self) -> &V {
+        &self.default
+    }
+    pub(crate) fn iter_overrides(&self) -> impl Iterator<Item = (K, &V)>
+    where
+        K: Copy,
+    {
+        self.override_refs
+            .iter()
+            .map(|(key, index)| (*key, &self.override_vals[*index]))
+    }
+    pub(crate) fn override_len(&self) -> usize {
+        self.override_refs.len()
     }
 }
 

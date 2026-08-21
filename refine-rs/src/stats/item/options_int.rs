@@ -236,3 +236,55 @@ impl ItemStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Anything-requested check
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+    pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
+        self.dmg.is_some() ||
+        self.mps.is_some() ||
+        self.outgoing_nps.is_some() ||
+        self.outgoing_rps.is_some() ||
+        self.outgoing_cps.is_some() ||
+        // Tank
+        self.resists ||
+        self.hp ||
+        self.ehp.is_some() ||
+        self.wc_ehp ||
+        self.rps.is_some() ||
+        self.erps.is_some() ||
+        self.breach_resist ||
+        // Cap
+        self.cap_amount ||
+        self.cap_balance.is_some() ||
+        self.cap_sim.is_some() ||
+        self.neut_resist ||
+        // Sensors
+        self.locks ||
+        self.lock_range ||
+        self.scan_res ||
+        self.sensors ||
+        self.dscan_range ||
+        self.probing_size ||
+        self.incoming_jam.is_some() ||
+        // Mobility
+        self.speed ||
+        self.agility ||
+        self.align_time ||
+        self.sig_radius ||
+        self.mass.is_some() ||
+        self.warp_speed ||
+        self.max_warp_range ||
+        self.jump.is_some() ||
+        // Misc
+        self.drone_control_range ||
+        self.can_warp ||
+        self.can_jump_gate ||
+        self.can_jump_wormhole ||
+        self.can_jump_drive ||
+        self.can_dock_station ||
+        self.can_dock_citadel ||
+        self.can_tether
+    }
+}
