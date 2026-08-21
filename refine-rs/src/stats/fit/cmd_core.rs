@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::OvrdCompact,
+    shared::{OvrdCompact, OvrdMapHeavy},
     stats::{FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr},
 };
 
@@ -106,6 +106,7 @@ impl FitStatsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResp {
+        let item_options = OvrdMapHeavy::from_compact(self.item_options);
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),
             items: Vec::new(),

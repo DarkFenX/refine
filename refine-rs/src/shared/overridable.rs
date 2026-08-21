@@ -89,7 +89,6 @@ where
 impl<K, V> OvrdMapHeavy<K, V>
 where
     K: Eq + Hash,
-    V: Copy,
 {
     pub(crate) fn get(&self, key: &K) -> &V {
         match self.override_refs.get(key) {
@@ -135,6 +134,23 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<K, V> OvrdMapHeavy<K, V>
+where
+    K: Eq + Hash,
+{
+    pub(crate) fn from_compact(compact: OvrdCompact<K, V>) -> Self {
+        let mut heavy = Self {
+            default: compact.default,
+            override_refs: HashMap::new(),
+            override_vals: Vec::with_capacity(compact.overrides.len()),
+        };
+        for (value, keys) in compact.overrides.into_iter() {
+            heavy.add_overrides(value, keys.into_iter());
+        }
+        heavy
+    }
+}
+
 impl<K, V> OvrdMapLight<K, V> {
     pub(crate) fn from_default(default: V) -> Self {
         Self {
