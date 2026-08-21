@@ -1,5 +1,5 @@
 use crate::{
-    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, IdType, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
@@ -12,31 +12,14 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "
-        O::Reg: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitDmg<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitMining>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutNps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutRps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutCps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionEhp>: serde::Deserialize<'de>,
-        O::Ext<StatOptionRps>: serde::Deserialize<'de>,
-        O::Ext<StatOptionErps>: serde::Deserialize<'de>,
-        O::Ext<StatOptionCapBlc<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionCapSim<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionIncomingJam>: serde::Deserialize<'de>,
-        O::Ext<StatOptionMass>: serde::Deserialize<'de>,
-        O::Ext<StatOptionJump<F>>: serde::Deserialize<'de>")
-    )
+    serde(default, bound(deserialize = ""))
 )]
 #[derive(Clone)]
 pub(super) struct FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     // Fit output stats
     pub(super) dmg: O::Ext<StatOptionFitDmg<I>>,
@@ -111,8 +94,8 @@ where
 impl<O, F, I> Default for FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     fn default() -> Self {
         Self {
@@ -276,8 +259,8 @@ impl FitStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FitStatsOptionsInt<StatOptionRaw, F, I>
 where
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     pub(super) fn stat_resolve(self, default: bool) -> FitStatsOptionsInt<StatOptionResolved, F, I> {
         FitStatsOptionsInt {

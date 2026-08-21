@@ -1,5 +1,5 @@
 use crate::{
-    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, IdType, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
@@ -12,31 +12,14 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "
-        O::Reg: serde::Deserialize<'de>,
-        O::Ext<StatOptionItemDmg<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionItemMining>: serde::Deserialize<'de>,
-        O::Ext<StatOptionItemOutNps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionItemOutRps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionItemOutCps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionEhp>: serde::Deserialize<'de>,
-        O::Ext<StatOptionRps>: serde::Deserialize<'de>,
-        O::Ext<StatOptionErps>: serde::Deserialize<'de>,
-        O::Ext<StatOptionCapBlc<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionCapSim<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionIncomingJam>: serde::Deserialize<'de>,
-        O::Ext<StatOptionMass>: serde::Deserialize<'de>,
-        O::Ext<StatOptionJump<F>>: serde::Deserialize<'de>")
-    )
+    serde(default, bound(deserialize = ""))
 )]
 #[derive(Clone)]
 pub(super) struct ItemStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     // Output
     pub(super) dmg: O::Ext<StatOptionItemDmg<I>>,
@@ -87,8 +70,8 @@ where
 impl<O, F, I> Default for ItemStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     fn default() -> Self {
         Self {

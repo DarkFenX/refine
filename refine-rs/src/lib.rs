@@ -38,7 +38,7 @@ pub use rc::{
 };
 pub use shared::{
     AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, CmdResp, CmdResps, FitIdBr, FleetIdBr,
-    ItemIdBr, TriStateField,
+    IdType, ItemIdBr, TriStateField,
 };
 pub use src::{Src, SrcAlias};
 

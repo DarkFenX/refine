@@ -1,28 +1,22 @@
-use crate::stats::{
-    StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
-    StatOptionMass,
-    option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+use crate::{
+    IdType,
+    stats::{
+        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
+        StatOptionMass,
+        option::{StatOptionKind, StatOptionRaw, StatOptionResolved},
+    },
 };
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "
-        O::Ext<StatOptionFitDmg<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitMining>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutNps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutRps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionFitOutCps<I>>: serde::Deserialize<'de>,
-        O::Ext<StatOptionMass>: serde::Deserialize<'de>")
-    )
+    serde(default, bound(deserialize = ""))
 )]
 #[derive(Clone)]
 pub(in crate::stats) struct FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
-    I: Clone,
+    I: IdType,
 {
     pub(super) dmg: O::Ext<StatOptionFitDmg<I>>,
     pub(super) mps: O::Ext<StatOptionFitMining>,
@@ -34,7 +28,7 @@ where
 impl<O, I> Default for FleetStatsOptionsInt<O, I>
 where
     O: StatOptionKind,
-    I: Clone,
+    I: IdType,
 {
     fn default() -> Self {
         Self {
@@ -53,7 +47,7 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FleetStatsOptionsInt<StatOptionRaw, I>
 where
-    I: Clone,
+    I: IdType,
 {
     pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsInt<StatOptionResolved, I> {
         FleetStatsOptionsInt {

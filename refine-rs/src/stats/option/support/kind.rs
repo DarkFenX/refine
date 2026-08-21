@@ -1,8 +1,10 @@
+pub(in crate::stats) use repr::StatOptionRepr;
+
 use super::containers::{StatDefOption, StatDefOptionExt};
 
-// Needed to make containers with per-entity options to be usable for storing them "raw" (which
-// should be usable with conjunction of default value set elsewhere), and for storing their resolved
-// version (combined with default value).
+// Needed to make containers with per-entity options to be usable for storing them "raw" and
+// resolved form. Raw form is the format which is stored in public-facing entities, which have
+// "default" field defined elsewhere. Resolved form is default value + stored option combined.
 //
 // Technically, it is necessary only for the extended option, but since we have it already, it is
 // good to use for the regular option as well.
@@ -10,12 +12,8 @@ pub(in crate::stats) trait StatOptionKind {
     type Reg: StatOptionRepr;
     type Ext<T>: StatOptionRepr
     where
-        T: Clone;
+        T: StatOptionRepr;
 }
-
-// Carries extra bounds which all container types need to have
-pub(in crate::stats) trait StatOptionRepr: Clone + Default {}
-impl<T> StatOptionRepr for T where T: Clone + Default {}
 
 #[derive(Copy, Clone)]
 pub(in crate::stats) struct StatOptionRaw;
@@ -24,7 +22,7 @@ impl StatOptionKind for StatOptionRaw {
     type Ext<T>
         = StatDefOptionExt<T>
     where
-        T: Clone;
+        T: StatOptionRepr;
 }
 
 #[derive(Copy, Clone)]
@@ -34,5 +32,18 @@ impl StatOptionKind for StatOptionResolved {
     type Ext<T>
         = Option<Vec<T>>
     where
-        T: Clone;
+        T: StatOptionRepr;
+}
+
+// Another trait is needed to remove lots of bounds from specific structs
+#[cfg(feature = "serde")]
+mod repr {
+    pub(in crate::stats) trait StatOptionRepr: Clone + Default + serde::de::DeserializeOwned {}
+    impl<T> StatOptionRepr for T where T: Clone + Default + serde::de::DeserializeOwned {}
+}
+
+#[cfg(not(feature = "serde"))]
+mod repr {
+    pub(in crate::stats) trait StatOptionRepr: Clone + Default {}
+    impl<T> StatOptionRepr for T where T: Clone + Default {}
 }

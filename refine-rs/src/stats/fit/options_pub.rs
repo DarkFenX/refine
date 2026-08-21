@@ -1,6 +1,6 @@
 use super::options_int::FitStatsOptionsInt;
 use crate::{
-    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    CmdResps, FitId, FitIdBr, IdType, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
@@ -13,16 +13,13 @@ use crate::{
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "FitStatsOptionsInt<StatOptionRaw, F, I>: Default + serde::Deserialize<'de>")
-    )
+    serde(default, bound(deserialize = ""))
 )]
 #[derive(Clone)]
 pub struct FitStatsOptions<F = FitId, I = ItemId>
 where
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     #[cfg_attr(feature = "serde", serde(default))]
     default: bool = false,
@@ -31,8 +28,8 @@ where
 }
 impl<F, I> Default for FitStatsOptions<F, I>
 where
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
     FitStatsOptionsInt<StatOptionRaw, F, I>: Default,
 {
     fn default() -> Self {
@@ -50,8 +47,8 @@ pub type FitStatsOptionsBr = FitStatsOptions<FitIdBr, ItemIdBr>;
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FitStatsOptions<F, I>
 where
-    F: Clone,
-    I: Clone,
+    F: IdType,
+    I: IdType,
 {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
