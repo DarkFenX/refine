@@ -1,7 +1,8 @@
-pub(in crate::stats) use repr::StatOptionRepr;
-
 use super::containers::{StatDefOption, StatDefOptionExt};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// HKT for stats options
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Needed to make containers with per-entity options to be usable for storing them "raw" and
 // resolved form. Raw form is the format which is stored in public-facing entities, which have
 // "default" field defined elsewhere. Resolved form is default value + stored option combined.
@@ -35,7 +36,11 @@ impl StatOptionKind for StatOptionResolved {
         T: StatOptionRepr;
 }
 
-// Another trait is needed to remove lots of bounds from specific structs
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Trait to hide common bounds for every HKT and option type
+////////////////////////////////////////////////////////////////////////////////////////////////////
+use repr::StatOptionRepr;
+
 #[cfg(feature = "serde")]
 mod repr {
     pub(in crate::stats) trait StatOptionRepr: Clone + Default + serde::de::DeserializeOwned {}
