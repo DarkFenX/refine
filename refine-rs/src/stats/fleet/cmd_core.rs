@@ -6,7 +6,10 @@ use crate::{
     shared::{OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStats, FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp,
-        ItemStats, ItemStatsOptions, ItemStatsOptionsBr, fit::FitStatsOptionsResolved, item::ItemStatsOptionsResolved,
+        ItemStats, ItemStatsOptions, ItemStatsOptionsBr,
+        exec_shared::{extend_fit_item_stats, get_ovrd_item_stats},
+        fit::FitStatsOptionsResolved,
+        item::ItemStatsOptionsResolved,
     },
 };
 
@@ -192,11 +195,7 @@ fn get_fleet_item_stats(
     let mut stats = Vec::new();
     let mut core_fits = core_fleet.iter_fits_mut();
     while let Some(mut core_fit) = core_fits.next() {
-        stats.extend(core_fit.iter_items_mut().map_into_iter(|mut core_item| {
-            let item_id = core_item.get_item_id();
-            let item_stats = item_options.get(&item_id).execute(&mut core_item);
-            (item_id, item_stats)
-        }));
+        extend_fit_item_stats(&mut core_fit, item_options, &mut stats);
     }
     stats
 }
@@ -205,24 +204,12 @@ fn get_fleet_item_stats_ovrd(
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
 ) -> Vec<(ItemId, ItemStats)> {
     let fleet_id = core_fleet.get_fleet_id();
-    let core_sol = core_fleet.get_sol_mut();
-    let mut stats = Vec::with_capacity(item_options.override_len());
-    for (item_id, options) in item_options.iter_overrides() {
-        if !options.is_any_stat_requested() {
-            continue;
-        }
-        let Ok(mut core_item) = core_sol.get_item_mut(&item_id) else {
-            continue;
-        };
-        let item_fleet_id = core_item
+    get_ovrd_item_stats(core_fleet.get_sol_mut(), item_options, |core_item| {
+        core_item
             .get_fit()
-            .and_then(|core_item_fit| core_item_fit.get_fleet().map(|fleet| fleet.get_fleet_id()));
-        if item_fleet_id != Some(fleet_id) {
-            continue;
-        }
-        stats.push((item_id, options.execute(&mut core_item)));
-    }
-    stats
+            .and_then(|core_item_fit| core_item_fit.get_fleet().map(|fleet| fleet.get_fleet_id()))
+            == Some(fleet_id)
+    })
 }
 
 impl FleetStatsCmdCtxFleet {

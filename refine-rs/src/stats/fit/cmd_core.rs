@@ -1,4 +1,4 @@
-use rc::{ItemCommon, Lender};
+use rc::ItemCommon;
 
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
@@ -6,6 +6,7 @@ use crate::{
     shared::{BrResolvable, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStats, ItemStatsOptions, ItemStatsOptionsBr,
+        exec_shared::{extend_fit_item_stats, get_ovrd_item_stats},
         item::ItemStatsOptionsResolved,
     },
 };
@@ -127,35 +128,18 @@ fn get_fit_item_stats(
     core_fit: &mut rc::FitMut,
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
 ) -> Vec<(ItemId, ItemStats)> {
-    core_fit
-        .iter_items_mut()
-        .map_into_iter(|mut core_item| {
-            let item_id = core_item.get_item_id();
-            let item_stats = item_options.get(&item_id).execute(&mut core_item);
-            (item_id, item_stats)
-        })
-        .collect()
+    let mut stats = Vec::new();
+    extend_fit_item_stats(core_fit, item_options, &mut stats);
+    stats
 }
 fn get_fit_item_stats_ovrd(
     core_fit: &mut rc::FitMut,
     item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
 ) -> Vec<(ItemId, ItemStats)> {
     let fit_id = core_fit.get_fit_id();
-    let core_sol = core_fit.get_sol_mut();
-    let mut stats = Vec::with_capacity(item_options.override_len());
-    for (item_id, options) in item_options.iter_overrides() {
-        if !options.is_any_stat_requested() {
-            continue;
-        }
-        let Ok(mut core_item) = core_sol.get_item_mut(&item_id) else {
-            continue;
-        };
-        if core_item.get_fit().map(|core_item_fit| core_item_fit.get_fit_id()) != Some(fit_id) {
-            continue;
-        }
-        stats.push((item_id, options.execute(&mut core_item)));
-    }
-    stats
+    get_ovrd_item_stats(core_fit.get_sol_mut(), item_options, |core_item| {
+        core_item.get_fit().map(|core_item_fit| core_item_fit.get_fit_id()) == Some(fit_id)
+    })
 }
 
 impl FitStatsCmdCtxFit {

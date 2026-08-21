@@ -21,6 +21,7 @@ pub use rc::{
 pub use result_details::{StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult};
 
 pub mod err;
+mod exec_shared;
 mod fatal;
 mod fit;
 mod fleet;
