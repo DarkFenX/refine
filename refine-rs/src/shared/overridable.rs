@@ -138,14 +138,17 @@ impl<K, V> OvrdMapHeavy<K, V>
 where
     K: Eq + Hash,
 {
-    pub(crate) fn from_compact(compact: OvrdCompact<K, V>) -> Self {
+    pub(crate) fn from_compact_with_conversion<VC>(compact: OvrdCompact<K, VC>) -> Self
+    where
+        VC: Into<V>,
+    {
         let mut heavy = Self {
-            default: compact.default,
+            default: compact.default.into(),
             override_refs: HashMap::new(),
             override_vals: Vec::with_capacity(compact.overrides.len()),
         };
         for (value, keys) in compact.overrides.into_iter() {
-            heavy.add_overrides(value, keys.into_iter());
+            heavy.add_overrides(value.into(), keys.into_iter());
         }
         heavy
     }

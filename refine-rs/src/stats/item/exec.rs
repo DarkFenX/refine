@@ -15,7 +15,7 @@ use crate::{
 };
 
 impl ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
-    pub(super) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStats {
+    pub(in crate::stats) fn execute(&self, core_item: &mut rc::ItemMut) -> ItemStats {
         let mut stats = ItemStats { .. };
         // Output
         if let Some(options) = self.dmg.as_ref() {

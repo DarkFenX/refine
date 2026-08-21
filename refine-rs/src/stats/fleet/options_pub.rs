@@ -1,8 +1,11 @@
 use crate::{
-    IdType, ItemId, ItemIdBr,
+    CmdResps, IdType, ItemId, ItemIdBr,
+    err::BrResolveError,
     stats::{
         FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-        StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptionsInt, option::StatOptionRaw,
+        StatOptionFitOutRps, StatOptionMass,
+        fleet::FleetStatsOptionsInt,
+        option::{StatOptionRaw, StatOptionResolved},
     },
 };
 
@@ -82,5 +85,32 @@ where
 impl FleetStatsOptions {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
         self.options.stat_resolve(self.default).execute(core_fleet)
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetStatsOptionsBr {
+    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsOptions, BrResolveError> {
+        Ok(FleetStatsOptions {
+            default: self.default,
+            options: self.options.br_resolve(resps)?,
+        })
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default + stat resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetStatsOptions {
+    pub(super) fn stat_resolve(self) -> FleetStatsOptionsInt<StatOptionResolved, ItemId> {
+        self.options.stat_resolve(self.default)
+    }
+}
+
+impl From<FleetStatsOptions<ItemId>> for FleetStatsOptionsInt<StatOptionResolved, ItemId> {
+    fn from(value: FleetStatsOptions<ItemId>) -> Self {
+        value.options.stat_resolve(value.default)
     }
 }

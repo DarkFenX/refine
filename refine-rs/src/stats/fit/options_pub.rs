@@ -331,3 +331,9 @@ impl FitStatsOptions {
         self.options.stat_resolve(self.default)
     }
 }
+
+impl From<FitStatsOptions<FitId, ItemId>> for FitStatsOptionsInt<StatOptionResolved, FitId, ItemId> {
+    fn from(value: FitStatsOptions<FitId, ItemId>) -> Self {
+        value.options.stat_resolve(value.default)
+    }
+}

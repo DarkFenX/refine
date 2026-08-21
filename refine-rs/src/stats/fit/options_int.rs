@@ -15,7 +15,7 @@ use crate::{
     serde(default, bound(deserialize = ""))
 )]
 #[derive(Clone)]
-pub(super) struct FitStatsOptionsInt<O, F, I>
+pub(in crate::stats) struct FitStatsOptionsInt<O, F, I>
 where
     O: StatOptionKind,
     F: IdType,

@@ -1,5 +1,6 @@
 use crate::{
-    IdType,
+    CmdResps, IdType, ItemId, ItemIdBr,
+    err::BrResolveError,
     stats::{
         StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
         StatOptionMass,
@@ -39,6 +40,25 @@ where
             outgoing_cps: Default::default(),
             mass: Default::default(),
         }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Backref resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetStatsOptionsInt<StatOptionRaw, ItemIdBr> {
+    pub(super) fn br_resolve(
+        self,
+        resps: &CmdResps,
+    ) -> Result<FleetStatsOptionsInt<StatOptionRaw, ItemId>, BrResolveError> {
+        Ok(FleetStatsOptionsInt {
+            dmg: self.dmg.br_resolve(resps)?,
+            mps: self.mps,
+            outgoing_nps: self.outgoing_nps.br_resolve(resps)?,
+            outgoing_rps: self.outgoing_rps.br_resolve(resps)?,
+            outgoing_cps: self.outgoing_cps.br_resolve(resps)?,
+            mass: self.mass,
+        })
     }
 }
 

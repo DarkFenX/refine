@@ -4,7 +4,10 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::{OvrdCompact, OvrdMapHeavy},
-    stats::{FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr},
+    stats::{
+        FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
+        item::ItemStatsOptionsInt, option::StatOptionResolved,
+    },
 };
 
 // Core commands
@@ -108,13 +111,18 @@ impl FitStatsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitStatsResp {
-        let item_options = OvrdMapHeavy::from_compact(self.item_options);
+        let item_options: OvrdMapHeavy<_, ItemStatsOptionsInt<StatOptionResolved, FitId, ItemId>> =
+            OvrdMapHeavy::from_compact_with_conversion(self.item_options);
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),
-            items: core_fit.iter_items_mut().map_into_iter(|core_item| {
-                let item_id = core_item.get_item_id();
-                let x = item_options.get(&item_id);
-            }),
+            items: core_fit
+                .iter_items_mut()
+                .map_into_iter(|mut core_item| {
+                    let item_id = core_item.get_item_id();
+                    let item_stats = item_options.get(&item_id).execute(&mut core_item);
+                    (item_id, item_stats)
+                })
+                .collect(),
         }
     }
 }
