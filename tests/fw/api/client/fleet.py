@@ -42,7 +42,7 @@ class ApiClientFleet(ApiClientBase):
         # Intentionally send request without body when we don't need it, to test case when the
         # server receives no content-type header
         if isinstance(options, FleetStatsOptions):
-            kwargs['json'] = options.to_dict()
+            kwargs['json'] = {'fleet_options': options.to_dict()}
         return Request(client=self, **kwargs)
 
     def create_fleet_request(

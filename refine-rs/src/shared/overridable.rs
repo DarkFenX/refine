@@ -107,7 +107,7 @@ where
     pub(crate) fn get_default(&self) -> &V {
         &self.default
     }
-    pub(crate) fn iter_overrides(&self) -> impl Iterator<Item = (K, &V)>
+    pub(crate) fn iter_overrides(&self) -> impl ExactSizeIterator<Item = (K, &V)>
     where
         K: Copy,
     {
@@ -254,13 +254,18 @@ mod custom_serde {
                     default,
                     overrides: HashMap::new(),
                 },
-                OverridableFormats::Extended(default, overrides) => Self {
-                    default,
-                    overrides: overrides
-                        .into_iter()
-                        .flat_map(|(value, keys)| keys.into_iter().map(move |key| (key, value)))
-                        .collect(),
-                },
+                OverridableFormats::Extended(default, overrides) => {
+                    let mut map = HashMap::with_capacity(overrides.iter().map(|(_, keys)| keys.len()).sum());
+                    map.extend(
+                        overrides
+                            .into_iter()
+                            .flat_map(|(value, keys)| keys.into_iter().map(move |key| (key, value))),
+                    );
+                    Self {
+                        default,
+                        overrides: map,
+                    }
+                }
             })
         }
     }
