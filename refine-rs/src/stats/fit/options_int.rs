@@ -335,3 +335,80 @@ impl FitStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Anything-requested check
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitStatsOptionsResolved {
+    pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
+        // Fit output stats
+        self.dmg.is_enabled() ||
+        self.mps.is_enabled() ||
+        self.outgoing_nps.is_enabled() ||
+        self.outgoing_rps.is_enabled() ||
+        self.outgoing_cps.is_enabled() ||
+        // Fit resources
+        self.cpu.is_enabled() ||
+        self.powergrid.is_enabled() ||
+        self.calibration.is_enabled() ||
+        self.drone_bay_volume.is_enabled() ||
+        self.drone_bandwidth.is_enabled() ||
+        self.fighter_bay_volume.is_enabled() ||
+        // Fit slots
+        self.high_slots.is_enabled() ||
+        self.mid_slots.is_enabled() ||
+        self.low_slots.is_enabled() ||
+        self.turret_slots.is_enabled() ||
+        self.launcher_slots.is_enabled() ||
+        self.rig_slots.is_enabled() ||
+        self.service_slots.is_enabled() ||
+        self.subsystem_slots.is_enabled() ||
+        self.launched_drones.is_enabled() ||
+        self.launched_fighters.is_enabled() ||
+        self.launched_light_fighters.is_enabled() ||
+        self.launched_heavy_fighters.is_enabled() ||
+        self.launched_support_fighters.is_enabled() ||
+        self.launched_st_light_fighters.is_enabled() ||
+        self.launched_st_heavy_fighters.is_enabled() ||
+        self.launched_st_support_fighters.is_enabled() ||
+        // Ship tank
+        self.resists.is_enabled() ||
+        self.hp.is_enabled() ||
+        self.ehp.is_enabled() ||
+        self.wc_ehp.is_enabled() ||
+        self.rps.is_enabled() ||
+        self.erps.is_enabled() ||
+        self.breach_resist.is_enabled() ||
+        // Ship cap
+        self.cap_amount.is_enabled() ||
+        self.cap_balance.is_enabled() ||
+        self.cap_sim.is_enabled() ||
+        self.neut_resist.is_enabled() ||
+        // Ship sensors
+        self.locks.is_enabled() ||
+        self.lock_range.is_enabled() ||
+        self.scan_res.is_enabled() ||
+        self.sensors.is_enabled() ||
+        self.dscan_range.is_enabled() ||
+        self.probing_size.is_enabled() ||
+        self.incoming_jam.is_enabled() ||
+        // Ship mobility
+        self.speed.is_enabled() ||
+        self.agility.is_enabled() ||
+        self.align_time.is_enabled() ||
+        self.sig_radius.is_enabled() ||
+        self.mass.is_enabled() ||
+        self.warp_speed.is_enabled() ||
+        self.max_warp_range.is_enabled() ||
+        self.jump.is_enabled() ||
+        // Ship misc stats
+        self.drone_control_range.is_enabled() ||
+        self.can_warp.is_enabled() ||
+        self.can_jump_gate.is_enabled() ||
+        self.can_jump_wormhole.is_enabled() ||
+        self.can_jump_drive.is_enabled() ||
+        self.can_dock_station.is_enabled() ||
+        self.can_dock_citadel.is_enabled() ||
+        self.can_tether.is_enabled()
+    }
+}

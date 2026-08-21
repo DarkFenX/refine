@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
+    shared::BrResolvable,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
@@ -298,9 +299,10 @@ impl<F, I> FitStatsOptions<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptionsBr {
-    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsOptions, BrResolveError> {
-        Ok(FitStatsOptions {
+impl BrResolvable for FitStatsOptionsBr {
+    type Target = FitStatsOptions;
+    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        Ok(Self::Target {
             default: self.default,
             options: self.options.br_resolve(resps)?,
         })

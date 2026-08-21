@@ -15,7 +15,7 @@ use crate::{
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptionsResolved {
-    pub(super) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
+    pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
         // Fit output stats
         if let Some(options) = self.dmg.get() {

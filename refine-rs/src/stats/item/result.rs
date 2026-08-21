@@ -1,4 +1,4 @@
-pub use crate::{
+use crate::{
     Count, PValue, UnitInterval, Value,
     stats::{
         StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
@@ -9,12 +9,6 @@ pub use crate::{
         },
     },
 };
-
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[derive(Clone)]
-pub struct ItemStatsResp {
-    pub item: ItemStats,
-}
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]

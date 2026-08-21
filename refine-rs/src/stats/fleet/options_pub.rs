@@ -2,7 +2,7 @@ use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
     stats::{
-        FleetStats, StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+        StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
         StatOptionFitOutRps, StatOptionMass,
         fleet::{FleetStatsOptionsInt, FleetStatsOptionsResolved},
         option::StatOptionRaw,
@@ -63,15 +63,6 @@ impl<I> FleetStatsOptions<I> {
     pub fn with_mass(mut self, option: StatOptionExt<StatOptionMass>) -> Self {
         self.options.mass = option.into();
         self
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Execution
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsOptions {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStats {
-        self.options.stat_resolve(self.default).execute(core_fleet)
     }
 }
 

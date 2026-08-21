@@ -1,26 +1,14 @@
 use crate::{
-    Count, ItemId, PValue, UnitInterval, Value,
+    Count, PValue, UnitInterval, Value,
     stats::{
-        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps,
-        StatResists, StatResource, StatResult, StatRps, StatSensors, StatSlot,
+        StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
+        StatResource, StatResult, StatRps, StatSensors, StatSlot,
         err::{
             StatAgilityError, StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
             StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatWarpSpeedError,
         },
     },
 };
-
-#[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
-#[derive(Clone)]
-pub struct FitStatsResp {
-    pub fit: FitStats,
-    #[cfg_attr(
-        feature = "serde",
-        serde_as(as = "serde_with::Map<_, _>"),
-        serde(skip_serializing_if = "Vec::is_empty")
-    )]
-    pub items: Vec<(ItemId, ItemStats)>,
-}
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
 #[derive(Clone)]

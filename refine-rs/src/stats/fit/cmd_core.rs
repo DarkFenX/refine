@@ -3,7 +3,7 @@ use rc::{ItemCommon, Lender};
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{OvrdCompact, OvrdMapHeavy},
+    shared::{BrResolvable, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStats, ItemStatsOptions, ItemStatsOptionsBr,
         item::ItemStatsOptionsResolved,
