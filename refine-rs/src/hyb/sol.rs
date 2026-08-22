@@ -310,22 +310,22 @@ impl ItemInfoCmdBr {
 // Stats
 impl SolStatsCmdBr {
     pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
-        SolHybridCmdBr::Stats(self.into_sol_stat_br())
+        SolHybridCmdBr::Stats(self.into_sol_stats_br())
     }
 }
 impl FleetStatsCmdBr {
     pub fn into_sol_hyb_br(self, fleet_id: impl Into<FleetIdBr>) -> SolHybridCmdBr {
-        SolHybridCmdBr::Stats(self.into_sol_stat_br(fleet_id))
+        SolHybridCmdBr::Stats(self.into_sol_stats_br(fleet_id))
     }
 }
 impl FitStatsCmdBr {
     pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
-        SolHybridCmdBr::Stats(self.into_sol_stat_br(fit_id))
+        SolHybridCmdBr::Stats(self.into_sol_stats_br(fit_id))
     }
 }
 impl ItemStatsCmdBr {
     pub fn into_sol_hyb_br(self, item_id: impl Into<ItemIdBr>) -> SolHybridCmdBr {
-        SolHybridCmdBr::Stats(self.into_sol_stat_br(item_id))
+        SolHybridCmdBr::Stats(self.into_sol_stats_br(item_id))
     }
 }
 // Validation
@@ -354,9 +354,9 @@ impl SolHybridCmdBr {
         Ok(match self {
             Self::Ctl(ctl_cmd) => SolHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => SolHybridCmd::Info(info_cmd.br_resolve(resps)?),
-            Self::Stats(info_cmd) => SolHybridCmd::Stats(info_cmd.br_resolve(resps)?),
-            Self::Val(info_cmd) => SolHybridCmd::Val(info_cmd.br_resolve(resps)?),
-            Self::TryItems(info_cmd) => SolHybridCmd::TryItems(info_cmd.br_resolve(resps)?),
+            Self::Stats(stats_cmd) => SolHybridCmd::Stats(stats_cmd.br_resolve(resps)?),
+            Self::Val(val_cmd) => SolHybridCmd::Val(val_cmd.br_resolve(resps)?),
+            Self::TryItems(try_cmd) => SolHybridCmd::TryItems(try_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -369,9 +369,9 @@ impl SolHybridCmd {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
             Self::Info(info_cmd) => info_cmd.execute(ctx, core_sol)?,
-            Self::Stats(info_cmd) => info_cmd.execute(core_sol)?,
-            Self::Val(info_cmd) => info_cmd.execute(core_sol)?,
-            Self::TryItems(info_cmd) => info_cmd.execute(core_sol)?,
+            Self::Stats(stats_cmd) => stats_cmd.execute(core_sol)?,
+            Self::Val(val_cmd) => val_cmd.execute(core_sol)?,
+            Self::TryItems(try_cmd) => try_cmd.execute(core_sol)?,
         })
     }
 }

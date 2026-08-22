@@ -231,12 +231,12 @@ impl ItemInfoCmdBr {
 // Stats
 impl FitStatsCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
-        FitHybridCmdBr::Stats(self.into_fit_stat_br())
+        FitHybridCmdBr::Stats(self.into_fit_stats_br())
     }
 }
 impl ItemStatsCmdBr {
     pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
-        FitHybridCmdBr::Stats(self.into_fit_stat_br(item_id))
+        FitHybridCmdBr::Stats(self.into_fit_stats_br(item_id))
     }
 }
 // Validation
@@ -260,9 +260,9 @@ impl FitHybridCmdBr {
         Ok(match self {
             Self::Ctl(ctl_cmd) => FitHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => FitHybridCmd::Info(info_cmd.br_resolve(resps)?),
-            Self::Stats(info_cmd) => FitHybridCmd::Stats(info_cmd.br_resolve(resps)?),
-            Self::Val(info_cmd) => FitHybridCmd::Val(info_cmd.br_resolve(resps)?),
-            Self::TryItems(info_cmd) => FitHybridCmd::TryItems(info_cmd.br_resolve(resps)?),
+            Self::Stats(stats_cmd) => FitHybridCmd::Stats(stats_cmd.br_resolve(resps)?),
+            Self::Val(val_cmd) => FitHybridCmd::Val(val_cmd.br_resolve(resps)?),
+            Self::TryItems(try_cmd) => FitHybridCmd::TryItems(try_cmd.br_resolve(resps)?),
         })
     }
 }
@@ -275,9 +275,9 @@ impl FitHybridCmd {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_fit)?,
             Self::Info(info_cmd) => info_cmd.execute(core_fit)?,
-            Self::Stats(info_cmd) => info_cmd.execute(core_fit)?,
-            Self::Val(info_cmd) => info_cmd.execute(core_fit),
-            Self::TryItems(info_cmd) => info_cmd.execute(core_fit),
+            Self::Stats(stats_cmd) => stats_cmd.execute(core_fit)?,
+            Self::Val(val_cmd) => val_cmd.execute(core_fit),
+            Self::TryItems(try_cmd) => try_cmd.execute(core_fit),
         })
     }
 }

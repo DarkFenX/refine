@@ -85,7 +85,7 @@ impl FitInfoCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmdBr {
-    pub(in crate::info) fn into_ctx_item_br(self, fit_id: impl Into<FitIdBr>) -> FitInfoCmdCtxFitBr {
+    pub(in crate::info) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitInfoCmdCtxFitBr {
         FitInfoCmdCtxFitBr {
             fit_id: fit_id.into(),
             core: self,

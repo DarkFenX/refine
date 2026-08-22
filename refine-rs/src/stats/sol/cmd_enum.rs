@@ -10,6 +10,7 @@ use crate::{
     },
 };
 
+#[expect(clippy::enum_variant_names)]
 #[derive(Clone)]
 pub(crate) enum SolStatsEnumCmd {
     SolStats(SolStatsCmd),
@@ -37,22 +38,22 @@ pub enum SolStatsEnumCmdBr {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl SolStatsCmdBr {
-    pub(crate) fn into_sol_stat_br(self) -> SolStatsEnumCmdBr {
+    pub(crate) fn into_sol_stats_br(self) -> SolStatsEnumCmdBr {
         SolStatsEnumCmdBr::SolStats(self)
     }
 }
 impl FleetStatsCmdBr {
-    pub(crate) fn into_sol_stat_br(self, fleet_id: impl Into<FleetIdBr>) -> SolStatsEnumCmdBr {
+    pub(crate) fn into_sol_stats_br(self, fleet_id: impl Into<FleetIdBr>) -> SolStatsEnumCmdBr {
         SolStatsEnumCmdBr::FleetStats(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FitStatsCmdBr {
-    pub(crate) fn into_sol_stat_br(self, fit_id: impl Into<FitIdBr>) -> SolStatsEnumCmdBr {
+    pub(crate) fn into_sol_stats_br(self, fit_id: impl Into<FitIdBr>) -> SolStatsEnumCmdBr {
         SolStatsEnumCmdBr::FitStats(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ItemStatsCmdBr {
-    pub(crate) fn into_sol_stat_br(self, item_id: impl Into<ItemIdBr>) -> SolStatsEnumCmdBr {
+    pub(crate) fn into_sol_stats_br(self, item_id: impl Into<ItemIdBr>) -> SolStatsEnumCmdBr {
         SolStatsEnumCmdBr::ItemStats(self.into_ctx_item_br(item_id))
     }
 }

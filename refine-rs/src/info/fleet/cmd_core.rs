@@ -106,7 +106,7 @@ impl FleetInfoCmdBr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmdBr {
-    pub(in crate::info) fn into_ctx_item_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetInfoCmdCtxFleetBr {
+    pub(in crate::info) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetInfoCmdCtxFleetBr {
         FleetInfoCmdCtxFleetBr {
             fleet_id: fleet_id.into(),
             core: self,

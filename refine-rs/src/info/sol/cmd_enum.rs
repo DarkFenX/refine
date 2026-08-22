@@ -44,12 +44,12 @@ impl SolInfoCmdBr {
 }
 impl FleetInfoCmdBr {
     pub(crate) fn into_sol_info_br(self, fleet_id: impl Into<FleetIdBr>) -> SolInfoEnumCmdBr {
-        SolInfoEnumCmdBr::FleetInfo(self.into_ctx_item_br(fleet_id))
+        SolInfoEnumCmdBr::FleetInfo(self.into_ctx_fleet_br(fleet_id))
     }
 }
 impl FitInfoCmdBr {
     pub(crate) fn into_sol_info_br(self, fit_id: impl Into<FitIdBr>) -> SolInfoEnumCmdBr {
-        SolInfoEnumCmdBr::FitInfo(self.into_ctx_item_br(fit_id))
+        SolInfoEnumCmdBr::FitInfo(self.into_ctx_fit_br(fit_id))
     }
 }
 impl ItemInfoCmdBr {
