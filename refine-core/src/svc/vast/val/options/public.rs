@@ -571,7 +571,7 @@ mod custom_serde {
                     let kind_deserializer = IntoDeserializer::<E>::into_deserializer(v);
                     Ok(match ValKind::deserialize(kind_deserializer) {
                         Ok(kind) => FieldKind::Option(kind),
-                        Err(_) => FieldKind::Unknown,
+                        Err(..) => FieldKind::Unknown,
                     })
                 }
             }

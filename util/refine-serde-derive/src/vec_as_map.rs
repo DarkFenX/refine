@@ -106,7 +106,7 @@ struct InferAsSame;
 impl VisitMut for InferAsSame {
     fn visit_type_mut(&mut self, node: &mut Type) {
         match node {
-            Type::Infer(_) => *node = syn::parse_quote!(::serde_with::Same),
+            Type::Infer(..) => *node = syn::parse_quote!(::serde_with::Same),
             _ => syn::visit_mut::visit_type_mut(self, node),
         }
     }

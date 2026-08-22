@@ -202,7 +202,7 @@ impl ApiError {
                     rs::err::FighterChangeError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-003"),
                     rs::err::FighterChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "FTR-004"),
                 },
-                rs::err::ItemChangeEnumError::FwEffect(rs::err::FwEffectChangeError::ItemIsNotFwEffect(_)) => {
+                rs::err::ItemChangeEnumError::FwEffect(rs::err::FwEffectChangeError::ItemIsNotFwEffect(..)) => {
                     (StatusCode::BAD_REQUEST, "FWE-001")
                 }
                 rs::err::ItemChangeEnumError::Implant(rs::err::ImplantChangeError::ItemIsNotImplant(..)) => {
@@ -240,7 +240,7 @@ impl ApiError {
                 rs::err::ItemChangeEnumError::Subsystem(rs::err::SubsystemChangeError::ItemIsNotSubsystem(..)) => {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
-                rs::err::ItemChangeEnumError::SwEffect(rs::err::SwEffectChangeError::ItemIsNotSwEffect(_)) => {
+                rs::err::ItemChangeEnumError::SwEffect(rs::err::SwEffectChangeError::ItemIsNotSwEffect(..)) => {
                     (StatusCode::BAD_REQUEST, "SWE-001")
                 }
             },
@@ -273,7 +273,7 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
             rs::err::FleetGetFleetChangeError::FitAdd(..) => (StatusCode::BAD_REQUEST, "FLT-004"),
             rs::err::FleetGetFleetChangeError::FitRemove(..) => (StatusCode::BAD_REQUEST, "FLT-005"),
         },
-        rs::err::SolChangeEnumError::FleetRemove(rs::err::FleetGetFleetRemoveError::FleetGet(_)) => {
+        rs::err::SolChangeEnumError::FleetRemove(rs::err::FleetGetFleetRemoveError::FleetGet(..)) => {
             (StatusCode::BAD_REQUEST, "FLT-001")
         }
         // Fits

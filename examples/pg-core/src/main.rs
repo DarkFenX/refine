@@ -68,8 +68,8 @@ fn test_crusader(edh: &EveDataHandler, adc: &AdaptedDataCacher) {
     tracing::info!("source: initializing...");
     let src = Src::new(edh, Some(adc)).unwrap();
     match src.get_info().origin {
-        SrcOrigin::Cached(_) => tracing::info!("source: loaded from cache"),
-        SrcOrigin::Generated(_) => tracing::info!("source: generated"),
+        SrcOrigin::Cached(..) => tracing::info!("source: loaded from cache"),
+        SrcOrigin::Generated(..) => tracing::info!("source: generated"),
     }
     let mut sol_sys = SolarSystem::new(&src);
     let mut fit = sol_sys.add_fit();
