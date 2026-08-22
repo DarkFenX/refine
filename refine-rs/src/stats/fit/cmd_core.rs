@@ -90,7 +90,7 @@ impl FitStatsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsCmd, BrResolveError> {
+    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsCmd, BrResolveError> {
         Ok(FitStatsCmd {
             fit_options: self.fit_options.br_resolve(resps)?,
             item_options: self.item_options.br_resolve(resps)?,

@@ -1,3 +1,7 @@
 pub use rc::stats::err::*;
 
-pub use crate::stats::{fit::FitGetFitStatsError, fleet::FleetGetFleetStatsError, item::ItemGetItemStatsError};
+pub use crate::stats::{
+    fit::{FitGetFitStatsError, FitStatsEnumError},
+    fleet::FleetGetFleetStatsError,
+    item::ItemGetItemStatsError,
+};

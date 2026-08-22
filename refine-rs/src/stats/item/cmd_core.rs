@@ -57,6 +57,18 @@ impl ItemStatsCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemStatsCmdBr {
+    pub(in crate::stats) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ItemStatsCmdCtxItemBr {
+        ItemStatsCmdCtxItemBr {
+            item_id: item_id.into(),
+            core: self,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsCmdBr {
@@ -68,7 +80,7 @@ impl ItemStatsCmdBr {
 }
 
 impl ItemStatsCmdCtxItemBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsCmdCtxItem, BrResolveError> {
+    pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsCmdCtxItem, BrResolveError> {
         Ok(ItemStatsCmdCtxItem {
             item_id: resps.resolve_item_id(self.item_id)?,
             core: self.core.br_resolve(resps)?,
@@ -88,7 +100,10 @@ impl ItemStatsCmd {
 }
 
 impl ItemStatsCmdCtxItem {
-    fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<ItemStatsResp, ItemGetItemStatsError> {
+    pub(in crate::stats) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<ItemStatsResp, ItemGetItemStatsError> {
         let mut core_item = core_sol.get_item_mut(&self.item_id)?;
         Ok(self.core.execute(&mut core_item))
     }

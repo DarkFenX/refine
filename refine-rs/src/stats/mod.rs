@@ -1,4 +1,7 @@
-pub use fit::{FitStats, FitStatsCmd, FitStatsCmdBr, FitStatsOptions, FitStatsOptionsBr, FitStatsResp};
+pub(crate) use fit::FitStatsEnumCmd;
+pub use fit::{
+    FitStats, FitStatsCmd, FitStatsCmdBr, FitStatsEnumCmdBr, FitStatsOptions, FitStatsOptionsBr, FitStatsResp,
+};
 pub use fleet::{FleetStats, FleetStatsCmd, FleetStatsCmdBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp};
 pub use item::{ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp};
 pub use option::{
