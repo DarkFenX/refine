@@ -35,8 +35,19 @@ from fw.api.commands import (
     FitCtlSubsystemChangeCmd,
     FitInfoFitCmd,
     FitInfoItemCmd,
+    FitStatsFitCmd,
+    FitStatsItemCmd,
+    FitValFitCmd,
 )
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
+from fw.api.types.helpers import (
+    process_effect_map_request,
+    process_muta_add_request,
+    process_muta_change_request,
+    process_stats_options_request,
+    process_val_options_request,
+)
+from fw.api.types.stats import FitBatchStats, ItemBatchStats
+from fw.api.types.validation import FitValResult
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
 from .base import BaseCmdBatchCtx
@@ -45,10 +56,22 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import InfoMode, MutaAdd, MutaChange, ReqHook
+    from fw.api.aliases import InfoMode, MutaAdd, MutaChange, ReqHook, StatsOptions
     from fw.api.types.fit import Fit
     from fw.api.types.item import Item
-    from fw.consts import ApiEffMode, ApiModMvMode, ApiModRmMode, ApiNpcProp, ApiOptionalReload, ApiRearmMinion
+    from fw.api.types.stats import FitStatsOptions, ItemStatsOptions
+    from fw.api.types.validation import ValOptions
+    from fw.consts import (
+        ApiEffMode,
+        ApiFitInfoMode,
+        ApiItemInfoMode,
+        ApiModMvMode,
+        ApiModRmMode,
+        ApiNpcProp,
+        ApiOptionalReload,
+        ApiRearmMinion,
+        ApiValInfoMode,
+    )
 
 
 class FitCmdBatchCtx(BaseCmdBatchCtx):
@@ -600,8 +623,8 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     ################################################################################################
     def get_fit_info(
             self, *,
-            fit_mode: InfoMode | type[Absent] = Absent,
-            item_mode: InfoMode | type[Absent] = Absent,
+            fit_mode: InfoMode[ApiFitInfoMode] | type[Absent] = Absent,
+            item_mode: InfoMode[ApiItemInfoMode] | type[Absent] = Absent,
     ) -> Fit:
         command = FitInfoFitCmd(
             fit_mode=fit_mode,
@@ -612,10 +635,49 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     def get_item_info(
             self, *,
             item_id: str,
-            item_mode: InfoMode | type[Absent] = Absent,
+            item_mode: InfoMode[ApiItemInfoMode] | type[Absent] = Absent,
     ) -> Item:
         command = FitInfoItemCmd(
             item_id=item_id,
             item_mode=item_mode)
         self._commands.append(command)
         return self._make_item_info()
+
+    ################################################################################################
+    # Stats
+    ################################################################################################
+    def get_fit_stats(
+            self, *,
+            fit_options: FitStatsOptions | type[Absent] = Absent,
+            item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
+    ) -> FitBatchStats:
+        command = FitStatsFitCmd(
+            fit_options=process_stats_options_request(options=fit_options),
+            item_options=process_stats_options_request(options=item_options))
+        self._commands.append(command)
+        return self._make_stats(cls=FitBatchStats)
+
+    def get_item_stats(
+            self, *,
+            item_id: str,
+            item_options: ItemStatsOptions | type[Absent] = Absent,
+    ) -> ItemBatchStats:
+        command = FitStatsItemCmd(
+            item_id=item_id,
+            item_options=process_stats_options_request(options=item_options))
+        self._commands.append(command)
+        return self._make_stats(cls=ItemBatchStats)
+
+    ################################################################################################
+    # Validation
+    ################################################################################################
+    def validate_fit(
+            self, *,
+            options: ValOptions | type[Absent] = Absent,
+            info_mode: ApiValInfoMode | type[Absent] = Absent,
+    ) -> FitValResult:
+        command = FitValFitCmd(
+            options=process_val_options_request(options=options),
+            info_mode=info_mode)
+        self._commands.append(command)
+        return self._make_val_result(cls=FitValResult)

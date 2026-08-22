@@ -6,6 +6,7 @@ from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import InfoMode
+    from fw.consts import ApiFleetInfoMode
     from fw.util import Absent
 
 
@@ -13,7 +14,7 @@ if typing.TYPE_CHECKING:
 class SolInfoFleetCmd(BaseCommand):
 
     fleet_id: str
-    fleet_mode: InfoMode | type[Absent]
+    fleet_mode: InfoMode[ApiFleetInfoMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()

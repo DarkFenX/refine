@@ -1,7 +1,6 @@
 """
 Here we check availability of info of various items via solar system info endpoint.
 """
-from conftest import consts
 from fw import check_no_field
 from fw.util import Absent
 
@@ -56,7 +55,7 @@ def test_fleet(client, consts):
     assert api_sol.fleets[api_fleet.id].id == api_fleet.id
     api_fit_via_fleet = api_sol.fleets[api_fleet.id].fits[api_fit.id]
     with check_no_field():
-        api_fit_via_fleet.character
+        api_fit_via_fleet.character  # ruff:ignore[useless-expression]
     # But fit has full info as requested in the fit container
     assert api_sol.fits[api_fit.id].character.id == api_item.id
     # Remove fleet and check that fleets container is empty

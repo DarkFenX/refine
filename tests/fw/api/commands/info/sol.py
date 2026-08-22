@@ -6,16 +6,17 @@ from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
     from fw.api.aliases import InfoMode
+    from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode
     from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
 class SolInfoSolCmd(BaseCommand):
 
-    sol_mode: InfoMode | type[Absent]
-    fleet_mode: InfoMode | type[Absent]
-    fit_mode: InfoMode | type[Absent]
-    item_mode: InfoMode | type[Absent]
+    sol_mode: InfoMode[ApiSolInfoMode] | type[Absent]
+    fleet_mode: InfoMode[ApiFleetInfoMode] | type[Absent]
+    fit_mode: InfoMode[ApiFitInfoMode] | type[Absent]
+    item_mode: InfoMode[ApiItemInfoMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()

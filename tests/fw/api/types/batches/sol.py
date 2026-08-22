@@ -51,10 +51,24 @@ from fw.api.commands import (
     SolInfoFleetCmd,
     SolInfoItemCmd,
     SolInfoSolCmd,
+    SolStatsFitCmd,
+    SolStatsFleetCmd,
+    SolStatsItemCmd,
+    SolStatsSolCmd,
+    SolValFitCmd,
+    SolValSolCmd,
 )
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
+from fw.api.types.helpers import (
+    process_effect_map_request,
+    process_muta_add_request,
+    process_muta_change_request,
+    process_stats_options_request,
+    process_val_options_request,
+)
+from fw.api.types.stats import FitBatchStats, FleetBatchStats, ItemBatchStats, SolBatchStats
+from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
 from fw.util import Absent
 from .base import BaseCmdBatchCtx, DataFillKind, EntityData
@@ -63,17 +77,24 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, ReqHook
+    from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, ReqHook, StatsOptions
     from fw.api.types.item import Item
     from fw.api.types.sol import SolarSystem
+    from fw.api.types.stats import FitStatsOptions, FleetStatsOptions, ItemStatsOptions
+    from fw.api.types.validation import ValOptions
     from fw.consts import (
         ApiEffMode,
+        ApiFitInfoMode,
+        ApiFleetInfoMode,
+        ApiItemInfoMode,
         ApiModMvMode,
         ApiModRmMode,
         ApiNpcProp,
         ApiOptionalReload,
         ApiRearmMinion,
         ApiSecZone,
+        ApiSolInfoMode,
+        ApiValInfoMode,
     )
 
 
@@ -863,10 +884,10 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     ################################################################################################
     def get_sol_info(
             self, *,
-            sol_mode: InfoMode | type[Absent] = Absent,
-            fleet_mode: InfoMode | type[Absent] = Absent,
-            fit_mode: InfoMode | type[Absent] = Absent,
-            item_mode: InfoMode | type[Absent] = Absent,
+            sol_mode: InfoMode[ApiSolInfoMode] | type[Absent] = Absent,
+            fleet_mode: InfoMode[ApiFleetInfoMode] | type[Absent] = Absent,
+            fit_mode: InfoMode[ApiFitInfoMode] | type[Absent] = Absent,
+            item_mode: InfoMode[ApiItemInfoMode] | type[Absent] = Absent,
     ) -> SolarSystem:
         command = SolInfoSolCmd(
             sol_mode=sol_mode,
@@ -879,7 +900,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     def get_fleet_info(
             self, *,
             fleet_id: str,
-            fleet_mode: InfoMode | type[Absent] = Absent,
+            fleet_mode: InfoMode[ApiFleetInfoMode] | type[Absent] = Absent,
     ) -> Fleet:
         command = SolInfoFleetCmd(
             fleet_id=fleet_id,
@@ -890,8 +911,8 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     def get_fit_info(
             self, *,
             fit_id: str,
-            fit_mode: InfoMode | type[Absent] = Absent,
-            item_mode: InfoMode | type[Absent] = Absent,
+            fit_mode: InfoMode[ApiFitInfoMode] | type[Absent] = Absent,
+            item_mode: InfoMode[ApiItemInfoMode] | type[Absent] = Absent,
     ) -> Fit:
         command = SolInfoFitCmd(
             fit_id=fit_id,
@@ -903,10 +924,94 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     def get_item_info(
             self, *,
             item_id: str,
-            item_mode: InfoMode | type[Absent] = Absent,
+            item_mode: InfoMode[ApiItemInfoMode] | type[Absent] = Absent,
     ) -> Item:
         command = SolInfoItemCmd(
             item_id=item_id,
             item_mode=item_mode)
         self._commands.append(command)
         return self._make_item_info()
+
+    ################################################################################################
+    # Stats
+    ################################################################################################
+    def get_sol_stats(
+            self, *,
+            fleet_options: StatsOptions[FleetStatsOptions] | type[Absent] = Absent,
+            fit_options: StatsOptions[FitStatsOptions] | type[Absent] = Absent,
+            item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
+    ) -> SolBatchStats:
+        command = SolStatsSolCmd(
+            fleet_options=process_stats_options_request(options=fleet_options),
+            fit_options=process_stats_options_request(options=fit_options),
+            item_options=process_stats_options_request(options=item_options))
+        self._commands.append(command)
+        return self._make_stats(cls=SolBatchStats)
+
+    def get_fleet_stats(
+            self, *,
+            fleet_id: str,
+            fleet_options: FleetStatsOptions | type[Absent] = Absent,
+            fit_options: StatsOptions[FitStatsOptions] | type[Absent] = Absent,
+            item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
+    ) -> FleetBatchStats:
+        command = SolStatsFleetCmd(
+            fleet_id=fleet_id,
+            fleet_options=process_stats_options_request(options=fleet_options),
+            fit_options=process_stats_options_request(options=fit_options),
+            item_options=process_stats_options_request(options=item_options))
+        self._commands.append(command)
+        return self._make_stats(cls=FleetBatchStats)
+
+    def get_fit_stats(
+            self, *,
+            fit_id: str,
+            fit_options: FitStatsOptions | type[Absent] = Absent,
+            item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
+    ) -> FitBatchStats:
+        command = SolStatsFitCmd(
+            fit_id=fit_id,
+            fit_options=process_stats_options_request(options=fit_options),
+            item_options=process_stats_options_request(options=item_options))
+        self._commands.append(command)
+        return self._make_stats(cls=FitBatchStats)
+
+    def get_item_stats(
+            self, *,
+            item_id: str,
+            item_options: ItemStatsOptions | type[Absent] = Absent,
+    ) -> ItemBatchStats:
+        command = SolStatsItemCmd(
+            item_id=item_id,
+            item_options=process_stats_options_request(options=item_options))
+        self._commands.append(command)
+        return self._make_stats(cls=ItemBatchStats)
+
+    ################################################################################################
+    # Validation
+    ################################################################################################
+    def validate_sol(
+            self, *,
+            options: ValOptions | type[Absent] = Absent,
+            fit_ids: list[str] | type[Absent] = Absent,
+            info_mode: ApiValInfoMode | type[Absent] = Absent,
+    ) -> SolValResult:
+        command = SolValSolCmd(
+            options=process_val_options_request(options=options),
+            fit_ids=fit_ids,
+            info_mode=info_mode)
+        self._commands.append(command)
+        return self._make_val_result(cls=SolValResult)
+
+    def validate_fit(
+            self, *,
+            fit_id: str,
+            options: ValOptions | type[Absent] = Absent,
+            info_mode: ApiValInfoMode | type[Absent] = Absent,
+    ) -> FitValResult:
+        command = SolValFitCmd(
+            fit_id=fit_id,
+            options=process_val_options_request(options=options),
+            info_mode=info_mode)
+        self._commands.append(command)
+        return self._make_val_result(cls=FitValResult)

@@ -1,7 +1,18 @@
 from fw.util import AttrDict, AttrHookDef, NttList
+from .res_fit import FitStats
+from .res_item import ItemStats
 from .stat_dmg import StatDmg
 from .stat_mining import StatMining
 from .stat_outgoing_rps import StatOutRps
+
+
+class FleetBatchStats(AttrDict):
+
+    def __init__(self, *, data: dict) -> None:
+        super().__init__(data=data, hooks={
+            'fleet': AttrHookDef(func=lambda d: FleetStats(data=d)),
+            'fits': AttrHookDef(func=lambda d: {k: FitStats(data=v) for k, v in d.items()}),
+            'items': AttrHookDef(func=lambda d: {k: ItemStats(data=v) for k, v in d.items()})})
 
 
 class FleetStats(AttrDict):

@@ -11,6 +11,12 @@ from .stat_rps import StatRps
 from .stat_sensors import StatSensors
 
 
+class ItemBatchStats(AttrDict):
+
+    def __init__(self, *, data: dict) -> None:
+        super().__init__(data=data, hooks={'item': AttrHookDef(func=lambda d: ItemStats(data=d))})
+
+
 class ItemStats(AttrDict):
 
     def __init__(self, *, data: dict) -> None:

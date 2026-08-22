@@ -1,4 +1,5 @@
 from fw.util import AttrDict, AttrHookDef, NttList
+from .res_item import ItemStats
 from .stat_dmg import StatDmg
 from .stat_ehp import StatEhp
 from .stat_erps import StatErps
@@ -11,6 +12,14 @@ from .stat_resource import StatResource
 from .stat_rps import StatRps
 from .stat_sensors import StatSensors
 from .stat_slot import StatSlot
+
+
+class FitBatchStats(AttrDict):
+
+    def __init__(self, *, data: dict) -> None:
+        super().__init__(data=data, hooks={
+            'fit': AttrHookDef(func=lambda d: FitStats(data=d)),
+            'items': AttrHookDef(func=lambda d: {k: ItemStats(data=v) for k, v in d.items()})})
 
 
 class FitStats(AttrDict):

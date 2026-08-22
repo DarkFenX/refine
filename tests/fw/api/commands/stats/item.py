@@ -5,30 +5,30 @@ from fw.api.commands import BaseCommand
 from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
-    from fw.api.aliases import InfoMode
-    from fw.consts import ApiItemInfoMode
+    from fw.api.aliases import StatsOptions
+    from fw.api.types import ItemStatsOptions
     from fw.util import Absent
 
 
 @dataclasses.dataclass(kw_only=True)
-class BaseInfoItemCmd(BaseCommand):
+class BaseStatsItemCmd(BaseCommand):
 
     item_id: str
-    item_mode: InfoMode[ApiItemInfoMode] | type[Absent]
+    item_options: StatsOptions[ItemStatsOptions] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
-        body['type'] = 'item_info'
+        body['type'] = 'item_stats'
         body['item_id'] = self.item_id
-        conditional_insert(container=body, path=['item_mode'], value=self.item_mode)
+        conditional_insert(container=body, path=['item_options'], value=self.item_options)
         return body
 
 
 @dataclasses.dataclass(kw_only=True)
-class FitInfoItemCmd(BaseInfoItemCmd):
+class FitStatsItemCmd(BaseStatsItemCmd):
     ...
 
 
 @dataclasses.dataclass(kw_only=True)
-class SolInfoItemCmd(BaseInfoItemCmd):
+class SolStatsItemCmd(BaseStatsItemCmd):
     ...
