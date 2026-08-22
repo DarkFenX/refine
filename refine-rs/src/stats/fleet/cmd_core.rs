@@ -112,6 +112,18 @@ impl FleetStatsCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetStatsCmdBr {
+    pub(in crate::stats) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetStatsCmdCtxFleetBr {
+        FleetStatsCmdCtxFleetBr {
+            fleet_id: fleet_id.into(),
+            core: self,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsCmdBr {
@@ -125,7 +137,7 @@ impl FleetStatsCmdBr {
 }
 
 impl FleetStatsCmdCtxFleetBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsCmdCtxFleet, BrResolveError> {
+    pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsCmdCtxFleet, BrResolveError> {
         Ok(FleetStatsCmdCtxFleet {
             fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
             core: self.core.br_resolve(resps)?,
@@ -179,7 +191,10 @@ impl FleetStatsCmd {
 }
 
 impl FleetStatsCmdCtxFleet {
-    fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FleetStatsResp, FleetGetFleetStatsError> {
+    pub(in crate::stats) fn execute(
+        self,
+        core_sol: &mut rc::SolarSystem,
+    ) -> Result<FleetStatsResp, FleetGetFleetStatsError> {
         let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
         Ok(self.core.execute(&mut core_fleet))
     }

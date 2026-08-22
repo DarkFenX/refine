@@ -116,7 +116,7 @@ impl SolStatsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolStatsCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<SolStatsCmd, BrResolveError> {
+    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<SolStatsCmd, BrResolveError> {
         Ok(SolStatsCmd {
             fleet_options: self.fleet_options.br_resolve(resps)?,
             fit_options: self.fit_options.br_resolve(resps)?,
@@ -129,7 +129,7 @@ impl SolStatsCmdBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolStatsCmd {
-    fn execute(self, core_sol: &mut rc::SolarSystem) -> SolStatsResp {
+    pub(super) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolStatsResp {
         let fleet_options: OvrdMapHeavy<_, FleetStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.fleet_options);
         let fit_options: OvrdMapHeavy<_, FitStatsOptionsResolved> =

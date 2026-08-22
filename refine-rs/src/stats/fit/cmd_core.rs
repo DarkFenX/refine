@@ -87,6 +87,18 @@ impl FitStatsCmdBr {
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitStatsCmdBr {
+    pub(in crate::stats) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitStatsCmdCtxFitBr {
+        FitStatsCmdCtxFitBr {
+            fit_id: fit_id.into(),
+            core: self,
+        }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmdBr {
@@ -99,7 +111,7 @@ impl FitStatsCmdBr {
 }
 
 impl FitStatsCmdCtxFitBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsCmdCtxFit, BrResolveError> {
+    pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsCmdCtxFit, BrResolveError> {
         Ok(FitStatsCmdCtxFit {
             fit_id: resps.resolve_fit_id(self.fit_id)?,
             core: self.core.br_resolve(resps)?,
@@ -134,7 +146,7 @@ impl FitStatsCmd {
     }
 }
 impl FitStatsCmdCtxFit {
-    fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitStatsResp, FitGetFitStatsError> {
+    pub(in crate::stats) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitStatsResp, FitGetFitStatsError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;
         Ok(self.core.execute(&mut core_fit))
     }

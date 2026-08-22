@@ -1,6 +1,6 @@
 use crate::{
     FitId, FitInfo, FleetId, FleetInfo, ItemId, ItemInfo, ItemTypeId, SolInfo,
-    stats::{FitStatsResp, ItemStatsResp},
+    stats::{FitStatsResp, FleetStatsResp, ItemStatsResp, SolStatsResp},
     val::{FitValResult, SolValResult},
 };
 
@@ -16,6 +16,8 @@ pub enum CmdResp {
     FitInfo(Box<FitInfo>),
     ItemInfo(Box<ItemInfo>),
     // Stats
+    SolStats(SolStatsResp),
+    FleetStats(FleetStatsResp),
     FitStats(FitStatsResp),
     ItemStats(ItemStatsResp),
     // Validation results are large
@@ -152,6 +154,16 @@ impl From<ItemInfo> for CmdResp {
         CmdResp::ItemInfo(Box::new(info))
     }
 }
+impl From<SolStatsResp> for CmdResp {
+    fn from(stats: SolStatsResp) -> Self {
+        CmdResp::SolStats(stats)
+    }
+}
+impl From<FleetStatsResp> for CmdResp {
+    fn from(stats: FleetStatsResp) -> Self {
+        CmdResp::FleetStats(stats)
+    }
+}
 impl From<FitStatsResp> for CmdResp {
     fn from(stats: FitStatsResp) -> Self {
         CmdResp::FitStats(stats)
@@ -196,6 +208,8 @@ mod custom_serde {
                 Self::FleetInfo(inner) => inner.serialize(serializer),
                 Self::FitInfo(inner) => inner.serialize(serializer),
                 Self::ItemInfo(inner) => inner.serialize(serializer),
+                Self::SolStats(inner) => inner.serialize(serializer),
+                Self::FleetStats(inner) => inner.serialize(serializer),
                 Self::FitStats(inner) => inner.serialize(serializer),
                 Self::ItemStats(inner) => inner.serialize(serializer),
                 Self::SolVal(inner) => inner.serialize(serializer),

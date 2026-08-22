@@ -22,7 +22,8 @@ pub use rc::{
     },
 };
 pub use result_details::{StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult};
-pub use sol::{SolStatsCmd, SolStatsCmdBr, SolStatsResp};
+pub(crate) use sol::SolStatsEnumCmd;
+pub use sol::{SolStatsCmd, SolStatsCmdBr, SolStatsEnumCmdBr, SolStatsResp};
 
 pub mod err;
 mod exec_shared;
