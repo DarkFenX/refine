@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem<'_> {
-    #[tracing::instrument(name = "sol-hyb", level = "trace", skip_all)]
+    #[tracing::instrument(name = "sol-app", level = "trace", skip_all)]
     pub async fn fitting_app_batch<F, E>(
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,
