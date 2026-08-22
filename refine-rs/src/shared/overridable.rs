@@ -90,9 +90,6 @@ impl<K, V> OvrdMapHeavy<K, V>
 where
     K: Eq + Hash,
 {
-    pub(crate) fn set_default(&mut self, default: V) {
-        self.default = default;
-    }
     pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
         let index = self.override_vals.len();
         self.override_vals.push(value);
@@ -158,7 +155,7 @@ where
     {
         let mut heavy = Self {
             default: compact.default.into(),
-            override_refs: HashMap::new(),
+            override_refs: HashMap::with_capacity(compact.overrides.iter().map(|(_, keys)| keys.len()).sum()),
             override_vals: Vec::with_capacity(compact.overrides.len()),
         };
         for (value, keys) in compact.overrides.into_iter() {
@@ -174,24 +171,6 @@ impl<K, V> OvrdMapLight<K, V> {
             default,
             overrides: HashMap::new(),
         }
-    }
-    pub(crate) fn from_compact(compact: OvrdCompact<K, V>) -> Self
-    where
-        K: Eq + Hash,
-        V: Copy + PartialEq,
-    {
-        let default = compact.default;
-        let mut overrides = HashMap::with_capacity(calc_needed_space(default, &compact.overrides));
-        for (value, keys) in compact.overrides {
-            // Getter falls back to default, do not add entries with it
-            if value == default {
-                continue;
-            }
-            for key in keys {
-                overrides.insert(key, value);
-            }
-        }
-        Self { default, overrides }
     }
     pub(crate) fn from_compact_with_br_resolution<B>(
         compact_br: OvrdCompact<B, V>,
