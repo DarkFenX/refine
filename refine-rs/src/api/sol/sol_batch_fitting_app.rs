@@ -14,7 +14,7 @@ impl SolarSystem<'_> {
         evaluator: F,
         info_cmd: SolInfoCmdBr,
         stats_cmd: SolStatsCmdBr,
-    ) -> Result<SolFittingAppResp, SolFittingAppBatchError<E>>
+    ) -> Result<SolFittingAppResp, SolFittingAppError<E>>
     where
         F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + 'static,
         E: std::error::Error + Send + 'static,
@@ -24,23 +24,23 @@ impl SolarSystem<'_> {
             for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
                 let ctl_cmd_resp = ctl_cmd
                     .br_resolve(&ctl_cmd_resps)
-                    .map_err(|br_err| SolFittingAppBatchError::from_ctl_br_resolve(index, br_err))?
+                    .map_err(|br_err| SolFittingAppError::from_ctl_br_resolve(index, br_err))?
                     .execute(core_sol)
-                    .map_err(|exec_err| SolFittingAppBatchError::from_ctl_exec(index, exec_err))?;
+                    .map_err(|exec_err| SolFittingAppError::from_ctl_exec(index, exec_err))?;
                 ctl_cmd_resps.append(ctl_cmd_resp);
             }
             let val_result = val_cmd
                 .br_resolve(&ctl_cmd_resps)
-                .map_err(SolFittingAppBatchError::ValBrResolve)?
+                .map_err(SolFittingAppError::ValBrResolve)?
                 .execute(core_sol);
-            let val_result = evaluator(val_result).map_err(SolFittingAppBatchError::Evaluator)?;
+            let val_result = evaluator(val_result).map_err(SolFittingAppError::Evaluator)?;
             let info = info_cmd
                 .br_resolve(&ctl_cmd_resps)
-                .map_err(SolFittingAppBatchError::InfoBrResolve)?
+                .map_err(SolFittingAppError::InfoBrResolve)?
                 .execute(sol_ctx.sol_id, sol_ctx.src_alias, core_sol);
             let stats = stats_cmd
                 .br_resolve(&ctl_cmd_resps)
-                .map_err(SolFittingAppBatchError::StatsBrResolve)?
+                .map_err(SolFittingAppError::StatsBrResolve)?
                 .execute(core_sol);
             Ok(SolFittingAppResp {
                 ctl: ctl_cmd_resps,
@@ -61,7 +61,7 @@ pub struct SolFittingAppResp {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum SolFittingAppBatchError<E>
+pub enum SolFittingAppError<E>
 where
     E: std::error::Error,
 {
@@ -78,7 +78,7 @@ where
     #[error("stats command failed")]
     StatsBrResolve(#[source] BrResolveError),
 }
-impl<E> SolFittingAppBatchError<E>
+impl<E> SolFittingAppError<E>
 where
     E: std::error::Error,
 {

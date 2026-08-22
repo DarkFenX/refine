@@ -5,8 +5,8 @@ pub use refine::Refine;
 #[cfg(feature = "serde")]
 pub use sol::ParseSolarSystemIdError;
 pub use sol::{
-    SolAddError, SolChangeEnumSolInfoError, SolFittingAppBatchError, SolFittingAppResp, SolGetError,
-    SolHybridBatchError, SolRemoveError, SolSwitchSrcError, SolarSystem, SolarSystemId,
+    SolAddError, SolChangeEnumSolInfoError, SolFittingAppError, SolFittingAppResp, SolGetError, SolHybridBatchError,
+    SolRemoveError, SolSwitchSrcError, SolarSystem, SolarSystemId,
 };
 pub use src::{
     Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError,

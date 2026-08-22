@@ -4,7 +4,7 @@
 #![feature(const_default)]
 #![cfg_attr(feature = "serde", feature(cfg_eval))]
 
-pub use api::{Fit, Fleet, Item, Refine, SolarSystem, SolarSystemId, SolFittingAppResp};
+pub use api::{Fit, Fleet, Item, Refine, SolFittingAppResp, SolarSystem, SolarSystemId};
 pub use ctl::{
     AddMutation, AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, AttrMutation, AutochargeChangeCmd, BoosterAddCmd,
     BoosterChangeCmd, ChangeMutation, ChangedItemIdsResp, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
