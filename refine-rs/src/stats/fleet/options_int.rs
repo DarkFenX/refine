@@ -1,81 +1,25 @@
-#[cfg(feature = "serde")]
-use crate::stats::option::DeStatOptionKind;
-use crate::{
-    CmdResps, ItemId, ItemIdBr,
-    err::BrResolveError,
-    stats::{
-        StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps,
-        StatOptionMass,
-        option::{StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionResolved},
-    },
+use crate::stats::{
+    StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
+    StatOptionFitOutRps, StatOptionMass,
 };
 
-pub(in crate::stats) type FleetStatsOptionsResolved = FleetStatsOptionsInt<StatOptionResolved, ItemId>;
-
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Deserialize),
-    serde(default, bound(deserialize = "O: DeStatOptionKind, I: serde::Deserialize<'de>"))
-)]
-#[derive(Clone)]
-pub(in crate::stats) struct FleetStatsOptionsInt<O, I>
-where
-    O: StatOptionKind,
-{
-    pub(super) dmg: StatOptionExtended<O, StatOptionFitDmg<I>>,
-    pub(super) mps: StatOptionExtended<O, StatOptionFitMining>,
-    pub(super) outgoing_nps: StatOptionExtended<O, StatOptionFitOutNps<I>>,
-    pub(super) outgoing_rps: StatOptionExtended<O, StatOptionFitOutRps<I>>,
-    pub(super) outgoing_cps: StatOptionExtended<O, StatOptionFitOutCps<I>>,
-    pub(super) mass: StatOptionExtended<O, StatOptionMass>,
+pub(in crate::stats) struct FleetStatsOptionsResolved {
+    pub(super) dmg: Vec<StatOptionFitDmg>,
+    pub(super) mps: Vec<StatOptionFitMining>,
+    pub(super) outgoing_nps: Vec<StatOptionFitOutNps>,
+    pub(super) outgoing_rps: Vec<StatOptionFitOutRps>,
+    pub(super) outgoing_cps: Vec<StatOptionFitOutCps>,
+    pub(super) mass: Vec<StatOptionMass>,
 }
-impl<O, I> Default for FleetStatsOptionsInt<O, I>
-where
-    O: StatOptionKind,
-{
-    fn default() -> Self {
+impl FleetStatsOptionsResolved {
+    pub(super) fn from_default(default: bool) -> Self {
         Self {
-            dmg: Default::default(),
-            mps: Default::default(),
-            outgoing_nps: Default::default(),
-            outgoing_rps: Default::default(),
-            outgoing_cps: Default::default(),
-            mass: Default::default(),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Backref resolution
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsOptionsInt<StatOptionRaw, ItemIdBr> {
-    pub(super) fn br_resolve(
-        self,
-        resps: &CmdResps,
-    ) -> Result<FleetStatsOptionsInt<StatOptionRaw, ItemId>, BrResolveError> {
-        Ok(FleetStatsOptionsInt {
-            dmg: self.dmg.br_resolve(resps)?,
-            mps: self.mps,
-            outgoing_nps: self.outgoing_nps.br_resolve(resps)?,
-            outgoing_rps: self.outgoing_rps.br_resolve(resps)?,
-            outgoing_cps: self.outgoing_cps.br_resolve(resps)?,
-            mass: self.mass,
-        })
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Default + stat resolution
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsOptionsInt<StatOptionRaw, ItemId> {
-    pub(in crate::stats) fn stat_resolve(self, default: bool) -> FleetStatsOptionsResolved {
-        FleetStatsOptionsInt {
-            dmg: self.dmg.stat_resolve(default),
-            mps: self.mps.stat_resolve(default),
-            outgoing_nps: self.outgoing_nps.stat_resolve(default),
-            outgoing_rps: self.outgoing_rps.stat_resolve(default),
-            outgoing_cps: self.outgoing_cps.stat_resolve(default),
-            mass: self.mass.stat_resolve(default),
+            dmg: StatOptionExt::stat_default(default),
+            mps: StatOptionExt::stat_default(default),
+            outgoing_nps: StatOptionExt::stat_default(default),
+            outgoing_rps: StatOptionExt::stat_default(default),
+            outgoing_cps: StatOptionExt::stat_default(default),
+            mass: StatOptionExt::stat_default(default),
         }
     }
 }
@@ -85,11 +29,11 @@ impl FleetStatsOptionsInt<StatOptionRaw, ItemId> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
-        self.dmg.is_enabled()
-            || self.mps.is_enabled()
-            || self.outgoing_nps.is_enabled()
-            || self.outgoing_rps.is_enabled()
-            || self.outgoing_cps.is_enabled()
-            || self.mass.is_enabled()
+        !self.dmg.is_empty()
+            || !self.mps.is_empty()
+            || !self.outgoing_nps.is_empty()
+            || !self.outgoing_rps.is_empty()
+            || !self.outgoing_cps.is_empty()
+            || !self.mass.is_empty()
     }
 }

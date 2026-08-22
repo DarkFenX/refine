@@ -8,12 +8,7 @@ pub use mining::{StatOptionFitMining, StatOptionItemMining};
 pub use out_cps::{StatOptionFitOutCps, StatOptionItemOutCps};
 pub use out_nps::{StatOptionFitOutNps, StatOptionItemOutNps};
 pub use out_rps::{StatOptionFitOutRps, StatOptionItemOutRps};
-#[cfg(feature = "serde")]
-pub(in crate::stats) use support::DeStatOptionKind;
 pub use support::StatOptionExt;
-pub(in crate::stats) use support::{
-    StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionRegular, StatOptionResolved,
-};
 pub use tank_ehp::StatOptionEhp;
 pub use tank_erps::StatOptionErps;
 pub use tank_rps::StatOptionRps;

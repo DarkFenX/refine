@@ -18,195 +18,195 @@ impl FitStatsOptionsResolved {
     pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
         // Fit output stats
-        if let Some(options) = self.dmg.get() {
-            stats.dmg = get_dmg_stats(core_fit, options);
+        if !self.dmg.is_empty() {
+            stats.dmg = get_dmg_stats(core_fit, &self.dmg);
         }
-        if let Some(options) = self.mps.get() {
-            stats.mps = get_mps_stats(core_fit, options);
+        if !self.mps.is_empty() {
+            stats.mps = get_mps_stats(core_fit, &self.mps);
         }
-        if let Some(options) = self.outgoing_nps.get() {
-            stats.outgoing_nps = get_outgoing_nps_stats(core_fit, options);
+        if !self.outgoing_nps.is_empty() {
+            stats.outgoing_nps = get_outgoing_nps_stats(core_fit, &self.outgoing_nps);
         }
-        if let Some(options) = self.outgoing_cps.get() {
-            stats.outgoing_cps = get_outgoing_cps_stats(core_fit, options);
+        if !self.outgoing_cps.is_empty() {
+            stats.outgoing_cps = get_outgoing_cps_stats(core_fit, &self.outgoing_cps);
         }
-        if let Some(options) = self.outgoing_rps.get() {
-            stats.outgoing_rps = get_outgoing_rps_stats(core_fit, options);
+        if !self.outgoing_rps.is_empty() {
+            stats.outgoing_rps = get_outgoing_rps_stats(core_fit, &self.outgoing_rps);
         }
         // Fit resources
-        if self.cpu.is_enabled() {
+        if self.cpu {
             stats.cpu = StatResult::from_stat(core_fit.get_stat_cpu());
         }
-        if self.powergrid.is_enabled() {
+        if self.powergrid {
             stats.powergrid = StatResult::from_stat(core_fit.get_stat_powergrid());
         }
-        if self.calibration.is_enabled() {
+        if self.calibration {
             stats.calibration = StatResult::from_stat(core_fit.get_stat_calibration());
         }
-        if self.drone_bay_volume.is_enabled() {
+        if self.drone_bay_volume {
             stats.drone_bay_volume = StatResult::from_stat(core_fit.get_stat_drone_bay_volume());
         }
-        if self.drone_bandwidth.is_enabled() {
+        if self.drone_bandwidth {
             stats.drone_bandwidth = StatResult::from_stat(core_fit.get_stat_drone_bandwidth());
         }
-        if self.fighter_bay_volume.is_enabled() {
+        if self.fighter_bay_volume {
             stats.fighter_bay_volume = StatResult::from_stat(core_fit.get_stat_fighter_bay_volume());
         }
         // Fit slots
-        if self.high_slots.is_enabled() {
+        if self.high_slots {
             stats.high_slots = StatResult::from_stat(core_fit.get_stat_high_slots());
         }
-        if self.mid_slots.is_enabled() {
+        if self.mid_slots {
             stats.mid_slots = StatResult::from_stat(core_fit.get_stat_mid_slots());
         }
-        if self.low_slots.is_enabled() {
+        if self.low_slots {
             stats.low_slots = StatResult::from_stat(core_fit.get_stat_low_slots());
         }
-        if self.turret_slots.is_enabled() {
+        if self.turret_slots {
             stats.turret_slots = StatResult::from_stat(core_fit.get_stat_turret_slots());
         }
-        if self.launcher_slots.is_enabled() {
+        if self.launcher_slots {
             stats.launcher_slots = StatResult::from_stat(core_fit.get_stat_launcher_slots());
         }
-        if self.rig_slots.is_enabled() {
+        if self.rig_slots {
             stats.rig_slots = StatResult::from_stat(core_fit.get_stat_rig_slots());
         }
-        if self.service_slots.is_enabled() {
+        if self.service_slots {
             stats.service_slots = StatResult::from_stat(core_fit.get_stat_service_slots());
         }
-        if self.subsystem_slots.is_enabled() {
+        if self.subsystem_slots {
             stats.subsystem_slots = StatResult::from_stat(core_fit.get_stat_subsystem_slots());
         }
-        if self.launched_drones.is_enabled() {
+        if self.launched_drones {
             stats.launched_drones = StatResult::from_stat(core_fit.get_stat_launched_drones());
         }
-        if self.launched_fighters.is_enabled() {
+        if self.launched_fighters {
             stats.launched_fighters = StatResult::from_stat(core_fit.get_stat_launched_fighters());
         }
-        if self.launched_light_fighters.is_enabled() {
+        if self.launched_light_fighters {
             stats.launched_light_fighters = StatResult::from_stat(core_fit.get_stat_launched_light_fighters());
         }
-        if self.launched_heavy_fighters.is_enabled() {
+        if self.launched_heavy_fighters {
             stats.launched_heavy_fighters = StatResult::from_stat(core_fit.get_stat_launched_heavy_fighters());
         }
-        if self.launched_support_fighters.is_enabled() {
+        if self.launched_support_fighters {
             stats.launched_support_fighters = StatResult::from_stat(core_fit.get_stat_launched_support_fighters());
         }
-        if self.launched_st_light_fighters.is_enabled() {
+        if self.launched_st_light_fighters {
             stats.launched_st_light_fighters = StatResult::from_stat(core_fit.get_stat_launched_st_light_fighters());
         }
-        if self.launched_st_heavy_fighters.is_enabled() {
+        if self.launched_st_heavy_fighters {
             stats.launched_st_heavy_fighters = StatResult::from_stat(core_fit.get_stat_launched_st_heavy_fighters());
         }
-        if self.launched_st_support_fighters.is_enabled() {
+        if self.launched_st_support_fighters {
             stats.launched_st_support_fighters =
                 StatResult::from_stat(core_fit.get_stat_launched_st_support_fighters());
         }
         // Ship tank
-        if self.resists.is_enabled() {
+        if self.resists {
             stats.resists = StatResult::from_result_outer(core_fit.get_stat_resists());
         }
-        if self.hp.is_enabled() {
+        if self.hp {
             stats.hp = StatResult::from_result_outer(core_fit.get_stat_hp());
         }
-        if let Some(options) = self.ehp.get() {
-            stats.ehp = get_ehp_stats(core_fit, options);
+        if !self.ehp.is_empty() {
+            stats.ehp = get_ehp_stats(core_fit, &self.ehp);
         }
-        if self.wc_ehp.is_enabled() {
+        if self.wc_ehp {
             stats.wc_ehp = StatResult::from_result_outer(core_fit.get_stat_wc_ehp());
         }
-        if let Some(options) = self.rps.get() {
-            stats.rps = get_rps_stats(core_fit, options);
+        if !self.rps.is_empty() {
+            stats.rps = get_rps_stats(core_fit, &self.rps);
         }
-        if let Some(options) = self.erps.get() {
-            stats.erps = get_erps_stats(core_fit, options);
+        if !self.erps.is_empty() {
+            stats.erps = get_erps_stats(core_fit, &self.erps);
         }
-        if self.breach_resist.is_enabled() {
+        if self.breach_resist {
             stats.breach_resist = StatResult::from_result_outer(core_fit.get_stat_breach_resist());
         }
         // Ship cap
-        if self.cap_amount.is_enabled() {
+        if self.cap_amount {
             stats.cap_amount = StatResult::from_result_outer(core_fit.get_stat_cap_amount());
         }
-        if let Some(options) = self.cap_balance.get() {
-            stats.cap_balance = get_cap_balance_stats(core_fit, options);
+        if !self.cap_balance.is_empty() {
+            stats.cap_balance = get_cap_balance_stats(core_fit, &self.cap_balance);
         }
-        if let Some(options) = self.cap_sim.get() {
-            stats.cap_sim = get_cap_sim_stats(core_fit, options);
+        if !self.cap_sim.is_empty() {
+            stats.cap_sim = get_cap_sim_stats(core_fit, &self.cap_sim);
         }
-        if self.neut_resist.is_enabled() {
+        if self.neut_resist {
             stats.neut_resist = StatResult::from_result_outer(core_fit.get_stat_neut_resist());
         }
         // Ship sensors
-        if self.locks.is_enabled() {
+        if self.locks {
             stats.locks = StatResult::from_result_outer(core_fit.get_stat_locks());
         }
-        if self.lock_range.is_enabled() {
+        if self.lock_range {
             stats.lock_range = StatResult::from_result_outer(core_fit.get_stat_lock_range());
         }
-        if self.scan_res.is_enabled() {
+        if self.scan_res {
             stats.scan_res = StatResult::from_result_outer(core_fit.get_stat_scan_res());
         }
-        if self.sensors.is_enabled() {
+        if self.sensors {
             stats.sensors = StatResult::from_result_outer(core_fit.get_stat_sensors());
         }
-        if self.dscan_range.is_enabled() {
+        if self.dscan_range {
             stats.dscan_range = StatResult::from_result_outer(core_fit.get_stat_dscan_range());
         }
-        if self.probing_size.is_enabled() {
+        if self.probing_size {
             stats.probing_size = StatResult::from_result_outer(core_fit.get_stat_probing_size());
         }
-        if let Some(options) = self.incoming_jam.get() {
-            stats.incoming_jam = get_incoming_jam_stats(core_fit, options);
+        if !self.incoming_jam.is_empty() {
+            stats.incoming_jam = get_incoming_jam_stats(core_fit, &self.incoming_jam);
         }
         // Ship mobility
-        if self.speed.is_enabled() {
+        if self.speed {
             stats.speed = StatResult::from_result_outer(core_fit.get_stat_speed());
         }
-        if self.agility.is_enabled() {
+        if self.agility {
             stats.agility = StatResult::from_result_outer(core_fit.get_stat_agility());
         }
-        if self.align_time.is_enabled() {
+        if self.align_time {
             stats.align_time = StatResult::from_result_outer(core_fit.get_stat_align_time());
         }
-        if self.sig_radius.is_enabled() {
+        if self.sig_radius {
             stats.sig_radius = StatResult::from_result_outer(core_fit.get_stat_sig_radius());
         }
-        if let Some(options) = self.mass.get() {
-            stats.mass = get_mass_stats(core_fit, options);
+        if !self.mass.is_empty() {
+            stats.mass = get_mass_stats(core_fit, &self.mass);
         }
-        if self.warp_speed.is_enabled() {
+        if self.warp_speed {
             stats.warp_speed = StatResult::from_result_outer(core_fit.get_stat_warp_speed());
         }
-        if self.max_warp_range.is_enabled() {
+        if self.max_warp_range {
             stats.max_warp_range = StatResult::from_result_outer(core_fit.get_stat_max_warp_range());
         }
-        if let Some(options) = self.jump.get() {
-            stats.jump = get_jump_stats(core_fit, options);
+        if !self.jump.is_empty() {
+            stats.jump = get_jump_stats(core_fit, &self.jump);
         }
         // Ship misc stats
-        if self.drone_control_range.is_enabled() {
+        if self.drone_control_range {
             stats.drone_control_range = StatResult::from_result_outer(core_fit.get_stat_drone_control_range());
         }
-        if self.can_warp.is_enabled() {
+        if self.can_warp {
             stats.can_warp = StatResult::from_result_outer(core_fit.get_stat_can_warp());
         }
-        if self.can_jump_gate.is_enabled() {
+        if self.can_jump_gate {
             stats.can_jump_gate = StatResult::from_result_outer(core_fit.get_stat_can_jump_gate());
         }
-        if self.can_jump_wormhole.is_enabled() {
+        if self.can_jump_wormhole {
             stats.can_jump_wormhole = StatResult::from_result_outer(core_fit.get_stat_can_jump_wormhole());
         }
-        if self.can_jump_drive.is_enabled() {
+        if self.can_jump_drive {
             stats.can_jump_drive = StatResult::from_result_outer(core_fit.get_stat_can_jump_drive());
         }
-        if self.can_dock_station.is_enabled() {
+        if self.can_dock_station {
             stats.can_dock_station = StatResult::from_result_outer(core_fit.get_stat_can_dock_station());
         }
-        if self.can_dock_citadel.is_enabled() {
+        if self.can_dock_citadel {
             stats.can_dock_citadel = StatResult::from_result_outer(core_fit.get_stat_can_dock_citadel());
         }
-        if self.can_tether.is_enabled() {
+        if self.can_tether {
             stats.can_tether = StatResult::from_result_outer(core_fit.get_stat_can_tether());
         }
         stats

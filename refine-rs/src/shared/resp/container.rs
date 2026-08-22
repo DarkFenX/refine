@@ -86,22 +86,20 @@ impl CmdResps {
     fn get_fleet_id(&self, index: usize) -> Result<FleetId, BrResolveError> {
         self.get_resp(index)?
             .get_fleet_id()
-            .ok_or_else(|| BrResolveError::NoFleetId(index))
+            .ok_or(BrResolveError::NoFleetId(index))
     }
     fn get_fit_id(&self, index: usize) -> Result<FitId, BrResolveError> {
-        self.get_resp(index)?
-            .get_fit_id()
-            .ok_or_else(|| BrResolveError::NoFitId(index))
+        self.get_resp(index)?.get_fit_id().ok_or(BrResolveError::NoFitId(index))
     }
     fn get_item_id(&self, index: usize) -> Result<ItemId, BrResolveError> {
         self.get_resp(index)?
             .get_item_id()
-            .ok_or_else(|| BrResolveError::NoItemId(index))
+            .ok_or(BrResolveError::NoItemId(index))
     }
     fn get_charge_item_id(&self, index: usize) -> Result<ItemId, BrResolveError> {
         self.get_resp(index)?
             .get_charge_item_id()
-            .ok_or_else(|| BrResolveError::NoChargeItemId(index))
+            .ok_or(BrResolveError::NoChargeItemId(index))
     }
     fn get_resp(&self, index: usize) -> Result<&CmdResp, BrResolveError> {
         self.data.get(index).ok_or(BrResolveError::NotFound(index))

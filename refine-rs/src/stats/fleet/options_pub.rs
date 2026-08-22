@@ -4,31 +4,32 @@ use crate::{
     shared::BrResolvable,
     stats::{
         StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-        StatOptionFitOutRps, StatOptionMass,
-        fleet::{FleetStatsOptionsInt, FleetStatsOptionsResolved},
-        option::StatOptionRaw,
+        StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptionsResolved,
     },
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(default))]
 #[derive(Clone)]
-pub struct FleetStatsOptions<I = ItemId>
-{
-    #[cfg_attr(feature = "serde", serde(default))]
+pub struct FleetStatsOptions<I = ItemId> {
     default: bool = false,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    options: FleetStatsOptionsInt<StatOptionRaw, I>,
+    overrides: Vec<FleetStatOption<I>> = Vec::new(),
 }
 impl<I> Default for FleetStatsOptions<I> {
     fn default() -> Self {
-        Self {
-            options: Default::default(),
-            ..
-        }
+        Self { .. }
     }
 }
 
 pub type FleetStatsOptionsBr = FleetStatsOptions<ItemIdBr>;
+
+#[derive(Clone)]
+enum FleetStatOption<I> {
+    Dmg(StatOptionExt<StatOptionFitDmg<I>>),
+    Mps(StatOptionExt<StatOptionFitMining>),
+    OutgoingNps(StatOptionExt<StatOptionFitOutNps<I>>),
+    OutgoingRps(StatOptionExt<StatOptionFitOutRps<I>>),
+    OutgoingCps(StatOptionExt<StatOptionFitOutCps<I>>),
+    Mass(StatOptionExt<StatOptionMass>),
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
@@ -36,33 +37,37 @@ pub type FleetStatsOptionsBr = FleetStatsOptions<ItemIdBr>;
 impl<I> FleetStatsOptions<I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
+        Self { default, .. }
+    }
+    /// True to have all supported stats enabled by default, false to have them disabled.
+    pub fn with_override_capacity(default: bool, capacity: usize) -> Self {
         Self {
             default,
-            options: FleetStatsOptionsInt::default(),
+            overrides: Vec::with_capacity(capacity),
         }
     }
     pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg<I>>) -> Self {
-        self.options.dmg = option.into();
+        self.overrides.push(FleetStatOption::Dmg(option));
         self
     }
     pub fn with_mps(mut self, option: StatOptionExt<StatOptionFitMining>) -> Self {
-        self.options.mps = option.into();
+        self.overrides.push(FleetStatOption::Mps(option));
         self
     }
     pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps<I>>) -> Self {
-        self.options.outgoing_nps = option.into();
+        self.overrides.push(FleetStatOption::OutgoingNps(option));
         self
     }
     pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps<I>>) -> Self {
-        self.options.outgoing_rps = option.into();
+        self.overrides.push(FleetStatOption::OutgoingRps(option));
         self
     }
     pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps<I>>) -> Self {
-        self.options.outgoing_cps = option.into();
+        self.overrides.push(FleetStatOption::OutgoingCps(option));
         self
     }
     pub fn with_mass(mut self, option: StatOptionExt<StatOptionMass>) -> Self {
-        self.options.mass = option.into();
+        self.overrides.push(FleetStatOption::Mass(option));
         self
     }
 }
@@ -73,9 +78,20 @@ impl<I> FleetStatsOptions<I> {
 impl BrResolvable for FleetStatsOptionsBr {
     type Target = FleetStatsOptions;
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        let mut overrides = Vec::with_capacity(self.overrides.len());
+        for option in self.overrides.into_iter() {
+            overrides.push(match option {
+                FleetStatOption::Dmg(option) => FleetStatOption::Dmg(option.br_resolve(resps)?),
+                FleetStatOption::Mps(option) => FleetStatOption::Mps(option),
+                FleetStatOption::OutgoingNps(option) => FleetStatOption::OutgoingNps(option.br_resolve(resps)?),
+                FleetStatOption::OutgoingRps(option) => FleetStatOption::OutgoingRps(option.br_resolve(resps)?),
+                FleetStatOption::OutgoingCps(option) => FleetStatOption::OutgoingCps(option.br_resolve(resps)?),
+                FleetStatOption::Mass(option) => FleetStatOption::Mass(option),
+            });
+        }
         Ok(Self::Target {
             default: self.default,
-            options: self.options.br_resolve(resps)?,
+            overrides,
         })
     }
 }
@@ -85,12 +101,106 @@ impl BrResolvable for FleetStatsOptionsBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptions {
     pub(super) fn stat_resolve(self) -> FleetStatsOptionsResolved {
-        self.options.stat_resolve(self.default)
+        let mut resolved = FleetStatsOptionsResolved::from_default(self.default);
+        for option in self.overrides.into_iter() {
+            match option {
+                FleetStatOption::Dmg(option) => resolved.dmg = option.stat_resolve(),
+                FleetStatOption::Mps(option) => resolved.mps = option.stat_resolve(),
+                FleetStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.stat_resolve(),
+                FleetStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.stat_resolve(),
+                FleetStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.stat_resolve(),
+                FleetStatOption::Mass(option) => resolved.mass = option.stat_resolve(),
+            }
+        }
+        resolved
     }
 }
 
 impl From<FleetStatsOptions<ItemId>> for FleetStatsOptionsResolved {
     fn from(value: FleetStatsOptions<ItemId>) -> Self {
-        value.options.stat_resolve(value.default)
+        value.stat_resolve()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Custom de/serialization
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[cfg(feature = "serde")]
+mod custom_serde {
+    use serde::de::{Deserialize, Deserializer, IgnoredAny, MapAccess, Visitor};
+
+    use super::*;
+
+    impl<'de, I> Deserialize<'de> for FleetStatsOptions<I>
+    where
+        I: Deserialize<'de>,
+    {
+        fn deserialize<D>(deserializer: D) -> Result<Self, D::Error>
+        where
+            D: Deserializer<'de>,
+        {
+            deserializer.deserialize_map(VisitorImpl(std::marker::PhantomData))
+        }
+    }
+
+    #[derive(serde::Deserialize)]
+    #[serde(field_identifier, rename_all = "snake_case")]
+    enum Key {
+        Default,
+        Dmg,
+        Mps,
+        OutgoingNps,
+        OutgoingRps,
+        OutgoingCps,
+        Mass,
+        #[serde(other)]
+        Unknown,
+    }
+
+    struct VisitorImpl<I>(std::marker::PhantomData<I>);
+    impl<'de, I> Visitor<'de> for VisitorImpl<I>
+    where
+        I: Deserialize<'de>,
+    {
+        type Value = FleetStatsOptions<I>;
+
+        fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
+            formatter.write_str("struct FleetStatsOptions")
+        }
+
+        fn visit_map<A>(self, mut map: A) -> Result<Self::Value, A::Error>
+        where
+            A: MapAccess<'de>,
+        {
+            let mut options = Self::Value::default();
+            let ovrd = &mut options.overrides;
+            while let Some(key) = map.next_key::<Key>()? {
+                match key {
+                    Key::Default => options.default = map.next_value()?,
+                    Key::Dmg => {
+                        ovrd.extend(map.next_value::<Option<_>>()?.map(FleetStatOption::Dmg));
+                    }
+                    Key::Mps => {
+                        ovrd.extend(map.next_value::<Option<_>>()?.map(FleetStatOption::Mps));
+                    }
+                    Key::OutgoingNps => {
+                        ovrd.extend(map.next_value::<Option<_>>()?.map(FleetStatOption::OutgoingNps));
+                    }
+                    Key::OutgoingRps => {
+                        ovrd.extend(map.next_value::<Option<_>>()?.map(FleetStatOption::OutgoingRps));
+                    }
+                    Key::OutgoingCps => {
+                        ovrd.extend(map.next_value::<Option<_>>()?.map(FleetStatOption::OutgoingCps));
+                    }
+                    Key::Mass => {
+                        ovrd.extend(map.next_value::<Option<_>>()?.map(FleetStatOption::Mass));
+                    }
+                    Key::Unknown => {
+                        map.next_value::<IgnoredAny>()?;
+                    }
+                }
+            }
+            Ok(options)
+        }
     }
 }

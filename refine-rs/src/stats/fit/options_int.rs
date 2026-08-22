@@ -1,337 +1,152 @@
-#[cfg(feature = "serde")]
-use crate::stats::option::DeStatOptionKind;
-use crate::{
-    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
-    err::BrResolveError,
-    stats::{
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
-        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
-        StatOptionMass, StatOptionRps,
-        option::{StatOptionExtended, StatOptionKind, StatOptionRaw, StatOptionRegular, StatOptionResolved},
-    },
+use crate::stats::{
+    StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+    StatOptionJump, StatOptionMass, StatOptionRps,
 };
 
-pub(in crate::stats) type FitStatsOptionsResolved = FitStatsOptionsInt<StatOptionResolved, FitId, ItemId>;
-
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Deserialize),
-    serde(
-        default,
-        bound(deserialize = "O: DeStatOptionKind, F: serde::Deserialize<'de>, I: serde::Deserialize<'de>")
-    )
-)]
-#[derive(Clone)]
-pub(in crate::stats) struct FitStatsOptionsInt<O, F, I>
-where
-    O: StatOptionKind,
-{
+pub(in crate::stats) struct FitStatsOptionsResolved {
     // Fit output stats
-    pub(super) dmg: StatOptionExtended<O, StatOptionFitDmg<I>>,
-    pub(super) mps: StatOptionExtended<O, StatOptionFitMining>,
-    pub(super) outgoing_nps: StatOptionExtended<O, StatOptionFitOutNps<I>>,
-    pub(super) outgoing_rps: StatOptionExtended<O, StatOptionFitOutRps<I>>,
-    pub(super) outgoing_cps: StatOptionExtended<O, StatOptionFitOutCps<I>>,
+    pub(super) dmg: Vec<StatOptionFitDmg>,
+    pub(super) mps: Vec<StatOptionFitMining>,
+    pub(super) outgoing_nps: Vec<StatOptionFitOutNps>,
+    pub(super) outgoing_rps: Vec<StatOptionFitOutRps>,
+    pub(super) outgoing_cps: Vec<StatOptionFitOutCps>,
     // Fit resources
-    pub(super) cpu: StatOptionRegular<O>,
-    pub(super) powergrid: StatOptionRegular<O>,
-    pub(super) calibration: StatOptionRegular<O>,
-    pub(super) drone_bay_volume: StatOptionRegular<O>,
-    pub(super) drone_bandwidth: StatOptionRegular<O>,
-    pub(super) fighter_bay_volume: StatOptionRegular<O>,
+    pub(super) cpu: bool,
+    pub(super) powergrid: bool,
+    pub(super) calibration: bool,
+    pub(super) drone_bay_volume: bool,
+    pub(super) drone_bandwidth: bool,
+    pub(super) fighter_bay_volume: bool,
     // Fit slots
-    pub(super) high_slots: StatOptionRegular<O>,
-    pub(super) mid_slots: StatOptionRegular<O>,
-    pub(super) low_slots: StatOptionRegular<O>,
-    pub(super) turret_slots: StatOptionRegular<O>,
-    pub(super) launcher_slots: StatOptionRegular<O>,
-    pub(super) rig_slots: StatOptionRegular<O>,
-    pub(super) service_slots: StatOptionRegular<O>,
-    pub(super) subsystem_slots: StatOptionRegular<O>,
-    pub(super) launched_drones: StatOptionRegular<O>,
-    pub(super) launched_fighters: StatOptionRegular<O>,
-    pub(super) launched_light_fighters: StatOptionRegular<O>,
-    pub(super) launched_heavy_fighters: StatOptionRegular<O>,
-    pub(super) launched_support_fighters: StatOptionRegular<O>,
-    pub(super) launched_st_light_fighters: StatOptionRegular<O>,
-    pub(super) launched_st_heavy_fighters: StatOptionRegular<O>,
-    pub(super) launched_st_support_fighters: StatOptionRegular<O>,
+    pub(super) high_slots: bool,
+    pub(super) mid_slots: bool,
+    pub(super) low_slots: bool,
+    pub(super) turret_slots: bool,
+    pub(super) launcher_slots: bool,
+    pub(super) rig_slots: bool,
+    pub(super) service_slots: bool,
+    pub(super) subsystem_slots: bool,
+    pub(super) launched_drones: bool,
+    pub(super) launched_fighters: bool,
+    pub(super) launched_light_fighters: bool,
+    pub(super) launched_heavy_fighters: bool,
+    pub(super) launched_support_fighters: bool,
+    pub(super) launched_st_light_fighters: bool,
+    pub(super) launched_st_heavy_fighters: bool,
+    pub(super) launched_st_support_fighters: bool,
     // Ship tank
-    pub(super) resists: StatOptionRegular<O>,
-    pub(super) hp: StatOptionRegular<O>,
-    pub(super) ehp: StatOptionExtended<O, StatOptionEhp>,
-    pub(super) wc_ehp: StatOptionRegular<O>,
-    pub(super) rps: StatOptionExtended<O, StatOptionRps>,
-    pub(super) erps: StatOptionExtended<O, StatOptionErps>,
-    pub(super) breach_resist: StatOptionRegular<O>,
+    pub(super) resists: bool,
+    pub(super) hp: bool,
+    pub(super) ehp: Vec<StatOptionEhp>,
+    pub(super) wc_ehp: bool,
+    pub(super) rps: Vec<StatOptionRps>,
+    pub(super) erps: Vec<StatOptionErps>,
+    pub(super) breach_resist: bool,
     // Ship cap
-    pub(super) cap_amount: StatOptionRegular<O>,
-    pub(super) cap_balance: StatOptionExtended<O, StatOptionCapBlc<I>>,
-    pub(super) cap_sim: StatOptionExtended<O, StatOptionCapSim<I>>,
-    pub(super) neut_resist: StatOptionRegular<O>,
+    pub(super) cap_amount: bool,
+    pub(super) cap_balance: Vec<StatOptionCapBlc>,
+    pub(super) cap_sim: Vec<StatOptionCapSim>,
+    pub(super) neut_resist: bool,
     // Ship sensors
-    pub(super) locks: StatOptionRegular<O>,
-    pub(super) lock_range: StatOptionRegular<O>,
-    pub(super) scan_res: StatOptionRegular<O>,
-    pub(super) sensors: StatOptionRegular<O>,
-    pub(super) dscan_range: StatOptionRegular<O>,
-    pub(super) probing_size: StatOptionRegular<O>,
-    pub(super) incoming_jam: StatOptionExtended<O, StatOptionIncomingJam>,
+    pub(super) locks: bool,
+    pub(super) lock_range: bool,
+    pub(super) scan_res: bool,
+    pub(super) sensors: bool,
+    pub(super) dscan_range: bool,
+    pub(super) probing_size: bool,
+    pub(super) incoming_jam: Vec<StatOptionIncomingJam>,
     // Ship mobility
-    pub(super) speed: StatOptionRegular<O>,
-    pub(super) agility: StatOptionRegular<O>,
-    pub(super) align_time: StatOptionRegular<O>,
-    pub(super) sig_radius: StatOptionRegular<O>,
-    pub(super) mass: StatOptionExtended<O, StatOptionMass>,
-    pub(super) warp_speed: StatOptionRegular<O>,
-    pub(super) max_warp_range: StatOptionRegular<O>,
-    pub(super) jump: StatOptionExtended<O, StatOptionJump<F>>,
+    pub(super) speed: bool,
+    pub(super) agility: bool,
+    pub(super) align_time: bool,
+    pub(super) sig_radius: bool,
+    pub(super) mass: Vec<StatOptionMass>,
+    pub(super) warp_speed: bool,
+    pub(super) max_warp_range: bool,
+    pub(super) jump: Vec<StatOptionJump>,
     // Ship misc stats
-    pub(super) drone_control_range: StatOptionRegular<O>,
-    pub(super) can_warp: StatOptionRegular<O>,
-    pub(super) can_jump_gate: StatOptionRegular<O>,
-    pub(super) can_jump_wormhole: StatOptionRegular<O>,
-    pub(super) can_jump_drive: StatOptionRegular<O>,
-    pub(super) can_dock_station: StatOptionRegular<O>,
-    pub(super) can_dock_citadel: StatOptionRegular<O>,
-    pub(super) can_tether: StatOptionRegular<O>,
+    pub(super) drone_control_range: bool,
+    pub(super) can_warp: bool,
+    pub(super) can_jump_gate: bool,
+    pub(super) can_jump_wormhole: bool,
+    pub(super) can_jump_drive: bool,
+    pub(super) can_dock_station: bool,
+    pub(super) can_dock_citadel: bool,
+    pub(super) can_tether: bool,
 }
-impl<O, F, I> Default for FitStatsOptionsInt<O, F, I>
-where
-    O: StatOptionKind,
-{
-    fn default() -> Self {
+impl FitStatsOptionsResolved {
+    pub(super) fn from_default(default: bool) -> Self {
         Self {
             // Fit output stats
-            dmg: Default::default(),
-            mps: Default::default(),
-            outgoing_nps: Default::default(),
-            outgoing_rps: Default::default(),
-            outgoing_cps: Default::default(),
+            dmg: StatOptionExt::stat_default(default),
+            mps: StatOptionExt::stat_default(default),
+            outgoing_nps: StatOptionExt::stat_default(default),
+            outgoing_rps: StatOptionExt::stat_default(default),
+            outgoing_cps: StatOptionExt::stat_default(default),
             // Fit resources
-            cpu: Default::default(),
-            powergrid: Default::default(),
-            calibration: Default::default(),
-            drone_bay_volume: Default::default(),
-            drone_bandwidth: Default::default(),
-            fighter_bay_volume: Default::default(),
+            cpu: default,
+            powergrid: default,
+            calibration: default,
+            drone_bay_volume: default,
+            drone_bandwidth: default,
+            fighter_bay_volume: default,
             // Fit slots
-            high_slots: Default::default(),
-            mid_slots: Default::default(),
-            low_slots: Default::default(),
-            turret_slots: Default::default(),
-            launcher_slots: Default::default(),
-            rig_slots: Default::default(),
-            service_slots: Default::default(),
-            subsystem_slots: Default::default(),
-            launched_drones: Default::default(),
-            launched_fighters: Default::default(),
-            launched_light_fighters: Default::default(),
-            launched_heavy_fighters: Default::default(),
-            launched_support_fighters: Default::default(),
-            launched_st_light_fighters: Default::default(),
-            launched_st_heavy_fighters: Default::default(),
-            launched_st_support_fighters: Default::default(),
+            high_slots: default,
+            mid_slots: default,
+            low_slots: default,
+            turret_slots: default,
+            launcher_slots: default,
+            rig_slots: default,
+            service_slots: default,
+            subsystem_slots: default,
+            launched_drones: default,
+            launched_fighters: default,
+            launched_light_fighters: default,
+            launched_heavy_fighters: default,
+            launched_support_fighters: default,
+            launched_st_light_fighters: default,
+            launched_st_heavy_fighters: default,
+            launched_st_support_fighters: default,
             // Ship tank
-            resists: Default::default(),
-            hp: Default::default(),
-            ehp: Default::default(),
-            wc_ehp: Default::default(),
-            rps: Default::default(),
-            erps: Default::default(),
-            breach_resist: Default::default(),
+            resists: default,
+            hp: default,
+            ehp: StatOptionExt::stat_default(default),
+            wc_ehp: default,
+            rps: StatOptionExt::stat_default(default),
+            erps: StatOptionExt::stat_default(default),
+            breach_resist: default,
             // Ship cap
-            cap_amount: Default::default(),
-            cap_balance: Default::default(),
-            cap_sim: Default::default(),
-            neut_resist: Default::default(),
+            cap_amount: default,
+            cap_balance: StatOptionExt::stat_default(default),
+            cap_sim: StatOptionExt::stat_default(default),
+            neut_resist: default,
             // Ship sensors
-            locks: Default::default(),
-            lock_range: Default::default(),
-            scan_res: Default::default(),
-            sensors: Default::default(),
-            dscan_range: Default::default(),
-            probing_size: Default::default(),
-            incoming_jam: Default::default(),
+            locks: default,
+            lock_range: default,
+            scan_res: default,
+            sensors: default,
+            dscan_range: default,
+            probing_size: default,
+            incoming_jam: StatOptionExt::stat_default(default),
             // Ship mobility
-            speed: Default::default(),
-            agility: Default::default(),
-            align_time: Default::default(),
-            sig_radius: Default::default(),
-            mass: Default::default(),
-            warp_speed: Default::default(),
-            max_warp_range: Default::default(),
-            jump: Default::default(),
+            speed: default,
+            agility: default,
+            align_time: default,
+            sig_radius: default,
+            mass: StatOptionExt::stat_default(default),
+            warp_speed: default,
+            max_warp_range: default,
+            jump: StatOptionExt::stat_default(default),
             // Ship misc stats
-            drone_control_range: Default::default(),
-            can_warp: Default::default(),
-            can_jump_gate: Default::default(),
-            can_jump_wormhole: Default::default(),
-            can_jump_drive: Default::default(),
-            can_dock_station: Default::default(),
-            can_dock_citadel: Default::default(),
-            can_tether: Default::default(),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Backref resolution
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptionsInt<StatOptionRaw, FitIdBr, ItemIdBr> {
-    pub(super) fn br_resolve(
-        self,
-        resps: &CmdResps,
-    ) -> Result<FitStatsOptionsInt<StatOptionRaw, FitId, ItemId>, BrResolveError> {
-        Ok(FitStatsOptionsInt {
-            // Fit output stats
-            dmg: self.dmg.br_resolve(resps)?,
-            mps: self.mps,
-            outgoing_nps: self.outgoing_nps.br_resolve(resps)?,
-            outgoing_rps: self.outgoing_rps.br_resolve(resps)?,
-            outgoing_cps: self.outgoing_cps.br_resolve(resps)?,
-            // Fit resources
-            cpu: self.cpu,
-            powergrid: self.powergrid,
-            calibration: self.calibration,
-            drone_bay_volume: self.drone_bay_volume,
-            drone_bandwidth: self.drone_bandwidth,
-            fighter_bay_volume: self.fighter_bay_volume,
-            // Fit slots
-            high_slots: self.high_slots,
-            mid_slots: self.mid_slots,
-            low_slots: self.low_slots,
-            turret_slots: self.turret_slots,
-            launcher_slots: self.launcher_slots,
-            rig_slots: self.rig_slots,
-            service_slots: self.service_slots,
-            subsystem_slots: self.subsystem_slots,
-            launched_drones: self.launched_drones,
-            launched_fighters: self.launched_fighters,
-            launched_light_fighters: self.launched_light_fighters,
-            launched_heavy_fighters: self.launched_heavy_fighters,
-            launched_support_fighters: self.launched_support_fighters,
-            launched_st_light_fighters: self.launched_st_light_fighters,
-            launched_st_heavy_fighters: self.launched_st_heavy_fighters,
-            launched_st_support_fighters: self.launched_st_support_fighters,
-            // Ship tank
-            resists: self.resists,
-            hp: self.hp,
-            ehp: self.ehp,
-            wc_ehp: self.wc_ehp,
-            rps: self.rps,
-            erps: self.erps,
-            breach_resist: self.breach_resist,
-            // Ship cap
-            cap_amount: self.cap_amount,
-            cap_balance: self.cap_balance.br_resolve(resps)?,
-            cap_sim: self.cap_sim.br_resolve(resps)?,
-            neut_resist: self.neut_resist,
-            // Ship sensors
-            locks: self.locks,
-            lock_range: self.lock_range,
-            scan_res: self.scan_res,
-            sensors: self.sensors,
-            dscan_range: self.dscan_range,
-            probing_size: self.probing_size,
-            incoming_jam: self.incoming_jam,
-            // Ship mobility
-            speed: self.speed,
-            agility: self.agility,
-            align_time: self.align_time,
-            sig_radius: self.sig_radius,
-            mass: self.mass,
-            warp_speed: self.warp_speed,
-            max_warp_range: self.max_warp_range,
-            jump: self.jump.br_resolve(resps)?,
-            // Ship misc stats
-            drone_control_range: self.drone_control_range,
-            can_warp: self.can_warp,
-            can_jump_gate: self.can_jump_gate,
-            can_jump_wormhole: self.can_jump_wormhole,
-            can_jump_drive: self.can_jump_drive,
-            can_dock_station: self.can_dock_station,
-            can_dock_citadel: self.can_dock_citadel,
-            can_tether: self.can_tether,
-        })
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Default + stat resolution
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
-    pub(super) fn stat_resolve(self, default: bool) -> FitStatsOptionsResolved {
-        FitStatsOptionsInt {
-            // Fit output stats
-            dmg: self.dmg.stat_resolve(default),
-            mps: self.mps.stat_resolve(default),
-            outgoing_nps: self.outgoing_nps.stat_resolve(default),
-            outgoing_rps: self.outgoing_rps.stat_resolve(default),
-            outgoing_cps: self.outgoing_cps.stat_resolve(default),
-            // Fit resources
-            cpu: self.cpu.stat_resolve(default),
-            powergrid: self.powergrid.stat_resolve(default),
-            calibration: self.calibration.stat_resolve(default),
-            drone_bay_volume: self.drone_bay_volume.stat_resolve(default),
-            drone_bandwidth: self.drone_bandwidth.stat_resolve(default),
-            fighter_bay_volume: self.fighter_bay_volume.stat_resolve(default),
-            // Fit slots
-            high_slots: self.high_slots.stat_resolve(default),
-            mid_slots: self.mid_slots.stat_resolve(default),
-            low_slots: self.low_slots.stat_resolve(default),
-            turret_slots: self.turret_slots.stat_resolve(default),
-            launcher_slots: self.launcher_slots.stat_resolve(default),
-            rig_slots: self.rig_slots.stat_resolve(default),
-            service_slots: self.service_slots.stat_resolve(default),
-            subsystem_slots: self.subsystem_slots.stat_resolve(default),
-            launched_drones: self.launched_drones.stat_resolve(default),
-            launched_fighters: self.launched_fighters.stat_resolve(default),
-            launched_light_fighters: self.launched_light_fighters.stat_resolve(default),
-            launched_heavy_fighters: self.launched_heavy_fighters.stat_resolve(default),
-            launched_support_fighters: self.launched_support_fighters.stat_resolve(default),
-            launched_st_light_fighters: self.launched_st_light_fighters.stat_resolve(default),
-            launched_st_heavy_fighters: self.launched_st_heavy_fighters.stat_resolve(default),
-            launched_st_support_fighters: self.launched_st_support_fighters.stat_resolve(default),
-            // Ship tank
-            resists: self.resists.stat_resolve(default),
-            hp: self.hp.stat_resolve(default),
-            ehp: self.ehp.stat_resolve(default),
-            wc_ehp: self.wc_ehp.stat_resolve(default),
-            rps: self.rps.stat_resolve(default),
-            erps: self.erps.stat_resolve(default),
-            breach_resist: self.breach_resist.stat_resolve(default),
-            // Ship cap
-            cap_amount: self.cap_amount.stat_resolve(default),
-            cap_balance: self.cap_balance.stat_resolve(default),
-            cap_sim: self.cap_sim.stat_resolve(default),
-            neut_resist: self.neut_resist.stat_resolve(default),
-            // Ship sensors
-            locks: self.locks.stat_resolve(default),
-            lock_range: self.lock_range.stat_resolve(default),
-            scan_res: self.scan_res.stat_resolve(default),
-            sensors: self.sensors.stat_resolve(default),
-            dscan_range: self.dscan_range.stat_resolve(default),
-            probing_size: self.probing_size.stat_resolve(default),
-            incoming_jam: self.incoming_jam.stat_resolve(default),
-            // Ship mobility
-            speed: self.speed.stat_resolve(default),
-            agility: self.agility.stat_resolve(default),
-            align_time: self.align_time.stat_resolve(default),
-            sig_radius: self.sig_radius.stat_resolve(default),
-            mass: self.mass.stat_resolve(default),
-            warp_speed: self.warp_speed.stat_resolve(default),
-            max_warp_range: self.max_warp_range.stat_resolve(default),
-            jump: self.jump.stat_resolve(default),
-            // Ship misc stats
-            drone_control_range: self.drone_control_range.stat_resolve(default),
-            can_warp: self.can_warp.stat_resolve(default),
-            can_jump_gate: self.can_jump_gate.stat_resolve(default),
-            can_jump_wormhole: self.can_jump_wormhole.stat_resolve(default),
-            can_jump_drive: self.can_jump_drive.stat_resolve(default),
-            can_dock_station: self.can_dock_station.stat_resolve(default),
-            can_dock_citadel: self.can_dock_citadel.stat_resolve(default),
-            can_tether: self.can_tether.stat_resolve(default),
+            drone_control_range: default,
+            can_warp: default,
+            can_jump_gate: default,
+            can_jump_wormhole: default,
+            can_jump_drive: default,
+            can_dock_station: default,
+            can_dock_citadel: default,
+            can_tether: default,
         }
     }
 }
@@ -342,73 +157,73 @@ impl FitStatsOptionsInt<StatOptionRaw, FitId, ItemId> {
 impl FitStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
         // Fit output stats
-        self.dmg.is_enabled() ||
-        self.mps.is_enabled() ||
-        self.outgoing_nps.is_enabled() ||
-        self.outgoing_rps.is_enabled() ||
-        self.outgoing_cps.is_enabled() ||
-        // Fit resources
-        self.cpu.is_enabled() ||
-        self.powergrid.is_enabled() ||
-        self.calibration.is_enabled() ||
-        self.drone_bay_volume.is_enabled() ||
-        self.drone_bandwidth.is_enabled() ||
-        self.fighter_bay_volume.is_enabled() ||
-        // Fit slots
-        self.high_slots.is_enabled() ||
-        self.mid_slots.is_enabled() ||
-        self.low_slots.is_enabled() ||
-        self.turret_slots.is_enabled() ||
-        self.launcher_slots.is_enabled() ||
-        self.rig_slots.is_enabled() ||
-        self.service_slots.is_enabled() ||
-        self.subsystem_slots.is_enabled() ||
-        self.launched_drones.is_enabled() ||
-        self.launched_fighters.is_enabled() ||
-        self.launched_light_fighters.is_enabled() ||
-        self.launched_heavy_fighters.is_enabled() ||
-        self.launched_support_fighters.is_enabled() ||
-        self.launched_st_light_fighters.is_enabled() ||
-        self.launched_st_heavy_fighters.is_enabled() ||
-        self.launched_st_support_fighters.is_enabled() ||
-        // Ship tank
-        self.resists.is_enabled() ||
-        self.hp.is_enabled() ||
-        self.ehp.is_enabled() ||
-        self.wc_ehp.is_enabled() ||
-        self.rps.is_enabled() ||
-        self.erps.is_enabled() ||
-        self.breach_resist.is_enabled() ||
-        // Ship cap
-        self.cap_amount.is_enabled() ||
-        self.cap_balance.is_enabled() ||
-        self.cap_sim.is_enabled() ||
-        self.neut_resist.is_enabled() ||
-        // Ship sensors
-        self.locks.is_enabled() ||
-        self.lock_range.is_enabled() ||
-        self.scan_res.is_enabled() ||
-        self.sensors.is_enabled() ||
-        self.dscan_range.is_enabled() ||
-        self.probing_size.is_enabled() ||
-        self.incoming_jam.is_enabled() ||
-        // Ship mobility
-        self.speed.is_enabled() ||
-        self.agility.is_enabled() ||
-        self.align_time.is_enabled() ||
-        self.sig_radius.is_enabled() ||
-        self.mass.is_enabled() ||
-        self.warp_speed.is_enabled() ||
-        self.max_warp_range.is_enabled() ||
-        self.jump.is_enabled() ||
-        // Ship misc stats
-        self.drone_control_range.is_enabled() ||
-        self.can_warp.is_enabled() ||
-        self.can_jump_gate.is_enabled() ||
-        self.can_jump_wormhole.is_enabled() ||
-        self.can_jump_drive.is_enabled() ||
-        self.can_dock_station.is_enabled() ||
-        self.can_dock_citadel.is_enabled() ||
-        self.can_tether.is_enabled()
+        !self.dmg.is_empty()
+            || !self.mps.is_empty()
+            || !self.outgoing_nps.is_empty()
+            || !self.outgoing_rps.is_empty()
+            || !self.outgoing_cps.is_empty()
+            // Fit resources
+            || self.cpu
+            || self.powergrid
+            || self.calibration
+            || self.drone_bay_volume
+            || self.drone_bandwidth
+            || self.fighter_bay_volume
+            // Fit slots
+            || self.high_slots
+            || self.mid_slots
+            || self.low_slots
+            || self.turret_slots
+            || self.launcher_slots
+            || self.rig_slots
+            || self.service_slots
+            || self.subsystem_slots
+            || self.launched_drones
+            || self.launched_fighters
+            || self.launched_light_fighters
+            || self.launched_heavy_fighters
+            || self.launched_support_fighters
+            || self.launched_st_light_fighters
+            || self.launched_st_heavy_fighters
+            || self.launched_st_support_fighters
+            // Ship tank
+            || self.resists
+            || self.hp
+            || !self.ehp.is_empty()
+            || self.wc_ehp
+            || !self.rps.is_empty()
+            || !self.erps.is_empty()
+            || self.breach_resist
+            // Ship cap
+            || self.cap_amount
+            || !self.cap_balance.is_empty()
+            || !self.cap_sim.is_empty()
+            || self.neut_resist
+            // Ship sensors
+            || self.locks
+            || self.lock_range
+            || self.scan_res
+            || self.sensors
+            || self.dscan_range
+            || self.probing_size
+            || !self.incoming_jam.is_empty()
+            // Ship mobility
+            || self.speed
+            || self.agility
+            || self.align_time
+            || self.sig_radius
+            || !self.mass.is_empty()
+            || self.warp_speed
+            || self.max_warp_range
+            || !self.jump.is_empty()
+            // Ship misc stats
+            || self.drone_control_range
+            || self.can_warp
+            || self.can_jump_gate
+            || self.can_jump_wormhole
+            || self.can_jump_drive
+            || self.can_dock_station
+            || self.can_dock_citadel
+            || self.can_tether
     }
 }

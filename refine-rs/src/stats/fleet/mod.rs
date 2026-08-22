@@ -1,7 +1,7 @@
 pub use cmd_core::{
     FleetGetFleetStatsError, FleetStatsCmd, FleetStatsCmdBr, FleetStatsCmdCtxFleet, FleetStatsCmdCtxFleetBr,
 };
-pub(in crate::stats) use options_int::{FleetStatsOptionsInt, FleetStatsOptionsResolved};
+pub(in crate::stats) use options_int::FleetStatsOptionsResolved;
 pub use options_pub::{FleetStatsOptions, FleetStatsOptionsBr};
 pub use resp::FleetStatsResp;
 pub use result::FleetStats;
