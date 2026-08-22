@@ -107,6 +107,11 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
             },
+            Self::FitBatchStats(err) => match &err.error {
+                rs::stats::err::FitStatsEnumError::Item(rs::stats::err::ItemGetItemStatsError::ItemGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "ITM-001")
+                }
+            },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Item-related
             ////////////////////////////////////////////////////////////////////////////////////////

@@ -8,6 +8,7 @@ use crate::{
     SubsystemChangeCmd,
     err::{BrResolveError, FitChangeEnumError, FitInfoEnumError},
     info::FitInfoEnumCmd,
+    stats::{FitStatsCmdBr, FitStatsEnumCmd, FitStatsEnumCmdBr, ItemStatsCmdBr, err::FitStatsEnumError},
     trial::{FitTryItemsCmdBr, FitTryItemsEnumCmd, FitTryItemsEnumCmdBr},
     val::{FitValCmdBr, FitValEnumCmd, FitValEnumCmdBr},
 };
@@ -16,6 +17,7 @@ use crate::{
 pub(crate) enum FitHybridCmd {
     Ctl(FitChangeEnumCmd),
     Info(FitInfoEnumCmd),
+    Stats(FitStatsEnumCmd),
     Val(FitValEnumCmd),
     TryItems(FitTryItemsEnumCmd),
 }
@@ -25,6 +27,7 @@ pub(crate) enum FitHybridCmd {
 pub enum FitHybridCmdBr {
     Ctl(FitChangeEnumCmdBr),
     Info(FitInfoEnumCmdBr),
+    Stats(FitStatsEnumCmdBr),
     Val(FitValEnumCmdBr),
     TryItems(FitTryItemsEnumCmdBr),
 }
@@ -225,7 +228,18 @@ impl ItemInfoCmdBr {
         FitHybridCmdBr::Info(self.into_fit_info_br(item_id))
     }
 }
-// Info
+// Stats
+impl FitStatsCmdBr {
+    pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
+        FitHybridCmdBr::Stats(self.into_fit_stat_br())
+    }
+}
+impl ItemStatsCmdBr {
+    pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
+        FitHybridCmdBr::Stats(self.into_fit_stat_br(item_id))
+    }
+}
+// Validation
 impl FitValCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
         FitHybridCmdBr::Val(self.into_fit_val_br())
@@ -246,6 +260,7 @@ impl FitHybridCmdBr {
         Ok(match self {
             Self::Ctl(ctl_cmd) => FitHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => FitHybridCmd::Info(info_cmd.br_resolve(resps)?),
+            Self::Stats(info_cmd) => FitHybridCmd::Stats(info_cmd.br_resolve(resps)?),
             Self::Val(info_cmd) => FitHybridCmd::Val(info_cmd.br_resolve(resps)?),
             Self::TryItems(info_cmd) => FitHybridCmd::TryItems(info_cmd.br_resolve(resps)?),
         })
@@ -260,6 +275,7 @@ impl FitHybridCmd {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_fit)?,
             Self::Info(info_cmd) => info_cmd.execute(core_fit)?,
+            Self::Stats(info_cmd) => info_cmd.execute(core_fit)?,
             Self::Val(info_cmd) => info_cmd.execute(core_fit),
             Self::TryItems(info_cmd) => info_cmd.execute(core_fit),
         })
@@ -272,4 +288,6 @@ pub enum FitHybridError {
     Ctl(#[from] FitChangeEnumError),
     #[error(transparent)]
     Info(#[from] FitInfoEnumError),
+    #[error(transparent)]
+    Stats(#[from] FitStatsEnumError),
 }
