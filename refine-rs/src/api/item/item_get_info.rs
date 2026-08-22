@@ -1,6 +1,7 @@
 use crate::{Item, ItemInfo, ItemInfoCmd};
 
 impl Item<'_, '_> {
+    #[tracing::instrument(name = "itm-inf", level = "trace", skip_all)]
     pub async fn get_info(&mut self, info_cmd: ItemInfoCmd) -> ItemInfo {
         // Variables for move
         let item_id = self.id;

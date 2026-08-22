@@ -1,6 +1,7 @@
 use crate::{Fit, FitInfo, FitInfoCmd};
 
 impl Fit<'_, '_> {
+    #[tracing::instrument(name = "fit-inf", level = "trace", skip_all)]
     pub async fn get_info(&mut self, info_cmd: FitInfoCmd) -> FitInfo {
         // Variables for move
         let fit_id = self.id;

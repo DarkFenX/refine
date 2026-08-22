@@ -1,6 +1,7 @@
 use crate::src::{Src, SrcInfo, SrcInfoMode};
 
 impl Src<'_> {
+    #[tracing::instrument(name = "src-inf", level = "trace", skip_all)]
     pub async fn get_info(&self, info_mode: SrcInfoMode) -> SrcInfo {
         SrcInfo::from_alias_and_core(
             self.inner.get_alias(),

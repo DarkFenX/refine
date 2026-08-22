@@ -1,6 +1,7 @@
 use crate::{Fleet, FleetInfo, info::FleetInfoCmd};
 
 impl Fleet<'_, '_> {
+    #[tracing::instrument(name = "flt-inf", level = "trace", skip_all)]
     pub async fn get_info(&mut self, info_cmd: FleetInfoCmd) -> FleetInfo {
         // Variables for move
         let fleet_id = self.id;

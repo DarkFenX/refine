@@ -4,6 +4,7 @@ use crate::{
 };
 
 impl Fit<'_, '_> {
+    #[tracing::instrument(name = "fit-stt", level = "trace", skip_all)]
     pub async fn get_stats(&mut self, stats_cmd: FitStatsCmd) -> FitStatsResp {
         // Variables for move
         let fit_id = self.id;
