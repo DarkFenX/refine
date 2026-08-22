@@ -25,13 +25,13 @@ impl<T, EO, EI> StatResult<T, EO, EI> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // No errors whatsoever
 impl<T> StatResult<T, !, !> {
-    pub(crate) fn from_stat(stat: T) -> Self {
+    pub(in crate::stats) fn from_stat(stat: T) -> Self {
         Self::Result(vec![Ok(stat)])
     }
 }
 // All errors become outer errors
 impl<T, E> StatResult<T, E, !> {
-    pub(crate) fn from_result_outer(result: Result<T, E>) -> Self {
+    pub(in crate::stats) fn from_result_outer(result: Result<T, E>) -> Self {
         match result {
             Ok(stat) => Self::Result(vec![Ok(stat)]),
             Err(err) => Self::Error(err),

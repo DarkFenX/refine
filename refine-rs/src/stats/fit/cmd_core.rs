@@ -5,8 +5,8 @@ use crate::{
     err::BrResolveError,
     shared::{BrResolvable, OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStats, ItemStatsOptions, ItemStatsOptionsBr,
-        exec_shared::{extend_fit_item_stats, get_ovrd_item_stats},
+        FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
+        exec_shared::{extend_stats_for_passed_items, get_stats_for_items_in_overrides},
         item::ItemStatsOptionsResolved,
     },
 };
@@ -115,8 +115,17 @@ impl FitStatsCmd {
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
         let items = match item_options.get_default().is_any_stat_requested() {
-            true => get_fit_item_stats(core_fit, &item_options),
-            false => get_fit_item_stats_ovrd(core_fit, &item_options),
+            true => {
+                let mut stats = Vec::new();
+                extend_stats_for_passed_items(core_fit.iter_items_mut(), &item_options, &mut stats);
+                stats
+            }
+            false => {
+                let fit_id = core_fit.get_fit_id();
+                get_stats_for_items_in_overrides(core_fit.get_sol_mut(), &item_options, |core_item| {
+                    core_item.get_fit().map(|core_item_fit| core_item_fit.get_fit_id()) == Some(fit_id)
+                })
+            }
         };
         FitStatsResp {
             fit: self.fit_options.stat_resolve().execute(core_fit),
@@ -124,24 +133,6 @@ impl FitStatsCmd {
         }
     }
 }
-fn get_fit_item_stats(
-    core_fit: &mut rc::FitMut,
-    item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
-) -> Vec<(ItemId, ItemStats)> {
-    let mut stats = Vec::new();
-    extend_fit_item_stats(core_fit, item_options, &mut stats);
-    stats
-}
-fn get_fit_item_stats_ovrd(
-    core_fit: &mut rc::FitMut,
-    item_options: &OvrdMapHeavy<ItemId, ItemStatsOptionsResolved>,
-) -> Vec<(ItemId, ItemStats)> {
-    let fit_id = core_fit.get_fit_id();
-    get_ovrd_item_stats(core_fit.get_sol_mut(), item_options, |core_item| {
-        core_item.get_fit().map(|core_item_fit| core_item_fit.get_fit_id()) == Some(fit_id)
-    })
-}
-
 impl FitStatsCmdCtxFit {
     fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FitStatsResp, FitGetFitStatsError> {
         let mut core_fit = core_sol.get_fit_mut(&self.fit_id)?;

@@ -1,17 +1,16 @@
-use rc::{ItemCommon, Lender};
-
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolvable, OvrdCompact, OvrdMapHeavy},
+    shared::{OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp, ItemStatsOptions,
-        ItemStatsOptionsBr,
+        FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, ItemStatsOptions,
+        ItemStatsOptionsBr, SolStatsResp,
         exec_shared::{
-            extend_stats_for_passed_items, get_stats_for_fits_in_overrides, get_stats_for_items_in_overrides,
-            get_stats_for_passed_fits,
+            extend_stats_for_passed_items, get_stats_for_fits_in_overrides, get_stats_for_fleets_in_overrides,
+            get_stats_for_items_in_overrides, get_stats_for_passed_fits, get_stats_for_passed_fleets,
         },
         fit::FitStatsOptionsResolved,
+        fleet::FleetStatsOptionsResolved,
         item::ItemStatsOptionsResolved,
     },
 };
@@ -19,9 +18,9 @@ use crate::{
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
-pub struct FleetStatsCmd {
+pub struct SolStatsCmd {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_options: FleetStatsOptions,
+    fleet_options: OvrdCompact<FleetId, FleetStatsOptions>,
     #[cfg_attr(feature = "serde", serde(default))]
     fit_options: OvrdCompact<FitId, FitStatsOptions>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -29,38 +28,32 @@ pub struct FleetStatsCmd {
 }
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Clone, Default)]
-pub struct FleetStatsCmdBr {
+pub struct SolStatsCmdBr {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_options: FleetStatsOptionsBr,
+    fleet_options: OvrdCompact<FleetIdBr, FleetStatsOptionsBr>,
     #[cfg_attr(feature = "serde", serde(default))]
     fit_options: OvrdCompact<FitIdBr, FitStatsOptionsBr>,
     #[cfg_attr(feature = "serde", serde(default))]
     item_options: OvrdCompact<ItemIdBr, ItemStatsOptionsBr>,
 }
 
-// Extra context commands
-#[derive(Clone)]
-pub struct FleetStatsCmdCtxFleet {
-    fleet_id: FleetId,
-    core: FleetStatsCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FleetStatsCmdCtxFleetBr {
-    fleet_id: FleetIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetStatsCmdBr,
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsCmd {
+impl SolStatsCmd {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet(mut self, options: FleetStatsOptions) -> Self {
-        self.fleet_options = options;
+    pub fn with_fleet_default(mut self, options: FleetStatsOptions) -> Self {
+        self.fleet_options.set_default(options);
+        self
+    }
+    pub fn with_fleet_overrides(
+        mut self,
+        options: FleetStatsOptions,
+        fleet_ids: impl Iterator<Item = FleetId>,
+    ) -> Self {
+        self.fleet_options.add_overrides(options, fleet_ids);
         self
     }
     pub fn with_fit_default(mut self, options: FitStatsOptions) -> Self {
@@ -81,12 +74,20 @@ impl FleetStatsCmd {
     }
 }
 
-impl FleetStatsCmdBr {
+impl SolStatsCmdBr {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet(mut self, options: FleetStatsOptionsBr) -> Self {
-        self.fleet_options = options;
+    pub fn with_fleet_default(mut self, options: FleetStatsOptionsBr) -> Self {
+        self.fleet_options.set_default(options);
+        self
+    }
+    pub fn with_fleet_overrides(
+        mut self,
+        options: FleetStatsOptionsBr,
+        fleet_ids: impl Iterator<Item = FleetIdBr>,
+    ) -> Self {
+        self.fleet_options.add_overrides(options, fleet_ids);
         self
     }
     pub fn with_fit_default(mut self, options: FitStatsOptionsBr) -> Self {
@@ -114,9 +115,9 @@ impl FleetStatsCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsCmd, BrResolveError> {
-        Ok(FleetStatsCmd {
+impl SolStatsCmdBr {
+    fn br_resolve(self, resps: &CmdResps) -> Result<SolStatsCmd, BrResolveError> {
+        Ok(SolStatsCmd {
             fleet_options: self.fleet_options.br_resolve(resps)?,
             fit_options: self.fit_options.br_resolve(resps)?,
             item_options: self.item_options.br_resolve(resps)?,
@@ -124,68 +125,35 @@ impl FleetStatsCmdBr {
     }
 }
 
-impl FleetStatsCmdCtxFleetBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsCmdCtxFleet, BrResolveError> {
-        Ok(FleetStatsCmdCtxFleet {
-            fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
-            core: self.core.br_resolve(resps)?,
-        })
-    }
-}
-
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsCmd {
-    pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStatsResp {
+impl SolStatsCmd {
+    fn execute(self, core_sol: &mut rc::SolarSystem) -> SolStatsResp {
+        let fleet_options: OvrdMapHeavy<_, FleetStatsOptionsResolved> =
+            OvrdMapHeavy::from_compact_with_conversion(self.fleet_options);
         let fit_options: OvrdMapHeavy<_, FitStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.fit_options);
         let item_options: OvrdMapHeavy<_, ItemStatsOptionsResolved> =
             OvrdMapHeavy::from_compact_with_conversion(self.item_options);
+        // Everything in a solar system belongs to it, so overridden entities need no membership
+        // check - unlike with fit and fleet commands
+        let fleets = match fleet_options.get_default().is_any_stat_requested() {
+            true => get_stats_for_passed_fleets(core_sol.iter_fleets_mut(), &fleet_options),
+            false => get_stats_for_fleets_in_overrides(core_sol, &fleet_options),
+        };
         let fits = match fit_options.get_default().is_any_stat_requested() {
-            true => get_stats_for_passed_fits(core_fleet.iter_fits_mut(), &fit_options),
-            false => {
-                let fleet_id = core_fleet.get_fleet_id();
-                get_stats_for_fits_in_overrides(core_fleet.get_sol_mut(), &fit_options, |core_fit| {
-                    core_fit.get_fleet().map(|core_fit_fleet| core_fit_fleet.get_fleet_id()) == Some(fleet_id)
-                })
-            }
+            true => get_stats_for_passed_fits(core_sol.iter_fits_mut(), &fit_options),
+            false => get_stats_for_fits_in_overrides(core_sol, &fit_options, |_| true),
         };
         let items = match item_options.get_default().is_any_stat_requested() {
             true => {
                 let mut stats = Vec::new();
-                let mut core_fits = core_fleet.iter_fits_mut();
-                while let Some(mut core_fit) = core_fits.next() {
-                    extend_stats_for_passed_items(core_fit.iter_items_mut(), &item_options, &mut stats);
-                }
+                extend_stats_for_passed_items(core_sol.iter_items_mut(), &item_options, &mut stats);
                 stats
             }
-            false => {
-                let fleet_id = core_fleet.get_fleet_id();
-                get_stats_for_items_in_overrides(core_fleet.get_sol_mut(), &item_options, |core_item| {
-                    core_item
-                        .get_fit()
-                        .and_then(|core_item_fit| core_item_fit.get_fleet().map(|fleet| fleet.get_fleet_id()))
-                        == Some(fleet_id)
-                })
-            }
+            false => get_stats_for_items_in_overrides(core_sol, &item_options, |_| true),
         };
-        FleetStatsResp {
-            fleet: self.fleet_options.stat_resolve().execute(core_fleet),
-            fits,
-            items,
-        }
+        SolStatsResp { fleets, fits, items }
     }
-}
-
-impl FleetStatsCmdCtxFleet {
-    fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<FleetStatsResp, FleetGetFleetStatsError> {
-        let mut core_fleet = core_sol.get_fleet_mut(&self.fleet_id)?;
-        Ok(self.core.execute(&mut core_fleet))
-    }
-}
-#[derive(thiserror::Error, Debug)]
-pub enum FleetGetFleetStatsError {
-    #[error(transparent)]
-    FleetGet(#[from] rc::err::GetFleetError),
 }

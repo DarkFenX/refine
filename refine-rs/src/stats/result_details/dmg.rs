@@ -35,13 +35,13 @@ pub struct StatDmgEntryBreacherRaw {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatDmg {
-    pub(crate) fn from_core(core_stat: rc::stats::StatDmg) -> Self {
+    pub(in crate::stats) fn from_core(core_stat: rc::stats::StatDmg) -> Self {
         Self {
             dps: StatDmgEntry::from_core(core_stat.dps),
             volley: StatDmgEntry::from_core(core_stat.volley),
         }
     }
-    pub(crate) fn from_core_applied(core_stat: rc::stats::StatDmgApplied) -> Self {
+    pub(in crate::stats) fn from_core_applied(core_stat: rc::stats::StatDmgApplied) -> Self {
         Self {
             dps: StatDmgEntry::from_core_applied(core_stat.dps),
             volley: StatDmgEntry::from_core_applied(core_stat.volley),

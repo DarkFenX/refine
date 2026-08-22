@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
+    shared::BrResolvable,
     stats::{
         StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
         StatOptionFitOutRps, StatOptionMass,
@@ -69,9 +70,10 @@ impl<I> FleetStatsOptions<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsOptionsBr {
-    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsOptions, BrResolveError> {
-        Ok(FleetStatsOptions {
+impl BrResolvable for FleetStatsOptionsBr {
+    type Target = FleetStatsOptions;
+    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+        Ok(Self::Target {
             default: self.default,
             options: self.options.br_resolve(resps)?,
         })

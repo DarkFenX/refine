@@ -19,6 +19,7 @@ pub use rc::{
     },
 };
 pub use result_details::{StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult};
+pub use sol::{SolStatsCmd, SolStatsCmdBr, SolStatsResp};
 
 pub mod err;
 mod exec_shared;
@@ -28,3 +29,4 @@ mod fleet;
 mod item;
 mod option;
 mod result_details;
+mod sol;

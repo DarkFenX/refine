@@ -79,3 +79,17 @@ impl FleetStatsOptionsInt<StatOptionRaw, ItemId> {
         }
     }
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Anything-requested check
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetStatsOptionsResolved {
+    pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
+        self.dmg.is_enabled()
+            || self.mps.is_enabled()
+            || self.outgoing_nps.is_enabled()
+            || self.outgoing_rps.is_enabled()
+            || self.outgoing_cps.is_enabled()
+            || self.mass.is_enabled()
+    }
+}
