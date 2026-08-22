@@ -1,7 +1,7 @@
 use crate::{
     CmdResp, CmdResps, FitInfoCmd, FitInfoCmdBr, ItemIdBr, ItemInfoCmdBr,
     err::{BrResolveError, ItemGetItemInfoError},
-    info::cmd_core::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
+    info::item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
 };
 
 #[derive(Clone)]
@@ -27,12 +27,12 @@ pub enum FitInfoEnumCmdBr {
 // Not public because there is no direct consumer of the command; this command is usable only via
 // hybrid batching endpoint
 impl FitInfoCmdBr {
-    pub(crate) fn into_fit_inf_br(self) -> FitInfoEnumCmdBr {
+    pub(crate) fn into_fit_info_br(self) -> FitInfoEnumCmdBr {
         FitInfoEnumCmdBr::FitInfo(self)
     }
 }
 impl ItemInfoCmdBr {
-    pub(crate) fn into_fit_inf_br(self, item_id: impl Into<ItemIdBr>) -> FitInfoEnumCmdBr {
+    pub(crate) fn into_fit_info_br(self, item_id: impl Into<ItemIdBr>) -> FitInfoEnumCmdBr {
         FitInfoEnumCmdBr::ItemInfo(self.into_ctx_item_br(item_id))
     }
 }

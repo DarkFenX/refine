@@ -217,12 +217,12 @@ impl SubsystemChangeCmd {
 // Info
 impl FitInfoCmdBr {
     pub fn into_fit_hyb_br(self) -> FitHybridCmdBr {
-        FitHybridCmdBr::Info(self.into_fit_inf_br())
+        FitHybridCmdBr::Info(self.into_fit_info_br())
     }
 }
 impl ItemInfoCmdBr {
     pub fn into_fit_hyb_br(self, item_id: impl Into<ItemIdBr>) -> FitHybridCmdBr {
-        FitHybridCmdBr::Info(self.into_fit_inf_br(item_id))
+        FitHybridCmdBr::Info(self.into_fit_info_br(item_id))
     }
 }
 // Info

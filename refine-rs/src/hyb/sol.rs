@@ -283,22 +283,22 @@ impl SwEffectChangeCmd {
 // Info
 impl SolInfoCmdBr {
     pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
-        SolHybridCmdBr::Info(self.into_sol_inf_br())
+        SolHybridCmdBr::Info(self.into_sol_info_br())
     }
 }
 impl FleetInfoCmdBr {
     pub fn into_sol_hyb_br(self, fleet_id: impl Into<FleetIdBr>) -> SolHybridCmdBr {
-        SolHybridCmdBr::Info(self.into_sol_inf_br(fleet_id))
+        SolHybridCmdBr::Info(self.into_sol_info_br(fleet_id))
     }
 }
 impl FitInfoCmdBr {
     pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
-        SolHybridCmdBr::Info(self.into_sol_inf_br(fit_id))
+        SolHybridCmdBr::Info(self.into_sol_info_br(fit_id))
     }
 }
 impl ItemInfoCmdBr {
     pub fn into_sol_hyb_br(self, item_id: impl Into<ItemIdBr>) -> SolHybridCmdBr {
-        SolHybridCmdBr::Info(self.into_sol_inf_br(item_id))
+        SolHybridCmdBr::Info(self.into_sol_info_br(item_id))
     }
 }
 // Validation
