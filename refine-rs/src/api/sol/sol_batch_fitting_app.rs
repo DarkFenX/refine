@@ -6,10 +6,10 @@ use crate::{
 };
 
 impl SolarSystem<'_> {
-    /// Apply changes requested by control commands and run validation of solar system. After
-    /// validation is complete, passed evaluator function is called, which decides fate of the
-    /// transaction: if it returns an error, solar system state is restored, and if it does not,
-    /// info and stats are generated, and all the info is returned.
+    /// Apply changes requested by control commands and run validation of the solar system. After
+    /// validation is complete, the evaluator function is called, which decides fate of the
+    /// transaction: if it returns an error, solar system state before any changes is restored, and
+    /// if it does not, info and stats are generated, and all the info is returned.
     #[tracing::instrument(name = "sol-app", level = "trace", skip_all)]
     pub async fn fitting_app_batch<F, E>(
         &mut self,
