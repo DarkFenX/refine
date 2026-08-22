@@ -37,6 +37,7 @@ from fw.api.commands import (
     FitInfoItemCmd,
     FitStatsFitCmd,
     FitStatsItemCmd,
+    FitTryItemsFitCmd,
     FitValFitCmd,
 )
 from fw.api.types.helpers import (
@@ -681,3 +682,17 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             info_mode=info_mode)
         self._commands.append(command)
         return self._make_val_result(cls=FitValResult)
+
+    ################################################################################################
+    # Try items
+    ################################################################################################
+    def try_fit_items(
+            self, *,
+            type_ids: list[int],
+            val_options: ValOptions | type[Absent] = Absent,
+    ) -> list[int]:
+        command = FitTryItemsFitCmd(
+            type_ids=type_ids,
+            val_options=process_val_options_request(options=val_options))
+        self._commands.append(command)
+        return self._make_try_items()

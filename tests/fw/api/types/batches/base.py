@@ -15,7 +15,8 @@ if typing.TYPE_CHECKING:
 
 @enum.unique
 class DataFillKind(enum.StrEnum):
-    copy = 'copy'
+    copy_map = 'copy_map'
+    copy_seq = 'copy_seq'
     id_regular = 'id_regular'
     id_charge = 'id_charge'
 
@@ -23,7 +24,7 @@ class DataFillKind(enum.StrEnum):
 @dataclasses.dataclass(kw_only=True)
 class EntityData:
     kind: DataFillKind
-    data: dict
+    data: dict | list
 
 
 class BaseCmdBatchCtx:
@@ -61,25 +62,31 @@ class BaseCmdBatchCtx:
         from fw.api.types.fit import Fit  # ruff:ignore[import-outside-top-level]
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
         return Fit(client=self._client, data=data, sol_id=self._sol_id)
 
     def _make_item_info(self) -> Item:
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
     def _make_stats[T](self, *, cls: type[T]) -> T:
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
         return cls(data=data)
+
+    def _make_try_items(self) -> list[int]:
+        index = len(self._commands) - 1
+        data = []
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_seq, data=data)
+        return data
 
     def _make_val_result[T](self, *, cls: type[T]) -> T:
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
         return cls(data=data)
 
     def _clear_ret_datas(self) -> None:
@@ -101,17 +108,24 @@ class BaseCmdBatchCtx:
                 continue
             entity_data = self._ret_datas[i]
             match entity_data.kind:
-                case DataFillKind.copy:
-                    self.__copy_entity_data(entity_data=entity_data, cmd_result=cmd_result)
+                case DataFillKind.copy_map:
+                    self.__copy_entity_map(entity_data=entity_data, cmd_result=cmd_result)
+                case DataFillKind.copy_seq:
+                    self.__copy_entity_seq(entity_data=entity_data, cmd_result=cmd_result)
                 case DataFillKind.id_regular:
                     self.__fill_entity_ids_regular(entity_data=entity_data, cmd_result=cmd_result)
                 case DataFillKind.id_charge:
                     self.__fill_entity_ids_charge(entity_data=entity_data, cmd_result=cmd_result)
 
     @staticmethod
-    def __copy_entity_data(*, entity_data: EntityData, cmd_result: dict) -> None:
+    def __copy_entity_map(*, entity_data: EntityData, cmd_result: dict) -> None:
         entity_data.data.clear()
         entity_data.data.update(cmd_result)
+
+    @staticmethod
+    def __copy_entity_seq(*, entity_data: EntityData, cmd_result: list) -> None:
+        entity_data.data.clear()
+        entity_data.data.extend(cmd_result)
 
     @staticmethod
     def __fill_entity_ids_regular(*, entity_data: EntityData, cmd_result: dict) -> None:

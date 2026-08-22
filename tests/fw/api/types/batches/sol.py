@@ -55,6 +55,7 @@ from fw.api.commands import (
     SolStatsFleetCmd,
     SolStatsItemCmd,
     SolStatsSolCmd,
+    SolTryItemsFitCmd,
     SolValFitCmd,
     SolValSolCmd,
 )
@@ -149,13 +150,13 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         from fw.api.types.sol import SolarSystem  # ruff:ignore[import-outside-top-level]
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
         return SolarSystem(client=self._client, data=data)
 
     def _make_fleet_info(self) -> Fleet:
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy_map, data=data)
         return Fleet(client=self._client, data=data, sol_id=self._sol_id)
 
     ################################################################################################
@@ -1015,3 +1016,19 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             info_mode=info_mode)
         self._commands.append(command)
         return self._make_val_result(cls=FitValResult)
+
+    ################################################################################################
+    # Try items
+    ################################################################################################
+    def try_fit_items(
+            self, *,
+            fit_id: str,
+            type_ids: list[int],
+            val_options: ValOptions | type[Absent] = Absent,
+    ) -> list[int]:
+        command = SolTryItemsFitCmd(
+            fit_id=fit_id,
+            type_ids=type_ids,
+            val_options=process_val_options_request(options=val_options))
+        self._commands.append(command)
+        return self._make_try_items()

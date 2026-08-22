@@ -70,13 +70,13 @@ class ApiClientFit(ApiClientBase):
             sol_id: str,
             fit_id: str,
             type_ids: list[int],
-            options: ValOptions | type[Absent],
+            val_options: ValOptions | type[Absent],
     ) -> Request:
         body = {'type_ids': type_ids}
         conditional_insert(
             container=body,
             path=['val_options'],
-            value=options.to_dict() if isinstance(options, ValOptions) else options)
+            value=val_options.to_dict() if isinstance(val_options, ValOptions) else val_options)
         return Request(
             client=self,
             method='POST',

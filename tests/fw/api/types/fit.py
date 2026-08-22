@@ -215,14 +215,14 @@ class Fit(AttrDict):
     def try_fit_items(
             self, *,
             type_ids: list[int],
-            options: ValOptions | type[Absent],
+            val_options: ValOptions | type[Absent],
             status_code: int = 200,
             json_predicate: dict | None = None,
     ) -> list[int] | None:
         resp = self._client.try_fit_items_request(
             sol_id=self._sol_id,
             fit_id=self.id,
-            options=options,
+            val_options=val_options,
             type_ids=type_ids).send()
         self._client.check_sol(sol_id=self._sol_id)
         resp.check(status_code=status_code, json_predicate=json_predicate)
