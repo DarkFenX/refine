@@ -19,12 +19,7 @@ from fw.api.commands import (
     ItemCtlSubsystemChangeCmd,
     ItemCtlSwEffectChangeCmd,
 )
-from fw.api.types.helpers import (
-    attr_http_to_fw,
-    effect_http_to_fw,
-    process_effect_map_request,
-    process_muta_change_request,
-)
+from fw.api.types.helpers import attr_http_to_fw, effect_http_to_fw
 from fw.api.types.stats import ItemStats
 from fw.consts import ApiItemInfoMode
 from fw.util import Absent, AttrDict, AttrHookDef
@@ -137,7 +132,7 @@ class Item(AttrDict):
     ) -> Item | None:
         command = ItemCtlAutochargeChangeCmd(
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -163,8 +158,8 @@ class Item(AttrDict):
         command = ItemCtlBoosterChangeCmd(
             type_id=type_id,
             state=state,
-            side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            side_effects=side_effects,
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -189,7 +184,7 @@ class Item(AttrDict):
         command = ItemCtlCharacterChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -214,7 +209,7 @@ class Item(AttrDict):
         command = ItemCtlChargeChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -245,13 +240,13 @@ class Item(AttrDict):
         command = ItemCtlDroneChangeCmd(
             type_id=type_id,
             state=state,
-            mutation=process_muta_change_request(mutation=mutation),
+            mutation=mutation,
             npc_prop=npc_prop,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -290,7 +285,7 @@ class Item(AttrDict):
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -315,7 +310,7 @@ class Item(AttrDict):
         command = ItemCtlFwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -340,7 +335,7 @@ class Item(AttrDict):
         command = ItemCtlImplantChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -373,13 +368,13 @@ class Item(AttrDict):
             type_id=type_id,
             move=move,
             state=state,
-            mutation=process_muta_change_request(mutation=mutation),
+            mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -408,7 +403,7 @@ class Item(AttrDict):
             state=state,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -433,7 +428,7 @@ class Item(AttrDict):
         command = ItemCtlRigChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -458,7 +453,7 @@ class Item(AttrDict):
         command = ItemCtlServiceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -487,7 +482,7 @@ class Item(AttrDict):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -514,7 +509,7 @@ class Item(AttrDict):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -539,7 +534,7 @@ class Item(AttrDict):
         command = ItemCtlStanceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -564,7 +559,7 @@ class Item(AttrDict):
         command = ItemCtlSubsystemChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,
@@ -589,7 +584,7 @@ class Item(AttrDict):
         command = ItemCtlSwEffectChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_change_request(
             sol_id=self._sol_id,
             item_id=self.id,

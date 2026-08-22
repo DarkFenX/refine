@@ -61,7 +61,6 @@ from fw.api.commands import (
 )
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.stats import FitBatchStats, FleetBatchStats, ItemBatchStats, SolBatchStats
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
@@ -253,7 +252,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         command = SolCtlAutochargeChangeCmd(
             item_id=item_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - booster
@@ -269,8 +268,8 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            side_effects=side_effects,
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -286,8 +285,8 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            side_effects=side_effects,
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - character
@@ -302,7 +301,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -317,7 +316,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def change_character_via_item_id(
@@ -331,7 +330,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def unset_character(self, *, fit_id: str) -> None:
@@ -350,7 +349,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - drone
@@ -370,12 +369,12 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            mutation=process_muta_add_request(mutation=mutation),
+            mutation=mutation,
             npc_prop=npc_prop,
             proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -396,13 +395,13 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            mutation=process_muta_change_request(mutation=mutation),
+            mutation=mutation,
             npc_prop=npc_prop,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - fighter
@@ -429,7 +428,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -458,7 +457,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - fit-wide effect
@@ -473,7 +472,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -488,7 +487,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - implant
@@ -503,7 +502,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -518,7 +517,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - module
@@ -542,12 +541,12 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             rack=rack,
             add_mode=add_mode,
             state=state,
-            mutation=process_muta_add_request(mutation=mutation),
+            mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
             proj_item_ids=proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -570,13 +569,13 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             move=move,
             state=state,
-            mutation=process_muta_change_request(mutation=mutation),
+            mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item_charge()
 
@@ -592,7 +591,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             state=state,
             proj_item_ids=proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -611,7 +610,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state=state,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - rig
@@ -626,7 +625,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -641,7 +640,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - service
@@ -656,7 +655,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -671,7 +670,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - ship
@@ -690,7 +689,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -709,7 +708,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def change_ship_via_item_id(
@@ -727,7 +726,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def unset_ship(self, *, fit_id: str) -> None:
@@ -748,7 +747,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -765,7 +764,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - stance
@@ -780,7 +779,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -795,7 +794,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def change_stance_via_item_id(
@@ -809,7 +808,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def unset_stance(self, *, fit_id: str) -> None:
@@ -828,7 +827,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             fit_id=fit_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -843,7 +842,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - system-wide effect
@@ -856,7 +855,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         command = SolCtlSwEffectAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -871,7 +870,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     ################################################################################################

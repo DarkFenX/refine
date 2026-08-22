@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from fw.api.commands import BaseCommand
+from fw.api.commands.helpers import process_effect_map_request
 from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -19,7 +20,7 @@ class BaseCtlFighterCmd(BaseCommand):
     rearm_minion: ApiRearmMinion | type[Absent] | None
     coordinates: tuple[float, float, float] | type[Absent]
     movement: tuple[float, float, float] | type[Absent]
-    effect_modes: dict[str, ApiEffMode] | type[Absent]
+    effect_modes: dict[int | str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -30,7 +31,10 @@ class BaseCtlFighterCmd(BaseCommand):
         conditional_insert(container=body, path=['rearm_minion'], value=self.rearm_minion)
         conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
         conditional_insert(container=body, path=['movement'], value=self.movement)
-        conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
+        conditional_insert(
+            container=body,
+            path=['effect_modes'],
+            value=process_effect_map_request(effect_map=self.effect_modes))
         return body
 
 

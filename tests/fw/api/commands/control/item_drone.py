@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from fw.api.commands import BaseCommand
+from fw.api.commands.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -26,7 +27,10 @@ class BaseCtlDroneCmd(BaseCommand):
         conditional_insert(container=body, path=['npc_prop'], value=self.npc_prop)
         conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
         conditional_insert(container=body, path=['movement'], value=self.movement)
-        conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
+        conditional_insert(
+            container=body,
+            path=['effect_modes'],
+            value=process_effect_map_request(effect_map=self.effect_modes))
         return body
 
 
@@ -41,7 +45,10 @@ class BaseCtlDroneAddCmd(BaseCtlDroneCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['mutation'], value=self.mutation)
+        conditional_insert(
+            container=body,
+            path=['mutation'],
+            value=process_muta_add_request(mutation=self.mutation))
         conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
@@ -91,7 +98,10 @@ class BaseCtlDroneChangeCmd(BaseCtlDroneCmd):
 
     def serialize(self) -> dict:
         body = super().serialize()
-        conditional_insert(container=body, path=['mutation'], value=self.mutation)
+        conditional_insert(
+            container=body,
+            path=['mutation'],
+            value=process_muta_change_request(mutation=self.mutation))
         conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
         conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body

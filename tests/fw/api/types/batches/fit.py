@@ -40,7 +40,6 @@ from fw.api.commands import (
     FitTryItemsFitCmd,
     FitValFitCmd,
 )
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.stats import FitBatchStats, ItemBatchStats
 from fw.api.types.validation import FitValResult
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
@@ -132,7 +131,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlAutochargeChangeCmd(
             item_id=item_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - booster
@@ -146,8 +145,8 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlBoosterAddCmd(
             type_id=type_id,
             state=state,
-            side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            side_effects=side_effects,
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -163,8 +162,8 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            side_effects=side_effects,
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - character
@@ -177,7 +176,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlCharacterSetCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -190,7 +189,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlCharacterChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def unset_character(self) -> None:
@@ -209,7 +208,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             item_id=item_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - drone
@@ -227,12 +226,12 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlDroneAddCmd(
             type_id=type_id,
             state=state,
-            mutation=process_muta_add_request(mutation=mutation),
+            mutation=mutation,
             npc_prop=npc_prop,
             proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -253,13 +252,13 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            mutation=process_muta_change_request(mutation=mutation),
+            mutation=mutation,
             npc_prop=npc_prop,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - fighter
@@ -284,7 +283,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -313,7 +312,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - fit-wide effect
@@ -326,7 +325,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlFwEffectAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -341,7 +340,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - implant
@@ -354,7 +353,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlImplantAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -369,7 +368,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - module
@@ -391,12 +390,12 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             rack=rack,
             add_mode=add_mode,
             state=state,
-            mutation=process_muta_add_request(mutation=mutation),
+            mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
             proj_item_ids=proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -419,13 +418,13 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             move=move,
             state=state,
-            mutation=process_muta_change_request(mutation=mutation),
+            mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item_charge()
 
@@ -439,7 +438,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlRigAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -454,7 +453,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - service
@@ -467,7 +466,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlServiceAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -482,7 +481,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - ship
@@ -499,7 +498,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -516,7 +515,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def unset_ship(self) -> None:
@@ -535,7 +534,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -552,7 +551,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     # Item - stance
@@ -565,7 +564,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlStanceSetCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -578,7 +577,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlStanceChangeCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     def unset_stance(self) -> None:
@@ -595,7 +594,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
         command = FitCtlSubsystemAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
         return self._make_item()
 
@@ -610,7 +609,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_id=item_id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         self._commands.append(command)
 
     ################################################################################################

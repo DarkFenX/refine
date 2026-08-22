@@ -5,7 +5,6 @@ from fw.api.types.batches.sol import SolCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
-from fw.api.types.helpers import process_effect_map_request
 from fw.api.types.item import Item
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiFitInfoMode, ApiFleetInfoMode, ApiItemInfoMode, ApiSolInfoMode, ApiValInfoMode
@@ -346,7 +345,7 @@ class SolarSystem(AttrDict):
             type_id=type_id,
             state=state,
             proj_item_ids=proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self.id,
             command=command,
@@ -369,7 +368,7 @@ class SolarSystem(AttrDict):
         command = ItemCtlSwEffectAddCmd(
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self.id,
             command=command,

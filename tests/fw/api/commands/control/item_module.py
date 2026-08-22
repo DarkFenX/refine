@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from fw.api.commands import BaseCommand
+from fw.api.commands.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.util import Absent, conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -17,7 +18,7 @@ class BaseCtlModuleCmd(BaseCommand):
     charge_type_id: int | type[Absent] | None
     spool: str | type[Absent] | None
     optional_reload: ApiOptionalReload | type[Absent] | None
-    effect_modes: dict[str, ApiEffMode] | type[Absent]
+    effect_modes: dict[int | str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
@@ -26,7 +27,10 @@ class BaseCtlModuleCmd(BaseCommand):
         conditional_insert(container=body, path=['charge_type_id'], value=self.charge_type_id)
         conditional_insert(container=body, path=['spool'], value=self.spool)
         conditional_insert(container=body, path=['optional_reload'], value=self.optional_reload)
-        conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
+        conditional_insert(
+            container=body,
+            path=['effect_modes'],
+            value=process_effect_map_request(effect_map=self.effect_modes))
         return body
 
 
@@ -45,7 +49,10 @@ class BaseCtlModuleAddCmd(BaseCtlModuleCmd):
         body = super().serialize()
         conditional_insert(container=body, path=['rack'], value=self.rack)
         conditional_insert(container=body, path=['add_mode'], value=self.add_mode)
-        conditional_insert(container=body, path=['mutation'], value=self.mutation)
+        conditional_insert(
+            container=body,
+            path=['mutation'],
+            value=process_muta_add_request(mutation=self.mutation))
         conditional_insert(container=body, path=['proj_item_ids'], value=self.proj_item_ids)
         return body
 
@@ -97,7 +104,10 @@ class BaseCtlModuleChangeCmd(BaseCtlModuleCmd):
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['move'], value=self.move)
-        conditional_insert(container=body, path=['mutation'], value=self.mutation)
+        conditional_insert(
+            container=body,
+            path=['mutation'],
+            value=process_muta_change_request(mutation=self.mutation))
         conditional_insert(container=body, path=['add_proj_item_ids'], value=self.add_proj_item_ids)
         conditional_insert(container=body, path=['rm_proj_item_ids'], value=self.rm_proj_item_ids)
         return body

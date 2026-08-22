@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from fw.api.commands import BaseCommand
+from fw.api.commands.helpers import process_effect_map_request
 from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -14,13 +15,16 @@ class BaseCtlStanceCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: bool | type[Absent]
-    effect_modes: dict[str, ApiEffMode] | type[Absent]
+    effect_modes: dict[int | str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['effect_modes'], value=self.effect_modes)
+        conditional_insert(
+            container=body,
+            path=['effect_modes'],
+            value=process_effect_map_request(effect_map=self.effect_modes))
         return body
 
 

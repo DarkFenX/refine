@@ -21,7 +21,6 @@ from fw.api.commands import (
 )
 from fw.api.types.batches.fit import FitCmdBatchCtx
 from fw.api.types.dps_profile import DpsProfile
-from fw.api.types.helpers import process_effect_map_request, process_muta_add_request
 from fw.api.types.item import Item
 from fw.api.types.stats import FitStats
 from fw.api.types.validation import FitValResult, SolValResult
@@ -50,9 +49,7 @@ if typing.TYPE_CHECKING:
 class Fit(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
-        super().__init__(data=data, hooks={
-            'rah_incoming_dps': AttrHookDef(
-                func=lambda dp: DpsProfile(em=dp[0], thermal=dp[1], kinetic=dp[2], explosive=dp[3]))})
+        super().__init__(data=data, hooks={'rah_incoming_dps': AttrHookDef(func=lambda dp: DpsProfile(data=dp))})
         self._client = client
         self._sol_id = sol_id
 
@@ -283,8 +280,8 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            side_effects=process_effect_map_request(effect_map=side_effects),
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            side_effects=side_effects,
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -308,7 +305,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -358,12 +355,12 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            mutation=process_muta_add_request(mutation=mutation),
+            mutation=mutation,
             npc_prop=npc_prop,
             proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -399,7 +396,7 @@ class Fit(AttrDict):
             proj_item_ids=proj_item_ids,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -423,7 +420,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -447,7 +444,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -480,12 +477,12 @@ class Fit(AttrDict):
             rack=rack,
             add_mode=add_mode,
             state=state,
-            mutation=process_muta_add_request(mutation=mutation),
+            mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
             optional_reload=optional_reload,
             proj_item_ids=proj_item_ids,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -509,7 +506,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -533,7 +530,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -561,7 +558,7 @@ class Fit(AttrDict):
             state=state,
             coordinates=coordinates,
             movement=movement,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -608,7 +605,7 @@ class Fit(AttrDict):
             type_id=type_id,
             level=level,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -632,7 +629,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
@@ -677,7 +674,7 @@ class Fit(AttrDict):
             fit_id=self.id,
             type_id=type_id,
             state=state,
-            effect_modes=process_effect_map_request(effect_map=effect_modes))
+            effect_modes=effect_modes)
         resp = self._client.item_command_add_request(
             sol_id=self._sol_id,
             command=command,
