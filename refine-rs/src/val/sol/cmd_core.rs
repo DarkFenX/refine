@@ -71,7 +71,7 @@ impl SolValCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolValCmdBr {
-    pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<SolValCmd, BrResolveError> {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolValCmd, BrResolveError> {
         Ok(SolValCmd {
             options: self
                 .options
