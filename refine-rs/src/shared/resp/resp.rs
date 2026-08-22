@@ -15,11 +15,11 @@ pub enum CmdResp {
     FleetInfo(Box<FleetInfo>),
     FitInfo(Box<FitInfo>),
     ItemInfo(Box<ItemInfo>),
-    // Stats
-    SolStats(SolStatsResp),
-    FleetStats(FleetStatsResp),
-    FitStats(FitStatsResp),
-    ItemStats(ItemStatsResp),
+    // Stats are large as well (e.g. fit is almost 1.5 kb)
+    SolStats(Box<SolStatsResp>),
+    FleetStats(Box<FleetStatsResp>),
+    FitStats(Box<FitStatsResp>),
+    ItemStats(Box<ItemStatsResp>),
     // Validation results are large
     SolVal(Box<SolValResult>),
     FitVal(Box<FitValResult>),
@@ -156,22 +156,22 @@ impl From<ItemInfo> for CmdResp {
 }
 impl From<SolStatsResp> for CmdResp {
     fn from(stats: SolStatsResp) -> Self {
-        CmdResp::SolStats(stats)
+        CmdResp::SolStats(Box::new(stats))
     }
 }
 impl From<FleetStatsResp> for CmdResp {
     fn from(stats: FleetStatsResp) -> Self {
-        CmdResp::FleetStats(stats)
+        CmdResp::FleetStats(Box::new(stats))
     }
 }
 impl From<FitStatsResp> for CmdResp {
     fn from(stats: FitStatsResp) -> Self {
-        CmdResp::FitStats(stats)
+        CmdResp::FitStats(Box::new(stats))
     }
 }
 impl From<ItemStatsResp> for CmdResp {
     fn from(stats: ItemStatsResp) -> Self {
-        CmdResp::ItemStats(stats)
+        CmdResp::ItemStats(Box::new(stats))
     }
 }
 impl From<SolValResult> for CmdResp {
