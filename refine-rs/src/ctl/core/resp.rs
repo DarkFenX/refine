@@ -1,7 +1,37 @@
 use rc::ItemCommon;
 
-use crate::{AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp};
+use crate::{FitId, FleetId, ItemId};
 
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Copy, Clone)]
+pub struct AddedFleetIdResp {
+    pub fleet_id: FleetId,
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Copy, Clone)]
+pub struct AddedFitIdResp {
+    pub fit_id: FitId,
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Copy, Clone)]
+pub struct AddedItemIdsResp {
+    pub item_id: ItemId,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub charge_item_id: Option<ItemId>,
+}
+
+#[cfg_attr(feature = "serde", derive(serde::Serialize))]
+#[derive(Copy, Clone, Default)]
+pub struct ChangedItemIdsResp {
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub charge_item_id: Option<ItemId>,
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Conversions
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddedFleetIdResp {
     pub(in crate::ctl::core) fn from_core_fleet(core_fleet: rc::FleetMut) -> Self {
         Self {

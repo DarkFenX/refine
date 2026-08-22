@@ -1,5 +1,6 @@
 use crate::{
-    FitId, FitInfo, FleetId, FleetInfo, ItemId, ItemInfo, ItemTypeId, SolInfo,
+    AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp, FitId, FitInfo, FleetId, FleetInfo, ItemId,
+    ItemInfo, ItemTypeId, SolInfo,
     stats::{FitStatsResp, FleetStatsResp, ItemStatsResp, SolStatsResp},
     val::{FitValResult, SolValResult},
 };
@@ -77,33 +78,6 @@ impl CmdResp {
             _ => None,
         }
     }
-}
-
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[derive(Copy, Clone)]
-pub struct AddedFleetIdResp {
-    pub fleet_id: FleetId,
-}
-
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[derive(Copy, Clone)]
-pub struct AddedFitIdResp {
-    pub fit_id: FitId,
-}
-
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[derive(Copy, Clone)]
-pub struct AddedItemIdsResp {
-    pub item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub charge_item_id: Option<ItemId>,
-}
-
-#[cfg_attr(feature = "serde", derive(serde::Serialize))]
-#[derive(Copy, Clone, Default)]
-pub struct ChangedItemIdsResp {
-    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
-    pub charge_item_id: Option<ItemId>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

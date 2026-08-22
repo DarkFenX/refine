@@ -84,6 +84,7 @@ pub use item_sw_effect::{
     ItemGetSwEffectChangeError, SwEffectAddCmd, SwEffectChangeCmd, SwEffectChangeCmdCtxItem,
     SwEffectChangeCmdCtxItemBr, SwEffectChangeError,
 };
+pub use resp::{AddedFitIdResp, AddedFleetIdResp, AddedItemIdsResp, ChangedItemIdsResp};
 pub use shared::{AddMutation, AttrMutation, ChangeMutation};
 pub use sol::{SolAddCmd, SolChangeCmd};
 
