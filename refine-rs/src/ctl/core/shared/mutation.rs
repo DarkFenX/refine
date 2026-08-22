@@ -44,7 +44,7 @@ pub enum AttrMutation {
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl AddMutation {
-    pub(in crate::ctl) fn apply_attrs(&self, core_mutation: &mut rc::MutationMut) {
+    pub(in crate::ctl::core) fn apply_attrs(&self, core_mutation: &mut rc::MutationMut) {
         for (attr_id, value) in self.attrs.iter() {
             match value {
                 AttrMutation::Absolute(value) => apply_absolute(core_mutation, *attr_id, *value),
@@ -55,7 +55,7 @@ impl AddMutation {
 }
 
 impl ChangeMutation {
-    pub(in crate::ctl) fn apply_attrs(&self, core_mutation: &mut rc::MutationMut) {
+    pub(in crate::ctl::core) fn apply_attrs(&self, core_mutation: &mut rc::MutationMut) {
         for (attr_id, value) in self.attrs.iter() {
             match value {
                 Some(AttrMutation::Absolute(value)) => apply_absolute(core_mutation, *attr_id, *value),

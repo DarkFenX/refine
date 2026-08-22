@@ -34,7 +34,7 @@ pub struct SolInfoExt {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfo {
-    pub(in crate::info) fn from_ids_and_core(
+    pub(in crate::info::sol) fn from_ids_and_core(
         sol_id: SolarSystemId,
         src_alias: SrcAlias,
         core_sol: &mut rc::SolarSystem,

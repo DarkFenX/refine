@@ -8,7 +8,7 @@ use crate::EffectId;
     serde(transparent)
 )]
 #[derive(Clone, Default)]
-pub(in crate::ctl) struct SideEffects {
+pub(in crate::ctl::core) struct SideEffects {
     #[cfg_attr(feature = "serde", serde_as(as = "serde_with::Map<_, _>"))]
     data: Vec<(EffectId, bool)>,
 }

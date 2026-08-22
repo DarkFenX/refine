@@ -2,7 +2,7 @@ use rc::ItemMutCommon;
 
 use crate::{EffectId, ItemEffectInfo, ItemInfoMode};
 
-pub(in crate::info::item) fn get_effects<T>(
+pub(in crate::info::item::info) fn get_effects<T>(
     core_item: &mut T,
     item_info_mode: ItemInfoMode,
 ) -> Vec<(EffectId, ItemEffectInfo)>
