@@ -61,6 +61,17 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "ITM-001")
                 }
             },
+            Self::SolBatchStats(err) => match &err.error {
+                rs::stats::err::SolStatsEnumError::Fleet(rs::stats::err::FleetGetFleetStatsError::FleetGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "FLT-001")
+                }
+                rs::stats::err::SolStatsEnumError::Fit(rs::stats::err::FitGetFitStatsError::FitGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "FIT-001")
+                }
+                rs::stats::err::SolStatsEnumError::Item(rs::stats::err::ItemGetItemStatsError::ItemGet(..)) => {
+                    (StatusCode::BAD_REQUEST, "ITM-001")
+                }
+            },
             Self::SolBatchVal(err) => match &err.error {
                 rs::val::err::SolValEnumError::Fit(rs::val::err::FitGetFitValError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")

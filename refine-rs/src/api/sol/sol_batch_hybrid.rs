@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, SolHybridCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError, SolHybridError, SolInfoEnumError},
+    stats::err::SolStatsEnumError,
     trial::err::SolTryItemsEnumError,
     val::err::SolValEnumError,
 };
@@ -33,6 +34,8 @@ pub enum SolHybridBatchError {
     #[error("command #{0} failed")]
     InfoExec(usize, #[source] SolInfoEnumError),
     #[error("command #{0} failed")]
+    StatsExec(usize, #[source] SolStatsEnumError),
+    #[error("command #{0} failed")]
     ValExec(usize, #[source] SolValEnumError),
     #[error("command #{0} failed")]
     TryItemsExec(usize, #[source] SolTryItemsEnumError),
@@ -45,6 +48,7 @@ impl SolHybridBatchError {
         match exec_err {
             SolHybridError::Ctl(ctl_err) => Self::CtlExec(cmd_idx, ctl_err),
             SolHybridError::Info(info_err) => Self::InfoExec(cmd_idx, info_err),
+            SolHybridError::Stats(info_err) => Self::StatsExec(cmd_idx, info_err),
             SolHybridError::Val(val_err) => Self::ValExec(cmd_idx, val_err),
             SolHybridError::TryItems(val_err) => Self::TryItemsExec(cmd_idx, val_err),
         }

@@ -10,6 +10,10 @@ use crate::{
     SwEffectChangeCmd,
     err::{BrResolveError, SolChangeEnumError, SolInfoEnumError},
     info::SolInfoEnumCmd,
+    stats::{
+        FitStatsCmdBr, FleetStatsCmdBr, ItemStatsCmdBr, SolStatsCmdBr, SolStatsEnumCmd, SolStatsEnumCmdBr,
+        err::SolStatsEnumError,
+    },
     svc::SolCtx,
     trial::{FitTryItemsCmdBr, SolTryItemsEnumCmd, SolTryItemsEnumCmdBr, err::SolTryItemsEnumError},
     val::{FitValCmdBr, SolValCmdBr, SolValEnumCmd, SolValEnumCmdBr, err::SolValEnumError},
@@ -19,6 +23,7 @@ use crate::{
 pub(crate) enum SolHybridCmd {
     Ctl(SolChangeEnumCmd),
     Info(SolInfoEnumCmd),
+    Stats(SolStatsEnumCmd),
     Val(SolValEnumCmd),
     TryItems(SolTryItemsEnumCmd),
 }
@@ -28,6 +33,7 @@ pub(crate) enum SolHybridCmd {
 pub enum SolHybridCmdBr {
     Ctl(SolChangeEnumCmdBr),
     Info(SolInfoEnumCmdBr),
+    Stats(SolStatsEnumCmdBr),
     Val(SolValEnumCmdBr),
     TryItems(SolTryItemsEnumCmdBr),
 }
@@ -301,6 +307,27 @@ impl ItemInfoCmdBr {
         SolHybridCmdBr::Info(self.into_sol_info_br(item_id))
     }
 }
+// Stats
+impl SolStatsCmdBr {
+    pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
+        SolHybridCmdBr::Stats(self.into_sol_stat_br())
+    }
+}
+impl FleetStatsCmdBr {
+    pub fn into_sol_hyb_br(self, fleet_id: impl Into<FleetIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Stats(self.into_sol_stat_br(fleet_id))
+    }
+}
+impl FitStatsCmdBr {
+    pub fn into_sol_hyb_br(self, fit_id: impl Into<FitIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Stats(self.into_sol_stat_br(fit_id))
+    }
+}
+impl ItemStatsCmdBr {
+    pub fn into_sol_hyb_br(self, item_id: impl Into<ItemIdBr>) -> SolHybridCmdBr {
+        SolHybridCmdBr::Stats(self.into_sol_stat_br(item_id))
+    }
+}
 // Validation
 impl SolValCmdBr {
     pub fn into_sol_hyb_br(self) -> SolHybridCmdBr {
@@ -327,6 +354,7 @@ impl SolHybridCmdBr {
         Ok(match self {
             Self::Ctl(ctl_cmd) => SolHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => SolHybridCmd::Info(info_cmd.br_resolve(resps)?),
+            Self::Stats(info_cmd) => SolHybridCmd::Stats(info_cmd.br_resolve(resps)?),
             Self::Val(info_cmd) => SolHybridCmd::Val(info_cmd.br_resolve(resps)?),
             Self::TryItems(info_cmd) => SolHybridCmd::TryItems(info_cmd.br_resolve(resps)?),
         })
@@ -341,6 +369,7 @@ impl SolHybridCmd {
         Ok(match self {
             Self::Ctl(ctl_cmd) => ctl_cmd.execute(core_sol)?,
             Self::Info(info_cmd) => info_cmd.execute(ctx, core_sol)?,
+            Self::Stats(info_cmd) => info_cmd.execute(core_sol)?,
             Self::Val(info_cmd) => info_cmd.execute(core_sol)?,
             Self::TryItems(info_cmd) => info_cmd.execute(core_sol)?,
         })
@@ -353,6 +382,8 @@ pub enum SolHybridError {
     Ctl(#[from] SolChangeEnumError),
     #[error(transparent)]
     Info(#[from] SolInfoEnumError),
+    #[error(transparent)]
+    Stats(#[from] SolStatsEnumError),
     #[error(transparent)]
     Val(#[from] SolValEnumError),
     #[error(transparent)]
