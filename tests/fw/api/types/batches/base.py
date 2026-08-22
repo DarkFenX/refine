@@ -70,10 +70,10 @@ class BaseCmdBatchCtx:
         self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
         return Item(client=self._client, data=data, sol_id=self._sol_id)
 
-    def _make_stats[T](self, *, cls: type[T], path: str | None = None) -> T:
+    def _make_stats[T](self, *, cls: type[T]) -> T:
         index = len(self._commands) - 1
         data = {}
-        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data, path=path)
+        self._ret_datas[index] = EntityData(kind=DataFillKind.copy, data=data)
         return cls(data=data)
 
     def _make_val_result[T](self, *, cls: type[T]) -> T:
