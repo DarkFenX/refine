@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from fw.api.commands import BaseCommand
+from fw.api.commands.helpers import process_stats_options_request
 from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -20,7 +21,10 @@ class BaseStatsItemCmd(BaseCommand):
         body = super().serialize()
         body['type'] = 'item_stats'
         body['item_id'] = self.item_id
-        conditional_insert(container=body, path=['item_options'], value=self.item_options)
+        conditional_insert(
+            container=body,
+            path=['item_options'],
+            value=process_stats_options_request(options=self.item_options))
         return body
 
 

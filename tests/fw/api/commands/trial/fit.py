@@ -2,6 +2,7 @@ import dataclasses
 import typing
 
 from fw.api.commands import BaseCommand
+from fw.api.commands.helpers import process_val_options_request
 from fw.util import conditional_insert
 
 if typing.TYPE_CHECKING:
@@ -19,7 +20,10 @@ class BaseTryItemsFitCmd(BaseCommand):
         body = super().serialize()
         body['type'] = 'fit_try_items'
         body['type_ids'] = self.type_ids
-        conditional_insert(container=body, path=['val_options'], value=self.val_options)
+        conditional_insert(
+            container=body,
+            path=['val_options'],
+            value=process_val_options_request(options=self.val_options))
         return body
 
 

@@ -61,13 +61,7 @@ from fw.api.commands import (
 )
 from fw.api.types.fit import Fit
 from fw.api.types.fleet import Fleet
-from fw.api.types.helpers import (
-    process_effect_map_request,
-    process_muta_add_request,
-    process_muta_change_request,
-    process_stats_options_request,
-    process_val_options_request,
-)
+from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.stats import FitBatchStats, FleetBatchStats, ItemBatchStats, SolBatchStats
 from fw.api.types.validation import FitValResult, SolValResult
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
@@ -943,9 +937,9 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
     ) -> SolBatchStats:
         command = SolStatsSolCmd(
-            fleet_options=process_stats_options_request(options=fleet_options),
-            fit_options=process_stats_options_request(options=fit_options),
-            item_options=process_stats_options_request(options=item_options))
+            fleet_options=fleet_options,
+            fit_options=fit_options,
+            item_options=item_options)
         self._commands.append(command)
         return self._make_stats(cls=SolBatchStats)
 
@@ -958,9 +952,9 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     ) -> FleetBatchStats:
         command = SolStatsFleetCmd(
             fleet_id=fleet_id,
-            fleet_options=process_stats_options_request(options=fleet_options),
-            fit_options=process_stats_options_request(options=fit_options),
-            item_options=process_stats_options_request(options=item_options))
+            fleet_options=fleet_options,
+            fit_options=fit_options,
+            item_options=item_options)
         self._commands.append(command)
         return self._make_stats(cls=FleetBatchStats)
 
@@ -972,8 +966,8 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     ) -> FitBatchStats:
         command = SolStatsFitCmd(
             fit_id=fit_id,
-            fit_options=process_stats_options_request(options=fit_options),
-            item_options=process_stats_options_request(options=item_options))
+            fit_options=fit_options,
+            item_options=item_options)
         self._commands.append(command)
         return self._make_stats(cls=FitBatchStats)
 
@@ -984,7 +978,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     ) -> ItemBatchStats:
         command = SolStatsItemCmd(
             item_id=item_id,
-            item_options=process_stats_options_request(options=item_options))
+            item_options=item_options)
         self._commands.append(command)
         return self._make_stats(cls=ItemBatchStats)
 
@@ -998,7 +992,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             info_mode: ApiValInfoMode | type[Absent] = Absent,
     ) -> SolValResult:
         command = SolValSolCmd(
-            options=process_val_options_request(options=options),
+            options=options,
             fit_ids=fit_ids,
             info_mode=info_mode)
         self._commands.append(command)
@@ -1012,7 +1006,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
     ) -> FitValResult:
         command = SolValFitCmd(
             fit_id=fit_id,
-            options=process_val_options_request(options=options),
+            options=options,
             info_mode=info_mode)
         self._commands.append(command)
         return self._make_val_result(cls=FitValResult)
@@ -1029,6 +1023,6 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
         command = SolTryItemsFitCmd(
             fit_id=fit_id,
             type_ids=type_ids,
-            val_options=process_val_options_request(options=val_options))
+            val_options=val_options)
         self._commands.append(command)
         return self._make_try_items()

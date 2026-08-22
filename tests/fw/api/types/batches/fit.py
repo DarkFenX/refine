@@ -40,13 +40,7 @@ from fw.api.commands import (
     FitTryItemsFitCmd,
     FitValFitCmd,
 )
-from fw.api.types.helpers import (
-    process_effect_map_request,
-    process_muta_add_request,
-    process_muta_change_request,
-    process_stats_options_request,
-    process_val_options_request,
-)
+from fw.api.types.helpers import process_effect_map_request, process_muta_add_request, process_muta_change_request
 from fw.api.types.stats import FitBatchStats, ItemBatchStats
 from fw.api.types.validation import FitValResult
 from fw.consts import ApiMinionState, ApiModAddMode, ApiModuleState, ApiRack, ApiServiceState
@@ -653,8 +647,8 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             item_options: StatsOptions[ItemStatsOptions] | type[Absent] = Absent,
     ) -> FitBatchStats:
         command = FitStatsFitCmd(
-            fit_options=process_stats_options_request(options=fit_options),
-            item_options=process_stats_options_request(options=item_options))
+            fit_options=fit_options,
+            item_options=item_options)
         self._commands.append(command)
         return self._make_stats(cls=FitBatchStats)
 
@@ -665,7 +659,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     ) -> ItemBatchStats:
         command = FitStatsItemCmd(
             item_id=item_id,
-            item_options=process_stats_options_request(options=item_options))
+            item_options=item_options)
         self._commands.append(command)
         return self._make_stats(cls=ItemBatchStats)
 
@@ -678,7 +672,7 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
             info_mode: ApiValInfoMode | type[Absent] = Absent,
     ) -> FitValResult:
         command = FitValFitCmd(
-            options=process_val_options_request(options=options),
+            options=options,
             info_mode=info_mode)
         self._commands.append(command)
         return self._make_val_result(cls=FitValResult)
@@ -693,6 +687,6 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     ) -> list[int]:
         command = FitTryItemsFitCmd(
             type_ids=type_ids,
-            val_options=process_val_options_request(options=val_options))
+            val_options=val_options)
         self._commands.append(command)
         return self._make_try_items()
