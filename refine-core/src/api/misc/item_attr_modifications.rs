@@ -31,7 +31,7 @@ pub struct Affector {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Modification {
-    pub(crate) fn from_calc(calc_mod_info: CalcModInfo, u_data: &UData) -> Self {
+    pub(in crate::api) fn from_calc(calc_mod_info: CalcModInfo, u_data: &UData) -> Self {
         Self {
             op: calc_mod_info.op,
             initial_str: calc_mod_info.initial_str,
@@ -49,7 +49,7 @@ impl Modification {
 }
 
 impl Affector {
-    pub(crate) fn from_calc(calc_affector: CalcModInfoAffector, u_data: &UData) -> Self {
+    pub(in crate::api) fn from_calc(calc_affector: CalcModInfoAffector, u_data: &UData) -> Self {
         Self {
             item_id: u_data.items.ext_id_by_int_id(calc_affector.item_uid),
             attr_id: calc_affector

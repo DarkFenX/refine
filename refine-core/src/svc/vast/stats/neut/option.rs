@@ -43,7 +43,7 @@ impl StatNeutItemKinds {
     }
 }
 impl StatNeutItemKinds {
-    pub(in crate::svc::vast) fn resolve(&self, r_effect: &REffect) -> bool {
+    pub(in crate::svc::vast::stats) fn resolve(&self, r_effect: &REffect) -> bool {
         let neut_kind = match &r_effect.neut {
             Some(neut) => neut.kind,
             None => return false,

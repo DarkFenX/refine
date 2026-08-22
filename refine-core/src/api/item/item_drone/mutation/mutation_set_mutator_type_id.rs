@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_drone_mutator_type_aid(
+    pub(in crate::api::item) fn internal_set_drone_mutator_type_aid(
         &mut self,
         drone_uid: UItemId,
         mutator_type_aid: AItemId,

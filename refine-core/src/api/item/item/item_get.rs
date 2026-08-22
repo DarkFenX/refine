@@ -15,7 +15,7 @@ impl SolarSystem {
         let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item(item_uid))
     }
-    pub(in crate::api) fn internal_get_item(&self, item_uid: UItemId) -> Item<'_> {
+    pub(in crate::api::item::item) fn internal_get_item(&self, item_uid: UItemId) -> Item<'_> {
         let u_item = self.u_data.items.get(item_uid);
         match u_item {
             UItem::Autocharge(..) => Item::Autocharge(Autocharge::new(self, item_uid)),
@@ -41,7 +41,7 @@ impl SolarSystem {
         let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_uid))
     }
-    pub(in crate::api) fn internal_get_item_mut(&mut self, item_uid: UItemId) -> ItemMut<'_> {
+    pub(in crate::api::item::item) fn internal_get_item_mut(&mut self, item_uid: UItemId) -> ItemMut<'_> {
         let u_item = self.u_data.items.get(item_uid);
         match u_item {
             UItem::Autocharge(..) => ItemMut::Autocharge(AutochargeMut::new(self, item_uid)),

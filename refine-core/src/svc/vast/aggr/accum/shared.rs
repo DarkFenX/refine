@@ -8,7 +8,7 @@ pub(in crate::svc::vast) struct SeqAccum<IA> {
     pub(in crate::svc::vast) time: PValue,
 }
 impl<IA> SeqAccum<IA> {
-    pub(in crate::svc::vast) fn add_output_full<I>(
+    pub(in crate::svc::vast::aggr) fn add_output_full<I>(
         &mut self,
         output: &Output<I>,
         chance_mult: Option<PValue>,
@@ -19,7 +19,7 @@ impl<IA> SeqAccum<IA> {
     {
         self.instances.add_output_full(output, chance_mult, repeat_count);
     }
-    pub(in crate::svc::vast) fn add_output_time_limited<I>(
+    pub(in crate::svc::vast::aggr) fn add_output_time_limited<I>(
         &mut self,
         output: &Output<I>,
         chance_mult: Option<PValue>,

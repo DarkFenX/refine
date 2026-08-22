@@ -32,7 +32,7 @@ pub struct ValRigSizeItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_rig_size_fast(&self, kfs: &RSet<UItemId>, ship: Option<&UShip>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_rig_size_fast(&self, kfs: &RSet<UItemId>, ship: Option<&UShip>) -> bool {
         let Some(allowed_size) = get_allowed_size(ship) else {
             return true;
         };
@@ -44,7 +44,7 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_rig_size_verbose(
+    pub(in crate::svc::vast::val) fn validate_rig_size_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

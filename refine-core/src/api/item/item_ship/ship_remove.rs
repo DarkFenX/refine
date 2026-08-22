@@ -6,7 +6,11 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_ship(&mut self, ship_uid: UItemId, reuse_eupdates: &mut UEffectUpdates) {
+    pub(in crate::api::item) fn internal_remove_ship(
+        &mut self,
+        ship_uid: UItemId,
+        reuse_eupdates: &mut UEffectUpdates,
+    ) {
         let u_ship = self.u_data.items.get(ship_uid).dc_ship().unwrap();
         let fit_uid = u_ship.get_fit_uid();
         // Remove incoming projections

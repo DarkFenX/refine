@@ -269,7 +269,7 @@ pub(crate) struct RAttrConsts {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RAttrConsts {
-    pub(in crate::rd) fn from_id_map(attr_aid_rid_map: &RMap<AAttrId, RAttrId>) -> Self {
+    pub(in crate::rd::data) fn from_id_map(attr_aid_rid_map: &RMap<AAttrId, RAttrId>) -> Self {
         let limited_precision = AAttrId::LIMITED_PRECISION_ATTRS
             .iter()
             .filter_map(|aid| attr_aid_rid_map.get(aid).copied())

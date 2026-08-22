@@ -16,10 +16,14 @@ impl EffProjs {
         }
     }
     // Query methods
-    pub(crate) fn get_proj_data(&self, projector_espec: EffectSpec, projectee_uid: UItemId) -> Option<UProjData> {
+    pub(in crate::svc) fn get_proj_data(
+        &self,
+        projector_espec: EffectSpec,
+        projectee_uid: UItemId,
+    ) -> Option<UProjData> {
         self.proj_datas.get(&(projector_espec, projectee_uid)).copied()
     }
-    pub(crate) fn get_or_make_proj_data(
+    pub(in crate::svc) fn get_or_make_proj_data(
         &self,
         u_data: &UData,
         projector_espec: EffectSpec,

@@ -13,7 +13,7 @@ struct AutochargeData {
 }
 
 impl SolarSystem {
-    pub(in crate::api) fn add_item_autocharges(
+    pub(in crate::api::item) fn add_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,
@@ -109,7 +109,7 @@ impl SolarSystem {
             cont_acs.set(ac_data.effect_rid, ac_data.autocharge_uid);
         }
     }
-    pub(in crate::api) fn remove_item_autocharges(
+    pub(in crate::api::item) fn remove_item_autocharges(
         u_data: &mut UData,
         svc: &mut Svc,
         rev_projs: &mut RevProjs,

@@ -52,14 +52,14 @@ impl ValShipKind {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_item_vs_ship_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
         if self.mods_rigs_svcs_vs_ship_kind.is_empty() {
             return true;
         }
         self.mods_rigs_svcs_vs_ship_kind.difference(kfs).next().is_none()
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_item_vs_ship_kind_verbose(
+    pub(in crate::svc::vast::val) fn validate_item_vs_ship_kind_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

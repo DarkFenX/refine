@@ -49,7 +49,7 @@ const impl Default for StatMiningResourceKind {
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatMiningItemKinds {
-    pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem) -> bool {
+    pub(in crate::svc::vast::stats) fn resolve(&self, u_item: &UItem) -> bool {
         match u_item {
             UItem::Drone(..) => self.minion.is_enabled(self.default),
             UItem::Module(..) => self.module.is_enabled(self.default),

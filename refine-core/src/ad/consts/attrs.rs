@@ -5,7 +5,7 @@ use crate::{
 
 impl AAttrId {
     // Composite constants
-    pub(crate) const SKILL_REQ_ATTRS: [(Self, Self); 6] = [
+    pub(in crate::ad) const SKILL_REQ_ATTRS: [(Self, Self); 6] = [
         (Self::REQUIRED_SKILL1, Self::REQUIRED_SKILL1_LEVEL),
         (Self::REQUIRED_SKILL2, Self::REQUIRED_SKILL2_LEVEL),
         (Self::REQUIRED_SKILL3, Self::REQUIRED_SKILL3_LEVEL),

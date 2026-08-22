@@ -113,7 +113,7 @@ impl REffect {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl REffect {
-    pub(in crate::rd) fn from_a_effect(effect_rid: REffectId, a_effect: &AEffect) -> Self {
+    pub(in crate::rd::data) fn from_a_effect(effect_rid: REffectId, a_effect: &AEffect) -> Self {
         let n_effect = N_EFFECT_MAP.get(&a_effect.id);
         let state = RState::from_a_state(&a_effect.state);
         Self {
@@ -188,7 +188,7 @@ impl REffect {
             ecm: Default::default(),
         }
     }
-    pub(in crate::rd) fn fill_runtime(
+    pub(in crate::rd::data) fn fill_runtime(
         &mut self,
         a_effects: &RMap<AEffectId, AEffect>,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,

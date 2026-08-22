@@ -36,7 +36,7 @@ pub struct ValOverloadSkillItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_overload_skill_fast(&self, kfs: &RSet<UItemId>, fit: &UFit) -> bool {
+    pub(in crate::svc::vast::val) fn validate_overload_skill_fast(&self, kfs: &RSet<UItemId>, fit: &UFit) -> bool {
         if self.overload_td_lvl.is_empty() {
             return true;
         }
@@ -49,7 +49,7 @@ impl VastFitData {
             .all(|(item_uid, &req_lvl)| td_lvl >= req_lvl || kfs.contains(item_uid))
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_overload_skill_verbose(
+    pub(in crate::svc::vast::val) fn validate_overload_skill_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

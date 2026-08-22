@@ -52,7 +52,7 @@ pub struct ValMaxGroupItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_max_group_fitted_fast(
+    pub(in crate::svc::vast::val) fn validate_max_group_fitted_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -67,7 +67,7 @@ impl VastFitData {
             ctx.ac().max_group_fitted,
         )
     }
-    pub(in crate::svc::vast) fn validate_max_group_online_fast(
+    pub(in crate::svc::vast::val) fn validate_max_group_online_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -82,7 +82,7 @@ impl VastFitData {
             ctx.ac().max_group_online,
         )
     }
-    pub(in crate::svc::vast) fn validate_max_group_active_fast(
+    pub(in crate::svc::vast::val) fn validate_max_group_active_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -98,7 +98,7 @@ impl VastFitData {
         )
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_max_group_fitted_verbose(
+    pub(in crate::svc::vast::val) fn validate_max_group_fitted_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -113,7 +113,7 @@ impl VastFitData {
             ctx.ac().max_group_fitted,
         )
     }
-    pub(in crate::svc::vast) fn validate_max_group_online_verbose(
+    pub(in crate::svc::vast::val) fn validate_max_group_online_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -128,7 +128,7 @@ impl VastFitData {
             ctx.ac().max_group_online,
         )
     }
-    pub(in crate::svc::vast) fn validate_max_group_active_verbose(
+    pub(in crate::svc::vast::val) fn validate_max_group_active_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

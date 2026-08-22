@@ -40,14 +40,14 @@ pub struct ValItemKindItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_item_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_item_kind_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.item_kind.is_empty(),
             false => self.item_kind.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_item_kind_verbose(
+    pub(in crate::svc::vast::val) fn validate_item_kind_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

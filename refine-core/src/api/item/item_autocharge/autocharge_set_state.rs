@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_autocharge_state(
+    pub(in crate::api::item) fn internal_set_autocharge_state(
         &mut self,
         autocharge_uid: UItemId,
         state: bool,

@@ -34,7 +34,7 @@ pub struct ValProjFilterItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_projectee_filter_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast::val) fn validate_projectee_filter_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
         for (projector_espec, projectee_data) in self.projectee_filter.iter() {
             for (&projectee_uid, &allowed_type_list_rid) in projectee_data.iter() {
                 if !validate_projection(kfs, ctx, projector_espec, allowed_type_list_rid, projectee_uid) {
@@ -45,7 +45,7 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_projectee_filter_verbose(
+    pub(in crate::svc::vast::val) fn validate_projectee_filter_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

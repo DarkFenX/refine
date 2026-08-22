@@ -37,7 +37,7 @@ pub struct ValResourceItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_cpu_fast(
+    pub(in crate::svc::vast::val) fn validate_cpu_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -54,7 +54,7 @@ impl VastFitData {
             ctx.ac().cpu_output,
         )
     }
-    pub(in crate::svc::vast) fn validate_powergrid_fast(
+    pub(in crate::svc::vast::val) fn validate_powergrid_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -71,7 +71,7 @@ impl VastFitData {
             ctx.ac().power_output,
         )
     }
-    pub(in crate::svc::vast) fn validate_calibration_fast(
+    pub(in crate::svc::vast::val) fn validate_calibration_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -87,7 +87,7 @@ impl VastFitData {
             ctx.ac().upgrade_capacity,
         )
     }
-    pub(in crate::svc::vast) fn validate_drone_bay_volume_fast(
+    pub(in crate::svc::vast::val) fn validate_drone_bay_volume_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -103,7 +103,7 @@ impl VastFitData {
             ctx.ac().drone_capacity,
         )
     }
-    pub(in crate::svc::vast) fn validate_drone_bandwidth_fast(
+    pub(in crate::svc::vast::val) fn validate_drone_bandwidth_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -119,7 +119,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc::vast) fn validate_fighter_bay_volume_fast(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -136,7 +136,7 @@ impl VastFitData {
         )
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_cpu_verbose(
+    pub(in crate::svc::vast::val) fn validate_cpu_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -153,7 +153,7 @@ impl VastFitData {
             ctx.ac().cpu_output,
         )
     }
-    pub(in crate::svc::vast) fn validate_powergrid_verbose(
+    pub(in crate::svc::vast::val) fn validate_powergrid_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -170,7 +170,7 @@ impl VastFitData {
             ctx.ac().power_output,
         )
     }
-    pub(in crate::svc::vast) fn validate_calibration_verbose(
+    pub(in crate::svc::vast::val) fn validate_calibration_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -186,7 +186,7 @@ impl VastFitData {
             ctx.ac().upgrade_capacity,
         )
     }
-    pub(in crate::svc::vast) fn validate_drone_bay_volume_verbose(
+    pub(in crate::svc::vast::val) fn validate_drone_bay_volume_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -202,7 +202,7 @@ impl VastFitData {
             ctx.ac().drone_capacity,
         )
     }
-    pub(in crate::svc::vast) fn validate_drone_bandwidth_verbose(
+    pub(in crate::svc::vast::val) fn validate_drone_bandwidth_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -218,7 +218,7 @@ impl VastFitData {
             ctx.ac().drone_bandwidth,
         )
     }
-    pub(in crate::svc::vast) fn validate_fighter_bay_volume_verbose(
+    pub(in crate::svc::vast::val) fn validate_fighter_bay_volume_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

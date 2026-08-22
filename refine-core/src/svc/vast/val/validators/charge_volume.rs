@@ -33,14 +33,14 @@ pub struct ValChargeVolumeChargeInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_charge_volume_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_charge_volume_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.charge_volume.is_empty(),
             false => self.charge_volume.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_charge_volume_verbose(
+    pub(in crate::svc::vast::val) fn validate_charge_volume_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

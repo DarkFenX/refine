@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_proj_effect(
+    pub(in crate::api::item) fn internal_remove_proj_effect(
         &mut self,
         proj_effect_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,

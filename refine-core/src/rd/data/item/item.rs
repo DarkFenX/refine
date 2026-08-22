@@ -17,13 +17,13 @@ pub(crate) struct RItem {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItem {
-    pub(in crate::rd) fn from_a_item(a_item: &AItem) -> Self {
+    pub(in crate::rd::data) fn from_a_item(a_item: &AItem) -> Self {
         Self {
             base: RItemBase::from_a_item(a_item),
             attr_data: RItemAttrData::default(),
         }
     }
-    pub(in crate::rd) fn fill_runtime(
+    pub(in crate::rd::data) fn fill_runtime(
         &mut self,
         a_items: &RMap<AItemId, AItem>,
         item_list_aid_rid_map: &RMap<AItemListId, RItemListId>,

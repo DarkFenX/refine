@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_get_proj(
+    pub(in crate::api::item) fn internal_get_proj(
         &self,
         projector_uid: UItemId,
         projectee_item_id: &ItemId,
@@ -13,7 +13,7 @@ impl SolarSystem {
         let projectee_uid = get_projectee_uid(self, projector_uid, projectee_item_id)?;
         Ok(Proj::new(self, projectee_uid))
     }
-    pub(in crate::api) fn internal_get_proj_mut(
+    pub(in crate::api::item) fn internal_get_proj_mut(
         &mut self,
         projector_uid: UItemId,
         projectee_item_id: &ItemId,

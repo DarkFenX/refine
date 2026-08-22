@@ -75,7 +75,7 @@ impl StatDmgItemKinds {
     }
 }
 impl StatDmgItemKinds {
-    pub(in crate::svc::vast) fn resolve(&self, u_item: &UItem, r_effect: &REffect) -> bool {
+    pub(in crate::svc::vast::stats) fn resolve(&self, u_item: &UItem, r_effect: &REffect) -> bool {
         match u_item {
             UItem::Drone(drone) => {
                 return match drone.get_r_item_attr_data().unwrap().is_mobile {

@@ -15,7 +15,7 @@ pub(in crate::svc::calc) enum Location {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl Location {
-    pub(in crate::svc::calc) fn from_a_effect_loc(a_effect_loc: AEffectLocation) -> Self {
+    pub(super) fn from_a_effect_loc(a_effect_loc: AEffectLocation) -> Self {
         match a_effect_loc {
             AEffectLocation::Ship => Self::Ship,
             AEffectLocation::Structure => Self::Structure,

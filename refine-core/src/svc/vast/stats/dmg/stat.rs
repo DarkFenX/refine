@@ -37,7 +37,7 @@ pub struct StatDmgEntryBreacher {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StatDmgEntry {
-    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: StatDmgEntryBreacher) -> Self {
+    pub(super) fn from_dmgs(normal: DmgKinds<PValue>, breacher: StatDmgEntryBreacher) -> Self {
         Self {
             em: normal.em,
             thermal: normal.thermal,
@@ -49,7 +49,7 @@ impl StatDmgEntry {
 }
 
 impl StatDmgEntryApplied {
-    pub(in crate::svc::vast) fn from_dmgs(normal: DmgKinds<PValue>, breacher: PValue) -> Self {
+    pub(super) fn from_dmgs(normal: DmgKinds<PValue>, breacher: PValue) -> Self {
         Self {
             em: normal.em,
             thermal: normal.thermal,

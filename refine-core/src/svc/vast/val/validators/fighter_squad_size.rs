@@ -40,14 +40,14 @@ pub struct ValFighterSquadSizeFighterInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_fighter_squad_size_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_fighter_squad_size_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.fighter_squad_size.is_empty(),
             false => self.fighter_squad_size.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_fighter_squad_size_verbose(
+    pub(in crate::svc::vast::val) fn validate_fighter_squad_size_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

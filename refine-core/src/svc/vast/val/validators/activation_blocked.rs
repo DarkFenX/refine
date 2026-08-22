@@ -14,7 +14,7 @@ pub struct ValActivationBlockedFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_activation_blocked_fast(
+    pub(in crate::svc::vast::val) fn validate_activation_blocked_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -30,7 +30,7 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_activation_blocked_verbose(
+    pub(in crate::svc::vast::val) fn validate_activation_blocked_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

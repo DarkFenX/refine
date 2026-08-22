@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_update_ship_radius_for_outgoing_projs(
+    pub(super) fn util_update_ship_radius_for_outgoing_projs(
         u_data: &mut UData,
         svc: &mut Svc,
         fit_uid: UFitId,

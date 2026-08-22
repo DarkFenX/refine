@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_sw_effect(
+    pub(in crate::api::item) fn internal_remove_sw_effect(
         &mut self,
         sw_effect_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,

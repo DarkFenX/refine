@@ -111,7 +111,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_bomb_application_mult(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Private
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(in crate::nd::effect::specs::proj_mult_getter) fn get_turret_application_mult(
+pub(super) fn get_turret_application_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

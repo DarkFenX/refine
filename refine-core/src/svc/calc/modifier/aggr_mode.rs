@@ -16,7 +16,7 @@ pub(in crate::svc::calc) enum AggrMode {
     Max(AggrKey),
 }
 impl AggrMode {
-    pub(in crate::svc::calc) fn from_buff(buff: &RBuff) -> Self {
+    pub(super) fn from_buff(buff: &RBuff) -> Self {
         match buff.aggr_mode {
             ABuffAggrMode::Min => Self::Min(buff.aid),
             ABuffAggrMode::Max => Self::Max(buff.aid),

@@ -52,14 +52,14 @@ pub struct ValSrqSkillInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_skill_reqs_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_skill_reqs_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.srqs_missing.is_empty(),
             false => self.srqs_missing.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_skill_reqs_verbose(
+    pub(in crate::svc::vast::val) fn validate_skill_reqs_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

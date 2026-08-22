@@ -13,10 +13,10 @@ pub struct ValNotLoadedItemFail {
 }
 
 impl Vast {
-    pub(in crate::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_not_loaded_item_fast(&self, kfs: &RSet<UItemId>) -> bool {
         validate_fast(kfs, &self.not_loaded)
     }
-    pub(in crate::svc::vast) fn validate_not_loaded_item_verbose(
+    pub(in crate::svc::vast::val) fn validate_not_loaded_item_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -26,10 +26,10 @@ impl Vast {
 }
 
 impl VastFitData {
-    pub(in crate::svc::vast) fn validate_not_loaded_item_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_not_loaded_item_fast(&self, kfs: &RSet<UItemId>) -> bool {
         validate_fast(kfs, &self.not_loaded)
     }
-    pub(in crate::svc::vast) fn validate_not_loaded_item_verbose(
+    pub(in crate::svc::vast::val) fn validate_not_loaded_item_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

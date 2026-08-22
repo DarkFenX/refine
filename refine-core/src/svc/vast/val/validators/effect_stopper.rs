@@ -32,7 +32,7 @@ pub struct ValEffectStopperItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_effect_stopper_fast(
+    pub(in crate::svc::vast::val) fn validate_effect_stopper_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -51,7 +51,7 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_effect_stopper_verbose(
+    pub(in crate::svc::vast::val) fn validate_effect_stopper_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

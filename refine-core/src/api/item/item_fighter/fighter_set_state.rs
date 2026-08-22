@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fighter_state(
+    pub(in crate::api::item) fn internal_set_fighter_state(
         &mut self,
         fighter_uid: UItemId,
         state: MinionState,

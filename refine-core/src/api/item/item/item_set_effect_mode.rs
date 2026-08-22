@@ -7,7 +7,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_effect_id_mode(
+    pub(in crate::api::item) fn internal_set_effect_id_mode(
         &mut self,
         item_uid: UItemId,
         effect_aid: AEffectId,
@@ -19,7 +19,7 @@ impl SolarSystem {
         u_item.update_reffs(reuse_eupdates, &self.u_data.r_data);
         self.effect_mode_update_postprocess(item_uid, reuse_eupdates);
     }
-    pub(in crate::api) fn internal_set_effect_id_modes(
+    pub(in crate::api::item) fn internal_set_effect_id_modes(
         &mut self,
         item_uid: UItemId,
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,

@@ -35,7 +35,11 @@ pub struct ValCapitalModInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_capital_module_fast(&self, kfs: &RSet<UItemId>, ship: Option<&UShip>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_capital_module_fast(
+        &self,
+        kfs: &RSet<UItemId>,
+        ship: Option<&UShip>,
+    ) -> bool {
         if !is_ship_subcap(ship) {
             return true;
         }
@@ -45,7 +49,7 @@ impl VastFitData {
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_capital_module_verbose(
+    pub(in crate::svc::vast::val) fn validate_capital_module_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

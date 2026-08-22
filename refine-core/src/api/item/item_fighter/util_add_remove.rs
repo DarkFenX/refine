@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_add_fighter(
+    pub(super) fn util_add_fighter(
         u_data: &mut UData,
         svc: &mut Svc,
         fighter_uid: UItemId,
@@ -27,7 +27,7 @@ impl SolarSystem {
         // Process autocharges
         SolarSystem::add_item_autocharges(u_data, svc, rev_projs, fighter_uid, reuse_eupdates);
     }
-    pub(in crate::api) fn util_remove_fighter(
+    pub(super) fn util_remove_fighter(
         u_data: &mut UData,
         svc: &mut Svc,
         fighter_uid: UItemId,

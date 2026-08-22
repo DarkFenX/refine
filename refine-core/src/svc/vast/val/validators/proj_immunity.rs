@@ -34,7 +34,7 @@ pub struct ValProjImmunityItemInfo {
 
 impl Vast {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_assist_immunity_fast(
+    pub(in crate::svc::vast::val) fn validate_assist_immunity_fast(
         &self,
         fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
@@ -43,7 +43,7 @@ impl Vast {
     ) -> bool {
         validate_fast(kfs, ctx, calc, &fit_data.blockable_assistance, is_assist_blocked, self)
     }
-    pub(in crate::svc::vast) fn validate_offense_immunity_fast(
+    pub(in crate::svc::vast::val) fn validate_offense_immunity_fast(
         &self,
         fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
@@ -52,7 +52,7 @@ impl Vast {
     ) -> bool {
         validate_fast(kfs, ctx, calc, &fit_data.blockable_offense, is_offense_blocked, self)
     }
-    pub(in crate::svc::vast) fn validate_resist_immunity_fast(
+    pub(in crate::svc::vast::val) fn validate_resist_immunity_fast(
         &self,
         fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
@@ -62,7 +62,7 @@ impl Vast {
         validate_fast(kfs, ctx, calc, &fit_data.resist_immunity, is_resist_blocked, self)
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_assist_immunity_verbose(
+    pub(in crate::svc::vast::val) fn validate_assist_immunity_verbose(
         &self,
         fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
@@ -71,7 +71,7 @@ impl Vast {
     ) -> Option<ValProjImmunityFail> {
         validate_verbose(kfs, ctx, calc, &fit_data.blockable_assistance, is_assist_blocked, self)
     }
-    pub(in crate::svc::vast) fn validate_offense_immunity_verbose(
+    pub(in crate::svc::vast::val) fn validate_offense_immunity_verbose(
         &self,
         fit_data: &VastFitData,
         kfs: &RSet<UItemId>,
@@ -80,7 +80,7 @@ impl Vast {
     ) -> Option<ValProjImmunityFail> {
         validate_verbose(kfs, ctx, calc, &fit_data.blockable_offense, is_offense_blocked, self)
     }
-    pub(in crate::svc::vast) fn validate_resist_immunity_verbose(
+    pub(in crate::svc::vast::val) fn validate_resist_immunity_verbose(
         &self,
         fit_data: &VastFitData,
         kfs: &RSet<UItemId>,

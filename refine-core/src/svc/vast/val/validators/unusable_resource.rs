@@ -35,7 +35,7 @@ pub struct ValUnusableResItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_fast(
+    pub(in crate::svc::vast::val) fn validate_unlaunchable_drone_bandwidth_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -54,7 +54,7 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_unlaunchable_drone_bandwidth_verbose(
+    pub(in crate::svc::vast::val) fn validate_unlaunchable_drone_bandwidth_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

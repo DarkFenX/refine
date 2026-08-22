@@ -9,7 +9,7 @@ mod api;
 pub(crate) mod calc;
 mod ctx;
 pub(crate) mod cycle;
-pub(crate) mod eff_projs;
+mod eff_projs;
 pub(crate) mod err;
 pub(crate) mod funcs;
 pub(crate) mod output;

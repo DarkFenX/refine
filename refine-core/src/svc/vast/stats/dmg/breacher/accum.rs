@@ -81,7 +81,7 @@ impl BreacherAccum {
             }
         }
     }
-    pub(in crate::svc::vast) fn get_dps(&self) -> StatDmgEntryBreacher {
+    pub(in crate::svc::vast::stats::dmg) fn get_dps(&self) -> StatDmgEntryBreacher {
         if self.data.is_empty() {
             return StatDmgEntryBreacher {
                 absolute_max: PValue::ZERO,
@@ -126,7 +126,7 @@ impl BreacherAccum {
             relative_max: loop_dmg_rel / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ,
         }
     }
-    pub(in crate::svc::vast) fn get_dps_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
+    pub(in crate::svc::vast::stats::dmg) fn get_dps_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
         let mut dmg = StatDmgEntryBreacher {
             absolute_max: PValue::ZERO,
             relative_max: PValue::ZERO,
@@ -202,7 +202,7 @@ impl BreacherAccum {
         }
         (dmg_abs, dmg_rel)
     }
-    pub(in crate::svc::vast) fn get_volley(&self) -> StatDmgEntryBreacher {
+    pub(in crate::svc::vast::stats::dmg) fn get_volley(&self) -> StatDmgEntryBreacher {
         let mut volley = StatDmgEntryBreacher {
             absolute_max: PValue::ZERO,
             relative_max: PValue::ZERO,
@@ -216,7 +216,7 @@ impl BreacherAccum {
         }
         volley
     }
-    pub(in crate::svc::vast) fn get_volley_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
+    pub(in crate::svc::vast::stats::dmg) fn get_volley_by_time(&self, time: PValue) -> StatDmgEntryBreacher {
         let mut volley = StatDmgEntryBreacher {
             absolute_max: PValue::ZERO,
             relative_max: PValue::ZERO,
@@ -322,7 +322,7 @@ impl AppliedBreacherAccum {
             }
         }
     }
-    pub(in crate::svc::vast) fn get_dps(&self) -> PValue {
+    pub(in crate::svc::vast::stats::dmg) fn get_dps(&self) -> PValue {
         if self.data.is_empty() {
             return PValue::ZERO;
         };
@@ -351,7 +351,7 @@ impl AppliedBreacherAccum {
         });
         loop_dmg / loop_tick_count.into_pvalue() * PValue::SERVER_TICK_HZ
     }
-    pub(in crate::svc::vast) fn get_dps_by_time(&self, time: PValue) -> PValue {
+    pub(in crate::svc::vast::stats::dmg) fn get_dps_by_time(&self, time: PValue) -> PValue {
         let mut total_dmg = PValue::ZERO;
         if self.data.is_empty() {
             return total_dmg;
@@ -411,10 +411,10 @@ impl AppliedBreacherAccum {
         }
         total_dmg
     }
-    pub(in crate::svc::vast) fn get_volley(&self) -> PValue {
+    pub(in crate::svc::vast::stats::dmg) fn get_volley(&self) -> PValue {
         self.data.keys().map(|v| v.dmg).max().unwrap_or(PValue::ZERO)
     }
-    pub(in crate::svc::vast) fn get_volley_by_time(&self, time: PValue) -> PValue {
+    pub(in crate::svc::vast::stats::dmg) fn get_volley_by_time(&self, time: PValue) -> PValue {
         self.data
             .keys()
             .filter_map(|v| match time >= ticks_to_duration(v.ticks.get_initial_delay()) {

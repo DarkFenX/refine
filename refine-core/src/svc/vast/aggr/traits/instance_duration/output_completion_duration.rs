@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl<I> Output<I> {
-    pub(in crate::svc::vast) fn get_completion_duration(&self) -> PValue
+    pub(in crate::svc::vast::aggr) fn get_completion_duration(&self) -> PValue
     where
         I: InstanceDuration,
     {

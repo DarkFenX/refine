@@ -19,7 +19,7 @@ pub(crate) struct RBuff {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RBuff {
-    pub(in crate::rd) fn from_a_buff(a_buff: &ABuff) -> Self {
+    pub(in crate::rd::data) fn from_a_buff(a_buff: &ABuff) -> Self {
         Self {
             aid: a_buff.id,
             aggr_mode: a_buff.aggr_mode,
@@ -28,7 +28,7 @@ impl RBuff {
             mods: Default::default(),
         }
     }
-    pub(in crate::rd) fn fill_runtime(
+    pub(in crate::rd::data) fn fill_runtime(
         &mut self,
         a_buffs: &RMap<ABuffId, ABuff>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,

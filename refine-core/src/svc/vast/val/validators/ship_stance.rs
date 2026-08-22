@@ -16,7 +16,7 @@ pub struct ValShipStanceFail {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_ship_stance_fast(
+    pub(in crate::svc::vast::val) fn validate_ship_stance_fast(
         &self,
         kfs: &RSet<UItemId>,
         fit: &UFit,
@@ -31,7 +31,7 @@ impl VastFitData {
         stanceable_matcher(ship) || kfs.contains(&stance_uid)
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_ship_stance_verbose(
+    pub(in crate::svc::vast::val) fn validate_ship_stance_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

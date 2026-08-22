@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_character(
+    pub(in crate::api::item) fn internal_remove_character(
         &mut self,
         character_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,

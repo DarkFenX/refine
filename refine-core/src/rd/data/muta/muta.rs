@@ -22,7 +22,7 @@ impl LibGetId<AItemId> for RMuta {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RMuta {
-    pub(in crate::rd) fn from_a_muta(a_muta: &AMuta) -> Self {
+    pub(in crate::rd::data) fn from_a_muta(a_muta: &AMuta) -> Self {
         Self {
             id: a_muta.id,
             item_map: a_muta
@@ -34,7 +34,7 @@ impl RMuta {
             attr_mods: RMap::new(),
         }
     }
-    pub(in crate::rd) fn fill_runtime(
+    pub(in crate::rd::data) fn fill_runtime(
         &mut self,
         a_mutas: &RMap<AItemId, AMuta>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,

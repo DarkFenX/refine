@@ -52,7 +52,7 @@ pub struct ValEffectSecZoneEffectInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_sec_zone_effect_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast::val) fn validate_sec_zone_effect_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
         if self.sec_zone_effect.is_empty() {
             return true;
         }
@@ -87,7 +87,7 @@ impl VastFitData {
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_sec_zone_effect_verbose(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_effect_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

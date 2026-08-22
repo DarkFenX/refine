@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_add_module(
+    pub(super) fn util_add_module(
         u_data: &mut UData,
         svc: &mut Svc,
         module_uid: UItemId,
@@ -32,7 +32,7 @@ impl SolarSystem {
             SolarSystem::util_process_charge_activation(u_data, svc, charge_uid, charge_activated, reuse_eupdates);
         }
     }
-    pub(in crate::api) fn util_remove_module(
+    pub(super) fn util_remove_module(
         u_data: &mut UData,
         svc: &mut Svc,
         module_uid: UItemId,

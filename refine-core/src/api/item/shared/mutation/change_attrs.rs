@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_change_item_mutation_attrs(
+    pub(super) fn internal_change_item_mutation_attrs(
         &mut self,
         item_uid: UItemId,
         attr_mutations: Vec<UAttrMutationRequest>,

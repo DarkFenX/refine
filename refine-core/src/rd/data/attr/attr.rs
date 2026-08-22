@@ -24,7 +24,7 @@ pub(crate) struct RAttr {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RAttr {
-    pub(in crate::rd) fn from_a_attr(attr_r_id: RAttrId, a_attr: &AAttr) -> Self {
+    pub(in crate::rd::data) fn from_a_attr(attr_r_id: RAttrId, a_attr: &AAttr) -> Self {
         Self {
             rid: attr_r_id,
             aid: a_attr.id,
@@ -37,7 +37,7 @@ impl RAttr {
             buff_str_attr_rid: Default::default(),
         }
     }
-    pub(in crate::rd) fn fill_runtime(
+    pub(in crate::rd::data) fn fill_runtime(
         &mut self,
         a_attrs: &RMap<AAttrId, AAttr>,
         attr_aid_rid_map: &RMap<AAttrId, RAttrId>,

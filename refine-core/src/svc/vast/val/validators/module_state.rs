@@ -39,14 +39,14 @@ pub struct ValModuleStateModuleInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_module_state_fast(&self, kfs: &RSet<UItemId>) -> bool {
+    pub(in crate::svc::vast::val) fn validate_module_state_fast(&self, kfs: &RSet<UItemId>) -> bool {
         match kfs.is_empty() {
             true => self.mods_state.is_empty(),
             false => self.mods_state.difference(kfs).next().is_none(),
         }
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_module_state_verbose(
+    pub(in crate::svc::vast::val) fn validate_module_state_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

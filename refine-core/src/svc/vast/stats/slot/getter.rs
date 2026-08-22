@@ -68,7 +68,7 @@ impl VastFitData {
         let total = get_attr_as_count(ctx, calc, fit.ship, ctx.ac().ftr_tubes);
         StatSlot { used, total }
     }
-    pub(in crate::svc::vast) fn get_launched_fighter_count(&self) -> Count {
+    pub(in crate::svc::vast::stats) fn get_launched_fighter_count(&self) -> Count {
         Count::from_usize(self.fighters_online.len())
     }
     pub(in crate::svc) fn get_stat_launched_light_fighters(

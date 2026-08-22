@@ -14,7 +14,7 @@ pub(crate) struct RMutaAttrRange {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RMutaAttrRange {
-    pub(in crate::rd) fn from_a_attr_range(a_attr_range: &AMutaAttrRange) -> Self {
+    pub(super) fn from_a_attr_range(a_attr_range: &AMutaAttrRange) -> Self {
         let mult_min_raw = Value::from_a_value(a_attr_range.mult_min);
         let mult_max_raw = Value::from_a_value(a_attr_range.mult_max);
         Self {

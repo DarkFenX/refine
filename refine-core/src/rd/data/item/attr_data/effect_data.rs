@@ -16,7 +16,7 @@ pub(crate) struct RItemAttrEffectData {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemAttrEffectData {
-    pub(in crate::rd::data::item) fn try_from_r_effect_data(
+    pub(super) fn try_from_r_effect_data(
         r_effect_data: &RItemEffectData,
         item_attrs: &RMap<RAttrId, Value>,
         effect_rid: REffectId,

@@ -4,7 +4,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_drone_mutation(
+    pub(in crate::api::item) fn internal_remove_drone_mutation(
         &mut self,
         drone_uid: UItemId,
         reuse_eupdates: &mut UEffectUpdates,

@@ -14,7 +14,7 @@ pub(crate) struct RItemList {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RItemList {
-    pub(in crate::rd) fn from_a_item_list(a_item_list: &AItemList) -> Self {
+    pub(in crate::rd::data) fn from_a_item_list(a_item_list: &AItemList) -> Self {
         Self {
             item_aids: a_item_list.item_ids.iter().copied().collect(),
         }

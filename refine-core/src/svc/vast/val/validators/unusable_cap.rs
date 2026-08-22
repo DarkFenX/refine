@@ -34,7 +34,7 @@ pub struct ValUnusableCapItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_unusable_cap_fast(
+    pub(in crate::svc::vast::val) fn validate_unusable_cap_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -66,7 +66,7 @@ impl VastFitData {
         true
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_unusable_cap_verbose(
+    pub(in crate::svc::vast::val) fn validate_unusable_cap_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

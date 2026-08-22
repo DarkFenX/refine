@@ -72,7 +72,7 @@ impl StandardRegister {
 }
 
 #[derive(Clone)]
-pub(in crate::svc::calc) struct StandardRegisterCtxMods {
+pub(super) struct StandardRegisterCtxMods {
     // Modifiers which rely on an item-attribute pair value
     // Map<affector attr spec, modifiers>
     pub(super) by_aspec: RMapRSet<AttrSpec, CtxModifier>,
@@ -117,7 +117,7 @@ impl StandardRegisterCtxMods {
 }
 
 #[derive(Clone)]
-pub(in crate::svc::calc) struct StandardRegisterRawProjStatus {
+pub(super) struct StandardRegisterRawProjStatus {
     // Valid item-targeted modifiers which target eligible item kind, with projectee item passing
     // all the checks
     // Map<projectee item, modifiers>

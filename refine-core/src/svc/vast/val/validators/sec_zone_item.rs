@@ -38,7 +38,7 @@ pub struct ValItemSecZoneItemInfo {
 
 impl VastFitData {
     // Fast validations
-    pub(in crate::svc::vast) fn validate_sec_zone_fitted_fast(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_fitted_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -52,10 +52,10 @@ impl VastFitData {
             Some(&self.sec_zone_fitted_wspace_banned),
         )
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_online_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast::val) fn validate_sec_zone_online_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
         class_check_fast(kfs, ctx, &self.sec_zone_online_class)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_active_fast(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_active_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -63,10 +63,14 @@ impl VastFitData {
     ) -> bool {
         flags_check_fast(kfs, ctx, calc, &self.sec_zone_active, None)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_unonlineable_fast(&self, kfs: &RSet<UItemId>, ctx: SvcCtx) -> bool {
+    pub(in crate::svc::vast::val) fn validate_sec_zone_unonlineable_fast(
+        &self,
+        kfs: &RSet<UItemId>,
+        ctx: SvcCtx,
+    ) -> bool {
         class_check_fast(kfs, ctx, &self.sec_zone_unonlineable_class)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_unactivable_fast(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_unactivable_fast(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -75,7 +79,7 @@ impl VastFitData {
         flags_check_fast(kfs, ctx, calc, &self.sec_zone_unactivable, None)
     }
     // Verbose validations
-    pub(in crate::svc::vast) fn validate_sec_zone_fitted_verbose(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_fitted_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -89,14 +93,14 @@ impl VastFitData {
             Some(&self.sec_zone_fitted_wspace_banned),
         )
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_online_verbose(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_online_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValItemSecZoneFail> {
         class_check_verbose(kfs, ctx, &self.sec_zone_online_class)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_active_verbose(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_active_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
@@ -104,14 +108,14 @@ impl VastFitData {
     ) -> Option<ValItemSecZoneFail> {
         flags_check_verbose(kfs, ctx, calc, &self.sec_zone_active, None)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_unonlineable_verbose(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_unonlineable_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,
     ) -> Option<ValItemSecZoneFail> {
         class_check_verbose(kfs, ctx, &self.sec_zone_unonlineable_class)
     }
-    pub(in crate::svc::vast) fn validate_sec_zone_unactivable_verbose(
+    pub(in crate::svc::vast::val) fn validate_sec_zone_unactivable_verbose(
         &self,
         kfs: &RSet<UItemId>,
         ctx: SvcCtx,

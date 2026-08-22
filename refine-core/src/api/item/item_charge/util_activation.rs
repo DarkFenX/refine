@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_process_charge_activation(
+    pub(in crate::api::item) fn util_process_charge_activation(
         u_data: &mut UData,
         svc: &mut Svc,
         charge_uid: UItemId,

@@ -1,7 +1,7 @@
 use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_module_proj(
+    pub(in crate::api::item) fn internal_remove_module_proj(
         &mut self,
         module_uid: UItemId,
         projectee_uid: UItemId,

@@ -73,7 +73,7 @@ impl StatCapSimStaggerInt {
                 .collect(),
         }
     }
-    pub(in crate::svc::vast) fn is_staggered(&self, item_uid: UItemId) -> bool {
+    pub(super) fn is_staggered(&self, item_uid: UItemId) -> bool {
         self.default ^ self.exception_item_uids.contains(&item_uid)
     }
 }

@@ -6,7 +6,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_validate_fit_fast(&mut self, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
+    pub(in crate::api::fit) fn internal_validate_fit_fast(&mut self, fit_uid: UFitId, options: &ValOptionsInt) -> bool {
         self.svc.validate_fit_fast(&self.u_data, fit_uid, options)
     }
     pub(in crate::api) fn internal_validate_fit_verbose(

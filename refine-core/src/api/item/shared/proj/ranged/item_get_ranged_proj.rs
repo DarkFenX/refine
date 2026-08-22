@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_get_ranged_proj(
+    pub(in crate::api::item) fn internal_get_ranged_proj(
         &self,
         projector_uid: UItemId,
         projectee_id: &ItemId,
@@ -13,7 +13,7 @@ impl SolarSystem {
         let projectee_uid = get_ranged_projectee_uid(self, projector_uid, projectee_id)?;
         Ok(RangedProj::new(self, projector_uid, projectee_uid))
     }
-    pub(in crate::api) fn internal_get_ranged_proj_mut(
+    pub(in crate::api::item) fn internal_get_ranged_proj_mut(
         &mut self,
         projector_uid: UItemId,
         projectee_id: &ItemId,

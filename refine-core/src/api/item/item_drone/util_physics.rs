@@ -5,7 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_update_drone_physics(
+    pub(super) fn util_update_drone_physics(
         u_data: &mut UData,
         rev_projs: &RevProjs,
         svc: &mut Svc,

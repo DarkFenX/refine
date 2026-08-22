@@ -5,12 +5,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub(in crate::api) fn util_update_ship_physics(
-        u_data: &mut UData,
-        rev_projs: &RevProjs,
-        svc: &mut Svc,
-        ship_uid: UItemId,
-    ) {
+    pub(super) fn util_update_ship_physics(u_data: &mut UData, rev_projs: &RevProjs, svc: &mut Svc, ship_uid: UItemId) {
         let u_ship = u_data.items.get_mut(ship_uid).dc_ship_mut().unwrap();
         let u_ship_physics = *u_ship.get_physics();
         // Handle outgoing projections

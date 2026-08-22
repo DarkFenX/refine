@@ -53,7 +53,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_full_restricted_ra
 ) -> PValue {
     get_std_full_range_mult(ctx, calc, projector_uid, effect, proj_data.get_range_s2s(), true)
 }
-pub(in crate::nd::effect::specs::proj_mult_getter) fn get_std_full_unrestricted_range_mult(
+pub(super) fn get_std_full_unrestricted_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -265,7 +265,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_burst_range_mult(
     }
 }
 
-pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_sharp_range_mult(
+pub(super) fn get_aoe_dd_sharp_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,
@@ -294,7 +294,7 @@ pub(in crate::nd::effect::specs::proj_mult_getter) fn get_aoe_dd_round_range_mul
     }
 }
 
-pub(in crate::nd::effect::specs::proj_mult_getter) fn get_dd_neut_range_mult(
+pub(super) fn get_dd_neut_range_mult(
     ctx: SvcCtx,
     calc: &mut Calc,
     projector_uid: UItemId,

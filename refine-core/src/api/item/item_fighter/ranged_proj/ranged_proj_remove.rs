@@ -3,7 +3,7 @@ use itertools::Itertools;
 use crate::{err::basic::ProjFoundError, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_remove_fighter_proj(
+    pub(in crate::api::item) fn internal_remove_fighter_proj(
         &mut self,
         fighter_uid: UItemId,
         projectee_uid: UItemId,
