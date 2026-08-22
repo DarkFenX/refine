@@ -20,8 +20,8 @@ impl SolarSystem<'_> {
         stats_cmd: SolStatsCmdBr,
     ) -> Result<SolFittingAppResp, SolFittingAppError<E>>
     where
-        F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + 'static,
-        E: std::error::Error + Send + 'static,
+        F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + Sync + 'static,
+        E: std::error::Error + Send + Sync + 'static,
     {
         self.exec_standard_fallible_ctx(|sol_ctx, core_sol| {
             let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
