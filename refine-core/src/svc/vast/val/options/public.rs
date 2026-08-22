@@ -28,6 +28,13 @@ impl<I> ValOptions<I> {
     pub fn new(default: bool) -> Self {
         Self { default, .. }
     }
+    /// True to have all validations enabled by default, false to have them disabled.
+    pub fn with_override_capacity(default: bool, capacity: usize) -> Self {
+        Self {
+            default,
+            overrides: Vec::with_capacity(capacity),
+        }
+    }
     ////////////////////////////////////////////////////////////////////////////////////////////////
     // Generic
     ////////////////////////////////////////////////////////////////////////////////////////////////
