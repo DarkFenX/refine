@@ -3,8 +3,8 @@ use crate::{
     err::BrResolveError,
     val::{
         FitValCmdBr, SolValCmd, SolValCmdBr,
-        cmd_core::{FitValCmdCtxFit, FitValCmdCtxFitBr},
         err::FitGetFitValError,
+        fit::{FitValCmdCtxFit, FitValCmdCtxFitBr},
     },
 };
 

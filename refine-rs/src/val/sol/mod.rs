@@ -1,6 +1,8 @@
-pub(crate) use cmd::SolValEnumCmd;
-pub use cmd::{SolValEnumCmdBr, SolValEnumError};
+pub use cmd_core::{SolValCmd, SolValCmdBr};
+pub(crate) use cmd_enum::SolValEnumCmd;
+pub use cmd_enum::{SolValEnumCmdBr, SolValEnumError};
 pub use result::SolValResult;
 
-mod cmd;
+mod cmd_core;
+mod cmd_enum;
 mod result;

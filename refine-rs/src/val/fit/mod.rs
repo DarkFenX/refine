@@ -1,6 +1,8 @@
-pub(crate) use cmd::FitValEnumCmd;
-pub use cmd::FitValEnumCmdBr;
+pub use cmd_core::{FitGetFitValError, FitValCmd, FitValCmdBr, FitValCmdCtxFit, FitValCmdCtxFitBr};
+pub(crate) use cmd_enum::FitValEnumCmd;
+pub use cmd_enum::FitValEnumCmdBr;
 pub use result::FitValResult;
 
-mod cmd;
+mod cmd_core;
+mod cmd_enum;
 mod result;
