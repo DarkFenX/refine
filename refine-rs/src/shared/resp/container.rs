@@ -84,33 +84,24 @@ impl CmdResps {
     }
     // Private methods
     fn get_fleet_id(&self, index: usize) -> Result<FleetId, BrResolveError> {
-        let resp = self.get_resp(index)?;
-        match resp {
-            CmdResp::AddedFleetId(resp) => Ok(resp.fleet_id),
-            _ => Err(BrResolveError::NoFleetId(index)),
-        }
+        self.get_resp(index)?
+            .get_fleet_id()
+            .ok_or_else(|| BrResolveError::NoFleetId(index))
     }
     fn get_fit_id(&self, index: usize) -> Result<FitId, BrResolveError> {
-        let resp = self.get_resp(index)?;
-        match resp {
-            CmdResp::AddedFitId(resp) => Ok(resp.fit_id),
-            _ => Err(BrResolveError::NoFitId(index)),
-        }
+        self.get_resp(index)?
+            .get_fit_id()
+            .ok_or_else(|| BrResolveError::NoFitId(index))
     }
     fn get_item_id(&self, index: usize) -> Result<ItemId, BrResolveError> {
-        let resp = self.get_resp(index)?;
-        match resp {
-            CmdResp::AddedItemIds(resp) => Ok(resp.item_id),
-            _ => Err(BrResolveError::NoItemId(index)),
-        }
+        self.get_resp(index)?
+            .get_item_id()
+            .ok_or_else(|| BrResolveError::NoItemId(index))
     }
     fn get_charge_item_id(&self, index: usize) -> Result<ItemId, BrResolveError> {
-        let resp = self.get_resp(index)?;
-        match resp {
-            CmdResp::AddedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
-            CmdResp::ChangedItemIds(resp) if let Some(charge_item_id) = resp.charge_item_id => Ok(charge_item_id),
-            _ => Err(BrResolveError::NoChargeItemId(index)),
-        }
+        self.get_resp(index)?
+            .get_charge_item_id()
+            .ok_or_else(|| BrResolveError::NoChargeItemId(index))
     }
     fn get_resp(&self, index: usize) -> Result<&CmdResp, BrResolveError> {
         self.data.get(index).ok_or(BrResolveError::NotFound(index))

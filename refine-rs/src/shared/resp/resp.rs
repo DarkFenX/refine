@@ -54,30 +54,6 @@ impl CmdResp {
             _ => None,
         }
     }
-    pub fn get_sol_info(&self) -> Option<&SolInfo> {
-        match self {
-            Self::SolInfo(info) => Some(info),
-            _ => None,
-        }
-    }
-    pub fn get_fleet_info(&self) -> Option<&FleetInfo> {
-        match self {
-            Self::FleetInfo(info) => Some(info),
-            _ => None,
-        }
-    }
-    pub fn get_fit_info(&self) -> Option<&FitInfo> {
-        match self {
-            Self::FitInfo(info) => Some(info),
-            _ => None,
-        }
-    }
-    pub fn get_item_info(&self) -> Option<&ItemInfo> {
-        match self {
-            Self::ItemInfo(info) => Some(info),
-            _ => None,
-        }
-    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
