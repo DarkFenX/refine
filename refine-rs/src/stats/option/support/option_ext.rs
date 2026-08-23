@@ -37,17 +37,17 @@ impl<T> StatOptionExt<T>
 where
     T: Default,
 {
+    pub(in crate::stats) fn from_default(default: bool) -> Vec<T> {
+        match default {
+            true => vec![T::default()],
+            false => Vec::new(),
+        }
+    }
     pub(in crate::stats) fn stat_resolve(self) -> Vec<T> {
         match self {
             Self::Disabled => Vec::new(),
             Self::Enabled => vec![T::default()],
             Self::EnabledExtended(options) => options,
-        }
-    }
-    pub(in crate::stats) fn stat_default(default: bool) -> Vec<T> {
-        match default {
-            true => vec![T::default()],
-            false => Vec::new(),
         }
     }
 }

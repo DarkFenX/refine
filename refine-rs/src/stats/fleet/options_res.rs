@@ -14,12 +14,12 @@ pub(in crate::stats) struct FleetStatsOptionsResolved {
 impl FleetStatsOptionsResolved {
     pub(super) fn from_default(default: bool) -> Self {
         Self {
-            dmg: StatOptionExt::stat_default(default),
-            mps: StatOptionExt::stat_default(default),
-            outgoing_nps: StatOptionExt::stat_default(default),
-            outgoing_rps: StatOptionExt::stat_default(default),
-            outgoing_cps: StatOptionExt::stat_default(default),
-            mass: StatOptionExt::stat_default(default),
+            dmg: StatOptionExt::from_default(default),
+            mps: StatOptionExt::from_default(default),
+            outgoing_nps: StatOptionExt::from_default(default),
+            outgoing_rps: StatOptionExt::from_default(default),
+            outgoing_cps: StatOptionExt::from_default(default),
+            mass: StatOptionExt::from_default(default),
         }
     }
 }

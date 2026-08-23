@@ -55,23 +55,23 @@ impl ItemStatsOptionsResolved {
     pub(super) fn from_default(default: bool) -> Self {
         Self {
             // Output
-            dmg: StatOptionExt::stat_default(default),
-            mps: StatOptionExt::stat_default(default),
-            outgoing_nps: StatOptionExt::stat_default(default),
-            outgoing_rps: StatOptionExt::stat_default(default),
-            outgoing_cps: StatOptionExt::stat_default(default),
+            dmg: StatOptionExt::from_default(default),
+            mps: StatOptionExt::from_default(default),
+            outgoing_nps: StatOptionExt::from_default(default),
+            outgoing_rps: StatOptionExt::from_default(default),
+            outgoing_cps: StatOptionExt::from_default(default),
             // Tank
             resists: default,
             hp: default,
-            ehp: StatOptionExt::stat_default(default),
+            ehp: StatOptionExt::from_default(default),
             wc_ehp: default,
-            rps: StatOptionExt::stat_default(default),
-            erps: StatOptionExt::stat_default(default),
+            rps: StatOptionExt::from_default(default),
+            erps: StatOptionExt::from_default(default),
             breach_resist: default,
             // Cap
             cap_amount: default,
-            cap_balance: StatOptionExt::stat_default(default),
-            cap_sim: StatOptionExt::stat_default(default),
+            cap_balance: StatOptionExt::from_default(default),
+            cap_sim: StatOptionExt::from_default(default),
             neut_resist: default,
             // Sensors
             locks: default,
@@ -80,16 +80,16 @@ impl ItemStatsOptionsResolved {
             sensors: default,
             dscan_range: default,
             probing_size: default,
-            incoming_jam: StatOptionExt::stat_default(default),
+            incoming_jam: StatOptionExt::from_default(default),
             // Mobility
             speed: default,
             agility: default,
             align_time: default,
             sig_radius: default,
-            mass: StatOptionExt::stat_default(default),
+            mass: StatOptionExt::from_default(default),
             warp_speed: default,
             max_warp_range: default,
-            jump: StatOptionExt::stat_default(default),
+            jump: StatOptionExt::from_default(default),
             // Misc
             drone_control_range: default,
             can_warp: default,
