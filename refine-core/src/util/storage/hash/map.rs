@@ -6,20 +6,20 @@ use std::{
 
 use super::set::Set;
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RMap<K, V> = Map<K, V, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct Map<K, V, H> {
-    data: HashMap<K, V, H>,
-}
-impl<K, V, H> Map<K, V, H>
-where
-    H: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
+impl<K, V> Default for RMap<K, V> {
+    fn default() -> Self {
         Self {
             data: HashMap::default(),
         }
+    }
+}
+impl<K, V> RMap<K, V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
     }
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -27,9 +27,73 @@ where
         }
     }
 }
+impl<K, V> FromIterator<(K, V)> for RMap<K, V>
+where
+    K: Eq + Hash,
+{
+    fn from_iter<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = (K, V)>,
+    {
+        Self {
+            data: HashMap::from_iter(iter),
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(crate) type CMap<K, V> = Map<K, V, rustc_hash::FxSeededState>;
+const impl<K, V> Default for CMap<K, V> {
+    fn default() -> Self {
+        Self {
+            data: HashMap::with_hasher(rustc_hash::FxSeededState::with_seed(0)),
+        }
+    }
+}
+impl<K, V> CMap<K, V> {
+    pub(crate) const fn new() -> Self {
+        Self::default()
+    }
+    pub(crate) fn with_capacity(capacity: usize) -> Self {
+        Self {
+            data: HashMap::with_capacity_and_hasher(capacity, rustc_hash::FxSeededState::with_seed(0)),
+        }
+    }
+}
+impl<K, V> FromIterator<(K, V)> for CMap<K, V>
+where
+    K: Eq + Hash,
+{
+    fn from_iter<I>(iter: I) -> Self
+    where
+        I: IntoIterator<Item = (K, V)>,
+    {
+        let mut map = Self::default();
+        map.data.extend(iter);
+        map
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared trait impls
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct Map<K, V, H> {
+    data: HashMap<K, V, H>,
+}
+impl<K, V, H> IntoIterator for Map<K, V, H> {
+    type Item = (K, V);
+    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared general methods
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<K, V, H> Map<K, V, H>
 where
@@ -122,70 +186,5 @@ where
         H2: BuildHasher + Default,
     {
         self.iter().filter(|(k, _)| !other.contains(k))
-    }
-}
-impl<K, V, H> Default for Map<K, V, H>
-where
-    K: Eq + Hash,
-    H: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<K, V, H> FromIterator<(K, V)> for Map<K, V, H>
-where
-    K: Eq + Hash,
-    H: BuildHasher + Default,
-{
-    fn from_iter<I>(iter: I) -> Self
-    where
-        I: IntoIterator<Item = (K, V)>,
-    {
-        Self {
-            data: HashMap::from_iter(iter),
-        }
-    }
-}
-impl<K, V, H> IntoIterator for Map<K, V, H> {
-    type Item = (K, V);
-    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.data.into_iter()
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Const variant of the map
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) type CMap<K, V> = Map<K, V, rustc_hash::FxSeededState>;
-
-impl<K, V> Map<K, V, rustc_hash::FxSeededState> {
-    pub(crate) const fn const_new() -> Self {
-        Self {
-            data: HashMap::with_hasher(rustc_hash::FxSeededState::with_seed(0)),
-        }
-    }
-    // Used only in adapted data deserialization
-    #[cfg(feature = "serde-ad")]
-    pub(crate) fn const_with_capacity(capacity: usize) -> Self {
-        Self {
-            data: HashMap::with_capacity_and_hasher(capacity, rustc_hash::FxSeededState::with_seed(0)),
-        }
-    }
-}
-impl<K, V> Map<K, V, rustc_hash::FxSeededState>
-where
-    K: Eq + Hash,
-{
-    pub(crate) fn const_from_iter<T: IntoIterator<Item = (K, V)>>(iter: T) -> Self {
-        let mut data = HashMap::with_hasher(rustc_hash::FxSeededState::with_seed(0));
-        data.extend(iter);
-        Self { data }
     }
 }

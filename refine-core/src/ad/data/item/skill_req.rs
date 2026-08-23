@@ -17,13 +17,11 @@ pub struct AItemSkillReq {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Default)]
 pub struct AItemSkillReqs {
-    data: CMap<AItemId, AItemSkillReq> = CMap::const_new(),
+    data: CMap<AItemId, AItemSkillReq> = CMap::default(),
 }
 impl AItemSkillReqs {
     pub const fn new() -> Self {
-        Self {
-            data: CMap::const_new(),
-        }
+        Self { .. }
     }
     pub fn insert(&mut self, val: AItemSkillReq) {
         self.data.insert(val.id, val);
@@ -38,7 +36,7 @@ impl FromIterator<AItemSkillReq> for AItemSkillReqs {
         I: IntoIterator<Item = AItemSkillReq>,
     {
         Self {
-            data: CMap::const_from_iter(iter.into_iter().map(|v| (v.id, v))),
+            data: CMap::from_iter(iter.into_iter().map(|v| (v.id, v))),
         }
     }
 }
@@ -96,7 +94,7 @@ mod custom_serde_ad {
                     S: SeqAccess<'de>,
                 {
                     let size_hint = seq.size_hint().unwrap_or(0);
-                    let mut data = CMap::const_with_capacity(size_hint);
+                    let mut data = CMap::with_capacity(size_hint);
                     while let Some(element) = seq.next_element::<AItemSkillReq>()? {
                         data.insert(element.id, element);
                     }
