@@ -38,7 +38,7 @@ async fn internal_change_item(
         .await?
         .get_item(item_id)
         .await?
-        .change_and_get_info(payload, params.into_cmd())
+        .change_and_get_info(payload, params.into_cmd_br())
         .await?;
     Ok(item_info)
 }

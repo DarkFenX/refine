@@ -28,10 +28,11 @@ impl Fit<'_, '_> {
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let ctl_cmd_resp = ctl_cmd.execute(&mut core_fit)?;
-                let cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
-                let info_cmd = info_cmd.br_resolve(&cmd_resps);
+                let ctl_cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
+                let info_cmd = info_cmd.br_resolve(&ctl_cmd_resps);
                 let fit_info = info_cmd.execute(&mut core_fit);
-                let ctl_cmd_resp = cmd_resps.into_iter().next().unwrap();
+                // The response which has just been added should be there
+                let ctl_cmd_resp = ctl_cmd_resps.into_iter().next().unwrap();
                 Ok((ctl_cmd_resp, fit_info))
             })
             .await

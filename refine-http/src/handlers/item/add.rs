@@ -34,7 +34,7 @@ async fn internal_add_item(
         .get_refine()
         .get_sol(sol_id)
         .await?
-        .add_item_and_get_info(payload, params.into_cmd())
+        .add_item_and_get_info(payload, params.into_cmd_br())
         .await?;
     Ok(item_info)
 }

@@ -79,7 +79,7 @@ impl ItemInfoCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> ItemInfoCmd {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> ItemInfoCmd {
         ItemInfoCmd {
             item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps),
         }
