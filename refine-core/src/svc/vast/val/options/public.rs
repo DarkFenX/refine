@@ -15,7 +15,7 @@ pub struct ValOptionsSol {
 /// Validation options.
 #[derive(Clone)]
 pub struct ValOptions<I = ItemId> {
-    pub(super) default: bool = true,
+    pub(super) default: bool = false,
     pub(super) overrides: Vec<(ValKind, OptionExt<ValEnabled<I>>)> = Vec::new(),
 }
 impl<I> Default for ValOptions<I> {
