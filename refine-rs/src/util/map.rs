@@ -4,20 +4,20 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RMap<K, V> = Map<K, V, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct Map<K, V, H> {
-    data: HashMap<K, V, H>,
-}
-impl<K, V, H> Map<K, V, H>
-where
-    H: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
+impl<K, V> Default for RMap<K, V> {
+    fn default() -> Self {
         Self {
             data: HashMap::default(),
         }
+    }
+}
+impl<K, V> RMap<K, V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
     }
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -27,8 +27,29 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Const-specific
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(crate) type CMap<K, V> = Map<K, V, rustc_hash::FxSeededState>;
+const impl<K, V> Default for CMap<K, V> {
+    fn default() -> Self {
+        Self {
+            data: HashMap::with_hasher(rustc_hash::FxSeededState::with_seed(0)),
+        }
+    }
+}
+impl<K, V> CMap<K, V> {
+    pub(crate) const fn new() -> Self {
+        Self::default()
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared
+////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct Map<K, V, H> {
+    data: HashMap<K, V, H>,
+}
 impl<K, V, H> Map<K, V, H>
 where
     K: Eq + Hash,
@@ -69,27 +90,5 @@ where
     }
     pub(crate) fn retain(&mut self, func: impl FnMut(&K, &mut V) -> bool) {
         self.data.retain(func)
-    }
-}
-impl<K, V, H> Default for Map<K, V, H>
-where
-    K: Eq + Hash,
-    H: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Const variant of the map
-////////////////////////////////////////////////////////////////////////////////////////////////////
-pub(crate) type CMap<K, V> = Map<K, V, rustc_hash::FxSeededState>;
-
-impl<K, V> Map<K, V, rustc_hash::FxSeededState> {
-    pub(crate) const fn const_new() -> Self {
-        Self {
-            data: HashMap::with_hasher(rustc_hash::FxSeededState::with_seed(0)),
-        }
     }
 }

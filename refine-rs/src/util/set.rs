@@ -3,26 +3,30 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RSet<V> = Set<V, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct Set<V, H> {
-    data: HashSet<V, H>,
-}
-impl<V, H> Set<V, H>
-where
-    H: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
+impl<V> Default for RSet<V> {
+    fn default() -> Self {
         Self {
             data: HashSet::default(),
         }
     }
 }
+impl<V> RSet<V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct Set<V, H> {
+    data: HashSet<V, H>,
+}
 impl<V, H> Set<V, H>
 where
     V: Eq + Hash,
