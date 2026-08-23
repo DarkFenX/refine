@@ -449,29 +449,26 @@ impl<I> ValOptions<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I1> ValOptions<I1> {
-    pub fn try_map_ids<I2, E, M>(self, mut item_mapper: M) -> Result<ValOptions<I2>, E>
+    // Behavior is the same as for ID-to-UID conversion: silently skip on mapping failure
+    pub fn filter_map_item_ids<I2, M>(self, mut item_mapper: M) -> ValOptions<I2>
     where
-        M: FnMut(I1) -> Result<I2, E>,
+        M: FnMut(I1) -> Option<I2>,
     {
         let mut new_overrides = Vec::with_capacity(self.overrides.len());
         for (kind, option) in self.overrides {
             let new_option = match option {
                 OptionExt::Disabled => OptionExt::Disabled,
                 OptionExt::Enabled => OptionExt::Enabled,
-                OptionExt::EnabledExtended(enabled) => {
-                    let mut kfs = Vec::with_capacity(enabled.kfs.len());
-                    for kf in enabled.kfs {
-                        kfs.push(item_mapper(kf)?);
-                    }
-                    OptionExt::EnabledExtended(ValEnabled { kfs })
-                }
+                OptionExt::EnabledExtended(enabled) => OptionExt::EnabledExtended(ValEnabled {
+                    kfs: enabled.kfs.into_iter().filter_map(&mut item_mapper).collect(),
+                }),
             };
             new_overrides.push((kind, new_option));
         }
-        Ok(ValOptions {
+        ValOptions {
             default: self.default,
             overrides: new_overrides,
-        })
+        }
     }
 }
 

@@ -32,7 +32,9 @@ impl BrResolvable for StatOptionCapSim<ItemIdBr> {
         Ok(Self::Target {
             cap_perc: self.cap_perc,
             optional_reloads: self.optional_reloads,
-            stagger: self.stagger.try_map_ids(|item_id| resps.resolve_item_id(item_id))?,
+            stagger: self
+                .stagger
+                .filter_map_item_ids(|item_id| resps.resolve_item_id(item_id).ok()),
             nosf_projectee_item_id: resps.resolve_item_id_opt(self.nosf_projectee_item_id)?,
         })
     }

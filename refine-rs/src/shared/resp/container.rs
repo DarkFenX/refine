@@ -57,10 +57,19 @@ impl CmdResps {
     }
     pub(crate) fn resolve_fit_ids(&self, br_fit_ids: Vec<FitIdBr>) -> Result<Vec<FitId>, BrResolveError> {
         let mut fit_ids = Vec::with_capacity(br_fit_ids.len());
-        for backref_fit_id in br_fit_ids {
+        for backref_fit_id in br_fit_ids.into_iter() {
             fit_ids.push(self.resolve_fit_id(backref_fit_id)?);
         }
         Ok(fit_ids)
+    }
+    pub(crate) fn resolve_fit_ids_lossy(&self, br_fit_ids: Vec<FitIdBr>) -> Vec<FitId> {
+        let mut fit_ids = Vec::with_capacity(br_fit_ids.len());
+        fit_ids.extend(
+            br_fit_ids
+                .into_iter()
+                .filter_map(|br_fit_id| self.resolve_fit_id(br_fit_id).ok()),
+        );
+        fit_ids
     }
     pub(crate) fn resolve_item_id(&self, item_id: ItemIdBr) -> Result<ItemId, BrResolveError> {
         match item_id {
@@ -71,7 +80,7 @@ impl CmdResps {
     }
     pub(crate) fn resolve_item_ids(&self, br_item_ids: Vec<ItemIdBr>) -> Result<Vec<ItemId>, BrResolveError> {
         let mut item_ids = Vec::with_capacity(br_item_ids.len());
-        for br_item_id in br_item_ids {
+        for br_item_id in br_item_ids.into_iter() {
             item_ids.push(self.resolve_item_id(br_item_id)?);
         }
         Ok(item_ids)

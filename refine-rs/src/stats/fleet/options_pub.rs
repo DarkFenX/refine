@@ -8,7 +8,6 @@ use crate::{
     },
 };
 
-
 /// Which stats to fetch for a fleet.
 ///
 /// By default, all stats are not fetched.

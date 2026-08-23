@@ -1,6 +1,5 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
-    err::BrResolveError,
     val::{SolValResult, ValOptions, ValResultMode},
 };
 
@@ -71,14 +70,14 @@ impl SolValCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolValCmdBr {
-    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolValCmd, BrResolveError> {
-        Ok(SolValCmd {
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> SolValCmd {
+        SolValCmd {
             options: self
                 .options
-                .try_map_ids(|item_id_br| resps.resolve_item_id(item_id_br))?,
-            fit_ids: resps.resolve_fit_ids(self.fit_ids)?,
+                .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
+            fit_ids: resps.resolve_fit_ids_lossy(self.fit_ids),
             shared: self.shared,
-        })
+        }
     }
 }
 

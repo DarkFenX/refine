@@ -33,10 +33,7 @@ impl SolarSystem<'_> {
                     .map_err(|exec_err| SolFittingAppError::from_ctl_exec(index, exec_err))?;
                 ctl_cmd_resps.append(ctl_cmd_resp);
             }
-            let val_result = val_cmd
-                .br_resolve(&ctl_cmd_resps)
-                .map_err(SolFittingAppError::ValBrResolve)?
-                .execute(core_sol);
+            let val_result = val_cmd.br_resolve(&ctl_cmd_resps).execute(core_sol);
             let val_result = evaluator(val_result).map_err(SolFittingAppError::Evaluator)?;
             let info = info_cmd
                 .br_resolve(&ctl_cmd_resps)
@@ -73,8 +70,6 @@ where
     CtlBrResolve(usize, #[source] BrResolveError),
     #[error("control command #{0} failed")]
     CtlExec(usize, #[source] SolChangeEnumError),
-    #[error("validation command failed")]
-    ValBrResolve(#[source] BrResolveError),
     #[error("evaluator failed")]
     Evaluator(#[source] E),
     #[error("info command failed")]

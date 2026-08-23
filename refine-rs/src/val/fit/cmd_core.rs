@@ -86,13 +86,13 @@ impl FitValCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmdBr {
-    pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<FitValCmd, BrResolveError> {
-        Ok(FitValCmd {
+    pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> FitValCmd {
+        FitValCmd {
             options: self
                 .options
-                .try_map_ids(|item_id_br| resps.resolve_item_id(item_id_br))?,
+                .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
             shared: self.shared,
-        })
+        }
     }
 }
 
@@ -100,7 +100,7 @@ impl FitValCmdCtxFitBr {
     pub(in crate::val) fn br_resolve(self, resps: &CmdResps) -> Result<FitValCmdCtxFit, BrResolveError> {
         Ok(FitValCmdCtxFit {
             fit_id: resps.resolve_fit_id(self.fit_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

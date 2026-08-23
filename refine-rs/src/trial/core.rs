@@ -84,13 +84,13 @@ impl FitTryItemsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitTryItemsCmdBr {
-    pub(in crate::trial) fn br_resolve(self, resps: &CmdResps) -> Result<FitTryItemsCmd, BrResolveError> {
-        Ok(FitTryItemsCmd {
+    pub(in crate::trial) fn br_resolve(self, resps: &CmdResps) -> FitTryItemsCmd {
+        FitTryItemsCmd {
             val_options: self
                 .val_options
-                .try_map_ids(|item_id_br| resps.resolve_item_id(item_id_br))?,
+                .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
             shared: self.shared,
-        })
+        }
     }
 }
 
@@ -98,7 +98,7 @@ impl FitTryItemsCmdCtxFitBr {
     pub(in crate::trial) fn br_resolve(self, resps: &CmdResps) -> Result<FitTryItemsCmdCtxFit, BrResolveError> {
         Ok(FitTryItemsCmdCtxFit {
             fit_id: resps.resolve_fit_id(self.fit_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

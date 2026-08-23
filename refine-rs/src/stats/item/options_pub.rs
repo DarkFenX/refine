@@ -9,7 +9,6 @@ use crate::{
     },
 };
 
-
 /// Which stats to fetch for an item.
 ///
 /// By default, all stats are not fetched.

@@ -1,6 +1,5 @@
 use crate::{
     CmdResp, CmdResps,
-    err::BrResolveError,
     val::{FitValCmd, FitValCmdBr},
 };
 
@@ -34,10 +33,10 @@ impl FitValCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValEnumCmdBr {
-    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitValEnumCmd, BrResolveError> {
-        Ok(match self {
-            Self::FitValidate(cmd) => FitValEnumCmd::FitValidate(cmd.br_resolve(resps)?),
-        })
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> FitValEnumCmd {
+        match self {
+            Self::FitValidate(cmd) => FitValEnumCmd::FitValidate(cmd.br_resolve(resps)),
+        }
     }
 }
 

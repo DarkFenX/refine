@@ -38,18 +38,15 @@ impl<I> StatCapSimStagger<I> {
 // Conversions
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I1> StatCapSimStagger<I1> {
-    pub fn try_map_ids<I2, E, M>(self, mut item_mapper: M) -> Result<StatCapSimStagger<I2>, E>
+    // Behavior is the same as for ID-to-UID conversion: silently skip on mapping failure
+    pub fn filter_map_item_ids<I2, M>(self, item_mapper: M) -> StatCapSimStagger<I2>
     where
-        M: FnMut(I1) -> Result<I2, E>,
+        M: FnMut(I1) -> Option<I2>,
     {
-        let mut exception_item_ids = Vec::with_capacity(self.exception_item_ids.len());
-        for exception_item_id in self.exception_item_ids {
-            exception_item_ids.push(item_mapper(exception_item_id)?);
-        }
-        Ok(StatCapSimStagger {
+        StatCapSimStagger {
             default: self.default,
-            exception_item_ids,
-        })
+            exception_item_ids: self.exception_item_ids.into_iter().filter_map(item_mapper).collect(),
+        }
     }
 }
 

@@ -35,7 +35,7 @@ impl BrResolvable for StatOptionJump<FitIdBr> {
     fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             range: self.range,
-            passenger_fit_ids: resps.resolve_fit_ids(self.passenger_fit_ids)?,
+            passenger_fit_ids: resps.resolve_fit_ids_lossy(self.passenger_fit_ids),
             passenger_fuel_affectors: self.passenger_fuel_affectors,
         })
     }

@@ -1,6 +1,5 @@
 use crate::{
     CmdResp, CmdResps,
-    err::BrResolveError,
     trial::{FitTryItemsCmd, FitTryItemsCmdBr},
 };
 
@@ -34,10 +33,10 @@ impl FitTryItemsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitTryItemsEnumCmdBr {
-    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitTryItemsEnumCmd, BrResolveError> {
-        Ok(match self {
-            Self::FitTryItems(cmd) => FitTryItemsEnumCmd::FitTryItems(cmd.br_resolve(resps)?),
-        })
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> FitTryItemsEnumCmd {
+        match self {
+            Self::FitTryItems(cmd) => FitTryItemsEnumCmd::FitTryItems(cmd.br_resolve(resps)),
+        }
     }
 }
 

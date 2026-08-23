@@ -261,8 +261,8 @@ impl FitHybridCmdBr {
             Self::Ctl(ctl_cmd) => FitHybridCmd::Ctl(ctl_cmd.br_resolve(resps)?),
             Self::Info(info_cmd) => FitHybridCmd::Info(info_cmd.br_resolve(resps)?),
             Self::Stats(stats_cmd) => FitHybridCmd::Stats(stats_cmd.br_resolve(resps)?),
-            Self::Val(val_cmd) => FitHybridCmd::Val(val_cmd.br_resolve(resps)?),
-            Self::TryItems(try_cmd) => FitHybridCmd::TryItems(try_cmd.br_resolve(resps)?),
+            Self::Val(val_cmd) => FitHybridCmd::Val(val_cmd.br_resolve(resps)),
+            Self::TryItems(try_cmd) => FitHybridCmd::TryItems(try_cmd.br_resolve(resps)),
         })
     }
 }
