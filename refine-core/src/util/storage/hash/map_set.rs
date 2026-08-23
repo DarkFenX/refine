@@ -72,6 +72,12 @@ where
             None => self.buffer.iter(),
         }
     }
+    pub(crate) fn extend_vec(&self, vec: &mut Vec<V>, key: &K)
+    where
+        V: Copy,
+    {
+        vec.extend(self.get(key).copied());
+    }
     pub(crate) fn iter(&self) -> impl ExactSizeIterator<Item = (&K, impl ExactSizeIterator<Item = &V>)> {
         self.data.iter().map(|(k, v)| (k, v.iter()))
     }
@@ -122,14 +128,4 @@ where
     pub(crate) fn drain_buffer(&mut self) -> impl ExactSizeIterator<Item = V> {
         self.buffer.drain()
     }
-}
-
-pub(crate) fn extend_vec_from_map_set_l1<K, V, H1, H2>(vec: &mut Vec<V>, storage: &MapSet<K, V, H1, H2>, key: &K)
-where
-    K: Eq + Hash,
-    V: Eq + Hash + Copy,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-{
-    vec.extend(storage.get(key).copied());
 }
