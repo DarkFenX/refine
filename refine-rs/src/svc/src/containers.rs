@@ -1,9 +1,10 @@
-use std::collections::{HashMap, HashSet};
-
 use tokio::sync::{RwLock, RwLockReadGuard, RwLockWriteGuard};
 
 use super::inner::SrcInnerGuarded;
-use crate::src::SrcAlias;
+use crate::{
+    src::SrcAlias,
+    util::{RMap, RSet},
+};
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Alias data
@@ -26,13 +27,13 @@ impl SrcAliasDataGuarded {
 }
 
 pub(crate) struct SrcAliasData {
-    pub(crate) map: HashMap<SrcAlias, SrcInnerGuarded>,
+    pub(crate) map: RMap<SrcAlias, SrcInnerGuarded>,
     pub(crate) default: Option<SrcInnerGuarded>,
 }
 impl SrcAliasData {
     fn new() -> Self {
         Self {
-            map: HashMap::new(),
+            map: RMap::new(),
             default: None,
         }
     }
@@ -42,18 +43,18 @@ impl SrcAliasData {
 // Locked aliases
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct SrcAliasLocksGuarded {
-    inner: RwLock<HashSet<SrcAlias>>,
+    inner: RwLock<RSet<SrcAlias>>,
 }
 impl SrcAliasLocksGuarded {
     pub(crate) fn new() -> Self {
         Self {
-            inner: RwLock::new(HashSet::new()),
+            inner: RwLock::new(RSet::new()),
         }
     }
-    pub(crate) async fn read(&self) -> RwLockReadGuard<'_, HashSet<SrcAlias>> {
+    pub(crate) async fn read(&self) -> RwLockReadGuard<'_, RSet<SrcAlias>> {
         self.inner.read().await
     }
-    pub(crate) async fn write(&self) -> RwLockWriteGuard<'_, HashSet<SrcAlias>> {
+    pub(crate) async fn write(&self) -> RwLockWriteGuard<'_, RSet<SrcAlias>> {
         self.inner.write().await
     }
 }

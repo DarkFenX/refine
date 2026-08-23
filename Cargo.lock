@@ -1868,6 +1868,7 @@ dependencies = [
  "fixedstr",
  "parking_lot",
  "refine-core",
+ "rustc-hash",
  "serde",
  "serde_tuple",
  "serde_with",

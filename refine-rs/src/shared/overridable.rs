@@ -1,6 +1,6 @@
-use std::{collections::HashMap, hash::Hash};
+use std::hash::Hash;
 
-use crate::{CmdResps, err::BrResolveError, shared::BrResolvable};
+use crate::{CmdResps, err::BrResolveError, shared::BrResolvable, util::RMap};
 
 // Representation form which is compact; it is hard to use work with it directly, so types which are
 // often queried should be converted into something else.
@@ -34,7 +34,7 @@ impl<K, V> OvrdCompact<K, V> {
 #[derive(Clone)]
 pub(crate) struct OvrdMapLight<K, V> {
     default: V,
-    overrides: HashMap<K, V>,
+    overrides: RMap<K, V>,
 }
 impl<K, V> Default for OvrdMapLight<K, V>
 where
@@ -43,7 +43,7 @@ where
     fn default() -> Self {
         Self {
             default: V::default(),
-            overrides: HashMap::new(),
+            overrides: RMap::new(),
         }
     }
 }
@@ -71,7 +71,7 @@ where
 #[derive(Clone)]
 pub(crate) struct OvrdMapHeavy<K, V> {
     default: V,
-    override_refs: HashMap<K, usize>,
+    override_refs: RMap<K, usize>,
     override_vals: Vec<V>,
 }
 impl<K, V> Default for OvrdMapHeavy<K, V>
@@ -81,7 +81,7 @@ where
     fn default() -> Self {
         Self {
             default: V::default(),
-            override_refs: HashMap::new(),
+            override_refs: RMap::new(),
             override_vals: Vec::new(),
         }
     }
@@ -155,7 +155,7 @@ where
     {
         let mut heavy = Self {
             default: compact.default.into(),
-            override_refs: HashMap::with_capacity(compact.overrides.iter().map(|(_, keys)| keys.len()).sum()),
+            override_refs: RMap::with_capacity(compact.overrides.iter().map(|(_, keys)| keys.len()).sum()),
             override_vals: Vec::with_capacity(compact.overrides.len()),
         };
         for (value, keys) in compact.overrides.into_iter() {
@@ -169,7 +169,7 @@ impl<K, V> OvrdMapLight<K, V> {
     pub(crate) fn from_default(default: V) -> Self {
         Self {
             default,
-            overrides: HashMap::new(),
+            overrides: RMap::new(),
         }
     }
     pub(crate) fn from_compact_with_br_resolution<B>(
@@ -182,7 +182,7 @@ impl<K, V> OvrdMapLight<K, V> {
         B: BrResolvable<Target = K>,
     {
         let default = compact_br.default;
-        let mut overrides = HashMap::with_capacity(calc_needed_space(default, &compact_br.overrides));
+        let mut overrides = RMap::with_capacity(calc_needed_space(default, &compact_br.overrides));
         for (over_mode, over_backrefs) in compact_br.overrides {
             // Getter falls back to default, do not add entries with it
             if over_mode == default {
@@ -231,10 +231,10 @@ mod custom_serde {
             Ok(match OverridableFormats::deserialize(deserializer)? {
                 OverridableFormats::Simple(default) => Self {
                     default,
-                    overrides: HashMap::new(),
+                    overrides: RMap::new(),
                 },
                 OverridableFormats::Extended(default, overrides) => {
-                    let mut map = HashMap::with_capacity(overrides.iter().map(|(_, keys)| keys.len()).sum());
+                    let mut map = RMap::with_capacity(overrides.iter().map(|(_, keys)| keys.len()).sum());
                     map.extend(
                         overrides
                             .into_iter()

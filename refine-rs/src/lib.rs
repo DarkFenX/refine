@@ -51,4 +51,5 @@ pub mod src;
 pub mod stats;
 mod svc;
 pub mod trial;
+mod util;
 pub mod val;
