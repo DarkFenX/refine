@@ -1,7 +1,4 @@
-use crate::{
-    CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr,
-    err::{BrResolveError, FitChangeEnumError},
-};
+use crate::{CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError};
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
@@ -22,7 +19,7 @@ impl Fit<'_, '_> {
         &mut self,
         ctl_cmd: FitChangeEnumCmd,
         info_cmd: FitInfoCmdBr,
-    ) -> Result<(CmdResp, FitInfo), FitChangeEnumFitInfoError> {
+    ) -> Result<(CmdResp, FitInfo), FitChangeEnumError> {
         // Variables for move
         let fit_id = self.id;
         self.sol
@@ -32,19 +29,11 @@ impl Fit<'_, '_> {
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let ctl_cmd_resp = ctl_cmd.execute(&mut core_fit)?;
                 let cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
-                let info_cmd = info_cmd.br_resolve(&cmd_resps)?;
+                let info_cmd = info_cmd.br_resolve(&cmd_resps);
                 let fit_info = info_cmd.execute(&mut core_fit);
                 let ctl_cmd_resp = cmd_resps.into_iter().next().unwrap();
                 Ok((ctl_cmd_resp, fit_info))
             })
             .await
     }
-}
-
-#[derive(Debug, thiserror::Error)]
-pub enum FitChangeEnumFitInfoError {
-    #[error(transparent)]
-    Change(#[from] FitChangeEnumError),
-    #[error("failed to resolve backref in info command")]
-    InfoBrResolve(#[from] BrResolveError),
 }

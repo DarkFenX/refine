@@ -130,10 +130,11 @@ where
         for override_ in self.overrides.into_iter() {
             let value = override_.0.br_resolve(cmd_resps)?;
             let mut keys = Vec::with_capacity(override_.1.len());
-            for key in override_.1.into_iter() {
-                keys.push(key.br_resolve(cmd_resps)?);
+            // Silently skip keys which cannot be resolved
+            keys.extend(override_.1.into_iter().filter_map(|key| key.br_resolve(cmd_resps).ok()));
+            if !keys.is_empty() {
+                overrides.push((value, keys))
             }
-            overrides.push((value, keys))
         }
         Ok(OvrdCompact {
             default: self.default.br_resolve(cmd_resps)?,
@@ -172,27 +173,29 @@ impl<K, V> OvrdMapLight<K, V> {
             overrides: RMap::new(),
         }
     }
-    pub(crate) fn from_compact_with_br_resolution<B>(
-        compact_br: OvrdCompact<B, V>,
-        ctl_cmd_resps: &CmdResps,
-    ) -> Result<Self, BrResolveError>
+    pub(crate) fn from_compact_with_br_resolution<B>(compact_br: OvrdCompact<B, V>, ctl_cmd_resps: &CmdResps) -> Self
     where
         K: Eq + Hash,
         V: Copy + PartialEq,
         B: BrResolvable<Target = K>,
     {
-        let default = compact_br.default;
-        let mut overrides = RMap::with_capacity(calc_needed_space(default, &compact_br.overrides));
-        for (over_mode, over_backrefs) in compact_br.overrides {
+        let default_value = compact_br.default;
+        let mut overrides = RMap::with_capacity(calc_needed_space(default_value, &compact_br.overrides));
+        for (override_value, override_keys_br) in compact_br.overrides.into_iter() {
             // Getter falls back to default, do not add entries with it
-            if over_mode == default {
+            if override_value == default_value {
                 continue;
             }
-            for over_backref in over_backrefs {
-                overrides.insert(over_backref.br_resolve(ctl_cmd_resps)?, over_mode);
+            for override_key_br in override_keys_br {
+                if let Ok(override_key) = override_key_br.br_resolve(ctl_cmd_resps) {
+                    overrides.insert(override_key, override_value);
+                }
             }
         }
-        Ok(Self { default, overrides })
+        Self {
+            default: default_value,
+            overrides,
+        }
     }
 }
 

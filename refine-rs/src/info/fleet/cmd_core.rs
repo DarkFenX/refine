@@ -118,12 +118,12 @@ impl FleetInfoCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FleetInfoCmd, BrResolveError> {
-        Ok(FleetInfoCmd {
-            fit_mode: OvrdMapLight::from_compact_with_br_resolution(self.fit_mode, resps)?,
-            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
+    fn br_resolve(self, resps: &CmdResps) -> FleetInfoCmd {
+        FleetInfoCmd {
+            fit_mode: OvrdMapLight::from_compact_with_br_resolution(self.fit_mode, resps),
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps),
             shared: self.shared,
-        })
+        }
     }
 }
 
@@ -131,7 +131,7 @@ impl FleetInfoCmdCtxFleetBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<FleetInfoCmdCtxFleet, BrResolveError> {
         Ok(FleetInfoCmdCtxFleet {
             fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

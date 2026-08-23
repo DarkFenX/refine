@@ -64,7 +64,7 @@ impl ItemInfoCmdBr {
 impl SolInfoEnumCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolInfoEnumCmd, BrResolveError> {
         Ok(match self {
-            Self::SolInfo(cmd) => SolInfoEnumCmd::SolInfo(cmd.br_resolve(resps)?),
+            Self::SolInfo(cmd) => SolInfoEnumCmd::SolInfo(cmd.br_resolve(resps)),
             Self::FleetInfo(cmd) => SolInfoEnumCmd::FleetInfo(cmd.br_resolve(resps)?),
             Self::FitInfo(cmd) => SolInfoEnumCmd::FitInfo(cmd.br_resolve(resps)?),
             Self::ItemInfo(cmd) => SolInfoEnumCmd::ItemInfo(cmd.br_resolve(resps)?),

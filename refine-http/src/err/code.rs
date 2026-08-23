@@ -45,10 +45,7 @@ impl ApiError {
             Self::SolAdd(err) => match err {
                 rs::err::SolAddError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
-            Self::SolChange(err) => match err {
-                rs::err::SolChangeEnumSolInfoError::Change(err_l2) => sol_change_enum(err_l2),
-                rs::err::SolChangeEnumSolInfoError::InfoBrResolve(..) => (StatusCode::BAD_REQUEST, "BRF-002"),
-            },
+            Self::SolChange(err) => sol_change_enum(err),
             Self::SolBatchCtl(err) => sol_change_enum(&err.error),
             Self::SolBatchInfo(err) => match &err.error {
                 rs::err::SolInfoEnumError::Fleet(rs::err::FleetGetFleetInfoError::FleetGet(..)) => {
@@ -108,10 +105,7 @@ impl ApiError {
             Self::FitAdd(err) => match err {
                 rs::err::FitAddError::FleetSet(..) => (StatusCode::BAD_REQUEST, "FIT-003"),
             },
-            Self::FitChange(err) => match err {
-                rs::err::FitChangeEnumFitInfoError::Change(err_l2) => fit_change_enum(err_l2),
-                rs::err::FitChangeEnumFitInfoError::InfoBrResolve(..) => (StatusCode::BAD_REQUEST, "BRF-003"),
-            },
+            Self::FitChange(err) => fit_change_enum(err),
             Self::FitBatchCtl(err) => fit_change_enum(&err.error),
             Self::FitBatchInfo(err) => match &err.error {
                 rs::err::FitInfoEnumError::Item(rs::err::ItemGetItemInfoError::ItemGet(..)) => {

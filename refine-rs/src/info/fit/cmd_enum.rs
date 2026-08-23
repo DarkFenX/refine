@@ -43,7 +43,7 @@ impl ItemInfoCmdBr {
 impl FitInfoEnumCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoEnumCmd, BrResolveError> {
         Ok(match self {
-            Self::FitInfo(cmd) => FitInfoEnumCmd::FitInfo(cmd.br_resolve(resps)?),
+            Self::FitInfo(cmd) => FitInfoEnumCmd::FitInfo(cmd.br_resolve(resps)),
             Self::ItemInfo(cmd) => FitInfoEnumCmd::ItemInfo(cmd.br_resolve(resps)?),
         })
     }

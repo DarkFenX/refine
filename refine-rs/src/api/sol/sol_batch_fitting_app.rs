@@ -37,7 +37,6 @@ impl SolarSystem<'_> {
             let val_result = evaluator(val_result).map_err(SolFittingAppError::Evaluator)?;
             let info = info_cmd
                 .br_resolve(&ctl_cmd_resps)
-                .map_err(SolFittingAppError::InfoBrResolve)?
                 .execute(sol_ctx.sol_id, sol_ctx.src_alias, core_sol);
             let stats = stats_cmd
                 .br_resolve(&ctl_cmd_resps)
@@ -72,8 +71,6 @@ where
     CtlExec(usize, #[source] SolChangeEnumError),
     #[error("evaluator failed")]
     Evaluator(#[source] E),
-    #[error("info command failed")]
-    InfoBrResolve(#[source] BrResolveError),
     #[error("stats command failed")]
     StatsBrResolve(#[source] BrResolveError),
 }

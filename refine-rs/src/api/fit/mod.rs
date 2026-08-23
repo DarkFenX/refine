@@ -1,6 +1,5 @@
 pub use fit::Fit;
 pub use fit_batch_hybrid::FitHybridBatchError;
-pub use fit_change::FitChangeEnumFitInfoError;
 pub use sol_get_fit::FitGetError;
 
 mod fit;

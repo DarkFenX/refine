@@ -79,10 +79,10 @@ impl ItemInfoCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmd, BrResolveError> {
-        Ok(ItemInfoCmd {
-            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
-        })
+    fn br_resolve(self, resps: &CmdResps) -> ItemInfoCmd {
+        ItemInfoCmd {
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps),
+        }
     }
 }
 
@@ -90,7 +90,7 @@ impl ItemInfoCmdCtxItemBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<ItemInfoCmdCtxItem, BrResolveError> {
         Ok(ItemInfoCmdCtxItem {
             item_id: resps.resolve_item_id(self.item_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

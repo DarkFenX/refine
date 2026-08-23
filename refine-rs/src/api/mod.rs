@@ -1,12 +1,12 @@
-pub use fit::{Fit, FitChangeEnumFitInfoError, FitGetError, FitHybridBatchError};
+pub use fit::{Fit, FitGetError, FitHybridBatchError};
 pub use fleet::{Fleet, FleetGetError};
 pub use item::{Item, ItemGetError};
 pub use refine::Refine;
 #[cfg(feature = "serde")]
 pub use sol::ParseSolarSystemIdError;
 pub use sol::{
-    SolAddError, SolChangeEnumSolInfoError, SolFittingAppError, SolFittingAppResp, SolGetError, SolHybridBatchError,
-    SolRemoveError, SolSwitchSrcError, SolarSystem, SolarSystemId,
+    SolAddError, SolFittingAppError, SolFittingAppResp, SolGetError, SolHybridBatchError, SolRemoveError,
+    SolSwitchSrcError, SolarSystem, SolarSystemId,
 };
 pub use src::{
     Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError,

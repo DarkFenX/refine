@@ -1,7 +1,6 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FitInfoMode, FleetId, FleetIdBr, FleetInfoMode, ItemId, ItemIdBr, ItemInfoMode, SolInfo,
     SolInfoExt, SolInfoMode, SolarSystemId, SrcAlias,
-    err::BrResolveError,
     shared::{OvrdCompact, OvrdMapLight},
 };
 
@@ -112,13 +111,13 @@ impl SolInfoCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmdBr {
-    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolInfoCmd, BrResolveError> {
-        Ok(SolInfoCmd {
-            fleet_mode: OvrdMapLight::from_compact_with_br_resolution(self.fleet_mode, resps)?,
-            fit_mode: OvrdMapLight::from_compact_with_br_resolution(self.fit_mode, resps)?,
-            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> SolInfoCmd {
+        SolInfoCmd {
+            fleet_mode: OvrdMapLight::from_compact_with_br_resolution(self.fleet_mode, resps),
+            fit_mode: OvrdMapLight::from_compact_with_br_resolution(self.fit_mode, resps),
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps),
             shared: self.shared,
-        })
+        }
     }
 }
 

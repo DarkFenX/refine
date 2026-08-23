@@ -47,7 +47,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     SolAdd(#[from] rs::err::SolAddError),
     #[error(transparent)]
-    SolChange(#[from] rs::err::SolChangeEnumSolInfoError),
+    SolChange(#[from] rs::err::SolChangeEnumError),
     #[error(transparent)]
     SolRemove(#[from] rs::err::SolRemoveError),
     #[error(transparent)]
@@ -79,7 +79,7 @@ pub(crate) enum ApiError {
     #[error(transparent)]
     FitAdd(#[from] rs::err::FitAddError),
     #[error(transparent)]
-    FitChange(#[from] rs::err::FitChangeEnumFitInfoError),
+    FitChange(#[from] rs::err::FitChangeEnumError),
     #[error(transparent)]
     FitBatchCtl(ApiErrorIndexed<rs::err::FitChangeEnumError>),
     #[error(transparent)]

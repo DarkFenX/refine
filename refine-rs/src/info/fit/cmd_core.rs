@@ -97,11 +97,11 @@ impl FitInfoCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitInfoCmdBr {
-    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmd, BrResolveError> {
-        Ok(FitInfoCmd {
-            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps)?,
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> FitInfoCmd {
+        FitInfoCmd {
+            item_mode: OvrdMapLight::from_compact_with_br_resolution(self.item_mode, resps),
             shared: self.shared,
-        })
+        }
     }
 }
 
@@ -109,7 +109,7 @@ impl FitInfoCmdCtxFitBr {
     pub(in crate::info) fn br_resolve(self, resps: &CmdResps) -> Result<FitInfoCmdCtxFit, BrResolveError> {
         Ok(FitInfoCmdCtxFit {
             fit_id: resps.resolve_fit_id(self.fit_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }
