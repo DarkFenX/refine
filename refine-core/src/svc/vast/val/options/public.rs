@@ -13,6 +13,8 @@ pub struct ValOptionsSol {
 }
 
 /// Validation options.
+///
+/// By default, all validations are disabled.
 #[derive(Clone)]
 pub struct ValOptions<I = ItemId> {
     pub(super) default: bool = false,

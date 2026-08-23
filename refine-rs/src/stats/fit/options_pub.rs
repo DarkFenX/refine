@@ -9,6 +9,9 @@ use crate::{
     },
 };
 
+/// Which stats to fetch for a fit.
+///
+/// By default, all stats are not fetched.
 #[derive(Clone)]
 pub struct FitStatsOptions<F = FitId, I = ItemId> {
     default: bool = false,

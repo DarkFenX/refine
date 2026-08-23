@@ -8,6 +8,10 @@ use crate::{
     },
 };
 
+
+/// Which stats to fetch for a fleet.
+///
+/// By default, all stats are not fetched.
 #[derive(Clone)]
 pub struct FleetStatsOptions<I = ItemId> {
     default: bool = false,
