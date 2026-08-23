@@ -1,29 +1,33 @@
 use std::hash::{BuildHasher, Hash};
 
-use super::map::Map;
+use super::map::{Map, RMap};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RMapVec<K, V> = MapVec<K, V, rustc_hash::FxBuildHasher>;
+impl<K, V> Default for RMapVec<K, V> {
+    fn default() -> Self {
+        Self {
+            data: RMap::new(),
+            empty: Vec::new(),
+        }
+    }
+}
+impl<K, V> RMapVec<K, V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
+    }
+}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) struct MapVec<K, V, H> {
     data: Map<K, Vec<V>, H>,
     #[expect(dead_code)]
     empty: Vec<V>,
 }
-impl<K, V, H> MapVec<K, V, H>
-where
-    H: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
-        Self {
-            data: Map::new(),
-            empty: Vec::new(),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<K, V, H> MapVec<K, V, H>
 where
     K: Eq + Hash,
@@ -62,15 +66,6 @@ where
     // Consumption methods
     pub(crate) fn into_values(self) -> impl Iterator<Item = Vec<V>> {
         self.data.into_values()
-    }
-}
-impl<K, V, H> Default for MapVec<K, V, H>
-where
-    K: Eq + Hash,
-    H: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
     }
 }
 impl<K, V, H> IntoIterator for MapVec<K, V, H> {

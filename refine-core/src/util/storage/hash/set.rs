@@ -3,20 +3,20 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RSet<V> = Set<V, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct Set<V, H> {
-    data: HashSet<V, H>,
-}
-impl<V, H> Set<V, H>
-where
-    H: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
+impl<V> Default for RSet<V> {
+    fn default() -> Self {
         Self {
             data: HashSet::default(),
         }
+    }
+}
+impl<V> RSet<V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
     }
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
@@ -24,10 +24,24 @@ where
         }
     }
 }
+impl<V> FromIterator<V> for RSet<V>
+where
+    V: Eq + Hash,
+{
+    fn from_iter<I: IntoIterator<Item = V>>(iter: I) -> Self {
+        Self {
+            data: HashSet::from_iter(iter),
+        }
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct Set<V, H> {
+    data: HashSet<V, H>,
+}
 impl<V, H> Set<V, H>
 where
     V: Eq + Hash,
@@ -86,30 +100,6 @@ where
     #[expect(dead_code)]
     pub(crate) fn clear(&mut self) {
         self.data.clear()
-    }
-}
-impl<V, H> Default for Set<V, H>
-where
-    V: Eq + Hash,
-    H: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
-////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<V, H> FromIterator<V> for Set<V, H>
-where
-    V: Eq + Hash,
-    H: BuildHasher + Default,
-{
-    fn from_iter<I: IntoIterator<Item = V>>(iter: I) -> Self {
-        Self {
-            data: HashSet::from_iter(iter),
-        }
     }
 }
 impl<V, H> IntoIterator for Set<V, H> {

@@ -2,26 +2,30 @@ use std::hash::{BuildHasher, Hash};
 
 use indexmap::{IndexSet, set::Slice};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type ROrdSet<V> = OrdSet<V, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct OrdSet<V, H> {
-    data: IndexSet<V, H>,
-}
-impl<V, H> OrdSet<V, H>
-where
-    H: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
+impl<V> Default for ROrdSet<V> {
+    fn default() -> Self {
         Self {
             data: IndexSet::default(),
         }
     }
 }
+impl<V> ROrdSet<V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
+    }
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct OrdSet<V, H> {
+    data: IndexSet<V, H>,
+}
 impl<V, H> OrdSet<V, H>
 where
     V: Eq + Hash,
@@ -38,10 +42,6 @@ where
         self.data.insert_full(val)
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Indexing
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<T, S> core::ops::Index<core::ops::RangeFrom<usize>> for OrdSet<T, S> {
     type Output = Slice<T>;
 
@@ -49,10 +49,6 @@ impl<T, S> core::ops::Index<core::ops::RangeFrom<usize>> for OrdSet<T, S> {
         self.data.index(range)
     }
 }
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Conversions
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<V, H> IntoIterator for OrdSet<V, H> {
     type Item = V;
     type IntoIter = indexmap::set::IntoIter<V>;

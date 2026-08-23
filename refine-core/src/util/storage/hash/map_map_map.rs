@@ -3,29 +3,45 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-use super::{map::Map, map_map::MapMap};
+use super::{
+    map::{Map, RMap},
+    map_map::MapMap,
+};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RMapRMapRMap<K1, K2, K3, V> =
     MapMapMap<K1, K2, K3, V, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct MapMapMap<K1, K2, K3, V, H1, H2, H3> {
-    data: Map<K1, MapMap<K2, K3, V, H2, H3>, H1>,
+impl<K1, K2, K3, V> Default for RMapRMapRMap<K1, K2, K3, V> {
+    fn default() -> Self {
+        Self { data: RMap::new() }
+    }
 }
-impl<K1, K2, K3, V, H1, H2, H3> MapMapMap<K1, K2, K3, V, H1, H2, H3>
-where
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-    H3: BuildHasher + Default,
-{
+impl<K1, K2, K3, V> RMapRMapRMap<K1, K2, K3, V> {
     pub(crate) fn new() -> Self {
-        Self { data: Map::new() }
+        Self::default()
+    }
+}
+impl<K1, K2, K3, V> RMapRMapRMap<K1, K2, K3, V>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+    K3: Eq + Hash,
+{
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
+        let m2l = self.data.entry(key1).or_default();
+        m2l.add_entry(key2, key3, value);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct MapMapMap<K1, K2, K3, V, H1, H2, H3> {
+    data: Map<K1, MapMap<K2, K3, V, H2, H3>, H1>,
+}
 impl<K1, K2, K3, V, H1, H2, H3> MapMapMap<K1, K2, K3, V, H1, H2, H3>
 where
     K1: Eq + Hash,
@@ -50,32 +66,5 @@ where
                 entry_l1.remove();
             }
         }
-    }
-}
-impl<K1, K2, K3, V, H1, H2, H3> MapMapMap<K1, K2, K3, V, H1, H2, H3>
-where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    K3: Eq + Hash,
-    H1: BuildHasher,
-    H2: BuildHasher + Default,
-    H3: BuildHasher + Default,
-{
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, key3: K3, value: V) {
-        let m2l = self.data.entry(key1).or_default();
-        m2l.add_entry(key2, key3, value);
-    }
-}
-impl<K1, K2, K3, V, H1, H2, H3> Default for MapMapMap<K1, K2, K3, V, H1, H2, H3>
-where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    K3: Eq + Hash,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-    H3: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
     }
 }

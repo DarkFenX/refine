@@ -5,33 +5,49 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-use super::{map::Map, map_set::MapSet};
+use super::{
+    map::{Map, RMap},
+    map_set::{MapSet, RMapRSet},
+};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RMapRMapRSet<K1, K2, V> =
     MapMapSet<K1, K2, V, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher>;
+impl<K1, K2, V> Default for RMapRMapRSet<K1, K2, V> {
+    fn default() -> Self {
+        Self {
+            data: RMap::new(),
+            empty: RMapRSet::new(),
+        }
+    }
+}
+impl<K1, K2, V> RMapRMapRSet<K1, K2, V> {
+    pub(crate) fn new() -> Self {
+        Self::default()
+    }
+}
+impl<K1, K2, V> RMapRMapRSet<K1, K2, V>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+    V: Eq + Hash,
+{
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
+        let ks1l = self.data.entry(key1).or_default();
+        ks1l.add_entry(key2, value);
+    }
+}
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Shared
+////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
 pub(crate) struct MapMapSet<K1, K2, V, H1, H2, H3> {
     data: Map<K1, MapSet<K2, V, H2, H3>, H1>,
     empty: MapSet<K2, V, H2, H3>,
 }
-impl<K1, K2, V, H1, H2, H3> MapMapSet<K1, K2, V, H1, H2, H3>
-where
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-    H3: BuildHasher + Default,
-{
-    pub(crate) fn new() -> Self {
-        Self {
-            data: Map::new(),
-            empty: MapSet::new(),
-        }
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<K1, K2, V, H1, H2, H3> MapMapSet<K1, K2, V, H1, H2, H3>
 where
     K1: Eq + Hash,
@@ -64,20 +80,6 @@ where
     pub(crate) fn remove_l1(&mut self, key: &K1) -> Option<MapSet<K2, V, H2, H3>> {
         self.data.remove(key)
     }
-}
-impl<K1, K2, V, H1, H2, H3> MapMapSet<K1, K2, V, H1, H2, H3>
-where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    V: Eq + Hash,
-    H1: BuildHasher,
-    H2: BuildHasher + Default,
-    H3: BuildHasher + Default,
-{
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
-        let ks1l = self.data.entry(key1).or_default();
-        ks1l.add_entry(key2, value);
-    }
     pub(crate) fn remove_entry(&mut self, key1: K1, key2: K2, value: &V) {
         if let Entry::Occupied(mut entry) = self.data.entry(key1) {
             let mapset = entry.get_mut();
@@ -86,18 +88,5 @@ where
                 entry.remove();
             }
         }
-    }
-}
-impl<K1, K2, V, H1, H2, H3> Default for MapMapSet<K1, K2, V, H1, H2, H3>
-where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    V: Eq + Hash,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-    H3: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
     }
 }

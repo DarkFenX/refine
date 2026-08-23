@@ -3,27 +3,40 @@ use std::{
     hash::{BuildHasher, Hash},
 };
 
-use super::map::Map;
+use super::map::{Map, RMap};
 
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Non-const-specific
+////////////////////////////////////////////////////////////////////////////////////////////////////
 pub(crate) type RMapRMap<K1, K2, V> = MapMap<K1, K2, V, rustc_hash::FxBuildHasher, rustc_hash::FxBuildHasher>;
-
-#[derive(Clone)]
-pub(crate) struct MapMap<K1, K2, V, H1, H2> {
-    data: Map<K1, Map<K2, V, H2>, H1>,
+impl<K1, K2, V> Default for RMapRMap<K1, K2, V> {
+    fn default() -> Self {
+        Self { data: RMap::new() }
+    }
 }
-impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
-where
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-{
+impl<K1, K2, V> RMapRMap<K1, K2, V> {
     pub(crate) fn new() -> Self {
-        Self { data: Map::new() }
+        Self::default()
+    }
+}
+impl<K1, K2, V> RMapRMap<K1, K2, V>
+where
+    K1: Eq + Hash,
+    K2: Eq + Hash,
+{
+    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
+        let m1l = self.data.entry(key1).or_default();
+        m1l.insert(key2, value);
     }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// General methods
+// Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+#[derive(Clone)]
+pub(crate) struct MapMap<K1, K2, V, H1, H2> {
+    data: Map<K1, Map<K2, V, H2>, H1>,
+}
 impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
 where
     K1: Eq + Hash,
@@ -63,28 +76,5 @@ where
             }
         }
         false
-    }
-}
-impl<K1, K2, V, H1, H2> MapMap<K1, K2, V, H1, H2>
-where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    H1: BuildHasher,
-    H2: BuildHasher + Default,
-{
-    pub(crate) fn add_entry(&mut self, key1: K1, key2: K2, value: V) {
-        let m1l = self.data.entry(key1).or_insert_with(Map::new);
-        m1l.insert(key2, value);
-    }
-}
-impl<K1, K2, V, H1, H2> Default for MapMap<K1, K2, V, H1, H2>
-where
-    K1: Eq + Hash,
-    K2: Eq + Hash,
-    H1: BuildHasher + Default,
-    H2: BuildHasher + Default,
-{
-    fn default() -> Self {
-        Self::new()
     }
 }

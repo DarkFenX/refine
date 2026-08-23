@@ -53,9 +53,8 @@ const impl<K, V> Default for CMap<K, V> {
     }
 }
 impl<K, V> CMap<K, V> {
-    pub(crate) const fn new() -> Self {
-        Self::default()
-    }
+    // Used only in adapted data deserialization
+    #[cfg(feature = "serde-ad")]
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
             data: HashMap::with_capacity_and_hasher(capacity, rustc_hash::FxSeededState::with_seed(0)),
@@ -77,24 +76,12 @@ where
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shared trait impls
+// Shared
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[derive(Clone)]
 pub(crate) struct Map<K, V, H> {
     data: HashMap<K, V, H>,
 }
-impl<K, V, H> IntoIterator for Map<K, V, H> {
-    type Item = (K, V);
-    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
-
-    fn into_iter(self) -> Self::IntoIter {
-        self.data.into_iter()
-    }
-}
-
-////////////////////////////////////////////////////////////////////////////////////////////////////
-// Shared general methods
-////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<K, V, H> Map<K, V, H>
 where
     K: Eq + Hash,
@@ -186,5 +173,13 @@ where
         H2: BuildHasher + Default,
     {
         self.iter().filter(|(k, _)| !other.contains(k))
+    }
+}
+impl<K, V, H> IntoIterator for Map<K, V, H> {
+    type Item = (K, V);
+    type IntoIter = std::collections::hash_map::IntoIter<K, V>;
+
+    fn into_iter(self) -> Self::IntoIter {
+        self.data.into_iter()
     }
 }
