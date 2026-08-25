@@ -7,7 +7,7 @@ use crate::{
         StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
         StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
-        fatal::StatErrorFatality,
+        exec_shared::{collect_stats_err_both_br, collect_stats_err_inner, collect_stats_err_outer_br},
         fit::FitStatsOptionsResolved,
     },
 };
@@ -221,150 +221,70 @@ fn get_dmg_stats(
     core_fit: &mut rc::FitMut,
     options: &[Result<StatOptionFitDmg, BrResolveError>],
 ) -> StatResult<StatDmg, !, StatBrFallibleError<StatFitAppliedError>> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match option {
-            Ok(option) => match option.projectee_item_id {
-                Some(projectee_item_id) => {
-                    let stat = core_fit
-                        .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
-                        .map(StatDmg::from_core_applied);
-                    stats.push(stat.map_err(StatBrFallibleError::Stat));
-                }
-                None => {
-                    let stat = StatDmg::from_core(core_fit.get_stat_dmg(option.item_kinds, option.time, option.crits));
-                    stats.push(Ok(stat));
-                }
-            },
-            Err(br_err) => {
-                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
-                continue;
-            }
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
+        Some(projectee_item_id) => core_fit
+            .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
+            .map(StatDmg::from_core_applied),
+        None => Ok(StatDmg::from_core(core_fit.get_stat_dmg(
+            option.item_kinds,
+            option.time,
+            option.crits,
+        ))),
+    })
 }
 fn get_mps_stats(core_fit: &mut rc::FitMut, options: &[StatOptionFitMining]) -> StatResult<StatMining, !, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        let stat = core_fit.get_stat_mps(option.item_kinds, option.time, option.resource_kind);
-        stats.push(Ok(stat));
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| {
+        Ok(core_fit.get_stat_mps(option.item_kinds, option.time, option.resource_kind))
+    })
 }
 fn get_outgoing_nps_stats(
     core_fit: &mut rc::FitMut,
     options: &[Result<StatOptionFitOutNps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match option {
-            Ok(option) => match option.projectee_item_id {
-                Some(projectee_item_id) => {
-                    let stat =
-                        core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
-                    stats.push(stat.map_err(StatBrFallibleError::Stat));
-                }
-                None => {
-                    let stat = core_fit.get_stat_outgoing_nps(option.item_kinds, option.time);
-                    stats.push(Ok(stat));
-                }
-            },
-            Err(br_err) => {
-                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
-                continue;
-            }
+    collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
+        Some(projectee_item_id) => {
+            core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id)
         }
-    }
-    StatResult::Result(stats)
+        None => Ok(core_fit.get_stat_outgoing_nps(option.item_kinds, option.time)),
+    })
 }
 fn get_outgoing_rps_stats(
     core_fit: &mut rc::FitMut,
     options: &[Result<StatOptionFitOutRps, BrResolveError>],
 ) -> StatResult<StatOutReps, !, StatBrFallibleError<StatFitAppliedError>> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match option {
-            Ok(option) => match option.projectee_item_id {
-                Some(projectee_item_id) => {
-                    let stat =
-                        core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
-                    stats.push(stat.map_err(StatBrFallibleError::Stat));
-                }
-                None => {
-                    let stat = core_fit.get_stat_outgoing_rps(option.item_kinds, option.time);
-                    stats.push(Ok(stat));
-                }
-            },
-            Err(br_err) => {
-                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
-                continue;
-            }
-        };
-    }
-    StatResult::Result(stats)
+    collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
+        Some(projectee_item_id) => {
+            core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id)
+        }
+        None => Ok(core_fit.get_stat_outgoing_rps(option.item_kinds, option.time)),
+    })
 }
 fn get_outgoing_cps_stats(
     core_fit: &mut rc::FitMut,
     options: &[Result<StatOptionFitOutCps, BrResolveError>],
 ) -> StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match option {
-            Ok(option) => match option.projectee_item_id {
-                Some(projectee_item_id) => {
-                    let stat = core_fit.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
-                    stats.push(stat.map_err(StatBrFallibleError::Stat));
-                }
-                None => {
-                    let stat = core_fit.get_stat_outgoing_cps(option.time);
-                    stats.push(Ok(stat));
-                }
-            },
-            Err(br_err) => {
-                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
-                continue;
-            }
-        };
-    }
-    StatResult::Result(stats)
+    collect_stats_err_outer_br(options, |option| match option.projectee_item_id {
+        Some(projectee_item_id) => core_fit.get_stat_outgoing_cps_applied(option.time, &projectee_item_id),
+        None => Ok(core_fit.get_stat_outgoing_cps(option.time)),
+    })
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship tank
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_ehp_stats(core_fit: &mut rc::FitMut, options: &[StatOptionEhp]) -> StatResult<StatEhp, StatFitShipError<!>, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match core_fit.get_stat_ehp(option.incoming_dps) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => return StatResult::Error(err),
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| core_fit.get_stat_ehp(option.incoming_dps))
 }
 fn get_rps_stats(core_fit: &mut rc::FitMut, options: &[StatOptionRps]) -> StatResult<StatRps, StatFitShipError<!>, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match core_fit.get_stat_rps(option.time, option.shield_perc) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => return StatResult::Error(err),
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| core_fit.get_stat_rps(option.time, option.shield_perc))
 }
 fn get_erps_stats(
     core_fit: &mut rc::FitMut,
     options: &[StatOptionErps],
 ) -> StatResult<StatErps, StatFitShipError<!>, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match core_fit.get_stat_erps(option.incoming_dps, option.time, option.shield_perc) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => return StatResult::Error(err),
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| {
+        core_fit.get_stat_erps(option.incoming_dps, option.time, option.shield_perc)
+    })
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -374,50 +294,22 @@ fn get_cap_balance_stats(
     core_fit: &mut rc::FitMut,
     options: &[Result<StatOptionCapBlc, BrResolveError>],
 ) -> StatResult<Value, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match option {
-            Ok(option) => match core_fit.get_stat_cap_balance(option.src_kinds, option.time) {
-                Ok(stat) => stats.push(Ok(stat)),
-                Err(err) => match err.is_fatal() {
-                    true => return StatResult::Error(err),
-                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
-                },
-            },
-            Err(br_err) => {
-                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
-                continue;
-            }
-        };
-    }
-    StatResult::Result(stats)
+    collect_stats_err_both_br(options, |option| {
+        core_fit.get_stat_cap_balance(option.src_kinds, option.time)
+    })
 }
 fn get_cap_sim_stats(
     core_fit: &mut rc::FitMut,
     options: &[Result<StatOptionCapSim, BrResolveError>],
 ) -> StatResult<StatCapSim, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match option {
-            Ok(option) => match core_fit.get_stat_cap_sim(
-                option.cap_perc,
-                option.optional_reloads,
-                &option.stagger,
-                option.nosf_projectee_item_id.as_ref(),
-            ) {
-                Ok(stat) => stats.push(Ok(stat)),
-                Err(err) => match err.is_fatal() {
-                    true => return StatResult::Error(err),
-                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
-                },
-            },
-            Err(br_err) => {
-                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
-                continue;
-            }
-        };
-    }
-    StatResult::Result(stats)
+    collect_stats_err_both_br(options, |option| {
+        core_fit.get_stat_cap_sim(
+            option.cap_perc,
+            option.optional_reloads,
+            &option.stagger,
+            option.nosf_projectee_item_id.as_ref(),
+        )
+    })
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -427,39 +319,20 @@ fn get_incoming_jam_stats(
     core_fit: &mut rc::FitMut,
     options: &[StatOptionIncomingJam],
 ) -> StatResult<StatInJam, StatFitShipError<!>, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match core_fit.get_stat_incoming_jam(option.time) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => return StatResult::Error(err),
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| core_fit.get_stat_incoming_jam(option.time))
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Ship mobility
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_mass_stats(core_fit: &mut rc::FitMut, options: &[StatOptionMass]) -> StatResult<PValue, StatFitShipError<!>, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match core_fit.get_stat_mass(option.affectors) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => return StatResult::Error(err),
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| core_fit.get_stat_mass(option.affectors))
 }
 fn get_jump_stats(
     core_fit: &mut rc::FitMut,
     options: &[StatOptionJump],
 ) -> StatResult<StatJump, StatFitShipError<StatJumpError>, !> {
-    let mut stats = Vec::with_capacity(options.len());
-    for option in options.iter() {
-        match core_fit.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => return StatResult::Error(err),
-        }
-    }
-    StatResult::Result(stats)
+    collect_stats_err_inner(options, |option| {
+        core_fit.get_stat_jump(option.range, &option.passenger_fit_ids, option.passenger_fuel_affectors)
+    })
 }

@@ -2,10 +2,11 @@ use rc::{ItemCommon, Lender};
 
 use crate::{
     FitId, FleetId, ItemId,
+    err::BrResolveError,
     shared::OvrdMapHeavy,
     stats::{
-        FitStats, FleetStats, ItemStats, fit::FitStatsOptionsResolved, fleet::FleetStatsOptionsResolved,
-        item::ItemStatsOptionsResolved,
+        FitStats, FleetStats, ItemStats, StatBrFallibleError, StatResult, fatal::StatErrorFatality,
+        fit::FitStatsOptionsResolved, fleet::FleetStatsOptionsResolved, item::ItemStatsOptionsResolved,
     },
 };
 
@@ -118,4 +119,58 @@ where
         stats.push((item_id, options.execute(&mut core_item)));
     }
     stats
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Per-option stat getters
+////////////////////////////////////////////////////////////////////////////////////////////////////
+pub(in crate::stats) fn collect_stats_err_inner<O, T, E>(
+    options: &[O],
+    mut getter: impl FnMut(&O) -> Result<T, E>,
+) -> StatResult<T, E, !> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.iter() {
+        match getter(option) {
+            Ok(stat) => stats.push(Ok(stat)),
+            Err(err) => return StatResult::Error(err),
+        }
+    }
+    StatResult::Result(stats)
+}
+
+pub(in crate::stats) fn collect_stats_err_outer_br<O, T, E>(
+    options: &[Result<O, BrResolveError>],
+    mut getter: impl FnMut(&O) -> Result<T, E>,
+) -> StatResult<T, !, StatBrFallibleError<E>> {
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.iter() {
+        match option {
+            Ok(option) => stats.push(getter(option).map_err(StatBrFallibleError::Stat)),
+            Err(br_err) => stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone()))),
+        }
+    }
+    StatResult::Result(stats)
+}
+
+pub(in crate::stats) fn collect_stats_err_both_br<O, T, E>(
+    options: &[Result<O, BrResolveError>],
+    mut getter: impl FnMut(&O) -> Result<T, E>,
+) -> StatResult<T, E, StatBrFallibleError<E>>
+where
+    E: StatErrorFatality,
+{
+    let mut stats = Vec::with_capacity(options.len());
+    for option in options.iter() {
+        match option {
+            Ok(option) => match getter(option) {
+                Ok(stat) => stats.push(Ok(stat)),
+                Err(err) => match err.is_fatal() {
+                    true => return StatResult::Error(err),
+                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                },
+            },
+            Err(br_err) => stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone()))),
+        }
+    }
+    StatResult::Result(stats)
 }
