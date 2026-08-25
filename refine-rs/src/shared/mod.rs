@@ -1,4 +1,4 @@
-pub(crate) use backrefs::BrResolvable;
+pub(crate) use backrefs::{BrResolveFallible, BrResolveInfallible};
 pub use backrefs::{FitIdBr, FleetIdBr, ItemIdBr};
 pub(crate) use overridable::{OvrdCompact, OvrdMapHeavy, OvrdMapLight};
 pub use resp::{BrResolveError, CmdResp, CmdResps};

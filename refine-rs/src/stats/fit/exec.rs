@@ -1,10 +1,11 @@
 use crate::{
     PValue, Value,
+    err::BrResolveError,
     stats::{
-        FitStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
-        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump, StatOptionMass, StatOptionRps,
-        StatOutReps, StatResult, StatRps,
+        FitStats, StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionFitDmg, StatOptionFitMining,
+        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam, StatOptionJump,
+        StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatFitAppliedError, StatFitShipAppliedError, StatFitShipError, StatJumpError},
         fatal::StatErrorFatality,
         fit::FitStatsOptionsResolved,
@@ -218,20 +219,26 @@ impl FitStatsOptionsResolved {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_dmg_stats(
     core_fit: &mut rc::FitMut,
-    options: &[StatOptionFitDmg],
-) -> StatResult<StatDmg, !, StatFitAppliedError> {
+    options: &[Result<StatOptionFitDmg, BrResolveError>],
+) -> StatResult<StatDmg, !, StatBrFallibleError<StatFitAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fit
-                    .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
-                    .map(StatDmg::from_core_applied);
-                stats.push(stat);
-            }
-            None => {
-                let stat = StatDmg::from_core(core_fit.get_stat_dmg(option.item_kinds, option.time, option.crits));
-                stats.push(Ok(stat));
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat = core_fit
+                        .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
+                        .map(StatDmg::from_core_applied);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat = StatDmg::from_core(core_fit.get_stat_dmg(option.item_kinds, option.time, option.crits));
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
         }
     }
@@ -247,18 +254,25 @@ fn get_mps_stats(core_fit: &mut rc::FitMut, options: &[StatOptionFitMining]) -> 
 }
 fn get_outgoing_nps_stats(
     core_fit: &mut rc::FitMut,
-    options: &[StatOptionFitOutNps],
-) -> StatResult<PValue, !, StatFitAppliedError> {
+    options: &[Result<StatOptionFitOutNps, BrResolveError>],
+) -> StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
-                stats.push(stat);
-            }
-            None => {
-                let stat = core_fit.get_stat_outgoing_nps(option.item_kinds, option.time);
-                stats.push(Ok(stat));
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat =
+                        core_fit.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat = core_fit.get_stat_outgoing_nps(option.item_kinds, option.time);
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
         }
     }
@@ -266,39 +280,52 @@ fn get_outgoing_nps_stats(
 }
 fn get_outgoing_rps_stats(
     core_fit: &mut rc::FitMut,
-    options: &[StatOptionFitOutRps],
-) -> StatResult<StatOutReps, !, StatFitAppliedError> {
+    options: &[Result<StatOptionFitOutRps, BrResolveError>],
+) -> StatResult<StatOutReps, !, StatBrFallibleError<StatFitAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
-                stats.push(stat);
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat =
+                        core_fit.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat = core_fit.get_stat_outgoing_rps(option.item_kinds, option.time);
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-            None => {
-                let stat = core_fit.get_stat_outgoing_rps(option.item_kinds, option.time);
-                stats.push(Ok(stat));
-            }
-        }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_outgoing_cps_stats(
     core_fit: &mut rc::FitMut,
-    options: &[StatOptionFitOutCps],
-) -> StatResult<PValue, !, StatFitAppliedError> {
+    options: &[Result<StatOptionFitOutCps, BrResolveError>],
+) -> StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fit.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
-                stats.push(stat);
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat = core_fit.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat = core_fit.get_stat_outgoing_cps(option.time);
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-            None => {
-                let stat = core_fit.get_stat_outgoing_cps(option.time);
-                stats.push(Ok(stat));
-            }
-        }
+        };
     }
     StatResult::Result(stats)
 }
@@ -345,38 +372,50 @@ fn get_erps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_cap_balance_stats(
     core_fit: &mut rc::FitMut,
-    options: &[StatOptionCapBlc],
-) -> StatResult<Value, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> {
+    options: &[Result<StatOptionCapBlc, BrResolveError>],
+) -> StatResult<Value, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match core_fit.get_stat_cap_balance(option.src_kinds, option.time) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => match err.is_fatal() {
-                true => return StatResult::Error(err),
-                false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match core_fit.get_stat_cap_balance(option.src_kinds, option.time) {
+                Ok(stat) => stats.push(Ok(stat)),
+                Err(err) => match err.is_fatal() {
+                    true => return StatResult::Error(err),
+                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_cap_sim_stats(
     core_fit: &mut rc::FitMut,
-    options: &[StatOptionCapSim],
-) -> StatResult<StatCapSim, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> {
+    options: &[Result<StatOptionCapSim, BrResolveError>],
+) -> StatResult<StatCapSim, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match core_fit.get_stat_cap_sim(
-            option.cap_perc,
-            option.optional_reloads,
-            &option.stagger,
-            option.nosf_projectee_item_id.as_ref(),
-        ) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => match err.is_fatal() {
-                true => return StatResult::Error(err),
-                false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match core_fit.get_stat_cap_sim(
+                option.cap_perc,
+                option.optional_reloads,
+                &option.stagger,
+                option.nosf_projectee_item_id.as_ref(),
+            ) {
+                Ok(stat) => stats.push(Ok(stat)),
+                Err(err) => match err.is_fatal() {
+                    true => return StatResult::Error(err),
+                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }

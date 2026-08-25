@@ -1,11 +1,10 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
-    err::BrResolveError,
-    shared::BrResolvable,
+    shared::BrResolveInfallible,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
-        StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-        StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsResolved,
+        StatOptionInt, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
+        StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsResolved,
     },
 };
 
@@ -28,11 +27,11 @@ pub type ItemStatsOptionsBr = ItemStatsOptions<FitIdBr, ItemIdBr>;
 #[derive(Clone)]
 enum ItemStatOption<F, I> {
     // Output
-    Dmg(StatOptionExt<StatOptionItemDmg<I>>),
+    Dmg(StatOptionInt<StatOptionItemDmg<I>>),
     Mps(StatOptionExt<StatOptionItemMining>),
-    OutgoingNps(StatOptionExt<StatOptionItemOutNps<I>>),
-    OutgoingRps(StatOptionExt<StatOptionItemOutRps<I>>),
-    OutgoingCps(StatOptionExt<StatOptionItemOutCps<I>>),
+    OutgoingNps(StatOptionInt<StatOptionItemOutNps<I>>),
+    OutgoingRps(StatOptionInt<StatOptionItemOutRps<I>>),
+    OutgoingCps(StatOptionInt<StatOptionItemOutCps<I>>),
     // Tank
     Resists(bool),
     Hp(bool),
@@ -43,8 +42,8 @@ enum ItemStatOption<F, I> {
     BreachResist(bool),
     // Cap
     CapAmount(bool),
-    CapBalance(StatOptionExt<StatOptionCapBlc<I>>),
-    CapSim(StatOptionExt<StatOptionCapSim<I>>),
+    CapBalance(StatOptionInt<StatOptionCapBlc<I>>),
+    CapSim(StatOptionInt<StatOptionCapSim<I>>),
     NeutResist(bool),
     // Sensors
     Locks(bool),
@@ -90,7 +89,7 @@ impl<F, I> ItemStatsOptions<F, I> {
         }
     }
     pub fn with_dmg(mut self, option: StatOptionExt<StatOptionItemDmg<I>>) -> Self {
-        self.overrides.push(ItemStatOption::Dmg(option));
+        self.overrides.push(ItemStatOption::Dmg(option.into_internal()));
         self
     }
     pub fn with_mps(mut self, option: StatOptionExt<StatOptionItemMining>) -> Self {
@@ -98,15 +97,15 @@ impl<F, I> ItemStatsOptions<F, I> {
         self
     }
     pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionItemOutNps<I>>) -> Self {
-        self.overrides.push(ItemStatOption::OutgoingNps(option));
+        self.overrides.push(ItemStatOption::OutgoingNps(option.into_internal()));
         self
     }
     pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionItemOutRps<I>>) -> Self {
-        self.overrides.push(ItemStatOption::OutgoingRps(option));
+        self.overrides.push(ItemStatOption::OutgoingRps(option.into_internal()));
         self
     }
     pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCps<I>>) -> Self {
-        self.overrides.push(ItemStatOption::OutgoingCps(option));
+        self.overrides.push(ItemStatOption::OutgoingCps(option.into_internal()));
         self
     }
     pub fn with_resists(mut self, enabled: bool) -> Self {
@@ -142,11 +141,11 @@ impl<F, I> ItemStatsOptions<F, I> {
         self
     }
     pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc<I>>) -> Self {
-        self.overrides.push(ItemStatOption::CapBalance(option));
+        self.overrides.push(ItemStatOption::CapBalance(option.into_internal()));
         self
     }
     pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim<I>>) -> Self {
-        self.overrides.push(ItemStatOption::CapSim(option));
+        self.overrides.push(ItemStatOption::CapSim(option.into_internal()));
         self
     }
     pub fn with_neut_resist(mut self, enabled: bool) -> Self {
@@ -250,18 +249,18 @@ impl<F, I> ItemStatsOptions<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolvable for ItemStatsOptionsBr {
+impl BrResolveInfallible for ItemStatsOptionsBr {
     type Target = ItemStatsOptions;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_infallible(self, resps: &CmdResps) -> Self::Target {
         let mut overrides = Vec::with_capacity(self.overrides.len());
         for option in self.overrides.into_iter() {
             overrides.push(match option {
                 // Output
-                ItemStatOption::Dmg(option) => ItemStatOption::Dmg(option.br_resolve(resps)?),
+                ItemStatOption::Dmg(option) => ItemStatOption::Dmg(option.br_resolve_fallible(resps)),
                 ItemStatOption::Mps(option) => ItemStatOption::Mps(option),
-                ItemStatOption::OutgoingNps(option) => ItemStatOption::OutgoingNps(option.br_resolve(resps)?),
-                ItemStatOption::OutgoingRps(option) => ItemStatOption::OutgoingRps(option.br_resolve(resps)?),
-                ItemStatOption::OutgoingCps(option) => ItemStatOption::OutgoingCps(option.br_resolve(resps)?),
+                ItemStatOption::OutgoingNps(option) => ItemStatOption::OutgoingNps(option.br_resolve_fallible(resps)),
+                ItemStatOption::OutgoingRps(option) => ItemStatOption::OutgoingRps(option.br_resolve_fallible(resps)),
+                ItemStatOption::OutgoingCps(option) => ItemStatOption::OutgoingCps(option.br_resolve_fallible(resps)),
                 // Tank
                 ItemStatOption::Resists(option) => ItemStatOption::Resists(option),
                 ItemStatOption::Hp(option) => ItemStatOption::Hp(option),
@@ -272,8 +271,8 @@ impl BrResolvable for ItemStatsOptionsBr {
                 ItemStatOption::BreachResist(option) => ItemStatOption::BreachResist(option),
                 // Cap
                 ItemStatOption::CapAmount(option) => ItemStatOption::CapAmount(option),
-                ItemStatOption::CapBalance(option) => ItemStatOption::CapBalance(option.br_resolve(resps)?),
-                ItemStatOption::CapSim(option) => ItemStatOption::CapSim(option.br_resolve(resps)?),
+                ItemStatOption::CapBalance(option) => ItemStatOption::CapBalance(option.br_resolve_fallible(resps)),
+                ItemStatOption::CapSim(option) => ItemStatOption::CapSim(option.br_resolve_fallible(resps)),
                 ItemStatOption::NeutResist(option) => ItemStatOption::NeutResist(option),
                 // Sensors
                 ItemStatOption::Locks(option) => ItemStatOption::Locks(option),
@@ -291,7 +290,7 @@ impl BrResolvable for ItemStatsOptionsBr {
                 ItemStatOption::Mass(option) => ItemStatOption::Mass(option),
                 ItemStatOption::WarpSpeed(option) => ItemStatOption::WarpSpeed(option),
                 ItemStatOption::MaxWarpRange(option) => ItemStatOption::MaxWarpRange(option),
-                ItemStatOption::Jump(option) => ItemStatOption::Jump(option.br_resolve(resps)?),
+                ItemStatOption::Jump(option) => ItemStatOption::Jump(option.br_resolve_infallible(resps)),
                 // Misc
                 ItemStatOption::DroneControlRange(option) => ItemStatOption::DroneControlRange(option),
                 ItemStatOption::CanWarp(option) => ItemStatOption::CanWarp(option),
@@ -303,10 +302,10 @@ impl BrResolvable for ItemStatsOptionsBr {
                 ItemStatOption::CanTether(option) => ItemStatOption::CanTether(option),
             });
         }
-        Ok(Self::Target {
+        Self::Target {
             default: self.default,
             overrides,
-        })
+        }
     }
 }
 

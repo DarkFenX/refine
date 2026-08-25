@@ -3,7 +3,7 @@ use rc::{ItemCommon, Lender};
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolvable, OvrdCompact, OvrdMapHeavy},
+    shared::{BrResolveInfallible, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp, ItemStatsOptions,
         ItemStatsOptionsBr,
@@ -127,12 +127,12 @@ impl FleetStatsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsCmd, BrResolveError> {
-        Ok(FleetStatsCmd {
-            fleet_options: self.fleet_options.br_resolve(resps)?,
-            fit_options: self.fit_options.br_resolve(resps)?,
-            item_options: self.item_options.br_resolve(resps)?,
-        })
+    fn br_resolve(self, resps: &CmdResps) -> FleetStatsCmd {
+        FleetStatsCmd {
+            fleet_options: self.fleet_options.br_resolve_infallible(resps),
+            fit_options: self.fit_options.br_resolve(resps),
+            item_options: self.item_options.br_resolve(resps),
+        }
     }
 }
 
@@ -140,7 +140,7 @@ impl FleetStatsCmdCtxFleetBr {
     pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<FleetStatsCmdCtxFleet, BrResolveError> {
         Ok(FleetStatsCmdCtxFleet {
             fleet_id: resps.resolve_fleet_id(self.fleet_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

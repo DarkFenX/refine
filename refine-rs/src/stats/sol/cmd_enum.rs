@@ -64,7 +64,7 @@ impl ItemStatsCmdBr {
 impl SolStatsEnumCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolStatsEnumCmd, BrResolveError> {
         Ok(match self {
-            Self::SolStats(cmd) => SolStatsEnumCmd::SolStats(cmd.br_resolve(resps)?),
+            Self::SolStats(cmd) => SolStatsEnumCmd::SolStats(cmd.br_resolve(resps)),
             Self::FleetStats(cmd) => SolStatsEnumCmd::FleetStats(cmd.br_resolve(resps)?),
             Self::FitStats(cmd) => SolStatsEnumCmd::FitStats(cmd.br_resolve(resps)?),
             Self::ItemStats(cmd) => SolStatsEnumCmd::ItemStats(cmd.br_resolve(resps)?),

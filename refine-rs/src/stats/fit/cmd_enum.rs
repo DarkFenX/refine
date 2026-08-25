@@ -47,7 +47,7 @@ impl ItemStatsCmdBr {
 impl FitStatsEnumCmdBr {
     pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsEnumCmd, BrResolveError> {
         Ok(match self {
-            Self::FitStats(cmd) => FitStatsEnumCmd::FitStats(cmd.br_resolve(resps)?),
+            Self::FitStats(cmd) => FitStatsEnumCmd::FitStats(cmd.br_resolve(resps)),
             Self::ItemStats(cmd) => FitStatsEnumCmd::ItemStats(cmd.br_resolve(resps)?),
         })
     }

@@ -1,16 +1,19 @@
-use crate::stats::{
-    StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-    StatOptionJump, StatOptionMass, StatOptionRps,
+use crate::{
+    err::BrResolveError,
+    stats::{
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
+        StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
+        StatOptionInt, StatOptionJump, StatOptionMass, StatOptionRps,
+    },
 };
 
 pub(in crate::stats) struct FitStatsOptionsResolved {
     // Fit output stats
-    pub(super) dmg: Vec<StatOptionFitDmg>,
+    pub(super) dmg: Vec<Result<StatOptionFitDmg, BrResolveError>>,
     pub(super) mps: Vec<StatOptionFitMining>,
-    pub(super) outgoing_nps: Vec<StatOptionFitOutNps>,
-    pub(super) outgoing_rps: Vec<StatOptionFitOutRps>,
-    pub(super) outgoing_cps: Vec<StatOptionFitOutCps>,
+    pub(super) outgoing_nps: Vec<Result<StatOptionFitOutNps, BrResolveError>>,
+    pub(super) outgoing_rps: Vec<Result<StatOptionFitOutRps, BrResolveError>>,
+    pub(super) outgoing_cps: Vec<Result<StatOptionFitOutCps, BrResolveError>>,
     // Fit resources
     pub(super) cpu: bool,
     pub(super) powergrid: bool,
@@ -45,8 +48,8 @@ pub(in crate::stats) struct FitStatsOptionsResolved {
     pub(super) breach_resist: bool,
     // Ship cap
     pub(super) cap_amount: bool,
-    pub(super) cap_balance: Vec<StatOptionCapBlc>,
-    pub(super) cap_sim: Vec<StatOptionCapSim>,
+    pub(super) cap_balance: Vec<Result<StatOptionCapBlc, BrResolveError>>,
+    pub(super) cap_sim: Vec<Result<StatOptionCapSim, BrResolveError>>,
     pub(super) neut_resist: bool,
     // Ship sensors
     pub(super) locks: bool,
@@ -79,11 +82,11 @@ impl FitStatsOptionsResolved {
     pub(super) fn from_default(default: bool) -> Self {
         Self {
             // Fit output stats
-            dmg: StatOptionExt::from_default(default),
+            dmg: StatOptionInt::from_default(default),
             mps: StatOptionExt::from_default(default),
-            outgoing_nps: StatOptionExt::from_default(default),
-            outgoing_rps: StatOptionExt::from_default(default),
-            outgoing_cps: StatOptionExt::from_default(default),
+            outgoing_nps: StatOptionInt::from_default(default),
+            outgoing_rps: StatOptionInt::from_default(default),
+            outgoing_cps: StatOptionInt::from_default(default),
             // Fit resources
             cpu: default,
             powergrid: default,
@@ -118,8 +121,8 @@ impl FitStatsOptionsResolved {
             breach_resist: default,
             // Ship cap
             cap_amount: default,
-            cap_balance: StatOptionExt::from_default(default),
-            cap_sim: StatOptionExt::from_default(default),
+            cap_balance: StatOptionInt::from_default(default),
+            cap_sim: StatOptionInt::from_default(default),
             neut_resist: default,
             // Ship sensors
             locks: default,

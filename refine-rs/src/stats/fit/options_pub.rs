@@ -1,11 +1,10 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
-    err::BrResolveError,
-    shared::BrResolvable,
+    shared::BrResolveInfallible,
     stats::{
         StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
         StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-        StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsResolved,
+        StatOptionInt, StatOptionJump, StatOptionMass, StatOptionRps, fit::FitStatsOptionsResolved,
     },
 };
 
@@ -28,11 +27,11 @@ pub type FitStatsOptionsBr = FitStatsOptions<FitIdBr, ItemIdBr>;
 #[derive(Clone)]
 enum FitStatOption<F, I> {
     // Fit output stats
-    Dmg(StatOptionExt<StatOptionFitDmg<I>>),
+    Dmg(StatOptionInt<StatOptionFitDmg<I>>),
     Mps(StatOptionExt<StatOptionFitMining>),
-    OutgoingNps(StatOptionExt<StatOptionFitOutNps<I>>),
-    OutgoingRps(StatOptionExt<StatOptionFitOutRps<I>>),
-    OutgoingCps(StatOptionExt<StatOptionFitOutCps<I>>),
+    OutgoingNps(StatOptionInt<StatOptionFitOutNps<I>>),
+    OutgoingRps(StatOptionInt<StatOptionFitOutRps<I>>),
+    OutgoingCps(StatOptionInt<StatOptionFitOutCps<I>>),
     // Fit resources
     Cpu(bool),
     Powergrid(bool),
@@ -67,8 +66,8 @@ enum FitStatOption<F, I> {
     BreachResist(bool),
     // Ship cap
     CapAmount(bool),
-    CapBalance(StatOptionExt<StatOptionCapBlc<I>>),
-    CapSim(StatOptionExt<StatOptionCapSim<I>>),
+    CapBalance(StatOptionInt<StatOptionCapBlc<I>>),
+    CapSim(StatOptionInt<StatOptionCapSim<I>>),
     NeutResist(bool),
     // Ship sensors
     Locks(bool),
@@ -115,7 +114,7 @@ impl<F, I> FitStatsOptions<F, I> {
     }
     // Fit output stats
     pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg<I>>) -> Self {
-        self.overrides.push(FitStatOption::Dmg(option));
+        self.overrides.push(FitStatOption::Dmg(option.into_internal()));
         self
     }
     pub fn with_mps(mut self, option: StatOptionExt<StatOptionFitMining>) -> Self {
@@ -123,15 +122,15 @@ impl<F, I> FitStatsOptions<F, I> {
         self
     }
     pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps<I>>) -> Self {
-        self.overrides.push(FitStatOption::OutgoingNps(option));
+        self.overrides.push(FitStatOption::OutgoingNps(option.into_internal()));
         self
     }
     pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps<I>>) -> Self {
-        self.overrides.push(FitStatOption::OutgoingRps(option));
+        self.overrides.push(FitStatOption::OutgoingRps(option.into_internal()));
         self
     }
     pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps<I>>) -> Self {
-        self.overrides.push(FitStatOption::OutgoingCps(option));
+        self.overrides.push(FitStatOption::OutgoingCps(option.into_internal()));
         self
     }
     // Fit resources
@@ -259,11 +258,11 @@ impl<F, I> FitStatsOptions<F, I> {
         self
     }
     pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc<I>>) -> Self {
-        self.overrides.push(FitStatOption::CapBalance(option));
+        self.overrides.push(FitStatOption::CapBalance(option.into_internal()));
         self
     }
     pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim<I>>) -> Self {
-        self.overrides.push(FitStatOption::CapSim(option));
+        self.overrides.push(FitStatOption::CapSim(option.into_internal()));
         self
     }
     pub fn with_neut_resist(mut self, enabled: bool) -> Self {
@@ -370,18 +369,18 @@ impl<F, I> FitStatsOptions<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolvable for FitStatsOptionsBr {
+impl BrResolveInfallible for FitStatsOptionsBr {
     type Target = FitStatsOptions;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_infallible(self, resps: &CmdResps) -> Self::Target {
         let mut overrides = Vec::with_capacity(self.overrides.len());
         for option in self.overrides.into_iter() {
             overrides.push(match option {
                 // Fit output stats
-                FitStatOption::Dmg(option) => FitStatOption::Dmg(option.br_resolve(resps)?),
+                FitStatOption::Dmg(option) => FitStatOption::Dmg(option.br_resolve_fallible(resps)),
                 FitStatOption::Mps(option) => FitStatOption::Mps(option),
-                FitStatOption::OutgoingNps(option) => FitStatOption::OutgoingNps(option.br_resolve(resps)?),
-                FitStatOption::OutgoingRps(option) => FitStatOption::OutgoingRps(option.br_resolve(resps)?),
-                FitStatOption::OutgoingCps(option) => FitStatOption::OutgoingCps(option.br_resolve(resps)?),
+                FitStatOption::OutgoingNps(option) => FitStatOption::OutgoingNps(option.br_resolve_fallible(resps)),
+                FitStatOption::OutgoingRps(option) => FitStatOption::OutgoingRps(option.br_resolve_fallible(resps)),
+                FitStatOption::OutgoingCps(option) => FitStatOption::OutgoingCps(option.br_resolve_fallible(resps)),
                 // Fit resources
                 FitStatOption::Cpu(option) => FitStatOption::Cpu(option),
                 FitStatOption::Powergrid(option) => FitStatOption::Powergrid(option),
@@ -416,8 +415,8 @@ impl BrResolvable for FitStatsOptionsBr {
                 FitStatOption::BreachResist(option) => FitStatOption::BreachResist(option),
                 // Ship cap
                 FitStatOption::CapAmount(option) => FitStatOption::CapAmount(option),
-                FitStatOption::CapBalance(option) => FitStatOption::CapBalance(option.br_resolve(resps)?),
-                FitStatOption::CapSim(option) => FitStatOption::CapSim(option.br_resolve(resps)?),
+                FitStatOption::CapBalance(option) => FitStatOption::CapBalance(option.br_resolve_fallible(resps)),
+                FitStatOption::CapSim(option) => FitStatOption::CapSim(option.br_resolve_fallible(resps)),
                 FitStatOption::NeutResist(option) => FitStatOption::NeutResist(option),
                 // Ship sensors
                 FitStatOption::Locks(option) => FitStatOption::Locks(option),
@@ -435,7 +434,7 @@ impl BrResolvable for FitStatsOptionsBr {
                 FitStatOption::Mass(option) => FitStatOption::Mass(option),
                 FitStatOption::WarpSpeed(option) => FitStatOption::WarpSpeed(option),
                 FitStatOption::MaxWarpRange(option) => FitStatOption::MaxWarpRange(option),
-                FitStatOption::Jump(option) => FitStatOption::Jump(option.br_resolve(resps)?),
+                FitStatOption::Jump(option) => FitStatOption::Jump(option.br_resolve_infallible(resps)),
                 // Ship misc stats
                 FitStatOption::DroneControlRange(option) => FitStatOption::DroneControlRange(option),
                 FitStatOption::CanWarp(option) => FitStatOption::CanWarp(option),
@@ -447,10 +446,10 @@ impl BrResolvable for FitStatsOptionsBr {
                 FitStatOption::CanTether(option) => FitStatOption::CanTether(option),
             });
         }
-        Ok(Self::Target {
+        Self::Target {
             default: self.default,
             overrides,
-        })
+        }
     }
 }
 

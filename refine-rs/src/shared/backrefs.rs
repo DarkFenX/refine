@@ -1,8 +1,13 @@
 use crate::{CmdResps, FitId, FleetId, ItemId, err::BrResolveError};
 
-pub(crate) trait BrResolvable {
+pub(crate) trait BrResolveInfallible {
     type Target;
-    fn br_resolve(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError>;
+    fn br_resolve_infallible(self, cmd_resps: &CmdResps) -> Self::Target;
+}
+
+pub(crate) trait BrResolveFallible {
+    type Target;
+    fn br_resolve_fallible(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError>;
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -22,9 +27,9 @@ impl From<FleetId> for FleetIdBr {
         FleetIdBr::Id(fleet_id)
     }
 }
-impl BrResolvable for FleetIdBr {
+impl BrResolveFallible for FleetIdBr {
     type Target = FleetId;
-    fn br_resolve(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_fallible(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         cmd_resps.resolve_fleet_id(self)
     }
 }
@@ -46,9 +51,9 @@ impl From<FitId> for FitIdBr {
         FitIdBr::Id(fit_id)
     }
 }
-impl BrResolvable for FitIdBr {
+impl BrResolveFallible for FitIdBr {
     type Target = FitId;
-    fn br_resolve(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_fallible(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         cmd_resps.resolve_fit_id(self)
     }
 }
@@ -71,9 +76,9 @@ impl From<ItemId> for ItemIdBr {
         ItemIdBr::Id(item_id)
     }
 }
-impl BrResolvable for ItemIdBr {
+impl BrResolveFallible for ItemIdBr {
     type Target = ItemId;
-    fn br_resolve(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_fallible(self, cmd_resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         cmd_resps.resolve_item_id(self)
     }
 }

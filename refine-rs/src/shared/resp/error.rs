@@ -1,4 +1,4 @@
-#[derive(Debug, thiserror::Error)]
+#[derive(Clone, Debug, thiserror::Error)]
 pub enum BrResolveError {
     #[error("referenced command #{0} does not have results recorded")]
     NotFound(usize),

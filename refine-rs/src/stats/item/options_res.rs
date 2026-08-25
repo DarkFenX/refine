@@ -1,16 +1,19 @@
-use crate::stats::{
-    StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
-    StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-    StatOptionJump, StatOptionMass, StatOptionRps,
+use crate::{
+    err::BrResolveError,
+    stats::{
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
+        StatOptionInt, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
+        StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps,
+    },
 };
 
 pub(in crate::stats) struct ItemStatsOptionsResolved {
     // Output
-    pub(super) dmg: Vec<StatOptionItemDmg>,
+    pub(super) dmg: Vec<Result<StatOptionItemDmg, BrResolveError>>,
     pub(super) mps: Vec<StatOptionItemMining>,
-    pub(super) outgoing_nps: Vec<StatOptionItemOutNps>,
-    pub(super) outgoing_rps: Vec<StatOptionItemOutRps>,
-    pub(super) outgoing_cps: Vec<StatOptionItemOutCps>,
+    pub(super) outgoing_nps: Vec<Result<StatOptionItemOutNps, BrResolveError>>,
+    pub(super) outgoing_rps: Vec<Result<StatOptionItemOutRps, BrResolveError>>,
+    pub(super) outgoing_cps: Vec<Result<StatOptionItemOutCps, BrResolveError>>,
     // Tank
     pub(super) resists: bool,
     pub(super) hp: bool,
@@ -21,8 +24,8 @@ pub(in crate::stats) struct ItemStatsOptionsResolved {
     pub(super) breach_resist: bool,
     // Cap
     pub(super) cap_amount: bool,
-    pub(super) cap_balance: Vec<StatOptionCapBlc>,
-    pub(super) cap_sim: Vec<StatOptionCapSim>,
+    pub(super) cap_balance: Vec<Result<StatOptionCapBlc, BrResolveError>>,
+    pub(super) cap_sim: Vec<Result<StatOptionCapSim, BrResolveError>>,
     pub(super) neut_resist: bool,
     // Sensors
     pub(super) locks: bool,
@@ -55,11 +58,11 @@ impl ItemStatsOptionsResolved {
     pub(super) fn from_default(default: bool) -> Self {
         Self {
             // Output
-            dmg: StatOptionExt::from_default(default),
+            dmg: StatOptionInt::from_default(default),
             mps: StatOptionExt::from_default(default),
-            outgoing_nps: StatOptionExt::from_default(default),
-            outgoing_rps: StatOptionExt::from_default(default),
-            outgoing_cps: StatOptionExt::from_default(default),
+            outgoing_nps: StatOptionInt::from_default(default),
+            outgoing_rps: StatOptionInt::from_default(default),
+            outgoing_cps: StatOptionInt::from_default(default),
             // Tank
             resists: default,
             hp: default,
@@ -70,8 +73,8 @@ impl ItemStatsOptionsResolved {
             breach_resist: default,
             // Cap
             cap_amount: default,
-            cap_balance: StatOptionExt::from_default(default),
-            cap_sim: StatOptionExt::from_default(default),
+            cap_balance: StatOptionInt::from_default(default),
+            cap_sim: StatOptionInt::from_default(default),
             neut_resist: default,
             // Sensors
             locks: default,

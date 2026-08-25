@@ -1,8 +1,8 @@
 use crate::{
     Count, PValue, UnitInterval, Value,
     stats::{
-        StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining, StatOutReps, StatResists,
-        StatResource, StatResult, StatRps, StatSensors, StatSlot,
+        StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatHp, StatInJam, StatJump, StatMining,
+        StatOutReps, StatResists, StatResource, StatResult, StatRps, StatSensors, StatSlot,
         err::{
             StatAgilityError, StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
             StatJumpError, StatMaxWarpRangeError, StatProbingSizeError, StatWarpSpeedError,
@@ -15,15 +15,15 @@ use crate::{
 pub struct FitStats {
     // Fit output stats
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub dmg: StatResult<StatDmg, !, StatFitAppliedError> = StatResult::NotRequested,
+    pub dmg: StatResult<StatDmg, !, StatBrFallibleError<StatFitAppliedError>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub mps: StatResult<StatMining, !, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub outgoing_nps: StatResult<PValue, !, StatFitAppliedError> = StatResult::NotRequested,
+    pub outgoing_nps: StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub outgoing_rps: StatResult<StatOutReps, !, StatFitAppliedError> = StatResult::NotRequested,
+    pub outgoing_rps: StatResult<StatOutReps, !, StatBrFallibleError<StatFitAppliedError>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub outgoing_cps: StatResult<PValue, !, StatFitAppliedError> = StatResult::NotRequested,
+    pub outgoing_cps: StatResult<PValue, !, StatBrFallibleError<StatFitAppliedError>> = StatResult::NotRequested,
     // Fit resources
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub cpu: StatResult<StatResource, !, !> = StatResult::NotRequested,
@@ -89,9 +89,9 @@ pub struct FitStats {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub cap_amount: StatResult<PValue, StatFitShipError<!>, !> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub cap_balance: StatResult<Value, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> = StatResult::NotRequested,
+    pub cap_balance: StatResult<Value, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
-    pub cap_sim: StatResult<StatCapSim, StatFitShipAppliedError<!>, StatFitShipAppliedError<!>> = StatResult::NotRequested,
+    pub cap_sim: StatResult<StatCapSim, StatFitShipAppliedError<!>, StatBrFallibleError<StatFitShipAppliedError<!>>> = StatResult::NotRequested,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "StatResult::is_not_requested"))]
     pub neut_resist: StatResult<UnitInterval, StatFitShipError<!>, !> = StatResult::NotRequested,
     // Ship sensors

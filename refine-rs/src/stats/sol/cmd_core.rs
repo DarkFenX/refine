@@ -1,6 +1,5 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
-    err::BrResolveError,
     shared::{OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, ItemStatsOptions,
@@ -116,12 +115,12 @@ impl SolStatsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolStatsCmdBr {
-    pub(crate) fn br_resolve(self, resps: &CmdResps) -> Result<SolStatsCmd, BrResolveError> {
-        Ok(SolStatsCmd {
-            fleet_options: self.fleet_options.br_resolve(resps)?,
-            fit_options: self.fit_options.br_resolve(resps)?,
-            item_options: self.item_options.br_resolve(resps)?,
-        })
+    pub(crate) fn br_resolve(self, resps: &CmdResps) -> SolStatsCmd {
+        SolStatsCmd {
+            fleet_options: self.fleet_options.br_resolve(resps),
+            fit_options: self.fit_options.br_resolve(resps),
+            item_options: self.item_options.br_resolve(resps),
+        }
     }
 }
 

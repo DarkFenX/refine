@@ -2,9 +2,10 @@ use rc::ItemMutCommon;
 
 use crate::{
     PValue, Value,
+    err::BrResolveError,
     stats::{
-        ItemStats, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining, StatOptionCapBlc,
-        StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
+        ItemStats, StatBrFallibleError, StatCapSim, StatDmg, StatEhp, StatErps, StatInJam, StatJump, StatMining,
+        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionIncomingJam, StatOptionItemDmg,
         StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps, StatOptionJump,
         StatOptionMass, StatOptionRps, StatOutReps, StatResult, StatRps,
         err::{StatItemAppliedError, StatItemError, StatJumpError},
@@ -148,39 +149,45 @@ impl ItemStatsOptionsResolved {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_dmg_stats(
     core_item: &mut rc::ItemMut,
-    options: &[StatOptionItemDmg],
-) -> StatResult<StatDmg, StatItemAppliedError<!>, StatItemAppliedError<!>> {
+    options: &[Result<StatOptionItemDmg, BrResolveError>],
+) -> StatResult<StatDmg, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                match core_item.get_stat_dmg_applied(
-                    option.time,
-                    option.crits,
-                    option.charges,
-                    option.state,
-                    &projectee_item_id,
-                ) {
-                    Ok(stat) => stats.push(Ok(StatDmg::from_core_applied(stat))),
-                    Err(err) => match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
-                    },
-                };
-            }
-            None => {
-                match core_item.get_stat_dmg(option.time, option.crits, option.charges, option.state) {
-                    Ok(stat) => stats.push(Ok(StatDmg::from_core(stat))),
-                    Err(err) => {
-                        let err = conv_err_item(err);
-                        match err.is_fatal() {
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    match core_item.get_stat_dmg_applied(
+                        option.time,
+                        option.crits,
+                        option.charges,
+                        option.state,
+                        &projectee_item_id,
+                    ) {
+                        Ok(stat) => stats.push(Ok(StatDmg::from_core_applied(stat))),
+                        Err(err) => match err.is_fatal() {
                             true => return StatResult::Error(err),
-                            false => stats.push(Err(err)),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        },
+                    };
+                }
+                None => {
+                    match core_item.get_stat_dmg(option.time, option.crits, option.charges, option.state) {
+                        Ok(stat) => stats.push(Ok(StatDmg::from_core(stat))),
+                        Err(err) => {
+                            let err = conv_err_item(err);
+                            match err.is_fatal() {
+                                true => return StatResult::Error(err),
+                                false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                            }
                         }
-                    }
-                };
+                    };
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-        }
+        };
     }
     StatResult::Result(stats)
 }
@@ -199,96 +206,114 @@ fn get_mps_stats(
 }
 fn get_outgoing_nps_stats(
     core_item: &mut rc::ItemMut,
-    options: &[StatOptionItemOutNps],
-) -> StatResult<PValue, StatItemAppliedError<!>, StatItemAppliedError<!>> {
+    options: &[Result<StatOptionItemOutNps, BrResolveError>],
+) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                match core_item.get_stat_outgoing_nps_applied(
-                    option.time,
-                    option.charges,
-                    option.state,
-                    &projectee_item_id,
-                ) {
-                    Ok(stat) => stats.push(Ok(stat)),
-                    Err(err) => match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
-                    },
-                }
-            }
-            None => match core_item.get_stat_outgoing_nps(option.time, option.charges, option.state) {
-                Ok(stat) => stats.push(Ok(stat)),
-                Err(err) => {
-                    let err = conv_err_item(err);
-                    match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    match core_item.get_stat_outgoing_nps_applied(
+                        option.time,
+                        option.charges,
+                        option.state,
+                        &projectee_item_id,
+                    ) {
+                        Ok(stat) => stats.push(Ok(stat)),
+                        Err(err) => match err.is_fatal() {
+                            true => return StatResult::Error(err),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        },
                     }
                 }
+                None => match core_item.get_stat_outgoing_nps(option.time, option.charges, option.state) {
+                    Ok(stat) => stats.push(Ok(stat)),
+                    Err(err) => {
+                        let err = conv_err_item(err);
+                        match err.is_fatal() {
+                            true => return StatResult::Error(err),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        }
+                    }
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_outgoing_rps_stats(
     core_item: &mut rc::ItemMut,
-    options: &[StatOptionItemOutRps],
-) -> StatResult<StatOutReps, StatItemAppliedError<!>, StatItemAppliedError<!>> {
+    options: &[Result<StatOptionItemOutRps, BrResolveError>],
+) -> StatResult<StatOutReps, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                match core_item.get_stat_outgoing_rps_applied(option.time, option.state, &projectee_item_id) {
-                    Ok(stat) => stats.push(Ok(stat)),
-                    Err(err) => match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
-                    },
-                }
-            }
-            None => match core_item.get_stat_outgoing_rps(option.time, option.state) {
-                Ok(stat) => stats.push(Ok(stat)),
-                Err(err) => {
-                    let err = conv_err_item(err);
-                    match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    match core_item.get_stat_outgoing_rps_applied(option.time, option.state, &projectee_item_id) {
+                        Ok(stat) => stats.push(Ok(stat)),
+                        Err(err) => match err.is_fatal() {
+                            true => return StatResult::Error(err),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        },
                     }
                 }
+                None => match core_item.get_stat_outgoing_rps(option.time, option.state) {
+                    Ok(stat) => stats.push(Ok(stat)),
+                    Err(err) => {
+                        let err = conv_err_item(err);
+                        match err.is_fatal() {
+                            true => return StatResult::Error(err),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        }
+                    }
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_outgoing_cps_stats(
     core_item: &mut rc::ItemMut,
-    options: &[StatOptionItemOutCps],
-) -> StatResult<PValue, StatItemAppliedError<!>, StatItemAppliedError<!>> {
+    options: &[Result<StatOptionItemOutCps, BrResolveError>],
+) -> StatResult<PValue, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                match core_item.get_stat_outgoing_cps_applied(option.time, option.state, &projectee_item_id) {
-                    Ok(stat) => stats.push(Ok(stat)),
-                    Err(err) => match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
-                    },
-                }
-            }
-            None => match core_item.get_stat_outgoing_cps(option.time, option.state) {
-                Ok(stat) => stats.push(Ok(stat)),
-                Err(err) => {
-                    let err = conv_err_item(err);
-                    match err.is_fatal() {
-                        true => return StatResult::Error(err),
-                        false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    match core_item.get_stat_outgoing_cps_applied(option.time, option.state, &projectee_item_id) {
+                        Ok(stat) => stats.push(Ok(stat)),
+                        Err(err) => match err.is_fatal() {
+                            true => return StatResult::Error(err),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        },
                     }
                 }
+                None => match core_item.get_stat_outgoing_cps(option.time, option.state) {
+                    Ok(stat) => stats.push(Ok(stat)),
+                    Err(err) => {
+                        let err = conv_err_item(err);
+                        match err.is_fatal() {
+                            true => return StatResult::Error(err),
+                            false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                        }
+                    }
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }
@@ -335,38 +360,50 @@ fn get_erps_stats(
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 fn get_cap_balance_stats(
     core_item: &mut rc::ItemMut,
-    options: &[StatOptionCapBlc],
-) -> StatResult<Value, StatItemAppliedError<!>, StatItemAppliedError<!>> {
+    options: &[Result<StatOptionCapBlc, BrResolveError>],
+) -> StatResult<Value, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match core_item.get_stat_cap_balance(option.src_kinds, option.time) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => match err.is_fatal() {
-                true => return StatResult::Error(err),
-                false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match core_item.get_stat_cap_balance(option.src_kinds, option.time) {
+                Ok(stat) => stats.push(Ok(stat)),
+                Err(err) => match err.is_fatal() {
+                    true => return StatResult::Error(err),
+                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_cap_sim_stats(
     core_item: &mut rc::ItemMut,
-    options: &[StatOptionCapSim],
-) -> StatResult<StatCapSim, StatItemAppliedError<!>, StatItemAppliedError<!>> {
+    options: &[Result<StatOptionCapSim, BrResolveError>],
+) -> StatResult<StatCapSim, StatItemAppliedError<!>, StatBrFallibleError<StatItemAppliedError<!>>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match core_item.get_stat_cap_sim(
-            option.cap_perc,
-            option.optional_reloads,
-            &option.stagger,
-            option.nosf_projectee_item_id.as_ref(),
-        ) {
-            Ok(stat) => stats.push(Ok(stat)),
-            Err(err) => match err.is_fatal() {
-                true => return StatResult::Error(err),
-                false => stats.push(Err(err)),
+        match option {
+            Ok(option) => match core_item.get_stat_cap_sim(
+                option.cap_perc,
+                option.optional_reloads,
+                &option.stagger,
+                option.nosf_projectee_item_id.as_ref(),
+            ) {
+                Ok(stat) => stats.push(Ok(stat)),
+                Err(err) => match err.is_fatal() {
+                    true => return StatResult::Error(err),
+                    false => stats.push(Err(StatBrFallibleError::Stat(err))),
+                },
             },
-        }
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
+            }
+        };
     }
     StatResult::Result(stats)
 }

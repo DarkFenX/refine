@@ -4,6 +4,7 @@ pub use fit::{
 };
 pub use fleet::{FleetStats, FleetStatsCmd, FleetStatsCmdBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp};
 pub use item::{ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp};
+pub(in crate::stats) use option::StatOptionInt;
 pub use option::{
     StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
     StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
@@ -21,7 +22,9 @@ pub use rc::{
         StatSensors, StatSensorsKind, StatSlot, StatTimeOptions, StatTimeOptionsBurst, StatTimeOptionsSim,
     },
 };
-pub use result_details::{StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult};
+pub use result_details::{
+    StatBrFallibleError, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
+};
 pub(crate) use sol::SolStatsEnumCmd;
 pub use sol::{SolStatsCmd, SolStatsCmdBr, SolStatsEnumCmdBr, SolStatsResp};
 

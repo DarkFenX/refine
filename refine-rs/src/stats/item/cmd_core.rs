@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::BrResolvable,
+    shared::BrResolveInfallible,
     stats::{ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp},
 };
 
@@ -72,10 +72,10 @@ impl ItemStatsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsCmdBr {
-    fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsCmd, BrResolveError> {
-        Ok(ItemStatsCmd {
-            item_options: self.item_options.br_resolve(resps)?,
-        })
+    fn br_resolve(self, resps: &CmdResps) -> ItemStatsCmd {
+        ItemStatsCmd {
+            item_options: self.item_options.br_resolve_infallible(resps),
+        }
     }
 }
 
@@ -83,7 +83,7 @@ impl ItemStatsCmdCtxItemBr {
     pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<ItemStatsCmdCtxItem, BrResolveError> {
         Ok(ItemStatsCmdCtxItem {
             item_id: resps.resolve_item_id(self.item_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

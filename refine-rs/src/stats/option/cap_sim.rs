@@ -1,5 +1,5 @@
 use crate::{
-    CmdResps, ItemId, ItemIdBr, OptionalReload, UnitInterval, err::BrResolveError, shared::BrResolvable,
+    CmdResps, ItemId, ItemIdBr, OptionalReload, UnitInterval, err::BrResolveError, shared::BrResolveFallible,
     stats::StatCapSimStagger,
 };
 
@@ -26,9 +26,9 @@ impl<I> Default for StatOptionCapSim<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolvable for StatOptionCapSim<ItemIdBr> {
+impl BrResolveFallible for StatOptionCapSim<ItemIdBr> {
     type Target = StatOptionCapSim<ItemId>;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             cap_perc: self.cap_perc,
             optional_reloads: self.optional_reloads,

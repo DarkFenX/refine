@@ -1,9 +1,10 @@
 use crate::{
     PValue,
+    err::BrResolveError,
     stats::{
-        FleetStats, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps,
-        StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult, err::StatFleetAppliedError,
-        fleet::FleetStatsOptionsResolved,
+        FleetStats, StatBrFallibleError, StatDmg, StatMining, StatOptionFitDmg, StatOptionFitMining,
+        StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionMass, StatOutReps, StatResult,
+        err::StatFleetAppliedError, fleet::FleetStatsOptionsResolved,
     },
 };
 
@@ -34,22 +35,29 @@ impl FleetStatsOptionsResolved {
 
 fn get_dmg_stats(
     core_fleet: &mut rc::FleetMut,
-    options: &[StatOptionFitDmg],
-) -> StatResult<StatDmg, !, StatFleetAppliedError> {
+    options: &[Result<StatOptionFitDmg, BrResolveError>],
+) -> StatResult<StatDmg, !, StatBrFallibleError<StatFleetAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fleet
-                    .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
-                    .map(StatDmg::from_core_applied);
-                stats.push(stat);
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat = core_fleet
+                        .get_stat_dmg_applied(option.item_kinds, option.time, option.crits, &projectee_item_id)
+                        .map(StatDmg::from_core_applied);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat =
+                        StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time, option.crits));
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-            None => {
-                let stat = StatDmg::from_core(core_fleet.get_stat_dmg(option.item_kinds, option.time, option.crits));
-                stats.push(Ok(stat));
-            }
-        }
+        };
     }
     StatResult::Result(stats)
 }
@@ -63,58 +71,78 @@ fn get_mps_stats(core_fleet: &mut rc::FleetMut, options: &[StatOptionFitMining])
 }
 fn get_outgoing_nps_stats(
     core_fleet: &mut rc::FleetMut,
-    options: &[StatOptionFitOutNps],
-) -> StatResult<PValue, !, StatFleetAppliedError> {
+    options: &[Result<StatOptionFitOutNps, BrResolveError>],
+) -> StatResult<PValue, !, StatBrFallibleError<StatFleetAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fleet.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
-                stats.push(stat)
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat =
+                        core_fleet.get_stat_outgoing_nps_applied(option.item_kinds, option.time, &projectee_item_id);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat))
+                }
+                None => {
+                    let stat = core_fleet.get_stat_outgoing_nps(option.item_kinds, option.time);
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-            None => {
-                let stat = core_fleet.get_stat_outgoing_nps(option.item_kinds, option.time);
-                stats.push(Ok(stat));
-            }
-        }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_outgoing_rps_stats(
     core_fleet: &mut rc::FleetMut,
-    options: &[StatOptionFitOutRps],
-) -> StatResult<StatOutReps, !, StatFleetAppliedError> {
+    options: &[Result<StatOptionFitOutRps, BrResolveError>],
+) -> StatResult<StatOutReps, !, StatBrFallibleError<StatFleetAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fleet.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
-                stats.push(stat);
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat =
+                        core_fleet.get_stat_outgoing_rps_applied(option.item_kinds, option.time, &projectee_item_id);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat = core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time);
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-            None => {
-                let stat = core_fleet.get_stat_outgoing_rps(option.item_kinds, option.time);
-                stats.push(Ok(stat));
-            }
-        }
+        };
     }
     StatResult::Result(stats)
 }
 fn get_outgoing_cps_stats(
     core_fleet: &mut rc::FleetMut,
-    options: &[StatOptionFitOutCps],
-) -> StatResult<PValue, !, StatFleetAppliedError> {
+    options: &[Result<StatOptionFitOutCps, BrResolveError>],
+) -> StatResult<PValue, !, StatBrFallibleError<StatFleetAppliedError>> {
     let mut stats = Vec::with_capacity(options.len());
     for option in options.iter() {
-        match option.projectee_item_id {
-            Some(projectee_item_id) => {
-                let stat = core_fleet.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
-                stats.push(stat);
+        match option {
+            Ok(option) => match option.projectee_item_id {
+                Some(projectee_item_id) => {
+                    let stat = core_fleet.get_stat_outgoing_cps_applied(option.time, &projectee_item_id);
+                    stats.push(stat.map_err(StatBrFallibleError::Stat));
+                }
+                None => {
+                    let stat = core_fleet.get_stat_outgoing_cps(option.time);
+                    stats.push(Ok(stat));
+                }
+            },
+            Err(br_err) => {
+                stats.push(Err(StatBrFallibleError::BrResolve(br_err.clone())));
+                continue;
             }
-            None => {
-                let stat = core_fleet.get_stat_outgoing_cps(option.time);
-                stats.push(Ok(stat));
-            }
-        }
+        };
     }
     StatResult::Result(stats)
 }

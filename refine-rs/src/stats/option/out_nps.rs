@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::BrResolvable,
+    shared::BrResolveFallible,
     stats::{StatItemChargeOptions, StatItemStateOptions, StatNeutItemKinds, StatTimeOptions},
 };
 
@@ -40,9 +40,9 @@ impl<I> Default for StatOptionItemOutNps<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolvable for StatOptionFitOutNps<ItemIdBr> {
+impl BrResolveFallible for StatOptionFitOutNps<ItemIdBr> {
     type Target = StatOptionFitOutNps<ItemId>;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             item_kinds: self.item_kinds,
             time: self.time,
@@ -51,9 +51,9 @@ impl BrResolvable for StatOptionFitOutNps<ItemIdBr> {
     }
 }
 
-impl BrResolvable for StatOptionItemOutNps<ItemIdBr> {
+impl BrResolveFallible for StatOptionItemOutNps<ItemIdBr> {
     type Target = StatOptionItemOutNps<ItemId>;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             time: self.time,
             charges: self.charges,

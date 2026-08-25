@@ -1,10 +1,9 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr,
-    err::BrResolveError,
-    shared::BrResolvable,
+    shared::BrResolveInfallible,
     stats::{
         StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-        StatOptionFitOutRps, StatOptionMass, fleet::FleetStatsOptionsResolved,
+        StatOptionFitOutRps, StatOptionInt, StatOptionMass, fleet::FleetStatsOptionsResolved,
     },
 };
 
@@ -26,11 +25,11 @@ pub type FleetStatsOptionsBr = FleetStatsOptions<ItemIdBr>;
 
 #[derive(Clone)]
 enum FleetStatOption<I> {
-    Dmg(StatOptionExt<StatOptionFitDmg<I>>),
+    Dmg(StatOptionInt<StatOptionFitDmg<I>>),
     Mps(StatOptionExt<StatOptionFitMining>),
-    OutgoingNps(StatOptionExt<StatOptionFitOutNps<I>>),
-    OutgoingRps(StatOptionExt<StatOptionFitOutRps<I>>),
-    OutgoingCps(StatOptionExt<StatOptionFitOutCps<I>>),
+    OutgoingNps(StatOptionInt<StatOptionFitOutNps<I>>),
+    OutgoingRps(StatOptionInt<StatOptionFitOutRps<I>>),
+    OutgoingCps(StatOptionInt<StatOptionFitOutCps<I>>),
     Mass(StatOptionExt<StatOptionMass>),
 }
 
@@ -50,7 +49,7 @@ impl<I> FleetStatsOptions<I> {
         }
     }
     pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg<I>>) -> Self {
-        self.overrides.push(FleetStatOption::Dmg(option));
+        self.overrides.push(FleetStatOption::Dmg(option.into_internal()));
         self
     }
     pub fn with_mps(mut self, option: StatOptionExt<StatOptionFitMining>) -> Self {
@@ -58,15 +57,18 @@ impl<I> FleetStatsOptions<I> {
         self
     }
     pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps<I>>) -> Self {
-        self.overrides.push(FleetStatOption::OutgoingNps(option));
+        self.overrides
+            .push(FleetStatOption::OutgoingNps(option.into_internal()));
         self
     }
     pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps<I>>) -> Self {
-        self.overrides.push(FleetStatOption::OutgoingRps(option));
+        self.overrides
+            .push(FleetStatOption::OutgoingRps(option.into_internal()));
         self
     }
     pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps<I>>) -> Self {
-        self.overrides.push(FleetStatOption::OutgoingCps(option));
+        self.overrides
+            .push(FleetStatOption::OutgoingCps(option.into_internal()));
         self
     }
     pub fn with_mass(mut self, option: StatOptionExt<StatOptionMass>) -> Self {
@@ -78,24 +80,24 @@ impl<I> FleetStatsOptions<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolvable for FleetStatsOptionsBr {
+impl BrResolveInfallible for FleetStatsOptionsBr {
     type Target = FleetStatsOptions;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
+    fn br_resolve_infallible(self, resps: &CmdResps) -> Self::Target {
         let mut overrides = Vec::with_capacity(self.overrides.len());
         for option in self.overrides.into_iter() {
             overrides.push(match option {
-                FleetStatOption::Dmg(option) => FleetStatOption::Dmg(option.br_resolve(resps)?),
+                FleetStatOption::Dmg(option) => FleetStatOption::Dmg(option.br_resolve_fallible(resps)),
                 FleetStatOption::Mps(option) => FleetStatOption::Mps(option),
-                FleetStatOption::OutgoingNps(option) => FleetStatOption::OutgoingNps(option.br_resolve(resps)?),
-                FleetStatOption::OutgoingRps(option) => FleetStatOption::OutgoingRps(option.br_resolve(resps)?),
-                FleetStatOption::OutgoingCps(option) => FleetStatOption::OutgoingCps(option.br_resolve(resps)?),
+                FleetStatOption::OutgoingNps(option) => FleetStatOption::OutgoingNps(option.br_resolve_fallible(resps)),
+                FleetStatOption::OutgoingRps(option) => FleetStatOption::OutgoingRps(option.br_resolve_fallible(resps)),
+                FleetStatOption::OutgoingCps(option) => FleetStatOption::OutgoingCps(option.br_resolve_fallible(resps)),
                 FleetStatOption::Mass(option) => FleetStatOption::Mass(option),
             });
         }
-        Ok(Self::Target {
+        Self::Target {
             default: self.default,
             overrides,
-        })
+        }
     }
 }
 

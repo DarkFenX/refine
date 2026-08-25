@@ -3,7 +3,7 @@ use rc::ItemCommon;
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolvable, OvrdCompact, OvrdMapHeavy},
+    shared::{BrResolveInfallible, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
         exec_shared::{extend_stats_for_passed_items, get_stats_for_items_in_overrides},
@@ -102,11 +102,11 @@ impl FitStatsCmdBr {
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmdBr {
-    pub(super) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsCmd, BrResolveError> {
-        Ok(FitStatsCmd {
-            fit_options: self.fit_options.br_resolve(resps)?,
-            item_options: self.item_options.br_resolve(resps)?,
-        })
+    pub(super) fn br_resolve(self, resps: &CmdResps) -> FitStatsCmd {
+        FitStatsCmd {
+            fit_options: self.fit_options.br_resolve_infallible(resps),
+            item_options: self.item_options.br_resolve(resps),
+        }
     }
 }
 
@@ -114,7 +114,7 @@ impl FitStatsCmdCtxFitBr {
     pub(in crate::stats) fn br_resolve(self, resps: &CmdResps) -> Result<FitStatsCmdCtxFit, BrResolveError> {
         Ok(FitStatsCmdCtxFit {
             fit_id: resps.resolve_fit_id(self.fit_id)?,
-            core: self.core.br_resolve(resps)?,
+            core: self.core.br_resolve(resps),
         })
     }
 }

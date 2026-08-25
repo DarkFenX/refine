@@ -1,6 +1,10 @@
 use std::hash::Hash;
 
-use crate::{CmdResps, err::BrResolveError, shared::BrResolvable, util::RMap};
+use crate::{
+    CmdResps,
+    shared::{BrResolveFallible, BrResolveInfallible},
+    util::RMap,
+};
 
 // Representation form which is compact; it is hard to use work with it directly, so types which are
 // often queried should be converted into something else.
@@ -122,24 +126,29 @@ where
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<K1, K2, V1, V2> OvrdCompact<K1, V1>
 where
-    K1: BrResolvable<Target = K2>,
-    V1: BrResolvable<Target = V2>,
+    K1: BrResolveFallible<Target = K2>,
+    V1: BrResolveInfallible<Target = V2>,
 {
-    pub(crate) fn br_resolve(self, cmd_resps: &CmdResps) -> Result<OvrdCompact<K2, V2>, BrResolveError> {
+    pub(crate) fn br_resolve(self, cmd_resps: &CmdResps) -> OvrdCompact<K2, V2> {
         let mut overrides = Vec::with_capacity(self.overrides.len());
         for override_ in self.overrides.into_iter() {
-            let value = override_.0.br_resolve(cmd_resps)?;
+            let value = override_.0.br_resolve_infallible(cmd_resps);
             let mut keys = Vec::with_capacity(override_.1.len());
             // Silently skip keys which cannot be resolved
-            keys.extend(override_.1.into_iter().filter_map(|key| key.br_resolve(cmd_resps).ok()));
+            keys.extend(
+                override_
+                    .1
+                    .into_iter()
+                    .filter_map(|key| key.br_resolve_fallible(cmd_resps).ok()),
+            );
             if !keys.is_empty() {
                 overrides.push((value, keys))
             }
         }
-        Ok(OvrdCompact {
-            default: self.default.br_resolve(cmd_resps)?,
+        OvrdCompact {
+            default: self.default.br_resolve_infallible(cmd_resps),
             overrides,
-        })
+        }
     }
 }
 
@@ -177,7 +186,7 @@ impl<K, V> OvrdMapLight<K, V> {
     where
         K: Eq + Hash,
         V: Copy + PartialEq,
-        B: BrResolvable<Target = K>,
+        B: BrResolveFallible<Target = K>,
     {
         let default_value = compact_br.default;
         let mut overrides = RMap::with_capacity(calc_needed_space(default_value, &compact_br.overrides));
@@ -187,7 +196,7 @@ impl<K, V> OvrdMapLight<K, V> {
                 continue;
             }
             for override_key_br in override_keys_br {
-                if let Ok(override_key) = override_key_br.br_resolve(ctl_cmd_resps) {
+                if let Ok(override_key) = override_key_br.br_resolve_fallible(ctl_cmd_resps) {
                     overrides.insert(override_key, override_value);
                 }
             }

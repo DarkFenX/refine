@@ -2,8 +2,7 @@ use rc::CtlAffectors;
 
 use crate::{
     CmdResps, FitId, FitIdBr,
-    err::BrResolveError,
-    shared::BrResolvable,
+    shared::BrResolveInfallible,
     stats::{StatAffectors, StatJumpRange},
 };
 
@@ -30,13 +29,13 @@ impl<F> Default for StatOptionJump<F> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolvable for StatOptionJump<FitIdBr> {
+impl BrResolveInfallible for StatOptionJump<FitIdBr> {
     type Target = StatOptionJump<FitId>;
-    fn br_resolve(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
-        Ok(Self::Target {
+    fn br_resolve_infallible(self, resps: &CmdResps) -> Self::Target {
+        Self::Target {
             range: self.range,
             passenger_fit_ids: resps.resolve_fit_ids_lossy(self.passenger_fit_ids),
             passenger_fuel_affectors: self.passenger_fuel_affectors,
-        })
+        }
     }
 }
