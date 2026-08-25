@@ -14,6 +14,10 @@ pub(in crate::stats) struct FleetStatsOptionsResolved {
     pub(super) outgoing_cps: Vec<Result<StatOptionFitOutCps, BrResolveError>>,
     pub(super) mass: Vec<StatOptionMass>,
 }
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Default + stat resolution
+////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptionsResolved {
     pub(super) fn from_default(default: bool) -> Self {
         Self {
