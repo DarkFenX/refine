@@ -4,5 +4,18 @@ use crate::stats::StatTimeOptions;
 #[derive(Copy, Clone, Default)]
 pub struct StatOptionIncomingJam {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time: StatTimeOptions = StatTimeOptions::default(),
+    pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl StatOptionIncomingJam {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+        self.time = time;
+        self
+    }
 }

@@ -9,10 +9,10 @@ use crate::{
 #[derive(Copy, Clone)]
 pub struct StatOptionFitOutNps<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_kinds: StatNeutItemKinds = StatNeutItemKinds::default(),
+    pub(in crate::stats) item_kinds: StatNeutItemKinds = StatNeutItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time: StatTimeOptions = StatTimeOptions::default(),
-    pub projectee_item_id: Option<I> = None,
+    pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
+    pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
 impl<I> Default for StatOptionFitOutNps<I> {
     fn default() -> Self {
@@ -24,16 +24,59 @@ impl<I> Default for StatOptionFitOutNps<I> {
 #[derive(Copy, Clone)]
 pub struct StatOptionItemOutNps<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time: StatTimeOptions = StatTimeOptions::default(),
+    pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charges: StatItemChargeOptions = StatItemChargeOptions::default(),
+    pub(in crate::stats) charges: StatItemChargeOptions = StatItemChargeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub state: StatItemStateOptions = StatItemStateOptions::default(),
-    pub projectee_item_id: Option<I> = None,
+    pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
+    pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
 impl<I> Default for StatOptionItemOutNps<I> {
     fn default() -> Self {
         Self { .. }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I> StatOptionFitOutNps<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_item_kinds(mut self, item_kinds: StatNeutItemKinds) -> Self {
+        self.item_kinds = item_kinds;
+        self
+    }
+    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+        self.time = time;
+        self
+    }
+    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+        self.projectee_item_id = Some(projectee_item_id.into());
+        self
+    }
+}
+
+impl<I> StatOptionItemOutNps<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+        self.time = time;
+        self
+    }
+    pub fn with_charges(mut self, charges: StatItemChargeOptions) -> Self {
+        self.charges = charges;
+        self
+    }
+    pub fn with_state(mut self, state: StatItemStateOptions) -> Self {
+        self.state = state;
+        self
+    }
+    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+        self.projectee_item_id = Some(projectee_item_id.into());
+        self
     }
 }
 

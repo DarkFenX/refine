@@ -11,15 +11,40 @@ use crate::{
 #[derive(Clone)]
 pub struct StatOptionCapSim<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default = "cap_perc_default"))]
-    pub cap_perc: UnitInterval = UnitInterval::from_f64_clamped(1.0),
-    pub optional_reloads: Option<OptionalReload> = None,
+    pub(in crate::stats) cap_perc: UnitInterval = UnitInterval::from_f64_clamped(1.0),
+    pub(in crate::stats) optional_reloads: Option<OptionalReload> = None,
     #[cfg_attr(feature = "serde", serde(default))]
-    pub stagger: StatCapSimStagger<I> = StatCapSimStagger::default(),
-    pub nosf_projectee_item_id: Option<I> = None,
+    pub(in crate::stats) stagger: StatCapSimStagger<I> = StatCapSimStagger::default(),
+    pub(in crate::stats) nosf_projectee_item_id: Option<I> = None,
 }
 impl<I> Default for StatOptionCapSim<I> {
     fn default() -> Self {
         Self { .. }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I> StatOptionCapSim<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_cap_perc(mut self, cap_perc: UnitInterval) -> Self {
+        self.cap_perc = cap_perc;
+        self
+    }
+    pub fn with_optional_reloads(mut self, optional_reloads: OptionalReload) -> Self {
+        self.optional_reloads = Some(optional_reloads);
+        self
+    }
+    pub fn with_stagger(mut self, stagger: StatCapSimStagger<I>) -> Self {
+        self.stagger = stagger;
+        self
+    }
+    pub fn with_nosf_projectee_item_id(mut self, nosf_projectee_item_id: impl Into<I>) -> Self {
+        self.nosf_projectee_item_id = Some(nosf_projectee_item_id.into());
+        self
     }
 }
 

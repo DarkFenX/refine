@@ -9,12 +9,12 @@ use crate::{
 #[derive(Copy, Clone)]
 pub struct StatOptionFitDmg<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub item_kinds: StatDmgItemKinds = StatDmgItemKinds::default(),
+    pub(in crate::stats) item_kinds: StatDmgItemKinds = StatDmgItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time: StatTimeOptions = StatTimeOptions::default(),
+    pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub crits: StatCritOptions = StatCritOptions::default(),
-    pub projectee_item_id: Option<I> = None,
+    pub(in crate::stats) crits: StatCritOptions = StatCritOptions::default(),
+    pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
 impl<I> Default for StatOptionFitDmg<I> {
     fn default() -> Self {
@@ -26,18 +26,69 @@ impl<I> Default for StatOptionFitDmg<I> {
 #[derive(Copy, Clone)]
 pub struct StatOptionItemDmg<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub time: StatTimeOptions = StatTimeOptions::default(),
+    pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub crits: StatCritOptions = StatCritOptions::default(),
+    pub(in crate::stats) crits: StatCritOptions = StatCritOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub charges: StatItemChargeOptions = StatItemChargeOptions::default(),
+    pub(in crate::stats) charges: StatItemChargeOptions = StatItemChargeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
-    pub state: StatItemStateOptions = StatItemStateOptions::default(),
-    pub projectee_item_id: Option<I> = None,
+    pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
+    pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
 impl<I> Default for StatOptionItemDmg<I> {
     fn default() -> Self {
         Self { .. }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I> StatOptionFitDmg<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_item_kinds(mut self, item_kinds: StatDmgItemKinds) -> Self {
+        self.item_kinds = item_kinds;
+        self
+    }
+    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+        self.time = time;
+        self
+    }
+    pub fn with_crits(mut self, crits: StatCritOptions) -> Self {
+        self.crits = crits;
+        self
+    }
+    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+        self.projectee_item_id = Some(projectee_item_id.into());
+        self
+    }
+}
+
+impl<I> StatOptionItemDmg<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+        self.time = time;
+        self
+    }
+    pub fn with_crits(mut self, crits: StatCritOptions) -> Self {
+        self.crits = crits;
+        self
+    }
+    pub fn with_charges(mut self, charges: StatItemChargeOptions) -> Self {
+        self.charges = charges;
+        self
+    }
+    pub fn with_state(mut self, state: StatItemStateOptions) -> Self {
+        self.state = state;
+        self
+    }
+    pub fn with_projectee_item_id(mut self, projectee_item_id: impl Into<I>) -> Self {
+        self.projectee_item_id = Some(projectee_item_id.into());
+        self
     }
 }
 

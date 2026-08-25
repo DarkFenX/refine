@@ -13,14 +13,31 @@ use crate::{
 #[derive(Copy, Clone)]
 pub struct StatOptionCapBlc<I = ItemId> {
     #[cfg_attr(feature = "serde", serde(default))]
-    pub src_kinds: StatCapBlcSrcKinds<I> = StatCapBlcSrcKinds::default(),
+    pub(in crate::stats) src_kinds: StatCapBlcSrcKinds<I> = StatCapBlcSrcKinds::default(),
     // Unlike other stats, default is sim mode over burst mode
     #[cfg_attr(feature = "serde", serde(default = "time_default"))]
-    pub time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
+    pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
 }
 impl<I> Default for StatOptionCapBlc<I> {
     fn default() -> Self {
         Self { .. }
+    }
+}
+
+////////////////////////////////////////////////////////////////////////////////////////////////////
+// Construction
+////////////////////////////////////////////////////////////////////////////////////////////////////
+impl<I> StatOptionCapBlc<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    pub fn with_src_kinds(mut self, src_kinds: StatCapBlcSrcKinds<I>) -> Self {
+        self.src_kinds = src_kinds;
+        self
+    }
+    pub fn with_time(mut self, time: StatTimeOptions) -> Self {
+        self.time = time;
+        self
     }
 }
 
