@@ -256,11 +256,11 @@ impl BrResolveInfallible for ItemStatsOptionsBr {
         for option in self.overrides.into_iter() {
             overrides.push(match option {
                 // Output
-                ItemStatOption::Dmg(option) => ItemStatOption::Dmg(option.br_resolve_fallible(resps)),
+                ItemStatOption::Dmg(option) => ItemStatOption::Dmg(option.br_resolve_stored(resps)),
                 ItemStatOption::Mps(option) => ItemStatOption::Mps(option),
-                ItemStatOption::OutgoingNps(option) => ItemStatOption::OutgoingNps(option.br_resolve_fallible(resps)),
-                ItemStatOption::OutgoingRps(option) => ItemStatOption::OutgoingRps(option.br_resolve_fallible(resps)),
-                ItemStatOption::OutgoingCps(option) => ItemStatOption::OutgoingCps(option.br_resolve_fallible(resps)),
+                ItemStatOption::OutgoingNps(option) => ItemStatOption::OutgoingNps(option.br_resolve_stored(resps)),
+                ItemStatOption::OutgoingRps(option) => ItemStatOption::OutgoingRps(option.br_resolve_stored(resps)),
+                ItemStatOption::OutgoingCps(option) => ItemStatOption::OutgoingCps(option.br_resolve_stored(resps)),
                 // Tank
                 ItemStatOption::Resists(option) => ItemStatOption::Resists(option),
                 ItemStatOption::Hp(option) => ItemStatOption::Hp(option),
@@ -271,8 +271,8 @@ impl BrResolveInfallible for ItemStatsOptionsBr {
                 ItemStatOption::BreachResist(option) => ItemStatOption::BreachResist(option),
                 // Cap
                 ItemStatOption::CapAmount(option) => ItemStatOption::CapAmount(option),
-                ItemStatOption::CapBalance(option) => ItemStatOption::CapBalance(option.br_resolve_fallible(resps)),
-                ItemStatOption::CapSim(option) => ItemStatOption::CapSim(option.br_resolve_fallible(resps)),
+                ItemStatOption::CapBalance(option) => ItemStatOption::CapBalance(option.br_resolve_stored(resps)),
+                ItemStatOption::CapSim(option) => ItemStatOption::CapSim(option.br_resolve_stored(resps)),
                 ItemStatOption::NeutResist(option) => ItemStatOption::NeutResist(option),
                 // Sensors
                 ItemStatOption::Locks(option) => ItemStatOption::Locks(option),

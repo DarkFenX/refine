@@ -376,11 +376,11 @@ impl BrResolveInfallible for FitStatsOptionsBr {
         for option in self.overrides.into_iter() {
             overrides.push(match option {
                 // Fit output stats
-                FitStatOption::Dmg(option) => FitStatOption::Dmg(option.br_resolve_fallible(resps)),
+                FitStatOption::Dmg(option) => FitStatOption::Dmg(option.br_resolve_stored(resps)),
                 FitStatOption::Mps(option) => FitStatOption::Mps(option),
-                FitStatOption::OutgoingNps(option) => FitStatOption::OutgoingNps(option.br_resolve_fallible(resps)),
-                FitStatOption::OutgoingRps(option) => FitStatOption::OutgoingRps(option.br_resolve_fallible(resps)),
-                FitStatOption::OutgoingCps(option) => FitStatOption::OutgoingCps(option.br_resolve_fallible(resps)),
+                FitStatOption::OutgoingNps(option) => FitStatOption::OutgoingNps(option.br_resolve_stored(resps)),
+                FitStatOption::OutgoingRps(option) => FitStatOption::OutgoingRps(option.br_resolve_stored(resps)),
+                FitStatOption::OutgoingCps(option) => FitStatOption::OutgoingCps(option.br_resolve_stored(resps)),
                 // Fit resources
                 FitStatOption::Cpu(option) => FitStatOption::Cpu(option),
                 FitStatOption::Powergrid(option) => FitStatOption::Powergrid(option),
@@ -415,8 +415,8 @@ impl BrResolveInfallible for FitStatsOptionsBr {
                 FitStatOption::BreachResist(option) => FitStatOption::BreachResist(option),
                 // Ship cap
                 FitStatOption::CapAmount(option) => FitStatOption::CapAmount(option),
-                FitStatOption::CapBalance(option) => FitStatOption::CapBalance(option.br_resolve_fallible(resps)),
-                FitStatOption::CapSim(option) => FitStatOption::CapSim(option.br_resolve_fallible(resps)),
+                FitStatOption::CapBalance(option) => FitStatOption::CapBalance(option.br_resolve_stored(resps)),
+                FitStatOption::CapSim(option) => FitStatOption::CapSim(option.br_resolve_stored(resps)),
                 FitStatOption::NeutResist(option) => FitStatOption::NeutResist(option),
                 // Ship sensors
                 FitStatOption::Locks(option) => FitStatOption::Locks(option),

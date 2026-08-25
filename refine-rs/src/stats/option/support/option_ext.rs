@@ -55,7 +55,7 @@ impl<B> StatOptionExt<B> {
 }
 
 impl<B> StatOptionInt<B> {
-    pub(in crate::stats) fn br_resolve_fallible<I>(self, resps: &CmdResps) -> StatOptionInt<I>
+    pub(in crate::stats) fn br_resolve_stored<I>(self, resps: &CmdResps) -> StatOptionInt<I>
     where
         B: BrResolveFallible<Target = I>,
     {

@@ -86,11 +86,11 @@ impl BrResolveInfallible for FleetStatsOptionsBr {
         let mut overrides = Vec::with_capacity(self.overrides.len());
         for option in self.overrides.into_iter() {
             overrides.push(match option {
-                FleetStatOption::Dmg(option) => FleetStatOption::Dmg(option.br_resolve_fallible(resps)),
+                FleetStatOption::Dmg(option) => FleetStatOption::Dmg(option.br_resolve_stored(resps)),
                 FleetStatOption::Mps(option) => FleetStatOption::Mps(option),
-                FleetStatOption::OutgoingNps(option) => FleetStatOption::OutgoingNps(option.br_resolve_fallible(resps)),
-                FleetStatOption::OutgoingRps(option) => FleetStatOption::OutgoingRps(option.br_resolve_fallible(resps)),
-                FleetStatOption::OutgoingCps(option) => FleetStatOption::OutgoingCps(option.br_resolve_fallible(resps)),
+                FleetStatOption::OutgoingNps(option) => FleetStatOption::OutgoingNps(option.br_resolve_stored(resps)),
+                FleetStatOption::OutgoingRps(option) => FleetStatOption::OutgoingRps(option.br_resolve_stored(resps)),
+                FleetStatOption::OutgoingCps(option) => FleetStatOption::OutgoingCps(option.br_resolve_stored(resps)),
                 FleetStatOption::Mass(option) => FleetStatOption::Mass(option),
             });
         }
