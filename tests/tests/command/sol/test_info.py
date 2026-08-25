@@ -1,0 +1,179 @@
+from fw import check_no_field
+
+
+def test_sol(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_sol.batch() as api_sol_batch:
+        api_sol_info1 = api_sol_batch.get_sol_info(sol_mode=consts.ApiSolInfoMode.full)
+        api_sol_info2 = api_sol_batch.get_sol_info(sol_mode=consts.ApiSolInfoMode.id)
+    # Verification
+    assert api_fit.id in api_sol_info1.fits
+    with check_no_field():
+        api_sol_info2.fits  # ruff:ignore[useless-expression]
+
+
+def test_fleet_override(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_fleet1 = api_sol.create_fleet(fit_ids=[api_fit1.id])
+    api_fleet2 = api_sol.create_fleet(fit_ids=[api_fit2.id])
+    with api_sol.batch() as api_sol_batch:
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fleet_mode=(consts.ApiFleetInfoMode.id, [(consts.ApiFleetInfoMode.full, [api_fleet1.id])]))
+    # Verification
+    assert api_fit1.id in api_sol_info.fleets[api_fleet1.id].fits
+    api_fleet2_info = api_sol_info.fleets[api_fleet2.id]
+    with check_no_field():
+        api_fleet2_info.fits  # ruff:ignore[useless-expression]
+
+
+def test_fleet_override_backref(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fit1 = api_sol_batch.create_fit()
+        api_fit2 = api_sol_batch.create_fit()
+        api_fleet1 = api_sol_batch.create_fleet(fit_ids=[api_fit1.id])
+        api_fleet2 = api_sol_batch.create_fleet(fit_ids=[api_fit2.id])
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fleet_mode=(consts.ApiFleetInfoMode.id, [(consts.ApiFleetInfoMode.full, [api_fleet1.id])]))
+    # Verification
+    assert api_fit1.id in api_sol_info.fleets[api_fleet1.id].fits
+    api_fleet2_info = api_sol_info.fleets[api_fleet2.id]
+    with check_no_field():
+        api_fleet2_info.fits  # ruff:ignore[useless-expression]
+
+
+def test_fleet_override_backref_error(client, consts):
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fit = api_sol_batch.create_fit()
+        api_fleet = api_sol_batch.create_fleet()
+        api_sol_batch.change_fleet(fleet_id=api_fleet.id, add_fit_ids=[api_fit.id])
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fleet_mode=(consts.ApiFleetInfoMode.full, [(consts.ApiFleetInfoMode.id, ['#0', '#2', '#5'])]))
+    # Verification - #0 references command which returns fit ID, #2 references command which returns
+    # no fleet ID, #5 references command which doesn't exist, so default is used
+    assert api_fit.id in api_sol_info.fleets[api_fleet.id].fits
+
+
+def test_fit_override(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit1 = api_sol.create_fit()
+    api_fit2 = api_sol.create_fit()
+    api_item1 = api_fit1.add_implant(type_id=eve_item_id)
+    api_fit2.add_implant(type_id=eve_item_id)
+    with api_sol.batch() as api_sol_batch:
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fit_mode=(consts.ApiFitInfoMode.id, [(consts.ApiFitInfoMode.full, [api_fit1.id])]))
+    # Verification
+    assert api_item1.id in api_sol_info.fits[api_fit1.id].implants
+    api_fit2_info = api_sol_info.fits[api_fit2.id]
+    with check_no_field():
+        api_fit2_info.implants  # ruff:ignore[useless-expression]
+
+
+def test_fit_override_backref(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fit1 = api_sol_batch.create_fit()
+        api_fit2 = api_sol_batch.create_fit()
+        api_item1 = api_sol_batch.add_implant(fit_id=api_fit1.id, type_id=eve_item_id)
+        api_sol_batch.add_implant(fit_id=api_fit2.id, type_id=eve_item_id)
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fit_mode=(consts.ApiFitInfoMode.id, [(consts.ApiFitInfoMode.full, [api_fit1.id])]))
+    # Verification
+    assert api_item1.id in api_sol_info.fits[api_fit1.id].implants
+    api_fit2_info = api_sol_info.fits[api_fit2.id]
+    with check_no_field():
+        api_fit2_info.implants  # ruff:ignore[useless-expression]
+
+
+def test_fit_override_backref_error(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fleet = api_sol_batch.create_fleet()
+        api_fit = api_sol_batch.create_fit(fleet_id=api_fleet.id)
+        api_item = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item_id)
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fit_mode=(consts.ApiFitInfoMode.full, [(consts.ApiFitInfoMode.id, ['#0', '#2', '#5'])]))
+    # Verification - #0 references command which returns fleet ID, #2 references command which
+    # returns item ID, #5 references command which doesn't exist, so default is used
+    assert api_item.id in api_sol_info.fits[api_fit.id].implants
+
+
+def test_item_override(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item1 = api_fit.add_implant(type_id=eve_item_id)
+    api_item2 = api_fit.add_implant(type_id=eve_item_id)
+    with api_sol.batch() as api_sol_batch:
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fit_mode=consts.ApiFitInfoMode.full,
+            item_mode=(consts.ApiItemInfoMode.id, [(consts.ApiItemInfoMode.partial, [api_item2.id])]))
+    # Verification
+    api_fit_info = api_sol_info.fits[api_fit.id]
+    api_item1_info = api_fit_info.implants[api_item1.id]
+    with check_no_field():
+        api_item1_info.type_id  # ruff:ignore[useless-expression]
+    api_item2_info = api_fit_info.implants[api_item2.id]
+    assert api_item2_info.type_id == eve_item_id
+
+
+def test_item_override_backref(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fit = api_sol_batch.create_fit()
+        api_item1 = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item_id)
+        api_item2 = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item_id)
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fit_mode=consts.ApiFitInfoMode.full,
+            item_mode=(consts.ApiItemInfoMode.id, [(consts.ApiItemInfoMode.partial, [api_item2.id])]))
+    # Verification
+    api_fit_info = api_sol_info.fits[api_fit.id]
+    api_item1_info = api_fit_info.implants[api_item1.id]
+    with check_no_field():
+        api_item1_info.type_id  # ruff:ignore[useless-expression]
+    api_item2_info = api_fit_info.implants[api_item2.id]
+    assert api_item2_info.type_id == eve_item_id
+
+
+def test_item_override_backref_error(client, consts):
+    eve_item1_id = client.mk_eve_item()
+    eve_item2_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fit = api_sol_batch.create_fit()
+        api_item = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item1_id)
+        api_sol_batch.change_implant(item_id=api_item.id, type_id=eve_item2_id)
+        api_sol_info = api_sol_batch.get_sol_info(
+            sol_mode=consts.ApiSolInfoMode.full,
+            fit_mode=consts.ApiFitInfoMode.full,
+            item_mode=(consts.ApiItemInfoMode.partial, [(consts.ApiItemInfoMode.id, ['#2', '#5'])]))
+    # Verification - #2 references existing command which does not return ID, #5 references command
+    # which doesn't exist, so default is used
+    assert api_sol_info.fits[api_fit.id].implants[api_item.id].type_id == eve_item2_id
