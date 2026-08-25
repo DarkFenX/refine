@@ -208,7 +208,7 @@ impl StanceChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetStanceChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
     #[error("fit {0} has no stance set")]
     FitNoStance(FitId),
 }
@@ -232,5 +232,5 @@ impl StanceChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetStanceChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetStanceError),
+    ItemGet(#[from] rc::err::StanceGetError),
 }

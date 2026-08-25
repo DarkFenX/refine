@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_rig(&self, item_id: &ItemId) -> Result<Rig<'_>, GetRigError> {
+    pub fn get_rig(&self, item_id: &ItemId) -> Result<Rig<'_>, RigGetError> {
         let rig_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(rig_uid).dc_rig()?;
         Ok(Rig::new(self, rig_uid))
     }
-    pub fn get_rig_mut(&mut self, item_id: &ItemId) -> Result<RigMut<'_>, GetRigError> {
+    pub fn get_rig_mut(&mut self, item_id: &ItemId) -> Result<RigMut<'_>, RigGetError> {
         let rig_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(rig_uid).dc_rig()?;
         Ok(RigMut::new(self, rig_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetRigError {
+pub enum RigGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

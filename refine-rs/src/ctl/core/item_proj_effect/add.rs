@@ -108,5 +108,5 @@ impl ProjEffectAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ProjEffectAddError {
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::ProjAddError),
 }

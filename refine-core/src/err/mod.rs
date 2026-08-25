@@ -1,16 +1,16 @@
 pub use basic::ItemKindMatchError;
 
 #[cfg(feature = "serde")]
-pub use crate::ud::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
+pub use crate::ud::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
 pub use crate::{
     api::{
-        AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, FleetAddFitError, FleetRemoveFitError,
-        GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError,
-        GetFighterError, GetFitError, GetFleetError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError,
-        GetModuleError, GetProjEffectError, GetProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError,
-        GetSideEffectError, GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, IterItemAttrsError,
-        IterItemEffectsError, IterItemModifiersError, RemoveFitRahIncomingDpsError, RemoveItemError, SetFitFleetError,
-        SetSkillTypeIdError, UnsetFitFleetError,
+        AbilityGetError, AttrMutateRawError, AutochargeGetError, BoosterGetError, CharacterGetError, ChargeGetError,
+        DroneGetError, FighterGetError, FitFleetSetError, FitFleetUnsetError, FitGetError,
+        FitRahIncomingDpsRemoveError, FleetFitAddError, FleetFitRemoveError, FleetGetError, FwEffectGetError,
+        ImplantGetError, ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemGetError,
+        ItemModifiersIterError, ItemRemoveError, ModuleGetError, MutationAddError, ProjAddError, ProjEffectGetError,
+        ProjGetError, RawMAttrGetError, RigGetError, ServiceGetError, ShipGetError, SideEffectGetError, SkillAddError,
+        SkillGetError, SkillTypeIdSetError, StanceGetError, SubsystemGetError, SwEffectGetError,
     },
     num::{CountNzError, FitSecStatusError, PValueError, SkillLevelError, UnitIntervalError},
 };

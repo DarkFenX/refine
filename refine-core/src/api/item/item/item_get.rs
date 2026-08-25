@@ -11,7 +11,7 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_item(&self, item_id: &ItemId) -> Result<Item<'_>, GetItemError> {
+    pub fn get_item(&self, item_id: &ItemId) -> Result<Item<'_>, ItemGetError> {
         let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item(item_uid))
     }
@@ -37,7 +37,7 @@ impl SolarSystem {
             UItem::SwEffect(..) => Item::SwEffect(SwEffect::new(self, item_uid)),
         }
     }
-    pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut<'_>, GetItemError> {
+    pub fn get_item_mut(&mut self, item_id: &ItemId) -> Result<ItemMut<'_>, ItemGetError> {
         let item_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         Ok(self.internal_get_item_mut(item_uid))
     }
@@ -66,7 +66,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetItemError {
+pub enum ItemGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
 }

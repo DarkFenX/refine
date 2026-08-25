@@ -106,7 +106,7 @@ impl AutochargeChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetAutochargeChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotAutocharge(rc::err::ItemKindMatchError),
 }

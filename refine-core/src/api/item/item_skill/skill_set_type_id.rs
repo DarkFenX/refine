@@ -46,7 +46,7 @@ impl SolarSystem {
 
 impl<'s> SkillMut<'s> {
     /// Set type ID, replacing currently used EVE item by another, preserving all the user data.
-    pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SetSkillTypeIdError> {
+    pub fn set_type_id(&mut self, type_id: ItemTypeId) -> Result<(), SkillTypeIdSetError> {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol
             .internal_set_skill_type_aid(self.uid, type_id.into_aid(), &mut reuse_eupdates)?;
@@ -55,7 +55,7 @@ impl<'s> SkillMut<'s> {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum SetSkillTypeIdError {
+pub enum SkillTypeIdSetError {
     #[error(transparent)]
     SkillIdCollision(#[from] SkillEveTypeError),
 }

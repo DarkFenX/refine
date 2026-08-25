@@ -1,7 +1,7 @@
 pub use fleet::{Fleet, FleetMut};
-pub use fleet_add_fit::FleetAddFitError;
-pub use fleet_remove_fit::FleetRemoveFitError;
-pub use sol_get_fleet::GetFleetError;
+pub use fleet_add_fit::FleetFitAddError;
+pub use fleet_remove_fit::FleetFitRemoveError;
+pub use sol_get_fleet::FleetGetError;
 pub use stats::StatFleetAppliedError;
 
 mod fleet;

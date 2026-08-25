@@ -41,7 +41,7 @@ pub(crate) enum ApiError {
     SrcRemove(#[from] rs::src::err::SrcRemoveError),
     // Solar system-related
     #[error(transparent)]
-    PathSolParse(#[from] rs::err::ParseSolarSystemIdError),
+    PathSolParse(#[from] rs::err::SolarSystemIdParseError),
     #[error(transparent)]
     PathSolNotFound(#[from] rs::err::SolGetError),
     #[error(transparent)]
@@ -64,7 +64,7 @@ pub(crate) enum ApiError {
     SolBatchTryItems(ApiErrorIndexed<rs::trial::err::SolTryItemsEnumError>),
     // Fleet-related
     #[error(transparent)]
-    PathFleetParse(#[from] rs::err::ParseFleetIdError),
+    PathFleetParse(#[from] rs::err::FleetIdParseError),
     #[error(transparent)]
     PathFleetNotFound(#[from] rs::err::FleetGetError),
     #[error(transparent)]
@@ -73,7 +73,7 @@ pub(crate) enum ApiError {
     FleetChange(#[from] rs::err::FleetChangeError),
     // Fit-related
     #[error(transparent)]
-    PathFitParse(#[from] rs::err::ParseFitIdError),
+    PathFitParse(#[from] rs::err::FitIdParseError),
     #[error(transparent)]
     PathFitNotFound(#[from] rs::err::FitGetError),
     #[error(transparent)]
@@ -88,7 +88,7 @@ pub(crate) enum ApiError {
     FitBatchStats(ApiErrorIndexed<rs::stats::err::FitStatsEnumError>),
     // Item-related
     #[error(transparent)]
-    PathItemParse(#[from] rs::err::ParseItemIdError),
+    PathItemParse(#[from] rs::err::ItemIdParseError),
     #[error(transparent)]
     PathItemNotFound(#[from] rs::err::ItemGetError),
     #[error(transparent)]

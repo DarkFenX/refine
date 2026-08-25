@@ -15,4 +15,4 @@ impl<'r, 's> SolarSystem<'r> {
 
 #[derive(thiserror::Error, Debug)]
 #[error(transparent)]
-pub struct FleetGetError(#[from] pub rc::err::GetFleetError);
+pub struct FleetGetError(#[from] pub rc::err::FleetGetError);

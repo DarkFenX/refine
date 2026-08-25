@@ -63,5 +63,5 @@ impl FleetAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetAddError {
     #[error("failed to add fit to fleet")]
-    FitAdd(#[from] rc::err::FleetAddFitError),
+    FitAdd(#[from] rc::err::FleetFitAddError),
 }

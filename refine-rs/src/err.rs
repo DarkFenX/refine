@@ -1,8 +1,8 @@
 #[cfg(feature = "serde")]
-pub use rc::err::{ParseFitIdError, ParseFleetIdError, ParseItemIdError};
+pub use rc::err::{FitIdParseError, FleetIdParseError, ItemIdParseError};
 
 #[cfg(feature = "serde")]
-pub use crate::api::ParseSolarSystemIdError;
+pub use crate::api::SolarSystemIdParseError;
 pub use crate::{
     api::{
         FitGetError, FitHybridBatchError, FleetGetError, ItemGetError, SolAddError, SolFittingAppError, SolGetError,

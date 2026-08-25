@@ -114,7 +114,7 @@ impl FwEffectChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetFwEffectChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotFwEffect(rc::err::ItemKindMatchError),
 }

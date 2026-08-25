@@ -5,7 +5,7 @@ use crate::{
     ItemTypeId, Modification, OptionalReload, PValue, SolarSystem, UnitInterval, Value,
     api::{AffectionDir, ItemSealed, active_stat_prepare, active_stat_rollback},
     err::{
-        GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError,
+        ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemModifiersIterError,
         basic::{AttrFoundError, ItemLoadedError},
     },
     stats::{
@@ -41,7 +41,7 @@ pub trait ItemCommon: ItemSealed {
         let type_aid = self.get_sol().u_data.items.get(self.get_uid()).get_type_aid();
         ItemTypeId::from_aid(type_aid)
     }
-    fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, ItemEffectInfo)>, IterItemEffectsError> {
+    fn iter_effects(&self) -> Result<impl ExactSizeIterator<Item = (EffectId, ItemEffectInfo)>, ItemEffectsIterError> {
         let sol = self.get_sol();
         let item_uid = self.get_uid();
         let item = sol.u_data.items.get(item_uid);
@@ -73,7 +73,7 @@ pub trait ItemMutCommon: ItemCommon {
         let u_item = sol.u_data.items.get(item_uid);
         u_item.get_fit_uid().map(|fit_uid| FitMut::new(sol, fit_uid))
     }
-    fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrValues, GetItemAttrError> {
+    fn get_attr(&mut self, attr_id: &AttrId) -> Result<ItemAttrValues, ItemAttrGetError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         let attr_aid = attr_id.into_aid();
@@ -88,7 +88,7 @@ pub trait ItemMutCommon: ItemCommon {
             .into()),
         }
     }
-    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, ItemAttrValues)>, IterItemAttrsError> {
+    fn iter_attrs(&mut self) -> Result<impl ExactSizeIterator<Item = (AttrId, ItemAttrValues)>, ItemAttrsIterError> {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();
         match sol.svc.iter_item_attr_vals(&sol.u_data, item_uid) {
@@ -108,7 +108,7 @@ pub trait ItemMutCommon: ItemCommon {
         &mut self,
     ) -> Result<
         impl ExactSizeIterator<Item = (AttrId, impl ExactSizeIterator<Item = Modification>)>,
-        IterItemModifiersError,
+        ItemModifiersIterError,
     > {
         let item_uid = self.get_uid();
         let sol = self.get_sol_mut();

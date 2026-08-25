@@ -1,5 +1,5 @@
 pub use drone::{Drone, DroneMut};
-pub use sol_get_drone::GetDroneError;
+pub use sol_get_drone::DroneGetError;
 
 mod drone;
 mod drone_remove;

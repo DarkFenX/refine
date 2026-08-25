@@ -5,7 +5,7 @@ use crate::{
 };
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetItemAttrError {
+pub enum ItemAttrGetError {
     #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
     #[error(transparent)]
@@ -13,19 +13,19 @@ pub enum GetItemAttrError {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum IterItemAttrsError {
+pub enum ItemAttrsIterError {
     #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum IterItemEffectsError {
+pub enum ItemEffectsIterError {
     #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum IterItemModifiersError {
+pub enum ItemModifiersIterError {
     #[error(transparent)]
     ItemNotLoaded(#[from] ItemLoadedError),
 }

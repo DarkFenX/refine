@@ -40,7 +40,7 @@ impl From<FitId> for FitFoundError {
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
-pub use custom_serde::ParseFitIdError;
+pub use custom_serde::FitIdParseError;
 
 #[cfg(feature = "serde")]
 mod custom_serde {
@@ -54,7 +54,7 @@ mod custom_serde {
     use super::*;
 
     impl FromStr for FitId {
-        type Err = ParseFitIdError;
+        type Err = FitIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let raw = u32::from_str(s)?;
@@ -64,7 +64,7 @@ mod custom_serde {
 
     #[derive(Debug, thiserror::Error)]
     #[error(transparent)]
-    pub struct ParseFitIdError(#[from] std::num::ParseIntError);
+    pub struct FitIdParseError(#[from] std::num::ParseIntError);
 
     impl Serialize for FitId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

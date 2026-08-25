@@ -1,5 +1,5 @@
 pub use ship::{Ship, ShipMut};
-pub use sol_get_ship::GetShipError;
+pub use sol_get_ship::ShipGetError;
 
 mod fit_get_ship;
 mod fit_set_ship;

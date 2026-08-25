@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_autocharge(&self, item_id: &ItemId) -> Result<Autocharge<'_>, GetAutochargeError> {
+    pub fn get_autocharge(&self, item_id: &ItemId) -> Result<Autocharge<'_>, AutochargeGetError> {
         let autocharge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(autocharge_uid).dc_autocharge()?;
         Ok(Autocharge::new(self, autocharge_uid))
     }
-    pub fn get_autocharge_mut(&mut self, item_id: &ItemId) -> Result<AutochargeMut<'_>, GetAutochargeError> {
+    pub fn get_autocharge_mut(&mut self, item_id: &ItemId) -> Result<AutochargeMut<'_>, AutochargeGetError> {
         let autocharge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(autocharge_uid).dc_autocharge()?;
         Ok(AutochargeMut::new(self, autocharge_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetAutochargeError {
+pub enum AutochargeGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

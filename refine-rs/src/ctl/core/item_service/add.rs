@@ -92,5 +92,5 @@ impl ServiceAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetServiceAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
 }

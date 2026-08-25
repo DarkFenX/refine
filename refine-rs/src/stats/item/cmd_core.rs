@@ -111,5 +111,5 @@ impl ItemStatsCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetItemStatsError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
 }

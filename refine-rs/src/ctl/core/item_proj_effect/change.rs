@@ -174,9 +174,9 @@ pub enum ProjEffectChangeError {
     #[error(transparent)]
     ItemIsNotProjEffect(#[from] rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
-    ProjAdd(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::ProjAddError),
     #[error("unable to remove projection")]
-    ProjRemove(#[from] rc::err::GetProjError),
+    ProjRemove(#[from] rc::err::ProjGetError),
 }
 
 impl ProjEffectChangeCmdCtxItem {
@@ -191,13 +191,13 @@ impl ProjEffectChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetProjEffectChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotProjEffect(rc::err::ItemKindMatchError),
     #[error("unable to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::ProjAddError),
     #[error("unable to remove projection")]
-    ProjRemove(#[source] rc::err::GetProjError),
+    ProjRemove(#[source] rc::err::ProjGetError),
 }
 impl From<ProjEffectChangeError> for ItemGetProjEffectChangeError {
     fn from(err: ProjEffectChangeError) -> Self {

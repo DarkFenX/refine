@@ -78,5 +78,5 @@ impl StanceUnsetCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetStanceUnsetError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
 }

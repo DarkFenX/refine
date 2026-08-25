@@ -1,7 +1,7 @@
 use itertools::Itertools;
 
 use crate::{
-    api::{AddProjError, FighterMut, ProjMut},
+    api::{FighterMut, ProjAddError, ProjMut},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::SolarSystem,
     ud::{ItemId, UItemId, UProjData},
@@ -12,7 +12,7 @@ impl SolarSystem {
         &mut self,
         fighter_uid: UItemId,
         projectee_uid: UItemId,
-    ) -> Result<(), AddProjError> {
+    ) -> Result<(), ProjAddError> {
         // Check projector
         let u_fighter = self.u_data.items.get(fighter_uid).dc_fighter().unwrap();
         // Check if projection has already been defined
@@ -65,7 +65,7 @@ impl SolarSystem {
 }
 
 impl<'s> FighterMut<'s> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, AddProjError> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, ProjAddError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_fighter_proj(self.uid, projectee_uid)?;
         Ok(ProjMut::new(self.sol, self.uid, projectee_uid))

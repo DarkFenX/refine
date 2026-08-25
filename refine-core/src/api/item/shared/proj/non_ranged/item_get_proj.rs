@@ -1,6 +1,6 @@
 use crate::{
     ItemId, Proj, ProjMut, SolarSystem,
-    err::{GetProjError, basic::ProjFoundError},
+    err::{ProjGetError, basic::ProjFoundError},
     ud::UItemId,
 };
 
@@ -9,7 +9,7 @@ impl SolarSystem {
         &self,
         projector_uid: UItemId,
         projectee_item_id: &ItemId,
-    ) -> Result<Proj<'_>, GetProjError> {
+    ) -> Result<Proj<'_>, ProjGetError> {
         let projectee_uid = get_projectee_uid(self, projector_uid, projectee_item_id)?;
         Ok(Proj::new(self, projectee_uid))
     }
@@ -17,7 +17,7 @@ impl SolarSystem {
         &mut self,
         projector_uid: UItemId,
         projectee_item_id: &ItemId,
-    ) -> Result<ProjMut<'_>, GetProjError> {
+    ) -> Result<ProjMut<'_>, ProjGetError> {
         let projectee_uid = get_projectee_uid(self, projector_uid, projectee_item_id)?;
         Ok(ProjMut::new(self, projector_uid, projectee_uid))
     }
@@ -27,7 +27,7 @@ fn get_projectee_uid(
     sol: &SolarSystem,
     projector_uid: UItemId,
     projectee_item_id: &ItemId,
-) -> Result<UItemId, GetProjError> {
+) -> Result<UItemId, ProjGetError> {
     let projectee_uid = sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
     match sol
         .u_data

@@ -1,5 +1,5 @@
 pub use character::{Character, CharacterMut};
-pub use sol_get::GetCharacterError;
+pub use sol_get::CharacterGetError;
 
 mod character;
 mod character_remove;

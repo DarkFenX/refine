@@ -185,7 +185,7 @@ impl DroneAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum DroneAddError {
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::ProjAddError),
 }
 
 impl DroneAddCmdCtxFit {
@@ -200,9 +200,9 @@ impl DroneAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetDroneAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::ProjAddError),
 }
 impl From<DroneAddError> for FitGetDroneAddError {
     fn from(err: DroneAddError) -> Self {

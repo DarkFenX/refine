@@ -1,5 +1,5 @@
 pub use charge::{Charge, ChargeMut};
-pub use sol_get_charge::GetChargeError;
+pub use sol_get_charge::ChargeGetError;
 
 mod charge;
 mod charge_remove;

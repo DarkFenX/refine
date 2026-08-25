@@ -111,7 +111,7 @@ impl ServiceChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetServiceChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotService(rc::err::ItemKindMatchError),
 }

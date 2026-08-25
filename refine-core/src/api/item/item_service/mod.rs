@@ -1,5 +1,5 @@
 pub use service::{Service, ServiceMut};
-pub use sol_get_service::GetServiceError;
+pub use sol_get_service::ServiceGetError;
 
 mod fit_add_service;
 mod fit_iter_services;

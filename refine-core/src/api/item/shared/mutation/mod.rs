@@ -1,10 +1,10 @@
 pub(in crate::api::item::shared::mutation) use abs_resolve::resolve_absolutes_into_rolls_with_ids;
-pub use add::AddMutationError;
+pub use add::MutationAddError;
 pub use full_attr::{FullMAttr, FullMAttrIter, FullMAttrMut};
 pub use mutation::{
     EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut,
 };
-pub use raw_attr::{AttrMutateRawError, GetRawMAttrError, RawMAttr, RawMAttrIter, RawMAttrMut};
+pub use raw_attr::{AttrMutateRawError, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut};
 
 mod abs_resolve;
 mod add;

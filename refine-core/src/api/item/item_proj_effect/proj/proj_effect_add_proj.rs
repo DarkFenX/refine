@@ -1,7 +1,7 @@
 use crate::{
     ItemId, ProjEffectMut, ProjMut, SolarSystem,
     err::{
-        AddProjError,
+        ProjAddError,
         basic::{ItemReceiveProjError, ProjNotFoundError},
     },
     ud::UItemId,
@@ -12,7 +12,7 @@ impl SolarSystem {
         &mut self,
         proj_effect_uid: UItemId,
         projectee_uid: UItemId,
-    ) -> Result<(), AddProjError> {
+    ) -> Result<(), ProjAddError> {
         // Check projector
         let u_item = self.u_data.items.get(proj_effect_uid);
         let u_proj_effect = u_item.dc_proj_effect().unwrap();
@@ -44,7 +44,7 @@ impl SolarSystem {
 }
 
 impl<'s> ProjEffectMut<'s> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, AddProjError> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<ProjMut<'_>, ProjAddError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_proj_effect_proj(self.uid, projectee_uid)?;
         Ok(ProjMut::new(self.sol, self.uid, projectee_uid))

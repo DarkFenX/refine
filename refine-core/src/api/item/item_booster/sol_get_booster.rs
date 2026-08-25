@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_booster(&self, item_id: &ItemId) -> Result<Booster<'_>, GetBoosterError> {
+    pub fn get_booster(&self, item_id: &ItemId) -> Result<Booster<'_>, BoosterGetError> {
         let booster_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(booster_uid).dc_booster()?;
         Ok(Booster::new(self, booster_uid))
     }
-    pub fn get_booster_mut(&mut self, item_id: &ItemId) -> Result<BoosterMut<'_>, GetBoosterError> {
+    pub fn get_booster_mut(&mut self, item_id: &ItemId) -> Result<BoosterMut<'_>, BoosterGetError> {
         let booster_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(booster_uid).dc_booster()?;
         Ok(BoosterMut::new(self, booster_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetBoosterError {
+pub enum BoosterGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

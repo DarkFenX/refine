@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_subsystem(&self, item_id: &ItemId) -> Result<Subsystem<'_>, GetSubsystemError> {
+    pub fn get_subsystem(&self, item_id: &ItemId) -> Result<Subsystem<'_>, SubsystemGetError> {
         let subsystem_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(subsystem_uid).dc_subsystem()?;
         Ok(Subsystem::new(self, subsystem_uid))
     }
-    pub fn get_subsystem_mut(&mut self, item_id: &ItemId) -> Result<SubsystemMut<'_>, GetSubsystemError> {
+    pub fn get_subsystem_mut(&mut self, item_id: &ItemId) -> Result<SubsystemMut<'_>, SubsystemGetError> {
         let subsystem_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(subsystem_uid).dc_subsystem()?;
         Ok(SubsystemMut::new(self, subsystem_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetSubsystemError {
+pub enum SubsystemGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

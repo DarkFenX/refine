@@ -113,5 +113,5 @@ impl ItemInfoCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetItemInfoError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
 }

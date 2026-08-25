@@ -1,5 +1,5 @@
 pub use rig::{Rig, RigMut};
-pub use sol_get_rig::GetRigError;
+pub use sol_get_rig::RigGetError;
 
 mod fit_add_rig;
 mod fit_iter_rigs;

@@ -119,7 +119,7 @@ impl BoosterChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetBoosterChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotBooster(rc::err::ItemKindMatchError),
 }

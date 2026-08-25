@@ -121,9 +121,9 @@ impl FleetChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetChangeError {
     #[error("failed to add fit")]
-    FitAdd(#[from] rc::err::FleetAddFitError),
+    FitAdd(#[from] rc::err::FleetFitAddError),
     #[error("failed to remove fit")]
-    FitRemove(#[from] rc::err::FleetRemoveFitError),
+    FitRemove(#[from] rc::err::FleetFitRemoveError),
 }
 
 impl FleetChangeCmdCtxFleet {
@@ -135,11 +135,11 @@ impl FleetChangeCmdCtxFleet {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetGetFleetChangeError {
     #[error(transparent)]
-    FleetGet(#[from] rc::err::GetFleetError),
+    FleetGet(#[from] rc::err::FleetGetError),
     #[error("failed to add fit")]
-    FitAdd(#[source] rc::err::FleetAddFitError),
+    FitAdd(#[source] rc::err::FleetFitAddError),
     #[error("failed to remove fit")]
-    FitRemove(#[source] rc::err::FleetRemoveFitError),
+    FitRemove(#[source] rc::err::FleetFitRemoveError),
 }
 impl From<FleetChangeError> for FleetGetFleetChangeError {
     fn from(err: FleetChangeError) -> Self {

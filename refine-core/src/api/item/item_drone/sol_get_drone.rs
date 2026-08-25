@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_drone(&self, item_id: &ItemId) -> Result<Drone<'_>, GetDroneError> {
+    pub fn get_drone(&self, item_id: &ItemId) -> Result<Drone<'_>, DroneGetError> {
         let drone_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(drone_uid).dc_drone()?;
         Ok(Drone::new(self, drone_uid))
     }
-    pub fn get_drone_mut(&mut self, item_id: &ItemId) -> Result<DroneMut<'_>, GetDroneError> {
+    pub fn get_drone_mut(&mut self, item_id: &ItemId) -> Result<DroneMut<'_>, DroneGetError> {
         let drone_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(drone_uid).dc_drone()?;
         Ok(DroneMut::new(self, drone_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetDroneError {
+pub enum DroneGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

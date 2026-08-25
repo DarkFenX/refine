@@ -111,7 +111,7 @@ impl ChargeChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetChargeChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotCharge(rc::err::ItemKindMatchError),
 }

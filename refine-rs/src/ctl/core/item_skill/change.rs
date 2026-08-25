@@ -106,7 +106,7 @@ pub enum SkillChangeError {
     #[error(transparent)]
     ItemIsNotSkill(#[from] rc::err::ItemKindMatchError),
     #[error(transparent)]
-    TypeIdSet(#[from] rc::err::SetSkillTypeIdError),
+    TypeIdSet(#[from] rc::err::SkillTypeIdSetError),
 }
 
 impl SkillChangeCmdCtxItem {
@@ -121,11 +121,11 @@ impl SkillChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetSkillChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotSkill(rc::err::ItemKindMatchError),
     #[error(transparent)]
-    TypeIdSet(rc::err::SetSkillTypeIdError),
+    TypeIdSet(rc::err::SkillTypeIdSetError),
 }
 impl From<SkillChangeError> for ItemGetSkillChangeError {
     fn from(err: SkillChangeError) -> Self {

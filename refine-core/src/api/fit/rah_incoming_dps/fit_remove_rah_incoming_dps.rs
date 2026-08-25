@@ -4,7 +4,7 @@ impl SolarSystem {
     pub(in crate::api) fn internal_remove_fit_rah_incoming_dps(
         &mut self,
         fit_uid: UFitId,
-    ) -> Result<(), RemoveFitRahIncomingDpsError> {
+    ) -> Result<(), FitRahIncomingDpsRemoveError> {
         let fit = self.u_data.fits.get_mut(fit_uid);
         let old_dps_profile = fit.rah_incoming_dps.take();
         match old_dps_profile {
@@ -15,21 +15,21 @@ impl SolarSystem {
                     self.svc.notify_fit_rah_dps_profile_changed(&self.u_data, fit_uid);
                 }
             }
-            None => return Err(RemoveFitRahIncomingDpsError::DpsProfileNotSet(fit.id)),
+            None => return Err(FitRahIncomingDpsRemoveError::DpsProfileNotSet(fit.id)),
         }
         Ok(())
     }
 }
 
 impl<'s> FitMut<'s> {
-    pub fn remove_rah_incoming_dps(&mut self) -> Result<(), RemoveFitRahIncomingDpsError> {
+    pub fn remove_rah_incoming_dps(&mut self) -> Result<(), FitRahIncomingDpsRemoveError> {
         self.sol.internal_remove_fit_rah_incoming_dps(self.uid)?;
         Ok(())
     }
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum RemoveFitRahIncomingDpsError {
+pub enum FitRahIncomingDpsRemoveError {
     #[error("DPS profile not found on fit {0}")]
     DpsProfileNotSet(FitId),
 }

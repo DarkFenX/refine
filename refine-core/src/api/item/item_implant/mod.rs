@@ -1,5 +1,5 @@
 pub use implant::{Implant, ImplantMut};
-pub use sol_get_implant::GetImplantError;
+pub use sol_get_implant::ImplantGetError;
 
 mod fit_add_implant;
 mod fit_iter_implants;

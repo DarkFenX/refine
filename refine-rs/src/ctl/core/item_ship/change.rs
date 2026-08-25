@@ -221,7 +221,7 @@ impl ShipChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetShipChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
     #[error("fit {0} has no ship set")]
     FitNoShip(FitId),
 }
@@ -245,5 +245,5 @@ impl ShipChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetShipChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetShipError),
+    ItemGet(#[from] rc::err::ShipGetError),
 }

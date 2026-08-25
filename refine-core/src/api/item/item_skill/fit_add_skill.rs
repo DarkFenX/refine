@@ -38,7 +38,7 @@ impl SolarSystem {
 }
 
 impl<'s> FitMut<'s> {
-    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, AddSkillError> {
+    pub fn add_skill(&mut self, type_id: ItemTypeId, level: SkillLevel) -> Result<SkillMut<'_>, SkillAddError> {
         let mut reuse_eupdates = UEffectUpdates::new();
         let skill_uid = self
             .sol
@@ -48,7 +48,7 @@ impl<'s> FitMut<'s> {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum AddSkillError {
+pub enum SkillAddError {
     #[error(transparent)]
     SkillIdCollision(#[from] SkillEveTypeError),
 }

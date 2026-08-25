@@ -205,7 +205,7 @@ impl ModuleAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ModuleAddError {
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::ProjAddError),
 }
 
 impl ModuleAddCmdCtxFit {
@@ -220,9 +220,9 @@ impl ModuleAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetModuleAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::ProjAddError),
 }
 impl From<ModuleAddError> for FitGetModuleAddError {
     fn from(err: ModuleAddError) -> Self {

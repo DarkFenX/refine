@@ -6,18 +6,18 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_fit(&self, fit_id: &FitId) -> Result<Fit<'_>, GetFitError> {
+    pub fn get_fit(&self, fit_id: &FitId) -> Result<Fit<'_>, FitGetError> {
         let fit_uid = self.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         Ok(Fit::new(self, fit_uid))
     }
-    pub fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<FitMut<'_>, GetFitError> {
+    pub fn get_fit_mut(&mut self, fit_id: &FitId) -> Result<FitMut<'_>, FitGetError> {
         let fit_uid = self.u_data.fits.int_id_by_ext_id_err(fit_id)?;
         Ok(FitMut::new(self, fit_uid))
     }
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetFitError {
+pub enum FitGetError {
     #[error(transparent)]
     FitNotFound(#[from] FitFoundError),
 }

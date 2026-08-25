@@ -1,5 +1,5 @@
 use crate::{
-    api::{AddMutationError, DroneMut, ItemTypeId, MutationMut},
+    api::{DroneMut, ItemTypeId, MutationAddError, MutationMut},
     err::basic::ItemNotMutatedError,
     sol::SolarSystem,
     ud::{UEffectUpdates, UItemId, UItemMutationRequest},
@@ -25,7 +25,7 @@ impl SolarSystem {
 }
 
 impl<'s> DroneMut<'s> {
-    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<MutationMut<'_>, AddMutationError> {
+    pub fn mutate(&mut self, mutator_type_id: ItemTypeId) -> Result<MutationMut<'_>, MutationAddError> {
         let mutation = UItemMutationRequest {
             mutator_type_aid: mutator_type_id.into_aid(),
             attrs: Vec::new(),

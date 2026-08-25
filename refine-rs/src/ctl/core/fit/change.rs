@@ -135,7 +135,7 @@ impl FitChangeCmd {
             TriStateField::None => match core_fit.unset_fleet() {
                 Ok(..) => (),
                 // We are fine if fleet was not set
-                Err(rc::err::UnsetFitFleetError::FitHasNoFleet(..)) => (),
+                Err(rc::err::FitFleetUnsetError::FitHasNoFleet(..)) => (),
             },
             TriStateField::Absent => (),
         }
@@ -147,7 +147,7 @@ impl FitChangeCmd {
             TriStateField::None => match core_fit.remove_rah_incoming_dps() {
                 Ok(..) => (),
                 // We are fine if profile was not set
-                Err(rc::err::RemoveFitRahIncomingDpsError::DpsProfileNotSet(..)) => (),
+                Err(rc::err::FitRahIncomingDpsRemoveError::DpsProfileNotSet(..)) => (),
             },
             TriStateField::Absent => (),
         }
@@ -157,7 +157,7 @@ impl FitChangeCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FitChangeError {
     #[error("failed to set fleet")]
-    FleetSet(#[from] rc::err::SetFitFleetError),
+    FleetSet(#[from] rc::err::FitFleetSetError),
 }
 
 impl FitChangeCmdCtxFit {
@@ -169,9 +169,9 @@ impl FitChangeCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitChangeError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
     #[error("failed to set fleet")]
-    FleetSet(#[source] rc::err::SetFitFleetError),
+    FleetSet(#[source] rc::err::FitFleetSetError),
 }
 impl From<FitChangeError> for FitGetFitChangeError {
     fn from(err: FitChangeError) -> Self {

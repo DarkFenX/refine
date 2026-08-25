@@ -1,6 +1,6 @@
-pub use abil::{Ability, AbilityIter, AbilityMut, GetAbilityError};
+pub use abil::{Ability, AbilityGetError, AbilityIter, AbilityMut};
 pub use fighter::{Fighter, FighterMut};
-pub use sol_get_fighter::GetFighterError;
+pub use sol_get_fighter::FighterGetError;
 
 mod abil;
 mod fighter;

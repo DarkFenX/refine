@@ -1,5 +1,5 @@
 pub use mutation_add::AttrMutateRawError;
-pub use mutation_get::GetRawMAttrError;
+pub use mutation_get::RawMAttrGetError;
 pub use mutation_iter::RawMAttrIter;
 pub use raw_attr::{RawMAttr, RawMAttrMut};
 

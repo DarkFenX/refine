@@ -1,6 +1,6 @@
 use crate::{
     ItemId, RangedProj, RangedProjMut, SolarSystem,
-    err::{GetProjError, basic::ProjFoundError},
+    err::{ProjGetError, basic::ProjFoundError},
     ud::UItemId,
 };
 
@@ -9,7 +9,7 @@ impl SolarSystem {
         &self,
         projector_uid: UItemId,
         projectee_id: &ItemId,
-    ) -> Result<RangedProj<'_>, GetProjError> {
+    ) -> Result<RangedProj<'_>, ProjGetError> {
         let projectee_uid = get_ranged_projectee_uid(self, projector_uid, projectee_id)?;
         Ok(RangedProj::new(self, projector_uid, projectee_uid))
     }
@@ -17,7 +17,7 @@ impl SolarSystem {
         &mut self,
         projector_uid: UItemId,
         projectee_id: &ItemId,
-    ) -> Result<RangedProjMut<'_>, GetProjError> {
+    ) -> Result<RangedProjMut<'_>, ProjGetError> {
         let projectee_uid = get_ranged_projectee_uid(self, projector_uid, projectee_id)?;
         Ok(RangedProjMut::new(self, projector_uid, projectee_uid))
     }
@@ -27,7 +27,7 @@ fn get_ranged_projectee_uid(
     sol: &SolarSystem,
     projector_uid: UItemId,
     projectee_id: &ItemId,
-) -> Result<UItemId, GetProjError> {
+) -> Result<UItemId, ProjGetError> {
     let projectee_uid = sol.u_data.items.int_id_by_ext_id_err(projectee_id)?;
     // Unwrapping projections because this method is supposed to be used only with items which
     // have projection container defined on them

@@ -111,7 +111,7 @@ impl ImplantChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetImplantChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotImplant(rc::err::ItemKindMatchError),
 }

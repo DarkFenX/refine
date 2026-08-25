@@ -197,7 +197,7 @@ impl FighterAddCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum FighterAddError {
     #[error("failed to add projection")]
-    ProjAdd(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::ProjAddError),
 }
 
 impl FighterAddCmdCtxFit {
@@ -212,9 +212,9 @@ impl FighterAddCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFighterAddError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
     #[error("failed to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::ProjAddError),
 }
 impl From<FighterAddError> for FitGetFighterAddError {
     fn from(err: FighterAddError) -> Self {

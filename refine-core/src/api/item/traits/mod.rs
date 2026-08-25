@@ -1,5 +1,5 @@
 pub use err::{
-    GetItemAttrError, IterItemAttrsError, IterItemEffectsError, IterItemModifiersError, StatItemAppliedError,
+    ItemAttrGetError, ItemAttrsIterError, ItemEffectsIterError, ItemModifiersIterError, StatItemAppliedError,
     StatItemError,
 };
 pub use main::{ItemCommon, ItemMutCommon};

@@ -1,4 +1,4 @@
-pub use sol_get_sw_effect::GetSwEffectError;
+pub use sol_get_sw_effect::SwEffectGetError;
 pub use sw_effect::{SwEffect, SwEffectMut};
 
 mod sol_add_sw_effect;

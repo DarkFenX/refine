@@ -1,7 +1,7 @@
 use crate::err::basic::{ItemFoundError, ItemReceiveProjError, ProjNotFoundError};
 
 #[derive(Debug, thiserror::Error)]
-pub enum AddProjError {
+pub enum ProjAddError {
     #[error(transparent)]
     ProjecteeNotFound(#[from] ItemFoundError),
     #[error(transparent)]

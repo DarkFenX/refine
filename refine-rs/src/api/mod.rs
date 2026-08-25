@@ -3,7 +3,7 @@ pub use fleet::{Fleet, FleetGetError};
 pub use item::{Item, ItemGetError};
 pub use refine::Refine;
 #[cfg(feature = "serde")]
-pub use sol::ParseSolarSystemIdError;
+pub use sol::SolarSystemIdParseError;
 pub use sol::{
     SolAddError, SolFittingAppError, SolFittingAppResp, SolGetError, SolHybridBatchError, SolRemoveError,
     SolSwitchSrcError, SolarSystem, SolarSystemId,

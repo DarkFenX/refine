@@ -76,5 +76,5 @@ impl FleetRemoveCmdCtxFleet {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetGetFleetRemoveError {
     #[error(transparent)]
-    FleetGet(#[from] rc::err::GetFleetError),
+    FleetGet(#[from] rc::err::FleetGetError),
 }

@@ -78,5 +78,5 @@ impl CharacterUnsetCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetCharacterUnsetError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
 }

@@ -1,5 +1,5 @@
 use crate::{
-    api::{AddProjError, DroneMut, RangedProjMut},
+    api::{DroneMut, ProjAddError, RangedProjMut},
     err::basic::{ItemReceiveProjError, ProjNotFoundError},
     sol::SolarSystem,
     ud::{ItemId, UItemId, UProjData},
@@ -10,7 +10,7 @@ impl SolarSystem {
         &mut self,
         drone_uid: UItemId,
         projectee_uid: UItemId,
-    ) -> Result<(), AddProjError> {
+    ) -> Result<(), ProjAddError> {
         // Check projector
         let u_drone = self.u_data.items.get(drone_uid).dc_drone().unwrap();
         // Check if projection has already been defined
@@ -48,7 +48,7 @@ impl SolarSystem {
 }
 
 impl<'s> DroneMut<'s> {
-    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProjMut<'_>, AddProjError> {
+    pub fn add_proj(&mut self, projectee_item_id: &ItemId) -> Result<RangedProjMut<'_>, ProjAddError> {
         let projectee_uid = self.sol.u_data.items.int_id_by_ext_id_err(projectee_item_id)?;
         self.sol.internal_add_drone_proj(self.uid, projectee_uid)?;
         Ok(RangedProjMut::new(self.sol, self.uid, projectee_uid))

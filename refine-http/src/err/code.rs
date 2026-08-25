@@ -161,7 +161,7 @@ impl ApiError {
                 }
                 rs::err::ItemAddEnumError::Skill(err_l2) => match err_l2 {
                     rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
+                    rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::SkillAddError::SkillIdCollision(..)) => {
                         (StatusCode::BAD_REQUEST, "SKL-002")
                     }
                 },
@@ -224,7 +224,7 @@ impl ApiError {
                 }
                 rs::err::ItemChangeEnumError::Skill(err_l2) => match err_l2 {
                     rs::err::SkillChangeError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
-                    rs::err::SkillChangeError::TypeIdSet(rs::err::core::SetSkillTypeIdError::SkillIdCollision(..)) => {
+                    rs::err::SkillChangeError::TypeIdSet(rs::err::core::SkillTypeIdSetError::SkillIdCollision(..)) => {
                         (StatusCode::BAD_REQUEST, "SKL-003")
                     }
                 },
@@ -239,7 +239,7 @@ impl ApiError {
                 }
             },
             Self::ItemRemove(rs::err::ItemRemoveError::ItemRemove(
-                rs::err::core::RemoveItemError::UnremovableAutocharge,
+                rs::err::core::ItemRemoveError::UnremovableAutocharge,
             )) => (StatusCode::FORBIDDEN, "ACH-002"),
         }
     }
@@ -282,7 +282,7 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
         // Item
         rs::err::SolChangeEnumError::ItemRemove(err_l2) => match err_l2 {
             rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-            rs::err::ItemGetItemRemoveError::ItemRemove(rs::err::core::RemoveItemError::UnremovableAutocharge) => {
+            rs::err::ItemGetItemRemoveError::ItemRemove(rs::err::core::ItemRemoveError::UnremovableAutocharge) => {
                 (StatusCode::BAD_REQUEST, "ACH-002")
             }
         },
@@ -310,8 +310,8 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
             },
             rs::err::CharacterChangeError::ViaItem(rs::err::ItemGetCharacterChangeError::ItemGet(err_l3)) => {
                 match err_l3 {
-                    rs::err::core::GetCharacterError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                    rs::err::core::GetCharacterError::ItemIsNotCharacter(..) => (StatusCode::BAD_REQUEST, "CHR-001"),
+                    rs::err::core::CharacterGetError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                    rs::err::core::CharacterGetError::ItemIsNotCharacter(..) => (StatusCode::BAD_REQUEST, "CHR-001"),
                 }
             }
         },
@@ -410,8 +410,8 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
                 rs::err::FitGetShipChangeError::FitNoShip(..) => (StatusCode::BAD_REQUEST, "SHP-002"),
             },
             rs::err::ShipChangeError::ViaItem(rs::err::ItemGetShipChangeError::ItemGet(err_l3)) => match err_l3 {
-                rs::err::core::GetShipError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                rs::err::core::GetShipError::ItemIsNotShip(..) => (StatusCode::BAD_REQUEST, "SHP-001"),
+                rs::err::core::ShipGetError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                rs::err::core::ShipGetError::ItemIsNotShip(..) => (StatusCode::BAD_REQUEST, "SHP-001"),
             },
         },
         rs::err::SolChangeEnumError::ShipUnset(rs::err::FitGetShipUnsetError::FitGet(..)) => {
@@ -420,14 +420,14 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
         // Item - skill
         rs::err::SolChangeEnumError::SkillAdd(err_l2) => match err_l2 {
             rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-            rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::AddSkillError::SkillIdCollision(..)) => {
+            rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::SkillAddError::SkillIdCollision(..)) => {
                 (StatusCode::BAD_REQUEST, "SKL-002")
             }
         },
         rs::err::SolChangeEnumError::SkillChange(err_l2) => match err_l2 {
             rs::err::ItemGetSkillChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
             rs::err::ItemGetSkillChangeError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
-            rs::err::ItemGetSkillChangeError::TypeIdSet(rs::err::core::SetSkillTypeIdError::SkillIdCollision(..)) => {
+            rs::err::ItemGetSkillChangeError::TypeIdSet(rs::err::core::SkillTypeIdSetError::SkillIdCollision(..)) => {
                 (StatusCode::BAD_REQUEST, "SKL-003")
             }
         },
@@ -441,8 +441,8 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
                 rs::err::FitGetStanceChangeError::FitNoStance(..) => (StatusCode::BAD_REQUEST, "STC-002"),
             },
             rs::err::StanceChangeError::ViaItem(rs::err::ItemGetStanceChangeError::ItemGet(err_l3)) => match err_l3 {
-                rs::err::core::GetStanceError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-                rs::err::core::GetStanceError::ItemIsNotStance(..) => (StatusCode::BAD_REQUEST, "STC-001"),
+                rs::err::core::StanceGetError::ItemNotFound(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
+                rs::err::core::StanceGetError::ItemIsNotStance(..) => (StatusCode::BAD_REQUEST, "STC-001"),
             },
         },
         rs::err::SolChangeEnumError::StanceUnset(rs::err::FitGetStanceUnsetError::FitGet(..)) => {
@@ -473,7 +473,7 @@ fn fit_change_enum(err: &rs::err::FitChangeEnumError) -> (StatusCode, &'static s
         // Item
         rs::err::FitChangeEnumError::ItemRemove(err_l2) => match err_l2 {
             rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
-            rs::err::ItemGetItemRemoveError::ItemRemove(rs::err::core::RemoveItemError::UnremovableAutocharge) => {
+            rs::err::ItemGetItemRemoveError::ItemRemove(rs::err::core::ItemRemoveError::UnremovableAutocharge) => {
                 (StatusCode::BAD_REQUEST, "ACH-002")
             }
         },
@@ -554,12 +554,12 @@ fn fit_change_enum(err: &rs::err::FitChangeEnumError) -> (StatusCode, &'static s
         }
         // Item - skill
         rs::err::FitChangeEnumError::SkillAdd(rs::err::SkillAddError::SkillAdd(
-            rs::err::core::AddSkillError::SkillIdCollision(..),
+            rs::err::core::SkillAddError::SkillIdCollision(..),
         )) => (StatusCode::BAD_REQUEST, "SKL-002"),
         rs::err::FitChangeEnumError::SkillChange(err_l2) => match err_l2 {
             rs::err::ItemGetSkillChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
             rs::err::ItemGetSkillChangeError::ItemIsNotSkill(..) => (StatusCode::BAD_REQUEST, "SKL-001"),
-            rs::err::ItemGetSkillChangeError::TypeIdSet(rs::err::core::SetSkillTypeIdError::SkillIdCollision(..)) => {
+            rs::err::ItemGetSkillChangeError::TypeIdSet(rs::err::core::SkillTypeIdSetError::SkillIdCollision(..)) => {
                 (StatusCode::BAD_REQUEST, "SKL-003")
             }
         },

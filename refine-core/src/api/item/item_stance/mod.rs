@@ -1,4 +1,4 @@
-pub use sol_get_stance::GetStanceError;
+pub use sol_get_stance::StanceGetError;
 pub use stance::{Stance, StanceMut};
 
 mod fit_get_stance;

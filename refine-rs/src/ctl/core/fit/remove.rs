@@ -76,5 +76,5 @@ impl FitRemoveCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitRemoveError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
 }

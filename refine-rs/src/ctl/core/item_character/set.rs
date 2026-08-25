@@ -99,5 +99,5 @@ impl CharacterSetCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetCharacterSetError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
 }

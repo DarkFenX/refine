@@ -5,7 +5,7 @@ use crate::{
 
 impl<'s> EffectiveMutation<'s> {
     /// Get mutation's full mutated attribute for requested attribute ID.
-    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, GetFullMAttrError> {
+    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, FullMAttrGetError> {
         let attr_aid = attr_id.into_aid();
         check_prereqs(self.sol, self.item_uid, &attr_aid)?;
         Ok(FullMAttr::new(self.sol, self.item_uid, attr_aid))
@@ -14,20 +14,20 @@ impl<'s> EffectiveMutation<'s> {
 
 impl<'s> EffectiveMutationMut<'s> {
     /// Get mutation's full mutated attribute for requested attribute ID.
-    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, GetFullMAttrError> {
+    pub fn get_full_mattr(&self, attr_id: AttrId) -> Result<FullMAttr<'_>, FullMAttrGetError> {
         let attr_aid = attr_id.into_aid();
         check_prereqs(self.sol, self.item_uid, &attr_aid)?;
         Ok(FullMAttr::new(self.sol, self.item_uid, attr_aid))
     }
     /// Get mutation's full mutated attribute for requested attribute ID.
-    pub fn get_full_mattr_mut(&mut self, attr_id: AttrId) -> Result<FullMAttrMut<'_>, GetFullMAttrError> {
+    pub fn get_full_mattr_mut(&mut self, attr_id: AttrId) -> Result<FullMAttrMut<'_>, FullMAttrGetError> {
         let attr_aid = attr_id.into_aid();
         check_prereqs(self.sol, self.item_uid, &attr_aid)?;
         Ok(FullMAttrMut::new(self.sol, self.item_uid, attr_aid))
     }
 }
 
-fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Result<(), GetFullMAttrError> {
+fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Result<(), FullMAttrGetError> {
     let u_item = sol.u_data.items.get(item_uid);
     let Some(attr_rid) = sol.u_data.r_data.get_attr_rid_by_aid(attr_aid) else {
         return Err(AttrFoundError {
@@ -37,14 +37,14 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
     };
     let mutation_cache = u_item.get_mutation_data().unwrap().get_cache().unwrap();
     if !mutation_cache.get_r_mutator().attr_mods.contains_key(&attr_rid) {
-        return Err(GetFullMAttrError::NotMutable(
+        return Err(FullMAttrGetError::NotMutable(
             sol.u_data.items.ext_id_by_int_id(item_uid),
             ItemTypeId::from_aid(mutation_cache.get_r_mutator().id),
             AttrId::from_aid(*attr_aid),
         ));
     };
     if !u_item.get_r_item_attr_data().unwrap().attrs.contains_key(&attr_rid) {
-        return Err(GetFullMAttrError::NoValue(
+        return Err(FullMAttrGetError::NoValue(
             sol.u_data.items.ext_id_by_int_id(item_uid),
             AttrId::from_aid(*attr_aid),
         ));
@@ -53,7 +53,7 @@ fn check_prereqs(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Re
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetFullMAttrError {
+pub enum FullMAttrGetError {
     #[error(transparent)]
     AttrNotFound(#[from] AttrFoundError),
     #[error("attribute {2} is not mutable according to mutator {1} on item {0}")]

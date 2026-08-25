@@ -40,7 +40,7 @@ impl From<ItemId> for ItemFoundError {
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
-pub use custom_serde::ParseItemIdError;
+pub use custom_serde::ItemIdParseError;
 
 #[cfg(feature = "serde")]
 mod custom_serde {
@@ -54,7 +54,7 @@ mod custom_serde {
     use super::*;
 
     impl FromStr for ItemId {
-        type Err = ParseItemIdError;
+        type Err = ItemIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let raw = u32::from_str(s)?;
@@ -64,7 +64,7 @@ mod custom_serde {
 
     #[derive(Debug, thiserror::Error)]
     #[error(transparent)]
-    pub struct ParseItemIdError(#[from] std::num::ParseIntError);
+    pub struct ItemIdParseError(#[from] std::num::ParseIntError);
 
     impl Serialize for ItemId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

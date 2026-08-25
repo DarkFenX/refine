@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_skill(&self, item_id: &ItemId) -> Result<Skill<'_>, GetSkillError> {
+    pub fn get_skill(&self, item_id: &ItemId) -> Result<Skill<'_>, SkillGetError> {
         let skill_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(skill_uid).dc_skill()?;
         Ok(Skill::new(self, skill_uid))
     }
-    pub fn get_skill_mut(&mut self, item_id: &ItemId) -> Result<SkillMut<'_>, GetSkillError> {
+    pub fn get_skill_mut(&mut self, item_id: &ItemId) -> Result<SkillMut<'_>, SkillGetError> {
         let skill_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(skill_uid).dc_skill()?;
         Ok(SkillMut::new(self, skill_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetSkillError {
+pub enum SkillGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

@@ -75,7 +75,7 @@ impl ItemRemoveCmd {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemRemoveError {
     #[error(transparent)]
-    ItemRemove(#[from] rc::err::RemoveItemError),
+    ItemRemove(#[from] rc::err::ItemRemoveError),
 }
 
 impl ItemRemoveCmdCtxItem {
@@ -87,9 +87,9 @@ impl ItemRemoveCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetItemRemoveError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
-    ItemRemove(rc::err::RemoveItemError),
+    ItemRemove(rc::err::ItemRemoveError),
 }
 impl From<ItemRemoveError> for ItemGetItemRemoveError {
     fn from(err: ItemRemoveError) -> Self {

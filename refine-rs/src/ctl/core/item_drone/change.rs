@@ -248,9 +248,9 @@ pub enum DroneChangeError {
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection")]
-    ProjAdd(#[from] rc::err::AddProjError),
+    ProjAdd(#[from] rc::err::ProjAddError),
     #[error("unable to remove projection")]
-    ProjRemove(#[from] rc::err::GetProjError),
+    ProjRemove(#[from] rc::err::ProjGetError),
 }
 
 impl DroneChangeCmdCtxItem {
@@ -265,15 +265,15 @@ impl DroneChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetDroneChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotDrone(rc::err::ItemKindMatchError),
     #[error("unable to mutate attributes: item {0} is not mutated")]
     NotMutated(ItemId),
     #[error("unable to add projection")]
-    ProjAdd(#[source] rc::err::AddProjError),
+    ProjAdd(#[source] rc::err::ProjAddError),
     #[error("unable to remove projection")]
-    ProjRemove(#[source] rc::err::GetProjError),
+    ProjRemove(#[source] rc::err::ProjGetError),
 }
 impl From<DroneChangeError> for ItemGetDroneChangeError {
     fn from(err: DroneChangeError) -> Self {

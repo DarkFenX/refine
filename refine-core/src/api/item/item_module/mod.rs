@@ -1,6 +1,6 @@
 pub use fit_iter_modules::ModuleIter;
 pub use module::{Module, ModuleMut};
-pub use sol_get_module::GetModuleError;
+pub use sol_get_module::ModuleGetError;
 
 mod fit_add_module;
 mod fit_iter_modules;

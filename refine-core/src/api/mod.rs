@@ -1,22 +1,22 @@
 pub use fit::{
-    Fit, FitMut, GetFitError, RemoveFitRahIncomingDpsError, SetFitFleetError, StatFitAppliedError,
-    StatFitCharacterError, StatFitShipAppliedError, StatFitShipError, UnsetFitFleetError,
+    Fit, FitFleetSetError, FitFleetUnsetError, FitGetError, FitMut, FitRahIncomingDpsRemoveError, StatFitAppliedError,
+    StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
 };
-pub use fleet::{Fleet, FleetAddFitError, FleetMut, FleetRemoveFitError, GetFleetError, StatFleetAppliedError};
+pub use fleet::{Fleet, FleetFitAddError, FleetFitRemoveError, FleetGetError, FleetMut, StatFleetAppliedError};
 pub use item::{
-    Ability, AbilityIter, AbilityMut, AddMutationError, AddProjError, AddSkillError, AttrMutateRawError, Autocharge,
-    AutochargeMut, Booster, BoosterMut, Character, CharacterMut, Charge, ChargeMut, Drone, DroneMut, EffectiveMutation,
-    EffectiveMutationMut, Fighter, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectMut,
-    GetAbilityError, GetAutochargeError, GetBoosterError, GetCharacterError, GetChargeError, GetDroneError,
-    GetFighterError, GetFwEffectError, GetImplantError, GetItemAttrError, GetItemError, GetModuleError,
-    GetProjEffectError, GetProjError, GetRawMAttrError, GetRigError, GetServiceError, GetShipError, GetSideEffectError,
-    GetSkillError, GetStanceError, GetSubsystemError, GetSwEffectError, Implant, ImplantMut, IncompleteMutation,
-    IncompleteMutationMut, Item, ItemCommon, ItemMut, ItemMutCommon, IterItemAttrsError, IterItemEffectsError,
-    IterItemModifiersError, Module, ModuleIter, ModuleMut, Mutation, MutationMut, Proj, ProjEffect, ProjEffectMut,
-    ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrIter, RawMAttrMut, RemoveItemError,
-    Rig, RigMut, Service, ServiceMut, SetSkillTypeIdError, Ship, ShipMut, SideEffect, SideEffectIter, SideEffectMut,
-    SideEffectPartialStr, SideEffectStr, Skill, SkillMut, Stance, StanceMut, StatItemAppliedError, StatItemError,
-    StatItemStateOptions, Subsystem, SubsystemMut, SwEffect, SwEffectMut,
+    Ability, AbilityGetError, AbilityIter, AbilityMut, AttrMutateRawError, Autocharge, AutochargeGetError,
+    AutochargeMut, Booster, BoosterGetError, BoosterMut, Character, CharacterGetError, CharacterMut, Charge,
+    ChargeGetError, ChargeMut, Drone, DroneGetError, DroneMut, EffectiveMutation, EffectiveMutationMut, Fighter,
+    FighterGetError, FighterMut, FullMAttr, FullMAttrIter, FullMAttrMut, FwEffect, FwEffectGetError, FwEffectMut,
+    Implant, ImplantGetError, ImplantMut, IncompleteMutation, IncompleteMutationMut, Item, ItemAttrGetError,
+    ItemAttrsIterError, ItemCommon, ItemEffectsIterError, ItemGetError, ItemModifiersIterError, ItemMut, ItemMutCommon,
+    ItemRemoveError, Module, ModuleGetError, ModuleIter, ModuleMut, Mutation, MutationAddError, MutationMut, Proj,
+    ProjAddError, ProjEffect, ProjEffectGetError, ProjEffectMut, ProjGetError, ProjIter, ProjMut, RangedProj,
+    RangedProjIter, RangedProjMut, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut, Rig, RigGetError, RigMut,
+    Service, ServiceGetError, ServiceMut, Ship, ShipGetError, ShipMut, SideEffect, SideEffectGetError, SideEffectIter,
+    SideEffectMut, SideEffectPartialStr, SideEffectStr, Skill, SkillAddError, SkillGetError, SkillMut,
+    SkillTypeIdSetError, Stance, StanceGetError, StanceMut, StatItemAppliedError, StatItemError, StatItemStateOptions,
+    Subsystem, SubsystemGetError, SubsystemMut, SwEffect, SwEffectGetError, SwEffectMut,
 };
 use item::{ItemSealed, active_stat_prepare, active_stat_rollback, get_ship_riad, iter_projs, iter_ranged_projs};
 pub use misc::{

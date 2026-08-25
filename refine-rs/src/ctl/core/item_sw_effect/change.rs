@@ -114,7 +114,7 @@ impl SwEffectChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetSwEffectChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotSwEffect(rc::err::ItemKindMatchError),
 }

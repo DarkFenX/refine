@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_charge(&self, item_id: &ItemId) -> Result<Charge<'_>, GetChargeError> {
+    pub fn get_charge(&self, item_id: &ItemId) -> Result<Charge<'_>, ChargeGetError> {
         let charge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(charge_uid).dc_charge()?;
         Ok(Charge::new(self, charge_uid))
     }
-    pub fn get_charge_mut(&mut self, item_id: &ItemId) -> Result<ChargeMut<'_>, GetChargeError> {
+    pub fn get_charge_mut(&mut self, item_id: &ItemId) -> Result<ChargeMut<'_>, ChargeGetError> {
         let charge_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(charge_uid).dc_charge()?;
         Ok(ChargeMut::new(self, charge_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetChargeError {
+pub enum ChargeGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

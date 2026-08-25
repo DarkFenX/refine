@@ -1,5 +1,5 @@
-pub use item_add_proj::AddProjError;
-pub use item_get_proj::GetProjError;
+pub use item_add_proj::ProjAddError;
+pub use item_get_proj::ProjGetError;
 use item_iter_projs::iter_projectee_uids;
 pub(in crate::api) use non_ranged::iter_projs;
 pub use non_ranged::{Proj, ProjIter, ProjMut};

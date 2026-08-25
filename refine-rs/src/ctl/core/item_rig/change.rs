@@ -111,7 +111,7 @@ impl RigChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetRigChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotRig(rc::err::ItemKindMatchError),
 }

@@ -12,4 +12,4 @@ impl<'r, 's> SolarSystem<'r> {
 
 #[derive(thiserror::Error, Debug)]
 #[error(transparent)]
-pub struct FitGetError(#[from] pub rc::err::GetFitError);
+pub struct FitGetError(#[from] pub rc::err::FitGetError);

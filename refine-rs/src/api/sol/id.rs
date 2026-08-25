@@ -14,7 +14,7 @@ impl SolarSystemId {
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 #[cfg(feature = "serde")]
-pub use custom_serde::ParseSolarSystemIdError;
+pub use custom_serde::SolarSystemIdParseError;
 
 #[cfg(feature = "serde")]
 mod custom_serde {
@@ -28,7 +28,7 @@ mod custom_serde {
     use super::*;
 
     impl FromStr for SolarSystemId {
-        type Err = ParseSolarSystemIdError;
+        type Err = SolarSystemIdParseError;
 
         fn from_str(s: &str) -> Result<Self, Self::Err> {
             let inner = uuid::Uuid::try_parse(s)?;
@@ -38,7 +38,7 @@ mod custom_serde {
 
     #[derive(thiserror::Error, Debug)]
     #[error(transparent)]
-    pub struct ParseSolarSystemIdError(#[from] uuid::Error);
+    pub struct SolarSystemIdParseError(#[from] uuid::Error);
 
     impl Serialize for SolarSystemId {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>

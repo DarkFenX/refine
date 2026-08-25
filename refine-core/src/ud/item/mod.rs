@@ -7,7 +7,7 @@ pub(crate) use base::{
 use base::{UItemBase, UItemBaseMutable};
 pub(crate) use container::UItems;
 #[cfg(feature = "serde")]
-pub use id::ParseItemIdError;
+pub use id::ItemIdParseError;
 pub use id::{ItemFoundError, ItemId};
 pub(crate) use item::UItem;
 pub(crate) use item_autocharge::UAutocharge;

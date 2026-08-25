@@ -114,7 +114,7 @@ impl SubsystemChangeCmdCtxItem {
 #[derive(thiserror::Error, Debug)]
 pub enum ItemGetSubsystemChangeError {
     #[error(transparent)]
-    ItemGet(#[from] rc::err::GetItemError),
+    ItemGet(#[from] rc::err::ItemGetError),
     #[error(transparent)]
     ItemIsNotSubsystem(rc::err::ItemKindMatchError),
 }

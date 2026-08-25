@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_stance(&self, item_id: &ItemId) -> Result<Stance<'_>, GetStanceError> {
+    pub fn get_stance(&self, item_id: &ItemId) -> Result<Stance<'_>, StanceGetError> {
         let stance_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(stance_uid).dc_stance()?;
         Ok(Stance::new(self, stance_uid))
     }
-    pub fn get_stance_mut(&mut self, item_id: &ItemId) -> Result<StanceMut<'_>, GetStanceError> {
+    pub fn get_stance_mut(&mut self, item_id: &ItemId) -> Result<StanceMut<'_>, StanceGetError> {
         let stance_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(stance_uid).dc_stance()?;
         Ok(StanceMut::new(self, stance_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetStanceError {
+pub enum StanceGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

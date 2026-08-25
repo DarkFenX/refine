@@ -159,5 +159,5 @@ impl FleetInfoCmdCtxFleet {
 #[derive(thiserror::Error, Debug)]
 pub enum FleetGetFleetInfoError {
     #[error(transparent)]
-    FleetGet(#[from] rc::err::GetFleetError),
+    FleetGet(#[from] rc::err::FleetGetError),
 }

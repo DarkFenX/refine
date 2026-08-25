@@ -10,11 +10,11 @@ impl SolarSystem {
         item_uid: UItemId,
         pos_mode: RemoveMode,
         reuse_eupdates: &mut UEffectUpdates,
-    ) -> Result<(), RemoveItemError> {
+    ) -> Result<(), ItemRemoveError> {
         let u_item = self.u_data.items.get(item_uid);
         match u_item {
             UItem::Autocharge(..) => {
-                return Err(RemoveItemError::UnremovableAutocharge);
+                return Err(ItemRemoveError::UnremovableAutocharge);
             }
             UItem::Booster(..) => self.internal_remove_booster(item_uid, reuse_eupdates),
             UItem::Character(..) => self.internal_remove_character(item_uid, reuse_eupdates),
@@ -38,11 +38,11 @@ impl SolarSystem {
 }
 
 impl<'s> ItemMut<'s> {
-    pub fn remove(self, pos_mode: RemoveMode) -> Result<(), RemoveItemError> {
+    pub fn remove(self, pos_mode: RemoveMode) -> Result<(), ItemRemoveError> {
         match self {
             // Autocharge can not be removed no matter what
             ItemMut::Autocharge(..) => {
-                return Err(RemoveItemError::UnremovableAutocharge);
+                return Err(ItemRemoveError::UnremovableAutocharge);
             }
             // For the rest, delegate to per-item removal methods
             ItemMut::Booster(booster) => booster.remove(),
@@ -67,7 +67,7 @@ impl<'s> ItemMut<'s> {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum RemoveItemError {
+pub enum ItemRemoveError {
     #[error("autocharge cannot be manually removed")]
     UnremovableAutocharge,
 }

@@ -1,8 +1,8 @@
 pub use booster::{Booster, BoosterMut};
 pub use side_effect::{
-    GetSideEffectError, SideEffect, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
+    SideEffect, SideEffectGetError, SideEffectIter, SideEffectMut, SideEffectPartialStr, SideEffectStr,
 };
-pub use sol_get_booster::GetBoosterError;
+pub use sol_get_booster::BoosterGetError;
 
 mod booster;
 mod booster_remove;

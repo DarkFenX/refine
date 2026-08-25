@@ -1,5 +1,5 @@
 pub use autocharge::{Autocharge, AutochargeMut};
-pub use sol_get_autocharge::GetAutochargeError;
+pub use sol_get_autocharge::AutochargeGetError;
 
 mod autocharge;
 mod autocharge_set_state;

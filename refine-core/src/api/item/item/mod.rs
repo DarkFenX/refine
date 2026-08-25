@@ -1,6 +1,6 @@
 pub use item::{Item, ItemMut};
-pub use item_get::GetItemError;
-pub use item_remove::RemoveItemError;
+pub use item_get::ItemGetError;
+pub use item_remove::ItemRemoveError;
 
 mod fit_iter_items;
 mod item;

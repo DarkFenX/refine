@@ -6,12 +6,12 @@ use crate::{
 };
 
 impl SolarSystem {
-    pub fn get_fighter(&self, item_id: &ItemId) -> Result<Fighter<'_>, GetFighterError> {
+    pub fn get_fighter(&self, item_id: &ItemId) -> Result<Fighter<'_>, FighterGetError> {
         let fighter_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(fighter_uid).dc_fighter()?;
         Ok(Fighter::new(self, fighter_uid))
     }
-    pub fn get_fighter_mut(&mut self, item_id: &ItemId) -> Result<FighterMut<'_>, GetFighterError> {
+    pub fn get_fighter_mut(&mut self, item_id: &ItemId) -> Result<FighterMut<'_>, FighterGetError> {
         let fighter_uid = self.u_data.items.int_id_by_ext_id_err(item_id)?;
         self.u_data.items.get(fighter_uid).dc_fighter()?;
         Ok(FighterMut::new(self, fighter_uid))
@@ -19,7 +19,7 @@ impl SolarSystem {
 }
 
 #[derive(Debug, thiserror::Error)]
-pub enum GetFighterError {
+pub enum FighterGetError {
     #[error(transparent)]
     ItemNotFound(#[from] ItemFoundError),
     #[error(transparent)]

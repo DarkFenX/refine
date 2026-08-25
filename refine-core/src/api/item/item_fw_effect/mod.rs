@@ -1,5 +1,5 @@
 pub use fw_effect::{FwEffect, FwEffectMut};
-pub use sol_get_fw_effect::GetFwEffectError;
+pub use sol_get_fw_effect::FwEffectGetError;
 
 mod fit_add_fw_effect;
 mod fit_iter_fw_effects;

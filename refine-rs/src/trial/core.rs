@@ -128,5 +128,5 @@ impl FitTryItemsCmdCtxFit {
 #[derive(thiserror::Error, Debug)]
 pub enum FitGetFitTryItemsError {
     #[error(transparent)]
-    FitGet(#[from] rc::err::GetFitError),
+    FitGet(#[from] rc::err::FitGetError),
 }
