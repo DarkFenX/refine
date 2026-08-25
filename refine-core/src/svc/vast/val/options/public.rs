@@ -475,15 +475,24 @@ impl<I1> ValOptions<I1> {
 #[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(transparent))]
 #[derive(Clone)]
 pub struct ValEnabled<I = ItemId> {
-    /// Known failures of a validation.
-    ///
-    /// Every validation failure is attached to an item. Items listed here will not be returned as
-    /// validation failures. If all validation's failures are known, it is passed.
-    pub kfs: Vec<I> = Vec::new(),
+    pub(super) kfs: Vec<I> = Vec::new(),
 }
 impl<I> Default for ValEnabled<I> {
     fn default() -> Self {
         Self { .. }
+    }
+}
+impl<I> ValEnabled<I> {
+    pub fn new() -> Self {
+        Self::default()
+    }
+    /// Known failures of a validation.
+    ///
+    /// Every validation failure is attached to an item. Items listed here will not be returned as
+    /// validation failures. If all validation's failures are known, it is passed.
+    pub fn with_kfs(mut self, kfs: impl Iterator<Item = I>) -> Self {
+        self.kfs = kfs.collect();
+        self
     }
 }
 
