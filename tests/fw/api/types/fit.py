@@ -49,7 +49,11 @@ if typing.TYPE_CHECKING:
 class Fit(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
-        super().__init__(data=data, hooks={'rah_incoming_dps': AttrHookDef(func=lambda dp: DpsProfile(data=dp))})
+        super().__init__(data=data, hooks={
+            'implants': AttrHookDef(func=lambda d: {
+                i['id']: Item(client=self._client, data=i, sol_id=self._sol_id)
+                for i in d}),
+            'rah_incoming_dps': AttrHookDef(func=lambda dp: DpsProfile(data=dp))})
         self._client = client
         self._sol_id = sol_id
 
