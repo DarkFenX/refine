@@ -314,27 +314,27 @@ impl BrResolveInfallible for ItemStatsOptionsBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsOptions {
     pub(super) fn stat_resolve(self) -> ItemStatsOptionsResolved {
-        let mut resolved = ItemStatsOptionsResolved::from_default(self.default);
+        let mut resolved = ItemStatsOptionsResolved::blank_from_default(self.default);
         for option in self.overrides.into_iter() {
             match option {
                 // Output
-                ItemStatOption::Dmg(option) => resolved.dmg = option.stat_resolve(),
-                ItemStatOption::Mps(option) => resolved.mps = option.stat_resolve(),
-                ItemStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.stat_resolve(),
-                ItemStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.stat_resolve(),
-                ItemStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.stat_resolve(),
+                ItemStatOption::Dmg(option) => resolved.dmg = option.into_resolved(),
+                ItemStatOption::Mps(option) => resolved.mps = option.into_resolved(),
+                ItemStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.into_resolved(),
+                ItemStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.into_resolved(),
+                ItemStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.into_resolved(),
                 // Tank
                 ItemStatOption::Resists(option) => resolved.resists = option,
                 ItemStatOption::Hp(option) => resolved.hp = option,
-                ItemStatOption::Ehp(option) => resolved.ehp = option.stat_resolve(),
+                ItemStatOption::Ehp(option) => resolved.ehp = option.into_resolved(),
                 ItemStatOption::WcEhp(option) => resolved.wc_ehp = option,
-                ItemStatOption::Rps(option) => resolved.rps = option.stat_resolve(),
-                ItemStatOption::Erps(option) => resolved.erps = option.stat_resolve(),
+                ItemStatOption::Rps(option) => resolved.rps = option.into_resolved(),
+                ItemStatOption::Erps(option) => resolved.erps = option.into_resolved(),
                 ItemStatOption::BreachResist(option) => resolved.breach_resist = option,
                 // Cap
                 ItemStatOption::CapAmount(option) => resolved.cap_amount = option,
-                ItemStatOption::CapBalance(option) => resolved.cap_balance = option.stat_resolve(),
-                ItemStatOption::CapSim(option) => resolved.cap_sim = option.stat_resolve(),
+                ItemStatOption::CapBalance(option) => resolved.cap_balance = option.into_resolved(),
+                ItemStatOption::CapSim(option) => resolved.cap_sim = option.into_resolved(),
                 ItemStatOption::NeutResist(option) => resolved.neut_resist = option,
                 // Sensors
                 ItemStatOption::Locks(option) => resolved.locks = option,
@@ -343,16 +343,16 @@ impl ItemStatsOptions {
                 ItemStatOption::Sensors(option) => resolved.sensors = option,
                 ItemStatOption::DscanRange(option) => resolved.dscan_range = option,
                 ItemStatOption::ProbingSize(option) => resolved.probing_size = option,
-                ItemStatOption::IncomingJam(option) => resolved.incoming_jam = option.stat_resolve(),
+                ItemStatOption::IncomingJam(option) => resolved.incoming_jam = option.into_resolved(),
                 // Mobility
                 ItemStatOption::Speed(option) => resolved.speed = option,
                 ItemStatOption::Agility(option) => resolved.agility = option,
                 ItemStatOption::AlignTime(option) => resolved.align_time = option,
                 ItemStatOption::SigRadius(option) => resolved.sig_radius = option,
-                ItemStatOption::Mass(option) => resolved.mass = option.stat_resolve(),
+                ItemStatOption::Mass(option) => resolved.mass = option.into_resolved(),
                 ItemStatOption::WarpSpeed(option) => resolved.warp_speed = option,
                 ItemStatOption::MaxWarpRange(option) => resolved.max_warp_range = option,
-                ItemStatOption::Jump(option) => resolved.jump = option.stat_resolve(),
+                ItemStatOption::Jump(option) => resolved.jump = option.into_resolved(),
                 // Misc
                 ItemStatOption::DroneControlRange(option) => resolved.drone_control_range = option,
                 ItemStatOption::CanWarp(option) => resolved.can_warp = option,
@@ -364,6 +364,7 @@ impl ItemStatsOptions {
                 ItemStatOption::CanTether(option) => resolved.can_tether = option,
             }
         }
+        resolved.complete_extended_defaults();
         resolved
     }
 }

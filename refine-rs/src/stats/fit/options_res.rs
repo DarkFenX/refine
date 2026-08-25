@@ -9,11 +9,11 @@ use crate::{
 
 pub(in crate::stats) struct FitStatsOptionsResolved {
     // Fit output stats
-    pub(super) dmg: Vec<Result<StatOptionFitDmg, BrResolveError>>,
-    pub(super) mps: Vec<StatOptionFitMining>,
-    pub(super) outgoing_nps: Vec<Result<StatOptionFitOutNps, BrResolveError>>,
-    pub(super) outgoing_rps: Vec<Result<StatOptionFitOutRps, BrResolveError>>,
-    pub(super) outgoing_cps: Vec<Result<StatOptionFitOutCps, BrResolveError>>,
+    pub(super) dmg: Option<Vec<Result<StatOptionFitDmg, BrResolveError>>>,
+    pub(super) mps: Option<Vec<StatOptionFitMining>>,
+    pub(super) outgoing_nps: Option<Vec<Result<StatOptionFitOutNps, BrResolveError>>>,
+    pub(super) outgoing_rps: Option<Vec<Result<StatOptionFitOutRps, BrResolveError>>>,
+    pub(super) outgoing_cps: Option<Vec<Result<StatOptionFitOutCps, BrResolveError>>>,
     // Fit resources
     pub(super) cpu: bool,
     pub(super) powergrid: bool,
@@ -41,15 +41,15 @@ pub(in crate::stats) struct FitStatsOptionsResolved {
     // Ship tank
     pub(super) resists: bool,
     pub(super) hp: bool,
-    pub(super) ehp: Vec<StatOptionEhp>,
+    pub(super) ehp: Option<Vec<StatOptionEhp>>,
     pub(super) wc_ehp: bool,
-    pub(super) rps: Vec<StatOptionRps>,
-    pub(super) erps: Vec<StatOptionErps>,
+    pub(super) rps: Option<Vec<StatOptionRps>>,
+    pub(super) erps: Option<Vec<StatOptionErps>>,
     pub(super) breach_resist: bool,
     // Ship cap
     pub(super) cap_amount: bool,
-    pub(super) cap_balance: Vec<Result<StatOptionCapBlc, BrResolveError>>,
-    pub(super) cap_sim: Vec<Result<StatOptionCapSim, BrResolveError>>,
+    pub(super) cap_balance: Option<Vec<Result<StatOptionCapBlc, BrResolveError>>>,
+    pub(super) cap_sim: Option<Vec<Result<StatOptionCapSim, BrResolveError>>>,
     pub(super) neut_resist: bool,
     // Ship sensors
     pub(super) locks: bool,
@@ -58,16 +58,16 @@ pub(in crate::stats) struct FitStatsOptionsResolved {
     pub(super) sensors: bool,
     pub(super) dscan_range: bool,
     pub(super) probing_size: bool,
-    pub(super) incoming_jam: Vec<StatOptionIncomingJam>,
+    pub(super) incoming_jam: Option<Vec<StatOptionIncomingJam>>,
     // Ship mobility
     pub(super) speed: bool,
     pub(super) agility: bool,
     pub(super) align_time: bool,
     pub(super) sig_radius: bool,
-    pub(super) mass: Vec<StatOptionMass>,
+    pub(super) mass: Option<Vec<StatOptionMass>>,
     pub(super) warp_speed: bool,
     pub(super) max_warp_range: bool,
-    pub(super) jump: Vec<StatOptionJump>,
+    pub(super) jump: Option<Vec<StatOptionJump>>,
     // Ship misc stats
     pub(super) drone_control_range: bool,
     pub(super) can_warp: bool,
@@ -83,14 +83,14 @@ pub(in crate::stats) struct FitStatsOptionsResolved {
 // Default + stat resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptionsResolved {
-    pub(super) fn from_default(default: bool) -> Self {
+    pub(super) fn blank_from_default(default: bool) -> Self {
         Self {
             // Fit output stats
-            dmg: StatOptionInt::from_default(default),
-            mps: StatOptionExt::from_default(default),
-            outgoing_nps: StatOptionInt::from_default(default),
-            outgoing_rps: StatOptionInt::from_default(default),
-            outgoing_cps: StatOptionInt::from_default(default),
+            dmg: StatOptionInt::blank_from_default(default),
+            mps: StatOptionExt::blank_from_default(default),
+            outgoing_nps: StatOptionInt::blank_from_default(default),
+            outgoing_rps: StatOptionInt::blank_from_default(default),
+            outgoing_cps: StatOptionInt::blank_from_default(default),
             // Fit resources
             cpu: default,
             powergrid: default,
@@ -118,15 +118,15 @@ impl FitStatsOptionsResolved {
             // Ship tank
             resists: default,
             hp: default,
-            ehp: StatOptionExt::from_default(default),
+            ehp: StatOptionExt::blank_from_default(default),
             wc_ehp: default,
-            rps: StatOptionExt::from_default(default),
-            erps: StatOptionExt::from_default(default),
+            rps: StatOptionExt::blank_from_default(default),
+            erps: StatOptionExt::blank_from_default(default),
             breach_resist: default,
             // Ship cap
             cap_amount: default,
-            cap_balance: StatOptionInt::from_default(default),
-            cap_sim: StatOptionInt::from_default(default),
+            cap_balance: StatOptionInt::blank_from_default(default),
+            cap_sim: StatOptionInt::blank_from_default(default),
             neut_resist: default,
             // Ship sensors
             locks: default,
@@ -135,16 +135,16 @@ impl FitStatsOptionsResolved {
             sensors: default,
             dscan_range: default,
             probing_size: default,
-            incoming_jam: StatOptionExt::from_default(default),
+            incoming_jam: StatOptionExt::blank_from_default(default),
             // Ship mobility
             speed: default,
             agility: default,
             align_time: default,
             sig_radius: default,
-            mass: StatOptionExt::from_default(default),
+            mass: StatOptionExt::blank_from_default(default),
             warp_speed: default,
             max_warp_range: default,
-            jump: StatOptionExt::from_default(default),
+            jump: StatOptionExt::blank_from_default(default),
             // Ship misc stats
             drone_control_range: default,
             can_warp: default,
@@ -156,6 +156,21 @@ impl FitStatsOptionsResolved {
             can_tether: default,
         }
     }
+    pub(super) fn complete_extended_defaults(&mut self) {
+        StatOptionInt::complete_blank_with_default(&mut self.dmg);
+        StatOptionExt::complete_blank_with_default(&mut self.mps);
+        StatOptionInt::complete_blank_with_default(&mut self.outgoing_nps);
+        StatOptionInt::complete_blank_with_default(&mut self.outgoing_rps);
+        StatOptionInt::complete_blank_with_default(&mut self.outgoing_cps);
+        StatOptionExt::complete_blank_with_default(&mut self.ehp);
+        StatOptionExt::complete_blank_with_default(&mut self.rps);
+        StatOptionExt::complete_blank_with_default(&mut self.erps);
+        StatOptionInt::complete_blank_with_default(&mut self.cap_balance);
+        StatOptionInt::complete_blank_with_default(&mut self.cap_sim);
+        StatOptionExt::complete_blank_with_default(&mut self.incoming_jam);
+        StatOptionExt::complete_blank_with_default(&mut self.mass);
+        StatOptionExt::complete_blank_with_default(&mut self.jump);
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -164,11 +179,11 @@ impl FitStatsOptionsResolved {
 impl FitStatsOptionsResolved {
     pub(in crate::stats) fn is_any_stat_requested(&self) -> bool {
         // Fit output stats
-        !self.dmg.is_empty()
-            || !self.mps.is_empty()
-            || !self.outgoing_nps.is_empty()
-            || !self.outgoing_rps.is_empty()
-            || !self.outgoing_cps.is_empty()
+        self.dmg.is_some()
+            || self.mps.is_some()
+            || self.outgoing_nps.is_some()
+            || self.outgoing_rps.is_some()
+            || self.outgoing_cps.is_some()
             // Fit resources
             || self.cpu
             || self.powergrid
@@ -196,15 +211,15 @@ impl FitStatsOptionsResolved {
             // Ship tank
             || self.resists
             || self.hp
-            || !self.ehp.is_empty()
+            || self.ehp.is_some()
             || self.wc_ehp
-            || !self.rps.is_empty()
-            || !self.erps.is_empty()
+            || self.rps.is_some()
+            || self.erps.is_some()
             || self.breach_resist
             // Ship cap
             || self.cap_amount
-            || !self.cap_balance.is_empty()
-            || !self.cap_sim.is_empty()
+            || self.cap_balance.is_some()
+            || self.cap_sim.is_some()
             || self.neut_resist
             // Ship sensors
             || self.locks
@@ -213,16 +228,16 @@ impl FitStatsOptionsResolved {
             || self.sensors
             || self.dscan_range
             || self.probing_size
-            || !self.incoming_jam.is_empty()
+            || self.incoming_jam.is_some()
             // Ship mobility
             || self.speed
             || self.agility
             || self.align_time
             || self.sig_radius
-            || !self.mass.is_empty()
+            || self.mass.is_some()
             || self.warp_speed
             || self.max_warp_range
-            || !self.jump.is_empty()
+            || self.jump.is_some()
             // Ship misc stats
             || self.drone_control_range
             || self.can_warp

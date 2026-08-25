@@ -79,17 +79,25 @@ impl<T> StatOptionExt<T>
 where
     T: Default,
 {
-    pub(in crate::stats) fn from_default(default: bool) -> Vec<T> {
+    pub(in crate::stats) fn blank_from_default(default: bool) -> Option<Vec<T>> {
         match default {
-            true => vec![T::default()],
-            false => Vec::new(),
+            true => Some(Vec::new()),
+            false => None,
         }
     }
-    pub(in crate::stats) fn stat_resolve(self) -> Vec<T> {
+    pub(in crate::stats) fn into_resolved(self) -> Option<Vec<T>> {
         match self {
-            Self::Disabled => Vec::new(),
-            Self::Enabled => vec![T::default()],
-            Self::EnabledExtended(options) => options,
+            Self::Disabled => None,
+            Self::Enabled => Some(Vec::new()),
+            Self::EnabledExtended(options) => Some(options),
+        }
+    }
+    pub(in crate::stats) fn complete_blank_with_default(options: &mut Option<Vec<T>>) {
+        if let Some(options) = options
+            && options.is_empty()
+        {
+            options.reserve_exact(1);
+            options.push(T::default());
         }
     }
 }
@@ -98,17 +106,25 @@ impl<T> StatOptionInt<T>
 where
     T: Default,
 {
-    pub(in crate::stats) fn from_default(default: bool) -> Vec<Result<T, BrResolveError>> {
+    pub(in crate::stats) fn blank_from_default(default: bool) -> Option<Vec<Result<T, BrResolveError>>> {
         match default {
-            true => vec![Ok(T::default())],
-            false => Vec::new(),
+            true => Some(Vec::new()),
+            false => None,
         }
     }
-    pub(in crate::stats) fn stat_resolve(self) -> Vec<Result<T, BrResolveError>> {
+    pub(in crate::stats) fn into_resolved(self) -> Option<Vec<Result<T, BrResolveError>>> {
         match self {
-            Self::Disabled => Vec::new(),
-            Self::Enabled => vec![Ok(T::default())],
-            Self::EnabledExtended(options) => options,
+            Self::Disabled => None,
+            Self::Enabled => Some(Vec::new()),
+            Self::EnabledExtended(options) => Some(options),
+        }
+    }
+    pub(in crate::stats) fn complete_blank_with_default(options: &mut Option<Vec<Result<T, BrResolveError>>>) {
+        if let Some(options) = options
+            && options.is_empty()
+        {
+            options.reserve_exact(1);
+            options.push(Ok(T::default()));
         }
     }
 }

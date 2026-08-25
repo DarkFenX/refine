@@ -19,20 +19,20 @@ impl FitStatsOptionsResolved {
     pub(in crate::stats) fn execute(&self, core_fit: &mut rc::FitMut) -> FitStats {
         let mut stats = FitStats { .. };
         // Fit output stats
-        if !self.dmg.is_empty() {
-            stats.dmg = get_dmg_stats(core_fit, &self.dmg);
+        if let Some(options) = &self.dmg {
+            stats.dmg = get_dmg_stats(core_fit, options);
         }
-        if !self.mps.is_empty() {
-            stats.mps = get_mps_stats(core_fit, &self.mps);
+        if let Some(options) = &self.mps {
+            stats.mps = get_mps_stats(core_fit, options);
         }
-        if !self.outgoing_nps.is_empty() {
-            stats.outgoing_nps = get_outgoing_nps_stats(core_fit, &self.outgoing_nps);
+        if let Some(options) = &self.outgoing_nps {
+            stats.outgoing_nps = get_outgoing_nps_stats(core_fit, options);
         }
-        if !self.outgoing_cps.is_empty() {
-            stats.outgoing_cps = get_outgoing_cps_stats(core_fit, &self.outgoing_cps);
+        if let Some(options) = &self.outgoing_cps {
+            stats.outgoing_cps = get_outgoing_cps_stats(core_fit, options);
         }
-        if !self.outgoing_rps.is_empty() {
-            stats.outgoing_rps = get_outgoing_rps_stats(core_fit, &self.outgoing_rps);
+        if let Some(options) = &self.outgoing_rps {
+            stats.outgoing_rps = get_outgoing_rps_stats(core_fit, options);
         }
         // Fit resources
         if self.cpu {
@@ -110,17 +110,17 @@ impl FitStatsOptionsResolved {
         if self.hp {
             stats.hp = StatResult::from_result_outer(core_fit.get_stat_hp());
         }
-        if !self.ehp.is_empty() {
-            stats.ehp = get_ehp_stats(core_fit, &self.ehp);
+        if let Some(options) = &self.ehp {
+            stats.ehp = get_ehp_stats(core_fit, options);
         }
         if self.wc_ehp {
             stats.wc_ehp = StatResult::from_result_outer(core_fit.get_stat_wc_ehp());
         }
-        if !self.rps.is_empty() {
-            stats.rps = get_rps_stats(core_fit, &self.rps);
+        if let Some(options) = &self.rps {
+            stats.rps = get_rps_stats(core_fit, options);
         }
-        if !self.erps.is_empty() {
-            stats.erps = get_erps_stats(core_fit, &self.erps);
+        if let Some(options) = &self.erps {
+            stats.erps = get_erps_stats(core_fit, options);
         }
         if self.breach_resist {
             stats.breach_resist = StatResult::from_result_outer(core_fit.get_stat_breach_resist());
@@ -129,11 +129,11 @@ impl FitStatsOptionsResolved {
         if self.cap_amount {
             stats.cap_amount = StatResult::from_result_outer(core_fit.get_stat_cap_amount());
         }
-        if !self.cap_balance.is_empty() {
-            stats.cap_balance = get_cap_balance_stats(core_fit, &self.cap_balance);
+        if let Some(options) = &self.cap_balance {
+            stats.cap_balance = get_cap_balance_stats(core_fit, options);
         }
-        if !self.cap_sim.is_empty() {
-            stats.cap_sim = get_cap_sim_stats(core_fit, &self.cap_sim);
+        if let Some(options) = &self.cap_sim {
+            stats.cap_sim = get_cap_sim_stats(core_fit, options);
         }
         if self.neut_resist {
             stats.neut_resist = StatResult::from_result_outer(core_fit.get_stat_neut_resist());
@@ -157,8 +157,8 @@ impl FitStatsOptionsResolved {
         if self.probing_size {
             stats.probing_size = StatResult::from_result_outer(core_fit.get_stat_probing_size());
         }
-        if !self.incoming_jam.is_empty() {
-            stats.incoming_jam = get_incoming_jam_stats(core_fit, &self.incoming_jam);
+        if let Some(options) = &self.incoming_jam {
+            stats.incoming_jam = get_incoming_jam_stats(core_fit, options);
         }
         // Ship mobility
         if self.speed {
@@ -173,8 +173,8 @@ impl FitStatsOptionsResolved {
         if self.sig_radius {
             stats.sig_radius = StatResult::from_result_outer(core_fit.get_stat_sig_radius());
         }
-        if !self.mass.is_empty() {
-            stats.mass = get_mass_stats(core_fit, &self.mass);
+        if let Some(options) = &self.mass {
+            stats.mass = get_mass_stats(core_fit, options);
         }
         if self.warp_speed {
             stats.warp_speed = StatResult::from_result_outer(core_fit.get_stat_warp_speed());
@@ -182,8 +182,8 @@ impl FitStatsOptionsResolved {
         if self.max_warp_range {
             stats.max_warp_range = StatResult::from_result_outer(core_fit.get_stat_max_warp_range());
         }
-        if !self.jump.is_empty() {
-            stats.jump = get_jump_stats(core_fit, &self.jump);
+        if let Some(options) = &self.jump {
+            stats.jump = get_jump_stats(core_fit, options);
         }
         // Ship misc stats
         if self.drone_control_range {

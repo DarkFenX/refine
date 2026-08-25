@@ -106,17 +106,18 @@ impl BrResolveInfallible for FleetStatsOptionsBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetStatsOptions {
     pub(super) fn stat_resolve(self) -> FleetStatsOptionsResolved {
-        let mut resolved = FleetStatsOptionsResolved::from_default(self.default);
+        let mut resolved = FleetStatsOptionsResolved::blank_from_default(self.default);
         for option in self.overrides.into_iter() {
             match option {
-                FleetStatOption::Dmg(option) => resolved.dmg = option.stat_resolve(),
-                FleetStatOption::Mps(option) => resolved.mps = option.stat_resolve(),
-                FleetStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.stat_resolve(),
-                FleetStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.stat_resolve(),
-                FleetStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.stat_resolve(),
-                FleetStatOption::Mass(option) => resolved.mass = option.stat_resolve(),
+                FleetStatOption::Dmg(option) => resolved.dmg = option.into_resolved(),
+                FleetStatOption::Mps(option) => resolved.mps = option.into_resolved(),
+                FleetStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.into_resolved(),
+                FleetStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.into_resolved(),
+                FleetStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.into_resolved(),
+                FleetStatOption::Mass(option) => resolved.mass = option.into_resolved(),
             }
         }
+        resolved.complete_extended_defaults();
         resolved
     }
 }

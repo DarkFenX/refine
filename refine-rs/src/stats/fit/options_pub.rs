@@ -458,15 +458,15 @@ impl BrResolveInfallible for FitStatsOptionsBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsOptions {
     pub(super) fn stat_resolve(self) -> FitStatsOptionsResolved {
-        let mut resolved = FitStatsOptionsResolved::from_default(self.default);
+        let mut resolved = FitStatsOptionsResolved::blank_from_default(self.default);
         for option in self.overrides.into_iter() {
             match option {
                 // Fit output stats
-                FitStatOption::Dmg(option) => resolved.dmg = option.stat_resolve(),
-                FitStatOption::Mps(option) => resolved.mps = option.stat_resolve(),
-                FitStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.stat_resolve(),
-                FitStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.stat_resolve(),
-                FitStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.stat_resolve(),
+                FitStatOption::Dmg(option) => resolved.dmg = option.into_resolved(),
+                FitStatOption::Mps(option) => resolved.mps = option.into_resolved(),
+                FitStatOption::OutgoingNps(option) => resolved.outgoing_nps = option.into_resolved(),
+                FitStatOption::OutgoingRps(option) => resolved.outgoing_rps = option.into_resolved(),
+                FitStatOption::OutgoingCps(option) => resolved.outgoing_cps = option.into_resolved(),
                 // Fit resources
                 FitStatOption::Cpu(option) => resolved.cpu = option,
                 FitStatOption::Powergrid(option) => resolved.powergrid = option,
@@ -494,15 +494,15 @@ impl FitStatsOptions {
                 // Ship tank
                 FitStatOption::Resists(option) => resolved.resists = option,
                 FitStatOption::Hp(option) => resolved.hp = option,
-                FitStatOption::Ehp(option) => resolved.ehp = option.stat_resolve(),
+                FitStatOption::Ehp(option) => resolved.ehp = option.into_resolved(),
                 FitStatOption::WcEhp(option) => resolved.wc_ehp = option,
-                FitStatOption::Rps(option) => resolved.rps = option.stat_resolve(),
-                FitStatOption::Erps(option) => resolved.erps = option.stat_resolve(),
+                FitStatOption::Rps(option) => resolved.rps = option.into_resolved(),
+                FitStatOption::Erps(option) => resolved.erps = option.into_resolved(),
                 FitStatOption::BreachResist(option) => resolved.breach_resist = option,
                 // Ship cap
                 FitStatOption::CapAmount(option) => resolved.cap_amount = option,
-                FitStatOption::CapBalance(option) => resolved.cap_balance = option.stat_resolve(),
-                FitStatOption::CapSim(option) => resolved.cap_sim = option.stat_resolve(),
+                FitStatOption::CapBalance(option) => resolved.cap_balance = option.into_resolved(),
+                FitStatOption::CapSim(option) => resolved.cap_sim = option.into_resolved(),
                 FitStatOption::NeutResist(option) => resolved.neut_resist = option,
                 // Ship sensors
                 FitStatOption::Locks(option) => resolved.locks = option,
@@ -511,16 +511,16 @@ impl FitStatsOptions {
                 FitStatOption::Sensors(option) => resolved.sensors = option,
                 FitStatOption::DscanRange(option) => resolved.dscan_range = option,
                 FitStatOption::ProbingSize(option) => resolved.probing_size = option,
-                FitStatOption::IncomingJam(option) => resolved.incoming_jam = option.stat_resolve(),
+                FitStatOption::IncomingJam(option) => resolved.incoming_jam = option.into_resolved(),
                 // Ship mobility
                 FitStatOption::Speed(option) => resolved.speed = option,
                 FitStatOption::Agility(option) => resolved.agility = option,
                 FitStatOption::AlignTime(option) => resolved.align_time = option,
                 FitStatOption::SigRadius(option) => resolved.sig_radius = option,
-                FitStatOption::Mass(option) => resolved.mass = option.stat_resolve(),
+                FitStatOption::Mass(option) => resolved.mass = option.into_resolved(),
                 FitStatOption::WarpSpeed(option) => resolved.warp_speed = option,
                 FitStatOption::MaxWarpRange(option) => resolved.max_warp_range = option,
-                FitStatOption::Jump(option) => resolved.jump = option.stat_resolve(),
+                FitStatOption::Jump(option) => resolved.jump = option.into_resolved(),
                 // Ship misc stats
                 FitStatOption::DroneControlRange(option) => resolved.drone_control_range = option,
                 FitStatOption::CanWarp(option) => resolved.can_warp = option,
@@ -532,6 +532,7 @@ impl FitStatsOptions {
                 FitStatOption::CanTether(option) => resolved.can_tether = option,
             }
         }
+        resolved.complete_extended_defaults();
         resolved
     }
 }
