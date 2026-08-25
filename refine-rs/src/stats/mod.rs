@@ -1,3 +1,28 @@
+// Stats seem to be more complex than other commands, so worth to describe high-level logic in a
+// comment.
+//
+// Stats options are split in two kinds: those which are simple (enabled/disabled), and those which
+// can take extended options when they are enabled (like target to apply damage to). Both are stored
+// in sparse format, to keep commands which store stats options small. Commands can be created using
+// builder pattern, which hides all the implementation details.
+//
+// For some stat options of extended kind, proper backreference support complicates it further. In
+// order to fail specific stat option instead of failing whole request, non-backref-capable
+// container carries both variants: proper stat option and backreference resolution error.
+//
+// Since the same set of options can be used to fetch stats of different entities, they are resolved
+// into format more convenient for stats generation process. It is dense, but it lives only during
+// the resolution process itself.
+//
+// Regardless of stat kind, results are returned as a vector (in case of the simple kind, len is
+// always 1). It is done to make the format more future-proof, during development many stats
+// received options while I thought they wouldn't receive any.
+//
+// During processing of a single stat errors might occur. They can be split into two groups: fatal
+// and non-fatal. Fatal errors fail stat for the whole set of passed options (e.g. attempt to fetch
+// some stat from an item which is not loaded is fatal), while non-fatal errors fail fetch for that
+// specific stat option.
+
 pub(crate) use fit::FitStatsEnumCmd;
 pub use fit::{
     FitStats, FitStatsCmd, FitStatsCmdBr, FitStatsEnumCmdBr, FitStatsOptions, FitStatsOptionsBr, FitStatsResp,
