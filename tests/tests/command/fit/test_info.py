@@ -1,6 +1,21 @@
 from fw import check_no_field
 
 
+def test_fit(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    api_item = api_fit.add_implant(type_id=eve_item_id)
+    with api_fit.batch() as api_fit_batch:
+        api_fit_info1 = api_fit_batch.get_fit_info(fit_mode=consts.ApiFitInfoMode.full)
+        api_fit_info2 = api_fit_batch.get_fit_info(fit_mode=consts.ApiFitInfoMode.id)
+    # Verification
+    assert api_item.id in api_fit_info1.implants
+    with check_no_field():
+        api_fit_info2.implants  # ruff:ignore[useless-expression]
+
+
 def test_item_override(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
