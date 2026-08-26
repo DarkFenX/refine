@@ -1,6 +1,6 @@
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
-    shared::{OvrdCompact, OvrdMapHeavy},
+    shared::{CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, ItemStatsOptions,
         ItemStatsOptionsBr, SolStatsResp,
@@ -127,6 +127,12 @@ impl SolStatsCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolStatsCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::None
+    }
+}
+
 impl SolStatsCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolStatsResp {
         let fleet_options: OvrdMapHeavy<_, FleetStatsOptionsResolved> =

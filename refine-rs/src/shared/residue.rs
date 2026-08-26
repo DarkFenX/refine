@@ -8,7 +8,8 @@
 pub(crate) enum CmdResidue {
     /// Command does not modify solar system state (e.g. info/stats getters)
     None,
-    /// Command modifies solar system state, but will never fail (e.g. adding a fit)
+    /// Command modifies solar system state, but will never fail (e.g. adding a fit without fleet
+    /// set)
     Infallible,
     /// Command modifies solar system state, but in case of failure reverts its effect
     FallibleClean,

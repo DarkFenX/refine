@@ -1,5 +1,6 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
+    shared::CmdResidue,
     val::{SolValResult, ValOptions, ValResultMode},
 };
 
@@ -84,6 +85,12 @@ impl SolValCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolValCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::None
+    }
+}
+
 impl SolValCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolValResult {
         let core_options = rc::val::ValOptionsSol {

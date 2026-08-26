@@ -3,7 +3,7 @@ use rc::{ItemCommon, Lender};
 use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
-    shared::{BrResolveInfallible, OvrdCompact, OvrdMapHeavy},
+    shared::{BrResolveInfallible, CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
         FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp, ItemStatsOptions,
         ItemStatsOptionsBr,
@@ -148,6 +148,17 @@ impl FleetStatsCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetStatsCmdBr {
+    fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::None
+    }
+}
+impl FleetStatsCmdCtxFleetBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl FleetStatsCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> FleetStatsResp {
         let fit_options: OvrdMapHeavy<_, FitStatsOptionsResolved> =

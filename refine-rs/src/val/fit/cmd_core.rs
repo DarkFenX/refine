@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
+    shared::CmdResidue,
     val::{FitValResult, ValOptions, ValResultMode},
 };
 
@@ -108,6 +109,17 @@ impl FitValCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitValCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::None
+    }
+}
+impl FitValCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl FitValCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValResult {
         match self.shared.info_mode {

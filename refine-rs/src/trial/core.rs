@@ -1,4 +1,6 @@
-use crate::{CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResolveError, val::ValOptions};
+use crate::{
+    CmdResps, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId, err::BrResolveError, shared::CmdResidue, val::ValOptions,
+};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -106,9 +108,20 @@ impl FitTryItemsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitTryItemsCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::None
+    }
+}
+impl FitTryItemsCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl FitTryItemsCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Vec<ItemTypeId> {
-        // Execute in cloned sol, since at the present time try_fit_items changes its state
+        // Execute in cloned sol, since at the present time try_fit_items() changes its state
         let fit_id = core_fit.get_fit_id();
         let mut cloned_sol = core_fit.get_sol().clone();
         let mut cloned_fit = cloned_sol.get_fit_mut(&fit_id).unwrap();

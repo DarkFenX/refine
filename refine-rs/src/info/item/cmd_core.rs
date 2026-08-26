@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, ItemId, ItemIdBr, ItemInfo, ItemInfoMode,
     err::BrResolveError,
-    shared::{OvrdCompact, OvrdMapLight},
+    shared::{CmdResidue, OvrdCompact, OvrdMapLight},
 };
 
 // Core commands
@@ -98,6 +98,17 @@ impl ItemInfoCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemInfoCmdBr {
+    fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::None
+    }
+}
+impl ItemInfoCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl ItemInfoCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> ItemInfo {
         ItemInfo::from_core(core_item, &self.item_mode)
