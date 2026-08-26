@@ -60,8 +60,7 @@ def test_sol_fleet_override_backref_error(client, consts):
         api_sol_info = api_sol_batch.get_sol_info(
             sol_mode=consts.ApiSolInfoMode.full,
             fleet_mode=(consts.ApiFleetInfoMode.full, [(consts.ApiFleetInfoMode.id, ['#0', '#2', '#5'])]))
-    # Verification - #0 references command which returns fit ID, #2 references command which returns
-    # no fleet ID, #5 references command which doesn't exist, so default is used
+    # Verification
     assert api_fit.id in api_sol_info.fleets[api_fleet.id].fits
 
 
@@ -114,8 +113,7 @@ def test_sol_fit_override_backref_error(client, consts):
         api_sol_info = api_sol_batch.get_sol_info(
             sol_mode=consts.ApiSolInfoMode.full,
             fit_mode=(consts.ApiFitInfoMode.full, [(consts.ApiFitInfoMode.id, ['#0', '#2', '#5'])]))
-    # Verification - #0 references command which returns fleet ID, #2 references command which
-    # returns item ID, #5 references command which doesn't exist, so default is used
+    # Verification
     assert api_item.id in api_sol_info.fits[api_fit.id].implants
 
 
@@ -174,8 +172,7 @@ def test_sol_item_override_backref_error(client, consts):
             sol_mode=consts.ApiSolInfoMode.full,
             fit_mode=consts.ApiFitInfoMode.full,
             item_mode=(consts.ApiItemInfoMode.partial, [(consts.ApiItemInfoMode.id, ['#2', '#5'])]))
-    # Verification - #2 references existing command which does not return ID, #5 references command
-    # which doesn't exist, so default is used
+    # Verification
     assert api_sol_info.fits[api_fit.id].implants[api_item.id].type_id == eve_item2_id
 
 
@@ -342,8 +339,7 @@ def test_fit_item_override_backref_error(client, consts):
             fit_id=api_fit.id,
             fit_mode=consts.ApiFitInfoMode.full,
             item_mode=(consts.ApiItemInfoMode.partial, [(consts.ApiItemInfoMode.id, ['#2', '#5'])]))
-    # Verification - #2 references existing command which does not return an item ID, #5 references
-    # command which doesn't exist, so default is used
+    # Verification
     assert api_fit_info.implants[api_item.id].type_id == eve_item2_id
 
 

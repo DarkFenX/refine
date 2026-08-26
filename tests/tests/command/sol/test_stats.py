@@ -64,8 +64,7 @@ def test_sol_fleet_override_backref_error(client, consts):
         api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
         api_sol_stats = api_sol_batch.get_sol_stats(
             fleet_options=(FleetStatsOptions(mass=True), [(FleetStatsOptions(outgoing_nps=True), ['#0', '#2', '#5'])]))
-    # Verification - #0 references command which returns fit ID, #2 references command which returns
-    # no fleet ID, #5 references command which doesn't exist, so default is used
+    # Verification
     assert len(api_sol_stats.fleets) == 1
     api_fleet_stats = api_sol_stats.fleets[api_fleet.id]
     assert api_fleet_stats.mass.one() == 1000000
@@ -135,8 +134,7 @@ def test_sol_fit_override_backref_error(client, consts):
         api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
         api_sol_stats = api_sol_batch.get_sol_stats(
             fit_options=(FitStatsOptions(mass=True), [(FitStatsOptions(speed=True), ['#0', '#2', '#5'])]))
-    # Verification - #0 references command which returns fleet ID, #2 references command which
-    # returns item ID, #5 references command which doesn't exist, so default is used
+    # Verification
     assert len(api_sol_stats.fits) == 1
     api_fit_stats = api_sol_stats.fits[api_fit.id]
     assert api_fit_stats.mass.one() == 1000000
@@ -203,8 +201,7 @@ def test_sol_item_override_backref_error(client, consts):
         api_item = api_sol_batch.set_ship(fit_id=api_fit.id, type_id=eve_ship_id)
         api_sol_stats = api_sol_batch.get_sol_stats(
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#0', '#5'])]))
-    # Verification - #0 references command which returns fit ID, #5 references command which doesn't
-    # exist, so default is used
+    # Verification
     assert len(api_sol_stats.items) == 1
     api_item_stats = api_sol_stats.items[api_item.id]
     assert api_item_stats.mass.one() == 1000000
@@ -353,8 +350,7 @@ def test_fleet_fit_override_backref_error(client, consts):
         api_fleet_stats = api_sol_batch.get_fleet_stats(
             fleet_id=api_fleet.id,
             fit_options=(FitStatsOptions(mass=True), [(FitStatsOptions(speed=True), ['#0', '#2', '#5'])]))
-    # Verification - #0 references command which returns fleet ID, #2 references command which
-    # returns item ID, #5 references command which doesn't exist, so default is used
+    # Verification
     assert len(api_fleet_stats.fits) == 1
     api_fit_stats = api_fleet_stats.fits[api_fit.id]
     assert api_fit_stats.mass.one() == 1000000
@@ -427,8 +423,7 @@ def test_fleet_item_override_backref_error(client, consts):
         api_fleet_stats = api_sol_batch.get_fleet_stats(
             fleet_id=api_fleet.id,
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#1', '#5'])]))
-    # Verification - #1 references command which returns fit ID, #5 references command which doesn't
-    # exist, so default is used
+    # Verification
     assert len(api_fleet_stats.items) == 1
     api_item_stats = api_fleet_stats.items[api_item.id]
     assert api_item_stats.mass.one() == 1000000
@@ -564,8 +559,7 @@ def test_fit_item_override_backref_error(client, consts):
         api_fit_stats = api_sol_batch.get_fit_stats(
             fit_id=api_fit.id,
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#0', '#5'])]))
-    # Verification - #0 references command which returns fit ID, #5 references command which doesn't
-    # exist, so default is used
+    # Verification
     assert len(api_fit_stats.items) == 1
     api_item_stats = api_fit_stats.items[api_item.id]
     assert api_item_stats.mass.one() == 1000000

@@ -82,8 +82,7 @@ def test_fit_item_override_backref_error(client, consts):
         api_item = api_fit_batch.set_ship(type_id=eve_ship_id)
         api_fit_stats = api_fit_batch.get_fit_stats(
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#0', '#5'])]))
-    # Verification - #0 references existing command which does not return an item ID, #5 references
-    # command which doesn't exist, so default is used
+    # Verification
     assert len(api_fit_stats.items) == 1
     api_item_stats = api_fit_stats.items[api_item.id]
     assert api_item_stats.mass.one() == 1000000

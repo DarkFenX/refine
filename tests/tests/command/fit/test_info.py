@@ -66,8 +66,7 @@ def test_fit_item_override_backref_error(client, consts):
         api_fit_info = api_fit_batch.get_fit_info(
             fit_mode=consts.ApiFitInfoMode.full,
             item_mode=(consts.ApiItemInfoMode.partial, [(consts.ApiItemInfoMode.id, ['#1', '#5'])]))
-    # Verification - #1 references existing command which does not return an item ID, #5 references
-    # command which doesn't exist, so default is used
+    # Verification
     assert api_fit_info.implants[api_item.id].type_id == eve_item2_id
 
 
