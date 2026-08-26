@@ -304,7 +304,7 @@ def test_incorrect_projectee(client, consts):
         cat_id=consts.EveEffCat.target,
         discharge_attr_id=eve_use_amount_attr_id,
         duration_attr_id=eve_cycle_time_attr_id)
-    eve_nosf_id = client.mk_eve_item(
+    eve_src_nosf_id = client.mk_eve_item(
         attrs={eve_nosf_amount_attr_id: 120, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 0},
         eff_ids=[eve_nosf_effect_id],
         defeff_id=eve_nosf_effect_id)
@@ -316,8 +316,8 @@ def test_incorrect_projectee(client, consts):
     api_src_ship = api_src_fit.set_ship(type_id=eve_src_ship_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
-    api_nosf = api_src_fit.add_module(type_id=eve_nosf_id, state=consts.ApiModuleState.active)
-    api_tmp = api_src_fit.add_module(type_id=eve_nosf_id)
+    api_src_nosf = api_src_fit.add_module(type_id=eve_src_nosf_id, state=consts.ApiModuleState.active)
+    api_tmp = api_src_fit.add_module(type_id=eve_src_nosf_id)
     api_tmp.remove()
     # Verification - specifying incorrect projectee item IDs should fail only that specific option,
     # not whole stat batch
@@ -325,7 +325,7 @@ def test_incorrect_projectee(client, consts):
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
             default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tmp.id))),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-            default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_nosf.id))),
+            default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_src_nosf.id))),
         StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
             default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))]))
     assert api_src_fit_stats.cap_balance == [None, None, approx(10)]
@@ -334,7 +334,106 @@ def test_incorrect_projectee(client, consts):
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
                 default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tmp.id))),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
-                default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_nosf.id))),
+                default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_src_nosf.id))),
             StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
                 default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))]))
     assert api_src_ship_stats.cap_balance == [None, None, approx(10)]
+
+
+def test_incorrect_projectee_backref_sol(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
+    eve_use_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_nosf_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_nosf_falloff,
+        cat_id=consts.EveEffCat.target,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_src_nosf_id = client.mk_eve_item(
+        attrs={eve_nosf_amount_attr_id: 120, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 0},
+        eff_ids=[eve_nosf_effect_id],
+        defeff_id=eve_nosf_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500})
+    eve_tgt_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 100, eve_sig_radius_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_src_fit = api_sol_batch.create_fit()
+        api_src_ship = api_sol_batch.set_ship(fit_id=api_src_fit.id, type_id=eve_src_ship_id)
+        api_tgt_fit = api_sol_batch.create_fit()
+        api_tgt_ship = api_sol_batch.set_ship(fit_id=api_tgt_fit.id, type_id=eve_tgt_ship_id)
+        api_sol_batch.add_module(fit_id=api_src_fit.id, type_id=eve_src_nosf_id, state=consts.ApiModuleState.active)
+        api_src_fit_stats = api_sol_batch.get_fit_stats(
+            fit_id=api_src_fit.id,
+            fit_options=FitStatsOptions(cap_balance=[
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#0'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#10'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))]))
+        api_src_ship_stats = api_sol_batch.get_item_stats(
+            item_id=api_src_ship.id,
+            item_options=ItemStatsOptions(cap_balance=[
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#0'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#10'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_ship.id)))]))
+    # Verification - specifying incorrect projectee item backref should fail only that specific
+    # option, not whole stat batch or even request
+    assert api_src_fit_stats.fit.cap_balance == [None, None, approx(10)]
+    assert api_src_ship_stats.item.cap_balance == [None, None, approx(10)]
+
+
+def test_incorrect_projectee_backref_fit(client, consts):
+    eve_ship_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_capacity)
+    eve_nosf_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.power_transfer_amount)
+    eve_sig_radius_attr_id = client.mk_eve_attr(id_=consts.EveAttr.sig_radius)
+    eve_override_attr_id = client.mk_eve_attr(id_=consts.EveAttr.nos_override)
+    eve_use_amount_attr_id = client.mk_eve_attr(id_=consts.EveAttr.capacitor_need)
+    eve_cycle_time_attr_id = client.mk_eve_attr()
+    eve_nosf_effect_id = client.mk_eve_effect(
+        id_=consts.EveEffect.energy_nosf_falloff,
+        cat_id=consts.EveEffCat.target,
+        discharge_attr_id=eve_use_amount_attr_id,
+        duration_attr_id=eve_cycle_time_attr_id)
+    eve_src_nosf_id = client.mk_eve_item(
+        attrs={eve_nosf_amount_attr_id: 120, eve_cycle_time_attr_id: 10000, eve_override_attr_id: 0},
+        eff_ids=[eve_nosf_effect_id],
+        defeff_id=eve_nosf_effect_id)
+    eve_src_ship_id = client.mk_eve_ship(attrs={eve_ship_amount_attr_id: 500})
+    eve_tgt_drone_id = client.mk_eve_drone(attrs={eve_ship_amount_attr_id: 100, eve_sig_radius_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_fit.batch() as api_fit_batch:
+        api_fit_batch.change_fit(sec_status=2.5)
+        api_src_ship = api_fit_batch.set_ship(type_id=eve_src_ship_id)
+        api_fit_batch.add_module(type_id=eve_src_nosf_id, state=consts.ApiModuleState.active)
+        api_tgt_drone = api_fit_batch.add_drone(type_id=eve_tgt_drone_id)
+        api_fit_stats = api_fit_batch.get_fit_stats(
+            fit_options=FitStatsOptions(cap_balance=[
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#0'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#10'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_drone.id)))]))
+        api_src_ship_stats = api_fit_batch.get_item_stats(
+            item_id=api_src_ship.id,
+            item_options=ItemStatsOptions(cap_balance=[
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#0'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id='#10'))),
+                StatsOptionCapBalance(src_kinds=StatCapSrcKinds(
+                    default=False, nosfs=StatCapNosfsOptions(projectee_item_id=api_tgt_drone.id)))]))
+    # Verification - specifying incorrect projectee item backref should fail only that specific
+    # option, not whole stat batch or even request
+    assert api_fit_stats.fit.cap_balance == [None, None, approx(10)]
+    assert api_src_ship_stats.item.cap_balance == [None, None, approx(10)]
