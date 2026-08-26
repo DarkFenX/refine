@@ -983,3 +983,93 @@ def test_unexpected_fit(client, consts):
     api_ship_psg_stats = api_ship_stats.jump.one().portals[api_portal.id].fuel_use_passengers
     assert len(api_ship_psg_stats) == 1
     assert api_ship_psg_stats[api_fit_psg2.id] == 146
+
+
+def test_unexpected_fit_backref_sol(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_amount)
+    eve_portal_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_open_jump_portal)
+    eve_portal_psg_attr_id = client.mk_eve_attr()
+    eve_portal_psg_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_portal_passenger_required_attr_id)
+    eve_portal_fuel_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_portal_consumption_mass_factor)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_fuel_id = client.mk_eve_item()
+    eve_portal_id = client.mk_eve_item(
+        attrs={eve_portal_flag_attr_id: 1, eve_portal_psg_ref_attr_id: eve_portal_psg_attr_id})
+    eve_main_ship_id = client.mk_eve_ship(attrs={
+        eve_range_attr_id: 5,
+        eve_fuel_type_attr_id: eve_fuel_id,
+        eve_fuel_use_attr_id: 1500,
+        eve_portal_fuel_mult_attr_id: 0.000000001})
+    eve_psg_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 19500000, eve_portal_psg_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_fit_main = api_sol_batch.create_fit()
+        api_ship_main = api_sol_batch.set_ship(fit_id=api_fit_main.id, type_id=eve_main_ship_id)
+        api_portal = api_sol_batch.add_module(
+            fit_id=api_fit_main.id, type_id=eve_portal_id, state=consts.ApiModuleState.active)
+        api_fit_psg = api_sol_batch.create_fit()
+        api_sol_batch.set_ship(fit_id=api_fit_psg.id, type_id=eve_psg_ship_id)
+        api_fit_stats = api_sol_batch.get_fit_stats(
+            fit_id=api_fit_main.id,
+            fit_options=FitStatsOptions(jump=[
+                StatsOptionJump(passenger_fit_ids=['#1', '#10', api_fit_psg.id])]))
+        api_ship_stats = api_sol_batch.get_item_stats(
+            item_id=api_ship_main.id,
+            item_options=ItemStatsOptions(jump=[
+                StatsOptionJump(passenger_fit_ids=['#1', '#10', api_fit_psg.id])]))
+    # Verification - passenger fit backrefs which cannot be resolved are ignored, just like fit IDs
+    # which refer no existing fit
+    api_fit_psg_stats = api_fit_stats.fit.jump.one().portals[api_portal.id].fuel_use_passengers
+    assert len(api_fit_psg_stats) == 1
+    assert api_fit_psg_stats[api_fit_psg.id] == 146
+    api_ship_psg_stats = api_ship_stats.item.jump.one().portals[api_portal.id].fuel_use_passengers
+    assert len(api_ship_psg_stats) == 1
+    assert api_ship_psg_stats[api_fit_psg.id] == 146
+
+
+def test_unexpected_fit_backref_fit(client, consts):
+    eve_range_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_range)
+    eve_fuel_type_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_type)
+    eve_fuel_use_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_drive_consumption_amount)
+    eve_portal_flag_attr_id = client.mk_eve_attr(id_=consts.EveAttr.enable_open_jump_portal)
+    eve_portal_psg_attr_id = client.mk_eve_attr()
+    eve_portal_psg_ref_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_portal_passenger_required_attr_id)
+    eve_portal_fuel_mult_attr_id = client.mk_eve_attr(id_=consts.EveAttr.jump_portal_consumption_mass_factor)
+    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
+    eve_fuel_id = client.mk_eve_item()
+    eve_portal_id = client.mk_eve_item(
+        attrs={eve_portal_flag_attr_id: 1, eve_portal_psg_ref_attr_id: eve_portal_psg_attr_id})
+    eve_main_ship_id = client.mk_eve_ship(attrs={
+        eve_range_attr_id: 5,
+        eve_fuel_type_attr_id: eve_fuel_id,
+        eve_fuel_use_attr_id: 1500,
+        eve_portal_fuel_mult_attr_id: 0.000000001})
+    eve_psg_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 19500000, eve_portal_psg_attr_id: 1})
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit_main = api_sol.create_fit()
+    api_ship_main = api_fit_main.set_ship(type_id=eve_main_ship_id)
+    api_fit_psg = api_sol.create_fit()
+    api_fit_psg.set_ship(type_id=eve_psg_ship_id)
+    with api_fit_main.batch() as api_fit_batch:
+        api_fit_batch.change_fit(sec_status=2.5)
+        api_portal = api_fit_batch.add_module(
+            type_id=eve_portal_id, state=consts.ApiModuleState.active)
+        api_fit_stats = api_fit_batch.get_fit_stats(
+            fit_options=FitStatsOptions(jump=[
+                StatsOptionJump(passenger_fit_ids=['#0', '#10', api_fit_psg.id])]))
+        api_ship_stats = api_fit_batch.get_item_stats(
+            item_id=api_ship_main.id,
+            item_options=ItemStatsOptions(jump=[
+                StatsOptionJump(passenger_fit_ids=['#0', '#10', api_fit_psg.id])]))
+    # Verification - passenger fit backrefs which cannot be resolved are ignored, just like fit IDs
+    # which refer no existing fit
+    api_fit_psg_stats = api_fit_stats.fit.jump.one().portals[api_portal.id].fuel_use_passengers
+    assert len(api_fit_psg_stats) == 1
+    assert api_fit_psg_stats[api_fit_psg.id] == 146
+    api_ship_psg_stats = api_ship_stats.item.jump.one().portals[api_portal.id].fuel_use_passengers
+    assert len(api_ship_psg_stats) == 1
+    assert api_ship_psg_stats[api_fit_psg.id] == 146
