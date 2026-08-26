@@ -45,13 +45,11 @@ def test_rollback_error_execution(client):
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_src_fit = api_sol.create_fit()
     api_src_drone = api_src_fit.add_drone(type_id=eve_drone_id, proj_item_ids=[api_tgt_ship.id])
-    with api_src_fit.batch(
-            status_code=400,
-            json_predicate={
-                'code': 'ITM-001',
-                'message': f'failed to change drone: item {api_src_drone.id} not found',
-                'cmd_index': 1},
-    ) as api_src_fit_batch:
+    with api_src_fit.batch(status_code=400, json_predicate={
+            'code': 'ITM-001',
+            'message': f'failed to change drone: item {api_src_drone.id} not found',
+            'cmd_index': 1,
+    }) as api_src_fit_batch:
         api_src_fit_batch.remove_item(item_id=api_src_drone.id)
         api_src_fit_batch.change_drone(item_id=api_src_drone.id, rm_proj_item_ids=[api_tgt_ship.id])
     # Verification - failing 2nd command should've reverted all the prior commands, including drone
