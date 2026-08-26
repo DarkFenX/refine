@@ -114,3 +114,19 @@ def test_item_item_backref_error(client, consts):
     }) as api_fit_batch:
         api_fit_batch.add_implant(type_id=eve_item_id)
         api_fit_batch.get_item_info(item_id='#2', item_mode=consts.ApiItemInfoMode.partial)
+
+
+def test_item_item_backref_error_kind(client, consts):
+    eve_item_id = client.mk_eve_item()
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    # Verification
+    with api_fit.batch(status_code=400, json_predicate={
+        'code': 'BRF-001',
+        'message': 'referenced command #0 exists, but does not have item ID info',
+        'cmd_index': 2,
+    }) as api_fit_batch:
+        api_fit_batch.change_fit(sec_status=3.5)
+        api_fit_batch.add_implant(type_id=eve_item_id)
+        api_fit_batch.get_item_info(item_id='#0', item_mode=consts.ApiItemInfoMode.partial)

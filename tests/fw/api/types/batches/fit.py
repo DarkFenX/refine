@@ -12,6 +12,7 @@ from fw.api.commands import (
     FitCtlDroneChangeCmd,
     FitCtlFighterAddCmd,
     FitCtlFighterChangeCmd,
+    FitCtlFitChangeCmd,
     FitCtlFwEffectAddCmd,
     FitCtlFwEffectChangeCmd,
     FitCtlImplantAddCmd,
@@ -50,7 +51,7 @@ if typing.TYPE_CHECKING:
     from types import TracebackType
 
     from fw.api import ApiClient
-    from fw.api.aliases import InfoMode, MutaAdd, MutaChange, ReqHook, StatsOptions
+    from fw.api.aliases import DpsProfileAlias, InfoMode, MutaAdd, MutaChange, ReqHook, StatsOptions
     from fw.api.types.fit import Fit
     from fw.api.types.item import Item
     from fw.api.types.stats import FitStatsOptions, ItemStatsOptions
@@ -110,6 +111,19 @@ class FitCmdBatchCtx(BaseCmdBatchCtx):
     ################################################################################################
     # Control
     ################################################################################################
+    # Fit
+    def change_fit(
+            self, *,
+            fleet_id: str | type[Absent] = Absent,
+            sec_status: float | type[Absent] = Absent,
+            rah_incoming_dps: DpsProfileAlias | type[Absent] = Absent,
+    ) -> None:
+        command = FitCtlFitChangeCmd(
+            fleet_id=fleet_id,
+            sec_status=sec_status,
+            rah_incoming_dps=rah_incoming_dps)
+        self._commands.append(command)
+
     # Item
     def remove_item(
             self, *,
