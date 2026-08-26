@@ -42,26 +42,12 @@ def test_sol_fleet_override_backref(client, consts):
         api_fleet2 = api_sol_batch.create_fleet(fit_ids=[api_fit2.id])
         api_sol_info = api_sol_batch.get_sol_info(
             sol_mode=consts.ApiSolInfoMode.full,
-            fleet_mode=(consts.ApiFleetInfoMode.id, [(consts.ApiFleetInfoMode.full, [api_fleet1.id])]))
+            fleet_mode=(consts.ApiFleetInfoMode.id, [(consts.ApiFleetInfoMode.full, ['#0', '#9', api_fleet1.id])]))
     # Verification
     assert api_fit1.id in api_sol_info.fleets[api_fleet1.id].fits
     api_fleet2_info = api_sol_info.fleets[api_fleet2.id]
     with check_no_field():
         api_fleet2_info.fits  # ruff:ignore[useless-expression]
-
-
-def test_sol_fleet_override_backref_error(client, consts):
-    client.create_sources()
-    api_sol = client.create_sol()
-    with api_sol.batch() as api_sol_batch:
-        api_fit = api_sol_batch.create_fit()
-        api_fleet = api_sol_batch.create_fleet()
-        api_sol_batch.change_fleet(fleet_id=api_fleet.id, add_fit_ids=[api_fit.id])
-        api_sol_info = api_sol_batch.get_sol_info(
-            sol_mode=consts.ApiSolInfoMode.full,
-            fleet_mode=(consts.ApiFleetInfoMode.full, [(consts.ApiFleetInfoMode.id, ['#0', '#2', '#5'])]))
-    # Verification
-    assert api_fit.id in api_sol_info.fleets[api_fleet.id].fits
 
 
 def test_sol_fit_override(client, consts):
@@ -94,27 +80,12 @@ def test_sol_fit_override_backref(client, consts):
         api_sol_batch.add_implant(fit_id=api_fit2.id, type_id=eve_item_id)
         api_sol_info = api_sol_batch.get_sol_info(
             sol_mode=consts.ApiSolInfoMode.full,
-            fit_mode=(consts.ApiFitInfoMode.id, [(consts.ApiFitInfoMode.full, [api_fit1.id])]))
+            fit_mode=(consts.ApiFitInfoMode.id, [(consts.ApiFitInfoMode.full, ['#2', '#9', api_fit1.id])]))
     # Verification
     assert api_item1.id in api_sol_info.fits[api_fit1.id].implants
     api_fit2_info = api_sol_info.fits[api_fit2.id]
     with check_no_field():
         api_fit2_info.implants  # ruff:ignore[useless-expression]
-
-
-def test_sol_fit_override_backref_error(client, consts):
-    eve_item_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    with api_sol.batch() as api_sol_batch:
-        api_fleet = api_sol_batch.create_fleet()
-        api_fit = api_sol_batch.create_fit(fleet_id=api_fleet.id)
-        api_item = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item_id)
-        api_sol_info = api_sol_batch.get_sol_info(
-            sol_mode=consts.ApiSolInfoMode.full,
-            fit_mode=(consts.ApiFitInfoMode.full, [(consts.ApiFitInfoMode.id, ['#0', '#2', '#5'])]))
-    # Verification
-    assert api_item.id in api_sol_info.fits[api_fit.id].implants
 
 
 def test_sol_item_override(client, consts):
@@ -149,7 +120,7 @@ def test_sol_item_override_backref(client, consts):
         api_sol_info = api_sol_batch.get_sol_info(
             sol_mode=consts.ApiSolInfoMode.full,
             fit_mode=consts.ApiFitInfoMode.full,
-            item_mode=(consts.ApiItemInfoMode.id, [(consts.ApiItemInfoMode.partial, [api_item2.id])]))
+            item_mode=(consts.ApiItemInfoMode.id, [(consts.ApiItemInfoMode.partial, ['#0', '#9', api_item2.id])]))
     # Verification
     api_fit_info = api_sol_info.fits[api_fit.id]
     api_item1_info = api_fit_info.implants[api_item1.id]
@@ -157,23 +128,6 @@ def test_sol_item_override_backref(client, consts):
         api_item1_info.type_id  # ruff:ignore[useless-expression]
     api_item2_info = api_fit_info.implants[api_item2.id]
     assert api_item2_info.type_id == eve_item_id
-
-
-def test_sol_item_override_backref_error(client, consts):
-    eve_item1_id = client.mk_eve_item()
-    eve_item2_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    with api_sol.batch() as api_sol_batch:
-        api_fit = api_sol_batch.create_fit()
-        api_item = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item1_id)
-        api_sol_batch.change_implant(item_id=api_item.id, type_id=eve_item2_id)
-        api_sol_info = api_sol_batch.get_sol_info(
-            sol_mode=consts.ApiSolInfoMode.full,
-            fit_mode=consts.ApiFitInfoMode.full,
-            item_mode=(consts.ApiItemInfoMode.partial, [(consts.ApiItemInfoMode.id, ['#2', '#5'])]))
-    # Verification
-    assert api_sol_info.fits[api_fit.id].implants[api_item.id].type_id == eve_item2_id
 
 
 def test_fleet_fleet(client, consts):
@@ -317,30 +271,13 @@ def test_fit_item_override_backref(client, consts):
         api_fit_info = api_sol_batch.get_fit_info(
             fit_id=api_fit.id,
             fit_mode=consts.ApiFitInfoMode.full,
-            item_mode=(consts.ApiItemInfoMode.id, [(consts.ApiItemInfoMode.partial, [api_item2.id])]))
+            item_mode=(consts.ApiItemInfoMode.id, [(consts.ApiItemInfoMode.partial, ['#0', '#9', api_item2.id])]))
     # Verification
     api_item1_info = api_fit_info.implants[api_item1.id]
     with check_no_field():
         api_item1_info.type_id  # ruff:ignore[useless-expression]
     api_item2_info = api_fit_info.implants[api_item2.id]
     assert api_item2_info.type_id == eve_item_id
-
-
-def test_fit_item_override_backref_error(client, consts):
-    eve_item1_id = client.mk_eve_item()
-    eve_item2_id = client.mk_eve_item()
-    client.create_sources()
-    api_sol = client.create_sol()
-    with api_sol.batch() as api_sol_batch:
-        api_fit = api_sol_batch.create_fit()
-        api_item = api_sol_batch.add_implant(fit_id=api_fit.id, type_id=eve_item1_id)
-        api_sol_batch.change_implant(item_id=api_item.id, type_id=eve_item2_id)
-        api_fit_info = api_sol_batch.get_fit_info(
-            fit_id=api_fit.id,
-            fit_mode=consts.ApiFitInfoMode.full,
-            item_mode=(consts.ApiItemInfoMode.partial, [(consts.ApiItemInfoMode.id, ['#2', '#5'])]))
-    # Verification
-    assert api_fit_info.implants[api_item.id].type_id == eve_item2_id
 
 
 def test_item_item(client, consts):

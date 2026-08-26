@@ -54,10 +54,11 @@ def test_fit_item_override_backref(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     with api_fit.batch() as api_fit_batch:
+        api_fit_batch.change_fit(sec_status=2.5)
         api_item1 = api_fit_batch.add_drone(type_id=eve_drone_id)
         api_item2 = api_fit_batch.add_drone(type_id=eve_drone_id)
         api_fit_stats = api_fit_batch.get_fit_stats(
-            item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), [api_item2.id])]))
+            item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#0', '#9', api_item2.id])]))
     # Verification
     assert len(api_fit_stats.items) == 2
     api_item1_stats = api_fit_stats.items[api_item1.id]
@@ -68,26 +69,6 @@ def test_fit_item_override_backref(client, consts):
     with check_no_field():
         api_item2_stats.mass  # ruff:ignore[useless-expression]
     assert api_item2_stats.speed.one() == 500
-
-
-def test_fit_item_override_backref_error(client, consts):
-    eve_mass_attr_id = client.mk_eve_attr(id_=consts.EveAttr.mass)
-    eve_speed_attr_id = client.mk_eve_attr(id_=consts.EveAttr.max_velocity)
-    eve_ship_id = client.mk_eve_ship(attrs={eve_mass_attr_id: 1000000, eve_speed_attr_id: 500})
-    client.create_sources()
-    api_sol = client.create_sol()
-    api_fit = api_sol.create_fit()
-    with api_fit.batch() as api_fit_batch:
-        api_fit_batch.change_fit(sec_status=2.5)
-        api_item = api_fit_batch.set_ship(type_id=eve_ship_id)
-        api_fit_stats = api_fit_batch.get_fit_stats(
-            item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#0', '#5'])]))
-    # Verification
-    assert len(api_fit_stats.items) == 1
-    api_item_stats = api_fit_stats.items[api_item.id]
-    assert api_item_stats.mass.one() == 1000000
-    with check_no_field():
-        api_item_stats.speed  # ruff:ignore[useless-expression]
 
 
 def test_item_item(client, consts):
