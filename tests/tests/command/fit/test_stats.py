@@ -35,6 +35,7 @@ def test_fit_item_override(client, consts):
         api_fit_stats = api_fit_batch.get_fit_stats(
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), [api_item2.id])]))
     # Verification
+    assert len(api_fit_stats.items) == 2
     api_item1_stats = api_fit_stats.items[api_item1.id]
     assert api_item1_stats.mass.one() == 1000000
     with check_no_field():
@@ -58,6 +59,7 @@ def test_fit_item_override_backref(client, consts):
         api_fit_stats = api_fit_batch.get_fit_stats(
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), [api_item2.id])]))
     # Verification
+    assert len(api_fit_stats.items) == 2
     api_item1_stats = api_fit_stats.items[api_item1.id]
     assert api_item1_stats.mass.one() == 1000000
     with check_no_field():
@@ -82,6 +84,7 @@ def test_fit_item_override_backref_error(client, consts):
             item_options=(ItemStatsOptions(mass=True), [(ItemStatsOptions(speed=True), ['#0', '#5'])]))
     # Verification - #0 references existing command which does not return an item ID, #5 references
     # command which doesn't exist, so default is used
+    assert len(api_fit_stats.items) == 1
     api_item_stats = api_fit_stats.items[api_item.id]
     assert api_item_stats.mass.one() == 1000000
     with check_no_field():
