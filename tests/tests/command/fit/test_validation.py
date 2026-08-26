@@ -2,7 +2,7 @@ from fw import check_no_field
 from fw.api import ValOptions
 
 
-def test_fit_fit(client, consts):
+def test_fit(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -23,7 +23,7 @@ def test_fit_fit(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_fit_item_kfs(client, consts):
+def test_fit_kfs(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -44,7 +44,7 @@ def test_fit_item_kfs(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_fit_item_kfs_backref(client, consts):
+def test_fit_kfs_backref(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()

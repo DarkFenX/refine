@@ -2,7 +2,7 @@ from fw import check_no_field
 from fw.api import ValOptions
 
 
-def test_sol_sol(client, consts):
+def test_sol(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -67,7 +67,7 @@ def test_sol_fit_ids_backref(client, consts):
     assert api_val2.details.fits[api_fit.id].not_loaded_item == [api_item.id]
 
 
-def test_sol_item_kfs(client, consts):
+def test_sol_kfs(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -87,7 +87,7 @@ def test_sol_item_kfs(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_sol_item_kfs_backref(client, consts):
+def test_sol_kfs_backref(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -108,7 +108,7 @@ def test_sol_item_kfs_backref(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_fit_fit(client, consts):
+def test_fit(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -131,7 +131,7 @@ def test_fit_fit(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_fit_fit_backref(client, consts):
+def test_fit_backref(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -154,7 +154,7 @@ def test_fit_fit_backref(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_fit_fit_backref_error_range(client):
+def test_fit_backref_error_range(client):
     client.create_sources()
     api_sol = client.create_sol()
     # Verification
@@ -167,7 +167,7 @@ def test_fit_fit_backref_error_range(client):
         api_sol_batch.validate_fit(fit_id='#2', options=ValOptions(not_loaded_item=True))
 
 
-def test_fit_fit_backref_error_kind(client):
+def test_fit_backref_error_kind(client):
     client.create_sources()
     api_sol = client.create_sol()
     # Verification
@@ -180,7 +180,7 @@ def test_fit_fit_backref_error_kind(client):
         api_sol_batch.validate_fit(fit_id='#0', options=ValOptions(not_loaded_item=True))
 
 
-def test_fit_item_kfs(client, consts):
+def test_fit_kfs(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
@@ -203,7 +203,7 @@ def test_fit_item_kfs(client, consts):
         api_val2.details  # ruff:ignore[useless-expression]
 
 
-def test_fit_item_kfs_backref(client, consts):
+def test_fit_kfs_backref(client, consts):
     eve_not_loaded_id = client.alloc_item_id()
     client.create_sources()
     api_sol = client.create_sol()
