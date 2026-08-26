@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError};
+use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -60,6 +60,17 @@ impl FitRemoveCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitRemoveCmd {
+    fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::Infallible
+    }
+}
+impl FitRemoveCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl FitRemoveCmd {
     pub(crate) fn execute(self, core_fit: rc::FitMut) {
         core_fit.remove()

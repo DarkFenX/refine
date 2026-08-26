@@ -1,4 +1,6 @@
-use crate::{AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BrResolveError};
+use crate::{
+    AddedFitIdResp, CmdResps, DpsProfile, FitSecStatus, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidue,
+};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -79,6 +81,15 @@ impl FitAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitAddCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.fleet_id {
+            Some(..) => CmdResidue::FallibleDirty,
+            None => CmdResidue::Infallible,
+        }
+    }
+}
+
 impl FitAddCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFitIdResp, FitAddError> {
         let mut core_fit = core_sol.add_fit();

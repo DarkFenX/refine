@@ -1,5 +1,6 @@
 use crate::{
     CmdResps, DpsProfile, FitId, FitIdBr, FitSecStatus, FleetId, FleetIdBr, TriStateField, err::BrResolveError,
+    shared::CmdResidue,
 };
 
 // Core commands
@@ -128,6 +129,20 @@ impl FitChangeCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitChangeCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.fleet_id {
+            TriStateField::Value(..) => CmdResidue::FallibleClean,
+            _ => CmdResidue::Infallible,
+        }
+    }
+}
+impl FitChangeCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl FitChangeCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<(), FitChangeError> {
         match self.fleet_id {
