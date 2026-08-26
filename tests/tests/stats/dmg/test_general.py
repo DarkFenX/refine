@@ -1,6 +1,6 @@
 from fw import approx, check_no_field
 from fw.api import FitStatsOptions, FleetStatsOptions, ItemStatsOptions, StatsOptionFitDmg, StatsOptionItemDmg
-from tests.stats.dmg import make_eve_ship, make_eve_smartbomb, setup_dmg_basics
+from tests.stats.dmg import make_eve_drone, make_eve_ship, make_eve_smartbomb, setup_dmg_basics
 
 
 def test_not_loaded(client, consts):
@@ -41,13 +41,14 @@ def test_incorrect_item_kind(client, consts):
 
 def test_incorrect_projectee(client, consts):
     eve_basic_info = setup_dmg_basics(client=client, consts=consts)
-    eve_module_id = make_eve_smartbomb(client=client, basic_info=eve_basic_info, dmgs=(120, 0, 0, 0), cycle_time=7500)
+    eve_src_module_id = make_eve_smartbomb(
+        client=client, basic_info=eve_basic_info, dmgs=(120, 0, 0, 0), cycle_time=7500)
     eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info)
     eve_implant_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
-    api_src_module = api_src_fit.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
+    api_src_module = api_src_fit.add_module(type_id=eve_src_module_id, state=consts.ApiModuleState.active)
     api_implant = api_src_fit.add_implant(type_id=eve_implant_id)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_tmp = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
@@ -71,6 +72,73 @@ def test_incorrect_projectee(client, consts):
         StatsOptionItemDmg(projectee_item_id=api_implant.id),
         StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))
     assert api_src_module_stats.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
+
+
+def test_incorrect_projectee_backref_sol(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_src_module_id = make_eve_smartbomb(
+        client=client, basic_info=eve_basic_info, dmgs=(120, 0, 0, 0), cycle_time=7500)
+    eve_tgt_ship_id = make_eve_ship(client=client, basic_info=eve_basic_info)
+    client.create_sources()
+    api_sol = client.create_sol()
+    with api_sol.batch() as api_sol_batch:
+        api_src_fit = api_sol_batch.create_fit()
+        api_src_module = api_sol_batch.add_module(
+            fit_id=api_src_fit.id, type_id=eve_src_module_id, state=consts.ApiModuleState.active)
+        api_tgt_fit = api_sol_batch.create_fit()
+        api_tgt_ship = api_sol_batch.set_ship(fit_id=api_tgt_fit.id, type_id=eve_tgt_ship_id)
+        api_fleet = api_sol_batch.create_fleet(fit_ids=[api_src_fit.id])
+        api_fleet_stats = api_sol_batch.get_fleet_stats(
+            fleet_id=api_fleet.id,
+            fleet_options=FleetStatsOptions(dmg=[
+                StatsOptionFitDmg(projectee_item_id='#0'),
+                StatsOptionFitDmg(projectee_item_id='#10'),
+                StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))
+        api_src_fit_stats = api_sol_batch.get_fit_stats(
+            fit_id=api_src_fit.id,
+            fit_options=FitStatsOptions(dmg=[
+                StatsOptionFitDmg(projectee_item_id='#0'),
+                StatsOptionFitDmg(projectee_item_id='#10'),
+                StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)]))
+        api_src_module_stats = api_sol_batch.get_item_stats(
+            item_id=api_src_module.id,
+            item_options=ItemStatsOptions(dmg=[
+                StatsOptionItemDmg(projectee_item_id='#0'),
+                StatsOptionItemDmg(projectee_item_id='#10'),
+                StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)]))
+    # Verification - specifying incorrect projectee item backref should fail only that specific
+    # option, not whole stat batch or even request
+    assert api_fleet_stats.fleet.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
+    assert api_src_fit_stats.fit.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
+    assert api_src_module_stats.item.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
+
+
+def test_incorrect_projectee_backref_fit(client, consts):
+    eve_basic_info = setup_dmg_basics(client=client, consts=consts)
+    eve_src_module_id = make_eve_smartbomb(
+        client=client, basic_info=eve_basic_info, dmgs=(120, 0, 0, 0), cycle_time=7500)
+    eve_tgt_drone_id = make_eve_drone(client=client, basic_info=eve_basic_info)
+    client.create_sources()
+    api_sol = client.create_sol()
+    api_fit = api_sol.create_fit()
+    with api_fit.batch() as api_fit_batch:
+        api_src_module = api_fit_batch.add_module(type_id=eve_src_module_id, state=consts.ApiModuleState.active)
+        api_tgt_drone = api_fit_batch.add_drone(type_id=eve_tgt_drone_id)
+        api_fit_stats = api_fit_batch.get_fit_stats(
+            fit_options=FitStatsOptions(dmg=[
+                StatsOptionFitDmg(projectee_item_id='#0'),
+                StatsOptionFitDmg(projectee_item_id='#10'),
+                StatsOptionFitDmg(projectee_item_id=api_tgt_drone.id)]))
+        api_src_module_stats = api_fit_batch.get_item_stats(
+            item_id=api_src_module.id,
+            item_options=ItemStatsOptions(dmg=[
+                StatsOptionItemDmg(projectee_item_id='#0'),
+                StatsOptionItemDmg(projectee_item_id='#10'),
+                StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)]))
+    # Verification - specifying incorrect projectee item backref should fail only that specific
+    # option, not whole stat batch or even request
+    assert api_fit_stats.fit.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
+    assert api_src_module_stats.item.dmg == [None, None, ([approx(16), 0, 0, 0], [approx(120), 0, 0, 0])]
 
 
 def test_not_requested(client, consts):
