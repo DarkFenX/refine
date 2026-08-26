@@ -16,50 +16,58 @@ pub(crate) enum CmdResidue {
     FallibleDirty,
 }
 
+#[derive(Copy, Clone)]
+pub(crate) enum SolBackup {
+    Needed,
+    NotNeeded,
+}
+
 pub(crate) struct ResidueResolver {
     seen_mutable: bool,
-    needs_backup: bool,
+    backup: SolBackup,
 }
 impl ResidueResolver {
     pub(crate) fn new() -> Self {
         Self {
             seen_mutable: false,
-            needs_backup: false,
+            backup: SolBackup::NotNeeded,
         }
     }
-    pub(crate) fn add_cmd(&mut self, residue: CmdResidue) -> bool {
+    pub(crate) fn add_cmd(&mut self, residue: CmdResidue) -> SolBackup {
         match residue {
-            CmdResidue::None => self.needs_backup,
+            CmdResidue::None => self.backup,
             // Infallible command just changes context for fallible commands
             CmdResidue::Infallible => {
                 self.seen_mutable = true;
-                self.needs_backup
+                self.backup
             }
             // Even if command reverts its action cleanly, it cannot revert already executed
             // commands; in this case, sol backup is needed
             CmdResidue::FallibleClean => {
                 match self.seen_mutable {
-                    true => self.needs_backup = true,
+                    true => self.backup = SolBackup::Needed,
                     false => self.seen_mutable = true,
                 }
-                self.needs_backup
+                self.backup
             }
             // Commands which can fail without proper recovery need sol backup regardless
             CmdResidue::FallibleDirty => {
-                self.needs_backup = true;
-                self.needs_backup
+                self.backup = SolBackup::Needed;
+                self.backup
             }
         }
     }
-    pub(crate) fn add_cmds(&mut self, residues: impl Iterator<Item = CmdResidue>) -> bool {
+    pub(crate) fn add_cmds(&mut self, residues: impl Iterator<Item = CmdResidue>) -> SolBackup {
         for residue in residues {
-            if self.add_cmd(residue) {
-                return true;
+            // Once it is concluded that backup is needed, do not need to go though the rest of the
+            // commands
+            if let SolBackup::Needed = self.add_cmd(residue) {
+                return SolBackup::Needed;
             }
         }
-        self.needs_backup
+        self.backup
     }
-    pub(crate) fn into_needs_backup(self) -> bool {
-        self.needs_backup
+    pub(crate) fn into_backup(self) -> SolBackup {
+        self.backup
     }
 }
