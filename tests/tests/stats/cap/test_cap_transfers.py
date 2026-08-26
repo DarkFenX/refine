@@ -434,6 +434,7 @@ def test_incorrect_projectee_backref_fit(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     with api_fit.batch() as api_fit_batch:
+        api_fit_batch.change_fit(sec_status=2.5)
         api_src_module = api_fit_batch.add_module(type_id=eve_module_id, state=consts.ApiModuleState.active)
         api_tgt_drone = api_fit_batch.add_drone(type_id=eve_tgt_drone_id)
         api_fit_stats = api_fit_batch.get_fit_stats(
