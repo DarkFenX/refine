@@ -1,4 +1,7 @@
-use crate::{ChangedItemIdsResp, CmdResps, Item, ItemChangeEnumCmd, ItemInfo, ItemInfoCmdBr, err::ItemChangeEnumError};
+use crate::{
+    ChangedItemIdsResp, CmdResps, Item, ItemChangeEnumCmd, ItemInfo, ItemInfoCmdBr, err::ItemChangeEnumError,
+    shared::SolBackup,
+};
 
 impl Item<'_, '_> {
     #[tracing::instrument(name = "itm-chg", level = "trace", skip_all)]
@@ -6,7 +9,7 @@ impl Item<'_, '_> {
         // Variables for move
         let item_id = self.id;
         self.sol
-            .exec_standard_fallible(move |core_sol| {
+            .exec_standard(SolBackup::Needed, move |core_sol| {
                 // Holding mutex on sol - nothing can remove the item before we get it here
                 let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
                 ctl_cmd.execute(&mut core_item)
@@ -22,7 +25,7 @@ impl Item<'_, '_> {
         // Variables for move
         let item_id = self.id;
         self.sol
-            .exec_standard_fallible(move |core_sol| {
+            .exec_standard(SolBackup::Needed, move |core_sol| {
                 // Holding mutex on sol - nothing can remove the item before we get it here
                 let mut core_item = core_sol.get_item_mut(&item_id).unwrap();
                 let ctl_cmd_resp = ctl_cmd.execute(&mut core_item)?;

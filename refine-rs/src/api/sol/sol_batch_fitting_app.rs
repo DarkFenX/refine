@@ -1,6 +1,7 @@
 use crate::{
     CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError},
+    shared::SolBackup,
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
 };
@@ -23,7 +24,8 @@ impl SolarSystem<'_> {
         F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + Sync + 'static,
         E: std::error::Error + Send + Sync + 'static,
     {
-        self.exec_standard_fallible_ctx(|sol_ctx, core_sol| {
+        let sol_ctx = self.get_ctx();
+        self.exec_standard(SolBackup::Needed, move |core_sol| {
             let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
             for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
                 let ctl_cmd_resp = ctl_cmd

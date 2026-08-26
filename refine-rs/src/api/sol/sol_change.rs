@@ -1,9 +1,11 @@
-use crate::{CmdResp, CmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem, err::SolChangeEnumError};
+use crate::{
+    CmdResp, CmdResps, SolChangeEnumCmd, SolInfo, SolInfoCmdBr, SolarSystem, err::SolChangeEnumError, shared::SolBackup,
+};
 
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chg", level = "trace", skip_all)]
     pub async fn change(&mut self, ctl_cmd: SolChangeEnumCmd) -> Result<CmdResp, SolChangeEnumError> {
-        self.exec_standard_fallible(move |core_sol| ctl_cmd.execute(core_sol))
+        self.exec_standard(SolBackup::Needed, move |core_sol| ctl_cmd.execute(core_sol))
             .await
     }
     #[tracing::instrument(name = "sol-chg-inf", level = "trace", skip_all)]
@@ -12,7 +14,8 @@ impl SolarSystem<'_> {
         ctl_cmd: SolChangeEnumCmd,
         info_cmd: SolInfoCmdBr,
     ) -> Result<(CmdResp, SolInfo), SolChangeEnumError> {
-        self.exec_standard_fallible_ctx(|ctx, core_sol| {
+        let ctx = self.get_ctx();
+        self.exec_standard(SolBackup::Needed, move |core_sol| {
             let ctl_cmd_resp = ctl_cmd.execute(core_sol)?;
             let cmd_resps = CmdResps::with_resp(ctl_cmd_resp);
             let info_cmd = info_cmd.br_resolve(&cmd_resps);

@@ -1,4 +1,6 @@
-use crate::{CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError};
+use crate::{
+    CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError, shared::SolBackup,
+};
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
@@ -6,7 +8,7 @@ impl Fit<'_, '_> {
         // Variables for move
         let fit_id = self.id;
         self.sol
-            .exec_standard_fallible(move |core_sol| {
+            .exec_standard(SolBackup::Needed, move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
@@ -23,7 +25,7 @@ impl Fit<'_, '_> {
         // Variables for move
         let fit_id = self.id;
         self.sol
-            .exec_standard_fallible(move |core_sol| {
+            .exec_standard(SolBackup::Needed, move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();

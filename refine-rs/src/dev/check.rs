@@ -6,7 +6,8 @@ use crate::SolarSystem;
 impl SolarSystem<'_> {
     #[tracing::instrument(name = "sol-chk", level = "trace", skip_all)]
     pub async fn dev_consistency_check(&mut self, dev_cmd: DecCheckCmd) -> bool {
-        self.exec_standard_safe(move |core_sol| dev_cmd.execute(core_sol)).await
+        self.exec_standard_infallible(move |core_sol| dev_cmd.execute(core_sol))
+            .await
     }
 }
 

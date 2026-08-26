@@ -8,7 +8,8 @@ impl SolarSystem<'_> {
     pub async fn switch_src(&mut self, src_alias: Option<SrcAlias>) -> Result<(), SolSwitchSrcError> {
         // Variables for move
         let src = self.refine.internal_get_src(src_alias).await?.get_core().clone();
-        self.exec_standard_safe(move |core_sol| core_sol.set_src(&src)).await;
+        self.exec_standard_infallible(move |core_sol| core_sol.set_src(&src))
+            .await;
         Ok(())
     }
     #[tracing::instrument(name = "sol-swt-src-inf", level = "trace", skip_all)]
@@ -23,7 +24,7 @@ impl SolarSystem<'_> {
         let sol_id = self.get_id();
         let src_alias = inner_src.get_alias();
         let sol_info = self
-            .exec_standard_safe(move |core_sol| {
+            .exec_standard_infallible(move |core_sol| {
                 core_sol.set_src(&src);
                 info_cmd.execute(sol_id, src_alias, core_sol)
             })
