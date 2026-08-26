@@ -126,7 +126,7 @@ def test_duplicate_loaded(client, consts):
     assert api_item.attrs[eve_level_attr_id].modified == 3
     api_fit.update()
     assert len(api_fit.skills) == 1
-    assert api_fit.skills[0].id == api_item.id
+    assert api_item.id in api_fit.skills
     # Action
     api_fit.add_skill(type_id=eve_item_id, level=4, status_code=400, json_predicate={
         'code': 'SKL-002',
@@ -139,7 +139,7 @@ def test_duplicate_loaded(client, consts):
     assert api_item.attrs[eve_level_attr_id].modified == 3
     api_fit.update()
     assert len(api_fit.skills) == 1
-    assert api_fit.skills[0].id == api_item.id
+    assert api_item.id in api_fit.skills
 
 
 def test_duplicate_not_loaded(client, consts):
@@ -156,7 +156,7 @@ def test_duplicate_not_loaded(client, consts):
         api_item.attrs  # ruff:ignore[useless-expression]
     api_fit.update()
     assert len(api_fit.skills) == 1
-    assert api_fit.skills[0].id == api_item.id
+    assert api_item.id in api_fit.skills
     # Action
     api_fit.add_skill(type_id=eve_item_id, level=4, status_code=400, json_predicate={
         'code': 'SKL-002',
@@ -170,7 +170,7 @@ def test_duplicate_not_loaded(client, consts):
         api_item.attrs  # ruff:ignore[useless-expression]
     api_fit.update()
     assert len(api_fit.skills) == 1
-    assert api_fit.skills[0].id == api_item.id
+    assert api_item.id in api_fit.skills
 
 
 def test_level_modification(client, consts):

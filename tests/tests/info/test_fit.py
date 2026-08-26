@@ -61,7 +61,7 @@ def test_skill(client):
     # Verification
     api_fit.update()
     assert len(api_fit.skills) == 1
-    assert api_fit.skills[0].id == api_item.id
+    assert api_item.id in api_fit.skills
     # Action
     api_item.remove()
     # Verification
@@ -79,7 +79,7 @@ def test_implant(client):
     # Verification
     api_fit.update()
     assert len(api_fit.implants) == 1
-    assert api_fit.implants[0].id == api_item.id
+    assert api_item.id in api_fit.implants
     # Action
     api_item.remove()
     # Verification
@@ -97,7 +97,7 @@ def test_booster(client):
     # Verification
     api_fit.update()
     assert len(api_fit.boosters) == 1
-    assert api_fit.boosters[0].id == api_item.id
+    assert api_item.id in api_fit.boosters
     api_item.remove()
     # Verification
     api_fit.update()
@@ -146,7 +146,7 @@ def test_subsystem(client):
     # Verification
     api_fit.update()
     assert len(api_fit.subsystems) == 1
-    assert api_fit.subsystems[0].id == api_item.id
+    assert api_item.id in api_fit.subsystems
     # Action
     api_item.remove()
     # Verification
@@ -221,7 +221,7 @@ def test_rig(client):
     # Verification
     api_fit.update()
     assert len(api_fit.rigs) == 1
-    assert api_fit.rigs[0].id == api_item.id
+    assert api_item.id in api_fit.rigs
     # Action
     api_item.remove()
     # Verification
@@ -239,7 +239,7 @@ def test_drone(client):
     # Verification
     api_fit.update()
     assert len(api_fit.drones) == 1
-    assert api_fit.drones[0].id == api_item.id
+    assert api_item.id in api_fit.drones
     # Action
     api_item.remove()
     # Verification
@@ -257,7 +257,7 @@ def test_fighter(client):
     # Verification
     api_fit.update()
     assert len(api_fit.fighters) == 1
-    assert api_fit.fighters[0].id == api_item.id
+    assert api_item.id in api_fit.fighters
     # Action
     api_item.remove()
     # Verification
@@ -275,7 +275,7 @@ def test_fw_effect(client):
     # Verification
     api_fit.update()
     assert len(api_fit.fw_effects) == 1
-    assert api_fit.fw_effects[0].id == api_item.id
+    assert api_item.id in api_fit.fw_effects
     # Action
     api_item.remove()
     # Verification

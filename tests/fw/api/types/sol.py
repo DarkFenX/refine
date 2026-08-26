@@ -27,7 +27,11 @@ class SolarSystem(AttrDict):
             'fits': AttrHookDef(
                 func=lambda fs: {f.id: f for f in [Fit(client=client, data=f, sol_id=self.id) for f in fs]}),
             'fleets': AttrHookDef(
-                func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]})})
+                func=lambda fs: {f.id: f for f in [Fleet(client=client, data=f, sol_id=self.id) for f in fs]}),
+            'sw_effects': AttrHookDef(
+                func=lambda ies: {i['id']: Item(client=client, data=i, sol_id=self.id) for i in ies}),
+            'proj_effects': AttrHookDef(
+                func=lambda ies: {i['id']: Item(client=client, data=i, sol_id=self.id) for i in ies})})
         self._client = client
 
     def batch(

@@ -49,10 +49,26 @@ if typing.TYPE_CHECKING:
 class Fit(AttrDict):
 
     def __init__(self, *, client: ApiClient, data: dict, sol_id: str) -> None:
+
+        def mk_item(data: dict) -> Item:
+            return Item(client=client, data=data, sol_id=sol_id)
+
+        def mk_items(data: list[dict]) -> dict[str, Item]:
+            return {i['id']: mk_item(data=i) for i in data}
+
         super().__init__(data=data, hooks={
-            'implants': AttrHookDef(func=lambda d: {
-                i['id']: Item(client=self._client, data=i, sol_id=self._sol_id)
-                for i in d}),
+            'character': AttrHookDef(func=lambda d: mk_item(data=d)),
+            'skills': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'implants': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'boosters': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'ship': AttrHookDef(func=lambda d: mk_item(data=d)),
+            'stance': AttrHookDef(func=lambda d: mk_item(data=d)),
+            'subsystems': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'rigs': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'services': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'drones': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'fighters': AttrHookDef(func=lambda d: mk_items(data=d)),
+            'fw_effects': AttrHookDef(func=lambda d: mk_items(data=d)),
             'rah_incoming_dps': AttrHookDef(func=lambda dp: DpsProfile(data=dp))})
         self._client = client
         self._sol_id = sol_id

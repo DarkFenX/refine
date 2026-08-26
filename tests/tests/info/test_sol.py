@@ -102,7 +102,7 @@ def test_sw_effect(client):
     api_item = api_sol.add_sw_effect(type_id=eve_item_id)
     api_sol.update()
     assert len(api_sol.sw_effects) == 1
-    assert api_sol.sw_effects[0].id == api_item.id
+    assert api_item.id in api_sol.sw_effects
     api_item.remove()
     api_sol.update()
     with check_no_field():
@@ -116,7 +116,7 @@ def test_proj_effect(client):
     api_item = api_sol.add_proj_effect(type_id=eve_item_id)
     api_sol.update()
     assert len(api_sol.proj_effects) == 1
-    assert api_sol.proj_effects[0].id == api_item.id
+    assert api_item.id in api_sol.proj_effects
     api_item.remove()
     api_sol.update()
     with check_no_field():
