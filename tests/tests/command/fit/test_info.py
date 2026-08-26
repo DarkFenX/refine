@@ -101,7 +101,7 @@ def test_item_item_backref(client, consts):
         api_item_info2.type_id  # ruff:ignore[useless-expression]
 
 
-def test_item_item_backref_error(client, consts):
+def test_item_item_backref_error_range(client, consts):
     eve_item_id = client.mk_eve_item()
     client.create_sources()
     api_sol = client.create_sol()
