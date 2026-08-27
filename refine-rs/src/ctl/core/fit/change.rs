@@ -129,6 +129,16 @@ impl FitChangeCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        // Fleet change goes first, so its fail is clean
+        if self.fleet_id.is_value() {
+            return CmdResidue::MutFallibleClean;
+        }
+        CmdResidue::MutInfallible
+    }
+}
 impl FitChangeCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)

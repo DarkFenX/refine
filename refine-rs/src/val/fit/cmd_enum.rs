@@ -1,5 +1,6 @@
 use crate::{
     CmdResp, CmdResps,
+    shared::CmdResidue,
     val::{FitValCmd, FitValCmdBr},
 };
 
@@ -43,6 +44,14 @@ impl FitValEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitValEnumCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::FitValidate(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl FitValEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> CmdResp {
         match self {

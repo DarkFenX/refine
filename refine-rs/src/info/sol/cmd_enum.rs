@@ -7,6 +7,7 @@ use crate::{
         fleet::{FleetInfoCmdCtxFleet, FleetInfoCmdCtxFleetBr},
         item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
     },
+    shared::CmdResidue,
     svc::SolCtx,
 };
 
@@ -75,6 +76,17 @@ impl SolInfoEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolInfoEnumCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::SolInfo(cmd) => cmd.exec_residue(),
+            Self::FleetInfo(cmd) => cmd.exec_residue(),
+            Self::FitInfo(cmd) => cmd.exec_residue(),
+            Self::ItemInfo(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl SolInfoEnumCmd {
     pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolInfoEnumError> {
         Ok(match self {

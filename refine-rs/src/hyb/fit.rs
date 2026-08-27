@@ -8,6 +8,7 @@ use crate::{
     SubsystemChangeCmd,
     err::{BrResolveError, FitChangeEnumError, FitInfoEnumError},
     info::FitInfoEnumCmd,
+    shared::CmdResidue,
     stats::{FitStatsCmdBr, FitStatsEnumCmd, FitStatsEnumCmdBr, ItemStatsCmdBr, err::FitStatsEnumError},
     trial::{FitTryItemsCmdBr, FitTryItemsEnumCmd, FitTryItemsEnumCmdBr},
     val::{FitValCmdBr, FitValEnumCmd, FitValEnumCmdBr},
@@ -270,6 +271,18 @@ impl FitHybridCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitHybridCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Ctl(cmd) => cmd.exec_residue(),
+            Self::Info(cmd) => cmd.exec_residue(),
+            Self::Stats(cmd) => cmd.exec_residue(),
+            Self::Val(cmd) => cmd.exec_residue(),
+            Self::TryItems(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl FitHybridCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitHybridError> {
         Ok(match self {

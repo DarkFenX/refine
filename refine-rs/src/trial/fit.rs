@@ -1,5 +1,6 @@
 use crate::{
     CmdResp, CmdResps,
+    shared::CmdResidue,
     trial::{FitTryItemsCmd, FitTryItemsCmdBr},
 };
 
@@ -43,6 +44,14 @@ impl FitTryItemsEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitTryItemsEnumCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::FitTryItems(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl FitTryItemsEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> CmdResp {
         match self {

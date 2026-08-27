@@ -1,6 +1,7 @@
 use crate::{
     CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr,
     err::BrResolveError,
+    shared::CmdResidue,
     stats::{
         FitStatsCmdBr, FleetStatsCmdBr, ItemStatsCmdBr, SolStatsCmd, SolStatsCmdBr,
         err::{FitGetFitStatsError, FleetGetFleetStatsError, ItemGetItemStatsError},
@@ -75,6 +76,17 @@ impl SolStatsEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolStatsEnumCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::SolStats(cmd) => cmd.exec_residue(),
+            Self::FleetStats(cmd) => cmd.exec_residue(),
+            Self::FitStats(cmd) => cmd.exec_residue(),
+            Self::ItemStats(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl SolStatsEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolStatsEnumError> {
         Ok(match self {

@@ -2,6 +2,7 @@ use crate::{
     CmdResp, CmdResps, FitInfoCmd, FitInfoCmdBr, ItemIdBr, ItemInfoCmdBr,
     err::{BrResolveError, ItemGetItemInfoError},
     info::item::{ItemInfoCmdCtxItem, ItemInfoCmdCtxItemBr},
+    shared::CmdResidue,
 };
 
 #[derive(Clone)]
@@ -52,6 +53,15 @@ impl FitInfoEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitInfoEnumCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::FitInfo(cmd) => cmd.exec_residue(),
+            Self::ItemInfo(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl FitInfoEnumCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> Result<CmdResp, FitInfoEnumError> {
         Ok(match self {

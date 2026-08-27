@@ -123,7 +123,7 @@ impl FitStatsCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitStatsCmdBr {
-    fn exec_residue(&self) -> CmdResidue {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutInfallible
     }
 }

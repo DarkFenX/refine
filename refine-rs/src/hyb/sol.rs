@@ -10,6 +10,7 @@ use crate::{
     SwEffectChangeCmd,
     err::{BrResolveError, SolChangeEnumError, SolInfoEnumError},
     info::SolInfoEnumCmd,
+    shared::CmdResidue,
     stats::{
         FitStatsCmdBr, FleetStatsCmdBr, ItemStatsCmdBr, SolStatsCmdBr, SolStatsEnumCmd, SolStatsEnumCmdBr,
         err::SolStatsEnumError,
@@ -364,6 +365,18 @@ impl SolHybridCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SolHybridCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Ctl(cmd) => cmd.exec_residue(),
+            Self::Info(cmd) => cmd.exec_residue(),
+            Self::Stats(cmd) => cmd.exec_residue(),
+            Self::Val(cmd) => cmd.exec_residue(),
+            Self::TryItems(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl SolHybridCmd {
     pub(crate) fn execute(self, ctx: SolCtx, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolHybridError> {
         Ok(match self {
