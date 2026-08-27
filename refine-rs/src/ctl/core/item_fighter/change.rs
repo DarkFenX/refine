@@ -198,6 +198,15 @@ impl FighterChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FighterChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
+            return CmdResidue::MutFallibleDirty;
+        }
+        CmdResidue::MutFallibleClean
+    }
+}
 impl FighterChangeCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
@@ -205,6 +214,11 @@ impl FighterChangeCmdBr {
             return CmdResidue::MutFallibleDirty;
         }
         CmdResidue::MutFallibleClean
+    }
+}
+impl FighterChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
     }
 }
 impl FighterChangeCmdCtxItemBr {

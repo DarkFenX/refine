@@ -81,6 +81,14 @@ impl FitAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FitAddCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        if self.fleet_id.is_some() {
+            return CmdResidue::MutFallibleDirty;
+        }
+        CmdResidue::MutInfallible
+    }
+}
 impl FitAddCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         if self.fleet_id.is_some() {

@@ -142,7 +142,17 @@ impl StanceChangeCmd {
         CmdResidue::MutInfallible
     }
 }
+impl StanceChangeCmdCtxFit {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl StanceChangeCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl StanceChangeCmdCtxItem {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
@@ -150,6 +160,14 @@ impl StanceChangeCmdCtxFitBr {
 impl StanceChangeCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
+    }
+}
+impl StanceChangeCmdCtxAny {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Fit(cmd) => cmd.exec_residue(),
+            Self::Item(cmd) => cmd.exec_residue(),
+        }
     }
 }
 impl StanceChangeCmdCtxAnyBr {

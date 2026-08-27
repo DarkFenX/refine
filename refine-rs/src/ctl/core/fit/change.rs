@@ -149,6 +149,12 @@ impl FitChangeCmdBr {
         CmdResidue::MutInfallible
     }
 }
+impl FitChangeCmdCtxFit {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // This one can fail regardless of core command contents
+        CmdResidue::MutFallibleClean
+    }
+}
 impl FitChangeCmdCtxFitBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // This one can fail regardless of core command contents

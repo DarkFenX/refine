@@ -188,6 +188,20 @@ impl DroneChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl DroneChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
+            return CmdResidue::MutFallibleDirty;
+        }
+        if let TriStateField::Value(mutation) = &self.shared.mutation
+            && !mutation.attrs.is_empty()
+        {
+            return CmdResidue::MutFallibleDirty;
+        }
+        CmdResidue::MutFallibleClean
+    }
+}
 impl DroneChangeCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
@@ -200,6 +214,11 @@ impl DroneChangeCmdBr {
             return CmdResidue::MutFallibleDirty;
         }
         CmdResidue::MutFallibleClean
+    }
+}
+impl DroneChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
     }
 }
 impl DroneChangeCmdCtxItemBr {

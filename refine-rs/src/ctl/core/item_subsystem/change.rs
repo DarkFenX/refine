@@ -86,6 +86,11 @@ impl SubsystemChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
+impl SubsystemChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl SubsystemChangeCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

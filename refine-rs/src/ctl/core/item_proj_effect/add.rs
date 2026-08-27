@@ -89,6 +89,14 @@ impl ProjEffectAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectAddCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.proj_item_ids.is_empty() {
+            true => CmdResidue::MutInfallible,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
 impl ProjEffectAddCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {

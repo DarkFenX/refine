@@ -82,6 +82,11 @@ impl SkillAddCmd {
         CmdResidue::MutFallibleClean
     }
 }
+impl SkillAddCmdCtxFit {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl SkillAddCmdCtxFitBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

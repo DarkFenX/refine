@@ -91,6 +91,11 @@ impl ShipSetCmd {
         CmdResidue::MutInfallible
     }
 }
+impl ShipSetCmdCtxFit {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl ShipSetCmdCtxFitBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

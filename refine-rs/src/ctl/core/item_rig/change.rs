@@ -86,6 +86,11 @@ impl RigChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
+impl RigChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl RigChangeCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

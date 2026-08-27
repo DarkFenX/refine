@@ -65,6 +65,11 @@ impl FleetRemoveCmd {
         CmdResidue::MutInfallible
     }
 }
+impl FleetRemoveCmdCtxFleet {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl FleetRemoveCmdCtxFleetBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

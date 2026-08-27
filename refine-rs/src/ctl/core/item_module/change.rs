@@ -200,6 +200,20 @@ impl ModuleChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModuleChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
+            return CmdResidue::MutFallibleDirty;
+        }
+        if let TriStateField::Value(mutation) = &self.shared.mutation
+            && !mutation.attrs.is_empty()
+        {
+            return CmdResidue::MutFallibleDirty;
+        }
+        CmdResidue::MutFallibleClean
+    }
+}
 impl ModuleChangeCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
@@ -212,6 +226,11 @@ impl ModuleChangeCmdBr {
             return CmdResidue::MutFallibleDirty;
         }
         CmdResidue::MutFallibleClean
+    }
+}
+impl ModuleChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
     }
 }
 impl ModuleChangeCmdCtxItemBr {

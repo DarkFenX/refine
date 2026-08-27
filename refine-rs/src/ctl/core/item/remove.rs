@@ -71,6 +71,11 @@ impl ItemRemoveCmd {
         CmdResidue::MutFallibleClean
     }
 }
+impl ItemRemoveCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl ItemRemoveCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

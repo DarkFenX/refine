@@ -86,6 +86,11 @@ impl ServiceChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
+impl ServiceChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl ServiceChangeCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

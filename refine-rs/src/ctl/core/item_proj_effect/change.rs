@@ -147,6 +147,15 @@ impl ProjEffectChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
+            return CmdResidue::MutFallibleDirty;
+        }
+        CmdResidue::MutFallibleClean
+    }
+}
 impl ProjEffectChangeCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
@@ -154,6 +163,11 @@ impl ProjEffectChangeCmdBr {
             return CmdResidue::MutFallibleDirty;
         }
         CmdResidue::MutFallibleClean
+    }
+}
+impl ProjEffectChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
     }
 }
 impl ProjEffectChangeCmdCtxItemBr {

@@ -1,14 +1,15 @@
 use crate::{
-    CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError, shared::SolBackup,
+    CmdResp, CmdResps, Fit, FitChangeEnumCmd, FitInfo, FitInfoCmdBr, err::FitChangeEnumError, shared::ResidueResolver,
 };
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-chg", level = "trace", skip_all)]
     pub async fn change(&mut self, ctl_cmd: FitChangeEnumCmd) -> Result<CmdResp, FitChangeEnumError> {
+        let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         // Variables for move
         let fit_id = self.id;
         self.sol
-            .exec_standard(SolBackup::Needed, move |core_sol| {
+            .exec_standard(sol_backup, move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
@@ -22,10 +23,11 @@ impl Fit<'_, '_> {
         ctl_cmd: FitChangeEnumCmd,
         info_cmd: FitInfoCmdBr,
     ) -> Result<(CmdResp, FitInfo), FitChangeEnumError> {
+        let sol_backup = ResidueResolver::new().add_cmds([ctl_cmd.exec_residue(), info_cmd.exec_residue()].into_iter());
         // Variables for move
         let fit_id = self.id;
         self.sol
-            .exec_standard(SolBackup::Needed, move |core_sol| {
+            .exec_standard(sol_backup, move |core_sol| {
                 // Holding mutex on sol - nothing can remove the core fit without consuming the
                 // high-level Fit
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();

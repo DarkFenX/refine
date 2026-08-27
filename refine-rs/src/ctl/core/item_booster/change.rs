@@ -94,6 +94,11 @@ impl BoosterChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
+impl BoosterChangeCmdCtxItem {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl BoosterChangeCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean

@@ -77,6 +77,11 @@ impl ServiceAddCmd {
         CmdResidue::MutInfallible
     }
 }
+impl ServiceAddCmdCtxFit {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
 impl ServiceAddCmdCtxFitBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
