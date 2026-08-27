@@ -99,7 +99,7 @@ impl ItemInfoCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemInfoCmdBr {
-    fn exec_residue(&self) -> CmdResidue {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutInfallible
     }
 }

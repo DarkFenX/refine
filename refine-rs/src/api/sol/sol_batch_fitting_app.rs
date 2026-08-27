@@ -1,7 +1,7 @@
 use crate::{
     CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError},
-    shared::SolBackup,
+    shared::{CmdResidue, ResidueResolver},
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
 };
@@ -24,8 +24,18 @@ impl SolarSystem<'_> {
         F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + Sync + 'static,
         E: std::error::Error + Send + Sync + 'static,
     {
+        let sol_backup = ResidueResolver::new().add_cmds(
+            ctl_cmds
+                .iter()
+                .map(|ctl_cmd| ctl_cmd.exec_residue())
+                .chain([val_cmd.exec_residue()])
+                // Evaluator does not modify solar system, but can fail
+                .chain([CmdResidue::ImmutFallible])
+                .chain([info_cmd.exec_residue(), stats_cmd.exec_residue()]),
+        );
+        // Variables for move
         let sol_ctx = self.get_ctx();
-        self.exec_standard(SolBackup::Needed, move |core_sol| {
+        self.exec_standard(sol_backup, move |core_sol| {
             let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
             for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
                 let ctl_cmd_resp = ctl_cmd

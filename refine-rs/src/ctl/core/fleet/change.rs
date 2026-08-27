@@ -108,7 +108,7 @@ impl FleetChangeCmdCtxFleetBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetChangeCmd {
-    fn exec_residue(&self) -> CmdResidue {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         match (self.rm_fit_ids.len(), self.add_fit_ids.len()) {
             (0, 0) => CmdResidue::MutInfallible,
@@ -118,7 +118,7 @@ impl FleetChangeCmd {
     }
 }
 impl FleetChangeCmdBr {
-    fn exec_residue(&self) -> CmdResidue {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         match (self.rm_fit_ids.len(), self.add_fit_ids.len()) {
             (0, 0) => CmdResidue::MutInfallible,

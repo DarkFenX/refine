@@ -12,6 +12,7 @@ use crate::{
         FitGetFwEffectAddError, FitGetImplantAddError, FitGetModuleAddError, FitGetRigAddError, FitGetServiceAddError,
         FitGetShipSetError, FitGetSkillAddError, FitGetStanceSetError, FitGetSubsystemAddError, ProjEffectAddError,
     },
+    shared::CmdResidue,
 };
 
 #[cfg_attr(
@@ -120,6 +121,28 @@ impl SwEffectAddCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemAddEnumCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Booster(cmd) => cmd.exec_residue(),
+            Self::Character(cmd) => cmd.exec_residue(),
+            Self::Drone(cmd) => cmd.exec_residue(),
+            Self::Fighter(cmd) => cmd.exec_residue(),
+            Self::FwEffect(cmd) => cmd.exec_residue(),
+            Self::Implant(cmd) => cmd.exec_residue(),
+            Self::Module(cmd) => cmd.exec_residue(),
+            Self::ProjEffect(cmd) => cmd.exec_residue(),
+            Self::Rig(cmd) => cmd.exec_residue(),
+            Self::Service(cmd) => cmd.exec_residue(),
+            Self::Ship(cmd) => cmd.exec_residue(),
+            Self::Skill(cmd) => cmd.exec_residue(),
+            Self::Stance(cmd) => cmd.exec_residue(),
+            Self::Subsystem(cmd) => cmd.exec_residue(),
+            Self::SwEffect(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl ItemAddEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedItemIdsResp, ItemAddEnumError> {
         Ok(match self {

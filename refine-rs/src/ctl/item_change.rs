@@ -8,6 +8,7 @@ use crate::{
         ModuleChangeError, ProjEffectChangeError, RigChangeError, ServiceChangeError, SkillChangeError,
         SubsystemChangeError, SwEffectChangeError,
     },
+    shared::CmdResidue,
 };
 
 #[cfg_attr(
@@ -128,6 +129,30 @@ impl SwEffectChangeCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemChangeEnumCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Autocharge(cmd) => cmd.exec_residue(),
+            Self::Booster(cmd) => cmd.exec_residue(),
+            Self::Character(cmd) => cmd.exec_residue(),
+            Self::Charge(cmd) => cmd.exec_residue(),
+            Self::Drone(cmd) => cmd.exec_residue(),
+            Self::Fighter(cmd) => cmd.exec_residue(),
+            Self::FwEffect(cmd) => cmd.exec_residue(),
+            Self::Implant(cmd) => cmd.exec_residue(),
+            Self::Module(cmd) => cmd.exec_residue(),
+            Self::ProjEffect(cmd) => cmd.exec_residue(),
+            Self::Rig(cmd) => cmd.exec_residue(),
+            Self::Service(cmd) => cmd.exec_residue(),
+            Self::Ship(cmd) => cmd.exec_residue(),
+            Self::Skill(cmd) => cmd.exec_residue(),
+            Self::Stance(cmd) => cmd.exec_residue(),
+            Self::Subsystem(cmd) => cmd.exec_residue(),
+            Self::SwEffect(cmd) => cmd.exec_residue(),
+        }
+    }
+}
+
 impl ItemChangeEnumCmd {
     pub(crate) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ItemChangeEnumError> {
         Ok(match self {
