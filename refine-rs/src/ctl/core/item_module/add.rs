@@ -1,6 +1,7 @@
 use crate::{
     AddMode, AddMutation, AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
     ItemTypeId, ModRack, ModuleState, OptionalReload, Spool, ctl::core::shared::EffectModes, err::BrResolveError,
+    shared::CmdResidue,
 };
 
 // Core commands
@@ -174,6 +175,23 @@ impl ModuleAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ModuleAddCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.proj_item_ids.is_empty() {
+            true => CmdResidue::MutInfallible,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+impl ModuleAddCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.core.proj_item_ids.is_empty() {
+            true => CmdResidue::MutFallibleClean,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+
 impl ModuleAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ModuleAddError> {
         let mut core_module = core_fit.add_module(

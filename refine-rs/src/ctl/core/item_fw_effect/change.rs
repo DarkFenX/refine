@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError,
+    err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -80,6 +80,18 @@ impl FwEffectChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FwEffectChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        CmdResidue::MutFallibleClean
+    }
+}
+impl FwEffectChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl FwEffectChangeCmd {
     pub(in crate::ctl) fn execute(
         self,
