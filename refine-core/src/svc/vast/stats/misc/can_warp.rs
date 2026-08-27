@@ -35,9 +35,6 @@ impl Vast {
             return Ok(false);
         }
         let warp_jump_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_warping, Value::ZERO);
-        if warp_jump_status > Value::FLOAT_TOLERANCE {
-            return Ok(false);
-        }
-        Ok(true)
+        Ok(warp_jump_status <= Value::FLOAT_TOLERANCE)
     }
 }

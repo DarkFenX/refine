@@ -14,6 +14,7 @@ use crate::{
 pub(crate) type SolStatsEnumCmd = SolStatsEnumCmdGen<FleetId, FitId, ItemId>;
 pub type SolStatsEnumCmdBr = SolStatsEnumCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
 
+#[expect(clippy::enum_variant_names)]
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),

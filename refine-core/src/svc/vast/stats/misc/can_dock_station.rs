@@ -24,9 +24,6 @@ impl Vast {
             return Ok(false);
         }
         let dock_status = calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_docking, Value::ZERO);
-        if dock_status > Value::FLOAT_TOLERANCE {
-            return Ok(false);
-        }
-        Ok(true)
+        Ok(dock_status <= Value::FLOAT_TOLERANCE)
     }
 }

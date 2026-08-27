@@ -32,9 +32,6 @@ impl Vast {
         }
         let jump_status =
             calc.get_item_oattr_ffb_extra(ctx, item_uid, ctx.ac().disallow_drive_jumping_only, Value::ZERO);
-        if jump_status > Value::FLOAT_TOLERANCE {
-            return Ok(false);
-        }
-        Ok(true)
+        Ok(jump_status <= Value::FLOAT_TOLERANCE)
     }
 }

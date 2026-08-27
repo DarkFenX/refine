@@ -2,7 +2,7 @@ use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
+#[derive(Clone, Default)]
 pub struct ShipUnsetCmd;
 
 // Extra context commands

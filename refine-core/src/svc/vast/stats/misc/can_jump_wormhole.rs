@@ -17,9 +17,6 @@ impl Vast {
             return Ok(false);
         }
         let fit_data = self.get_fit_data(ship.get_fit_uid());
-        if !fit_data.mod_effects_disallow_jump_wh.is_empty() {
-            return Ok(false);
-        }
-        Ok(true)
+        Ok(fit_data.mod_effects_disallow_jump_wh.is_empty())
     }
 }
