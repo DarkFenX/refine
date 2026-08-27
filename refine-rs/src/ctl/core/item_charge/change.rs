@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError,
+    err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -80,6 +80,17 @@ impl ChargeChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ChargeChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl ChargeChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl ChargeChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, ChargeChangeError> {
         let core_charge = core_item.dc_charge()?;

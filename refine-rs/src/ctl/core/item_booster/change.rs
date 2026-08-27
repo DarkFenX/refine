@@ -2,6 +2,7 @@ use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId,
     ctl::core::shared::{EffectModes, SideEffects},
     err::BrResolveError,
+    shared::CmdResidue,
 };
 
 // Core commands
@@ -87,6 +88,12 @@ impl BoosterChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl BoosterChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleDirty
+    }
+}
+
 impl BoosterChangeCmd {
     pub(in crate::ctl) fn execute(self, core_item: &mut rc::ItemMut) -> Result<ChangedItemIdsResp, BoosterChangeError> {
         let core_booster = core_item.dc_booster()?;
