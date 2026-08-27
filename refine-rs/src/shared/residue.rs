@@ -1,4 +1,5 @@
-/// This enum is used to describe how a command changes solar system state.
+/// This enum is used to describe how a command behaves - does it change solar system state, and can
+/// it fail or not.
 ///
 /// The change here is not used in sense of rust mutation, it only concerns user data. For example,
 /// modifying attribute cache (which happens when calculating stats or fetching item's attributes)
@@ -6,15 +7,16 @@
 /// new IDs, but also is not considered a change. Neither of those change IDs assigned to user data,
 /// or user data itself directly.
 pub(crate) enum CmdResidue {
-    /// Command does not modify solar system state (e.g. info/stats getters)
-    None,
-    /// Command modifies solar system state, but will never fail (e.g. adding a fit without fleet
-    /// set)
-    Infallible,
-    /// Command modifies solar system state, but in case of failure reverts its effect
-    FallibleClean,
-    /// Command modifies solar system state, but in case of failure may not revert its effect
-    FallibleDirty,
+    /// Does not modify solar system state, and cannot fail.
+    ImmutInfallible,
+    /// Does not modify solar system state, and can fail.
+    ImmutFallible,
+    /// Command modifies solar system state, but will never fail.
+    MutInfallible,
+    /// Command modifies solar system state, but in case of failure reverts its effect.
+    MutFallibleClean,
+    /// Command modifies solar system state, but in case of failure may not revert its effect.
+    MutFallibleDirty,
 }
 
 #[derive(Copy, Clone)]
@@ -24,35 +26,43 @@ pub(crate) enum SolBackup {
 }
 
 pub(crate) struct ResidueResolver {
-    seen_mutable: bool,
+    seen_mutating: bool,
     backup: SolBackup,
 }
 impl ResidueResolver {
     pub(crate) fn new() -> Self {
         Self {
-            seen_mutable: false,
+            seen_mutating: false,
             backup: SolBackup::NotNeeded,
         }
     }
     pub(crate) fn add_cmd(&mut self, residue: CmdResidue) -> SolBackup {
         match residue {
-            CmdResidue::None => self.backup,
-            // Infallible command just changes context for fallible commands
-            CmdResidue::Infallible => {
-                self.seen_mutable = true;
+            CmdResidue::ImmutInfallible => self.backup,
+            // If something could possibly mutate sol before and this command can fail, need backup
+            CmdResidue::ImmutFallible => {
+                if self.seen_mutating {
+                    self.backup = SolBackup::Needed
+                }
+                self.backup
+            }
+            ,
+            // Infallible mutable command just changes context for fallible commands
+            CmdResidue::MutInfallible => {
+                self.seen_mutating = true;
                 self.backup
             }
             // Even if command reverts its action cleanly, it cannot revert already executed
             // commands; in this case, sol backup is needed
-            CmdResidue::FallibleClean => {
-                match self.seen_mutable {
+            CmdResidue::MutFallibleClean => {
+                match self.seen_mutating {
                     true => self.backup = SolBackup::Needed,
-                    false => self.seen_mutable = true,
+                    false => self.seen_mutating = true,
                 }
                 self.backup
             }
             // Commands which can fail without proper recovery need sol backup regardless
-            CmdResidue::FallibleDirty => {
+            CmdResidue::MutFallibleDirty => {
                 self.backup = SolBackup::Needed;
                 self.backup
             }

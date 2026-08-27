@@ -93,12 +93,12 @@ impl ItemStatsCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ItemStatsCmdBr {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::None
+        CmdResidue::ImmutInfallible
     }
 }
 impl ItemStatsCmdCtxItemBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
+        CmdResidue::ImmutFallible
     }
 }
 

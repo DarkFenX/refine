@@ -129,7 +129,7 @@ impl SolStatsCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolStatsCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::None
+        CmdResidue::ImmutInfallible
     }
 }
 

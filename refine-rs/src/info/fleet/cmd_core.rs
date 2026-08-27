@@ -141,12 +141,12 @@ impl FleetInfoCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetInfoCmdBr {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::None
+        CmdResidue::ImmutInfallible
     }
 }
 impl FleetInfoCmdCtxFleetBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
+        CmdResidue::ImmutFallible
     }
 }
 

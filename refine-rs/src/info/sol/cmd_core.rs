@@ -126,7 +126,7 @@ impl SolInfoCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SolInfoCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::None
+        CmdResidue::ImmutInfallible
     }
 }
 

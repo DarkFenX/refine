@@ -111,12 +111,12 @@ impl FitValCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitValCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::None
+        CmdResidue::ImmutInfallible
     }
 }
 impl FitValCmdCtxFitBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
+        CmdResidue::ImmutFallible
     }
 }
 
