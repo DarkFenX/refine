@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
-    ctl::core::shared::EffectModes, err::BrResolveError,
+    ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -137,6 +137,30 @@ impl CharacterChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl CharacterChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl CharacterChangeCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl CharacterChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl CharacterChangeCmdCtxAnyBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Fit(inner) => inner.exec_residue(),
+            Self::Item(inner) => inner.exec_residue(),
+        }
+    }
+}
+
 impl CharacterChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,
