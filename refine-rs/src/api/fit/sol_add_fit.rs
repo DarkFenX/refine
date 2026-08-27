@@ -5,7 +5,7 @@ impl<'r, 's> SolarSystem<'r> {
     pub async fn add_fit(&'s mut self, ctl_cmd: FitAddCmd) -> Result<Fit<'r, 's>, FitAddError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         let ctl_cmd_resp = self
-            .exec_standard(sol_backup, move |core_sol| ctl_cmd.execute(core_sol))
+            .exec_standard(sol_backup, |core_sol| ctl_cmd.execute(core_sol))
             .await?;
         let fit = Fit::new(self, ctl_cmd_resp.fit_id);
         Ok(fit)
@@ -18,7 +18,7 @@ impl<'r, 's> SolarSystem<'r> {
     ) -> Result<(Fit<'r, 's>, FitInfo), FitAddError> {
         let sol_backup = ResidueResolver::new().add_cmds([ctl_cmd.exec_residue(), info_cmd.exec_residue()].into_iter());
         let (fit_id, fit_info) = self
-            .exec_standard(sol_backup, move |core_sol| {
+            .exec_standard(sol_backup, |core_sol| {
                 let fit_id = ctl_cmd.execute(core_sol)?.fit_id;
                 let mut core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
                 let fit_info = info_cmd.execute(&mut core_fit);

@@ -24,15 +24,14 @@ impl SolarSystem<'_> {
         F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + Sync + 'static,
         E: std::error::Error + Send + Sync + 'static,
     {
-        let sol_backup = ResidueResolver::new().add_cmds(
-            ctl_cmds
-                .iter()
-                .map(|ctl_cmd| ctl_cmd.exec_residue())
-                .chain([val_cmd.exec_residue()])
-                // Evaluator does not modify solar system, but can fail
-                .chain([CmdResidue::ImmutFallible])
-                .chain([info_cmd.exec_residue(), stats_cmd.exec_residue()]),
-        );
+        // Evaluator does not modify solar system, but can fail, so it has a separate entry
+        let sol_backup =
+            ResidueResolver::new().add_cmds(ctl_cmds.iter().map(|ctl_cmd| ctl_cmd.exec_residue()).chain([
+                val_cmd.exec_residue(),
+                CmdResidue::ImmutFallible,
+                info_cmd.exec_residue(),
+                stats_cmd.exec_residue(),
+            ]));
         // Variables for move
         let sol_ctx = self.get_ctx();
         self.exec_standard(sol_backup, move |core_sol| {

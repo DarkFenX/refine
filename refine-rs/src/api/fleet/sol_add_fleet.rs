@@ -7,7 +7,7 @@ impl<'r, 's> SolarSystem<'r> {
     pub async fn add_fleet(&'s mut self, ctl_cmd: FleetAddCmd) -> Result<Fleet<'r, 's>, FleetAddError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         let ctl_cmd_resp = self
-            .exec_standard(sol_backup, move |core_sol| {
+            .exec_standard(sol_backup, |core_sol| {
                 ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.fleet_id)
             })
             .await?;
@@ -22,7 +22,7 @@ impl<'r, 's> SolarSystem<'r> {
     ) -> Result<(Fleet<'r, 's>, FleetInfo), FleetAddError> {
         let sol_backup = ResidueResolver::new().add_cmds([ctl_cmd.exec_residue(), info_cmd.exec_residue()].into_iter());
         let (fleet_id, fleet_info) = self
-            .exec_standard(sol_backup, move |core_sol| {
+            .exec_standard(sol_backup, |core_sol| {
                 let fleet_id = ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.fleet_id)?;
                 let mut core_fleet = core_sol.get_fleet_mut(&fleet_id).unwrap();
                 let fleet_info = info_cmd.execute(&mut core_fleet);

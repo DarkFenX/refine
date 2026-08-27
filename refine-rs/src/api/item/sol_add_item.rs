@@ -8,7 +8,7 @@ impl<'r, 's> SolarSystem<'r> {
     pub async fn add_item(&'s mut self, ctl_cmd: ItemAddEnumCmd) -> Result<Item<'r, 's>, ItemAddEnumError> {
         let sol_backup = ResidueResolver::new().add_cmd(ctl_cmd.exec_residue());
         let item_id = self
-            .exec_standard(sol_backup, move |core_sol| {
+            .exec_standard(sol_backup, |core_sol| {
                 ctl_cmd.execute(core_sol).map(|ctl_cmd_resp| ctl_cmd_resp.item_id)
             })
             .await?;
@@ -23,7 +23,7 @@ impl<'r, 's> SolarSystem<'r> {
     ) -> Result<(Item<'r, 's>, ItemInfo), ItemAddEnumError> {
         let sol_backup = ResidueResolver::new().add_cmds([ctl_cmd.exec_residue(), info_cmd.exec_residue()].into_iter());
         let (item_id, item_info) = self
-            .exec_standard(sol_backup, move |core_sol| {
+            .exec_standard(sol_backup, |core_sol| {
                 let ctl_cmd_resp = ctl_cmd.execute(core_sol)?;
                 let item_id = ctl_cmd_resp.item_id;
                 let ctl_cmd_resps = CmdResps::with_resp(ctl_cmd_resp.into());
