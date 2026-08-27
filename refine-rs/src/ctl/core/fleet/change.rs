@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError};
+use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -107,6 +107,24 @@ impl FleetChangeCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetChangeCmdBr {
+    fn exec_residue(&self) -> CmdResidue {
+        match self.rm_fit_ids.is_empty() && self.add_fit_ids.is_empty() {
+            true => CmdResidue::MutInfallible,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+impl FleetChangeCmdCtxFleetBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Same as core, but getting fleet may fail
+        match self.core.rm_fit_ids.is_empty() && self.core.add_fit_ids.is_empty() {
+            true => CmdResidue::MutFallibleClean,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+
 impl FleetChangeCmd {
     pub(crate) fn execute(self, core_fleet: &mut rc::FleetMut) -> Result<(), FleetChangeError> {
         for fit_id in self.rm_fit_ids.iter() {

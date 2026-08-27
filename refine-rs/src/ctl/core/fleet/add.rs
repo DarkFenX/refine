@@ -1,4 +1,4 @@
-use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBr, err::BrResolveError};
+use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -51,6 +51,15 @@ impl FleetAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetAddCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.fit_ids.is_empty() {
+            true => CmdResidue::MutInfallible,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+
 impl FleetAddCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<AddedFleetIdResp, FleetAddError> {
         let mut core_fleet = core_sol.add_fleet();

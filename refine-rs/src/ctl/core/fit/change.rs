@@ -131,15 +131,17 @@ impl FitChangeCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitChangeCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Do not check for any of fields being set, just assume something is mutating
         match self.fleet_id {
-            TriStateField::Value(..) => CmdResidue::FallibleClean,
-            _ => CmdResidue::Infallible,
+            TriStateField::Value(..) => CmdResidue::MutFallibleClean,
+            _ => CmdResidue::MutInfallible,
         }
     }
 }
 impl FitChangeCmdCtxFitBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
+        // We assume core command mutates, and this one can fail regardless of core command contents
+        CmdResidue::MutFallibleClean
     }
 }
 

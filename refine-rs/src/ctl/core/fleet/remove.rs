@@ -1,4 +1,4 @@
-use crate::{CmdResps, FleetId, FleetIdBr, err::BrResolveError};
+use crate::{CmdResps, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -60,6 +60,17 @@ impl FleetRemoveCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl FleetRemoveCmd {
+    fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl FleetRemoveCmdCtxFleetBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl FleetRemoveCmd {
     pub(crate) fn execute(self, core_fleet: rc::FleetMut) {
         core_fleet.remove()
