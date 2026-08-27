@@ -7,7 +7,7 @@ use crate::{
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone)]
-pub struct StatOptionFitDmg<I = ItemId> {
+pub struct StatOptionFitDmgGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) item_kinds: StatDmgItemKinds = StatDmgItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
@@ -16,15 +16,18 @@ pub struct StatOptionFitDmg<I = ItemId> {
     pub(in crate::stats) crits: StatCritOptions = StatCritOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionFitDmg<I> {
+impl<I> Default for StatOptionFitDmgGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionFitDmg = StatOptionFitDmgGen<ItemId>;
+pub type StatOptionFitDmgBr = StatOptionFitDmgGen<ItemIdBr>;
+
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone)]
-pub struct StatOptionItemDmg<I = ItemId> {
+pub struct StatOptionItemDmgGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
@@ -35,16 +38,19 @@ pub struct StatOptionItemDmg<I = ItemId> {
     pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionItemDmg<I> {
+impl<I> Default for StatOptionItemDmgGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionItemDmg = StatOptionItemDmgGen<ItemId>;
+pub type StatOptionItemDmgBr = StatOptionItemDmgGen<ItemIdBr>;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> StatOptionFitDmg<I> {
+impl<I> StatOptionFitDmgGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -66,7 +72,7 @@ impl<I> StatOptionFitDmg<I> {
     }
 }
 
-impl<I> StatOptionItemDmg<I> {
+impl<I> StatOptionItemDmgGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -95,8 +101,8 @@ impl<I> StatOptionItemDmg<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolveFallible for StatOptionFitDmg<ItemIdBr> {
-    type Target = StatOptionFitDmg<ItemId>;
+impl BrResolveFallible for StatOptionFitDmgBr {
+    type Target = StatOptionFitDmg;
     fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             item_kinds: self.item_kinds,
@@ -107,8 +113,8 @@ impl BrResolveFallible for StatOptionFitDmg<ItemIdBr> {
     }
 }
 
-impl BrResolveFallible for StatOptionItemDmg<ItemIdBr> {
-    type Target = StatOptionItemDmg<ItemId>;
+impl BrResolveFallible for StatOptionItemDmgBr {
+    type Target = StatOptionItemDmg;
     fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             time: self.time,

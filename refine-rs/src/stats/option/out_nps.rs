@@ -7,22 +7,25 @@ use crate::{
 
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone)]
-pub struct StatOptionFitOutNps<I = ItemId> {
+pub struct StatOptionFitOutNpsGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) item_kinds: StatNeutItemKinds = StatNeutItemKinds::default(),
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionFitOutNps<I> {
+impl<I> Default for StatOptionFitOutNpsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionFitOutNps = StatOptionFitOutNpsGen<ItemId>;
+pub type StatOptionFitOutNpsBr = StatOptionFitOutNpsGen<ItemIdBr>;
+
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
 #[derive(Copy, Clone)]
-pub struct StatOptionItemOutNps<I = ItemId> {
+pub struct StatOptionItemOutNpsGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::default(),
     #[cfg_attr(feature = "serde", serde(default))]
@@ -31,16 +34,19 @@ pub struct StatOptionItemOutNps<I = ItemId> {
     pub(in crate::stats) state: StatItemStateOptions = StatItemStateOptions::default(),
     pub(in crate::stats) projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionItemOutNps<I> {
+impl<I> Default for StatOptionItemOutNpsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionItemOutNps = StatOptionItemOutNpsGen<ItemId>;
+pub type StatOptionItemOutNpsBr = StatOptionItemOutNpsGen<ItemIdBr>;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> StatOptionFitOutNps<I> {
+impl<I> StatOptionFitOutNpsGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -58,7 +64,7 @@ impl<I> StatOptionFitOutNps<I> {
     }
 }
 
-impl<I> StatOptionItemOutNps<I> {
+impl<I> StatOptionItemOutNpsGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -83,8 +89,8 @@ impl<I> StatOptionItemOutNps<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolveFallible for StatOptionFitOutNps<ItemIdBr> {
-    type Target = StatOptionFitOutNps<ItemId>;
+impl BrResolveFallible for StatOptionFitOutNpsBr {
+    type Target = StatOptionFitOutNps;
     fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             item_kinds: self.item_kinds,
@@ -94,8 +100,8 @@ impl BrResolveFallible for StatOptionFitOutNps<ItemIdBr> {
     }
 }
 
-impl BrResolveFallible for StatOptionItemOutNps<ItemIdBr> {
-    type Target = StatOptionItemOutNps<ItemId>;
+impl BrResolveFallible for StatOptionItemOutNpsBr {
+    type Target = StatOptionItemOutNps;
     fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             time: self.time,

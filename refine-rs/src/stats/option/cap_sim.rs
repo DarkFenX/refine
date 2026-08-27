@@ -9,7 +9,7 @@ use crate::{
     serde(bound(deserialize = "I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub struct StatOptionCapSim<I = ItemId> {
+pub struct StatOptionCapSimGen<I> {
     #[cfg_attr(feature = "serde", serde(default = "cap_perc_default"))]
     pub(in crate::stats) cap_perc: UnitInterval = UnitInterval::from_f64_clamped(1.0),
     pub(in crate::stats) optional_reloads: Option<OptionalReload> = None,
@@ -17,16 +17,19 @@ pub struct StatOptionCapSim<I = ItemId> {
     pub(in crate::stats) stagger: StatCapSimStagger<I> = StatCapSimStagger::default(),
     pub(in crate::stats) nosf_projectee_item_id: Option<I> = None,
 }
-impl<I> Default for StatOptionCapSim<I> {
+impl<I> Default for StatOptionCapSimGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionCapSim = StatOptionCapSimGen<ItemId>;
+pub type StatOptionCapSimBr = StatOptionCapSimGen<ItemIdBr>;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> StatOptionCapSim<I> {
+impl<I> StatOptionCapSimGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -51,8 +54,8 @@ impl<I> StatOptionCapSim<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolveFallible for StatOptionCapSim<ItemIdBr> {
-    type Target = StatOptionCapSim<ItemId>;
+impl BrResolveFallible for StatOptionCapSimBr {
+    type Target = StatOptionCapSim;
     fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             cap_perc: self.cap_perc,

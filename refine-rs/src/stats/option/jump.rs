@@ -12,7 +12,7 @@ use crate::{
     serde(bound(deserialize = "F: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub struct StatOptionJump<F = FitId> {
+pub struct StatOptionJumpGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) range: StatJumpRange = StatJumpRange::Max,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -20,16 +20,19 @@ pub struct StatOptionJump<F = FitId> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) passenger_fuel_affectors: StatAffectors = CtlAffectors::Unmodified,
 }
-impl<F> Default for StatOptionJump<F> {
+impl<F> Default for StatOptionJumpGen<F> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionJump = StatOptionJumpGen<FitId>;
+pub type StatOptionJumpBr = StatOptionJumpGen<FitIdBr>;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F> StatOptionJump<F> {
+impl<F> StatOptionJumpGen<F> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -50,8 +53,8 @@ impl<F> StatOptionJump<F> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolveInfallible for StatOptionJump<FitIdBr> {
-    type Target = StatOptionJump<FitId>;
+impl BrResolveInfallible for StatOptionJumpBr {
+    type Target = StatOptionJump;
     fn br_resolve_infallible(self, resps: &CmdResps) -> Self::Target {
         Self::Target {
             range: self.range,

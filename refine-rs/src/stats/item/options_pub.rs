@@ -2,9 +2,9 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     shared::BrResolveInfallible,
     stats::{
-        StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
-        StatOptionInt, StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps,
-        StatOptionItemOutRps, StatOptionJump, StatOptionMass, StatOptionRps, item::ItemStatsOptionsResolved,
+        StatOptionCapBlcGen, StatOptionCapSimGen, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionIncomingJam,
+        StatOptionInt, StatOptionItemDmgGen, StatOptionItemMining, StatOptionItemOutCpsGen, StatOptionItemOutNpsGen,
+        StatOptionItemOutRpsGen, StatOptionJumpGen, StatOptionMass, StatOptionRps, item::ItemStatsOptionsResolved,
     },
 };
 
@@ -12,26 +12,27 @@ use crate::{
 ///
 /// By default, all stats are not fetched.
 #[derive(Clone)]
-pub struct ItemStatsOptions<F = FitId, I = ItemId> {
+pub struct ItemStatsOptionsGen<F, I> {
     default: bool = false,
     overrides: Vec<ItemStatOption<F, I>> = Vec::new(),
 }
-impl<F, I> Default for ItemStatsOptions<F, I> {
+impl<F, I> Default for ItemStatsOptionsGen<F, I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
-pub type ItemStatsOptionsBr = ItemStatsOptions<FitIdBr, ItemIdBr>;
+pub type ItemStatsOptions = ItemStatsOptionsGen<FitId, ItemId>;
+pub type ItemStatsOptionsBr = ItemStatsOptionsGen<FitIdBr, ItemIdBr>;
 
 #[derive(Clone)]
 enum ItemStatOption<F, I> {
     // Output
-    Dmg(StatOptionInt<StatOptionItemDmg<I>>),
+    Dmg(StatOptionInt<StatOptionItemDmgGen<I>>),
     Mps(StatOptionExt<StatOptionItemMining>),
-    OutgoingNps(StatOptionInt<StatOptionItemOutNps<I>>),
-    OutgoingRps(StatOptionInt<StatOptionItemOutRps<I>>),
-    OutgoingCps(StatOptionInt<StatOptionItemOutCps<I>>),
+    OutgoingNps(StatOptionInt<StatOptionItemOutNpsGen<I>>),
+    OutgoingRps(StatOptionInt<StatOptionItemOutRpsGen<I>>),
+    OutgoingCps(StatOptionInt<StatOptionItemOutCpsGen<I>>),
     // Tank
     Resists(bool),
     Hp(bool),
@@ -42,8 +43,8 @@ enum ItemStatOption<F, I> {
     BreachResist(bool),
     // Cap
     CapAmount(bool),
-    CapBalance(StatOptionInt<StatOptionCapBlc<I>>),
-    CapSim(StatOptionInt<StatOptionCapSim<I>>),
+    CapBalance(StatOptionInt<StatOptionCapBlcGen<I>>),
+    CapSim(StatOptionInt<StatOptionCapSimGen<I>>),
     NeutResist(bool),
     // Sensors
     Locks(bool),
@@ -61,7 +62,7 @@ enum ItemStatOption<F, I> {
     Mass(StatOptionExt<StatOptionMass>),
     WarpSpeed(bool),
     MaxWarpRange(bool),
-    Jump(StatOptionExt<StatOptionJump<F>>),
+    Jump(StatOptionExt<StatOptionJumpGen<F>>),
     // Misc
     DroneControlRange(bool),
     CanWarp(bool),
@@ -76,7 +77,7 @@ enum ItemStatOption<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> ItemStatsOptions<F, I> {
+impl<F, I> ItemStatsOptionsGen<F, I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self { default, .. }
@@ -88,7 +89,7 @@ impl<F, I> ItemStatsOptions<F, I> {
             overrides: Vec::with_capacity(capacity),
         }
     }
-    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionItemDmg<I>>) -> Self {
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionItemDmgGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::Dmg(option.into_internal()));
         self
     }
@@ -96,15 +97,15 @@ impl<F, I> ItemStatsOptions<F, I> {
         self.overrides.push(ItemStatOption::Mps(option));
         self
     }
-    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionItemOutNps<I>>) -> Self {
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionItemOutNpsGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::OutgoingNps(option.into_internal()));
         self
     }
-    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionItemOutRps<I>>) -> Self {
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionItemOutRpsGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::OutgoingRps(option.into_internal()));
         self
     }
-    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCps<I>>) -> Self {
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionItemOutCpsGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::OutgoingCps(option.into_internal()));
         self
     }
@@ -140,11 +141,11 @@ impl<F, I> ItemStatsOptions<F, I> {
         self.overrides.push(ItemStatOption::CapAmount(enabled));
         self
     }
-    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlc<I>>) -> Self {
+    pub fn with_cap_balance(mut self, option: StatOptionExt<StatOptionCapBlcGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::CapBalance(option.into_internal()));
         self
     }
-    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSim<I>>) -> Self {
+    pub fn with_cap_sim(mut self, option: StatOptionExt<StatOptionCapSimGen<I>>) -> Self {
         self.overrides.push(ItemStatOption::CapSim(option.into_internal()));
         self
     }
@@ -208,7 +209,7 @@ impl<F, I> ItemStatsOptions<F, I> {
         self.overrides.push(ItemStatOption::MaxWarpRange(enabled));
         self
     }
-    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJump<F>>) -> Self {
+    pub fn with_jump(mut self, option: StatOptionExt<StatOptionJumpGen<F>>) -> Self {
         self.overrides.push(ItemStatOption::Jump(option));
         self
     }
@@ -369,7 +370,7 @@ impl ItemStatsOptions {
     }
 }
 
-impl From<ItemStatsOptions<FitId, ItemId>> for ItemStatsOptionsResolved {
+impl From<ItemStatsOptions> for ItemStatsOptionsResolved {
     fn from(value: ItemStatsOptions) -> Self {
         value.stat_resolve()
     }
@@ -386,7 +387,7 @@ mod custom_serde {
 
     use super::*;
 
-    impl<'de, F, I> Deserialize<'de> for ItemStatsOptions<F, I>
+    impl<'de, F, I> Deserialize<'de> for ItemStatsOptionsGen<F, I>
     where
         F: Deserialize<'de>,
         I: Deserialize<'de>,
@@ -458,7 +459,7 @@ mod custom_serde {
         F: Deserialize<'de>,
         I: Deserialize<'de>,
     {
-        type Value = ItemStatsOptions<F, I>;
+        type Value = ItemStatsOptionsGen<F, I>;
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
             formatter.write_str("struct ItemStatsOptions")

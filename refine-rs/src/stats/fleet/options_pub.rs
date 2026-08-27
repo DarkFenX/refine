@@ -2,8 +2,8 @@ use crate::{
     CmdResps, ItemId, ItemIdBr,
     shared::BrResolveInfallible,
     stats::{
-        StatOptionExt, StatOptionFitDmg, StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps,
-        StatOptionFitOutRps, StatOptionInt, StatOptionMass, fleet::FleetStatsOptionsResolved,
+        StatOptionExt, StatOptionFitDmgGen, StatOptionFitMining, StatOptionFitOutCpsGen, StatOptionFitOutNpsGen,
+        StatOptionFitOutRpsGen, StatOptionInt, StatOptionMass, fleet::FleetStatsOptionsResolved,
     },
 };
 
@@ -11,32 +11,33 @@ use crate::{
 ///
 /// By default, all stats are not fetched.
 #[derive(Clone)]
-pub struct FleetStatsOptions<I = ItemId> {
+pub struct FleetStatsOptionsGen<I> {
     default: bool = false,
     overrides: Vec<FleetStatOption<I>> = Vec::new(),
 }
-impl<I> Default for FleetStatsOptions<I> {
+impl<I> Default for FleetStatsOptionsGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
-pub type FleetStatsOptionsBr = FleetStatsOptions<ItemIdBr>;
+pub type FleetStatsOptions = FleetStatsOptionsGen<ItemId>;
+pub type FleetStatsOptionsBr = FleetStatsOptionsGen<ItemIdBr>;
 
 #[derive(Clone)]
 enum FleetStatOption<I> {
-    Dmg(StatOptionInt<StatOptionFitDmg<I>>),
+    Dmg(StatOptionInt<StatOptionFitDmgGen<I>>),
     Mps(StatOptionExt<StatOptionFitMining>),
-    OutgoingNps(StatOptionInt<StatOptionFitOutNps<I>>),
-    OutgoingRps(StatOptionInt<StatOptionFitOutRps<I>>),
-    OutgoingCps(StatOptionInt<StatOptionFitOutCps<I>>),
+    OutgoingNps(StatOptionInt<StatOptionFitOutNpsGen<I>>),
+    OutgoingRps(StatOptionInt<StatOptionFitOutRpsGen<I>>),
+    OutgoingCps(StatOptionInt<StatOptionFitOutCpsGen<I>>),
     Mass(StatOptionExt<StatOptionMass>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> FleetStatsOptions<I> {
+impl<I> FleetStatsOptionsGen<I> {
     /// True to have all supported stats enabled by default, false to have them disabled.
     pub fn new(default: bool) -> Self {
         Self { default, .. }
@@ -48,7 +49,7 @@ impl<I> FleetStatsOptions<I> {
             overrides: Vec::with_capacity(capacity),
         }
     }
-    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmg<I>>) -> Self {
+    pub fn with_dmg(mut self, option: StatOptionExt<StatOptionFitDmgGen<I>>) -> Self {
         self.overrides.push(FleetStatOption::Dmg(option.into_internal()));
         self
     }
@@ -56,17 +57,17 @@ impl<I> FleetStatsOptions<I> {
         self.overrides.push(FleetStatOption::Mps(option));
         self
     }
-    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNps<I>>) -> Self {
+    pub fn with_outgoing_nps(mut self, option: StatOptionExt<StatOptionFitOutNpsGen<I>>) -> Self {
         self.overrides
             .push(FleetStatOption::OutgoingNps(option.into_internal()));
         self
     }
-    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRps<I>>) -> Self {
+    pub fn with_outgoing_rps(mut self, option: StatOptionExt<StatOptionFitOutRpsGen<I>>) -> Self {
         self.overrides
             .push(FleetStatOption::OutgoingRps(option.into_internal()));
         self
     }
-    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCps<I>>) -> Self {
+    pub fn with_outgoing_cps(mut self, option: StatOptionExt<StatOptionFitOutCpsGen<I>>) -> Self {
         self.overrides
             .push(FleetStatOption::OutgoingCps(option.into_internal()));
         self
@@ -122,8 +123,8 @@ impl FleetStatsOptions {
     }
 }
 
-impl From<FleetStatsOptions<ItemId>> for FleetStatsOptionsResolved {
-    fn from(value: FleetStatsOptions<ItemId>) -> Self {
+impl From<FleetStatsOptions> for FleetStatsOptionsResolved {
+    fn from(value: FleetStatsOptions) -> Self {
         value.stat_resolve()
     }
 }
@@ -137,7 +138,7 @@ mod custom_serde {
 
     use super::*;
 
-    impl<'de, I> Deserialize<'de> for FleetStatsOptions<I>
+    impl<'de, I> Deserialize<'de> for FleetStatsOptionsGen<I>
     where
         I: Deserialize<'de>,
     {
@@ -168,7 +169,7 @@ mod custom_serde {
     where
         I: Deserialize<'de>,
     {
-        type Value = FleetStatsOptions<I>;
+        type Value = FleetStatsOptionsGen<I>;
 
         fn expecting(&self, formatter: &mut std::fmt::Formatter) -> std::fmt::Result {
             formatter.write_str("struct FleetStatsOptions")

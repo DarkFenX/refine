@@ -11,23 +11,26 @@ use crate::{
     serde(bound(deserialize = "I: serde::Deserialize<'de>"))
 )]
 #[derive(Copy, Clone)]
-pub struct StatOptionCapBlc<I = ItemId> {
+pub struct StatOptionCapBlcGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     pub(in crate::stats) src_kinds: StatCapBlcSrcKinds<I> = StatCapBlcSrcKinds::default(),
     // Unlike other stats, default is sim mode over burst mode
     #[cfg_attr(feature = "serde", serde(default = "time_default"))]
     pub(in crate::stats) time: StatTimeOptions = StatTimeOptions::Sim(StatTimeOptionsSim { .. }),
 }
-impl<I> Default for StatOptionCapBlc<I> {
+impl<I> Default for StatOptionCapBlcGen<I> {
     fn default() -> Self {
         Self { .. }
     }
 }
 
+pub type StatOptionCapBlc = StatOptionCapBlcGen<ItemId>;
+pub type StatOptionCapBlcBr = StatOptionCapBlcGen<ItemIdBr>;
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<I> StatOptionCapBlc<I> {
+impl<I> StatOptionCapBlcGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -44,8 +47,8 @@ impl<I> StatOptionCapBlc<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl BrResolveFallible for StatOptionCapBlc<ItemIdBr> {
-    type Target = StatOptionCapBlc<ItemId>;
+impl BrResolveFallible for StatOptionCapBlcBr {
+    type Target = StatOptionCapBlc;
     fn br_resolve_fallible(self, resps: &CmdResps) -> Result<Self::Target, BrResolveError> {
         Ok(Self::Target {
             src_kinds: self.src_kinds.try_map_ids(|item_id| resps.resolve_item_id(item_id))?,

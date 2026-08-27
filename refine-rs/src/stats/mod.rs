@@ -25,16 +25,24 @@
 
 pub(crate) use fit::FitStatsEnumCmd;
 pub use fit::{
-    FitStats, FitStatsCmd, FitStatsCmdBr, FitStatsEnumCmdBr, FitStatsOptions, FitStatsOptionsBr, FitStatsResp,
+    FitStats, FitStatsCmd, FitStatsCmdBr, FitStatsEnumCmdBr, FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen,
+    FitStatsResp,
 };
-pub use fleet::{FleetStats, FleetStatsCmd, FleetStatsCmdBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp};
-pub use item::{ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsResp};
+pub use fleet::{
+    FleetStats, FleetStatsCmd, FleetStatsCmdBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsOptionsGen,
+    FleetStatsResp,
+};
+pub use item::{
+    ItemStats, ItemStatsCmd, ItemStatsCmdBr, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsOptionsGen, ItemStatsResp,
+};
 pub(in crate::stats) use option::StatOptionInt;
 pub use option::{
-    StatOptionCapBlc, StatOptionCapSim, StatOptionEhp, StatOptionErps, StatOptionExt, StatOptionFitDmg,
-    StatOptionFitMining, StatOptionFitOutCps, StatOptionFitOutNps, StatOptionFitOutRps, StatOptionIncomingJam,
-    StatOptionItemDmg, StatOptionItemMining, StatOptionItemOutCps, StatOptionItemOutNps, StatOptionItemOutRps,
-    StatOptionJump, StatOptionMass, StatOptionRps,
+    StatOptionCapBlc, StatOptionCapBlcGen, StatOptionCapSim, StatOptionCapSimGen, StatOptionEhp, StatOptionErps,
+    StatOptionExt, StatOptionFitDmg, StatOptionFitDmgGen, StatOptionFitMining, StatOptionFitOutCps,
+    StatOptionFitOutCpsGen, StatOptionFitOutNps, StatOptionFitOutNpsGen, StatOptionFitOutRps, StatOptionFitOutRpsGen,
+    StatOptionIncomingJam, StatOptionItemDmg, StatOptionItemDmgGen, StatOptionItemMining, StatOptionItemOutCps,
+    StatOptionItemOutCpsGen, StatOptionItemOutNps, StatOptionItemOutNpsGen, StatOptionItemOutRps,
+    StatOptionItemOutRpsGen, StatOptionJump, StatOptionJumpGen, StatOptionMass, StatOptionRps,
 };
 pub use rc::{
     CtlAffectors as StatAffectors,
