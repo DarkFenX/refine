@@ -2,14 +2,14 @@ use crate::{Fit, FitRemoveCmd};
 
 impl Fit<'_, '_> {
     #[tracing::instrument(name = "fit-rmv", level = "trace", skip_all)]
-    pub async fn remove(self, cmd: FitRemoveCmd) {
+    pub async fn remove(self, ctl_cmd: FitRemoveCmd) {
         // Variables for move
         let fit_id = self.id;
         self.sol
             .exec_standard_infallible(move |core_sol| {
                 // Holding mutex on sol - nothing can remove the fit before we get it here
                 let core_fit = core_sol.get_fit_mut(&fit_id).unwrap();
-                cmd.execute(core_fit)
+                ctl_cmd.execute(core_fit)
             })
             .await;
     }

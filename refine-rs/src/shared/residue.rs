@@ -78,7 +78,4 @@ impl ResidueResolver {
         }
         self.backup
     }
-    pub(crate) fn into_backup(self) -> SolBackup {
-        self.backup
-    }
 }
