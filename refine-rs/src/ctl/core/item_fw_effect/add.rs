@@ -77,12 +77,12 @@ impl FwEffectAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FwEffectAddCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutInfallible
     }
 }
 impl<F> FwEffectAddCmdCtxFitGen<F> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }

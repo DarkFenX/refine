@@ -133,7 +133,7 @@ impl FighterAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> FighterAddCmdGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {
             true => CmdResidue::MutInfallible,
             false => CmdResidue::MutFallibleDirty,
@@ -141,7 +141,7 @@ impl<I> FighterAddCmdGen<I> {
     }
 }
 impl<F, I> FighterAddCmdCtxFitGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self.core.proj_item_ids.is_empty() {
             true => CmdResidue::MutFallibleClean,
             false => CmdResidue::MutFallibleDirty,

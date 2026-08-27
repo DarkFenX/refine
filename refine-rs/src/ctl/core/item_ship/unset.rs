@@ -61,12 +61,12 @@ impl ShipUnsetCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipUnsetCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutInfallible
     }
 }
 impl<F> ShipUnsetCmdCtxFitGen<F> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }

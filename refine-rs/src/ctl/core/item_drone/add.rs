@@ -124,7 +124,7 @@ impl DroneAddCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> DroneAddCmdGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {
             true => CmdResidue::MutInfallible,
             false => CmdResidue::MutFallibleDirty,
@@ -132,7 +132,7 @@ impl<I> DroneAddCmdGen<I> {
     }
 }
 impl<F, I> DroneAddCmdCtxFitGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self.core.proj_item_ids.is_empty() {
             true => CmdResidue::MutFallibleClean,
             false => CmdResidue::MutFallibleDirty,

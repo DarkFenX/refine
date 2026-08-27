@@ -150,22 +150,22 @@ impl ShipChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutInfallible
     }
 }
 impl<F> ShipChangeCmdCtxFitGen<F> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
 impl<I> ShipChangeCmdCtxItemGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
 impl<F, I> ShipChangeCmdCtxAnyGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self {
             Self::Fit(cmd) => cmd.exec_residue(),
             Self::Item(cmd) => cmd.exec_residue(),

@@ -125,7 +125,7 @@ impl ProjEffectChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<I> ProjEffectChangeCmdGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
             return CmdResidue::MutFallibleDirty;
@@ -134,7 +134,7 @@ impl<I> ProjEffectChangeCmdGen<I> {
     }
 }
 impl<I> ProjEffectChangeCmdCtxItemGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         self.core.exec_residue()
     }
 }

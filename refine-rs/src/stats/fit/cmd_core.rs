@@ -114,12 +114,12 @@ impl FitStatsCmdCtxFitBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl<F, I> FitStatsCmdGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(super) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutInfallible
     }
 }
 impl<F, I> FitStatsCmdCtxFitGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::stats) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutFallible
     }
 }

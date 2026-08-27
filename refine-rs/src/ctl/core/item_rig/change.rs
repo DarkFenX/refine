@@ -81,13 +81,13 @@ impl RigChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl RigChangeCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         CmdResidue::MutFallibleClean
     }
 }
 impl<I> RigChangeCmdCtxItemGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }

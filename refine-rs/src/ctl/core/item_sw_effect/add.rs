@@ -31,7 +31,7 @@ impl SwEffectAddCmd {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl SwEffectAddCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutInfallible
     }
 }

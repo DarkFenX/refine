@@ -110,7 +110,7 @@ impl<F> FleetChangeCmdGen<F> {
     }
 }
 impl<L, F> FleetChangeCmdCtxFleetGen<L, F> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self.core.exec_residue() {
             CmdResidue::MutInfallible => CmdResidue::MutFallibleClean,
             n => n,

@@ -140,22 +140,22 @@ impl StanceChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceChangeCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutInfallible
     }
 }
 impl<F> StanceChangeCmdCtxFitGen<F> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
 impl<I> StanceChangeCmdCtxItemGen<I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
 impl<F, I> StanceChangeCmdCtxAnyGen<F, I> {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
+    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
         match self {
             Self::Fit(cmd) => cmd.exec_residue(),
             Self::Item(cmd) => cmd.exec_residue(),
