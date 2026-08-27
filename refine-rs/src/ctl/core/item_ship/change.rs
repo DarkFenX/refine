@@ -150,18 +150,23 @@ impl ShipChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl ShipChangeCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutInfallible
+    pub(in crate::ctl) fn exec_residue_via_fit(&self) -> CmdResidue {
+        // Fails when the fit has no ship, before anything is changed
+        CmdResidue::MutFallibleClean
+    }
+    pub(in crate::ctl) fn exec_residue_via_item(&self) -> CmdResidue {
+        // Fails when the item is not a ship, before anything is changed
+        CmdResidue::MutFallibleClean
     }
 }
 impl<F> ShipChangeCmdCtxFitGen<F> {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
+        self.core.exec_residue_via_fit()
     }
 }
 impl<I> ShipChangeCmdCtxItemGen<I> {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
+        self.core.exec_residue_via_item()
     }
 }
 impl<F, I> ShipChangeCmdCtxAnyGen<F, I> {

@@ -140,18 +140,23 @@ impl CharacterChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CharacterChangeCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutInfallible
+    pub(in crate::ctl) fn exec_residue_via_fit(&self) -> CmdResidue {
+        // Fails when the fit has no character, before anything is changed
+        CmdResidue::MutFallibleClean
+    }
+    pub(in crate::ctl) fn exec_residue_via_item(&self) -> CmdResidue {
+        // Fails when the item is not a character, before anything is changed
+        CmdResidue::MutFallibleClean
     }
 }
 impl<F> CharacterChangeCmdCtxFitGen<F> {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
+        self.core.exec_residue_via_fit()
     }
 }
 impl<I> CharacterChangeCmdCtxItemGen<I> {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
+        self.core.exec_residue_via_item()
     }
 }
 impl<F, I> CharacterChangeCmdCtxAnyGen<F, I> {

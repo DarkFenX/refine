@@ -140,18 +140,23 @@ impl StanceChangeCmdCtxItemBr {
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl StanceChangeCmd {
-    pub(in crate::ctl) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutInfallible
+    pub(in crate::ctl) fn exec_residue_via_fit(&self) -> CmdResidue {
+        // Fails when the fit has no stance, before anything is changed
+        CmdResidue::MutFallibleClean
+    }
+    pub(in crate::ctl) fn exec_residue_via_item(&self) -> CmdResidue {
+        // Fails when the item is not a stance, before anything is changed
+        CmdResidue::MutFallibleClean
     }
 }
 impl<F> StanceChangeCmdCtxFitGen<F> {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
+        self.core.exec_residue_via_fit()
     }
 }
 impl<I> StanceChangeCmdCtxItemGen<I> {
     fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
+        self.core.exec_residue_via_item()
     }
 }
 impl<F, I> StanceChangeCmdCtxAnyGen<F, I> {

@@ -459,7 +459,7 @@ impl<I> FitChangeEnumCmdGen<I> {
             Self::BoosterChange(cmd) => cmd.exec_residue(),
             // Item - character
             Self::CharacterSet(cmd) => cmd.exec_residue(),
-            Self::CharacterChange(cmd) => cmd.exec_residue(),
+            Self::CharacterChange(cmd) => cmd.exec_residue_via_fit(),
             Self::CharacterUnset(cmd) => cmd.exec_residue(),
             // Item - charge
             Self::ChargeChange(cmd) => cmd.exec_residue(),
@@ -486,14 +486,14 @@ impl<I> FitChangeEnumCmdGen<I> {
             Self::ServiceChange(cmd) => cmd.exec_residue(),
             // Item - ship
             Self::ShipSet(cmd) => cmd.exec_residue(),
-            Self::ShipChange(cmd) => cmd.exec_residue(),
+            Self::ShipChange(cmd) => cmd.exec_residue_via_fit(),
             Self::ShipUnset(cmd) => cmd.exec_residue(),
             // Item - skill
             Self::SkillAdd(cmd) => cmd.exec_residue(),
             Self::SkillChange(cmd) => cmd.exec_residue(),
             // Item - stance
             Self::StanceSet(cmd) => cmd.exec_residue(),
-            Self::StanceChange(cmd) => cmd.exec_residue(),
+            Self::StanceChange(cmd) => cmd.exec_residue_via_fit(),
             Self::StanceUnset(cmd) => cmd.exec_residue(),
             // Item - subsystem
             Self::SubsystemAdd(cmd) => cmd.exec_residue(),
