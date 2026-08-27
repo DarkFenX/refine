@@ -1,4 +1,4 @@
-use crate::{CmdResps, ItemId, ItemIdBr, RemoveMode, err::BrResolveError};
+use crate::{CmdResps, ItemId, ItemIdBr, RemoveMode, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -66,6 +66,17 @@ impl ItemRemoveCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ItemRemoveCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl ItemRemoveCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl ItemRemoveCmd {
     pub(crate) fn execute(self, core_item: rc::ItemMut) -> Result<(), ItemRemoveError> {
         core_item.remove(self.rm_mode.unwrap_or(RemoveMode::Free))?;

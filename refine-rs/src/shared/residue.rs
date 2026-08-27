@@ -7,15 +7,15 @@
 /// new IDs, but also is not considered a change. Neither of those change IDs assigned to user data,
 /// or user data itself directly.
 pub(crate) enum CmdResidue {
-    /// Does not modify solar system state, and cannot fail.
+    /// Never modifies solar system state, and cannot fail.
     ImmutInfallible,
-    /// Does not modify solar system state, and can fail.
+    /// Never modifies solar system state, and can fail.
     ImmutFallible,
-    /// Command modifies solar system state, but will never fail.
+    /// May modify solar system state, but will never fail.
     MutInfallible,
-    /// Command modifies solar system state, but in case of failure reverts its effect.
+    /// May modify solar system state, but in case of failure reverts its effect.
     MutFallibleClean,
-    /// Command modifies solar system state, but in case of failure may not revert its effect.
+    /// May modify solar system state, but in case of failure may not revert its effect completely.
     MutFallibleDirty,
 }
 
