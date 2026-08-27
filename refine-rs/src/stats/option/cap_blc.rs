@@ -5,6 +5,9 @@ use crate::{
     stats::{StatCapBlcSrcKinds, StatTimeOptions, StatTimeOptionsSim},
 };
 
+pub type StatOptionCapBlc = StatOptionCapBlcGen<ItemId>;
+pub type StatOptionCapBlcBr = StatOptionCapBlcGen<ItemIdBr>;
+
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -23,9 +26,6 @@ impl<I> Default for StatOptionCapBlcGen<I> {
         Self { .. }
     }
 }
-
-pub type StatOptionCapBlc = StatOptionCapBlcGen<ItemId>;
-pub type StatOptionCapBlcBr = StatOptionCapBlcGen<ItemIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction

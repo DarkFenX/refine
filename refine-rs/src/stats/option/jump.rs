@@ -6,6 +6,9 @@ use crate::{
     stats::{StatAffectors, StatJumpRange},
 };
 
+pub type StatOptionJump = StatOptionJumpGen<FitId>;
+pub type StatOptionJumpBr = StatOptionJumpGen<FitIdBr>;
+
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -25,9 +28,6 @@ impl<F> Default for StatOptionJumpGen<F> {
         Self { .. }
     }
 }
-
-pub type StatOptionJump = StatOptionJumpGen<FitId>;
-pub type StatOptionJumpBr = StatOptionJumpGen<FitIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction

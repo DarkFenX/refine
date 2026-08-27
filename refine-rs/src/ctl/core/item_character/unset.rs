@@ -2,21 +2,21 @@ use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
+#[derive(Clone)]
 pub struct CharacterUnsetCmd;
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type CharacterUnsetCmdCtxFit = CharacterUnsetCmdCtxFitGen<FitId>;
+pub type CharacterUnsetCmdCtxFitBr = CharacterUnsetCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct CharacterUnsetCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: CharacterUnsetCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct CharacterUnsetCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct CharacterUnsetCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: CharacterUnsetCmd,
 }

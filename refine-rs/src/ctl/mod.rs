@@ -26,6 +26,9 @@ pub use core::{
     StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SubsystemChangeError, SwEffectAddCmd, SwEffectChangeCmd,
     SwEffectChangeError,
 };
+pub(crate) use core::{
+    DroneAddCmdGen, FighterAddCmdGen, FitAddCmdGen, FleetAddCmdGen, ModuleAddCmdGen, ProjEffectAddCmdGen,
+};
 
 pub use fit_change::{FitChangeEnumCmd, FitChangeEnumCmdBr, FitChangeEnumError};
 pub use item_add::{ItemAddEnumCmd, ItemAddEnumError};

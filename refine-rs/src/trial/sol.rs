@@ -1,27 +1,22 @@
 use crate::{
-    CmdResp, CmdResps, FitIdBr,
+    CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::CmdResidue,
-    trial::{
-        FitTryItemsCmdBr,
-        core::{FitTryItemsCmdCtxFit, FitTryItemsCmdCtxFitBr},
-        err::FitGetFitTryItemsError,
-    },
+    trial::{FitTryItemsCmdBr, core::FitTryItemsCmdCtxFitGen, err::FitGetFitTryItemsError},
 };
 
-#[derive(Clone)]
-pub(crate) enum SolTryItemsEnumCmd {
-    FitTryItems(FitTryItemsCmdCtxFit),
-}
+pub(crate) type SolTryItemsEnumCmd = SolTryItemsEnumCmdGen<FitId, ItemId>;
+pub type SolTryItemsEnumCmdBr = SolTryItemsEnumCmdGen<FitIdBr, ItemIdBr>;
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
+    serde(tag = "type", rename_all = "snake_case"),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub enum SolTryItemsEnumCmdBr {
-    FitTryItems(FitTryItemsCmdCtxFitBr),
+pub enum SolTryItemsEnumCmdGen<F, I> {
+    FitTryItems(FitTryItemsCmdCtxFitGen<F, I>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

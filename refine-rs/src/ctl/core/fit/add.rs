@@ -3,25 +3,28 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitAddCmd {
-    fleet_id: Option<FleetId>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitAddCmdBr {
-    fleet_id: Option<FleetIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct FitAddCmdShared {
+pub type FitAddCmd = FitAddCmdGen<FleetId>;
+pub type FitAddCmdBr = FitAddCmdGen<FleetIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FitAddCmdGen<L> {
+    fleet_id: Option<L>,
     sec_status: Option<FitSecStatus>,
     rah_incoming_dps: Option<DpsProfile>,
+}
+impl<L> Default for FitAddCmdGen<L> {
+    fn default() -> Self {
+        Self {
+            fleet_id: Default::default(),
+            sec_status: Default::default(),
+            rah_incoming_dps: Default::default(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -36,11 +39,11 @@ impl FitAddCmd {
         self
     }
     pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.shared.sec_status = Some(sec_status);
+        self.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
-        self.shared.rah_incoming_dps = Some(rah_incoming_dps);
+        self.rah_incoming_dps = Some(rah_incoming_dps);
         self
     }
 }
@@ -54,11 +57,11 @@ impl FitAddCmdBr {
         self
     }
     pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.shared.sec_status = Some(sec_status);
+        self.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
-        self.shared.rah_incoming_dps = Some(rah_incoming_dps);
+        self.rah_incoming_dps = Some(rah_incoming_dps);
         self
     }
 }
@@ -69,7 +72,8 @@ impl FitAddCmdBr {
 impl FitAddCmdBr {
     pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FitAddCmd, BrResolveError> {
         Ok(FitAddCmd {
-            shared: self.shared,
+            sec_status: self.sec_status,
+            rah_incoming_dps: self.rah_incoming_dps,
             fleet_id: match self.fleet_id {
                 Some(fleet_id) => Some(resps.resolve_fleet_id(fleet_id)?),
                 None => None,
@@ -104,10 +108,10 @@ impl FitAddCmd {
         if let Some(fleet_id) = self.fleet_id {
             core_fit.set_fleet(&fleet_id)?;
         }
-        if let Some(sec_status) = self.shared.sec_status {
+        if let Some(sec_status) = self.sec_status {
             core_fit.set_sec_status(sec_status);
         }
-        if let Some(rah_incoming_dps) = self.shared.rah_incoming_dps {
+        if let Some(rah_incoming_dps) = self.rah_incoming_dps {
             core_fit.set_rah_incoming_dps(rah_incoming_dps);
         }
         Ok(AddedFitIdResp::from_core_fit(core_fit))

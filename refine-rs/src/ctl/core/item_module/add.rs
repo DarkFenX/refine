@@ -5,25 +5,16 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ModuleAddCmd = ModuleAddCmdGen<ItemId>;
+pub type ModuleAddCmdBr = ModuleAddCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ModuleAddCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
-    proj_item_ids: Vec<ItemId> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ModuleAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ModuleAddCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ModuleAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-struct ModuleAddCmdShared {
+pub struct ModuleAddCmdGen<I> {
     rack: ModRack,
     add_mode: AddMode,
     type_id: ItemTypeId,
@@ -33,23 +24,25 @@ struct ModuleAddCmdShared {
     spool: Option<Spool> = None,
     optional_reload: Option<OptionalReload> = None,
     #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<I> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes = EffectModes::new(),
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ModuleAddCmdCtxFit = ModuleAddCmdCtxFitGen<FitId, ItemId>;
+pub type ModuleAddCmdCtxFitBr = ModuleAddCmdCtxFitGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ModuleAddCmdCtxFit {
-    fit_id: FitId,
+pub struct ModuleAddCmdCtxFitGen<F, I> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ModuleAddCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ModuleAddCmdCtxFitBr {
-    fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ModuleAddCmdBr,
+    core: ModuleAddCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -58,30 +51,27 @@ pub struct ModuleAddCmdCtxFitBr {
 impl ModuleAddCmd {
     pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
         Self {
-            shared: ModuleAddCmdShared {
-                rack,
-                add_mode,
-                type_id,
-                state,
-                ..
-            },
+            rack,
+            add_mode,
+            type_id,
+            state,
             ..
         }
     }
     pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
-        self.shared.mutation = Some(mutation);
+        self.mutation = Some(mutation);
         self
     }
     pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
-        self.shared.charge_type_id = Some(charge_type_id);
+        self.charge_type_id = Some(charge_type_id);
         self
     }
     pub fn with_spool(mut self, spool: Spool) -> Self {
-        self.shared.spool = Some(spool);
+        self.spool = Some(spool);
         self
     }
     pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
-        self.shared.optional_reload = Some(optional_reload);
+        self.optional_reload = Some(optional_reload);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
@@ -89,7 +79,7 @@ impl ModuleAddCmd {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -97,30 +87,27 @@ impl ModuleAddCmd {
 impl ModuleAddCmdBr {
     pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
         Self {
-            shared: ModuleAddCmdShared {
-                rack,
-                add_mode,
-                type_id,
-                state,
-                ..
-            },
+            rack,
+            add_mode,
+            type_id,
+            state,
             ..
         }
     }
     pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
-        self.shared.mutation = Some(mutation);
+        self.mutation = Some(mutation);
         self
     }
     pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
-        self.shared.charge_type_id = Some(charge_type_id);
+        self.charge_type_id = Some(charge_type_id);
         self
     }
     pub fn with_spool(mut self, spool: Spool) -> Self {
-        self.shared.spool = Some(spool);
+        self.spool = Some(spool);
         self
     }
     pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
-        self.shared.optional_reload = Some(optional_reload);
+        self.optional_reload = Some(optional_reload);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
@@ -128,7 +115,7 @@ impl ModuleAddCmdBr {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -158,7 +145,15 @@ impl ModuleAddCmdBr {
     pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ModuleAddCmd, BrResolveError> {
         Ok(ModuleAddCmd {
             proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
-            shared: self.shared,
+            rack: self.rack,
+            add_mode: self.add_mode,
+            type_id: self.type_id,
+            state: self.state,
+            mutation: self.mutation,
+            charge_type_id: self.charge_type_id,
+            spool: self.spool,
+            optional_reload: self.optional_reload,
+            effect_modes: self.effect_modes,
         })
     }
 }
@@ -210,26 +205,21 @@ impl ModuleAddCmdCtxFitBr {
 
 impl ModuleAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, ModuleAddError> {
-        let mut core_module = core_fit.add_module(
-            self.shared.rack,
-            self.shared.add_mode,
-            self.shared.type_id,
-            self.shared.state,
-        );
-        if let Some(mutation) = self.shared.mutation.as_ref() {
+        let mut core_module = core_fit.add_module(self.rack, self.add_mode, self.type_id, self.state);
+        if let Some(mutation) = self.mutation.as_ref() {
             let mut core_mutation = core_module.mutate(mutation.mutator_id).unwrap();
             mutation.apply_attrs(&mut core_mutation);
         }
-        if let Some(charge_type_id) = self.shared.charge_type_id {
+        if let Some(charge_type_id) = self.charge_type_id {
             core_module.set_charge_type_id(charge_type_id);
         }
-        if let Some(spool) = self.shared.spool {
+        if let Some(spool) = self.spool {
             core_module.set_spool(Some(spool));
         }
-        if let Some(optional_reload) = self.shared.optional_reload {
+        if let Some(optional_reload) = self.optional_reload {
             core_module.set_optional_reload(Some(optional_reload));
         }
-        self.shared.effect_modes.apply(&mut core_module);
+        self.effect_modes.apply(&mut core_module);
         for projectee_item_id in self.proj_item_ids.iter() {
             core_module.add_proj(projectee_item_id)?;
         }

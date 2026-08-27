@@ -7,57 +7,64 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FighterChangeCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemId>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemId>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FighterChangeCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FighterChangeCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemIdBr>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FighterChangeCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct FighterChangeCmdShared {
+pub type FighterChangeCmd = FighterChangeCmdGen<ItemId>;
+pub type FighterChangeCmdBr = FighterChangeCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FighterChangeCmdGen<I> {
     type_id: Option<ItemTypeId>,
     state: Option<MinionState>,
     #[cfg_attr(feature = "serde", serde(default))]
     count: TriStateField<CountNz>,
     #[cfg_attr(feature = "serde", serde(default))]
-    abilities: Abilities,
-    #[cfg_attr(feature = "serde", serde(default))]
     rearm_minion: TriStateField<RearmMinion>,
     coordinates: Option<Coordinates>,
     movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
+    add_proj_item_ids: Vec<I>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_proj_item_ids: Vec<I>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    abilities: Abilities,
+    #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+impl<I> Default for FighterChangeCmdGen<I> {
+    fn default() -> Self {
+        Self {
+            type_id: Default::default(),
+            state: Default::default(),
+            count: Default::default(),
+            rearm_minion: Default::default(),
+            coordinates: Default::default(),
+            movement: Default::default(),
+            add_proj_item_ids: Default::default(),
+            rm_proj_item_ids: Default::default(),
+            abilities: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FighterChangeCmdCtxItem = FighterChangeCmdCtxItemGen<ItemId>;
+pub type FighterChangeCmdCtxItemBr = FighterChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FighterChangeCmdCtxItem {
-    item_id: ItemId,
+pub struct FighterChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FighterChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FighterChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FighterChangeCmdBr,
+    core: FighterChangeCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -68,31 +75,31 @@ impl FighterChangeCmd {
         Self::default()
     }
     pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.shared.type_id = Some(type_id);
+        self.type_id = Some(type_id);
         self
     }
     pub fn with_state(mut self, state: MinionState) -> Self {
-        self.shared.state = Some(state);
+        self.state = Some(state);
         self
     }
     pub fn with_count(mut self, count: Option<CountNz>) -> Self {
-        self.shared.count = count.into();
+        self.count = count.into();
         self
     }
     pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
-        self.shared.abilities.extend(abilities);
+        self.abilities.extend(abilities);
         self
     }
     pub fn with_rearm_minion(mut self, rearm_minion: Option<RearmMinion>) -> Self {
-        self.shared.rearm_minion = rearm_minion.into();
+        self.rearm_minion = rearm_minion.into();
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.shared.coordinates = Some(coordinates);
+        self.coordinates = Some(coordinates);
         self
     }
     pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.shared.movement = Some(movement);
+        self.movement = Some(movement);
         self
     }
     pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
@@ -104,7 +111,7 @@ impl FighterChangeCmd {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -114,31 +121,31 @@ impl FighterChangeCmdBr {
         Self::default()
     }
     pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.shared.type_id = Some(type_id);
+        self.type_id = Some(type_id);
         self
     }
     pub fn with_state(mut self, state: MinionState) -> Self {
-        self.shared.state = Some(state);
+        self.state = Some(state);
         self
     }
     pub fn with_count(mut self, count: Option<CountNz>) -> Self {
-        self.shared.count = count.into();
+        self.count = count.into();
         self
     }
     pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
-        self.shared.abilities.extend(abilities);
+        self.abilities.extend(abilities);
         self
     }
     pub fn with_rearm_minion(mut self, rearm_minion: Option<RearmMinion>) -> Self {
-        self.shared.rearm_minion = rearm_minion.into();
+        self.rearm_minion = rearm_minion.into();
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.shared.coordinates = Some(coordinates);
+        self.coordinates = Some(coordinates);
         self
     }
     pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.shared.movement = Some(movement);
+        self.movement = Some(movement);
         self
     }
     pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
@@ -150,7 +157,7 @@ impl FighterChangeCmdBr {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -181,7 +188,14 @@ impl FighterChangeCmdBr {
         Ok(FighterChangeCmd {
             add_proj_item_ids: resps.resolve_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.resolve_item_ids(self.rm_proj_item_ids)?,
-            shared: self.shared,
+            type_id: self.type_id,
+            state: self.state,
+            count: self.count,
+            abilities: self.abilities,
+            rearm_minion: self.rearm_minion,
+            coordinates: self.coordinates,
+            movement: self.movement,
+            effect_modes: self.effect_modes,
         })
     }
 }
@@ -233,30 +247,30 @@ impl FighterChangeCmd {
         for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_fighter.get_proj_mut(projectee_item_id)?.remove();
         }
-        if let Some(type_id) = self.shared.type_id {
+        if let Some(type_id) = self.type_id {
             core_fighter.set_type_id(type_id);
         }
-        if let Some(state) = self.shared.state {
+        if let Some(state) = self.state {
             core_fighter.set_state(state);
         }
-        match self.shared.count {
+        match self.count {
             TriStateField::Value(count) => core_fighter.set_count_override(Some(count)),
             TriStateField::None => core_fighter.set_count_override(None),
             TriStateField::Absent => (),
         }
-        self.shared.abilities.apply(core_fighter);
-        match self.shared.rearm_minion {
+        self.abilities.apply(core_fighter);
+        match self.rearm_minion {
             TriStateField::Value(rearm_minion) => core_fighter.set_rearm_minion(Some(rearm_minion)),
             TriStateField::None => core_fighter.set_rearm_minion(None),
             TriStateField::Absent => (),
         }
-        if let Some(coordinates) = self.shared.coordinates {
+        if let Some(coordinates) = self.coordinates {
             core_fighter.set_coordinates(coordinates);
         }
-        if let Some(movement) = self.shared.movement {
+        if let Some(movement) = self.movement {
             core_fighter.set_movement(movement);
         }
-        self.shared.effect_modes.apply(core_fighter);
+        self.effect_modes.apply(core_fighter);
         for projectee_item_id in self.add_proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id)?;
         }

@@ -7,6 +7,9 @@ use crate::{
     },
 };
 
+pub type FleetStatsOptions = FleetStatsOptionsGen<ItemId>;
+pub type FleetStatsOptionsBr = FleetStatsOptionsGen<ItemIdBr>;
+
 /// Which stats to fetch for a fleet.
 ///
 /// By default, all stats are not fetched.
@@ -20,9 +23,6 @@ impl<I> Default for FleetStatsOptionsGen<I> {
         Self { .. }
     }
 }
-
-pub type FleetStatsOptions = FleetStatsOptionsGen<ItemId>;
-pub type FleetStatsOptionsBr = FleetStatsOptionsGen<ItemIdBr>;
 
 #[derive(Clone)]
 enum FleetStatOption<I> {

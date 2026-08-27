@@ -1,9 +1,12 @@
+pub(crate) use change::StanceChangeCmdCtxAnyGen;
 pub use change::{
     FitGetStanceChangeError, FitStanceChangeError, ItemGetStanceChangeError, ItemStanceChangeError, StanceChangeCmd,
-    StanceChangeCmdCtxAny, StanceChangeCmdCtxAnyBr, StanceChangeError,
+    StanceChangeError,
 };
-pub use set::{FitGetStanceSetError, StanceSetCmd, StanceSetCmdCtxFit, StanceSetCmdCtxFitBr};
-pub use unset::{FitGetStanceUnsetError, StanceUnsetCmd, StanceUnsetCmdCtxFit, StanceUnsetCmdCtxFitBr};
+pub(crate) use set::StanceSetCmdCtxFitGen;
+pub use set::{FitGetStanceSetError, StanceSetCmd, StanceSetCmdCtxFit};
+pub(crate) use unset::StanceUnsetCmdCtxFitGen;
+pub use unset::{FitGetStanceUnsetError, StanceUnsetCmd};
 
 mod change;
 mod set;

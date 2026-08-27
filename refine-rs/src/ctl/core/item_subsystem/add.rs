@@ -14,17 +14,17 @@ pub struct SubsystemAddCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type SubsystemAddCmdCtxFit = SubsystemAddCmdCtxFitGen<FitId>;
+pub type SubsystemAddCmdCtxFitBr = SubsystemAddCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct SubsystemAddCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: SubsystemAddCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct SubsystemAddCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct SubsystemAddCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: SubsystemAddCmd,
 }

@@ -1,29 +1,23 @@
 use crate::{
-    CmdResp, CmdResps, ItemIdBr,
+    CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::CmdResidue,
-    stats::{
-        FitStatsCmd, FitStatsCmdBr, ItemStatsCmdBr,
-        err::ItemGetItemStatsError,
-        item::{ItemStatsCmdCtxItem, ItemStatsCmdCtxItemBr},
-    },
+    stats::{FitStatsCmdBr, FitStatsCmdGen, ItemStatsCmdBr, err::ItemGetItemStatsError, item::ItemStatsCmdCtxItemGen},
 };
 
-#[derive(Clone)]
-pub(crate) enum FitStatsEnumCmd {
-    FitStats(FitStatsCmd),
-    ItemStats(ItemStatsCmdCtxItem),
-}
+pub(crate) type FitStatsEnumCmd = FitStatsEnumCmdGen<FitId, ItemId>;
+pub type FitStatsEnumCmdBr = FitStatsEnumCmdGen<FitIdBr, ItemIdBr>;
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
+    serde(tag = "type", rename_all = "snake_case"),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub enum FitStatsEnumCmdBr {
-    FitStats(FitStatsCmdBr),
-    ItemStats(ItemStatsCmdCtxItemBr),
+pub enum FitStatsEnumCmdGen<F, I> {
+    FitStats(FitStatsCmdGen<F, I>),
+    ItemStats(ItemStatsCmdCtxItemGen<F, I>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

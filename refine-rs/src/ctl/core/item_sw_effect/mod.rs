@@ -1,8 +1,6 @@
 pub use add::SwEffectAddCmd;
-pub use change::{
-    ItemGetSwEffectChangeError, SwEffectChangeCmd, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
-    SwEffectChangeError,
-};
+pub(crate) use change::SwEffectChangeCmdCtxItemGen;
+pub use change::{ItemGetSwEffectChangeError, SwEffectChangeCmd, SwEffectChangeError};
 
 mod add;
 mod change;

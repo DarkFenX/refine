@@ -1,3 +1,4 @@
+pub(crate) use core::FitTryItemsCmdGen;
 pub use core::{FitTryItemsCmd, FitTryItemsCmdBr};
 
 pub(crate) use fit::FitTryItemsEnumCmd;
@@ -10,5 +11,6 @@ mod fit;
 mod sol;
 
 pub mod err {
+
     pub use crate::trial::{core::FitGetFitTryItemsError, sol::SolTryItemsEnumError};
 }

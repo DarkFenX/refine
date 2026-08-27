@@ -18,17 +18,17 @@ pub struct BoosterAddCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type BoosterAddCmdCtxFit = BoosterAddCmdCtxFitGen<FitId>;
+pub type BoosterAddCmdCtxFitBr = BoosterAddCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct BoosterAddCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: BoosterAddCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct BoosterAddCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct BoosterAddCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: BoosterAddCmd,
 }

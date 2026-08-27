@@ -5,42 +5,52 @@ use crate::{
     err::BrResolveError,
     shared::{BrResolveInfallible, CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
+        FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
+        ItemStatsOptionsGen,
         exec_shared::{extend_stats_for_passed_items, get_stats_for_items_in_overrides},
         item::ItemStatsOptionsResolved,
     },
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitStatsCmd {
+pub type FitStatsCmd = FitStatsCmdGen<FitId, ItemId>;
+pub type FitStatsCmdBr = FitStatsCmdGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FitStatsCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_options: FitStatsOptions,
+    fit_options: FitStatsOptionsGen<F, I>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_options: OvrdCompact<ItemId, ItemStatsOptions>,
+    item_options: OvrdCompact<I, ItemStatsOptionsGen<F, I>>,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitStatsCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    fit_options: FitStatsOptionsBr,
-    #[cfg_attr(feature = "serde", serde(default))]
-    item_options: OvrdCompact<ItemIdBr, ItemStatsOptionsBr>,
+impl<F, I> Default for FitStatsCmdGen<F, I> {
+    fn default() -> Self {
+        Self {
+            fit_options: Default::default(),
+            item_options: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
+pub type FitStatsCmdCtxFit = FitStatsCmdCtxFitGen<FitId, ItemId>;
+pub type FitStatsCmdCtxFitBr = FitStatsCmdCtxFitGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FitStatsCmdCtxFit {
-    fit_id: FitId,
-    core: FitStatsCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FitStatsCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct FitStatsCmdCtxFitGen<F, I> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitStatsCmdBr,
+    core: FitStatsCmdGen<F, I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

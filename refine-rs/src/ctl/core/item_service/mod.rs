@@ -1,7 +1,7 @@
-pub use add::{FitGetServiceAddError, ServiceAddCmd, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr};
-pub use change::{
-    ItemGetServiceChangeError, ServiceChangeCmd, ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, ServiceChangeError,
-};
+pub(crate) use add::ServiceAddCmdCtxFitGen;
+pub use add::{FitGetServiceAddError, ServiceAddCmd, ServiceAddCmdCtxFit};
+pub(crate) use change::ServiceChangeCmdCtxItemGen;
+pub use change::{ItemGetServiceChangeError, ServiceChangeCmd, ServiceChangeError};
 
 mod add;
 mod change;

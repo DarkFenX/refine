@@ -6,17 +6,17 @@ use crate::{CmdResps, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidu
 pub struct FleetRemoveCmd;
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FleetRemoveCmdCtxFleet = FleetRemoveCmdCtxFleetGen<FleetId>;
+pub type FleetRemoveCmdCtxFleetBr = FleetRemoveCmdCtxFleetGen<FleetIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FleetRemoveCmdCtxFleet {
-    fleet_id: FleetId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetRemoveCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FleetRemoveCmdCtxFleetBr {
-    fleet_id: FleetIdBr,
+pub struct FleetRemoveCmdCtxFleetGen<L> {
+    fleet_id: L,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FleetRemoveCmd,
 }

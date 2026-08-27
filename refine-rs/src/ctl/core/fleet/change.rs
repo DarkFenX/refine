@@ -1,37 +1,44 @@
 use crate::{CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FleetChangeCmd {
+pub type FleetChangeCmd = FleetChangeCmdGen<FitId>;
+pub type FleetChangeCmdBr = FleetChangeCmdGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FleetChangeCmdGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
-    add_fit_ids: Vec<FitId>,
+    add_fit_ids: Vec<F>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rm_fit_ids: Vec<FitId>,
+    rm_fit_ids: Vec<F>,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FleetChangeCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    add_fit_ids: Vec<FitIdBr>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    rm_fit_ids: Vec<FitIdBr>,
+impl<F> Default for FleetChangeCmdGen<F> {
+    fn default() -> Self {
+        Self {
+            add_fit_ids: Default::default(),
+            rm_fit_ids: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FleetChangeCmdCtxFleet = FleetChangeCmdCtxFleetGen<FleetId, FitId>;
+pub type FleetChangeCmdCtxFleetBr = FleetChangeCmdCtxFleetGen<FleetIdBr, FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>, F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FleetChangeCmdCtxFleet {
-    fleet_id: FleetId,
+pub struct FleetChangeCmdCtxFleetGen<L, F> {
+    fleet_id: L,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FleetChangeCmdCtxFleetBr {
-    fleet_id: FleetIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetChangeCmdBr,
+    core: FleetChangeCmdGen<F>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -5,25 +5,16 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type DroneAddCmd = DroneAddCmdGen<ItemId>;
+pub type DroneAddCmdBr = DroneAddCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct DroneAddCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
-    proj_item_ids: Vec<ItemId> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: DroneAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct DroneAddCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: DroneAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-struct DroneAddCmdShared {
+pub struct DroneAddCmdGen<I> {
     type_id: ItemTypeId,
     state: MinionState,
     mutation: Option<AddMutation> = None,
@@ -31,23 +22,25 @@ struct DroneAddCmdShared {
     coordinates: Option<Coordinates> = None,
     movement: Option<Movement> = None,
     #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<I> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes = EffectModes::new(),
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type DroneAddCmdCtxFit = DroneAddCmdCtxFitGen<FitId, ItemId>;
+pub type DroneAddCmdCtxFitBr = DroneAddCmdCtxFitGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct DroneAddCmdCtxFit {
-    fit_id: FitId,
+pub struct DroneAddCmdCtxFitGen<F, I> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: DroneAddCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct DroneAddCmdCtxFitBr {
-    fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: DroneAddCmdBr,
+    core: DroneAddCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -55,25 +48,22 @@ pub struct DroneAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl DroneAddCmd {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
-        Self {
-            shared: DroneAddCmdShared { type_id, state, .. },
-            ..
-        }
+        Self { type_id, state, .. }
     }
     pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
-        self.shared.mutation = Some(mutation);
+        self.mutation = Some(mutation);
         self
     }
     pub fn with_npc_prop(mut self, npc_prop: NpcProp) -> Self {
-        self.shared.npc_prop = Some(npc_prop);
+        self.npc_prop = Some(npc_prop);
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.shared.coordinates = Some(coordinates);
+        self.coordinates = Some(coordinates);
         self
     }
     pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.shared.movement = Some(movement);
+        self.movement = Some(movement);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
@@ -81,32 +71,29 @@ impl DroneAddCmd {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
 
 impl DroneAddCmdBr {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
-        Self {
-            shared: DroneAddCmdShared { type_id, state, .. },
-            ..
-        }
+        Self { type_id, state, .. }
     }
     pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
-        self.shared.mutation = Some(mutation);
+        self.mutation = Some(mutation);
         self
     }
     pub fn with_npc_prop(mut self, npc_prop: NpcProp) -> Self {
-        self.shared.npc_prop = Some(npc_prop);
+        self.npc_prop = Some(npc_prop);
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.shared.coordinates = Some(coordinates);
+        self.coordinates = Some(coordinates);
         self
     }
     pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.shared.movement = Some(movement);
+        self.movement = Some(movement);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
@@ -114,7 +101,7 @@ impl DroneAddCmdBr {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -144,7 +131,13 @@ impl DroneAddCmdBr {
     pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<DroneAddCmd, BrResolveError> {
         Ok(DroneAddCmd {
             proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
-            shared: self.shared,
+            type_id: self.type_id,
+            state: self.state,
+            mutation: self.mutation,
+            npc_prop: self.npc_prop,
+            coordinates: self.coordinates,
+            movement: self.movement,
+            effect_modes: self.effect_modes,
         })
     }
 }
@@ -196,20 +189,15 @@ impl DroneAddCmdCtxFitBr {
 
 impl DroneAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, DroneAddError> {
-        let mut core_drone = core_fit.add_drone(
-            self.shared.type_id,
-            self.shared.state,
-            self.shared.coordinates,
-            self.shared.movement,
-        );
-        if let Some(mutation) = self.shared.mutation.as_ref() {
+        let mut core_drone = core_fit.add_drone(self.type_id, self.state, self.coordinates, self.movement);
+        if let Some(mutation) = self.mutation.as_ref() {
             let mut core_mutation = core_drone.mutate(mutation.mutator_id).unwrap();
             mutation.apply_attrs(&mut core_mutation);
         }
-        if let Some(npc_prop) = self.shared.npc_prop {
+        if let Some(npc_prop) = self.npc_prop {
             core_drone.set_npc_prop(Some(npc_prop))
         }
-        self.shared.effect_modes.apply(&mut core_drone);
+        self.effect_modes.apply(&mut core_drone);
         for projectee_item_id in self.proj_item_ids.iter() {
             core_drone.add_proj(projectee_item_id)?;
         }

@@ -1,22 +1,21 @@
 use crate::{
-    CmdResp, CmdResps,
+    CmdResp, CmdResps, ItemId, ItemIdBr,
     shared::CmdResidue,
-    trial::{FitTryItemsCmd, FitTryItemsCmdBr},
+    trial::{FitTryItemsCmdBr, FitTryItemsCmdGen},
 };
 
-#[derive(Clone)]
-pub(crate) enum FitTryItemsEnumCmd {
-    FitTryItems(FitTryItemsCmd),
-}
+pub(crate) type FitTryItemsEnumCmd = FitTryItemsEnumCmdGen<ItemId>;
+pub type FitTryItemsEnumCmdBr = FitTryItemsEnumCmdGen<ItemIdBr>;
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
+    serde(tag = "type", rename_all = "snake_case"),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub enum FitTryItemsEnumCmdBr {
-    FitTryItems(FitTryItemsCmdBr),
+pub enum FitTryItemsEnumCmdGen<I> {
+    FitTryItems(FitTryItemsCmdGen<I>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

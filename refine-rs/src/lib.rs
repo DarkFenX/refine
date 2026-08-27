@@ -17,6 +17,9 @@ pub use ctl::{
     SolChangeEnumCmd, SolChangeEnumCmdBr, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd,
     SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
 };
+pub(crate) use ctl::{
+    DroneAddCmdGen, FighterAddCmdGen, FitAddCmdGen, FleetAddCmdGen, ModuleAddCmdGen, ProjEffectAddCmdGen,
+};
 pub use hyb::{FitHybridCmdBr, SolHybridCmdBr};
 pub use info::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,

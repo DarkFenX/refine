@@ -1,6 +1,5 @@
-pub use cmd_core::{
-    FleetGetFleetStatsError, FleetStatsCmd, FleetStatsCmdBr, FleetStatsCmdCtxFleet, FleetStatsCmdCtxFleetBr,
-};
+pub(crate) use cmd_core::FleetStatsCmdCtxFleetGen;
+pub use cmd_core::{FleetGetFleetStatsError, FleetStatsCmd, FleetStatsCmdBr};
 pub use options_pub::{FleetStatsOptions, FleetStatsOptionsBr, FleetStatsOptionsGen};
 pub(in crate::stats) use options_res::FleetStatsOptionsResolved;
 pub use resp::FleetStatsResp;

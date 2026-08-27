@@ -2,8 +2,8 @@ use crate::{
     CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     shared::{CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, ItemStatsOptions,
-        ItemStatsOptionsBr, SolStatsResp,
+        FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen, FleetStatsOptions, FleetStatsOptionsBr,
+        FleetStatsOptionsGen, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsOptionsGen, SolStatsResp,
         exec_shared::{
             extend_stats_for_passed_items, get_stats_for_fits_in_overrides, get_stats_for_fleets_in_overrides,
             get_stats_for_items_in_overrides, get_stats_for_passed_fits, get_stats_for_passed_fleets,
@@ -15,25 +15,31 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct SolStatsCmd {
+pub type SolStatsCmd = SolStatsCmdGen<FleetId, FitId, ItemId>;
+pub type SolStatsCmdBr = SolStatsCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>, F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct SolStatsCmdGen<L, F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_options: OvrdCompact<FleetId, FleetStatsOptions>,
+    fleet_options: OvrdCompact<L, FleetStatsOptionsGen<I>>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_options: OvrdCompact<FitId, FitStatsOptions>,
+    fit_options: OvrdCompact<F, FitStatsOptionsGen<F, I>>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_options: OvrdCompact<ItemId, ItemStatsOptions>,
+    item_options: OvrdCompact<I, ItemStatsOptionsGen<F, I>>,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct SolStatsCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    fleet_options: OvrdCompact<FleetIdBr, FleetStatsOptionsBr>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    fit_options: OvrdCompact<FitIdBr, FitStatsOptionsBr>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    item_options: OvrdCompact<ItemIdBr, ItemStatsOptionsBr>,
+impl<L, F, I> Default for SolStatsCmdGen<L, F, I> {
+    fn default() -> Self {
+        Self {
+            fleet_options: Default::default(),
+            fit_options: Default::default(),
+            item_options: Default::default(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

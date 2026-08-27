@@ -5,7 +5,14 @@ use crate::{
     stats::{StatItemChargeOptions, StatItemStateOptions, StatNeutItemKinds, StatTimeOptions},
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type StatOptionFitOutNps = StatOptionFitOutNpsGen<ItemId>;
+pub type StatOptionFitOutNpsBr = StatOptionFitOutNpsGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Copy, Clone)]
 pub struct StatOptionFitOutNpsGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
@@ -20,10 +27,14 @@ impl<I> Default for StatOptionFitOutNpsGen<I> {
     }
 }
 
-pub type StatOptionFitOutNps = StatOptionFitOutNpsGen<ItemId>;
-pub type StatOptionFitOutNpsBr = StatOptionFitOutNpsGen<ItemIdBr>;
+pub type StatOptionItemOutNps = StatOptionItemOutNpsGen<ItemId>;
+pub type StatOptionItemOutNpsBr = StatOptionItemOutNpsGen<ItemIdBr>;
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Copy, Clone)]
 pub struct StatOptionItemOutNpsGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
@@ -39,9 +50,6 @@ impl<I> Default for StatOptionItemOutNpsGen<I> {
         Self { .. }
     }
 }
-
-pub type StatOptionItemOutNps = StatOptionItemOutNpsGen<ItemId>;
-pub type StatOptionItemOutNpsBr = StatOptionItemOutNpsGen<ItemIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction

@@ -4,49 +4,51 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct ProjEffectChangeCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemId>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemId>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ProjEffectChangeCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct ProjEffectChangeCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    add_proj_item_ids: Vec<ItemIdBr>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    rm_proj_item_ids: Vec<ItemIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: ProjEffectChangeCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct ProjEffectChangeCmdShared {
+pub type ProjEffectChangeCmd = ProjEffectChangeCmdGen<ItemId>;
+pub type ProjEffectChangeCmdBr = ProjEffectChangeCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct ProjEffectChangeCmdGen<I> {
     type_id: Option<ItemTypeId>,
     state: Option<bool>,
     #[cfg_attr(feature = "serde", serde(default))]
+    add_proj_item_ids: Vec<I>,
+    #[cfg_attr(feature = "serde", serde(default))]
+    rm_proj_item_ids: Vec<I>,
+    #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes,
+}
+impl<I> Default for ProjEffectChangeCmdGen<I> {
+    fn default() -> Self {
+        Self {
+            type_id: Default::default(),
+            state: Default::default(),
+            add_proj_item_ids: Default::default(),
+            rm_proj_item_ids: Default::default(),
+            effect_modes: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ProjEffectChangeCmdCtxItem = ProjEffectChangeCmdCtxItemGen<ItemId>;
+pub type ProjEffectChangeCmdCtxItemBr = ProjEffectChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ProjEffectChangeCmdCtxItem {
-    item_id: ItemId,
+pub struct ProjEffectChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ProjEffectChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ProjEffectChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ProjEffectChangeCmdBr,
+    core: ProjEffectChangeCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -57,11 +59,11 @@ impl ProjEffectChangeCmd {
         Self::default()
     }
     pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.shared.type_id = Some(type_id);
+        self.type_id = Some(type_id);
         self
     }
     pub fn with_state(mut self, state: bool) -> Self {
-        self.shared.state = Some(state);
+        self.state = Some(state);
         self
     }
     pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
@@ -73,7 +75,7 @@ impl ProjEffectChangeCmd {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -83,11 +85,11 @@ impl ProjEffectChangeCmdBr {
         Self::default()
     }
     pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.shared.type_id = Some(type_id);
+        self.type_id = Some(type_id);
         self
     }
     pub fn with_state(mut self, state: bool) -> Self {
-        self.shared.state = Some(state);
+        self.state = Some(state);
         self
     }
     pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
@@ -99,7 +101,7 @@ impl ProjEffectChangeCmdBr {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -130,7 +132,9 @@ impl ProjEffectChangeCmdBr {
         Ok(ProjEffectChangeCmd {
             add_proj_item_ids: resps.resolve_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.resolve_item_ids(self.rm_proj_item_ids)?,
-            shared: self.shared,
+            type_id: self.type_id,
+            state: self.state,
+            effect_modes: self.effect_modes,
         })
     }
 }
@@ -185,13 +189,13 @@ impl ProjEffectChangeCmd {
         for projectee_item_id in self.rm_proj_item_ids.iter() {
             core_proj_effect.get_proj_mut(projectee_item_id)?.remove();
         }
-        if let Some(type_id) = self.shared.type_id {
+        if let Some(type_id) = self.type_id {
             core_proj_effect.set_type_id(type_id);
         }
-        if let Some(state) = self.shared.state {
+        if let Some(state) = self.state {
             core_proj_effect.set_state(state);
         }
-        self.shared.effect_modes.apply(core_proj_effect);
+        self.effect_modes.apply(core_proj_effect);
         for projectee_item_id in self.add_proj_item_ids.iter() {
             core_proj_effect.add_proj(projectee_item_id)?;
         }

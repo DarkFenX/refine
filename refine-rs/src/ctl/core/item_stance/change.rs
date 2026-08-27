@@ -14,47 +14,49 @@ pub struct StanceChangeCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
+pub type StanceChangeCmdCtxAny = StanceChangeCmdCtxAnyGen<FitId, ItemId>;
+pub type StanceChangeCmdCtxAnyBr = StanceChangeCmdCtxAnyGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(untagged),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub enum StanceChangeCmdCtxAny {
-    Fit(StanceChangeCmdCtxFit),
-    Item(StanceChangeCmdCtxItem),
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
-#[derive(Clone)]
-pub enum StanceChangeCmdCtxAnyBr {
-    Fit(StanceChangeCmdCtxFitBr),
-    Item(StanceChangeCmdCtxItemBr),
+pub enum StanceChangeCmdCtxAnyGen<F, I> {
+    Fit(StanceChangeCmdCtxFitGen<F>),
+    Item(StanceChangeCmdCtxItemGen<I>),
 }
 
 // Extra context commands - fit
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type StanceChangeCmdCtxFit = StanceChangeCmdCtxFitGen<FitId>;
+pub type StanceChangeCmdCtxFitBr = StanceChangeCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct StanceChangeCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: StanceChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct StanceChangeCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct StanceChangeCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: StanceChangeCmd,
 }
 
 // Extra context commands - item
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type StanceChangeCmdCtxItem = StanceChangeCmdCtxItemGen<ItemId>;
+pub type StanceChangeCmdCtxItemBr = StanceChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct StanceChangeCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: StanceChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct StanceChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct StanceChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: StanceChangeCmd,
 }

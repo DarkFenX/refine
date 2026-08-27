@@ -8,17 +8,17 @@ pub struct ItemRemoveCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ItemRemoveCmdCtxItem = ItemRemoveCmdCtxItemGen<ItemId>;
+pub type ItemRemoveCmdCtxItemBr = ItemRemoveCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ItemRemoveCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ItemRemoveCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ItemRemoveCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct ItemRemoveCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ItemRemoveCmd,
 }

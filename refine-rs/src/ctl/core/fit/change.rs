@@ -4,44 +4,46 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitChangeCmd {
+pub type FitChangeCmd = FitChangeCmdGen<FleetId>;
+pub type FitChangeCmdBr = FitChangeCmdGen<FleetIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FitChangeCmdGen<L> {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_id: TriStateField<FleetId>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: CmdFitChangeShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitChangeCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    fleet_id: TriStateField<FleetIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: CmdFitChangeShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct CmdFitChangeShared {
+    fleet_id: TriStateField<L>,
     sec_status: Option<FitSecStatus>,
     #[cfg_attr(feature = "serde", serde(default))]
     rah_incoming_dps: TriStateField<DpsProfile>,
 }
+impl<L> Default for FitChangeCmdGen<L> {
+    fn default() -> Self {
+        Self {
+            fleet_id: Default::default(),
+            sec_status: Default::default(),
+            rah_incoming_dps: Default::default(),
+        }
+    }
+}
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FitChangeCmdCtxFit = FitChangeCmdCtxFitGen<FleetId, FitId>;
+pub type FitChangeCmdCtxFitBr = FitChangeCmdCtxFitGen<FleetIdBr, FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>, F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FitChangeCmdCtxFit {
-    fit_id: FitId,
+pub struct FitChangeCmdCtxFitGen<L, F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FitChangeCmdCtxFitBr {
-    fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitChangeCmdBr,
+    core: FitChangeCmdGen<L>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -56,11 +58,11 @@ impl FitChangeCmd {
         self
     }
     pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.shared.sec_status = Some(sec_status);
+        self.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
-        self.shared.rah_incoming_dps = rah_incoming_dps.into();
+        self.rah_incoming_dps = rah_incoming_dps.into();
         self
     }
 }
@@ -74,11 +76,11 @@ impl FitChangeCmdBr {
         self
     }
     pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.shared.sec_status = Some(sec_status);
+        self.sec_status = Some(sec_status);
         self
     }
     pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
-        self.shared.rah_incoming_dps = rah_incoming_dps.into();
+        self.rah_incoming_dps = rah_incoming_dps.into();
         self
     }
 }
@@ -107,7 +109,8 @@ impl FitChangeCmdBr {
 impl FitChangeCmdBr {
     pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FitChangeCmd, BrResolveError> {
         Ok(FitChangeCmd {
-            shared: self.shared,
+            sec_status: self.sec_status,
+            rah_incoming_dps: self.rah_incoming_dps,
             fleet_id: match self.fleet_id {
                 TriStateField::Value(fleet_id) => TriStateField::Value(resps.resolve_fleet_id(fleet_id)?),
                 TriStateField::None => TriStateField::None,
@@ -173,10 +176,10 @@ impl FitChangeCmd {
             },
             TriStateField::Absent => (),
         }
-        if let Some(sec_status) = self.shared.sec_status {
+        if let Some(sec_status) = self.sec_status {
             core_fit.set_sec_status(sec_status);
         }
-        match self.shared.rah_incoming_dps {
+        match self.rah_incoming_dps {
             TriStateField::Value(rah_incoming_dps) => core_fit.set_rah_incoming_dps(rah_incoming_dps),
             TriStateField::None => match core_fit.remove_rah_incoming_dps() {
                 Ok(..) => (),

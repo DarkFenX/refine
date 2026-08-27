@@ -14,17 +14,17 @@ pub struct FwEffectAddCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FwEffectAddCmdCtxFit = FwEffectAddCmdCtxFitGen<FitId>;
+pub type FwEffectAddCmdCtxFitBr = FwEffectAddCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FwEffectAddCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FwEffectAddCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FwEffectAddCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct FwEffectAddCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FwEffectAddCmd,
 }

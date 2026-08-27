@@ -5,27 +5,31 @@ use crate::{
 };
 
 // Core commands
-#[derive(Clone, Default)]
-pub struct SolValCmd {
-    options: ValOptions<ItemId>,
-    fit_ids: Vec<FitId>,
-    shared: SolValCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct SolValCmdBr {
+pub type SolValCmd = SolValCmdGen<FitId, ItemId>;
+pub type SolValCmdBr = SolValCmdGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct SolValCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
-    options: ValOptions<ItemIdBr>,
+    options: ValOptions<I>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_ids: Vec<FitIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: SolValCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct SolValCmdShared {
+    fit_ids: Vec<F>,
     #[cfg_attr(feature = "serde", serde(default))]
     info_mode: ValResultMode,
+}
+impl<F, I> Default for SolValCmdGen<F, I> {
+    fn default() -> Self {
+        Self {
+            options: Default::default(),
+            fit_ids: Default::default(),
+            info_mode: Default::default(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -44,7 +48,7 @@ impl SolValCmd {
         self
     }
     pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.shared.info_mode = info_mode;
+        self.info_mode = info_mode;
         self
     }
 }
@@ -62,7 +66,7 @@ impl SolValCmdBr {
         self
     }
     pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.shared.info_mode = info_mode;
+        self.info_mode = info_mode;
         self
     }
 }
@@ -77,7 +81,7 @@ impl SolValCmdBr {
                 .options
                 .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
             fit_ids: resps.resolve_fit_ids_lossy(self.fit_ids),
-            shared: self.shared,
+            info_mode: self.info_mode,
         }
     }
 }
@@ -97,7 +101,7 @@ impl SolValCmd {
             fit_ids: self.fit_ids,
             options: self.options,
         };
-        match self.shared.info_mode {
+        match self.info_mode {
             ValResultMode::Simple => SolValResult {
                 passed: core_sol.validate_fast(&core_options),
                 details: None,

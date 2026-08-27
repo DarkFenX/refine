@@ -1,36 +1,31 @@
 use crate::{
-    CmdResp, CmdResps, FitIdBr, FleetIdBr, ItemIdBr,
+    CmdResp, CmdResps, FitId, FitIdBr, FleetId, FleetIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::CmdResidue,
     stats::{
-        FitStatsCmdBr, FleetStatsCmdBr, ItemStatsCmdBr, SolStatsCmd, SolStatsCmdBr,
+        FitStatsCmdBr, FleetStatsCmdBr, ItemStatsCmdBr, SolStatsCmdBr, SolStatsCmdGen,
         err::{FitGetFitStatsError, FleetGetFleetStatsError, ItemGetItemStatsError},
-        fit::{FitStatsCmdCtxFit, FitStatsCmdCtxFitBr},
-        fleet::{FleetStatsCmdCtxFleet, FleetStatsCmdCtxFleetBr},
-        item::{ItemStatsCmdCtxItem, ItemStatsCmdCtxItemBr},
+        fit::FitStatsCmdCtxFitGen,
+        fleet::FleetStatsCmdCtxFleetGen,
+        item::ItemStatsCmdCtxItemGen,
     },
 };
 
-#[expect(clippy::enum_variant_names)]
-#[derive(Clone)]
-pub(crate) enum SolStatsEnumCmd {
-    SolStats(SolStatsCmd),
-    FleetStats(FleetStatsCmdCtxFleet),
-    FitStats(FitStatsCmdCtxFit),
-    ItemStats(ItemStatsCmdCtxItem),
-}
+pub(crate) type SolStatsEnumCmd = SolStatsEnumCmdGen<FleetId, FitId, ItemId>;
+pub type SolStatsEnumCmdBr = SolStatsEnumCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
+    serde(tag = "type", rename_all = "snake_case"),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>, F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub enum SolStatsEnumCmdBr {
-    SolStats(SolStatsCmdBr),
-    FleetStats(FleetStatsCmdCtxFleetBr),
-    FitStats(FitStatsCmdCtxFitBr),
-    ItemStats(ItemStatsCmdCtxItemBr),
+pub enum SolStatsEnumCmdGen<L, F, I> {
+    SolStats(SolStatsCmdGen<L, F, I>),
+    FleetStats(FleetStatsCmdCtxFleetGen<L, F, I>),
+    FitStats(FitStatsCmdCtxFitGen<F, I>),
+    ItemStats(ItemStatsCmdCtxItemGen<F, I>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

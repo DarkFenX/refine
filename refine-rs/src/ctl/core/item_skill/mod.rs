@@ -1,7 +1,7 @@
-pub use add::{FitGetSkillAddError, SkillAddCmd, SkillAddCmdCtxFit, SkillAddCmdCtxFitBr, SkillAddError};
-pub use change::{
-    ItemGetSkillChangeError, SkillChangeCmd, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, SkillChangeError,
-};
+pub(crate) use add::SkillAddCmdCtxFitGen;
+pub use add::{FitGetSkillAddError, SkillAddCmd, SkillAddCmdCtxFit, SkillAddError};
+pub(crate) use change::SkillChangeCmdCtxItemGen;
+pub use change::{ItemGetSkillChangeError, SkillChangeCmd, SkillChangeError};
 
 mod add;
 mod change;

@@ -6,17 +6,17 @@ use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 pub struct FitRemoveCmd;
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FitRemoveCmdCtxFit = FitRemoveCmdCtxFitGen<FitId>;
+pub type FitRemoveCmdCtxFitBr = FitRemoveCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FitRemoveCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitRemoveCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FitRemoveCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct FitRemoveCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: FitRemoveCmd,
 }

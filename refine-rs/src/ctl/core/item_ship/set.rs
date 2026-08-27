@@ -16,17 +16,17 @@ pub struct ShipSetCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ShipSetCmdCtxFit = ShipSetCmdCtxFitGen<FitId>;
+pub type ShipSetCmdCtxFitBr = ShipSetCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ShipSetCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ShipSetCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ShipSetCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct ShipSetCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ShipSetCmd,
 }

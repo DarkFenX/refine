@@ -5,8 +5,8 @@ use crate::{
     err::BrResolveError,
     shared::{BrResolveInfallible, CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsResp, ItemStatsOptions,
-        ItemStatsOptionsBr,
+        FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen, FleetStatsOptions, FleetStatsOptionsBr,
+        FleetStatsOptionsGen, FleetStatsResp, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsOptionsGen,
         exec_shared::{
             extend_stats_for_passed_items, get_stats_for_fits_in_overrides, get_stats_for_items_in_overrides,
             get_stats_for_passed_fits,
@@ -17,39 +17,47 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FleetStatsCmd {
+pub type FleetStatsCmd = FleetStatsCmdGen<FitId, ItemId>;
+pub type FleetStatsCmdBr = FleetStatsCmdGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FleetStatsCmdGen<F, I> {
     #[cfg_attr(feature = "serde", serde(default))]
-    fleet_options: FleetStatsOptions,
+    fleet_options: FleetStatsOptionsGen<I>,
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_options: OvrdCompact<FitId, FitStatsOptions>,
+    fit_options: OvrdCompact<F, FitStatsOptionsGen<F, I>>,
     #[cfg_attr(feature = "serde", serde(default))]
-    item_options: OvrdCompact<ItemId, ItemStatsOptions>,
+    item_options: OvrdCompact<I, ItemStatsOptionsGen<F, I>>,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FleetStatsCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    fleet_options: FleetStatsOptionsBr,
-    #[cfg_attr(feature = "serde", serde(default))]
-    fit_options: OvrdCompact<FitIdBr, FitStatsOptionsBr>,
-    #[cfg_attr(feature = "serde", serde(default))]
-    item_options: OvrdCompact<ItemIdBr, ItemStatsOptionsBr>,
+impl<F, I> Default for FleetStatsCmdGen<F, I> {
+    fn default() -> Self {
+        Self {
+            fleet_options: Default::default(),
+            fit_options: Default::default(),
+            item_options: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
+pub type FleetStatsCmdCtxFleet = FleetStatsCmdCtxFleetGen<FleetId, FitId, ItemId>;
+pub type FleetStatsCmdCtxFleetBr = FleetStatsCmdCtxFleetGen<FleetIdBr, FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>, F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FleetStatsCmdCtxFleet {
-    fleet_id: FleetId,
-    core: FleetStatsCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FleetStatsCmdCtxFleetBr {
-    fleet_id: FleetIdBr,
+pub struct FleetStatsCmdCtxFleetGen<L, F, I> {
+    fleet_id: L,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FleetStatsCmdBr,
+    core: FleetStatsCmdGen<F, I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

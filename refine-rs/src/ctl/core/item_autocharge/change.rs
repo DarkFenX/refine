@@ -13,17 +13,17 @@ pub struct AutochargeChangeCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type AutochargeChangeCmdCtxItem = AutochargeChangeCmdCtxItemGen<ItemId>;
+pub type AutochargeChangeCmdCtxItemBr = AutochargeChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct AutochargeChangeCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: AutochargeChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct AutochargeChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct AutochargeChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: AutochargeChangeCmd,
 }

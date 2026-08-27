@@ -3,6 +3,9 @@ use crate::{
     stats::StatCapSimStagger,
 };
 
+pub type StatOptionCapSim = StatOptionCapSimGen<ItemId>;
+pub type StatOptionCapSimBr = StatOptionCapSimGen<ItemIdBr>;
+
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
@@ -22,9 +25,6 @@ impl<I> Default for StatOptionCapSimGen<I> {
         Self { .. }
     }
 }
-
-pub type StatOptionCapSim = StatOptionCapSimGen<ItemId>;
-pub type StatOptionCapSimBr = StatOptionCapSimGen<ItemIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction

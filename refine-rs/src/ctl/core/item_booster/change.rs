@@ -18,17 +18,17 @@ pub struct BoosterChangeCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type BoosterChangeCmdCtxItem = BoosterChangeCmdCtxItemGen<ItemId>;
+pub type BoosterChangeCmdCtxItemBr = BoosterChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct BoosterChangeCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: BoosterChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct BoosterChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct BoosterChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: BoosterChangeCmd,
 }

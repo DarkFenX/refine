@@ -16,47 +16,49 @@ pub struct ShipChangeCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
+pub type ShipChangeCmdCtxAny = ShipChangeCmdCtxAnyGen<FitId, ItemId>;
+pub type ShipChangeCmdCtxAnyBr = ShipChangeCmdCtxAnyGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(untagged),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub enum ShipChangeCmdCtxAny {
-    Fit(ShipChangeCmdCtxFit),
-    Item(ShipChangeCmdCtxItem),
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize), serde(untagged))]
-#[derive(Clone)]
-pub enum ShipChangeCmdCtxAnyBr {
-    Fit(ShipChangeCmdCtxFitBr),
-    Item(ShipChangeCmdCtxItemBr),
+pub enum ShipChangeCmdCtxAnyGen<F, I> {
+    Fit(ShipChangeCmdCtxFitGen<F>),
+    Item(ShipChangeCmdCtxItemGen<I>),
 }
 
 // Extra context commands - fit
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ShipChangeCmdCtxFit = ShipChangeCmdCtxFitGen<FitId>;
+pub type ShipChangeCmdCtxFitBr = ShipChangeCmdCtxFitGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ShipChangeCmdCtxFit {
-    fit_id: FitId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ShipChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ShipChangeCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct ShipChangeCmdCtxFitGen<F> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ShipChangeCmd,
 }
 
 // Extra context commands - item
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ShipChangeCmdCtxItem = ShipChangeCmdCtxItemGen<ItemId>;
+pub type ShipChangeCmdCtxItemBr = ShipChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ShipChangeCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ShipChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ShipChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct ShipChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ShipChangeCmd,
 }

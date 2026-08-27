@@ -1,4 +1,5 @@
-pub use cmd_core::{FitGetFitStatsError, FitStatsCmd, FitStatsCmdBr, FitStatsCmdCtxFit, FitStatsCmdCtxFitBr};
+pub use cmd_core::{FitGetFitStatsError, FitStatsCmd, FitStatsCmdBr};
+pub(crate) use cmd_core::{FitStatsCmdCtxFitGen, FitStatsCmdGen};
 pub(crate) use cmd_enum::FitStatsEnumCmd;
 pub use cmd_enum::{FitStatsEnumCmdBr, FitStatsEnumError};
 pub use options_pub::{FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen};

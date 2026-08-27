@@ -1,9 +1,12 @@
+pub(crate) use change::CharacterChangeCmdCtxAnyGen;
 pub use change::{
-    CharacterChangeCmd, CharacterChangeCmdCtxAny, CharacterChangeCmdCtxAnyBr, CharacterChangeError,
-    FitCharacterChangeError, FitGetCharacterChangeError, ItemCharacterChangeError, ItemGetCharacterChangeError,
+    CharacterChangeCmd, CharacterChangeError, FitCharacterChangeError, FitGetCharacterChangeError,
+    ItemCharacterChangeError, ItemGetCharacterChangeError,
 };
-pub use set::{CharacterSetCmd, CharacterSetCmdCtxFit, CharacterSetCmdCtxFitBr, FitGetCharacterSetError};
-pub use unset::{CharacterUnsetCmd, CharacterUnsetCmdCtxFit, CharacterUnsetCmdCtxFitBr, FitGetCharacterUnsetError};
+pub(crate) use set::CharacterSetCmdCtxFitGen;
+pub use set::{CharacterSetCmd, CharacterSetCmdCtxFit, FitGetCharacterSetError};
+pub(crate) use unset::CharacterUnsetCmdCtxFitGen;
+pub use unset::{CharacterUnsetCmd, FitGetCharacterUnsetError};
 
 mod change;
 mod set;

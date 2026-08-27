@@ -15,17 +15,17 @@ pub struct SkillChangeCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type SkillChangeCmdCtxItem = SkillChangeCmdCtxItemGen<ItemId>;
+pub type SkillChangeCmdCtxItemBr = SkillChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct SkillChangeCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: SkillChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct SkillChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct SkillChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: SkillChangeCmd,
 }

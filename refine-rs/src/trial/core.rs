@@ -3,40 +3,43 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitTryItemsCmd {
+pub type FitTryItemsCmd = FitTryItemsCmdGen<ItemId>;
+pub type FitTryItemsCmdBr = FitTryItemsCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FitTryItemsCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
-    val_options: ValOptions<ItemId>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitTryItemsCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitTryItemsCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    val_options: ValOptions<ItemIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitTryItemsCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct FitTryItemsCmdShared {
+    val_options: ValOptions<I>,
     type_ids: Vec<ItemTypeId>,
+}
+impl<I> Default for FitTryItemsCmdGen<I> {
+    fn default() -> Self {
+        Self {
+            val_options: Default::default(),
+            type_ids: Default::default(),
+        }
+    }
 }
 
 // Extra context commands
+pub type FitTryItemsCmdCtxFit = FitTryItemsCmdCtxFitGen<FitId, ItemId>;
+pub type FitTryItemsCmdCtxFitBr = FitTryItemsCmdCtxFitGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FitTryItemsCmdCtxFit {
-    fit_id: FitId,
-    core: FitTryItemsCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FitTryItemsCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct FitTryItemsCmdCtxFitGen<F, I> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitTryItemsCmdBr,
+    core: FitTryItemsCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -51,7 +54,7 @@ impl FitTryItemsCmd {
         self
     }
     pub fn with_type_ids(mut self, type_ids: impl Iterator<Item = ItemTypeId>) -> Self {
-        self.shared.type_ids.extend(type_ids);
+        self.type_ids.extend(type_ids);
         self
     }
 }
@@ -65,7 +68,7 @@ impl FitTryItemsCmdBr {
         self
     }
     pub fn with_type_ids(mut self, type_ids: impl Iterator<Item = ItemTypeId>) -> Self {
-        self.shared.type_ids.extend(type_ids);
+        self.type_ids.extend(type_ids);
         self
     }
 }
@@ -91,7 +94,7 @@ impl FitTryItemsCmdBr {
             val_options: self
                 .val_options
                 .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
-            shared: self.shared,
+            type_ids: self.type_ids,
         }
     }
 }
@@ -125,7 +128,7 @@ impl FitTryItemsCmd {
         let fit_id = core_fit.get_fit_id();
         let mut cloned_sol = core_fit.get_sol().clone();
         let mut cloned_fit = cloned_sol.get_fit_mut(&fit_id).unwrap();
-        cloned_fit.try_fit_items(&self.shared.type_ids, &self.val_options)
+        cloned_fit.try_fit_items(&self.type_ids, &self.val_options)
     }
 }
 

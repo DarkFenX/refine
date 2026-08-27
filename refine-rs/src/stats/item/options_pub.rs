@@ -8,6 +8,9 @@ use crate::{
     },
 };
 
+pub type ItemStatsOptions = ItemStatsOptionsGen<FitId, ItemId>;
+pub type ItemStatsOptionsBr = ItemStatsOptionsGen<FitIdBr, ItemIdBr>;
+
 /// Which stats to fetch for an item.
 ///
 /// By default, all stats are not fetched.
@@ -21,9 +24,6 @@ impl<F, I> Default for ItemStatsOptionsGen<F, I> {
         Self { .. }
     }
 }
-
-pub type ItemStatsOptions = ItemStatsOptionsGen<FitId, ItemId>;
-pub type ItemStatsOptionsBr = ItemStatsOptionsGen<FitIdBr, ItemIdBr>;
 
 #[derive(Clone)]
 enum ItemStatOption<F, I> {

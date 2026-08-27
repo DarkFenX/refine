@@ -5,7 +5,14 @@ use crate::{
     stats::{StatCritOptions, StatDmgItemKinds, StatItemChargeOptions, StatItemStateOptions, StatTimeOptions},
 };
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type StatOptionFitDmg = StatOptionFitDmgGen<ItemId>;
+pub type StatOptionFitDmgBr = StatOptionFitDmgGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Copy, Clone)]
 pub struct StatOptionFitDmgGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
@@ -22,10 +29,14 @@ impl<I> Default for StatOptionFitDmgGen<I> {
     }
 }
 
-pub type StatOptionFitDmg = StatOptionFitDmgGen<ItemId>;
-pub type StatOptionFitDmgBr = StatOptionFitDmgGen<ItemIdBr>;
+pub type StatOptionItemDmg = StatOptionItemDmgGen<ItemId>;
+pub type StatOptionItemDmgBr = StatOptionItemDmgGen<ItemIdBr>;
 
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Copy, Clone)]
 pub struct StatOptionItemDmgGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
@@ -43,9 +54,6 @@ impl<I> Default for StatOptionItemDmgGen<I> {
         Self { .. }
     }
 }
-
-pub type StatOptionItemDmg = StatOptionItemDmgGen<ItemId>;
-pub type StatOptionItemDmgBr = StatOptionItemDmgGen<ItemIdBr>;
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction

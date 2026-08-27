@@ -6,38 +6,44 @@ use crate::{
 };
 
 // Core commands
-#[derive(Clone, Default)]
-pub struct FitValCmd {
-    options: ValOptions<ItemId>,
-    shared: FitValCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FitValCmdBr {
+pub type FitValCmd = FitValCmdGen<ItemId>;
+pub type FitValCmdBr = FitValCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FitValCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
-    options: ValOptions<ItemIdBr>,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FitValCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-struct FitValCmdShared {
+    options: ValOptions<I>,
     #[cfg_attr(feature = "serde", serde(default))]
     info_mode: ValResultMode,
 }
+impl<I> Default for FitValCmdGen<I> {
+    fn default() -> Self {
+        Self {
+            options: Default::default(),
+            info_mode: Default::default(),
+        }
+    }
+}
 
 // Extra context commands
+pub type FitValCmdCtxFit = FitValCmdCtxFitGen<FitId, ItemId>;
+pub type FitValCmdCtxFitBr = FitValCmdCtxFitGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FitValCmdCtxFit {
-    fit_id: FitId,
-    core: FitValCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FitValCmdCtxFitBr {
-    fit_id: FitIdBr,
+pub struct FitValCmdCtxFitGen<F, I> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FitValCmdBr,
+    core: FitValCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -52,7 +58,7 @@ impl FitValCmd {
         self
     }
     pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.shared.info_mode = info_mode;
+        self.info_mode = info_mode;
         self
     }
 }
@@ -66,7 +72,7 @@ impl FitValCmdBr {
         self
     }
     pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.shared.info_mode = info_mode;
+        self.info_mode = info_mode;
         self
     }
 }
@@ -92,7 +98,7 @@ impl FitValCmdBr {
             options: self
                 .options
                 .filter_map_item_ids(|item_id_br| resps.resolve_item_id(item_id_br).ok()),
-            shared: self.shared,
+            info_mode: self.info_mode,
         }
     }
 }
@@ -122,7 +128,7 @@ impl FitValCmdCtxFitBr {
 
 impl FitValCmd {
     pub(crate) fn execute(self, core_fit: &mut rc::FitMut) -> FitValResult {
-        match self.shared.info_mode {
+        match self.info_mode {
             ValResultMode::Simple => FitValResult {
                 passed: core_fit.validate_fast(&self.options),
                 details: None,

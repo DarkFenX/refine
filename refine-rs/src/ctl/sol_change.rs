@@ -1,34 +1,25 @@
 use crate::{
     AutochargeChangeCmd, BoosterAddCmd, BoosterChangeCmd, CharacterChangeCmd, CharacterSetCmd, CharacterUnsetCmd,
     ChargeChangeCmd, CmdResp, CmdResps, DroneAddCmd, DroneAddCmdBr, DroneChangeCmd, DroneChangeCmdBr, FighterAddCmd,
-    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitChangeCmd, FitChangeCmdBr, FitId,
-    FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetChangeCmd, FleetChangeCmdBr, FleetId, FleetIdBr,
-    FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd, ImplantChangeCmd, ItemId, ItemIdBr,
-    ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd, ModuleChangeCmdBr, ProjEffectAddCmd,
-    ProjEffectAddCmdBr, ProjEffectChangeCmd, ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd,
-    ServiceChangeCmd, ShipChangeCmd, ShipSetCmd, ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd,
-    StanceChangeCmd, StanceSetCmd, StanceUnsetCmd, SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd,
-    SwEffectChangeCmd,
+    FighterAddCmdBr, FighterChangeCmd, FighterChangeCmdBr, FitAddCmd, FitAddCmdBr, FitAddCmdGen, FitChangeCmd,
+    FitChangeCmdBr, FitId, FitIdBr, FitRemoveCmd, FleetAddCmd, FleetAddCmdBr, FleetAddCmdGen, FleetChangeCmd,
+    FleetChangeCmdBr, FleetId, FleetIdBr, FleetRemoveCmd, FwEffectAddCmd, FwEffectChangeCmd, ImplantAddCmd,
+    ImplantChangeCmd, ItemId, ItemIdBr, ItemRemoveCmd, ModuleAddCmd, ModuleAddCmdBr, ModuleChangeCmd,
+    ModuleChangeCmdBr, ProjEffectAddCmd, ProjEffectAddCmdBr, ProjEffectAddCmdGen, ProjEffectChangeCmd,
+    ProjEffectChangeCmdBr, RigAddCmd, RigChangeCmd, ServiceAddCmd, ServiceChangeCmd, ShipChangeCmd, ShipSetCmd,
+    ShipUnsetCmd, SkillAddCmd, SkillChangeCmd, SolChangeCmd, StanceChangeCmd, StanceSetCmd, StanceUnsetCmd,
+    SubsystemAddCmd, SubsystemChangeCmd, SwEffectAddCmd, SwEffectChangeCmd,
     ctl::core::{
-        AutochargeChangeCmdCtxItem, AutochargeChangeCmdCtxItemBr, BoosterAddCmdCtxFit, BoosterAddCmdCtxFitBr,
-        BoosterChangeCmdCtxItem, BoosterChangeCmdCtxItemBr, CharacterChangeCmdCtxAny, CharacterChangeCmdCtxAnyBr,
-        CharacterSetCmdCtxFit, CharacterSetCmdCtxFitBr, CharacterUnsetCmdCtxFit, CharacterUnsetCmdCtxFitBr,
-        ChargeChangeCmdCtxItem, ChargeChangeCmdCtxItemBr, DroneAddCmdCtxFit, DroneAddCmdCtxFitBr,
-        DroneChangeCmdCtxItem, DroneChangeCmdCtxItemBr, FighterAddCmdCtxFit, FighterAddCmdCtxFitBr,
-        FighterChangeCmdCtxItem, FighterChangeCmdCtxItemBr, FitChangeCmdCtxFit, FitChangeCmdCtxFitBr,
-        FitRemoveCmdCtxFit, FitRemoveCmdCtxFitBr, FleetChangeCmdCtxFleet, FleetChangeCmdCtxFleetBr,
-        FleetRemoveCmdCtxFleet, FleetRemoveCmdCtxFleetBr, FwEffectAddCmdCtxFit, FwEffectAddCmdCtxFitBr,
-        FwEffectChangeCmdCtxItem, FwEffectChangeCmdCtxItemBr, ImplantAddCmdCtxFit, ImplantAddCmdCtxFitBr,
-        ImplantChangeCmdCtxItem, ImplantChangeCmdCtxItemBr, ItemRemoveCmdCtxItem, ItemRemoveCmdCtxItemBr,
-        ModuleAddCmdCtxFit, ModuleAddCmdCtxFitBr, ModuleChangeCmdCtxItem, ModuleChangeCmdCtxItemBr,
-        ProjEffectChangeCmdCtxItem, ProjEffectChangeCmdCtxItemBr, RigAddCmdCtxFit, RigAddCmdCtxFitBr,
-        RigChangeCmdCtxItem, RigChangeCmdCtxItemBr, ServiceAddCmdCtxFit, ServiceAddCmdCtxFitBr,
-        ServiceChangeCmdCtxItem, ServiceChangeCmdCtxItemBr, ShipChangeCmdCtxAny, ShipChangeCmdCtxAnyBr,
-        ShipSetCmdCtxFit, ShipSetCmdCtxFitBr, ShipUnsetCmdCtxFit, ShipUnsetCmdCtxFitBr, SkillAddCmdCtxFit,
-        SkillAddCmdCtxFitBr, SkillChangeCmdCtxItem, SkillChangeCmdCtxItemBr, StanceChangeCmdCtxAny,
-        StanceChangeCmdCtxAnyBr, StanceSetCmdCtxFit, StanceSetCmdCtxFitBr, StanceUnsetCmdCtxFit,
-        StanceUnsetCmdCtxFitBr, SubsystemAddCmdCtxFit, SubsystemAddCmdCtxFitBr, SubsystemChangeCmdCtxItem,
-        SubsystemChangeCmdCtxItemBr, SwEffectChangeCmdCtxItem, SwEffectChangeCmdCtxItemBr,
+        AutochargeChangeCmdCtxItemGen, BoosterAddCmdCtxFitGen, BoosterChangeCmdCtxItemGen, CharacterChangeCmdCtxAnyGen,
+        CharacterSetCmdCtxFitGen, CharacterUnsetCmdCtxFitGen, ChargeChangeCmdCtxItemGen, DroneAddCmdCtxFitGen,
+        DroneChangeCmdCtxItemGen, FighterAddCmdCtxFitGen, FighterChangeCmdCtxItemGen, FitChangeCmdCtxFitGen,
+        FitRemoveCmdCtxFitGen, FleetChangeCmdCtxFleetGen, FleetRemoveCmdCtxFleetGen, FwEffectAddCmdCtxFitGen,
+        FwEffectChangeCmdCtxItemGen, ImplantAddCmdCtxFitGen, ImplantChangeCmdCtxItemGen, ItemRemoveCmdCtxItemGen,
+        ModuleAddCmdCtxFitGen, ModuleChangeCmdCtxItemGen, ProjEffectChangeCmdCtxItemGen, RigAddCmdCtxFitGen,
+        RigChangeCmdCtxItemGen, ServiceAddCmdCtxFitGen, ServiceChangeCmdCtxItemGen, ShipChangeCmdCtxAnyGen,
+        ShipSetCmdCtxFitGen, ShipUnsetCmdCtxFitGen, SkillAddCmdCtxFitGen, SkillChangeCmdCtxItemGen,
+        StanceChangeCmdCtxAnyGen, StanceSetCmdCtxFitGen, StanceUnsetCmdCtxFitGen, SubsystemAddCmdCtxFitGen,
+        SubsystemChangeCmdCtxItemGen, SwEffectChangeCmdCtxItemGen,
     },
     err::{
         BrResolveError, CharacterChangeError, FitAddError, FitGetBoosterAddError, FitGetCharacterSetError,
@@ -45,150 +36,81 @@ use crate::{
     shared::CmdResidue,
 };
 
-#[cfg_attr(
-    feature = "serde",
-    derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
-)]
-#[derive(Clone)]
-pub enum SolChangeEnumCmd {
-    // Solar system
-    SolChange(SolChangeCmd),
-    // Fleet
-    FleetAdd(FleetAddCmd),
-    FleetChange(FleetChangeCmdCtxFleet),
-    FleetRemove(FleetRemoveCmdCtxFleet),
-    // Fit
-    FitAdd(FitAddCmd),
-    FitChange(FitChangeCmdCtxFit),
-    FitRemove(FitRemoveCmdCtxFit),
-    // Item
-    ItemRemove(ItemRemoveCmdCtxItem),
-    // Item - autocharge
-    AutochargeChange(AutochargeChangeCmdCtxItem),
-    // Item - booster
-    BoosterAdd(BoosterAddCmdCtxFit),
-    BoosterChange(BoosterChangeCmdCtxItem),
-    // Item - character
-    CharacterSet(CharacterSetCmdCtxFit),
-    CharacterChange(CharacterChangeCmdCtxAny),
-    CharacterUnset(CharacterUnsetCmdCtxFit),
-    // Item - charge
-    ChargeChange(ChargeChangeCmdCtxItem),
-    // Item - drone
-    DroneAdd(DroneAddCmdCtxFit),
-    DroneChange(DroneChangeCmdCtxItem),
-    // Item - fighter
-    FighterAdd(FighterAddCmdCtxFit),
-    FighterChange(FighterChangeCmdCtxItem),
-    // Item - fit-wide effect
-    FwEffectAdd(FwEffectAddCmdCtxFit),
-    FwEffectChange(FwEffectChangeCmdCtxItem),
-    // Item - implant
-    ImplantAdd(ImplantAddCmdCtxFit),
-    ImplantChange(ImplantChangeCmdCtxItem),
-    // Item - module
-    ModuleAdd(ModuleAddCmdCtxFit),
-    ModuleChange(ModuleChangeCmdCtxItem),
-    // Item - projected effect
-    ProjEffectAdd(ProjEffectAddCmd),
-    ProjEffectChange(ProjEffectChangeCmdCtxItem),
-    // Item - rig
-    RigAdd(RigAddCmdCtxFit),
-    RigChange(RigChangeCmdCtxItem),
-    // Item - service
-    ServiceAdd(ServiceAddCmdCtxFit),
-    ServiceChange(ServiceChangeCmdCtxItem),
-    // Item - ship
-    ShipSet(ShipSetCmdCtxFit),
-    ShipChange(ShipChangeCmdCtxAny),
-    ShipUnset(ShipUnsetCmdCtxFit),
-    // Item - skill
-    SkillAdd(SkillAddCmdCtxFit),
-    SkillChange(SkillChangeCmdCtxItem),
-    // Item - stance
-    StanceSet(StanceSetCmdCtxFit),
-    StanceChange(StanceChangeCmdCtxAny),
-    StanceUnset(StanceUnsetCmdCtxFit),
-    // Item - subsystem
-    SubsystemAdd(SubsystemAddCmdCtxFit),
-    SubsystemChange(SubsystemChangeCmdCtxItem),
-    // Item - system-wide effect
-    SwEffectAdd(SwEffectAddCmd),
-    SwEffectChange(SwEffectChangeCmdCtxItem),
-}
+pub type SolChangeEnumCmd = SolChangeEnumCmdGen<FleetId, FitId, ItemId>;
+pub type SolChangeEnumCmdBr = SolChangeEnumCmdGen<FleetIdBr, FitIdBr, ItemIdBr>;
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
+    serde(tag = "type", rename_all = "snake_case"),
+    serde(bound(deserialize = "L: serde::Deserialize<'de>, F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub enum SolChangeEnumCmdBr {
+pub enum SolChangeEnumCmdGen<L, F, I> {
     // Solar system
     SolChange(SolChangeCmd),
     // Fleet
-    FleetAdd(FleetAddCmdBr),
-    FleetChange(FleetChangeCmdCtxFleetBr),
-    FleetRemove(FleetRemoveCmdCtxFleetBr),
+    FleetAdd(FleetAddCmdGen<F>),
+    FleetChange(FleetChangeCmdCtxFleetGen<L, F>),
+    FleetRemove(FleetRemoveCmdCtxFleetGen<L>),
     // Fit
-    FitAdd(FitAddCmdBr),
-    FitChange(FitChangeCmdCtxFitBr),
-    FitRemove(FitRemoveCmdCtxFitBr),
+    FitAdd(FitAddCmdGen<L>),
+    FitChange(FitChangeCmdCtxFitGen<L, F>),
+    FitRemove(FitRemoveCmdCtxFitGen<F>),
     // Item
-    ItemRemove(ItemRemoveCmdCtxItemBr),
+    ItemRemove(ItemRemoveCmdCtxItemGen<I>),
     // Item - autocharge
-    AutochargeChange(AutochargeChangeCmdCtxItemBr),
+    AutochargeChange(AutochargeChangeCmdCtxItemGen<I>),
     // Item - booster
-    BoosterAdd(BoosterAddCmdCtxFitBr),
-    BoosterChange(BoosterChangeCmdCtxItemBr),
+    BoosterAdd(BoosterAddCmdCtxFitGen<F>),
+    BoosterChange(BoosterChangeCmdCtxItemGen<I>),
     // Item - character
-    CharacterSet(CharacterSetCmdCtxFitBr),
-    CharacterChange(CharacterChangeCmdCtxAnyBr),
-    CharacterUnset(CharacterUnsetCmdCtxFitBr),
+    CharacterSet(CharacterSetCmdCtxFitGen<F>),
+    CharacterChange(CharacterChangeCmdCtxAnyGen<F, I>),
+    CharacterUnset(CharacterUnsetCmdCtxFitGen<F>),
     // Item - charge
-    ChargeChange(ChargeChangeCmdCtxItemBr),
+    ChargeChange(ChargeChangeCmdCtxItemGen<I>),
     // Item - drone
-    DroneAdd(DroneAddCmdCtxFitBr),
-    DroneChange(DroneChangeCmdCtxItemBr),
+    DroneAdd(DroneAddCmdCtxFitGen<F, I>),
+    DroneChange(DroneChangeCmdCtxItemGen<I>),
     // Item - fighter
-    FighterAdd(FighterAddCmdCtxFitBr),
-    FighterChange(FighterChangeCmdCtxItemBr),
+    FighterAdd(FighterAddCmdCtxFitGen<F, I>),
+    FighterChange(FighterChangeCmdCtxItemGen<I>),
     // Item - fit-wide effect
-    FwEffectAdd(FwEffectAddCmdCtxFitBr),
-    FwEffectChange(FwEffectChangeCmdCtxItemBr),
+    FwEffectAdd(FwEffectAddCmdCtxFitGen<F>),
+    FwEffectChange(FwEffectChangeCmdCtxItemGen<I>),
     // Item - implant
-    ImplantAdd(ImplantAddCmdCtxFitBr),
-    ImplantChange(ImplantChangeCmdCtxItemBr),
+    ImplantAdd(ImplantAddCmdCtxFitGen<F>),
+    ImplantChange(ImplantChangeCmdCtxItemGen<I>),
     // Item - module
-    ModuleAdd(ModuleAddCmdCtxFitBr),
-    ModuleChange(ModuleChangeCmdCtxItemBr),
+    ModuleAdd(ModuleAddCmdCtxFitGen<F, I>),
+    ModuleChange(ModuleChangeCmdCtxItemGen<I>),
     // Item - projected effect
-    ProjEffectAdd(ProjEffectAddCmdBr),
-    ProjEffectChange(ProjEffectChangeCmdCtxItemBr),
+    ProjEffectAdd(ProjEffectAddCmdGen<I>),
+    ProjEffectChange(ProjEffectChangeCmdCtxItemGen<I>),
     // Item - rig
-    RigAdd(RigAddCmdCtxFitBr),
-    RigChange(RigChangeCmdCtxItemBr),
+    RigAdd(RigAddCmdCtxFitGen<F>),
+    RigChange(RigChangeCmdCtxItemGen<I>),
     // Item - service
-    ServiceAdd(ServiceAddCmdCtxFitBr),
-    ServiceChange(ServiceChangeCmdCtxItemBr),
+    ServiceAdd(ServiceAddCmdCtxFitGen<F>),
+    ServiceChange(ServiceChangeCmdCtxItemGen<I>),
     // Item - ship
-    ShipSet(ShipSetCmdCtxFitBr),
-    ShipChange(ShipChangeCmdCtxAnyBr),
-    ShipUnset(ShipUnsetCmdCtxFitBr),
+    ShipSet(ShipSetCmdCtxFitGen<F>),
+    ShipChange(ShipChangeCmdCtxAnyGen<F, I>),
+    ShipUnset(ShipUnsetCmdCtxFitGen<F>),
     // Item - skill
-    SkillAdd(SkillAddCmdCtxFitBr),
-    SkillChange(SkillChangeCmdCtxItemBr),
+    SkillAdd(SkillAddCmdCtxFitGen<F>),
+    SkillChange(SkillChangeCmdCtxItemGen<I>),
     // Item - stance
-    StanceSet(StanceSetCmdCtxFitBr),
-    StanceChange(StanceChangeCmdCtxAnyBr),
-    StanceUnset(StanceUnsetCmdCtxFitBr),
+    StanceSet(StanceSetCmdCtxFitGen<F>),
+    StanceChange(StanceChangeCmdCtxAnyGen<F, I>),
+    StanceUnset(StanceUnsetCmdCtxFitGen<F>),
     // Item - subsystem
-    SubsystemAdd(SubsystemAddCmdCtxFitBr),
-    SubsystemChange(SubsystemChangeCmdCtxItemBr),
+    SubsystemAdd(SubsystemAddCmdCtxFitGen<F>),
+    SubsystemChange(SubsystemChangeCmdCtxItemGen<I>),
     // Item - system-wide effect
     SwEffectAdd(SwEffectAddCmd),
-    SwEffectChange(SwEffectChangeCmdCtxItemBr),
+    SwEffectChange(SwEffectChangeCmdCtxItemGen<I>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

@@ -1,17 +1,25 @@
 use crate::{AddedFleetIdResp, CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FleetAddCmd {
+pub type FleetAddCmd = FleetAddCmdGen<FitId>;
+pub type FleetAddCmdBr = FleetAddCmdGen<FitIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>"))
+)]
+#[derive(Clone)]
+pub struct FleetAddCmdGen<F> {
     #[cfg_attr(feature = "serde", serde(default))]
-    fit_ids: Vec<FitId>,
+    fit_ids: Vec<F>,
 }
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone, Default)]
-pub struct FleetAddCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    fit_ids: Vec<FitIdBr>,
+impl<F> Default for FleetAddCmdGen<F> {
+    fn default() -> Self {
+        Self {
+            fit_ids: Default::default(),
+        }
+    }
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

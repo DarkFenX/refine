@@ -1,9 +1,12 @@
+pub(crate) use change::ShipChangeCmdCtxAnyGen;
 pub use change::{
     FitGetShipChangeError, FitShipChangeError, ItemGetShipChangeError, ItemShipChangeError, ShipChangeCmd,
-    ShipChangeCmdCtxAny, ShipChangeCmdCtxAnyBr, ShipChangeError,
+    ShipChangeError,
 };
-pub use set::{FitGetShipSetError, ShipSetCmd, ShipSetCmdCtxFit, ShipSetCmdCtxFitBr};
-pub use unset::{FitGetShipUnsetError, ShipUnsetCmd, ShipUnsetCmdCtxFit, ShipUnsetCmdCtxFitBr};
+pub(crate) use set::ShipSetCmdCtxFitGen;
+pub use set::{FitGetShipSetError, ShipSetCmd, ShipSetCmdCtxFit};
+pub(crate) use unset::ShipUnsetCmdCtxFitGen;
+pub use unset::{FitGetShipUnsetError, ShipUnsetCmd};
 
 mod change;
 mod set;

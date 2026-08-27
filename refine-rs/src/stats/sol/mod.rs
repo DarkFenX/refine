@@ -1,3 +1,4 @@
+pub(crate) use cmd_core::SolStatsCmdGen;
 pub use cmd_core::{SolStatsCmd, SolStatsCmdBr};
 pub(crate) use cmd_enum::SolStatsEnumCmd;
 pub use cmd_enum::{SolStatsEnumCmdBr, SolStatsEnumError};

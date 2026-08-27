@@ -1,29 +1,23 @@
 use crate::{
-    CmdResp, CmdResps, FitIdBr,
+    CmdResp, CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::CmdResidue,
-    val::{
-        FitValCmdBr, SolValCmd, SolValCmdBr,
-        err::FitGetFitValError,
-        fit::{FitValCmdCtxFit, FitValCmdCtxFitBr},
-    },
+    val::{FitValCmdBr, SolValCmdBr, SolValCmdGen, err::FitGetFitValError, fit::FitValCmdCtxFitGen},
 };
 
-#[derive(Clone)]
-pub(crate) enum SolValEnumCmd {
-    SolValidate(SolValCmd),
-    FitValidate(FitValCmdCtxFit),
-}
+pub(crate) type SolValEnumCmd = SolValEnumCmdGen<FitId, ItemId>;
+pub type SolValEnumCmdBr = SolValEnumCmdGen<FitIdBr, ItemIdBr>;
 
 #[cfg_attr(
     feature = "serde",
     derive(serde::Deserialize),
-    serde(tag = "type", rename_all = "snake_case")
+    serde(tag = "type", rename_all = "snake_case"),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
 )]
 #[derive(Clone)]
-pub enum SolValEnumCmdBr {
-    SolValidate(SolValCmdBr),
-    FitValidate(FitValCmdCtxFitBr),
+pub enum SolValEnumCmdGen<F, I> {
+    SolValidate(SolValCmdGen<F, I>),
+    FitValidate(FitValCmdCtxFitGen<F, I>),
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

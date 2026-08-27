@@ -7,51 +7,44 @@ use crate::{
 };
 
 // Core commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FighterAddCmd = FighterAddCmdGen<ItemId>;
+pub type FighterAddCmdBr = FighterAddCmdGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FighterAddCmd {
-    #[cfg_attr(feature = "serde", serde(default))]
-    proj_item_ids: Vec<ItemId> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FighterAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FighterAddCmdBr {
-    #[cfg_attr(feature = "serde", serde(default))]
-    proj_item_ids: Vec<ItemIdBr> = Vec::new(),
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    shared: FighterAddCmdShared,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-struct FighterAddCmdShared {
+pub struct FighterAddCmdGen<I> {
     type_id: ItemTypeId,
     state: MinionState,
     count: Option<CountNz> = None,
-    #[cfg_attr(feature = "serde", serde(default))]
-    abilities: Abilities = Abilities::new(),
     rearm_minion: Option<RearmMinion> = None,
     coordinates: Option<Coordinates> = None,
     movement: Option<Movement> = None,
+    #[cfg_attr(feature = "serde", serde(default))]
+    proj_item_ids: Vec<I> = Vec::new(),
+    #[cfg_attr(feature = "serde", serde(default))]
+    abilities: Abilities = Abilities::new(),
     #[cfg_attr(feature = "serde", serde(default))]
     effect_modes: EffectModes = EffectModes::new(),
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type FighterAddCmdCtxFit = FighterAddCmdCtxFitGen<FitId, ItemId>;
+pub type FighterAddCmdCtxFitBr = FighterAddCmdCtxFitGen<FitIdBr, ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "F: serde::Deserialize<'de>, I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct FighterAddCmdCtxFit {
-    fit_id: FitId,
+pub struct FighterAddCmdCtxFitGen<F, I> {
+    fit_id: F,
     #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FighterAddCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct FighterAddCmdCtxFitBr {
-    fit_id: FitIdBr,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: FighterAddCmdBr,
+    core: FighterAddCmdGen<I>,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -59,29 +52,26 @@ pub struct FighterAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FighterAddCmd {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
-        Self {
-            shared: FighterAddCmdShared { type_id, state, .. },
-            ..
-        }
+        Self { type_id, state, .. }
     }
     pub fn with_count(mut self, count: CountNz) -> Self {
-        self.shared.count = Some(count);
+        self.count = Some(count);
         self
     }
     pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
-        self.shared.abilities.extend(abilities);
+        self.abilities.extend(abilities);
         self
     }
     pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
-        self.shared.rearm_minion = Some(rearm_minion);
+        self.rearm_minion = Some(rearm_minion);
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.shared.coordinates = Some(coordinates);
+        self.coordinates = Some(coordinates);
         self
     }
     pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.shared.movement = Some(movement);
+        self.movement = Some(movement);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
@@ -89,36 +79,33 @@ impl FighterAddCmd {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
 
 impl FighterAddCmdBr {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
-        Self {
-            shared: FighterAddCmdShared { type_id, state, .. },
-            ..
-        }
+        Self { type_id, state, .. }
     }
     pub fn with_count(mut self, count: CountNz) -> Self {
-        self.shared.count = Some(count);
+        self.count = Some(count);
         self
     }
     pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
-        self.shared.abilities.extend(abilities);
+        self.abilities.extend(abilities);
         self
     }
     pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
-        self.shared.rearm_minion = Some(rearm_minion);
+        self.rearm_minion = Some(rearm_minion);
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.shared.coordinates = Some(coordinates);
+        self.coordinates = Some(coordinates);
         self
     }
     pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.shared.movement = Some(movement);
+        self.movement = Some(movement);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
@@ -126,7 +113,7 @@ impl FighterAddCmdBr {
         self
     }
     pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.shared.effect_modes.extend(effect_modes);
+        self.effect_modes.extend(effect_modes);
         self
     }
 }
@@ -156,7 +143,14 @@ impl FighterAddCmdBr {
     pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FighterAddCmd, BrResolveError> {
         Ok(FighterAddCmd {
             proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
-            shared: self.shared,
+            type_id: self.type_id,
+            state: self.state,
+            count: self.count,
+            abilities: self.abilities,
+            rearm_minion: self.rearm_minion,
+            coordinates: self.coordinates,
+            movement: self.movement,
+            effect_modes: self.effect_modes,
         })
     }
 }
@@ -208,20 +202,15 @@ impl FighterAddCmdCtxFitBr {
 
 impl FighterAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FighterAddError> {
-        let mut core_fighter = core_fit.add_fighter(
-            self.shared.type_id,
-            self.shared.state,
-            self.shared.coordinates,
-            self.shared.movement,
-        );
-        if let Some(count) = self.shared.count {
+        let mut core_fighter = core_fit.add_fighter(self.type_id, self.state, self.coordinates, self.movement);
+        if let Some(count) = self.count {
             core_fighter.set_count_override(Some(count));
         }
-        self.shared.abilities.apply(&mut core_fighter);
-        if let Some(rearm_minion) = self.shared.rearm_minion {
+        self.abilities.apply(&mut core_fighter);
+        if let Some(rearm_minion) = self.rearm_minion {
             core_fighter.set_rearm_minion(Some(rearm_minion));
         }
-        self.shared.effect_modes.apply(&mut core_fighter);
+        self.effect_modes.apply(&mut core_fighter);
         for projectee_item_id in self.proj_item_ids.iter() {
             core_fighter.add_proj(projectee_item_id)?;
         }

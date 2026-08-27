@@ -23,11 +23,11 @@
 // some stat from an item which is not loaded is fatal), while non-fatal errors fail fetch for that
 // specific stat option.
 
-pub(crate) use fit::FitStatsEnumCmd;
 pub use fit::{
     FitStats, FitStatsCmd, FitStatsCmdBr, FitStatsEnumCmdBr, FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen,
     FitStatsResp,
 };
+pub(crate) use fit::{FitStatsCmdGen, FitStatsEnumCmd};
 pub use fleet::{
     FleetStats, FleetStatsCmd, FleetStatsCmdBr, FleetStatsOptions, FleetStatsOptionsBr, FleetStatsOptionsGen,
     FleetStatsResp,
@@ -58,8 +58,8 @@ pub use rc::{
 pub use result_details::{
     StatBrFallibleError, StatDmg, StatDmgEntry, StatDmgEntryBreacher, StatDmgEntryBreacherRaw, StatResult,
 };
-pub(crate) use sol::SolStatsEnumCmd;
 pub use sol::{SolStatsCmd, SolStatsCmdBr, SolStatsEnumCmdBr, SolStatsResp};
+pub(crate) use sol::{SolStatsCmdGen, SolStatsEnumCmd};
 
 pub mod err;
 mod exec_shared;

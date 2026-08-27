@@ -14,17 +14,17 @@ pub struct ServiceChangeCmd {
 }
 
 // Extra context commands
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
+pub type ServiceChangeCmdCtxItem = ServiceChangeCmdCtxItemGen<ItemId>;
+pub type ServiceChangeCmdCtxItemBr = ServiceChangeCmdCtxItemGen<ItemIdBr>;
+
+#[cfg_attr(
+    feature = "serde",
+    derive(serde::Deserialize),
+    serde(bound(deserialize = "I: serde::Deserialize<'de>"))
+)]
 #[derive(Clone)]
-pub struct ServiceChangeCmdCtxItem {
-    item_id: ItemId,
-    #[cfg_attr(feature = "serde", serde(flatten))]
-    core: ServiceChangeCmd,
-}
-#[cfg_attr(feature = "serde", derive(serde::Deserialize))]
-#[derive(Clone)]
-pub struct ServiceChangeCmdCtxItemBr {
-    item_id: ItemIdBr,
+pub struct ServiceChangeCmdCtxItemGen<I> {
+    item_id: I,
     #[cfg_attr(feature = "serde", serde(flatten))]
     core: ServiceChangeCmd,
 }

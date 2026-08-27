@@ -1,9 +1,13 @@
-#[derive(Copy, Clone, Default)]
+#[derive(Copy, Clone)]
 pub enum TriStateField<T> {
     Value(T),
     None,
-    #[default]
     Absent,
+}
+impl<T> Default for TriStateField<T> {
+    fn default() -> Self {
+        Self::Absent
+    }
 }
 impl<T> TriStateField<T> {
     pub fn as_ref(&self) -> TriStateField<&T> {
