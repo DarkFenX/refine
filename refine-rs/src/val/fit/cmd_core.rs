@@ -101,12 +101,12 @@ impl FitValCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitValCmdBr {
+impl<I> FitValCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutInfallible
     }
 }
-impl FitValCmdCtxFitBr {
+impl<F, I> FitValCmdCtxFitGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutFallible
     }

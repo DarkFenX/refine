@@ -97,12 +97,12 @@ impl FitTryItemsCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitTryItemsCmdBr {
+impl<I> FitTryItemsCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutInfallible
     }
 }
-impl FitTryItemsCmdCtxFitBr {
+impl<F, I> FitTryItemsCmdCtxFitGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutFallible
     }
