@@ -46,7 +46,7 @@ pub struct DroneAddCmdCtxFitGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DroneAddCmd {
+impl<I> DroneAddCmdGen<I> {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
         Self { type_id, state, .. }
     }
@@ -66,37 +66,7 @@ impl DroneAddCmd {
         self.movement = Some(movement);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.proj_item_ids.extend(proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl DroneAddCmdBr {
-    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
-        Self { type_id, state, .. }
-    }
-    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
-        self.mutation = Some(mutation);
-        self
-    }
-    pub fn with_npc_prop(mut self, npc_prop: NpcProp) -> Self {
-        self.npc_prop = Some(npc_prop);
-        self
-    }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.coordinates = Some(coordinates);
-        self
-    }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.movement = Some(movement);
-        self
-    }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.proj_item_ids.extend(proj_item_ids);
         self
     }
@@ -114,7 +84,6 @@ impl DroneAddCmd {
         DroneAddCmdCtxFit { fit_id, core: self }
     }
 }
-
 impl DroneAddCmdBr {
     pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> DroneAddCmdCtxFitBr {
         DroneAddCmdCtxFitBr {
@@ -154,7 +123,7 @@ impl DroneAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DroneAddCmd {
+impl<I> DroneAddCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {
             true => CmdResidue::MutInfallible,
@@ -162,23 +131,7 @@ impl DroneAddCmd {
         }
     }
 }
-impl DroneAddCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.proj_item_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl DroneAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.core.proj_item_ids.is_empty() {
-            true => CmdResidue::MutFallibleClean,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl DroneAddCmdCtxFitBr {
+impl<F, I> DroneAddCmdCtxFitGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.core.proj_item_ids.is_empty() {
             true => CmdResidue::MutFallibleClean,

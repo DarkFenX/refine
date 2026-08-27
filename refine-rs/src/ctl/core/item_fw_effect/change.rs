@@ -86,12 +86,7 @@ impl FwEffectChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl FwEffectChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl FwEffectChangeCmdCtxItemBr {
+impl<I> FwEffectChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

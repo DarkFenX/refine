@@ -81,12 +81,7 @@ impl SubsystemAddCmd {
         CmdResidue::MutInfallible
     }
 }
-impl SubsystemAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl SubsystemAddCmdCtxFitBr {
+impl<F> SubsystemAddCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

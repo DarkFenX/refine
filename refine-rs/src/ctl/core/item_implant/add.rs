@@ -81,12 +81,7 @@ impl ImplantAddCmd {
         CmdResidue::MutInfallible
     }
 }
-impl ImplantAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl ImplantAddCmdCtxFitBr {
+impl<F> ImplantAddCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

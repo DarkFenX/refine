@@ -72,7 +72,7 @@ pub struct ModuleChangeCmdCtxItemGen<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ModuleChangeCmd {
+impl<I> ModuleChangeCmdGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -104,57 +104,11 @@ impl ModuleChangeCmd {
         self.optional_reload = optional_reload.into();
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.rm_proj_item_ids.extend(rm_proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl ModuleChangeCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.type_id = Some(type_id);
-        self
-    }
-    pub fn with_move(mut self, move_: MoveMode) -> Self {
-        self.move_ = Some(move_);
-        self
-    }
-    pub fn with_state(mut self, state: ModuleState) -> Self {
-        self.state = Some(state);
-        self
-    }
-    pub fn with_mutation(mut self, mutation: Option<ChangeMutation>) -> Self {
-        self.mutation = mutation.into();
-        self
-    }
-    pub fn with_charge_type_id(mut self, charge_type_id: Option<ItemTypeId>) -> Self {
-        self.charge_type_id = charge_type_id.into();
-        self
-    }
-    pub fn with_spool(mut self, spool: Option<Spool>) -> Self {
-        self.spool = spool.into();
-        self
-    }
-    pub fn with_optional_reload(mut self, optional_reload: Option<OptionalReload>) -> Self {
-        self.optional_reload = optional_reload.into();
-        self
-    }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.add_proj_item_ids.extend(add_proj_item_ids);
-        self
-    }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
@@ -172,7 +126,6 @@ impl ModuleChangeCmd {
         ModuleChangeCmdCtxItem { item_id, core: self }
     }
 }
-
 impl ModuleChangeCmdBr {
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ModuleChangeCmdCtxItemBr {
         ModuleChangeCmdCtxItemBr {
@@ -214,7 +167,7 @@ impl ModuleChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ModuleChangeCmd {
+impl<I> ModuleChangeCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
@@ -228,26 +181,7 @@ impl ModuleChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl ModuleChangeCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        if let TriStateField::Value(mutation) = &self.mutation
-            && !mutation.attrs.is_empty()
-        {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutFallibleClean
-    }
-}
-impl ModuleChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
-    }
-}
-impl ModuleChangeCmdCtxItemBr {
+impl<I> ModuleChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         self.core.exec_residue()
     }

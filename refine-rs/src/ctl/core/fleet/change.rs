@@ -44,29 +44,15 @@ pub struct FleetChangeCmdCtxFleetGen<L, F> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetChangeCmd {
+impl<F> FleetChangeCmdGen<F> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_add_fit_ids(mut self, add_fit_ids: impl Iterator<Item = FitId>) -> Self {
+    pub fn with_add_fit_ids(mut self, add_fit_ids: impl Iterator<Item = F>) -> Self {
         self.add_fit_ids.extend(add_fit_ids);
         self
     }
-    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl Iterator<Item = FitId>) -> Self {
-        self.rm_fit_ids.extend(rm_fit_ids);
-        self
-    }
-}
-
-impl FleetChangeCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_add_fit_ids(mut self, add_fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
-        self.add_fit_ids.extend(add_fit_ids);
-        self
-    }
-    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+    pub fn with_rm_fit_ids(mut self, rm_fit_ids: impl Iterator<Item = F>) -> Self {
         self.rm_fit_ids.extend(rm_fit_ids);
         self
     }
@@ -80,7 +66,6 @@ impl FleetChangeCmd {
         FleetChangeCmdCtxFleet { fleet_id, core: self }
     }
 }
-
 impl FleetChangeCmdBr {
     pub(in crate::ctl) fn into_ctx_fleet_br(self, fleet_id: impl Into<FleetIdBr>) -> FleetChangeCmdCtxFleetBr {
         FleetChangeCmdCtxFleetBr {
@@ -114,7 +99,7 @@ impl FleetChangeCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetChangeCmd {
+impl<F> FleetChangeCmdGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         match (self.rm_fit_ids.len(), self.add_fit_ids.len()) {
@@ -124,25 +109,7 @@ impl FleetChangeCmd {
         }
     }
 }
-impl FleetChangeCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        match (self.rm_fit_ids.len(), self.add_fit_ids.len()) {
-            (0, 0) => CmdResidue::MutInfallible,
-            (1, 0) | (0, 1) => CmdResidue::MutFallibleClean,
-            _ => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl FleetChangeCmdCtxFleet {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.core.exec_residue() {
-            CmdResidue::MutInfallible => CmdResidue::MutFallibleClean,
-            n => n,
-        }
-    }
-}
-impl FleetChangeCmdCtxFleetBr {
+impl<L, F> FleetChangeCmdCtxFleetGen<L, F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.core.exec_residue() {
             CmdResidue::MutInfallible => CmdResidue::MutFallibleClean,

@@ -49,29 +49,11 @@ pub struct FitChangeCmdCtxFitGen<L, F> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitChangeCmd {
+impl<L> FitChangeCmdGen<L> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: Option<FleetId>) -> Self {
-        self.fleet_id = fleet_id.into();
-        self
-    }
-    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.sec_status = Some(sec_status);
-        self
-    }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: Option<DpsProfile>) -> Self {
-        self.rah_incoming_dps = rah_incoming_dps.into();
-        self
-    }
-}
-
-impl FitChangeCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fleet_id(mut self, fleet_id: Option<FleetIdBr>) -> Self {
+    pub fn with_fleet_id(mut self, fleet_id: Option<L>) -> Self {
         self.fleet_id = fleet_id.into();
         self
     }
@@ -93,7 +75,6 @@ impl FitChangeCmd {
         FitChangeCmdCtxFit { fit_id, core: self }
     }
 }
-
 impl FitChangeCmdBr {
     pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FitChangeCmdCtxFitBr {
         FitChangeCmdCtxFitBr {
@@ -132,7 +113,7 @@ impl FitChangeCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitChangeCmd {
+impl<L> FitChangeCmdGen<L> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         // Fleet change goes first, so its fail is clean
@@ -142,23 +123,7 @@ impl FitChangeCmd {
         CmdResidue::MutInfallible
     }
 }
-impl FitChangeCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        // Fleet change goes first, so its fail is clean
-        if self.fleet_id.is_value() {
-            return CmdResidue::MutFallibleClean;
-        }
-        CmdResidue::MutInfallible
-    }
-}
-impl FitChangeCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // This one can fail regardless of core command contents
-        CmdResidue::MutFallibleClean
-    }
-}
-impl FitChangeCmdCtxFitBr {
+impl<L, F> FitChangeCmdCtxFitGen<L, F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // This one can fail regardless of core command contents
         CmdResidue::MutFallibleClean

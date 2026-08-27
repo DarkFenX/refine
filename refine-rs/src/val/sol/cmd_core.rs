@@ -35,33 +35,15 @@ impl<F, I> Default for SolValCmdGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl SolValCmd {
+impl<F, I> SolValCmdGen<F, I> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_options(mut self, options: ValOptions<ItemId>) -> Self {
+    pub fn with_options(mut self, options: ValOptions<I>) -> Self {
         self.options = options;
         self
     }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitId>) -> Self {
-        self.fit_ids.extend(fit_ids);
-        self
-    }
-    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.info_mode = info_mode;
-        self
-    }
-}
-
-impl SolValCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_options(mut self, options: ValOptions<ItemIdBr>) -> Self {
-        self.options = options;
-        self
-    }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = F>) -> Self {
         self.fit_ids.extend(fit_ids);
         self
     }

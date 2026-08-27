@@ -70,7 +70,7 @@ pub struct FighterChangeCmdCtxItemGen<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterChangeCmd {
+impl<I> FighterChangeCmdGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -102,57 +102,11 @@ impl FighterChangeCmd {
         self.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.rm_proj_item_ids.extend(rm_proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl FighterChangeCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.type_id = Some(type_id);
-        self
-    }
-    pub fn with_state(mut self, state: MinionState) -> Self {
-        self.state = Some(state);
-        self
-    }
-    pub fn with_count(mut self, count: Option<CountNz>) -> Self {
-        self.count = count.into();
-        self
-    }
-    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
-        self.abilities.extend(abilities);
-        self
-    }
-    pub fn with_rearm_minion(mut self, rearm_minion: Option<RearmMinion>) -> Self {
-        self.rearm_minion = rearm_minion.into();
-        self
-    }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.coordinates = Some(coordinates);
-        self
-    }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.movement = Some(movement);
-        self
-    }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.add_proj_item_ids.extend(add_proj_item_ids);
-        self
-    }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
@@ -170,7 +124,6 @@ impl FighterChangeCmd {
         FighterChangeCmdCtxItem { item_id, core: self }
     }
 }
-
 impl FighterChangeCmdBr {
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> FighterChangeCmdCtxItemBr {
         FighterChangeCmdCtxItemBr {
@@ -212,7 +165,7 @@ impl FighterChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterChangeCmd {
+impl<I> FighterChangeCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
@@ -221,21 +174,7 @@ impl FighterChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl FighterChangeCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutFallibleClean
-    }
-}
-impl FighterChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
-    }
-}
-impl FighterChangeCmdCtxItemBr {
+impl<I> FighterChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         self.core.exec_residue()
     }

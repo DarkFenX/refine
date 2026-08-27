@@ -86,12 +86,7 @@ impl ChargeChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl ChargeChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl ChargeChangeCmdCtxItemBr {
+impl<I> ChargeChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

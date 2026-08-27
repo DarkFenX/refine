@@ -86,12 +86,7 @@ impl ImplantChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl ImplantChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl ImplantChangeCmdCtxItemBr {
+impl<I> ImplantChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

@@ -90,12 +90,7 @@ impl BoosterAddCmd {
     }
 }
 
-impl BoosterAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl BoosterAddCmdCtxFitBr {
+impl<F> BoosterAddCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

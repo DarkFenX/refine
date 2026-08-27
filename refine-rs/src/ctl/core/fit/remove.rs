@@ -65,12 +65,7 @@ impl FitRemoveCmd {
         CmdResidue::MutInfallible
     }
 }
-impl FitRemoveCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl FitRemoveCmdCtxFitBr {
+impl<F> FitRemoveCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

@@ -81,12 +81,7 @@ impl AutochargeChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl AutochargeChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl AutochargeChangeCmdCtxItemBr {
+impl<I> AutochargeChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

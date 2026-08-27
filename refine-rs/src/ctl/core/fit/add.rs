@@ -30,29 +30,11 @@ impl<L> Default for FitAddCmdGen<L> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitAddCmd {
+impl<L> FitAddCmdGen<L> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet_id(mut self, fleet_id: FleetId) -> Self {
-        self.fleet_id = Some(fleet_id);
-        self
-    }
-    pub fn with_sec_status(mut self, sec_status: FitSecStatus) -> Self {
-        self.sec_status = Some(sec_status);
-        self
-    }
-    pub fn with_rah_incoming_dps(mut self, rah_incoming_dps: DpsProfile) -> Self {
-        self.rah_incoming_dps = Some(rah_incoming_dps);
-        self
-    }
-}
-
-impl FitAddCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fleet_id(mut self, fleet_id: FleetIdBr) -> Self {
+    pub fn with_fleet_id(mut self, fleet_id: L) -> Self {
         self.fleet_id = Some(fleet_id);
         self
     }
@@ -85,15 +67,7 @@ impl FitAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitAddCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        if self.fleet_id.is_some() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutInfallible
-    }
-}
-impl FitAddCmdBr {
+impl<L> FitAddCmdGen<L> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         if self.fleet_id.is_some() {
             return CmdResidue::MutFallibleDirty;

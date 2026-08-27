@@ -144,35 +144,17 @@ impl CharacterChangeCmd {
         CmdResidue::MutInfallible
     }
 }
-impl CharacterChangeCmdCtxFit {
+impl<F> CharacterChangeCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
-impl CharacterChangeCmdCtxFitBr {
+impl<I> CharacterChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
 }
-impl CharacterChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl CharacterChangeCmdCtxItemBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl CharacterChangeCmdCtxAny {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            Self::Fit(cmd) => cmd.exec_residue(),
-            Self::Item(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-impl CharacterChangeCmdCtxAnyBr {
+impl<F, I> CharacterChangeCmdCtxAnyGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self {
             Self::Fit(cmd) => cmd.exec_residue(),

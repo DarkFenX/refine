@@ -50,7 +50,7 @@ pub struct FighterAddCmdCtxFitGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterAddCmd {
+impl<I> FighterAddCmdGen<I> {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
         Self { type_id, state, .. }
     }
@@ -74,41 +74,7 @@ impl FighterAddCmd {
         self.movement = Some(movement);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.proj_item_ids.extend(proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl FighterAddCmdBr {
-    pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
-        Self { type_id, state, .. }
-    }
-    pub fn with_count(mut self, count: CountNz) -> Self {
-        self.count = Some(count);
-        self
-    }
-    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
-        self.abilities.extend(abilities);
-        self
-    }
-    pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
-        self.rearm_minion = Some(rearm_minion);
-        self
-    }
-    pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
-        self.coordinates = Some(coordinates);
-        self
-    }
-    pub fn with_movement(mut self, movement: Movement) -> Self {
-        self.movement = Some(movement);
-        self
-    }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.proj_item_ids.extend(proj_item_ids);
         self
     }
@@ -126,7 +92,6 @@ impl FighterAddCmd {
         FighterAddCmdCtxFit { fit_id, core: self }
     }
 }
-
 impl FighterAddCmdBr {
     pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> FighterAddCmdCtxFitBr {
         FighterAddCmdCtxFitBr {
@@ -167,7 +132,7 @@ impl FighterAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterAddCmd {
+impl<I> FighterAddCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {
             true => CmdResidue::MutInfallible,
@@ -175,23 +140,7 @@ impl FighterAddCmd {
         }
     }
 }
-impl FighterAddCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.proj_item_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl FighterAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.core.proj_item_ids.is_empty() {
-            true => CmdResidue::MutFallibleClean,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl FighterAddCmdCtxFitBr {
+impl<F, I> FighterAddCmdCtxFitGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.core.proj_item_ids.is_empty() {
             true => CmdResidue::MutFallibleClean,

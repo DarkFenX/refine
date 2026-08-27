@@ -5,8 +5,7 @@ use crate::{
     err::BrResolveError,
     shared::{BrResolveInfallible, CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen, FitStatsResp, ItemStatsOptions, ItemStatsOptionsBr,
-        ItemStatsOptionsGen,
+        FitStatsOptionsGen, FitStatsResp, ItemStatsOptionsGen,
         exec_shared::{extend_stats_for_passed_items, get_stats_for_items_in_overrides},
         item::ItemStatsOptionsResolved,
     },
@@ -56,40 +55,22 @@ pub struct FitStatsCmdCtxFitGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitStatsCmd {
+impl<F, I> FitStatsCmdGen<F, I> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fit(mut self, options: FitStatsOptions) -> Self {
+    pub fn with_fit(mut self, options: FitStatsOptionsGen<F, I>) -> Self {
         self.fit_options = options;
         self
     }
-    pub fn with_item_default(mut self, options: ItemStatsOptions) -> Self {
-        self.item_options.set_default(options);
-        self
-    }
-    pub fn with_item_overrides(mut self, options: ItemStatsOptions, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item_options.add_overrides(options, item_ids);
-        self
-    }
-}
-
-impl FitStatsCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fit(mut self, options: FitStatsOptionsBr) -> Self {
-        self.fit_options = options;
-        self
-    }
-    pub fn with_item_default(mut self, options: ItemStatsOptionsBr) -> Self {
+    pub fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
         self.item_options.set_default(options);
         self
     }
     pub fn with_item_overrides(
         mut self,
-        options: ItemStatsOptionsBr,
-        item_ids: impl Iterator<Item = ItemIdBr>,
+        options: ItemStatsOptionsGen<F, I>,
+        item_ids: impl Iterator<Item = I>,
     ) -> Self {
         self.item_options.add_overrides(options, item_ids);
         self

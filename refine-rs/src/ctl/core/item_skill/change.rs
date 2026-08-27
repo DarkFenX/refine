@@ -91,12 +91,7 @@ impl SkillChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl SkillChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl SkillChangeCmdCtxItemBr {
+impl<I> SkillChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

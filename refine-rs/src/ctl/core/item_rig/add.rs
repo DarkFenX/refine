@@ -81,12 +81,7 @@ impl RigAddCmd {
         CmdResidue::MutInfallible
     }
 }
-impl RigAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl RigAddCmdCtxFitBr {
+impl<F> RigAddCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

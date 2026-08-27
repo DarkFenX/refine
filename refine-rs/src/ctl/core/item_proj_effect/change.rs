@@ -54,7 +54,7 @@ pub struct ProjEffectChangeCmdCtxItemGen<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ProjEffectChangeCmd {
+impl<I> ProjEffectChangeCmdGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
@@ -66,37 +66,11 @@ impl ProjEffectChangeCmd {
         self.state = Some(state);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.rm_proj_item_ids.extend(rm_proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl ProjEffectChangeCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_type_id(mut self, type_id: ItemTypeId) -> Self {
-        self.type_id = Some(type_id);
-        self
-    }
-    pub fn with_state(mut self, state: bool) -> Self {
-        self.state = Some(state);
-        self
-    }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
-        self.add_proj_item_ids.extend(add_proj_item_ids);
-        self
-    }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
@@ -114,7 +88,6 @@ impl ProjEffectChangeCmd {
         ProjEffectChangeCmdCtxItem { item_id, core: self }
     }
 }
-
 impl ProjEffectChangeCmdBr {
     pub(in crate::ctl) fn into_ctx_item_br(self, item_id: impl Into<ItemIdBr>) -> ProjEffectChangeCmdCtxItemBr {
         ProjEffectChangeCmdCtxItemBr {
@@ -151,7 +124,7 @@ impl ProjEffectChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ProjEffectChangeCmd {
+impl<I> ProjEffectChangeCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         // Assume the command always mutates (even if it does not with none of fields set)
         if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
@@ -160,21 +133,7 @@ impl ProjEffectChangeCmd {
         CmdResidue::MutFallibleClean
     }
 }
-impl ProjEffectChangeCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Assume the command always mutates (even if it does not with none of fields set)
-        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutFallibleClean
-    }
-}
-impl ProjEffectChangeCmdCtxItem {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        self.core.exec_residue()
-    }
-}
-impl ProjEffectChangeCmdCtxItemBr {
+impl<I> ProjEffectChangeCmdCtxItemGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         self.core.exec_residue()
     }

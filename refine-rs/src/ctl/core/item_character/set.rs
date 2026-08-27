@@ -81,12 +81,7 @@ impl CharacterSetCmd {
         CmdResidue::MutInfallible
     }
 }
-impl CharacterSetCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl CharacterSetCmdCtxFitBr {
+impl<F> CharacterSetCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

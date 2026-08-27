@@ -445,63 +445,7 @@ impl FitChangeEnumCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitChangeEnumCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self {
-            // Fit
-            Self::FitChange(cmd) => cmd.exec_residue(),
-            // Item
-            Self::ItemRemove(cmd) => cmd.exec_residue(),
-            // Item - autocharge
-            Self::AutochargeChange(cmd) => cmd.exec_residue(),
-            // Item - booster
-            Self::BoosterAdd(cmd) => cmd.exec_residue(),
-            Self::BoosterChange(cmd) => cmd.exec_residue(),
-            // Item - character
-            Self::CharacterSet(cmd) => cmd.exec_residue(),
-            Self::CharacterChange(cmd) => cmd.exec_residue(),
-            Self::CharacterUnset(cmd) => cmd.exec_residue(),
-            // Item - charge
-            Self::ChargeChange(cmd) => cmd.exec_residue(),
-            // Item - drone
-            Self::DroneAdd(cmd) => cmd.exec_residue(),
-            Self::DroneChange(cmd) => cmd.exec_residue(),
-            // Item - fighter
-            Self::FighterAdd(cmd) => cmd.exec_residue(),
-            Self::FighterChange(cmd) => cmd.exec_residue(),
-            // Item - fit-wide effect
-            Self::FwEffectAdd(cmd) => cmd.exec_residue(),
-            Self::FwEffectChange(cmd) => cmd.exec_residue(),
-            // Item - implant
-            Self::ImplantAdd(cmd) => cmd.exec_residue(),
-            Self::ImplantChange(cmd) => cmd.exec_residue(),
-            // Item - module
-            Self::ModuleAdd(cmd) => cmd.exec_residue(),
-            Self::ModuleChange(cmd) => cmd.exec_residue(),
-            // Item - rig
-            Self::RigAdd(cmd) => cmd.exec_residue(),
-            Self::RigChange(cmd) => cmd.exec_residue(),
-            // Item - service
-            Self::ServiceAdd(cmd) => cmd.exec_residue(),
-            Self::ServiceChange(cmd) => cmd.exec_residue(),
-            // Item - ship
-            Self::ShipSet(cmd) => cmd.exec_residue(),
-            Self::ShipChange(cmd) => cmd.exec_residue(),
-            Self::ShipUnset(cmd) => cmd.exec_residue(),
-            // Item - skill
-            Self::SkillAdd(cmd) => cmd.exec_residue(),
-            Self::SkillChange(cmd) => cmd.exec_residue(),
-            // Item - stance
-            Self::StanceSet(cmd) => cmd.exec_residue(),
-            Self::StanceChange(cmd) => cmd.exec_residue(),
-            Self::StanceUnset(cmd) => cmd.exec_residue(),
-            // Item - subsystem
-            Self::SubsystemAdd(cmd) => cmd.exec_residue(),
-            Self::SubsystemChange(cmd) => cmd.exec_residue(),
-        }
-    }
-}
-impl FitChangeEnumCmdBr {
+impl<I> FitChangeEnumCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self {
             // Fit

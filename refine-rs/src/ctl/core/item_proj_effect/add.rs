@@ -25,7 +25,7 @@ pub struct ProjEffectAddCmdGen<I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ProjEffectAddCmd {
+impl<I> ProjEffectAddCmdGen<I> {
     pub fn new(type_id: ItemTypeId) -> Self {
         Self { type_id, .. }
     }
@@ -33,25 +33,7 @@ impl ProjEffectAddCmd {
         self.state = Some(state);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.proj_item_ids.extend(proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl ProjEffectAddCmdBr {
-    pub fn new(type_id: ItemTypeId) -> Self {
-        Self { type_id, .. }
-    }
-    pub fn with_state(mut self, state: bool) -> Self {
-        self.state = Some(state);
-        self
-    }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.proj_item_ids.extend(proj_item_ids);
         self
     }
@@ -78,15 +60,7 @@ impl ProjEffectAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ProjEffectAddCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.proj_item_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl ProjEffectAddCmdBr {
+impl<I> ProjEffectAddCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {
             true => CmdResidue::MutInfallible,

@@ -45,25 +45,11 @@ pub struct FitTryItemsCmdCtxFitGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitTryItemsCmd {
+impl<I> FitTryItemsCmdGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_val_options(mut self, val_options: ValOptions<ItemId>) -> Self {
-        self.val_options = val_options;
-        self
-    }
-    pub fn with_type_ids(mut self, type_ids: impl Iterator<Item = ItemTypeId>) -> Self {
-        self.type_ids.extend(type_ids);
-        self
-    }
-}
-
-impl FitTryItemsCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_val_options(mut self, val_options: ValOptions<ItemIdBr>) -> Self {
+    pub fn with_val_options(mut self, val_options: ValOptions<I>) -> Self {
         self.val_options = val_options;
         self
     }

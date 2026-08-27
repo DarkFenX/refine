@@ -5,8 +5,7 @@ use crate::{
     err::BrResolveError,
     shared::{BrResolveInfallible, CmdResidue, OvrdCompact, OvrdMapHeavy},
     stats::{
-        FitStatsOptions, FitStatsOptionsBr, FitStatsOptionsGen, FleetStatsOptions, FleetStatsOptionsBr,
-        FleetStatsOptionsGen, FleetStatsResp, ItemStatsOptions, ItemStatsOptionsBr, ItemStatsOptionsGen,
+        FitStatsOptionsGen, FleetStatsOptionsGen, FleetStatsResp, ItemStatsOptionsGen,
         exec_shared::{
             extend_stats_for_passed_items, get_stats_for_fits_in_overrides, get_stats_for_items_in_overrides,
             get_stats_for_passed_fits,
@@ -63,56 +62,30 @@ pub struct FleetStatsCmdCtxFleetGen<L, F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetStatsCmd {
+impl<F, I> FleetStatsCmdGen<F, I> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fleet(mut self, options: FleetStatsOptions) -> Self {
+    pub fn with_fleet(mut self, options: FleetStatsOptionsGen<I>) -> Self {
         self.fleet_options = options;
         self
     }
-    pub fn with_fit_default(mut self, options: FitStatsOptions) -> Self {
+    pub fn with_fit_default(mut self, options: FitStatsOptionsGen<F, I>) -> Self {
         self.fit_options.set_default(options);
         self
     }
-    pub fn with_fit_overrides(mut self, options: FitStatsOptions, fit_ids: impl Iterator<Item = FitId>) -> Self {
+    pub fn with_fit_overrides(mut self, options: FitStatsOptionsGen<F, I>, fit_ids: impl Iterator<Item = F>) -> Self {
         self.fit_options.add_overrides(options, fit_ids);
         self
     }
-    pub fn with_item_default(mut self, options: ItemStatsOptions) -> Self {
-        self.item_options.set_default(options);
-        self
-    }
-    pub fn with_item_overrides(mut self, options: ItemStatsOptions, item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.item_options.add_overrides(options, item_ids);
-        self
-    }
-}
-
-impl FleetStatsCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fleet(mut self, options: FleetStatsOptionsBr) -> Self {
-        self.fleet_options = options;
-        self
-    }
-    pub fn with_fit_default(mut self, options: FitStatsOptionsBr) -> Self {
-        self.fit_options.set_default(options);
-        self
-    }
-    pub fn with_fit_overrides(mut self, options: FitStatsOptionsBr, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
-        self.fit_options.add_overrides(options, fit_ids);
-        self
-    }
-    pub fn with_item_default(mut self, options: ItemStatsOptionsBr) -> Self {
+    pub fn with_item_default(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
         self.item_options.set_default(options);
         self
     }
     pub fn with_item_overrides(
         mut self,
-        options: ItemStatsOptionsBr,
-        item_ids: impl Iterator<Item = ItemIdBr>,
+        options: ItemStatsOptionsGen<F, I>,
+        item_ids: impl Iterator<Item = I>,
     ) -> Self {
         self.item_options.add_overrides(options, item_ids);
         self

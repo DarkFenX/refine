@@ -48,7 +48,7 @@ pub struct ModuleAddCmdCtxFitGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ModuleAddCmd {
+impl<I> ModuleAddCmdGen<I> {
     pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
         Self {
             rack,
@@ -74,43 +74,7 @@ impl ModuleAddCmd {
         self.optional_reload = Some(optional_reload);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemId>) -> Self {
-        self.proj_item_ids.extend(proj_item_ids);
-        self
-    }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
-        self.effect_modes.extend(effect_modes);
-        self
-    }
-}
-
-impl ModuleAddCmdBr {
-    pub fn new(rack: ModRack, add_mode: AddMode, type_id: ItemTypeId, state: ModuleState) -> Self {
-        Self {
-            rack,
-            add_mode,
-            type_id,
-            state,
-            ..
-        }
-    }
-    pub fn with_mutation(mut self, mutation: AddMutation) -> Self {
-        self.mutation = Some(mutation);
-        self
-    }
-    pub fn with_charge_type_id(mut self, charge_type_id: ItemTypeId) -> Self {
-        self.charge_type_id = Some(charge_type_id);
-        self
-    }
-    pub fn with_spool(mut self, spool: Spool) -> Self {
-        self.spool = Some(spool);
-        self
-    }
-    pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
-        self.optional_reload = Some(optional_reload);
-        self
-    }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = I>) -> Self {
         self.proj_item_ids.extend(proj_item_ids);
         self
     }
@@ -128,7 +92,6 @@ impl ModuleAddCmd {
         ModuleAddCmdCtxFit { fit_id, core: self }
     }
 }
-
 impl ModuleAddCmdBr {
     pub(in crate::ctl) fn into_ctx_fit_br(self, fit_id: impl Into<FitIdBr>) -> ModuleAddCmdCtxFitBr {
         ModuleAddCmdCtxFitBr {
@@ -170,7 +133,7 @@ impl ModuleAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ModuleAddCmd {
+impl<I> ModuleAddCmdGen<I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.proj_item_ids.is_empty() {
             true => CmdResidue::MutInfallible,
@@ -178,23 +141,7 @@ impl ModuleAddCmd {
         }
     }
 }
-impl ModuleAddCmdBr {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.proj_item_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl ModuleAddCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.core.proj_item_ids.is_empty() {
-            true => CmdResidue::MutFallibleClean,
-            false => CmdResidue::MutFallibleDirty,
-        }
-    }
-}
-impl ModuleAddCmdCtxFitBr {
+impl<F, I> ModuleAddCmdCtxFitGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self.core.proj_item_ids.is_empty() {
             true => CmdResidue::MutFallibleClean,

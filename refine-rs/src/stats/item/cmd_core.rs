@@ -2,7 +2,7 @@ use crate::{
     CmdResps, FitId, FitIdBr, ItemId, ItemIdBr,
     err::BrResolveError,
     shared::{BrResolveInfallible, CmdResidue},
-    stats::{ItemStatsOptions, ItemStatsOptionsBr, ItemStatsOptionsGen, ItemStatsResp},
+    stats::{ItemStatsOptionsGen, ItemStatsResp},
 };
 
 // Core commands
@@ -46,21 +46,11 @@ pub struct ItemStatsCmdCtxItemGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ItemStatsCmd {
+impl<F, I> ItemStatsCmdGen<F, I> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_item(mut self, options: ItemStatsOptions) -> Self {
-        self.item_options = options;
-        self
-    }
-}
-
-impl ItemStatsCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_item(mut self, options: ItemStatsOptionsBr) -> Self {
+    pub fn with_item(mut self, options: ItemStatsOptionsGen<F, I>) -> Self {
         self.item_options = options;
         self
     }

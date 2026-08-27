@@ -65,12 +65,7 @@ impl CharacterUnsetCmd {
         CmdResidue::MutInfallible
     }
 }
-impl CharacterUnsetCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl CharacterUnsetCmdCtxFitBr {
+impl<F> CharacterUnsetCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }

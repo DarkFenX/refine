@@ -49,25 +49,11 @@ pub struct FitValCmdCtxFitGen<F, I> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FitValCmd {
+impl<I> FitValCmdGen<I> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_options(mut self, options: ValOptions<ItemId>) -> Self {
-        self.options = options;
-        self
-    }
-    pub fn with_info_mode(mut self, info_mode: ValResultMode) -> Self {
-        self.info_mode = info_mode;
-        self
-    }
-}
-
-impl FitValCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_options(mut self, options: ValOptions<ItemIdBr>) -> Self {
+    pub fn with_options(mut self, options: ValOptions<I>) -> Self {
         self.options = options;
         self
     }

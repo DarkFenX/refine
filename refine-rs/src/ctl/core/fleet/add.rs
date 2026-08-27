@@ -25,21 +25,11 @@ impl<F> Default for FleetAddCmdGen<F> {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Construction
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetAddCmd {
+impl<F> FleetAddCmdGen<F> {
     pub fn new() -> Self {
         Self::default()
     }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitId>) -> Self {
-        self.fit_ids.extend(fit_ids);
-        self
-    }
-}
-
-impl FleetAddCmdBr {
-    pub fn new() -> Self {
-        Self::default()
-    }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = F>) -> Self {
         self.fit_ids.extend(fit_ids);
         self
     }
@@ -59,15 +49,7 @@ impl FleetAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FleetAddCmd {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        if !self.fit_ids.is_empty() {
-            return CmdResidue::MutFallibleDirty;
-        }
-        CmdResidue::MutInfallible
-    }
-}
-impl FleetAddCmdBr {
+impl<F> FleetAddCmdGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         if !self.fit_ids.is_empty() {
             return CmdResidue::MutFallibleDirty;

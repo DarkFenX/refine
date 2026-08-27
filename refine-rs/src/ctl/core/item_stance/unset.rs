@@ -65,12 +65,7 @@ impl StanceUnsetCmd {
         CmdResidue::MutInfallible
     }
 }
-impl StanceUnsetCmdCtxFit {
-    pub(crate) fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::MutFallibleClean
-    }
-}
-impl StanceUnsetCmdCtxFitBr {
+impl<F> StanceUnsetCmdCtxFitGen<F> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::MutFallibleClean
     }
