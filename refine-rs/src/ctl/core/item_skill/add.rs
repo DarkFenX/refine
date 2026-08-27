@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, SkillLevel,
-    ctl::core::shared::EffectModes, err::BrResolveError,
+    ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -77,6 +77,17 @@ impl SkillAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SkillAddCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl SkillAddCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl SkillAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, SkillAddError> {
         let mut core_skill = core_fit.add_skill(self.type_id, self.level)?;

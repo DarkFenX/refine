@@ -1,4 +1,4 @@
-use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError};
+use crate::{CmdResps, FitId, FitIdBr, err::BrResolveError, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -60,6 +60,17 @@ impl ShipUnsetCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipUnsetCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl ShipUnsetCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl ShipUnsetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) {
         if let Some(core_ship) = core_fit.get_ship_mut() {

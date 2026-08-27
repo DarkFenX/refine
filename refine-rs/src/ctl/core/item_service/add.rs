@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ServiceState,
-    ctl::core::shared::EffectModes, err::BrResolveError,
+    ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -72,6 +72,17 @@ impl ServiceAddCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ServiceAddCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl ServiceAddCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl ServiceAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_service = core_fit.add_service(self.type_id, self.state);

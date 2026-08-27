@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
-    Movement, ctl::core::shared::EffectModes, err::BrResolveError,
+    Movement, ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -147,6 +147,30 @@ impl ShipChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl ShipChangeCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl ShipChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl ShipChangeCmdCtxAnyBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Fit(inner) => inner.exec_residue(),
+            Self::Item(inner) => inner.exec_residue(),
+        }
+    }
+}
+
 impl ShipChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,

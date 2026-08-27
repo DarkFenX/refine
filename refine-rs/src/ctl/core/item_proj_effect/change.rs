@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, ItemId, ItemIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError,
+    err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -125,15 +125,6 @@ impl ProjEffectChangeCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl ProjEffectChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ProjEffectChangeCmdCtxItem, BrResolveError> {
-        Ok(ProjEffectChangeCmdCtxItem {
-            item_id: resps.resolve_item_id(self.item_id)?,
-            core: self.core.br_resolve(resps)?,
-        })
-    }
-}
-
 impl ProjEffectChangeCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<ProjEffectChangeCmd, BrResolveError> {
         Ok(ProjEffectChangeCmd {
@@ -144,9 +135,33 @@ impl ProjEffectChangeCmdBr {
     }
 }
 
+impl ProjEffectChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<ProjEffectChangeCmdCtxItem, BrResolveError> {
+        Ok(ProjEffectChangeCmdCtxItem {
+            item_id: resps.resolve_item_id(self.item_id)?,
+            core: self.core.br_resolve(resps)?,
+        })
+    }
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ProjEffectChangeCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        // Assume the command always mutates (even if it does not with none of fields set)
+        if !self.rm_proj_item_ids.is_empty() || !self.add_proj_item_ids.is_empty() {
+            return CmdResidue::MutFallibleDirty;
+        }
+        CmdResidue::MutFallibleClean
+    }
+}
+impl ProjEffectChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        self.core.exec_residue()
+    }
+}
+
 impl ProjEffectChangeCmd {
     pub(in crate::ctl) fn execute(
         self,

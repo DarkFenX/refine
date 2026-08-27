@@ -1,4 +1,4 @@
-use crate::{AddedItemIdsResp, EffectId, EffectMode, ItemTypeId, ctl::core::shared::EffectModes};
+use crate::{AddedItemIdsResp, EffectId, EffectMode, ItemTypeId, ctl::core::shared::EffectModes, shared::CmdResidue};
 
 // Core commands
 #[cfg_attr(feature = "serde", derive(serde::Deserialize))]
@@ -30,6 +30,12 @@ impl SwEffectAddCmd {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl SwEffectAddCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+
 impl SwEffectAddCmd {
     pub(in crate::ctl) fn execute(self, core_sol: &mut rc::SolarSystem) -> AddedItemIdsResp {
         let mut core_sw_effect = core_sol.add_sw_effect(self.type_id);

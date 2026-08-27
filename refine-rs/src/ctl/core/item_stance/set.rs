@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, ctl::core::shared::EffectModes,
-    err::BrResolveError,
+    err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -76,6 +76,17 @@ impl StanceSetCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl StanceSetCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl StanceSetCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl StanceSetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_stance = core_fit.set_stance(self.type_id);

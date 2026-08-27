@@ -1,6 +1,6 @@
 use crate::{
     ChangedItemIdsResp, CmdResps, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr, ItemTypeId,
-    ctl::core::shared::EffectModes, err::BrResolveError,
+    ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -137,6 +137,30 @@ impl StanceChangeCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl StanceChangeCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl StanceChangeCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl StanceChangeCmdCtxItemBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+impl StanceChangeCmdCtxAnyBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self {
+            Self::Fit(inner) => inner.exec_residue(),
+            Self::Item(inner) => inner.exec_residue(),
+        }
+    }
+}
+
 impl StanceChangeCmd {
     pub(in crate::ctl) fn execute_via_fit(
         self,

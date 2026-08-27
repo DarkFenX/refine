@@ -1,6 +1,6 @@
 use crate::{
     AddedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemTypeId, Movement,
-    ctl::core::shared::EffectModes, err::BrResolveError,
+    ctl::core::shared::EffectModes, err::BrResolveError, shared::CmdResidue,
 };
 
 // Core commands
@@ -86,6 +86,17 @@ impl ShipSetCmdCtxFitBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl ShipSetCmd {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutInfallible
+    }
+}
+impl ShipSetCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        CmdResidue::MutFallibleClean
+    }
+}
+
 impl ShipSetCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> AddedItemIdsResp {
         let mut core_ship = core_fit.set_ship(self.type_id, self.coordinates, self.movement);
