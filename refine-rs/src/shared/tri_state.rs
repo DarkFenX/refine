@@ -23,6 +23,9 @@ impl<T> TriStateField<T> {
             Self::Absent => TriStateField::Absent,
         }
     }
+    pub fn is_value(&self) -> bool {
+        matches!(self, Self::Value(..))
+    }
     pub fn is_absent(&self) -> bool {
         matches!(self, Self::Absent)
     }

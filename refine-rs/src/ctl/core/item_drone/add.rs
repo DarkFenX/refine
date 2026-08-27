@@ -1,6 +1,7 @@
 use crate::{
     AddMutation, AddedItemIdsResp, CmdResps, Coordinates, EffectId, EffectMode, FitId, FitIdBr, ItemId, ItemIdBr,
     ItemTypeId, MinionState, Movement, NpcProp, ctl::core::shared::EffectModes, err::BrResolveError,
+    shared::CmdResidue,
 };
 
 // Core commands
@@ -160,6 +161,23 @@ impl DroneAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+impl DroneAddCmdBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.proj_item_ids.is_empty() {
+            true => CmdResidue::MutInfallible,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+impl DroneAddCmdCtxFitBr {
+    pub(crate) fn exec_residue(&self) -> CmdResidue {
+        match self.core.proj_item_ids.is_empty() {
+            true => CmdResidue::MutFallibleClean,
+            false => CmdResidue::MutFallibleDirty,
+        }
+    }
+}
+
 impl DroneAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, DroneAddError> {
         let mut core_drone = core_fit.add_drone(

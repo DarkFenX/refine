@@ -109,18 +109,19 @@ impl FleetChangeCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetChangeCmdBr {
     fn exec_residue(&self) -> CmdResidue {
-        match self.rm_fit_ids.is_empty() && self.add_fit_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
+        // Assume the command always mutates (even if it does not with none of fields set)
+        match (self.rm_fit_ids.len(), self.add_fit_ids.len()) {
+            (0, 0) => CmdResidue::MutInfallible,
+            (1, 0) | (0, 1) => CmdResidue::MutFallibleClean,
+            _ => CmdResidue::MutFallibleDirty,
         }
     }
 }
 impl FleetChangeCmdCtxFleetBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        // Same as core, but getting fleet may fail
-        match self.core.rm_fit_ids.is_empty() && self.core.add_fit_ids.is_empty() {
-            true => CmdResidue::MutFallibleClean,
-            false => CmdResidue::MutFallibleDirty,
+        match self.core.exec_residue() {
+            CmdResidue::MutInfallible => CmdResidue::MutFallibleClean,
+            n => n,
         }
     }
 }

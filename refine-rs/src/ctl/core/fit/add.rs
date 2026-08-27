@@ -83,10 +83,10 @@ impl FitAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FitAddCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.fleet_id {
-            Some(..) => CmdResidue::MutFallibleDirty,
-            None => CmdResidue::MutInfallible,
+        if self.fleet_id.is_some() {
+            return CmdResidue::MutFallibleDirty;
         }
+        CmdResidue::MutInfallible
     }
 }
 

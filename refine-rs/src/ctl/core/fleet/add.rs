@@ -53,10 +53,10 @@ impl FleetAddCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl FleetAddCmdBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
-        match self.fit_ids.is_empty() {
-            true => CmdResidue::MutInfallible,
-            false => CmdResidue::MutFallibleDirty,
+        if !self.fit_ids.is_empty() {
+            return CmdResidue::MutFallibleDirty;
         }
+        CmdResidue::MutInfallible
     }
 }
 
