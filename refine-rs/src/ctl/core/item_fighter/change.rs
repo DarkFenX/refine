@@ -176,21 +176,21 @@ impl FighterChangeCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl FighterChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FighterChangeCmdCtxItem, BrResolveError> {
-        Ok(FighterChangeCmdCtxItem {
-            item_id: resps.resolve_item_id(self.item_id)?,
-            core: self.core.br_resolve(resps)?,
-        })
-    }
-}
-
 impl FighterChangeCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<FighterChangeCmd, BrResolveError> {
         Ok(FighterChangeCmd {
             add_proj_item_ids: resps.resolve_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.resolve_item_ids(self.rm_proj_item_ids)?,
             shared: self.shared,
+        })
+    }
+}
+
+impl FighterChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<FighterChangeCmdCtxItem, BrResolveError> {
+        Ok(FighterChangeCmdCtxItem {
+            item_id: resps.resolve_item_id(self.item_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }

@@ -166,21 +166,21 @@ impl DroneChangeCmdBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Backref resolution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl DroneChangeCmdCtxItemBr {
-    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<DroneChangeCmdCtxItem, BrResolveError> {
-        Ok(DroneChangeCmdCtxItem {
-            item_id: resps.resolve_item_id(self.item_id)?,
-            core: self.core.br_resolve(resps)?,
-        })
-    }
-}
-
 impl DroneChangeCmdBr {
     fn br_resolve(self, resps: &CmdResps) -> Result<DroneChangeCmd, BrResolveError> {
         Ok(DroneChangeCmd {
             add_proj_item_ids: resps.resolve_item_ids(self.add_proj_item_ids)?,
             rm_proj_item_ids: resps.resolve_item_ids(self.rm_proj_item_ids)?,
             shared: self.shared,
+        })
+    }
+}
+
+impl DroneChangeCmdCtxItemBr {
+    pub(in crate::ctl) fn br_resolve(self, resps: &CmdResps) -> Result<DroneChangeCmdCtxItem, BrResolveError> {
+        Ok(DroneChangeCmdCtxItem {
+            item_id: resps.resolve_item_id(self.item_id)?,
+            core: self.core.br_resolve(resps)?,
         })
     }
 }
