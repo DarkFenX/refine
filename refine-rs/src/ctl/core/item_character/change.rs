@@ -155,8 +155,8 @@ impl CharacterChangeCmdCtxItemBr {
 impl CharacterChangeCmdCtxAnyBr {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         match self {
-            Self::Fit(inner) => inner.exec_residue(),
-            Self::Item(inner) => inner.exec_residue(),
+            Self::Fit(cmd) => cmd.exec_residue(),
+            Self::Item(cmd) => cmd.exec_residue(),
         }
     }
 }
