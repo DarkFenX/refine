@@ -91,11 +91,6 @@ impl ItemStatsCmdCtxItemBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> ItemStatsCmdGen<F, I> {
-    fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
 impl<F, I> ItemStatsCmdCtxItemGen<F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutFallible

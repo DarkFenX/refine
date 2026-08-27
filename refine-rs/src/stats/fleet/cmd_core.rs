@@ -129,11 +129,6 @@ impl FleetStatsCmdCtxFleetBr {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Execution
 ////////////////////////////////////////////////////////////////////////////////////////////////////
-impl<F, I> FleetStatsCmdGen<F, I> {
-    fn exec_residue(&self) -> CmdResidue {
-        CmdResidue::ImmutInfallible
-    }
-}
 impl<L, F, I> FleetStatsCmdCtxFleetGen<L, F, I> {
     pub(crate) fn exec_residue(&self) -> CmdResidue {
         CmdResidue::ImmutFallible
