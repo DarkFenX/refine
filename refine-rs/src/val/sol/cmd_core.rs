@@ -43,7 +43,7 @@ impl<F, I> SolValCmdGen<F, I> {
         self.options = options;
         self
     }
-    pub fn with_fit_ids(mut self, fit_ids: impl Iterator<Item = F>) -> Self {
+    pub fn with_fit_ids(mut self, fit_ids: impl IntoIterator<Item = F>) -> Self {
         self.fit_ids.extend(fit_ids);
         self
     }

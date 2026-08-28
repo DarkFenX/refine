@@ -33,11 +33,11 @@ impl<I> ProjEffectAddCmdGen<I> {
         self.state = Some(state);
         self
     }
-    pub fn with_proj_item_ids(mut self, proj_item_ids: impl Iterator<Item = I>) -> Self {
+    pub fn with_proj_item_ids(mut self, proj_item_ids: impl IntoIterator<Item = I>) -> Self {
         self.proj_item_ids.extend(proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) -> Self {
         self.effect_modes.extend(effect_modes);
         self
     }

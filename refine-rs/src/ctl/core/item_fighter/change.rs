@@ -86,7 +86,7 @@ impl<I> FighterChangeCmdGen<I> {
         self.count = count.into();
         self
     }
-    pub fn with_abilities(mut self, abilities: impl Iterator<Item = (AbilityId, bool)>) -> Self {
+    pub fn with_abilities(mut self, abilities: impl IntoIterator<Item = (AbilityId, bool)>) -> Self {
         self.abilities.extend(abilities);
         self
     }
@@ -102,15 +102,15 @@ impl<I> FighterChangeCmdGen<I> {
         self.movement = Some(movement);
         self
     }
-    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl Iterator<Item = I>) -> Self {
+    pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl IntoIterator<Item = I>) -> Self {
         self.add_proj_item_ids.extend(add_proj_item_ids);
         self
     }
-    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl Iterator<Item = I>) -> Self {
+    pub fn with_rm_proj_item_ids(mut self, rm_proj_item_ids: impl IntoIterator<Item = I>) -> Self {
         self.rm_proj_item_ids.extend(rm_proj_item_ids);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) -> Self {
         self.effect_modes.extend(effect_modes);
         self
     }

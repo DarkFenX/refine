@@ -68,7 +68,7 @@ impl ResidueResolver {
             }
         }
     }
-    pub(crate) fn add_cmds(&mut self, residues: impl Iterator<Item = CmdResidue>) -> SolBackup {
+    pub(crate) fn add_cmds(&mut self, residues: impl IntoIterator<Item = CmdResidue>) -> SolBackup {
         for residue in residues {
             // Once it is concluded that backup is needed, do not need to go though the rest of the
             // commands

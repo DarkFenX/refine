@@ -36,7 +36,7 @@ impl ServiceAddCmd {
     pub fn new(type_id: ItemTypeId, state: ServiceState) -> Self {
         Self { type_id, state, .. }
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) -> Self {
         self.effect_modes.extend(effect_modes);
         self
     }

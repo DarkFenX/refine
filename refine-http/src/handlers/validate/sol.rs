@@ -47,7 +47,7 @@ async fn internal_validate_sol(
         .validate(
             rs::val::SolValCmd::new()
                 .with_options(payload.options)
-                .with_fit_ids(payload.fit_ids.into_iter())
+                .with_fit_ids(payload.fit_ids)
                 .with_info_mode(params.validation),
         )
         .await;

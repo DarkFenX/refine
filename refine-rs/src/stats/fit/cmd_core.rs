@@ -70,7 +70,7 @@ impl<F, I> FitStatsCmdGen<F, I> {
     pub fn with_item_overrides(
         mut self,
         options: ItemStatsOptionsGen<F, I>,
-        item_ids: impl Iterator<Item = I>,
+        item_ids: impl IntoIterator<Item = I>,
     ) -> Self {
         self.item_options.add_overrides(options, item_ids);
         self

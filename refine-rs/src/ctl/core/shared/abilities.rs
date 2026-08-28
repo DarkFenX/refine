@@ -14,7 +14,7 @@ impl Abilities {
     pub(in crate::ctl) const fn new() -> Self {
         Self { data: Vec::new() }
     }
-    pub(in crate::ctl) fn extend(&mut self, effect_modes: impl Iterator<Item = (rc::AbilityId, bool)>) {
+    pub(in crate::ctl) fn extend(&mut self, effect_modes: impl IntoIterator<Item = (rc::AbilityId, bool)>) {
         self.data.extend(effect_modes);
     }
     pub(in crate::ctl::core) fn apply(&self, core_fighter: &mut rc::FighterMut) {

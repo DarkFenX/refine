@@ -44,11 +44,11 @@ impl BoosterAddCmd {
         self.state = Some(state);
         self
     }
-    pub fn with_side_effects(mut self, side_effects: impl Iterator<Item = (EffectId, bool)>) -> Self {
+    pub fn with_side_effects(mut self, side_effects: impl IntoIterator<Item = (EffectId, bool)>) -> Self {
         self.side_effects.extend(side_effects);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) -> Self {
         self.effect_modes.extend(effect_modes);
         self
     }

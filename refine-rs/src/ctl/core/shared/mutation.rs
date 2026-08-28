@@ -9,7 +9,7 @@ impl AddMutation {
     pub fn new(mutator_id: ItemTypeId) -> Self {
         Self { mutator_id, .. }
     }
-    pub fn with_attrs(mut self, attrs: impl Iterator<Item = (AttrId, AttrMutation)>) -> Self {
+    pub fn with_attrs(mut self, attrs: impl IntoIterator<Item = (AttrId, AttrMutation)>) -> Self {
         self.attrs.extend(attrs);
         self
     }
@@ -28,7 +28,7 @@ impl ChangeMutation {
         self.mutator_id = Some(mutator_id);
         self
     }
-    pub fn with_attrs(mut self, attrs: impl Iterator<Item = (AttrId, Option<AttrMutation>)>) -> Self {
+    pub fn with_attrs(mut self, attrs: impl IntoIterator<Item = (AttrId, Option<AttrMutation>)>) -> Self {
         self.attrs.extend(attrs);
         self
     }

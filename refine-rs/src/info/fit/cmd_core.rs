@@ -57,7 +57,7 @@ impl FitInfoCmd {
         self.item_mode.set_default(mode);
         self
     }
-    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl IntoIterator<Item = ItemId>) -> Self {
         self.item_mode.add_overrides(mode, item_ids);
         self
     }
@@ -75,7 +75,7 @@ impl FitInfoCmdBr {
         self.item_mode.set_default(mode);
         self
     }
-    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl IntoIterator<Item = ItemIdBr>) -> Self {
         self.item_mode.add_overrides(mode, item_ids);
         self
     }

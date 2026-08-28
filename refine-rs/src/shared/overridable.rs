@@ -28,8 +28,8 @@ impl<K, V> OvrdCompact<K, V> {
     pub(crate) fn set_default(&mut self, default: V) {
         self.default = default;
     }
-    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
-        self.overrides.push((value, keys.collect()))
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl IntoIterator<Item = K>) {
+        self.overrides.push((value, keys.into_iter().collect()))
     }
 }
 
@@ -65,8 +65,8 @@ where
     pub(crate) fn set_default(&mut self, default: V) {
         self.default = default;
     }
-    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
-        self.overrides.extend(keys.map(|key| (key, value)))
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl IntoIterator<Item = K>) {
+        self.overrides.extend(keys.into_iter().map(|key| (key, value)))
     }
 }
 
@@ -94,10 +94,10 @@ impl<K, V> OvrdMapHeavy<K, V>
 where
     K: Eq + Hash,
 {
-    pub(crate) fn add_overrides(&mut self, value: V, keys: impl Iterator<Item = K>) {
+    pub(crate) fn add_overrides(&mut self, value: V, keys: impl IntoIterator<Item = K>) {
         let index = self.override_vals.len();
         self.override_vals.push(value);
-        self.override_refs.extend(keys.map(|key| (key, index)));
+        self.override_refs.extend(keys.into_iter().map(|key| (key, index)));
     }
     pub(crate) fn get(&self, key: &K) -> &V {
         match self.override_refs.get(key) {
@@ -169,7 +169,7 @@ where
             override_vals: Vec::with_capacity(compact.overrides.len()),
         };
         for (value, keys) in compact.overrides.into_iter() {
-            heavy.add_overrides(value.into(), keys.into_iter());
+            heavy.add_overrides(value.into(), keys);
         }
         heavy
     }

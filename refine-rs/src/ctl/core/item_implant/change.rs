@@ -44,7 +44,7 @@ impl ImplantChangeCmd {
         self.state = Some(state);
         self
     }
-    pub fn with_effect_modes(mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) -> Self {
+    pub fn with_effect_modes(mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) -> Self {
         self.effect_modes.extend(effect_modes);
         self
     }

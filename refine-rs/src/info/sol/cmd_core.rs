@@ -51,7 +51,7 @@ impl SolInfoCmd {
         self.fleet_mode.set_default(mode);
         self
     }
-    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetId>) -> Self {
+    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl IntoIterator<Item = FleetId>) -> Self {
         self.fleet_mode.add_overrides(mode, fleet_ids);
         self
     }
@@ -59,7 +59,7 @@ impl SolInfoCmd {
         self.fit_mode.set_default(mode);
         self
     }
-    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitId>) -> Self {
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl IntoIterator<Item = FitId>) -> Self {
         self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
@@ -67,7 +67,7 @@ impl SolInfoCmd {
         self.item_mode.set_default(mode);
         self
     }
-    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemId>) -> Self {
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl IntoIterator<Item = ItemId>) -> Self {
         self.item_mode.add_overrides(mode, item_ids);
         self
     }
@@ -85,7 +85,7 @@ impl SolInfoCmdBr {
         self.fleet_mode.set_default(mode);
         self
     }
-    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl Iterator<Item = FleetIdBr>) -> Self {
+    pub fn with_fleet_overrides(mut self, mode: FleetInfoMode, fleet_ids: impl IntoIterator<Item = FleetIdBr>) -> Self {
         self.fleet_mode.add_overrides(mode, fleet_ids);
         self
     }
@@ -93,7 +93,7 @@ impl SolInfoCmdBr {
         self.fit_mode.set_default(mode);
         self
     }
-    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl Iterator<Item = FitIdBr>) -> Self {
+    pub fn with_fit_overrides(mut self, mode: FitInfoMode, fit_ids: impl IntoIterator<Item = FitIdBr>) -> Self {
         self.fit_mode.add_overrides(mode, fit_ids);
         self
     }
@@ -101,7 +101,7 @@ impl SolInfoCmdBr {
         self.item_mode.set_default(mode);
         self
     }
-    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl Iterator<Item = ItemIdBr>) -> Self {
+    pub fn with_item_overrides(mut self, mode: ItemInfoMode, item_ids: impl IntoIterator<Item = ItemIdBr>) -> Self {
         self.item_mode.add_overrides(mode, item_ids);
         self
     }

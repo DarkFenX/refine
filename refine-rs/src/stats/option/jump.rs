@@ -40,7 +40,7 @@ impl<F> StatOptionJumpGen<F> {
         self.range = range;
         self
     }
-    pub fn with_passenger_fit_ids(mut self, passenger_fit_ids: impl Iterator<Item = F>) -> Self {
+    pub fn with_passenger_fit_ids(mut self, passenger_fit_ids: impl IntoIterator<Item = F>) -> Self {
         self.passenger_fit_ids.extend(passenger_fit_ids);
         self
     }

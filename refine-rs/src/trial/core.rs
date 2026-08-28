@@ -53,7 +53,7 @@ impl<I> FitTryItemsCmdGen<I> {
         self.val_options = val_options;
         self
     }
-    pub fn with_type_ids(mut self, type_ids: impl Iterator<Item = ItemTypeId>) -> Self {
+    pub fn with_type_ids(mut self, type_ids: impl IntoIterator<Item = ItemTypeId>) -> Self {
         self.type_ids.extend(type_ids);
         self
     }

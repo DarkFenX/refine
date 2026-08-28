@@ -55,7 +55,7 @@ impl<L, F, I> SolStatsCmdGen<L, F, I> {
     pub fn with_fleet_overrides(
         mut self,
         options: FleetStatsOptionsGen<I>,
-        fleet_ids: impl Iterator<Item = L>,
+        fleet_ids: impl IntoIterator<Item = L>,
     ) -> Self {
         self.fleet_options.add_overrides(options, fleet_ids);
         self
@@ -64,7 +64,11 @@ impl<L, F, I> SolStatsCmdGen<L, F, I> {
         self.fit_options.set_default(options);
         self
     }
-    pub fn with_fit_overrides(mut self, options: FitStatsOptionsGen<F, I>, fit_ids: impl Iterator<Item = F>) -> Self {
+    pub fn with_fit_overrides(
+        mut self,
+        options: FitStatsOptionsGen<F, I>,
+        fit_ids: impl IntoIterator<Item = F>,
+    ) -> Self {
         self.fit_options.add_overrides(options, fit_ids);
         self
     }
@@ -75,7 +79,7 @@ impl<L, F, I> SolStatsCmdGen<L, F, I> {
     pub fn with_item_overrides(
         mut self,
         options: ItemStatsOptionsGen<F, I>,
-        item_ids: impl Iterator<Item = I>,
+        item_ids: impl IntoIterator<Item = I>,
     ) -> Self {
         self.item_options.add_overrides(options, item_ids);
         self
