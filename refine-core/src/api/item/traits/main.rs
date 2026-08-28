@@ -137,12 +137,14 @@ pub trait ItemMutCommon: ItemCommon {
             &mut reuse_eupdates,
         );
     }
-    fn set_effect_modes(&mut self, effect_modes: impl Iterator<Item = (EffectId, EffectMode)>) {
+    fn set_effect_modes(&mut self, effect_modes: impl IntoIterator<Item = (EffectId, EffectMode)>) {
         let item_uid = self.get_uid();
         let mut reuse_eupdates = UEffectUpdates::new();
         self.get_sol_mut().internal_set_effect_id_modes(
             item_uid,
-            effect_modes.map(|(effect_id, effect_mode)| (effect_id.into_aid(), effect_mode)),
+            effect_modes
+                .into_iter()
+                .map(|(effect_id, effect_mode)| (effect_id.into_aid(), effect_mode)),
             &mut reuse_eupdates,
         );
     }

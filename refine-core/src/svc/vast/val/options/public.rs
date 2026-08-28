@@ -490,8 +490,8 @@ impl<I> ValEnabled<I> {
     ///
     /// Every validation failure is attached to an item. Items listed here will not be returned as
     /// validation failures. If all validation's failures are known, it is passed.
-    pub fn with_kfs(mut self, kfs: impl Iterator<Item = I>) -> Self {
-        self.kfs = kfs.collect();
+    pub fn with_kfs(mut self, kfs: impl IntoIterator<Item = I>) -> Self {
+        self.kfs = kfs.into_iter().collect();
         self
     }
 }

@@ -28,7 +28,7 @@ impl<I> StatCapSimStagger<I> {
     pub fn new(default: bool) -> Self {
         Self { default, .. }
     }
-    pub fn with_exception_item_ids(mut self, exception_item_ids: impl Iterator<Item = I>) -> Self {
+    pub fn with_exception_item_ids(mut self, exception_item_ids: impl IntoIterator<Item = I>) -> Self {
         self.exception_item_ids.extend(exception_item_ids);
         self
     }
