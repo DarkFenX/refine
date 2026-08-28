@@ -11,7 +11,7 @@ edition = "2024"
 refine-serde = { path = "../util/refine-serde", optional = true }
 # Non-local
 angle-sc = ">=2.0.1"
-cranelift-entity = ">=0.135.0"
+cranelift-entity = ">=0.135.1"
 derive_more = { version = ">=2.1.1", features = ["display"] }
 indexmap = ">=2.14.0"
 itertools = ">=0.15.0"
