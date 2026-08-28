@@ -259,7 +259,7 @@ fn sim_rearm_collect_effect_infos(
     fighter: &UFighter,
     effect_rids: impl ExactSizeIterator<Item = REffectId>,
 ) -> RMap<REffectId, EffectInfo> {
-    let mut effect_infos = RMap::new();
+    let mut effect_infos = RMap::with_capacity(effect_rids.len());
     for effect_rid in effect_rids {
         match get_effect_info(ctx, calc, item_uid, fighter, effect_rid) {
             Some(effect_info) => effect_infos.insert(effect_rid, effect_info),
