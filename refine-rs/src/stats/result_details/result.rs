@@ -5,6 +5,16 @@ pub enum StatResult<T, EO, EI> {
     Error(EO),
 }
 impl<T, EO, EI> StatResult<T, EO, EI> {
+    /// Get stat result by index.
+    ///
+    /// In case of any errors, or if index is out of bounds, None is returned.
+    pub fn get(&self, index: usize) -> Option<&T> {
+        match self {
+            Self::NotRequested => None,
+            Self::Result(results) => results.get(index).and_then(|v| v.as_ref().ok()),
+            Self::Error(..) => None,
+        }
+    }
     pub fn unwrap(self) -> Vec<Result<T, EI>>
     where
         EO: std::fmt::Debug,
