@@ -1,3 +1,13 @@
+// Info commands are special in one regard: they use 2 separate formats to store backref-capable IDs
+// and regular IDs. As such, they were not transformed into a generic form which could store either.
+//
+// Backref-capable commands use format which minimizes friction from used container types: plain
+// vector is used.
+//
+// Regular ID ones use hashmap, because this format is the one consumed by info getters, and they
+// need convenient access to the data. This saves one conversion (which can potentially involve many
+// allocations, depending on override count).
+
 pub(crate) use fit::FitInfoEnumCmd;
 pub use fit::{
     FitGetFitInfoError, FitInfo, FitInfoCmd, FitInfoCmdBr, FitInfoEnumCmdBr, FitInfoEnumError, FitInfoExt, FitInfoMode,
