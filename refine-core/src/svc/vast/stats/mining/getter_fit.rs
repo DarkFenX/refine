@@ -20,7 +20,7 @@ impl Vast {
         reuse_cseq_map: &mut CseqMap,
         ctx: SvcCtx,
         calc: &mut Calc,
-        fit_uids: impl ExactSizeIterator<Item = UFitId>,
+        fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatMiningItemKinds,
         time_options: StatTimeOptions,
         resource_kind: StatMiningResourceKind,

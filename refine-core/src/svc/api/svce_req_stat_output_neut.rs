@@ -10,7 +10,7 @@ impl Svc {
         &mut self,
         reuse_cseq_map: &mut CseqMap,
         u_data: &UData,
-        fit_uids: impl ExactSizeIterator<Item = UFitId>,
+        fit_uids: impl Iterator<Item = UFitId>,
         item_kinds: StatNeutItemKinds,
         time_options: StatTimeOptions,
         projectee_uid: Option<UItemId>,
