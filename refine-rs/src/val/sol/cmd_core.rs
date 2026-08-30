@@ -78,24 +78,8 @@ impl<F, I> SolValCmdGen<F, I> {
 }
 
 impl SolValCmd {
-    pub(crate) fn execute_owned(self, core_sol: &mut rc::SolarSystem) -> SolValResult {
-        let core_options = rc::val::ValOptionsSol {
-            fit_ids: self.fit_ids,
-            options: self.options,
-        };
-        match self.info_mode {
-            ValResultMode::Simple => SolValResult {
-                passed: core_sol.validate_fast(&core_options),
-                details: None,
-            },
-            ValResultMode::Detailed => {
-                let details = core_sol.validate_verbose(&core_options);
-                SolValResult {
-                    passed: details.all_passed(),
-                    details: Some(details),
-                }
-            }
-        }
+    pub(crate) fn execute_owned(mut self, core_sol: &mut rc::SolarSystem) -> SolValResult {
+        self.execute_borrowed(core_sol)
     }
     pub(crate) fn execute_borrowed(&mut self, core_sol: &mut rc::SolarSystem) -> SolValResult {
         let mut core_options = rc::val::ValOptionsSol {

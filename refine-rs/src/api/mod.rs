@@ -6,7 +6,7 @@ pub use refine::Refine;
 pub use sol::SolarSystemIdParseError;
 pub use sol::{
     SolAddError, SolFittingAppError, SolFittingAppResp, SolGetError, SolHybridBatchError, SolRemoveError,
-    SolSwitchSrcError, SolarSystem, SolarSystemId,
+    SolSwitchSrcError, SolarSystem, SolarSystemId, ValCheckerResult,
 };
 pub use src::{
     Src, SrcAddError, SrcAlias, SrcAliasPruneInitError, SrcAliasStrictInitError, SrcGetError, SrcRemoveError,

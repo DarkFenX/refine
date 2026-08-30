@@ -8,28 +8,37 @@ use crate::{
 
 const FIX_LIMIT: usize = 20;
 
+/// Verdict of a validation checker.
 pub enum ValCheckerResult<E> {
+    /// Validation passes; enclosed validation result is then returned, along with all the extra
+    /// data the method provides.
     Pass(SolValResult),
+    /// Attempt to fix validation failures by executing enclosed control commands.
     Fix(Vec<SolChangeEnumCmdBr>),
+    /// Sol is in an unacceptable state for validation checker.
     Fail(E),
 }
 
 impl SolarSystem<'_> {
     /// Apply changes requested by control commands and run validation of the solar system. After
-    /// validation is complete, the evaluator function is called, which decides fate of the
-    /// transaction: if it returns an error, solar system state before any changes is restored, and
-    /// if it does not, info and stats are generated, and all the info is returned.
+    /// validation is complete, the validation checker decides fate of the transaction: it can
+    /// accept validation results, reject them, or request fixes.
+    ///
+    /// Fixes are applied as control commands, after which validation is repeated and the checker is
+    /// called again, until it accepts the results or exhausts the fix limit. Once results are
+    /// accepted, info and stats are generated, and all the info is returned; in every other case,
+    /// solar system state before any changes is restored.
     #[tracing::instrument(name = "sol-app", level = "trace", skip_all)]
     pub async fn fitting_app_batch<VC, VCE>(
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,
         val_cmd: SolValCmdBr,
-        val_checker: VC,
+        mut val_checker: VC,
         info_cmd: SolInfoCmdBr,
         stats_cmd: SolStatsCmdBr,
     ) -> Result<SolFittingAppResp, SolFittingAppError<VCE>>
     where
-        VC: Fn(SolValResult) -> ValCheckerResult<VCE> + Send + Sync + 'static,
+        VC: FnMut(SolValResult) -> ValCheckerResult<VCE> + Send + 'static,
         VCE: std::error::Error + Send + Sync + 'static,
     {
         // Variables for move
@@ -60,21 +69,21 @@ impl SolarSystem<'_> {
                         if fix_cycle >= FIX_LIMIT {
                             return Err(SolFittingAppError::ValCheckerFixLimit);
                         }
-                        fix_cycle += 1;
                         // Fix commands' backreferences are resolved only relatively initially
                         // passed control commands, and their responses are recorded separately
-                        for fix_cmd in fix_cmds.into_iter() {
+                        for (index, fix_cmd) in fix_cmds.into_iter().enumerate() {
                             let fix_cmd_resp = fix_cmd
                                 .br_resolve(&ctl_cmd_resps)
-                                .map_err(SolFittingAppError::ValCheckerFixBrResolve)?
+                                .map_err(|br_err| SolFittingAppError::from_fix_br_resolve(fix_cycle, index, br_err))?
                                 .execute(core_sol)
-                                .map_err(SolFittingAppError::ValCheckerFixExec)?;
+                                .map_err(|exec_err| SolFittingAppError::from_fix_exec(fix_cycle, index, exec_err))?;
                             fix_ctl_cmd_resps.append(fix_cmd_resp);
                         }
+                        fix_cycle += 1;
                         val_result = val_cmd.execute_borrowed(core_sol);
                     }
                     ValCheckerResult::Fail(checker_error) => {
-                        return Err(SolFittingAppError::ValCheckerInvalid(checker_error));
+                        return Err(SolFittingAppError::ValCheckerFail(checker_error));
                     }
                 }
             };
@@ -111,13 +120,13 @@ where
     CtlBrResolve(usize, #[source] BrResolveError),
     #[error("control command #{0} failed")]
     CtlExec(usize, #[source] SolChangeEnumError),
-    #[error("validation checker concluded that sol is in invalid state")]
-    ValCheckerInvalid(#[source] E),
-    #[error("validation checker fix failed on backref resolution")]
-    ValCheckerFixBrResolve(#[source] BrResolveError),
-    #[error("validation checker fix failed on execution")]
-    ValCheckerFixExec(#[source] SolChangeEnumError),
-    #[error("validation checker attempted to fix sol too many times")]
+    #[error("validation conclusively failed")]
+    ValCheckerFail(#[source] E),
+    #[error("validation fix cycle #{0} command #{1} failed")]
+    ValCheckerFixBrResolve(usize, usize, #[source] BrResolveError),
+    #[error("validation fix cycle #{0} command #{1} failed")]
+    ValCheckerFixExec(usize, usize, #[source] SolChangeEnumError),
+    #[error("validation fix attempted more than {} times", FIX_LIMIT)]
     ValCheckerFixLimit,
 }
 impl<E> SolFittingAppError<E>
@@ -129,5 +138,11 @@ where
     }
     fn from_ctl_exec(cmd_idx: usize, ctl_err: SolChangeEnumError) -> Self {
         Self::CtlExec(cmd_idx, ctl_err)
+    }
+    fn from_fix_br_resolve(fix_cycle: usize, cmd_idx: usize, br_err: BrResolveError) -> Self {
+        Self::ValCheckerFixBrResolve(fix_cycle, cmd_idx, br_err)
+    }
+    fn from_fix_exec(fix_cycle: usize, cmd_idx: usize, ctl_err: SolChangeEnumError) -> Self {
+        Self::ValCheckerFixExec(fix_cycle, cmd_idx, ctl_err)
     }
 }
