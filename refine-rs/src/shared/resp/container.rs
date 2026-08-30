@@ -32,6 +32,9 @@ impl IntoIterator for CmdResps {
 // Non-public
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 impl CmdResps {
+    pub(crate) fn new() -> Self {
+        Self { data: Vec::new() }
+    }
     pub(crate) fn with_capacity(capacity: usize) -> Self {
         Self {
             data: Vec::with_capacity(capacity),

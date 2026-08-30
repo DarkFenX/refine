@@ -63,7 +63,7 @@ impl<F, I> SolValEnumCmdGen<F, I> {
 impl SolValEnumCmd {
     pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> Result<CmdResp, SolValEnumError> {
         Ok(match self {
-            Self::SolValidate(cmd) => cmd.execute(core_sol).into(),
+            Self::SolValidate(cmd) => cmd.execute_owned(core_sol).into(),
             Self::FitValidate(cmd) => cmd.execute(core_sol)?.into(),
         })
     }

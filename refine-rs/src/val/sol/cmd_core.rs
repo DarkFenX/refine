@@ -78,7 +78,7 @@ impl<F, I> SolValCmdGen<F, I> {
 }
 
 impl SolValCmd {
-    pub(crate) fn execute(self, core_sol: &mut rc::SolarSystem) -> SolValResult {
+    pub(crate) fn execute_owned(self, core_sol: &mut rc::SolarSystem) -> SolValResult {
         let core_options = rc::val::ValOptionsSol {
             fit_ids: self.fit_ids,
             options: self.options,
@@ -96,5 +96,30 @@ impl SolValCmd {
                 }
             }
         }
+    }
+    pub(crate) fn execute_borrowed(&mut self, core_sol: &mut rc::SolarSystem) -> SolValResult {
+        let mut core_options = rc::val::ValOptionsSol {
+            fit_ids: Vec::default(),
+            options: ValOptions::default(),
+        };
+        // Avoid allocations by temporarily moving data to core options struct
+        std::mem::swap(&mut self.fit_ids, &mut core_options.fit_ids);
+        std::mem::swap(&mut self.options, &mut core_options.options);
+        let result = match self.info_mode {
+            ValResultMode::Simple => SolValResult {
+                passed: core_sol.validate_fast(&core_options),
+                details: None,
+            },
+            ValResultMode::Detailed => {
+                let details = core_sol.validate_verbose(&core_options);
+                SolValResult {
+                    passed: details.all_passed(),
+                    details: Some(details),
+                }
+            }
+        };
+        std::mem::swap(&mut self.fit_ids, &mut core_options.fit_ids);
+        std::mem::swap(&mut self.options, &mut core_options.options);
+        result
     }
 }

@@ -1,10 +1,18 @@
 use crate::{
     CmdResps, SolChangeEnumCmdBr, SolInfo, SolInfoCmdBr, SolarSystem,
     err::{BrResolveError, SolChangeEnumError},
-    shared::{CmdResidue, ResidueResolver},
+    shared::SolBackup,
     stats::{SolStatsCmdBr, SolStatsResp},
     val::{SolValCmdBr, SolValResult},
 };
+
+const FIX_LIMIT: usize = 20;
+
+pub enum ValCheckerResult<E> {
+    Pass(SolValResult),
+    Fix(Vec<SolChangeEnumCmdBr>),
+    Fail(E),
+}
 
 impl SolarSystem<'_> {
     /// Apply changes requested by control commands and run validation of the solar system. After
@@ -12,29 +20,24 @@ impl SolarSystem<'_> {
     /// transaction: if it returns an error, solar system state before any changes is restored, and
     /// if it does not, info and stats are generated, and all the info is returned.
     #[tracing::instrument(name = "sol-app", level = "trace", skip_all)]
-    pub async fn fitting_app_batch<F, E>(
+    pub async fn fitting_app_batch<VC, VCE>(
         &mut self,
         ctl_cmds: Vec<SolChangeEnumCmdBr>,
         val_cmd: SolValCmdBr,
-        evaluator: F,
+        val_checker: VC,
         info_cmd: SolInfoCmdBr,
         stats_cmd: SolStatsCmdBr,
-    ) -> Result<SolFittingAppResp, SolFittingAppError<E>>
+    ) -> Result<SolFittingAppResp, SolFittingAppError<VCE>>
     where
-        F: FnOnce(SolValResult) -> Result<SolValResult, E> + Send + Sync + 'static,
-        E: std::error::Error + Send + Sync + 'static,
+        VC: Fn(SolValResult) -> ValCheckerResult<VCE> + Send + Sync + 'static,
+        VCE: std::error::Error + Send + Sync + 'static,
     {
-        // Evaluator does not modify solar system, but can fail, so it has a separate entry
-        let sol_backup =
-            ResidueResolver::new().add_cmds(ctl_cmds.iter().map(|ctl_cmd| ctl_cmd.exec_residue()).chain([
-                val_cmd.exec_residue(),
-                CmdResidue::ImmutFallible,
-                info_cmd.exec_residue(),
-                stats_cmd.exec_residue(),
-            ]));
         // Variables for move
         let sol_ctx = self.get_ctx();
-        self.exec_standard(sol_backup, move |core_sol| {
+        // Always backup sol, because val checker alone can completely screw it in a way not
+        // predictable before it's actually ran
+        self.exec_standard(SolBackup::Needed, move |core_sol| {
+            // Execute received control commands
             let mut ctl_cmd_resps = CmdResps::with_capacity(ctl_cmds.len());
             for (index, ctl_cmd) in ctl_cmds.into_iter().enumerate() {
                 let ctl_cmd_resp = ctl_cmd
@@ -44,14 +47,44 @@ impl SolarSystem<'_> {
                     .map_err(|exec_err| SolFittingAppError::from_ctl_exec(index, exec_err))?;
                 ctl_cmd_resps.append(ctl_cmd_resp);
             }
-            let val_result = val_cmd.br_resolve(&ctl_cmd_resps).execute(core_sol);
-            let val_result = evaluator(val_result).map_err(SolFittingAppError::Evaluator)?;
+            // Run validation
+            let mut val_cmd = val_cmd.br_resolve(&ctl_cmd_resps);
+            let mut val_result = val_cmd.execute_borrowed(core_sol);
+            // Use provided function to evaluate validation results, and if necessary try to fix sol
+            let mut fix_ctl_cmd_resps = CmdResps::new();
+            let mut fix_cycle = 0;
+            let val_result = loop {
+                match val_checker(val_result) {
+                    ValCheckerResult::Pass(val_result) => break val_result,
+                    ValCheckerResult::Fix(fix_cmds) => {
+                        if fix_cycle >= FIX_LIMIT {
+                            return Err(SolFittingAppError::ValCheckerFixLimit);
+                        }
+                        fix_cycle += 1;
+                        // Fix commands' backreferences are resolved only relatively initially
+                        // passed control commands, and their responses are recorded separately
+                        for fix_cmd in fix_cmds.into_iter() {
+                            let fix_cmd_resp = fix_cmd
+                                .br_resolve(&ctl_cmd_resps)
+                                .map_err(SolFittingAppError::ValCheckerFixBrResolve)?
+                                .execute(core_sol)
+                                .map_err(SolFittingAppError::ValCheckerFixExec)?;
+                            fix_ctl_cmd_resps.append(fix_cmd_resp);
+                        }
+                        val_result = val_cmd.execute_borrowed(core_sol);
+                    }
+                    ValCheckerResult::Fail(checker_error) => {
+                        return Err(SolFittingAppError::ValCheckerInvalid(checker_error));
+                    }
+                }
+            };
             let info = info_cmd
                 .br_resolve(&ctl_cmd_resps)
                 .execute(sol_ctx.sol_id, sol_ctx.src_alias, core_sol);
             let stats = stats_cmd.br_resolve(&ctl_cmd_resps).execute(core_sol);
             Ok(SolFittingAppResp {
                 ctl: ctl_cmd_resps,
+                ctl_fix: fix_ctl_cmd_resps,
                 val: val_result,
                 info,
                 stats,
@@ -63,6 +96,7 @@ impl SolarSystem<'_> {
 
 pub struct SolFittingAppResp {
     pub ctl: CmdResps,
+    pub ctl_fix: CmdResps,
     pub val: SolValResult,
     pub info: SolInfo,
     pub stats: SolStatsResp,
@@ -77,8 +111,14 @@ where
     CtlBrResolve(usize, #[source] BrResolveError),
     #[error("control command #{0} failed")]
     CtlExec(usize, #[source] SolChangeEnumError),
-    #[error("evaluator failed")]
-    Evaluator(#[source] E),
+    #[error("validation checker concluded that sol is in invalid state")]
+    ValCheckerInvalid(#[source] E),
+    #[error("validation checker fix failed on backref resolution")]
+    ValCheckerFixBrResolve(#[source] BrResolveError),
+    #[error("validation checker fix failed on execution")]
+    ValCheckerFixExec(#[source] SolChangeEnumError),
+    #[error("validation checker attempted to fix sol too many times")]
+    ValCheckerFixLimit,
 }
 impl<E> SolFittingAppError<E>
 where

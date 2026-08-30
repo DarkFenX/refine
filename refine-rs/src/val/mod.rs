@@ -10,6 +10,5 @@ mod result_mode;
 mod sol;
 
 pub mod err {
-
     pub use crate::val::{fit::FitGetFitValError, sol::SolValEnumError};
 }
