@@ -10,13 +10,13 @@ const FIX_LIMIT: usize = 20;
 
 /// Verdict of a validation checker.
 pub enum ValCheckerResult<E> {
-    /// Validation passes; enclosed validation result is then returned, along with all the extra
-    /// data the method provides.
-    Pass(SolValResult),
+    /// Validation results are accepted; enclosed validation result is then returned, along with all
+    /// the extra data the method provides.
+    Accept(SolValResult),
     /// Attempt to fix validation failures by executing enclosed control commands.
     Fix(Vec<SolChangeEnumCmdBr>),
     /// Sol is in an unacceptable state for validation checker.
-    Fail(E),
+    Veto(E),
 }
 
 impl SolarSystem<'_> {
@@ -64,7 +64,7 @@ impl SolarSystem<'_> {
             let mut fix_cycle = 0;
             let val_result = loop {
                 match val_checker(val_result) {
-                    ValCheckerResult::Pass(val_result) => break val_result,
+                    ValCheckerResult::Accept(val_result) => break val_result,
                     ValCheckerResult::Fix(fix_cmds) => {
                         if fix_cycle >= FIX_LIMIT {
                             return Err(SolFittingAppError::ValCheckerFixLimit);
@@ -82,8 +82,8 @@ impl SolarSystem<'_> {
                         fix_cycle += 1;
                         val_result = val_cmd.execute_borrowed(core_sol);
                     }
-                    ValCheckerResult::Fail(checker_error) => {
-                        return Err(SolFittingAppError::ValCheckerFail(checker_error));
+                    ValCheckerResult::Veto(checker_error) => {
+                        return Err(SolFittingAppError::ValCheckerVeto(checker_error));
                     }
                 }
             };
@@ -120,8 +120,8 @@ where
     CtlBrResolve(usize, #[source] BrResolveError),
     #[error("control command #{0} failed")]
     CtlExec(usize, #[source] SolChangeEnumError),
-    #[error("validation conclusively failed")]
-    ValCheckerFail(#[source] E),
+    #[error("validation results are vetoed")]
+    ValCheckerVeto(#[source] E),
     #[error("validation fix cycle #{0} command #{1} failed")]
     ValCheckerFixBrResolve(usize, usize, #[source] BrResolveError),
     #[error("validation fix cycle #{0} command #{1} failed")]
