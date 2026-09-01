@@ -1,7 +1,7 @@
 use crate::num::{Count, PValue, UnitInterval};
 
 /// Controls on which spool cycle spoolable modules will be set.
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug)]
 pub enum Spool {
     /// Module will use this number, or max spool cycles supported by module, whichever is lower.
     Cycles(Count),
@@ -40,6 +40,22 @@ pub struct ItemSpoolInfo {
 ////////////////////////////////////////////////////////////////////////////////////////////////////
 // Custom de/serialization
 ////////////////////////////////////////////////////////////////////////////////////////////////////
+const CYCLES_PREFIX: &str = "c";
+const TIME_PREFIX: &str = "t";
+const SPOOL_SCALE_PREFIX: &str = "ss";
+const CYCLE_SCALE_PREFIX: &str = "cs";
+
+impl std::fmt::Display for Spool {
+    fn fmt(&self, f: &mut std::fmt::Formatter<'_>) -> std::fmt::Result {
+        match self {
+            Self::Cycles(count) => write!(f, "{CYCLES_PREFIX}{count}"),
+            Self::Time(time) => write!(f, "{TIME_PREFIX}{time}"),
+            Self::SpoolScale(value) => write!(f, "{SPOOL_SCALE_PREFIX}{value}"),
+            Self::CycleScale(value) => write!(f, "{CYCLE_SCALE_PREFIX}{value}"),
+        }
+    }
+}
+
 #[cfg(feature = "serde")]
 mod custom_serde {
     use std::str::FromStr;
@@ -51,23 +67,12 @@ mod custom_serde {
 
     use super::*;
 
-    const CYCLES_PREFIX: &str = "c";
-    const TIME_PREFIX: &str = "t";
-    const SPOOL_SCALE_PREFIX: &str = "ss";
-    const CYCLE_SCALE_PREFIX: &str = "cs";
-
     impl Serialize for Spool {
         fn serialize<S>(&self, serializer: S) -> Result<S::Ok, S::Error>
         where
             S: Serializer,
         {
-            let string = match self {
-                Self::Cycles(count) => format!("{CYCLES_PREFIX}{count}"),
-                Self::Time(time) => format!("{TIME_PREFIX}{time}"),
-                Self::SpoolScale(value) => format!("{SPOOL_SCALE_PREFIX}{value}"),
-                Self::CycleScale(value) => format!("{CYCLE_SCALE_PREFIX}{value}"),
-            };
-            serializer.serialize_str(&string)
+            serializer.serialize_str(&self.to_string())
         }
     }
 
