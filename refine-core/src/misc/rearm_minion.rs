@@ -4,7 +4,8 @@
     derive(serde::Serialize, serde::Deserialize),
     serde(rename_all = "snake_case")
 )]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
+#[display(rename_all = "snake_case")]
 pub enum RearmMinion {
     /// No rearm - fighter is kept out even when some of its abilities are out of charges.
     Disabled,

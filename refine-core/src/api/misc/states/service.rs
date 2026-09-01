@@ -6,7 +6,8 @@ use crate::rd::RState;
     derive(serde::Serialize, serde::Deserialize),
     serde(rename_all = "snake_case")
 )]
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Eq, PartialEq, Debug, derive_more::Display)]
+#[display(rename_all = "snake_case")]
 pub enum ServiceState {
     Disabled,
     Offline,
