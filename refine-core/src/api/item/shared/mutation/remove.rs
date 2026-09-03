@@ -1,5 +1,5 @@
 use crate::{
-    api::{EffectiveMutationMut, IncompleteMutationMut, MutationMut},
+    api::{DormantMutationMut, EffectiveMutationMut, MutationMut},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItem, UItemId, err::ItemMutatedError},
 };
@@ -22,7 +22,7 @@ impl<'s> MutationMut<'s> {
     pub fn remove(self) {
         match self {
             MutationMut::Effective(effective_mutation) => effective_mutation.remove(),
-            MutationMut::Incomplete(incomplete_mutation) => incomplete_mutation.remove(),
+            MutationMut::Dormant(dormant_mutation) => dormant_mutation.remove(),
         }
     }
 }
@@ -36,7 +36,7 @@ impl<'s> EffectiveMutationMut<'s> {
     }
 }
 
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     pub fn remove(self) {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol

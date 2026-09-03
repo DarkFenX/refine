@@ -20,10 +20,9 @@ pub use item_stance::{Stance, StanceGetError, StanceMut};
 pub use item_subsystem::{Subsystem, SubsystemGetError, SubsystemMut};
 pub use item_sw_effect::{SwEffect, SwEffectGetError, SwEffectMut};
 pub use shared::{
-    AttrMutateRawError, EffectiveMutation, EffectiveMutationMut, FullMAttr, FullMAttrIter, FullMAttrMut,
-    IncompleteMutation, IncompleteMutationMut, Mutation, MutationAddError, MutationMut, Proj, ProjAddError,
-    ProjGetError, ProjIter, ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrGetError,
-    RawMAttrIter, RawMAttrMut,
+    AttrMutateRawError, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, FullMAttr,
+    FullMAttrIter, FullMAttrMut, Mutation, MutationAddError, MutationMut, Proj, ProjAddError, ProjGetError, ProjIter,
+    ProjMut, RangedProj, RangedProjIter, RangedProjMut, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut,
 };
 pub(in crate::api) use shared::{
     active_stat_prepare, active_stat_rollback, get_ship_riad, iter_projs, iter_ranged_projs,

@@ -3,13 +3,13 @@ use crate::{sol::SolarSystem, ud::UItemId};
 /// Mutation applied to an item.
 pub enum Mutation<'s> {
     Effective(EffectiveMutation<'s>),
-    Incomplete(IncompleteMutation<'s>),
+    Dormant(DormantMutation<'s>),
 }
 
 /// Mutation applied to an item.
 pub enum MutationMut<'s> {
     Effective(EffectiveMutationMut<'s>),
-    Incomplete(IncompleteMutationMut<'s>),
+    Dormant(DormantMutationMut<'s>),
 }
 
 /// Mutation which has enough prerequisites met to affect item it mutates.
@@ -36,11 +36,11 @@ impl<'s> EffectiveMutationMut<'s> {
 
 /// Mutation which doesn't have enough data available, thus doesn't change anything on the item it's
 /// applied to.
-pub struct IncompleteMutation<'s> {
+pub struct DormantMutation<'s> {
     pub(in crate::api) sol: &'s SolarSystem,
     pub(in crate::api) item_uid: UItemId,
 }
-impl<'s> IncompleteMutation<'s> {
+impl<'s> DormantMutation<'s> {
     pub(in crate::api) fn new(sol: &'s SolarSystem, item_uid: UItemId) -> Self {
         Self { sol, item_uid }
     }
@@ -48,11 +48,11 @@ impl<'s> IncompleteMutation<'s> {
 
 /// Mutation which doesn't have enough data available, thus doesn't change anything on the item it's
 /// applied to.
-pub struct IncompleteMutationMut<'s> {
+pub struct DormantMutationMut<'s> {
     pub(in crate::api) sol: &'s mut SolarSystem,
     pub(in crate::api) item_uid: UItemId,
 }
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     pub(in crate::api) fn new(sol: &'s mut SolarSystem, item_uid: UItemId) -> Self {
         Self { sol, item_uid }
     }

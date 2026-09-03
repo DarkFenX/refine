@@ -1,7 +1,6 @@
 use crate::{
     api::{
-        EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, ItemTypeId, Mutation,
-        MutationMut,
+        DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, ItemTypeId, Mutation, MutationMut,
     },
     sol::SolarSystem,
     ud::UItemId,
@@ -24,7 +23,7 @@ impl<'s> Mutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_mutator_type_id(),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.get_mutator_type_id(),
+            Self::Dormant(dormant_mutation) => dormant_mutation.get_mutator_type_id(),
         }
     }
 }
@@ -33,7 +32,7 @@ impl<'s> MutationMut<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_mutator_type_id(),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.get_mutator_type_id(),
+            Self::Dormant(dormant_mutation) => dormant_mutation.get_mutator_type_id(),
         }
     }
 }
@@ -49,12 +48,12 @@ impl<'s> EffectiveMutationMut<'s> {
     }
 }
 
-impl<'s> IncompleteMutation<'s> {
+impl<'s> DormantMutation<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }
 }
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     pub fn get_mutator_type_id(&self) -> ItemTypeId {
         self.sol.api_get_mutator_type_id(self.item_uid)
     }

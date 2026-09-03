@@ -1,5 +1,5 @@
 use crate::{
-    AttrId, EffectiveMutationMut, IncompleteMutationMut, ItemId, MutationMut, RawMAttrMut, SolarSystem, UnitInterval,
+    AttrId, DormantMutationMut, EffectiveMutationMut, ItemId, MutationMut, RawMAttrMut, SolarSystem, UnitInterval,
     ad::AAttrId, ud::UItemId,
 };
 
@@ -11,7 +11,7 @@ impl<'s> MutationMut<'s> {
     pub fn mutate_raw(&mut self, attr_id: AttrId, roll: UnitInterval) -> Result<RawMAttrMut<'_>, AttrMutateRawError> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.mutate_raw(attr_id, roll),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.mutate_raw(attr_id, roll),
+            Self::Dormant(dormant_mutation) => dormant_mutation.mutate_raw(attr_id, roll),
         }
     }
 }
@@ -26,7 +26,7 @@ impl<'s> EffectiveMutationMut<'s> {
     }
 }
 
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     /// Mutate an attribute with a roll quality.
     ///
     /// Accepts roll of any attribute, even if it is not defined by item mutator. In this case, roll

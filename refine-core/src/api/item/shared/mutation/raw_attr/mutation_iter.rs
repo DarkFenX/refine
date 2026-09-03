@@ -3,8 +3,8 @@ use lender::{ExactSizeLender, Lender, Lending, check_covariance};
 use crate::{
     ad::AAttrId,
     api::{
-        EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut,
-        RawMAttr, RawMAttrMut,
+        DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, Mutation, MutationMut, RawMAttr,
+        RawMAttrMut,
     },
     sol::SolarSystem,
     ud::UItemId,
@@ -15,7 +15,7 @@ impl<'s> Mutation<'s> {
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         let (sol, item_uid) = match self {
             Self::Effective(effective_mutation) => (effective_mutation.sol, effective_mutation.item_uid),
-            Self::Incomplete(incomplete_mutation) => (incomplete_mutation.sol, incomplete_mutation.item_uid),
+            Self::Dormant(dormant_mutation) => (dormant_mutation.sol, dormant_mutation.item_uid),
         };
         iter_raw_mattrs(sol, item_uid)
     }
@@ -26,7 +26,7 @@ impl<'s> MutationMut<'s> {
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         let (sol, item_uid) = match self {
             Self::Effective(effective_mutation) => (&*effective_mutation.sol, effective_mutation.item_uid),
-            Self::Incomplete(incomplete_mutation) => (&*incomplete_mutation.sol, incomplete_mutation.item_uid),
+            Self::Dormant(dormant_mutation) => (&*dormant_mutation.sol, dormant_mutation.item_uid),
         };
         iter_raw_mattrs(sol, item_uid)
     }
@@ -34,7 +34,7 @@ impl<'s> MutationMut<'s> {
     pub fn iter_raw_mattrs_mut(&mut self) -> RawMAttrIter<'_> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.iter_raw_mattrs_mut(),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.iter_raw_mattrs_mut(),
+            Self::Dormant(dormant_mutation) => dormant_mutation.iter_raw_mattrs_mut(),
         }
     }
 }
@@ -57,14 +57,14 @@ impl<'s> EffectiveMutationMut<'s> {
     }
 }
 
-impl<'s> IncompleteMutation<'s> {
+impl<'s> DormantMutation<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         iter_raw_mattrs(self.sol, self.item_uid)
     }
 }
 
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     /// Iterates over mutation's raw mutated attributes.
     pub fn iter_raw_mattrs(&self) -> impl ExactSizeIterator<Item = RawMAttr<'_>> {
         iter_raw_mattrs(self.sol, self.item_uid)

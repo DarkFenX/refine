@@ -1,5 +1,5 @@
 use crate::{
-    api::{EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut},
+    api::{DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, Mutation, MutationMut},
     sol::SolarSystem,
     ud::UItemId,
 };
@@ -8,13 +8,13 @@ impl SolarSystem {
     pub(in crate::api::item) fn api_get_item_mutation(&self, item_uid: UItemId) -> Option<Mutation<'_>> {
         item_has_mutation_cache(self, item_uid).map(|v| match v {
             true => Mutation::Effective(EffectiveMutation::new(self, item_uid)),
-            false => Mutation::Incomplete(IncompleteMutation::new(self, item_uid)),
+            false => Mutation::Dormant(DormantMutation::new(self, item_uid)),
         })
     }
     pub(in crate::api::item) fn api_get_item_mutation_mut(&mut self, item_uid: UItemId) -> Option<MutationMut<'_>> {
         item_has_mutation_cache(self, item_uid).map(|v| match v {
             true => MutationMut::Effective(EffectiveMutationMut::new(self, item_uid)),
-            false => MutationMut::Incomplete(IncompleteMutationMut::new(self, item_uid)),
+            false => MutationMut::Dormant(DormantMutationMut::new(self, item_uid)),
         })
     }
 }

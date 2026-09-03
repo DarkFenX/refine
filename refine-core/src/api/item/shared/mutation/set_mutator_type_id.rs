@@ -1,6 +1,6 @@
 use crate::{
     ad::AItemId,
-    api::{EffectiveMutationMut, IncompleteMutationMut, ItemTypeId, MutationMut},
+    api::{DormantMutationMut, EffectiveMutationMut, ItemTypeId, MutationMut},
     sol::SolarSystem,
     ud::{UEffectUpdates, UItem, UItemId, err::ItemMutatedError},
 };
@@ -25,7 +25,7 @@ impl<'s> MutationMut<'s> {
     pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.set_mutator_type_id(mutator_type_id),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.set_mutator_type_id(mutator_type_id),
+            Self::Dormant(dormant_mutation) => dormant_mutation.set_mutator_type_id(mutator_type_id),
         }
     }
 }
@@ -40,7 +40,7 @@ impl<'s> EffectiveMutationMut<'s> {
     }
 }
 
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     pub fn set_mutator_type_id(self, mutator_type_id: ItemTypeId) -> MutationMut<'s> {
         let mut reuse_eupdates = UEffectUpdates::new();
         self.sol

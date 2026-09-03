@@ -2,7 +2,7 @@ pub(in crate::api::item::shared::mutation) use abs_resolve::resolve_absolutes_in
 pub use add::MutationAddError;
 pub use full_attr::{FullMAttr, FullMAttrIter, FullMAttrMut};
 pub use mutation::{
-    EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, Mutation, MutationMut,
+    DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, Mutation, MutationMut,
 };
 pub use raw_attr::{AttrMutateRawError, RawMAttr, RawMAttrGetError, RawMAttrIter, RawMAttrMut};
 

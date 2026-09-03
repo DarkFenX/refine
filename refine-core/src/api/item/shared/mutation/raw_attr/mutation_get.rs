@@ -1,5 +1,5 @@
 use crate::{
-    AttrId, EffectiveMutation, EffectiveMutationMut, IncompleteMutation, IncompleteMutationMut, ItemId, Mutation,
+    AttrId, DormantMutation, DormantMutationMut, EffectiveMutation, EffectiveMutationMut, ItemId, Mutation,
     MutationMut, RawMAttr, RawMAttrMut, SolarSystem, ad::AAttrId, ud::UItemId,
 };
 
@@ -8,7 +8,7 @@ impl<'s> Mutation<'s> {
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_raw_mattr(attr_id),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.get_raw_mattr(attr_id),
+            Self::Dormant(dormant_mutation) => dormant_mutation.get_raw_mattr(attr_id),
         }
     }
 }
@@ -18,14 +18,14 @@ impl<'s> MutationMut<'s> {
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_raw_mattr(attr_id),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.get_raw_mattr(attr_id),
+            Self::Dormant(dormant_mutation) => dormant_mutation.get_raw_mattr(attr_id),
         }
     }
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr_mut(&mut self, attr_id: AttrId) -> Result<RawMAttrMut<'_>, RawMAttrGetError> {
         match self {
             Self::Effective(effective_mutation) => effective_mutation.get_raw_mattr_mut(attr_id),
-            Self::Incomplete(incomplete_mutation) => incomplete_mutation.get_raw_mattr_mut(attr_id),
+            Self::Dormant(dormant_mutation) => dormant_mutation.get_raw_mattr_mut(attr_id),
         }
     }
 }
@@ -48,14 +48,14 @@ impl<'s> EffectiveMutationMut<'s> {
     }
 }
 
-impl<'s> IncompleteMutation<'s> {
+impl<'s> DormantMutation<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
     }
 }
 
-impl<'s> IncompleteMutationMut<'s> {
+impl<'s> DormantMutationMut<'s> {
     /// Get mutation's raw mutated attribute for requested attribute ID.
     pub fn get_raw_mattr(&self, attr_id: AttrId) -> Result<RawMAttr<'_>, RawMAttrGetError> {
         get_raw_mattr(self.sol, self.item_uid, attr_id.into_aid())
