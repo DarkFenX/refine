@@ -17,10 +17,10 @@ pub use item::{
     AbilityInfo, AttrMutationInfo, AutochargeInfo, AutochargeInfoExt, BoosterInfo, BoosterInfoExt, CharacterInfo,
     CharacterInfoExt, ChargeInfo, ChargeInfoExt, DroneInfo, DroneInfoExt, FighterInfo, FighterInfoExt, FwEffectInfo,
     FwEffectInfoExt, ImplantInfo, ImplantInfoExt, ItemGetItemInfoError, ItemInfo, ItemInfoCmd, ItemInfoCmdBr,
-    ItemInfoMode, ItemMutationInfo, ModuleInfo, ModuleInfoExt, ProjEffectInfo, ProjEffectInfoExt, ProjInfo,
-    RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt, ShipInfo, ShipInfoExt, SideEffectInfo,
-    SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo, StanceInfoExt, SubsystemInfo, SubsystemInfoExt,
-    SwEffectInfo, SwEffectInfoExt,
+    ItemInfoMode, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo, ModuleInfo, ModuleInfoExt,
+    ProjEffectInfo, ProjEffectInfoExt, ProjInfo, RangedProjInfo, RigInfo, RigInfoExt, ServiceInfo, ServiceInfoExt,
+    ShipInfo, ShipInfoExt, SideEffectInfo, SideEffectMod, SideEffectOp, SkillInfo, SkillInfoExt, StanceInfo,
+    StanceInfoExt, SubsystemInfo, SubsystemInfoExt, SwEffectInfo, SwEffectInfoExt,
 };
 pub(crate) use sol::SolInfoEnumCmd;
 pub use sol::{SolInfo, SolInfoCmd, SolInfoCmdBr, SolInfoEnumCmdBr, SolInfoEnumError, SolInfoExt, SolInfoMode};

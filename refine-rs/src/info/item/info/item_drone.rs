@@ -71,7 +71,7 @@ impl DroneInfo {
                     type_id: core_drone.get_type_id(),
                     fit_id: core_drone.get_fit().get_fit_id(),
                     state: core_drone.get_state(),
-                    mutation: core_drone.get_mutation().and_then(ItemMutationInfo::try_from_core),
+                    mutation: core_drone.get_mutation().map(ItemMutationInfo::try_from_core),
                     npc_prop: core_drone.get_npc_prop(),
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),

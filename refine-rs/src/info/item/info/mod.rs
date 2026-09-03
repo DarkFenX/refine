@@ -17,8 +17,8 @@ pub use item_stance::{StanceInfo, StanceInfoExt};
 pub use item_subsystem::{SubsystemInfo, SubsystemInfoExt};
 pub use item_sw_effect::{SwEffectInfo, SwEffectInfoExt};
 pub use shared::{
-    AbilityInfo, AttrMutationInfo, ItemMutationInfo, ProjInfo, RangedProjInfo, SideEffectInfo, SideEffectMod,
-    SideEffectOp,
+    AbilityInfo, AttrMutationInfo, ItemMutationDormantInfo, ItemMutationEffectiveInfo, ItemMutationInfo, ProjInfo,
+    RangedProjInfo, SideEffectInfo, SideEffectMod, SideEffectOp,
 };
 
 mod item;

@@ -102,7 +102,7 @@ impl ModuleInfo {
                         state: core_module.get_state(),
                         rack: core_module.get_rack(),
                         pos: core_module.get_pos(),
-                        mutation: core_module.get_mutation().and_then(ItemMutationInfo::try_from_core),
+                        mutation: core_module.get_mutation().map(ItemMutationInfo::try_from_core),
                         charge_count,
                         charged_cycles: charged_cycle_count,
                         spool_cycles: core_module.get_spool_cycle_count(),
