@@ -12,6 +12,8 @@ pub struct ItemMutationInfo {
     pub mutator_id: ItemTypeId,
     #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
     pub attrs: Vec<(AttrId, AttrMutationInfo)>,
+    #[cfg_attr(feature = "serde", serde_as(as = "&serde_with::Map<_, _>"))]
+    pub rolls: Vec<(AttrId, UnitInterval)>,
 }
 
 #[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
@@ -35,6 +37,10 @@ impl ItemMutationInfo {
             attrs: core_mutation
                 .iter_full_mattrs()
                 .map(|v| (v.get_attr_id(), AttrMutationInfo::from_core(v)))
+                .collect(),
+            rolls: core_mutation
+                .iter_raw_mattrs()
+                .map(|v| (v.get_attr_id(), v.get_roll()))
                 .collect(),
         })
     }
