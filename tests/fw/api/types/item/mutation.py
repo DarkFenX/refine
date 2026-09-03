@@ -10,10 +10,12 @@ class ItemMutation:
     base_type_id: int
     mutator_id: int
     attrs: dict[int, AttrMutation]
+    rolls: dict[int, float]
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.base_type_id, self.mutator_id, attrs = data
+        self.base_type_id, self.mutator_id, attrs, rolls = data
         self.attrs = {attr_http_to_fw(attr_id=k): AttrMutation(data=v) for k, v in attrs.items()}
+        self.rolls = {attr_http_to_fw(attr_id=k): v for k, v in rolls.items()}
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -22,7 +24,7 @@ class ItemMutation:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.base_type_id, self.mutator_id, self.attrs] == other
+        return [self.base_type_id, self.mutator_id, self.attrs, self.rolls] == other
 
 
 @dataclasses.dataclass
