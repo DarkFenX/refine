@@ -620,7 +620,7 @@ def test_to_stage1_no_base_item(client):
 
 
 def test_from_stage3(client):
-    # Check that proper base item ID is taken when switching source from incomplete mutated item
+    # Check that proper base item ID is taken when switching source from item with dormant mutation
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
@@ -655,7 +655,7 @@ def test_from_stage3(client):
 
 
 def test_from_stage2(client):
-    # Check that proper base item ID is taken when switching source from incomplete mutated item
+    # Check that proper base item ID is taken when switching source from item with dormant mutation
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])
@@ -697,7 +697,7 @@ def test_from_stage2(client):
 
 
 def test_from_stage1(client):
-    # Check that proper base item ID is taken when switching source from incomplete mutated item
+    # Check that proper base item ID is taken when switching source from item with dormant mutation
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
     eve_attr_id = client.mk_eve_attr(datas=[eve_d1, eve_d2])

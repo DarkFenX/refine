@@ -94,7 +94,7 @@ def test_absolute_value_range(client):
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification - on the first source absolute values couldn't be set due to mutation being
-    # incomplete, so defaults are exposed on the second source
+    # dormant, so defaults are exposed on the second source
     api_item.update()
     assert len(api_item.mutation.attrs) == 3
     assert api_item.mutation.attrs[eve_lower_attr_id].roll == approx(0.5)
