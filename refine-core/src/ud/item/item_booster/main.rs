@@ -58,11 +58,16 @@ impl UBooster {
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
         self.base.stop_all_reffs(reuse_eupdates, r_data, false, false)
     }
-    pub(crate) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
-        self.base.get_effect_mode(effect_rid)
+    pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode_by_rid(effect_rid)
     }
-    pub(crate) fn get_effect_id_mode(&self, effect_id: &AEffectId) -> EffectMode {
-        self.base.get_effect_mode_by_aid(effect_id)
+    pub(crate) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
+        self.base.get_effect_mode_by_aid(effect_aid)
+    }
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(
+        &self,
+    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+        self.base.iter_effect_mode_overrides()
     }
     pub(crate) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
         self.base.set_effect_mode(effect_aid, effect_mode, r_data)

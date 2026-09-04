@@ -173,25 +173,46 @@ impl UItem {
             Self::SwEffect(sw_effect) => sw_effect.stop_all_reffs(reuse_eupdates, r_data),
         }
     }
-    pub(crate) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+    pub(crate) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         match self {
-            Self::Autocharge(autocharge) => autocharge.get_effect_mode(effect_rid),
-            Self::Booster(booster) => booster.get_effect_mode(effect_rid),
-            Self::Character(character) => character.get_effect_mode(effect_rid),
-            Self::Charge(charge) => charge.get_effect_mode(effect_rid),
-            Self::Drone(drone) => drone.get_effect_mode(effect_rid),
-            Self::Fighter(fighter) => fighter.get_effect_mode(effect_rid),
-            Self::FwEffect(fw_effect) => fw_effect.get_effect_mode(effect_rid),
-            Self::Implant(implant) => implant.get_effect_mode(effect_rid),
-            Self::Module(module) => module.get_effect_mode(effect_rid),
-            Self::ProjEffect(proj_effect) => proj_effect.get_effect_mode(effect_rid),
-            Self::Rig(rig) => rig.get_effect_mode(effect_rid),
-            Self::Service(service) => service.get_effect_mode(effect_rid),
-            Self::Ship(ship) => ship.get_effect_mode(effect_rid),
-            Self::Skill(skill) => skill.get_effect_mode(effect_rid),
-            Self::Stance(stance) => stance.get_effect_mode(effect_rid),
-            Self::Subsystem(subsystem) => subsystem.get_effect_mode(effect_rid),
-            Self::SwEffect(sw_effect) => sw_effect.get_effect_mode(effect_rid),
+            Self::Autocharge(autocharge) => autocharge.get_effect_mode_by_rid(effect_rid),
+            Self::Booster(booster) => booster.get_effect_mode_by_rid(effect_rid),
+            Self::Character(character) => character.get_effect_mode_by_rid(effect_rid),
+            Self::Charge(charge) => charge.get_effect_mode_by_rid(effect_rid),
+            Self::Drone(drone) => drone.get_effect_mode_by_rid(effect_rid),
+            Self::Fighter(fighter) => fighter.get_effect_mode_by_rid(effect_rid),
+            Self::FwEffect(fw_effect) => fw_effect.get_effect_mode_by_rid(effect_rid),
+            Self::Implant(implant) => implant.get_effect_mode_by_rid(effect_rid),
+            Self::Module(module) => module.get_effect_mode_by_rid(effect_rid),
+            Self::ProjEffect(proj_effect) => proj_effect.get_effect_mode_by_rid(effect_rid),
+            Self::Rig(rig) => rig.get_effect_mode_by_rid(effect_rid),
+            Self::Service(service) => service.get_effect_mode_by_rid(effect_rid),
+            Self::Ship(ship) => ship.get_effect_mode_by_rid(effect_rid),
+            Self::Skill(skill) => skill.get_effect_mode_by_rid(effect_rid),
+            Self::Stance(stance) => stance.get_effect_mode_by_rid(effect_rid),
+            Self::Subsystem(subsystem) => subsystem.get_effect_mode_by_rid(effect_rid),
+            Self::SwEffect(sw_effect) => sw_effect.get_effect_mode_by_rid(effect_rid),
+        }
+    }
+    pub(crate) fn iter_effect_mode_overrides(&self) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+        match self {
+            Self::Autocharge(autocharge) => autocharge.iter_effect_mode_overrides(),
+            Self::Booster(booster) => booster.iter_effect_mode_overrides(),
+            Self::Character(character) => character.iter_effect_mode_overrides(),
+            Self::Charge(charge) => charge.iter_effect_mode_overrides(),
+            Self::Drone(drone) => drone.iter_effect_mode_overrides(),
+            Self::Fighter(fighter) => fighter.iter_effect_mode_overrides(),
+            Self::FwEffect(fw_effect) => fw_effect.iter_effect_mode_overrides(),
+            Self::Implant(implant) => implant.iter_effect_mode_overrides(),
+            Self::Module(module) => module.iter_effect_mode_overrides(),
+            Self::ProjEffect(proj_effect) => proj_effect.iter_effect_mode_overrides(),
+            Self::Rig(rig) => rig.iter_effect_mode_overrides(),
+            Self::Service(service) => service.iter_effect_mode_overrides(),
+            Self::Ship(ship) => ship.iter_effect_mode_overrides(),
+            Self::Skill(skill) => skill.iter_effect_mode_overrides(),
+            Self::Stance(stance) => stance.iter_effect_mode_overrides(),
+            Self::Subsystem(subsystem) => subsystem.iter_effect_mode_overrides(),
+            Self::SwEffect(sw_effect) => sw_effect.iter_effect_mode_overrides(),
         }
     }
     pub(crate) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {

@@ -26,7 +26,7 @@ impl<'s> SideEffectMut<'s> {
 
 fn get_state(sol: &SolarSystem, booster_uid: UItemId, effect_id: &AEffectId) -> bool {
     let u_booster = sol.u_data.items.get(booster_uid).dc_booster().unwrap();
-    match u_booster.get_effect_id_mode(effect_id) {
+    match u_booster.get_effect_mode_by_aid(effect_id) {
         EffectMode::FullCompliance => false,
         EffectMode::StateCompliance => true,
         EffectMode::ForceRun => true,

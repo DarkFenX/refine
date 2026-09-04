@@ -57,10 +57,17 @@ pub trait ItemCommon: ItemSealed {
         let effect_infos = effect_rids.map(move |&effect_rid| {
             let effect_aid = sol.u_data.r_data.get_effect_by_rid(effect_rid).aid;
             let running = reffs.contains(&effect_rid);
-            let mode = item.get_effect_mode(&effect_rid);
+            let mode = item.get_effect_mode_by_rid(&effect_rid);
             (EffectId::from_aid(effect_aid), ItemEffectInfo { running, mode })
         });
         Ok(effect_infos)
+    }
+    fn iter_effect_mode_overrides(&self) -> impl ExactSizeIterator<Item = (EffectId, EffectMode)> {
+        let sol = self.get_sol();
+        let item_uid = self.get_uid();
+        let item = sol.u_data.items.get(item_uid);
+        item.iter_effect_mode_overrides()
+            .map(|(effect_aid, effect_mode)| (EffectId::from_aid(effect_aid), effect_mode))
     }
 }
 

@@ -106,11 +106,16 @@ impl UItemBase {
     pub(in crate::ud::item) fn set_state(&mut self, state: RState) {
         self.state = state;
     }
-    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
+    pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.effect_modes.get_by_rid(effect_rid)
     }
     pub(in crate::ud::item) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
         self.effect_modes.get_by_aid(effect_aid)
+    }
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(
+        &self,
+    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+        self.effect_modes.iter_overrides_with_aids()
     }
     pub(in crate::ud::item) fn set_effect_mode(
         &mut self,
@@ -125,8 +130,8 @@ impl UItemBase {
         effect_modes: impl Iterator<Item = (AEffectId, EffectMode)>,
         r_data: &RData,
     ) {
-        for (effect_id, effect_mode) in effect_modes {
-            self.effect_modes.set_by_aid(effect_id, effect_mode, r_data);
+        for (effect_aid, effect_mode) in effect_modes {
+            self.effect_modes.set_by_aid(effect_aid, effect_mode, r_data);
         }
     }
     pub(in crate::ud::item::base) fn base_update_effect_modes(&mut self, r_data: &RData) {

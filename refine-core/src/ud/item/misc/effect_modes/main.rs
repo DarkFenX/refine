@@ -32,6 +32,13 @@ impl UEffectModes {
             None => DEFAULT_EFFECT_MODE,
         }
     }
+    pub(in crate::ud::item) fn iter_overrides_with_aids(
+        &self,
+    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+        self.by_aid
+            .iter()
+            .map(|(&effect_aid, &effect_mode)| (effect_aid, effect_mode))
+    }
     // Modification methods
     pub(in crate::ud::item) fn set_by_aid(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
         match effect_mode {

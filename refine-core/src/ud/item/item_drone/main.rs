@@ -69,8 +69,13 @@ impl UDrone {
     pub(in crate::ud::item) fn stop_all_reffs(&mut self, reuse_eupdates: &mut UEffectUpdates, r_data: &RData) {
         self.base.stop_all_reffs(reuse_eupdates, r_data, false, true)
     }
-    pub(in crate::ud::item) fn get_effect_mode(&self, effect_rid: &REffectId) -> EffectMode {
-        self.base.get_effect_mode(effect_rid)
+    pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
+        self.base.get_effect_mode_by_rid(effect_rid)
+    }
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(
+        &self,
+    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+        self.base.iter_effect_mode_overrides()
     }
     pub(in crate::ud::item) fn set_effect_mode(
         &mut self,
