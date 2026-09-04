@@ -13,7 +13,7 @@ pub(super) fn fighter_count_postproc_fast(ctx: SvcCtx, item_uid: UItemId, mut va
         .get(item_uid)
         .dc_fighter()
         .unwrap()
-        .get_count()
+        .get_current_count()
         .unwrap()
         .into_value();
     val.dogma = count;
@@ -28,7 +28,7 @@ pub(super) fn fighter_count_postproc_info(ctx: SvcCtx, item_uid: UItemId) -> Att
         .get(item_uid)
         .dc_fighter()
         .unwrap()
-        .get_count()
+        .get_current_count()
         .unwrap()
         .into_value();
     AttrValInfo::new(count)

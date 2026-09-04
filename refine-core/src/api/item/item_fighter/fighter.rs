@@ -1,7 +1,7 @@
 use crate::{
-    api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed, MinionState, Movement},
-    misc::{FighterCountInfo, ItemRearmMinionInfo},
-    sol::SolarSystem,
+    Coordinates, CountNz, FighterCountInfo, Fit, FitMut, ItemCommon, ItemMutCommon, ItemRearmMinionInfo, MinionState,
+    Movement, SolarSystem,
+    api::ItemSealed,
     ud::{UFighter, UItemId},
 };
 
@@ -21,6 +21,9 @@ impl<'s> Fighter<'s> {
     }
     pub fn get_count(&self) -> Option<FighterCountInfo> {
         get_count(self.sol, self.uid)
+    }
+    pub fn get_count_override(&self) -> Option<CountNz> {
+        get_count_override(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
         get_coordinates(self.sol, self.uid)
@@ -64,6 +67,9 @@ impl<'s> FighterMut<'s> {
     pub fn get_count(&self) -> Option<FighterCountInfo> {
         get_count(self.sol, self.uid)
     }
+    pub fn get_count_override(&self) -> Option<CountNz> {
+        get_count_override(self.sol, self.uid)
+    }
     pub fn get_coordinates(&self) -> Coordinates {
         get_coordinates(self.sol, self.uid)
     }
@@ -99,6 +105,9 @@ fn get_state(sol: &SolarSystem, fighter_uid: UItemId) -> MinionState {
 }
 fn get_count(sol: &SolarSystem, fighter_uid: UItemId) -> Option<FighterCountInfo> {
     get_u_fighter(sol, fighter_uid).get_count_info()
+}
+fn get_count_override(sol: &SolarSystem, fighter_uid: UItemId) -> Option<CountNz> {
+    get_u_fighter(sol, fighter_uid).get_count_override()
 }
 fn get_coordinates(sol: &SolarSystem, fighter_uid: UItemId) -> Coordinates {
     Coordinates::from_xyz(get_u_fighter(sol, fighter_uid).get_physics().coordinates)

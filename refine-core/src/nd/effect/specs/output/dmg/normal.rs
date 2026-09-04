@@ -174,7 +174,7 @@ fn get_ftr_abil_attack_m(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
         Value::ONE,
     ));
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
-        && let Some(count) = u_fighter.get_count()
+        && let Some(count) = u_fighter.get_current_count()
     {
         dmg_mult *= count.into_pvalue();
     }
@@ -205,7 +205,7 @@ fn get_ftr_abil_missiles(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
         Value::ONE,
     ));
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
-        && let Some(count) = u_fighter.get_count()
+        && let Some(count) = u_fighter.get_current_count()
     {
         dmg_mult *= count.into_pvalue();
     }
@@ -230,7 +230,7 @@ fn get_ftr_abil_kamikaze(ctx: SvcCtx, calc: &mut Calc, item_uid: UItemId) -> Opt
         ctx.ac().ftr_abil_kamikaze_dmg_expl,
     )?;
     if let Ok(u_fighter) = ctx.u_data.items.get(item_uid).dc_fighter()
-        && let Some(count) = u_fighter.get_count()
+        && let Some(count) = u_fighter.get_current_count()
     {
         let dmg_mult = count.into_pvalue();
         dmg.em *= dmg_mult;

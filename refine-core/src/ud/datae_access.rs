@@ -45,7 +45,7 @@ impl UData {
             _ => return None,
         };
         match self.items.get(cont_item_uid) {
-            UItem::Fighter(fighter) => fighter.get_count().map(|v| v.into_pvalue()),
+            UItem::Fighter(fighter) => fighter.get_current_count().map(|v| v.into_pvalue()),
             _ => None,
         }
     }

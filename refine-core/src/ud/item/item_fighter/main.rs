@@ -120,7 +120,7 @@ impl UFighter {
     pub(crate) fn get_fit_uid(&self) -> UFitId {
         self.fit_uid
     }
-    pub(crate) fn get_count(&self) -> Option<CountNz> {
+    pub(crate) fn get_current_count(&self) -> Option<CountNz> {
         let riad = self.get_r_item_attr_data()?;
         Some(match self.count_override {
             Some(count_override) => count_override,
@@ -133,14 +133,15 @@ impl UFighter {
             Some(count_override) => FighterCountInfo {
                 current: count_override,
                 max: riad.max_fighter_count,
-                overridden: true,
             },
             None => FighterCountInfo {
                 current: riad.max_fighter_count,
                 max: riad.max_fighter_count,
-                overridden: false,
             },
         })
+    }
+    pub(crate) fn get_count_override(&self) -> Option<CountNz> {
+        self.count_override
     }
     pub(crate) fn set_count_override(&mut self, count_override: Option<CountNz>) {
         self.count_override = count_override

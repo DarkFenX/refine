@@ -7,6 +7,4 @@ pub struct FighterCountInfo {
     pub current: CountNz,
     /// Max count of fighters this squad supports.
     pub max: CountNz,
-    /// True if current count of fighters in a squad is set via override.
-    pub overridden: bool,
 }
