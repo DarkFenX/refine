@@ -681,6 +681,12 @@ class ApiMinionState(StrEnum):
 
 
 @unique
+class ApiMutationType(StrEnum):
+    effective = 'effective'
+    dormant = 'dormant'
+
+
+@unique
 class ApiRack(StrEnum):
     high = 'high'
     mid = 'mid'
