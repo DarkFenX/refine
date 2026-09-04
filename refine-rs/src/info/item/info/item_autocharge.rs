@@ -1,11 +1,11 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    shared::OvrdMapLight,
+    AttrId, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
+    Modification, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -26,6 +26,12 @@ pub struct AutochargeInfoExt {
     pub cont_item_id: ItemId,
     pub cont_effect_id: EffectId,
     pub state: bool,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -68,6 +74,7 @@ impl AutochargeInfo {
                     cont_item_id: core_autocharge.get_cont_item().get_item_id(),
                     cont_effect_id: core_autocharge.get_cont_effect_id(),
                     state: core_autocharge.get_state(),
+                    effect_mode_overrides: get_effect_mode_overrides(core_autocharge, autocharge_info_mode),
                     attrs: get_attrs(core_autocharge, autocharge_info_mode),
                     effects: get_effects(core_autocharge, autocharge_info_mode),
                     mods: get_mods(core_autocharge, autocharge_info_mode),

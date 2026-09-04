@@ -1,10 +1,10 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
+    AttrId, Coordinates, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
     Modification, Movement, shared::OvrdMapLight,
 };
 
@@ -26,6 +26,12 @@ pub struct ShipInfoExt {
     pub state: bool,
     pub coordinates: Coordinates,
     pub movement: Movement,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -68,6 +74,7 @@ impl ShipInfo {
                     state: core_ship.get_state(),
                     coordinates: core_ship.get_coordinates(),
                     movement: core_ship.get_movement(),
+                    effect_mode_overrides: get_effect_mode_overrides(core_ship, ship_info_mode),
                     attrs: get_attrs(core_ship, ship_info_mode),
                     effects: get_effects(core_ship, ship_info_mode),
                     mods: get_mods(core_ship, ship_info_mode),

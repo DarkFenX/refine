@@ -1,12 +1,12 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, ChargeInfo, Count, EffectId, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
-    ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState,
-    RangedProjInfo, TriStateField, shared::OvrdMapLight,
+    AttrId, ChargeInfo, Count, EffectId, EffectMode, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId,
+    ItemInfoMode, ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification,
+    ModuleState, RangedProjInfo, TriStateField, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -40,6 +40,12 @@ pub struct ModuleInfoExt {
     pub optional_reload: ItemOptionalReloadInfo,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub projs: Vec<RangedProjInfo>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -108,6 +114,7 @@ impl ModuleInfo {
                         spool_cycles: core_module.get_spool_cycle_count(),
                         optional_reload: core_module.get_optional_reload(),
                         projs: core_module.iter_projs().map(RangedProjInfo::from_core).collect(),
+                        effect_mode_overrides: get_effect_mode_overrides(core_module, module_info_mode),
                         attrs: get_attrs(core_module, module_info_mode),
                         effects: get_effects(core_module, module_info_mode),
                         mods: get_mods(core_module, module_info_mode),

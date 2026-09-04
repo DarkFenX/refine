@@ -1,11 +1,11 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, ProjInfo,
-    shared::OvrdMapLight,
+    AttrId, EffectId, EffectMode, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
+    ProjInfo, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -28,6 +28,12 @@ pub struct ProjEffectInfoExt {
         serde(rename = "proj_item_ids", skip_serializing_if = "Vec::is_empty")
     )]
     pub projs: Vec<ProjInfo>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -68,6 +74,7 @@ impl ProjEffectInfo {
                     type_id: core_proj_effect.get_type_id(),
                     state: core_proj_effect.get_state(),
                     projs: core_proj_effect.iter_projs().map(ProjInfo::from_core).collect(),
+                    effect_mode_overrides: get_effect_mode_overrides(core_proj_effect, proj_effect_info_mode),
                     attrs: get_attrs(core_proj_effect, proj_effect_info_mode),
                     effects: get_effects(core_proj_effect, proj_effect_info_mode),
                     mods: get_mods(core_proj_effect, proj_effect_info_mode),

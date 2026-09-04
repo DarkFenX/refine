@@ -1,11 +1,11 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification, SlotIndex,
-    shared::OvrdMapLight,
+    AttrId, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
+    Modification, SlotIndex, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -26,6 +26,12 @@ pub struct SubsystemInfoExt {
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub slot: Option<SlotIndex>,
     pub state: bool,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -67,6 +73,7 @@ impl SubsystemInfo {
                     fit_id: core_subsystem.get_fit().get_fit_id(),
                     slot: core_subsystem.get_slot(),
                     state: core_subsystem.get_state(),
+                    effect_mode_overrides: get_effect_mode_overrides(core_subsystem, subsystem_info_mode),
                     attrs: get_attrs(core_subsystem, subsystem_info_mode),
                     effects: get_effects(core_subsystem, subsystem_info_mode),
                     mods: get_mods(core_subsystem, subsystem_info_mode),

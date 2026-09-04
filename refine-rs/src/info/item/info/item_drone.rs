@@ -1,11 +1,12 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, Coordinates, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemMutationInfo,
-    ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo, shared::OvrdMapLight,
+    AttrId, Coordinates, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
+    ItemMutationInfo, ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
+    shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -31,6 +32,12 @@ pub struct DroneInfoExt {
     pub movement: Movement,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub projs: Vec<RangedProjInfo>,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -76,6 +83,7 @@ impl DroneInfo {
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),
                     projs: core_drone.iter_projs().map(RangedProjInfo::from_core).collect(),
+                    effect_mode_overrides: get_effect_mode_overrides(core_drone, drone_info_mode),
                     attrs: get_attrs(core_drone, drone_info_mode),
                     effects: get_effects(core_drone, drone_info_mode),
                     mods: get_mods(core_drone, drone_info_mode),

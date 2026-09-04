@@ -1,11 +1,11 @@
 use rc::ItemCommon;
 
-use super::shared::{get_attrs, get_effects, get_mods};
+use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods};
 #[cfg(feature = "serde")]
 use crate::ItemKind;
 use crate::{
-    AttrId, EffectId, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, Modification,
-    shared::OvrdMapLight,
+    AttrId, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId,
+    Modification, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -25,6 +25,12 @@ pub struct ChargeInfoExt {
     pub fit_id: FitId,
     pub cont_item_id: ItemId,
     pub state: bool,
+    #[cfg_attr(
+        feature = "serde",
+        serde_as(as = "serde_with::Map<_, _>"),
+        serde(skip_serializing_if = "Vec::is_empty")
+    )]
+    pub effect_mode_overrides: Vec<(EffectId, EffectMode)>,
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
@@ -66,6 +72,7 @@ impl ChargeInfo {
                     fit_id: core_charge.get_fit().get_fit_id(),
                     cont_item_id: core_charge.get_cont_item().get_item_id(),
                     state: core_charge.get_state(),
+                    effect_mode_overrides: get_effect_mode_overrides(core_charge, charge_info_mode),
                     attrs: get_attrs(core_charge, charge_info_mode),
                     effects: get_effects(core_charge, charge_info_mode),
                     mods: get_mods(core_charge, charge_info_mode),
