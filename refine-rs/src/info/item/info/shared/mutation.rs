@@ -7,7 +7,10 @@ use crate::{AttrId, ItemTypeId, UnitInterval, Value};
 )]
 #[derive(Clone)]
 pub enum ItemMutationInfo {
+    /// This mutation has full effect upon item: item's type is mutated, its attributes are mutable.
     Effective(ItemMutationEffectiveInfo),
+    /// This mutation lacks some info in the data source to be applied to the item, and has no
+    /// effect on it.
     Dormant(ItemMutationDormantInfo),
 }
 impl ItemMutationInfo {
@@ -30,12 +33,22 @@ impl ItemMutationInfo {
 pub struct ItemMutationEffectiveInfo {
     pub base_type_id: ItemTypeId,
     pub mutator_id: ItemTypeId,
+    /// All the attributes which are mutable for the item in the context of data source used by sol.
+    ///
+    /// Exposes absolute value of every attribute, and roll value. If roll value was not previously
+    /// set by user, it is calculated using base attribute value. There are rare cases when it can't
+    /// be calculated, and it is the only case roll can be None.
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub attrs: Vec<(AttrId, AttrMutationInfo)>,
+    /// Attribute roll values as they are stored internally.
+    ///
+    /// Contains only data for attributes which were set by the user. This means that not all
+    /// mutable attributes for the item can be exposed, and some of exposed attributes might be not
+    /// mutable on the current data source.
     #[cfg_attr(
         feature = "serde",
         serde_as(as = "serde_with::Map<_, _>"),
