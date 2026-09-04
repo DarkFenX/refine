@@ -1,7 +1,7 @@
-from fw import Muta, approx, check_no_field
+from fw import Muta, approx
 
 
-def test_from_stage1(client):
+def test_from_stage1(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item2_id = client.alloc_item_id()
@@ -18,20 +18,24 @@ def test_from_stage1(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator1_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator2_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
-def test_from_stage2(client):
+def test_from_stage2(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item2_id = client.alloc_item_id()
@@ -52,20 +56,24 @@ def test_from_stage2(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator1_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator2_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
-def test_from_stage3(client):
+def test_from_stage3(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item1_id = client.alloc_item_id()
@@ -85,20 +93,24 @@ def test_from_stage3(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator1_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator2_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
-def test_from_stage4(client):
+def test_from_stage4(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item1_id = client.mk_eve_item()
@@ -118,17 +130,22 @@ def test_from_stage4(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item1_id
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert api_item.mutation.base_type_id == eve_base_item_id
     assert api_item.mutation.mutator_id == eve_mutator1_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(92)
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(92)
     # Action
     api_item.change_module(mutation=eve_mutator2_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert api_item.mutation.mutator_id == eve_mutator2_id
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)

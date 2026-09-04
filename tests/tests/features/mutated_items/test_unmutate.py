@@ -1,7 +1,7 @@
 from fw import Muta, approx, check_no_field
 
 
-def test_from_stage4(client):
+def test_from_stage4(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
@@ -17,10 +17,13 @@ def test_from_stage4(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.6)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(104)
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.6)
     assert api_item.attrs[eve_attr_id].base == approx(104)
     # Action
     api_item.change_module(mutation=None)
@@ -34,14 +37,17 @@ def test_from_stage4(client):
     # Verification - after mutating item again, all the old mutations should be gone
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.5)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(100)
+    with check_no_field():
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
-def test_from_stage3(client):
+def test_from_stage3(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.alloc_item_id()
@@ -57,8 +63,9 @@ def test_from_stage3(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.6)
     # Action
     api_item.change_module(mutation=None)
     # Verification
@@ -71,11 +78,12 @@ def test_from_stage3(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
     with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
 
 
-def test_from_stage2(client):
+def test_from_stage2(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
@@ -91,8 +99,9 @@ def test_from_stage2(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.6)
     # Action
     api_item.change_module(mutation=None)
     # Verification
@@ -105,11 +114,12 @@ def test_from_stage2(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
     with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
 
 
-def test_from_stage1(client):
+def test_from_stage1(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutator_id = client.alloc_item_id()
@@ -122,8 +132,9 @@ def test_from_stage1(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.6)
     # Action
     api_item.change_module(mutation=None)
     # Verification
@@ -136,11 +147,12 @@ def test_from_stage1(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
     with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
 
 
-def test_from_unmutated(client):
+def test_from_unmutated(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_item()
@@ -168,10 +180,13 @@ def test_from_unmutated(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert api_item.mutation.base_type_id == eve_base_item_id
     assert len(api_item.mutation.attrs) == 1
     assert api_item.mutation.attrs[eve_attr_id].roll == approx(0.5)
     assert api_item.mutation.attrs[eve_attr_id].absolute == approx(100)
+    with check_no_field():
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
@@ -229,7 +244,7 @@ def test_projection(client, consts):
     assert api_affectee2_ship.update().attrs[eve_affectee_attr_id].modified == approx(120)
 
 
-def test_drone(client):
+def test_drone(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item_id = client.mk_eve_drone(attrs={eve_attr_id: 100})
     eve_mutated_item_id = client.mk_eve_drone()
@@ -245,10 +260,13 @@ def test_drone(client):
     # Verification
     api_drone.update()
     assert api_drone.type_id == eve_mutated_item_id
+    assert api_drone.mutation.type == consts.ApiMutationType.effective
     assert api_drone.mutation.base_type_id == eve_base_item_id
     assert len(api_drone.mutation.attrs) == 1
     assert api_drone.mutation.attrs[eve_attr_id].roll == approx(0.6)
     assert api_drone.mutation.attrs[eve_attr_id].absolute == approx(104)
+    assert len(api_drone.mutation.rolls) == 1
+    assert api_drone.mutation.rolls[eve_attr_id] == approx(0.6)
     assert api_drone.attrs[eve_attr_id].base == approx(104)
     # Action
     api_drone.change_drone(mutation=None)
@@ -262,8 +280,11 @@ def test_drone(client):
     # Verification - after mutating item again, all the old mutations should be gone
     api_drone.update()
     assert api_drone.type_id == eve_mutated_item_id
+    assert api_drone.mutation.type == consts.ApiMutationType.effective
     assert api_drone.mutation.base_type_id == eve_base_item_id
     assert len(api_drone.mutation.attrs) == 1
     assert api_drone.mutation.attrs[eve_attr_id].roll == approx(0.5)
     assert api_drone.mutation.attrs[eve_attr_id].absolute == approx(100)
+    with check_no_field():
+        api_drone.mutation.rolls  # ruff:ignore[useless-expression]
     assert api_drone.attrs[eve_attr_id].base == approx(100)
