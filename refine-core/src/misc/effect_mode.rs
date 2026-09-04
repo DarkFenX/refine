@@ -1,6 +1,6 @@
 /// Item effect operation modes.
 #[cfg_attr(feature = "serde", derive(serde::Serialize, serde::Deserialize))]
-#[derive(Copy, Clone, PartialEq)]
+#[derive(Copy, Clone, Eq, PartialEq, derive_more::Display)]
 pub enum EffectMode {
     /// In this mode rules vary, depending on effect category:
     /// - Offline: effects from this category are run when item is in offline+ state, and when they
@@ -11,14 +11,18 @@ pub enum EffectMode {
     ///   drone, or if it is default effect of item effect is default item effect
     /// - Overload: effects from this category
     #[cfg_attr(feature = "serde", serde(rename = "full"))]
+    #[display("full")]
     FullCompliance,
     /// Effects in this mode are always run if item's state is high enough to run it
     #[cfg_attr(feature = "serde", serde(rename = "state"))]
+    #[display("state")]
     StateCompliance,
     /// Effects in this mode are always running no matter what
     #[cfg_attr(feature = "serde", serde(rename = "run"))]
+    #[display("run")]
     ForceRun,
     /// Effects in this mode are never running no matter what
     #[cfg_attr(feature = "serde", serde(rename = "stop"))]
+    #[display("stop")]
     ForceStop,
 }
