@@ -1,7 +1,7 @@
 from fw import Muta, approx, check_no_field
 
 
-def test_rolls_range(client):
+def test_rolls_range(client, consts):
     # Check processing of roll values - within range and out of range
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -44,8 +44,12 @@ def test_rolls_range(client):
         eve_remove_attr_id: Muta.roll_to_api(val=0.8)}))
     # Verification
     api_item.update()
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 4
+    assert api_item.mutation.rolls[eve_change_lower_attr_id] == approx(1)
+    assert api_item.mutation.rolls[eve_change_within_attr_id] == approx(0.6)
+    assert api_item.mutation.rolls[eve_change_higher_attr_id] == approx(0)
+    assert api_item.mutation.rolls[eve_remove_attr_id] == approx(0.8)
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -64,8 +68,14 @@ def test_rolls_range(client):
         eve_remove_attr_id: None})
     # Verification
     api_item.update()
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 6
+    assert api_item.mutation.rolls[eve_add_lower_attr_id] == approx(0)
+    assert api_item.mutation.rolls[eve_add_within_attr_id] == approx(0.3)
+    assert api_item.mutation.rolls[eve_add_higher_attr_id] == approx(1)
+    assert api_item.mutation.rolls[eve_change_lower_attr_id] == approx(0)
+    assert api_item.mutation.rolls[eve_change_within_attr_id] == approx(0.1)
+    assert api_item.mutation.rolls[eve_change_higher_attr_id] == approx(1)
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -77,6 +87,7 @@ def test_rolls_range(client):
     api_sol.change_src(data=eve_d2)
     # Verification
     api_item.update()
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert len(api_item.mutation.attrs) == 7
     assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0)
     assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(80)
@@ -92,6 +103,13 @@ def test_rolls_range(client):
     assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(120)
     assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
     assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(100)
+    assert len(api_item.mutation.rolls) == 6
+    assert api_item.mutation.rolls[eve_add_lower_attr_id] == approx(0)
+    assert api_item.mutation.rolls[eve_add_within_attr_id] == approx(0.3)
+    assert api_item.mutation.rolls[eve_add_higher_attr_id] == approx(1)
+    assert api_item.mutation.rolls[eve_change_lower_attr_id] == approx(0)
+    assert api_item.mutation.rolls[eve_change_within_attr_id] == approx(0.1)
+    assert api_item.mutation.rolls[eve_change_higher_attr_id] == approx(1)
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(80)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(92)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(120)
@@ -101,7 +119,7 @@ def test_rolls_range(client):
     assert api_item.attrs[eve_remove_attr_id].base == approx(100)
 
 
-def test_absolute_value_range(client):
+def test_absolute_value_range(client, consts):
     # Check processing of absolute values - within range and out of range
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -144,8 +162,9 @@ def test_absolute_value_range(client):
         eve_remove_attr_id: Muta.abs_to_api(val=112)}))
     # Verification
     api_item.update()
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
     with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -164,8 +183,9 @@ def test_absolute_value_range(client):
         eve_remove_attr_id: None})
     # Verification
     api_item.update()
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
     with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -178,6 +198,7 @@ def test_absolute_value_range(client):
     # Verification - on the first source absolute values couldn't be set due to mutation being
     # dormant, so defaults are exposed on the second source
     api_item.update()
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert len(api_item.mutation.attrs) == 7
     assert api_item.mutation.attrs[eve_add_lower_attr_id].roll == approx(0.5)
     assert api_item.mutation.attrs[eve_add_lower_attr_id].absolute == approx(100)
@@ -193,6 +214,8 @@ def test_absolute_value_range(client):
     assert api_item.mutation.attrs[eve_change_higher_attr_id].absolute == approx(100)
     assert api_item.mutation.attrs[eve_remove_attr_id].roll == approx(0.5)
     assert api_item.mutation.attrs[eve_remove_attr_id].absolute == approx(100)
+    with check_no_field():
+        api_item.mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_add_lower_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_within_attr_id].base == approx(100)
     assert api_item.attrs[eve_add_higher_attr_id].base == approx(100)
@@ -202,7 +225,7 @@ def test_absolute_value_range(client):
     assert api_item.attrs[eve_remove_attr_id].base == approx(100)
 
 
-def test_no_base_item(client):
+def test_no_base_item(client, consts):
     # Check that roll mutations are accepted for items w/o base item
     eve_d1 = client.mk_eve_data()
     eve_d2 = client.mk_eve_data()
@@ -243,8 +266,10 @@ def test_no_base_item(client):
         eve_remove_absolute_attr_id: Muta.abs_to_api(val=55)}))
     # Verification
     api_item.update()
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 2
+    assert api_item.mutation.rolls[eve_change_roll_attr_id] == approx(0.7)
+    assert api_item.mutation.rolls[eve_remove_roll_attr_id] == approx(0.8)
     with check_no_field():
         api_item.attrs  # ruff:ignore[useless-expression]
     # Action
@@ -257,14 +282,17 @@ def test_no_base_item(client):
         eve_remove_absolute_attr_id: None})
     # Verification
     api_item.update()
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 2
+    assert api_item.mutation.rolls[eve_add_roll_attr_id] == approx(0.9)
+    assert api_item.mutation.rolls[eve_change_roll_attr_id] == approx(0.3)
     with check_no_field():
         api_item.attrs  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
     api_item.update()
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert len(api_item.mutation.attrs) == 6
     assert api_item.mutation.attrs[eve_add_roll_attr_id].roll == approx(0.9)
     assert api_item.mutation.attrs[eve_add_roll_attr_id].absolute == approx(58)
@@ -278,6 +306,9 @@ def test_no_base_item(client):
     assert api_item.mutation.attrs[eve_remove_roll_attr_id].absolute == approx(50)
     assert api_item.mutation.attrs[eve_remove_absolute_attr_id].roll == approx(0.5)
     assert api_item.mutation.attrs[eve_remove_absolute_attr_id].absolute == approx(50)
+    assert len(api_item.mutation.rolls) == 2
+    assert api_item.mutation.rolls[eve_add_roll_attr_id] == approx(0.9)
+    assert api_item.mutation.rolls[eve_change_roll_attr_id] == approx(0.3)
     assert api_item.attrs[eve_add_roll_attr_id].base == approx(58)
     assert api_item.attrs[eve_add_absolute_attr_id].base == approx(50)
     assert api_item.attrs[eve_change_roll_attr_id].base == approx(46)

@@ -70,7 +70,7 @@ no-lines-before = ["local-folder"]
 max-args = 30
 max-locals = 150
 max-public-methods = 75
-max-statements = 150
+max-statements = 200
 
 [tool.ruff.lint.mccabe]
 max-complexity = 15
