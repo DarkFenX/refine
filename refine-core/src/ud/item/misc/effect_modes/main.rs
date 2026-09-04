@@ -7,6 +7,8 @@ use crate::{
 
 const DEFAULT_EFFECT_MODE: EffectMode = EffectMode::FullCompliance;
 
+pub(in crate::ud::item) type UEffectModeOverrideIter<'a> = impl ExactSizeIterator<Item = (AEffectId, EffectMode)>;
+
 #[derive(Clone)]
 pub(in crate::ud::item) struct UEffectModes {
     by_aid: RMap<AEffectId, EffectMode>,
@@ -32,9 +34,8 @@ impl UEffectModes {
             None => DEFAULT_EFFECT_MODE,
         }
     }
-    pub(in crate::ud::item) fn iter_overrides_with_aids(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+    #[define_opaque(UEffectModeOverrideIter)]
+    pub(in crate::ud::item) fn iter_overrides_with_aids(&self) -> UEffectModeOverrideIter<'_> {
         self.by_aid
             .iter()
             .map(|(&effect_aid, &effect_mode)| (effect_aid, effect_mode))

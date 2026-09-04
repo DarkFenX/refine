@@ -47,8 +47,8 @@ impl<'s> RangedProjMut<'s> {
 fn get_range(sol: &SolarSystem, projector_uid: UItemId, projectee_uid: &UItemId) -> ProjRange {
     // - unwrap #1 - projection itself is fetchable only for item with projection data on them
     // - unwrap #2 - projection itself is fetchable only for projections which exist
-    // - unwrap #3 - ranged projection should be exposed only for items which have ranged projection,
-    //   i.e. put some value into projection container
+    // - unwrap #3 - ranged projection should be exposed only for items which have ranged
+    //   projection, i.e. put some value into projection container
     let u_proj = sol
         .u_data
         .items

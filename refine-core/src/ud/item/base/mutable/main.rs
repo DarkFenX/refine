@@ -5,7 +5,10 @@ use crate::{
     rd::{RAttrId, RData, REffectId, RItem, RItemAttrData, RItemBase, RMuta, RMutaAttrRange, RState, RcItem, RcMuta},
     ud::{
         UAttrMutationRequest, UItemMutationRequest,
-        item::base::{UEffectUpdates, UItemBase, mutable::err::ItemMutatedError},
+        item::{
+            UEffectModeOverrideIter,
+            base::{UEffectUpdates, UItemBase, mutable::err::ItemMutatedError},
+        },
     },
     util::{RMap, RSet},
 };
@@ -150,9 +153,7 @@ impl UItemBaseMutable {
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
     }
-    pub(in crate::ud::item) fn iter_effect_mode_overrides(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {
         self.base.iter_effect_mode_overrides()
     }
     pub(in crate::ud::item) fn set_effect_mode(

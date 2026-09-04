@@ -7,7 +7,7 @@ use crate::{
     ud::{
         UAttrMutationRequest, UFitId, UItemMutationRequest,
         err::ItemMutatedError,
-        item::{ItemMutationData, UEffectUpdates, UItemBaseMutable, UPhysics, UProjs},
+        item::{ItemMutationData, UEffectModeOverrideIter, UEffectUpdates, UItemBaseMutable, UPhysics, UProjs},
     },
     util::RSet,
 };
@@ -72,9 +72,7 @@ impl UDrone {
     pub(in crate::ud::item) fn get_effect_mode_by_rid(&self, effect_rid: &REffectId) -> EffectMode {
         self.base.get_effect_mode_by_rid(effect_rid)
     }
-    pub(in crate::ud::item) fn iter_effect_mode_overrides(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {
         self.base.iter_effect_mode_overrides()
     }
     pub(in crate::ud::item) fn set_effect_mode(

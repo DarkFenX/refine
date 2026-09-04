@@ -5,6 +5,7 @@ use crate::{
     ud::{
         ItemId,
         item::{
+            UEffectModeOverrideIter,
             base::{UEffectUpdates, process_effects},
             misc::UEffectModes,
         },
@@ -112,9 +113,7 @@ impl UItemBase {
     pub(in crate::ud::item) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
         self.effect_modes.get_by_aid(effect_aid)
     }
-    pub(in crate::ud::item) fn iter_effect_mode_overrides(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {
         self.effect_modes.iter_overrides_with_aids()
     }
     pub(in crate::ud::item) fn set_effect_mode(

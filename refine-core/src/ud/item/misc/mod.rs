@@ -1,5 +1,5 @@
 pub(crate) use autocharges::UAutocharges;
-pub(in crate::ud::item) use effect_modes::UEffectModes;
+pub(in crate::ud::item) use effect_modes::{UEffectModeOverrideIter, UEffectModes};
 pub(in crate::ud::item) use func::{bool_to_state_active, bool_to_state_offline, state_to_bool};
 pub(crate) use physics::UPhysics;
 pub(crate) use proj_data::UProjData;

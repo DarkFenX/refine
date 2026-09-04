@@ -28,8 +28,8 @@ impl ADataGenerator {
         }
     }
     fn get_grp_mutations(&self) -> RMapRSet<AItemGrpId, AItemGrpId> {
-        // Mutated items can potentially change their group ID during mutation; here, we compose a map
-        // between base item group IDs and mutated item group IDs
+        // Mutated items can potentially change their group ID during mutation; here, we compose a
+        // map between base item group IDs and mutated item group IDs
         let mut mutations = RMapRSet::new();
         for a_muta in self.a_data.mutas.data.values() {
             for a_item_conv in a_muta.items.iter() {

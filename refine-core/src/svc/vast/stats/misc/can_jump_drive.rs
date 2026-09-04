@@ -14,8 +14,8 @@ impl Vast {
         let ship = check_ship_no_struct(ctx.u_data, item_uid)?;
         // Jumping (with a jump drive) is blocked by either of:
         // - standard warp scram status attribute (points, HIC scripted points)
-        // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
-        //   jumps)
+        // - standard drive jump status attribute (disruptive lance, it controls both drive jumps
+        //   and gate jumps)
         // - custom drive jump status attribute (bubbles)
         // - having any modules with effects which disable drive jumping (cloaks, MJDs)
         let fit_data = self.get_fit_data(ship.get_fit_uid());

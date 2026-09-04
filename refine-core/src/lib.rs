@@ -1,4 +1,5 @@
 #![feature(default_field_values)]
+#![feature(type_alias_impl_trait)]
 #![feature(error_reporter)]
 #![feature(structural_match)]
 #![feature(variant_count)]

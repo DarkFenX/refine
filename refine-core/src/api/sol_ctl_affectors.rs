@@ -40,10 +40,10 @@ impl SolarSystem {
     // - it considers only modules
     // - it considers only affectors which modify requested attribute directly
     // - it ignores base attribute value - e.g. multiplications by >1 are considered as increases
-    // - it ignores possibility of complex math interactions (e.g. during calculation attribute can flip
-    //   sign of its value multiple times)
-    // - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying effect
-    //   is in force-run mode
+    // - it ignores possibility of complex math interactions (e.g. during calculation attribute can
+    //   flip sign of its value multiple times)
+    // - it ignores effect mode - it will attempt to deactivate/offline modules even if modifying
+    //   effect is in force-run mode
     pub(in crate::api) fn internal_ctl_affectors_switch(
         &mut self,
         item_uid: UItemId,

@@ -16,8 +16,8 @@ impl Vast {
         // - standard warp scram status attribute (points, HIC scripted points)
         // - custom warp status attribute (bubbles)
         // - having no max velocity
-        // - having any modules with effects which disable warp, if stat is fetched for a ship (non-covops
-        //   cloaks)
+        // - having any modules with effects which disable warp, if stat is fetched for a ship
+        //   (non-covops cloaks)
         if let UItem::Ship(ship) = item {
             let fit_data = self.get_fit_data(ship.get_fit_uid());
             if !fit_data.mod_effects_disallow_warp.is_empty() {

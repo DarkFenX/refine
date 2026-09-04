@@ -15,8 +15,8 @@ impl Vast {
         // Gating is blocked by either of:
         // - having any running effects which give weapons timer
         // - standard gate scram status attribute (scripted HIC ray)
-        // - standard drive jump status attribute (disruptive lance, it controls both drive jumps and gate
-        //   jumps)
+        // - standard drive jump status attribute (disruptive lance, it controls both drive jumps
+        //   and gate jumps)
         // - having any modules with effects which disable gate jumping
         let fit_data = self.get_fit_data(ship.get_fit_uid());
         if !fit_data.effects_weapons_timer.is_empty() {

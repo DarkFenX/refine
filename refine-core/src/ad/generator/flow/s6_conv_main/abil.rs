@@ -2,7 +2,8 @@ use crate::ad::{AAbil, AAbilId, AAbils, ADataGenerator, AEffectId, generator::ge
 
 impl ADataGenerator {
     pub(super) fn conv_abils(&mut self) {
-        // Abilities not known to the getter should've been removed during validation, so we just unwrap
+        // Abilities not known to the getter should've been removed during validation, so we just
+        // unwrap
         let a_abils = self
             .e_data
             .abils

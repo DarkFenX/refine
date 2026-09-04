@@ -46,11 +46,11 @@ fn get_roll(sol: &SolarSystem, item_uid: UItemId, attr_aid: &AAttrId) -> Option<
         .unwrap();
     // In absence of mutation, for purposes of calculating roll, it is fine to use base attribute
     // value in place of unmutated attribute value:
-    // - in case mutation range includes multiplier of 1, it means base value won't be shifted, an in
-    //   absence of mutation - base value matches unmutated value;
+    // - in case mutation range includes multiplier of 1, it means base value won't be shifted, an
+    //   in absence of mutation - base value matches unmutated value;
     // - if value was shifted into any direction (e.g. unmutated 10 with range [1.2, 1.4] exposed as
-    //   base value 12), it will still lie on appropriate edge of shifted roll (in this case it will be
-    //   0.0 relatively [14.4, 16.8] range - range is wrong, result is right).
+    //   base value 12), it will still lie on appropriate edge of shifted roll (in this case it will
+    //   be 0.0 relatively [14.4, 16.8] range - range is wrong, result is right).
     let value = *u_item.get_r_item_attr_data().unwrap().attrs.get(&attr_rid).unwrap();
     let min_value = value * a_mutation_range.mult_min_raw;
     let max_value = value * a_mutation_range.mult_max_raw;

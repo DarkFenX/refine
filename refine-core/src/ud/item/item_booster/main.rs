@@ -4,7 +4,7 @@ use crate::{
     rd::{RData, REffectId, RItemAttrData, RItemBase, RState},
     ud::{
         UFitId,
-        item::{UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
+        item::{UEffectModeOverrideIter, UEffectUpdates, UItemBase, bool_to_state_offline, state_to_bool},
     },
     util::RSet,
 };
@@ -64,9 +64,7 @@ impl UBooster {
     pub(crate) fn get_effect_mode_by_aid(&self, effect_aid: &AEffectId) -> EffectMode {
         self.base.get_effect_mode_by_aid(effect_aid)
     }
-    pub(in crate::ud::item) fn iter_effect_mode_overrides(
-        &self,
-    ) -> impl ExactSizeIterator<Item = (AEffectId, EffectMode)> {
+    pub(in crate::ud::item) fn iter_effect_mode_overrides(&self) -> UEffectModeOverrideIter<'_> {
         self.base.iter_effect_mode_overrides()
     }
     pub(crate) fn set_effect_mode(&mut self, effect_aid: AEffectId, effect_mode: EffectMode, r_data: &RData) {
