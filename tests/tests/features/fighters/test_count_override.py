@@ -25,7 +25,7 @@ def test_set_not_loaded(client, consts):
     with check_no_field():
         api_fighter.count_override  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=3)
+    api_fighter.change_fighter(count_override=3)
     # Verification
     api_fighter.update()
     with check_no_field():

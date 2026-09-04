@@ -14,7 +14,7 @@ def test_add_remove(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count_override=10)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
@@ -41,26 +41,26 @@ def test_change(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=10)
+    api_fighter.change_fighter(count_override=10)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
     assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
-    api_fighter.change_fighter(count=5)
+    api_fighter.change_fighter(count_override=5)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=11)
+    api_fighter.change_fighter(count_override=11)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
     assert api_val.details.fighter_squad_size == {api_fighter.id: (11, 9)}
     # Action
-    api_fighter.change_fighter(count=None)
+    api_fighter.change_fighter(count_override=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
@@ -81,14 +81,14 @@ def test_equal(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=9)
+    api_fighter.change_fighter(count_override=9)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=None)
+    api_fighter.change_fighter(count_override=None)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True
@@ -104,8 +104,8 @@ def test_known_failures(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_other = api_fit.add_implant(type_id=eve_other_id)
-    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
-    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, count=11)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter_id, count_override=10)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter_id, count_override=11)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=[api_fighter1.id]))
     assert api_val.passed is False
@@ -151,7 +151,7 @@ def test_modified_max(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=10)
+    api_fighter.change_fighter(count_override=10)
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].modified == approx(6)
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
@@ -165,7 +165,7 @@ def test_modified_max(client, consts):
     assert api_val.passed is False
     assert api_val.details.fighter_squad_size == {api_fighter.id: (10, 9)}
     # Action
-    api_fighter.change_fighter(count=None)
+    api_fighter.change_fighter(count_override=None)
     # Verification
     assert api_fighter.update().attrs[eve_count_attr_id].modified == approx(9)
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
@@ -181,8 +181,8 @@ def test_rounding(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_fighter(type_id=eve_fighter1_id, count=9)
-    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count=9)
+    api_fit.add_fighter(type_id=eve_fighter1_id, count_override=9)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count_override=9)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
@@ -196,8 +196,8 @@ def test_not_positive_max(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id, count=10)
-    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count=10)
+    api_fighter1 = api_fit.add_fighter(type_id=eve_fighter1_id, count_override=10)
+    api_fighter2 = api_fit.add_fighter(type_id=eve_fighter2_id, count_override=10)
     # Verification - when not specified, max amount is assumed to be 1
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
@@ -216,7 +216,7 @@ def test_no_value(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=10)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count_override=10)
     # Verification - when not specified, max amount is assumed to be 1
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
@@ -236,7 +236,7 @@ def test_no_attr(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=10)
+    api_fighter.change_fighter(count_override=10)
     # Verification - when attribute is not specified, max size of 1 is set
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is False
@@ -249,7 +249,7 @@ def test_not_loaded(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fit.add_fighter(type_id=eve_fighter_id, count=10)
+    api_fit.add_fighter(type_id=eve_fighter_id, count_override=10)
     # Verification
     api_val = api_fit.validate(options=ValOptions(fighter_squad_size=True))
     assert api_val.passed is True

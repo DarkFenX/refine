@@ -398,7 +398,7 @@ def test_count_override(client, consts):
         type_id=eve_fighter_id,
         state=consts.ApiMinionState.engaging,
         abilities={eve_basic_info.missiles_abil_id: True},
-        count=4)
+        count_override=4)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
@@ -411,7 +411,7 @@ def test_count_override(client, consts):
     assert api_fighter_dmg_stats.dps == [approx(367.493304), 0, 0, 0]
     assert api_fighter_dmg_stats.volley == [approx(3140.15625), 0, 0, 0]
     # Action
-    api_fighter.change_fighter(count=8)
+    api_fighter.change_fighter(count_override=8)
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(734.986607), 0, 0, 0]

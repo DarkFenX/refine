@@ -266,7 +266,7 @@ class Item(AttrDict):
             self, *,
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
-            count: int | type[Absent] | None = Absent,
+            count_override: int | type[Absent] | None = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
             rearm_minion: ApiRearmMinion | type[Absent] | None = Absent,
             add_proj_item_ids: list[str] | type[Absent] = Absent,
@@ -281,7 +281,7 @@ class Item(AttrDict):
         command = ItemCtlFighterChangeCmd(
             type_id=type_id,
             state=state,
-            count=count,
+            count_override=count_override,
             abilities=abilities,
             rearm_minion=rearm_minion,
             add_proj_item_ids=add_proj_item_ids,

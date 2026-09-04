@@ -15,7 +15,7 @@ class BaseCtlFighterCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: ApiMinionState | type[Absent]
-    count: int | type[Absent] | None
+    count_override: int | type[Absent] | None
     abilities: dict[int, bool] | type[Absent]
     rearm_minion: ApiRearmMinion | type[Absent] | None
     coordinates: tuple[float, float, float] | type[Absent]
@@ -26,7 +26,7 @@ class BaseCtlFighterCmd(BaseCommand):
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['count'], value=self.count)
+        conditional_insert(container=body, path=['count_override'], value=self.count_override)
         conditional_insert(container=body, path=['abilities'], value=self.abilities)
         conditional_insert(container=body, path=['rearm_minion'], value=self.rearm_minion)
         conditional_insert(container=body, path=['coordinates'], value=self.coordinates)

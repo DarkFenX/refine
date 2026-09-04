@@ -19,7 +19,7 @@ pub type FighterAddCmdBr = FighterAddCmdGen<ItemIdBr>;
 pub struct FighterAddCmdGen<I> {
     type_id: ItemTypeId,
     state: MinionState,
-    count: Option<CountNz> = None,
+    count_override: Option<CountNz> = None,
     rearm_minion: Option<RearmMinion> = None,
     coordinates: Option<Coordinates> = None,
     movement: Option<Movement> = None,
@@ -54,8 +54,8 @@ impl<I> FighterAddCmdGen<I> {
     pub fn new(type_id: ItemTypeId, state: MinionState) -> Self {
         Self { type_id, state, .. }
     }
-    pub fn with_count(mut self, count: CountNz) -> Self {
-        self.count = Some(count);
+    pub fn with_count_override(mut self, count_override: CountNz) -> Self {
+        self.count_override = Some(count_override);
         self
     }
     pub fn with_abilities(mut self, abilities: impl IntoIterator<Item = (AbilityId, bool)>) -> Self {
@@ -110,7 +110,7 @@ impl FighterAddCmdBr {
             proj_item_ids: resps.resolve_item_ids(self.proj_item_ids)?,
             type_id: self.type_id,
             state: self.state,
-            count: self.count,
+            count_override: self.count_override,
             abilities: self.abilities,
             rearm_minion: self.rearm_minion,
             coordinates: self.coordinates,
@@ -152,8 +152,8 @@ impl<F, I> FighterAddCmdCtxFitGen<F, I> {
 impl FighterAddCmd {
     pub(in crate::ctl) fn execute(self, core_fit: &mut rc::FitMut) -> Result<AddedItemIdsResp, FighterAddError> {
         let mut core_fighter = core_fit.add_fighter(self.type_id, self.state, self.coordinates, self.movement);
-        if let Some(count) = self.count {
-            core_fighter.set_count_override(Some(count));
+        if let Some(count_override) = self.count_override {
+            core_fighter.set_count_override(Some(count_override));
         }
         self.abilities.apply(&mut core_fighter);
         if let Some(rearm_minion) = self.rearm_minion {

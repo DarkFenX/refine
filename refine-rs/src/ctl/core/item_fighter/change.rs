@@ -20,7 +20,7 @@ pub struct FighterChangeCmdGen<I> {
     type_id: Option<ItemTypeId>,
     state: Option<MinionState>,
     #[cfg_attr(feature = "serde", serde(default))]
-    count: TriStateField<CountNz>,
+    count_override: TriStateField<CountNz>,
     #[cfg_attr(feature = "serde", serde(default))]
     rearm_minion: TriStateField<RearmMinion>,
     coordinates: Option<Coordinates>,
@@ -39,7 +39,7 @@ impl<I> Default for FighterChangeCmdGen<I> {
         Self {
             type_id: Default::default(),
             state: Default::default(),
-            count: Default::default(),
+            count_override: Default::default(),
             rearm_minion: Default::default(),
             coordinates: Default::default(),
             movement: Default::default(),
@@ -82,8 +82,8 @@ impl<I> FighterChangeCmdGen<I> {
         self.state = Some(state);
         self
     }
-    pub fn with_count(mut self, count: Option<CountNz>) -> Self {
-        self.count = count.into();
+    pub fn with_count_override(mut self, count_override: Option<CountNz>) -> Self {
+        self.count_override = count_override.into();
         self
     }
     pub fn with_abilities(mut self, abilities: impl IntoIterator<Item = (AbilityId, bool)>) -> Self {
@@ -143,7 +143,7 @@ impl FighterChangeCmdBr {
             rm_proj_item_ids: resps.resolve_item_ids(self.rm_proj_item_ids)?,
             type_id: self.type_id,
             state: self.state,
-            count: self.count,
+            count_override: self.count_override,
             abilities: self.abilities,
             rearm_minion: self.rearm_minion,
             coordinates: self.coordinates,
@@ -192,8 +192,8 @@ impl FighterChangeCmd {
         if let Some(state) = self.state {
             core_fighter.set_state(state);
         }
-        match self.count {
-            TriStateField::Value(count) => core_fighter.set_count_override(Some(count)),
+        match self.count_override {
+            TriStateField::Value(count_override) => core_fighter.set_count_override(Some(count_override)),
             TriStateField::None => core_fighter.set_count_override(None),
             TriStateField::Absent => (),
         }

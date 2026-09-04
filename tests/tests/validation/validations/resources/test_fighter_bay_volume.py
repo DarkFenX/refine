@@ -178,7 +178,7 @@ def test_changed_count(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.set_ship(type_id=eve_ship_id)
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count=6)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, count_override=6)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(6000), approx(5000))
@@ -188,7 +188,7 @@ def test_changed_count(client, consts):
     assert api_val.details.fighter_bay_volume.max == approx(5000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(6000)}
     # Action
-    api_fighter.change_fighter(count=5)
+    api_fighter.change_fighter(count_override=5)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(5000), approx(5000))
@@ -197,7 +197,7 @@ def test_changed_count(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=20)
+    api_fighter.change_fighter(count_override=20)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(20000), approx(5000))
@@ -207,7 +207,7 @@ def test_changed_count(client, consts):
     assert api_val.details.fighter_bay_volume.max == approx(5000)
     assert api_val.details.fighter_bay_volume.users == {api_fighter.id: approx(20000)}
     # Action
-    api_fighter.change_fighter(count=2)
+    api_fighter.change_fighter(count_override=2)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(2000), approx(5000))
@@ -216,7 +216,7 @@ def test_changed_count(client, consts):
     with check_no_field():
         api_val.details  # ruff:ignore[useless-expression]
     # Action
-    api_fighter.change_fighter(count=None)
+    api_fighter.change_fighter(count_override=None)
     # Verification
     api_stats = api_fit.get_stats(options=FitStatsOptions(fighter_bay_volume=True))
     assert api_stats.fighter_bay_volume.one() == (approx(9000), approx(5000))

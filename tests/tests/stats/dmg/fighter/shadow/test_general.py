@@ -425,7 +425,7 @@ def test_count_override(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count=4)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count_override=4)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
@@ -450,7 +450,7 @@ def test_count_override(client, consts):
     assert api_fighter_dmg_stats.dps == [approx(20000), approx(20000), approx(20000), approx(20000)]
     assert api_fighter_dmg_stats.volley == [approx(200000), approx(200000), approx(200000), approx(200000)]
     # Action
-    api_fighter.change_fighter(abilities={consts.EveAbil.true_sacrifice: False}, count=8)
+    api_fighter.change_fighter(abilities={consts.EveAbil.true_sacrifice: False}, count_override=8)
     # Verification
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=True)).dmg.one()
     assert api_fleet_dmg_stats.dps == [approx(1607.142857), approx(1607.142857), 0, 0]

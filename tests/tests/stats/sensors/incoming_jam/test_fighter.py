@@ -176,7 +176,7 @@ def test_count_override(client, consts):
     api_src_fit = api_sol.create_fit()
     api_src_fit.set_ship(type_id=eve_src_ship_id, coordinates=(0, 0, 0))
     api_src_fighter = api_src_fit.add_fighter(
-        type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count=2, coordinates=(0, 0, 0))
+        type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count_override=2, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship2_id, coordinates=(0, 0, 0))
     api_src_fighter.change_fighter(add_proj_item_ids=[api_tgt_ship.id])
@@ -186,14 +186,14 @@ def test_count_override(client, consts):
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.275), approx(0.275)]
     # Action
-    api_src_fighter.change_fighter(count=4)
+    api_src_fighter.change_fighter(count_override=4)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [approx(0.55), approx(0.55)]
     api_tgt_ship_stats = api_tgt_ship.get_stats(options=ItemStatsOptions(incoming_jam=True))
     assert api_tgt_ship_stats.incoming_jam.one() == [approx(0.55), approx(0.55)]
     # Action
-    api_src_fighter.change_fighter(count=100)
+    api_src_fighter.change_fighter(count_override=100)
     # Verification
     api_tgt_fit_stats = api_tgt_fit.get_stats(options=FitStatsOptions(incoming_jam=True))
     assert api_tgt_fit_stats.incoming_jam.one() == [1, 1]

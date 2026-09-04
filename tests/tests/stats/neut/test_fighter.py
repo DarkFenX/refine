@@ -386,7 +386,7 @@ def test_count_override(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count=2)
+    api_fighter = api_fit.add_fighter(type_id=eve_fighter_id, state=consts.ApiMinionState.engaging, count_override=2)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
@@ -396,7 +396,7 @@ def test_count_override(client, consts):
     api_fighter_stats = api_fighter.get_stats(options=ItemStatsOptions(outgoing_nps=True))
     assert api_fighter_stats.outgoing_nps.one() == approx(33)
     # Action
-    api_fighter.change_fighter(count=4)
+    api_fighter.change_fighter(count_override=4)
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(outgoing_nps=True))
     assert api_fleet_stats.outgoing_nps.one() == approx(66)
