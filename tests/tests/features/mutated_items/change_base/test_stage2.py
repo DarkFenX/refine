@@ -1,7 +1,7 @@
-from fw import Muta, approx, check_no_field
+from fw import Muta, approx
 
 
-def test_from_stage2(client):
+def test_from_stage2(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item1_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_base_item2_id = client.mk_eve_item(attrs={eve_attr_id: 200})
@@ -19,28 +19,31 @@ def test_from_stage2(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item1_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(type_id=eve_base_item2_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item2_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(200)
     # Action
     api_item.change_module(type_id=eve_base_item1_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item1_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
-def test_from_stage3(client):
+def test_from_stage3(client, consts):
     eve_attr_id = client.mk_eve_attr()
     eve_base_item1_id = client.mk_eve_item(attrs={eve_attr_id: 100})
     eve_base_item2_id = client.mk_eve_item(attrs={eve_attr_id: 200})
@@ -57,28 +60,31 @@ def test_from_stage3(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item1_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
     # Action
     api_item.change_module(type_id=eve_base_item2_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item2_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(200)
     # Action
     api_item.change_module(type_id=eve_base_item1_id)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item1_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 1
+    assert api_item.mutation.rolls[eve_attr_id] == approx(0.3)
     assert api_item.attrs[eve_attr_id].base == approx(100)
 
 
-def test_from_stage4(client):
+def test_from_stage4(client, consts):
     eve_attr1_id = client.mk_eve_attr()
     eve_attr2_id = client.mk_eve_attr()
     eve_base_item1_id = client.mk_eve_item(attrs={eve_attr1_id: 100, eve_attr2_id: 100})
@@ -96,12 +102,16 @@ def test_from_stage4(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item1_id
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert api_item.mutation.base_type_id == eve_base_item1_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
     assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(46)
+    assert len(api_item.mutation.rolls) == 2
+    assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
+    assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
     assert api_item.attrs[eve_attr1_id].base == approx(92)
     assert api_item.attrs[eve_attr2_id].base == approx(46)
     # Action
@@ -109,8 +119,10 @@ def test_from_stage4(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_base_item2_id
-    with check_no_field():
-        api_item.mutation  # ruff:ignore[useless-expression]
+    assert api_item.mutation.type == consts.ApiMutationType.dormant
+    assert len(api_item.mutation.rolls) == 2
+    assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
+    assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
     assert api_item.attrs[eve_attr1_id].base == approx(200)
     assert api_item.attrs[eve_attr2_id].base == approx(200)
     # Action
@@ -118,11 +130,15 @@ def test_from_stage4(client):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item1_id
+    assert api_item.mutation.type == consts.ApiMutationType.effective
     assert api_item.mutation.base_type_id == eve_base_item1_id
     assert len(api_item.mutation.attrs) == 2
     assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(92)
     assert api_item.mutation.attrs[eve_attr2_id].roll == approx(0.3)
     assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(46)
+    assert len(api_item.mutation.rolls) == 2
+    assert api_item.mutation.rolls[eve_attr1_id] == approx(0.3)
+    assert api_item.mutation.rolls[eve_attr2_id] == approx(0.3)
     assert api_item.attrs[eve_attr1_id].base == approx(92)
     assert api_item.attrs[eve_attr2_id].base == approx(46)
