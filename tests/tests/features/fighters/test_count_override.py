@@ -12,20 +12,27 @@ def test_set_not_loaded(client, consts):
     api_fit = api_sol.create_fit()
     api_fighter = api_fit.add_fighter(type_id=eve_fighter_id)
     # Verification
-    assert api_fighter.update().count == [12, 12, False]
+    api_fighter.update()
+    assert api_fighter.count == [12, 12]
+    with check_no_field():
+        api_fighter.count_override  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
     api_fighter.update()
     with check_no_field():
         api_fighter.count  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_fighter.count_override  # ruff:ignore[useless-expression]
     # Action
     api_fighter.change_fighter(count=3)
     # Verification
     api_fighter.update()
     with check_no_field():
         api_fighter.count  # ruff:ignore[useless-expression]
+    assert api_fighter.count_override == 3
     # Action
     api_sol.change_src(data=eve_d1)
     # Verification
-    assert api_fighter.update().count == [3, 12, True]
+    assert api_fighter.update().count == [3, 12]
+    assert api_fighter.count_override == 3

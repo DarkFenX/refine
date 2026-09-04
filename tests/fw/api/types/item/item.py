@@ -28,6 +28,7 @@ from .attr_vals import AttrVals
 from .coordinates import Coordinates
 from .count import ItemCountInfo
 from .effect import EffectInfo
+from .fighter_count import FighterCountInfo
 from .mod_info import AttrModInfoMap
 from .movement import Movement
 from .mutation import ItemMutation
@@ -64,7 +65,7 @@ class Item(AttrDict):
                 effect_http_to_fw(effect_id=k): Item(client=client, data=v, sol_id=sol_id)
                 for k, v in d.items()}),
             'spool_cycles': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
-            'count': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
+            'count': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
             'optional_reload': AttrHookDef(func=lambda d: ItemOptionalReloadInfo(data=d)),
             'rearm_minion': AttrHookDef(func=lambda d: ItemRearmMinionInfo(data=d)),
             'npc_prop': AttrHookDef(func=lambda d: ItemNpcPropInfo(data=d)),

@@ -562,14 +562,15 @@ def test_base_out_of_range(client, consts):
     api_item.change_module(mutation=eve_mutator_id)
     # Verification - all the values are put onto mutation range
     api_item.update()
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert len(api_item.mutation.attrs) == 2
-    assert api_item.mutation.attrs[eve_attr1_id].roll == approx(0)
-    assert api_item.mutation.attrs[eve_attr1_id].absolute == approx(110)
-    assert api_item.mutation.attrs[eve_attr2_id].roll == approx(1)
-    assert api_item.mutation.attrs[eve_attr2_id].absolute == approx(90)
+    api_item_mutation = api_item.mutation
+    assert api_item_mutation.type == consts.ApiMutationType.effective
+    assert len(api_item_mutation.attrs) == 2
+    assert api_item_mutation.attrs[eve_attr1_id].roll == approx(0)
+    assert api_item_mutation.attrs[eve_attr1_id].absolute == approx(110)
+    assert api_item_mutation.attrs[eve_attr2_id].roll == approx(1)
+    assert api_item_mutation.attrs[eve_attr2_id].absolute == approx(90)
     with check_no_field():
-        api_item.mutation.rolls  # ruff:ignore[useless-expression]
+        api_item_mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_attr1_id].base == approx(110)
     assert api_item.attrs[eve_attr2_id].base == approx(90)
 
@@ -640,9 +641,10 @@ def test_item_type_id(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
+    api_item_mutation = api_item.mutation
+    assert api_item_mutation.type == consts.ApiMutationType.effective
     with check_no_field():
-        api_item.mutation.rolls  # ruff:ignore[useless-expression]
+        api_item_mutation.rolls  # ruff:ignore[useless-expression]
 
 
 def test_item_group(client, consts):

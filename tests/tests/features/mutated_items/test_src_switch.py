@@ -175,10 +175,11 @@ def test_to_stage4_different_group(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert api_item.mutation.base_type_id == eve_base_item_id
+    api_item_mutation = api_item.mutation
+    assert api_item_mutation.type == consts.ApiMutationType.effective
+    assert api_item_mutation.base_type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation.rolls  # ruff:ignore[useless-expression]
+        api_item_mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_affectee_attr1_id].modified == approx(120)
     assert api_item.attrs[eve_affectee_attr2_id].modified == approx(100)
     # Action
@@ -187,10 +188,11 @@ def test_to_stage4_different_group(client, consts):
     # used
     api_item.update()
     assert api_item.type_id == eve_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert api_item.mutation.base_type_id == eve_base_item_id
+    api_item_mutation = api_item.mutation
+    assert api_item_mutation.type == consts.ApiMutationType.effective
+    assert api_item_mutation.base_type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation.rolls  # ruff:ignore[useless-expression]
+        api_item_mutation.rolls  # ruff:ignore[useless-expression]
     assert api_item.attrs[eve_affectee_attr1_id].modified == approx(100)
     assert api_item.attrs[eve_affectee_attr2_id].modified == approx(120)
 
@@ -215,19 +217,21 @@ def test_to_stage4_different_id(client, consts):
     # Verification
     api_item.update()
     assert api_item.type_id == eve_d1_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert api_item.mutation.base_type_id == eve_base_item_id
+    api_item_mutation = api_item.mutation
+    assert api_item_mutation.type == consts.ApiMutationType.effective
+    assert api_item_mutation.base_type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation.rolls  # ruff:ignore[useless-expression]
+        api_item_mutation.rolls  # ruff:ignore[useless-expression]
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
     api_item.update()
     assert api_item.type_id == eve_d2_mutated_item_id
-    assert api_item.mutation.type == consts.ApiMutationType.effective
-    assert api_item.mutation.base_type_id == eve_base_item_id
+    api_item_mutation = api_item.mutation
+    assert api_item_mutation.type == consts.ApiMutationType.effective
+    assert api_item_mutation.base_type_id == eve_base_item_id
     with check_no_field():
-        api_item.mutation.rolls  # ruff:ignore[useless-expression]
+        api_item_mutation.rolls  # ruff:ignore[useless-expression]
 
 
 def test_to_stage4_no_base_item(client, consts):
