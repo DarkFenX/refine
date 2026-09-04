@@ -123,6 +123,8 @@ def test_state_online_running(client, consts):
     assert api_item.effects[eve_online_effect_id].mode == consts.ApiEffMode.force_stop
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.full_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_online_effect_id] == consts.ApiEffMode.force_stop
     # Action - effects from online category rely only on actual "online" effect, ignoring everything
     # else
     api_item.change_module(
@@ -135,6 +137,8 @@ def test_state_online_running(client, consts):
     assert api_item.effects[eve_online_effect_id].mode == consts.ApiEffMode.force_run
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.full_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_online_effect_id] == consts.ApiEffMode.force_run
 
 
 def test_state_online_absent(client, consts):

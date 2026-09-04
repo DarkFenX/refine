@@ -1,4 +1,4 @@
-from fw import approx
+from fw import approx, check_no_field
 
 
 def test_force_stop(client, consts):
@@ -23,6 +23,8 @@ def test_force_stop(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.full_compliance
+    with check_no_field():
+        api_item.effect_mode_overrides  # ruff:ignore[useless-expression]
     # Action
     api_item.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_stop})
     # Verification
@@ -30,6 +32,8 @@ def test_force_stop(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.force_stop
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.force_stop
     # Action
     api_item.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.full_compliance})
     # Verification
@@ -37,3 +41,5 @@ def test_force_stop(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.full_compliance
+    with check_no_field():
+        api_item.effect_mode_overrides  # ruff:ignore[useless-expression]

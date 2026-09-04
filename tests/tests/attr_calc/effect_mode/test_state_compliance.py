@@ -24,6 +24,8 @@ def test_state_offline(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.disabled)
     # Verification
@@ -31,6 +33,8 @@ def test_state_offline(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.offline)
     # Verification
@@ -38,6 +42,8 @@ def test_state_offline(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
 
 
 def test_state_online(client, consts):
@@ -63,6 +69,8 @@ def test_state_online(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.offline)
     # Verification
@@ -70,6 +78,8 @@ def test_state_online(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -77,6 +87,8 @@ def test_state_online(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
 
 
 def test_state_active(client, consts):
@@ -102,6 +114,8 @@ def test_state_active(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.online)
     # Verification
@@ -109,6 +123,8 @@ def test_state_active(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -116,6 +132,8 @@ def test_state_active(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
 
 
 def test_state_overload(client, consts):
@@ -141,6 +159,8 @@ def test_state_overload(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.active)
     # Verification
@@ -148,6 +168,8 @@ def test_state_overload(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(100)
     assert api_item.effects[eve_effect_id].running is False
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance
     # Action
     api_item.change_module(state=consts.ApiModuleState.overload)
     # Verification
@@ -155,3 +177,5 @@ def test_state_overload(client, consts):
     assert api_item.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_item.effects[eve_effect_id].running is True
     assert api_item.effects[eve_effect_id].mode == consts.ApiEffMode.state_compliance
+    assert len(api_item.effect_mode_overrides) == 1
+    assert api_item.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.state_compliance

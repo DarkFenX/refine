@@ -74,6 +74,8 @@ class Item(AttrDict):
             'projs': AttrHookDef(func=lambda data: {k: ProjRangeInfo(data=v) for k, v in data}),
             'coordinates': AttrHookDef(func=lambda c: Coordinates(data=c)),
             'movement': AttrHookDef(func=lambda m: Movement(data=m)),
+            'effect_mode_overrides': AttrHookDef(func=lambda modes: {
+                effect_http_to_fw(effect_id=k): v for k, v in modes.items()}),
             'attrs': AttrHookDef(func=lambda attrs: {
                 attr_http_to_fw(attr_id=k): AttrVals(data=v) for k, v in attrs.items()}),
             'effects': AttrHookDef(func=lambda effects: {

@@ -34,11 +34,15 @@ def test_src_switch(client, consts):
         api_normal.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
         api_normal.effects  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_normal.effect_mode_overrides  # ruff:ignore[useless-expression]
     api_mutable.update()
     with check_no_field():
         api_mutable.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
         api_mutable.effects  # ruff:ignore[useless-expression]
+    with check_no_field():
+        api_mutable.effect_mode_overrides  # ruff:ignore[useless-expression]
     # Action
     api_normal.change_rig(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
     api_mutable.change_module(effect_modes={eve_effect_id: consts.ApiEffMode.force_run})
@@ -48,11 +52,15 @@ def test_src_switch(client, consts):
         api_normal.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
         api_normal.effects  # ruff:ignore[useless-expression]
+    assert len(api_normal.effect_mode_overrides) == 1
+    assert api_normal.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.force_run
     api_mutable.update()
     with check_no_field():
         api_mutable.attrs  # ruff:ignore[useless-expression]
     with check_no_field():
         api_mutable.effects  # ruff:ignore[useless-expression]
+    assert len(api_mutable.effect_mode_overrides) == 1
+    assert api_mutable.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.force_run
     # Action
     api_sol.change_src(data=eve_d2)
     # Verification
@@ -60,7 +68,11 @@ def test_src_switch(client, consts):
     assert api_normal.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_normal.effects[eve_effect_id].running is True
     assert api_normal.effects[eve_effect_id].mode == consts.ApiEffMode.force_run
+    assert len(api_normal.effect_mode_overrides) == 1
+    assert api_normal.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.force_run
     api_mutable.update()
     assert api_mutable.attrs[eve_affectee_attr_id].modified == approx(120)
     assert api_mutable.effects[eve_effect_id].running is True
     assert api_mutable.effects[eve_effect_id].mode == consts.ApiEffMode.force_run
+    assert len(api_mutable.effect_mode_overrides) == 1
+    assert api_mutable.effect_mode_overrides[eve_effect_id] == consts.ApiEffMode.force_run
