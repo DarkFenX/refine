@@ -33,8 +33,6 @@ pub struct ItemSpoolInfo {
     pub current: Count,
     /// Count of cycles at which effect reaches max spool.
     pub max: Count,
-    /// True if spool parameters are defined directly on item, false if inherited from sol.
-    pub overridden: bool,
 }
 
 ////////////////////////////////////////////////////////////////////////////////////////////////////

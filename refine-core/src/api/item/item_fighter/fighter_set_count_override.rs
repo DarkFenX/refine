@@ -1,11 +1,7 @@
 use crate::{api::FighterMut, num::CountNz, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    fn internal_set_fighter_count_override(
-        &mut self,
-        fighter_uid: UItemId,
-        count_override: Option<CountNz>,
-    ) {
+    fn internal_set_fighter_count_override(&mut self, fighter_uid: UItemId, count_override: Option<CountNz>) {
         // Update user data
         let u_fighter = self.u_data.items.get_mut(fighter_uid).dc_fighter_mut().unwrap();
         let old_count = u_fighter.get_current_count();

@@ -26,7 +26,6 @@ from fw.util import Absent, AttrDict, AttrHookDef
 from .ability_info import AbilityInfo
 from .attr_vals import AttrVals
 from .coordinates import Coordinates
-from .count import ItemCountInfo
 from .effect import EffectInfo
 from .fighter_count import FighterCountInfo
 from .mod_info import AttrModInfoMap
@@ -34,6 +33,7 @@ from .movement import Movement
 from .mutation import ItemMutation
 from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo
+from .spool_count import SpoolCycleInfo
 
 if typing.TYPE_CHECKING:
     from fw.api import ApiClient
@@ -61,7 +61,7 @@ class Item(AttrDict):
             'autocharges': AttrHookDef(func=lambda d: {
                 effect_http_to_fw(effect_id=k): Item(client=client, data=v, sol_id=sol_id)
                 for k, v in d.items()}),
-            'spool_cycles': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
+            'spool_cycles': AttrHookDef(func=lambda d: SpoolCycleInfo(data=d)),
             'count': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
@@ -352,7 +352,7 @@ class Item(AttrDict):
             state: ApiModuleState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,
-            spool: str | type[Absent] | None = Absent,
+            spool_override: str | type[Absent] | None = Absent,
             optional_reload_override: ApiOptionalReload | type[Absent] | None = Absent,
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
@@ -367,7 +367,7 @@ class Item(AttrDict):
             state=state,
             mutation=mutation,
             charge_type_id=charge_type_id,
-            spool=spool,
+            spool_override=spool_override,
             optional_reload_override=optional_reload_override,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,

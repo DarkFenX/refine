@@ -41,7 +41,7 @@ def test_state(client, consts):
     api_module_spool = api_fit.add_module(
         type_id=eve_module_spool_id,
         state=consts.ApiModuleState.active,
-        spool=Spool.spool_scale_to_api(val=1))
+        spool_override=Spool.spool_scale_to_api(val=1))
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
@@ -185,7 +185,7 @@ def test_hp_limit_and_time_burst_spool(client, consts):
     api_src_module = api_src_fit.add_module(
         type_id=eve_module_spool_id,
         state=consts.ApiModuleState.active,
-        spool=Spool.spool_scale_to_api(val=0.5))
+        spool_override=Spool.spool_scale_to_api(val=0.5))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
@@ -235,7 +235,7 @@ def test_item_kind(client, consts):
     api_fit.add_module(
         type_id=eve_module_spool_id,
         state=consts.ApiModuleState.active,
-        spool=Spool.spool_scale_to_api(val=1))
+        spool_override=Spool.spool_scale_to_api(val=1))
     api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
@@ -412,7 +412,7 @@ def test_zero_cycle_time(client, consts):
     api_module_spool = api_fit.add_module(
         type_id=eve_module_spool_id,
         state=consts.ApiModuleState.active,
-        spool=Spool.spool_scale_to_api(val=1))
+        spool_override=Spool.spool_scale_to_api(val=1))
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification
@@ -449,7 +449,7 @@ def test_no_cycle_time(client, consts):
     api_module_spool = api_fit.add_module(
         type_id=eve_module_spool_id,
         state=consts.ApiModuleState.active,
-        spool=Spool.spool_scale_to_api(val=1))
+        spool_override=Spool.spool_scale_to_api(val=1))
     api_drone = api_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_fleet = api_sol.create_fleet(fit_ids=[api_fit.id])
     # Verification

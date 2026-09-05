@@ -34,7 +34,7 @@ def test_state_ship(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=0))
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
@@ -110,7 +110,7 @@ def test_drone(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=0))
     api_src_drone = api_src_fit.add_drone(type_id=eve_src_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.add_drone(type_id=eve_tgt_drone_id)
@@ -149,7 +149,7 @@ def test_hp_limit_and_resist(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=0))
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
@@ -202,7 +202,7 @@ def test_hp_limit_and_range(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=0))
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging, coordinates=(0, 0, 0))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(15270, 0, 0))
@@ -234,7 +234,9 @@ def test_hp_limit_and_spool(client, consts):
     api_sol = client.create_sol()
     api_src_fit = api_sol.create_fit()
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0.5))
+        type_id=eve_module_rsar_id,
+        state=consts.ApiModuleState.active,
+        spool_override=Spool.spool_scale_to_api(val=0.5))
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
     api_module_rsar.change_module(add_proj_item_ids=[api_tgt_ship.id])
@@ -274,7 +276,7 @@ def test_time(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=1))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=1))
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
@@ -393,7 +395,7 @@ def test_zero_cycle_time(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=0))
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)
@@ -436,7 +438,7 @@ def test_no_cycle_time(client, consts):
     api_module_raar = api_src_fit.add_module(
         type_id=eve_module_raar_id, state=consts.ApiModuleState.active, charge_type_id=eve_paste_id)
     api_module_rsar = api_src_fit.add_module(
-        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool=Spool.spool_scale_to_api(val=0))
+        type_id=eve_module_rsar_id, state=consts.ApiModuleState.active, spool_override=Spool.spool_scale_to_api(val=0))
     api_drone = api_src_fit.add_drone(type_id=eve_drone_id, state=consts.ApiMinionState.engaging)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_ship_id)

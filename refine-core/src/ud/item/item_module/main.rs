@@ -20,7 +20,7 @@ pub(crate) struct UModule {
     charge_uid: Option<UItemId>,
     projs: UProjs,
     // Optional settings related to cycling
-    spool: Option<Spool>,
+    spool_override: Option<Spool>,
     optional_reload_override: Option<OptionalReload>,
 }
 impl UModule {
@@ -42,7 +42,7 @@ impl UModule {
             pos,
             charge_uid,
             projs: UProjs::new(),
-            spool: None,
+            spool_override: None,
             optional_reload_override: None,
         }
     }
@@ -197,11 +197,11 @@ impl UModule {
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
-    pub(crate) fn get_spool(&self) -> Option<Spool> {
-        self.spool
+    pub(crate) fn get_spool_override(&self) -> Option<Spool> {
+        self.spool_override
     }
-    pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
-        self.spool = spool
+    pub(crate) fn set_spool_override(&mut self, spool_override: Option<Spool>) {
+        self.spool_override = spool_override
     }
     pub(crate) fn get_optional_reload_override(&self) -> Option<OptionalReload> {
         self.optional_reload_override

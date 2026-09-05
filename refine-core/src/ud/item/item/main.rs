@@ -487,7 +487,7 @@ impl UItem {
     }
     pub(crate) fn get_spool_override(&self) -> Option<Spool> {
         match self {
-            Self::Module(module) => module.get_spool(),
+            Self::Module(module) => module.get_spool_override(),
             _ => None,
         }
     }

@@ -26,7 +26,7 @@ pub struct ModuleChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     charge_type_id: TriStateField<ItemTypeId>,
     #[cfg_attr(feature = "serde", serde(default))]
-    spool: TriStateField<Spool>,
+    spool_override: TriStateField<Spool>,
     #[cfg_attr(feature = "serde", serde(default))]
     optional_reload_override: TriStateField<OptionalReload>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -44,7 +44,7 @@ impl<I> Default for ModuleChangeCmdGen<I> {
             state: Default::default(),
             mutation: Default::default(),
             charge_type_id: Default::default(),
-            spool: Default::default(),
+            spool_override: Default::default(),
             optional_reload_override: Default::default(),
             add_proj_item_ids: Default::default(),
             rm_proj_item_ids: Default::default(),
@@ -96,8 +96,8 @@ impl<I> ModuleChangeCmdGen<I> {
         self.charge_type_id = charge_type_id.into();
         self
     }
-    pub fn with_spool(mut self, spool: Option<Spool>) -> Self {
-        self.spool = spool.into();
+    pub fn with_spool_override(mut self, spool_override: Option<Spool>) -> Self {
+        self.spool_override = spool_override.into();
         self
     }
     pub fn with_optional_reload_override(mut self, optional_reload_override: Option<OptionalReload>) -> Self {
@@ -148,7 +148,7 @@ impl ModuleChangeCmdBr {
             state: self.state,
             mutation: self.mutation,
             charge_type_id: self.charge_type_id,
-            spool: self.spool,
+            spool_override: self.spool_override,
             optional_reload_override: self.optional_reload_override,
             effect_modes: self.effect_modes,
         })
@@ -241,9 +241,9 @@ impl ModuleChangeCmd {
             }
             TriStateField::Absent => (),
         }
-        match self.spool {
-            TriStateField::Value(spool) => core_module.set_spool(Some(spool)),
-            TriStateField::None => core_module.set_spool(None),
+        match self.spool_override {
+            TriStateField::Value(spool_override) => core_module.set_spool_override(Some(spool_override)),
+            TriStateField::None => core_module.set_spool_override(None),
             TriStateField::Absent => (),
         }
         match self.optional_reload_override {

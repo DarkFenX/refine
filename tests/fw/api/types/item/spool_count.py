@@ -3,14 +3,13 @@ import typing
 
 
 @dataclasses.dataclass
-class ItemCountInfo:
+class SpoolCycleInfo:
 
     current: int
     max: int
-    overridden: bool
 
     def __init__(self, *, data: list | tuple) -> None:
-        self.current, self.max, self.overridden = data
+        self.current, self.max = data
 
     def __getitem__(self, item: int) -> typing.Any:
         field = dataclasses.fields(self)[item]
@@ -19,4 +18,4 @@ class ItemCountInfo:
     def __eq__(self, other: list | tuple) -> bool:
         if isinstance(other, tuple):
             other = list(other)
-        return [self.current, self.max, self.overridden] == other
+        return [self.current, self.max] == other

@@ -187,7 +187,7 @@ def test_time_burst(client, consts):
     assert api_module_dmg_full.dps == [0, approx(392.342434), 0, approx(205.512704)]
     assert api_module_dmg_full.volley == [0, approx(855.306506), 0, approx(448.017694)]
     # Action
-    api_module.change_module(spool=Spool.spool_scale_to_api(val=0.7))
+    api_module.change_module(spool_override=Spool.spool_scale_to_api(val=0.7))
     # Verification
     api_fleet_stats = api_fleet.get_stats(options=FleetStatsOptions(dmg=[
         StatsOptionFitDmg(time=StatTimeBurst(spool=Spool.spool_scale_to_api(val=0))),
