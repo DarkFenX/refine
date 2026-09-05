@@ -169,11 +169,11 @@ def test_hard_downtime(client, consts):
     api_src_fighter1 = api_src_fit.add_fighter(
         type_id=eve_fighter1_id,
         state=consts.ApiMinionState.engaging,
-        rearm_minion=consts.ApiRearmMinion.on_first_empty)
+        rearm_minion_override=consts.ApiRearmMinion.on_first_empty)
     api_src_fighter2 = api_src_fit.add_fighter(
         type_id=eve_fighter2_id,
         state=consts.ApiMinionState.engaging,
-        rearm_minion=consts.ApiRearmMinion.on_first_empty)
+        rearm_minion_override=consts.ApiRearmMinion.on_first_empty)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id)
     api_src_fighter1.change_fighter(add_proj_item_ids=[api_tgt_ship.id])

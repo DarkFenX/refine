@@ -13,12 +13,3 @@ pub enum RearmMinion {
     /// completed.
     OnFirstEmpty,
 }
-
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
-#[derive(Copy, Clone)]
-pub struct ItemRearmMinionInfo {
-    /// Effective value of item's "rearm minion" setting.
-    pub value: RearmMinion,
-    /// True if setting is defined directly on item, false if inherited from sol.
-    pub overridden: bool,
-}

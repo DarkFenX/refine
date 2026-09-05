@@ -11,7 +11,7 @@ pub use npc_behavior::{ItemNpcPropInfo, NpcProp};
 pub use option::OptionExt;
 pub(crate) use option::{DefOption, DefOptionExt};
 pub use optional_reload::{ItemOptionalReloadInfo, OptionalReload};
-pub use rearm_minion::{ItemRearmMinionInfo, RearmMinion};
+pub use rearm_minion::RearmMinion;
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use spool::{ItemSpoolInfo, Spool};
 pub(crate) use xyz::Xyz;

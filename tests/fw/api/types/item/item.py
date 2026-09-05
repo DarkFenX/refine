@@ -35,7 +35,6 @@ from .mutation import ItemMutation
 from .npc_prop import ItemNpcPropInfo
 from .optional_reload import ItemOptionalReloadInfo
 from .proj_range import ProjRangeInfo
-from .rearm_minion import ItemRearmMinionInfo
 from .side_effect_info import SideEffectInfo
 
 if typing.TYPE_CHECKING:
@@ -67,7 +66,6 @@ class Item(AttrDict):
             'spool_cycles': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
             'count': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
             'optional_reload': AttrHookDef(func=lambda d: ItemOptionalReloadInfo(data=d)),
-            'rearm_minion': AttrHookDef(func=lambda d: ItemRearmMinionInfo(data=d)),
             'npc_prop': AttrHookDef(func=lambda d: ItemNpcPropInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
@@ -268,7 +266,7 @@ class Item(AttrDict):
             state: ApiMinionState | type[Absent] = Absent,
             count_override: int | type[Absent] | None = Absent,
             abilities: dict[int, bool] | type[Absent] = Absent,
-            rearm_minion: ApiRearmMinion | type[Absent] | None = Absent,
+            rearm_minion_override: ApiRearmMinion | type[Absent] | None = Absent,
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
@@ -283,7 +281,7 @@ class Item(AttrDict):
             state=state,
             count_override=count_override,
             abilities=abilities,
-            rearm_minion=rearm_minion,
+            rearm_minion_override=rearm_minion_override,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,

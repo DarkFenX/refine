@@ -5,8 +5,8 @@ use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods}
 use crate::ItemKind;
 use crate::{
     AbilityId, AbilityInfo, AttrId, AutochargeInfo, Coordinates, CountNz, EffectId, EffectMode, FighterCountInfo,
-    FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemRearmMinionInfo, ItemTypeId, MinionState,
-    Modification, Movement, RangedProjInfo, shared::OvrdMapLight,
+    FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode, ItemTypeId, MinionState, Modification, Movement,
+    RangedProjInfo, RearmMinion, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", cfg_eval, serde_with::serde_as, derive(serde::Serialize))]
@@ -41,7 +41,9 @@ pub struct FighterInfoExt {
         serde(skip_serializing_if = "Vec::is_empty")
     )]
     pub abilities: Vec<(AbilityId, AbilityInfo)>,
-    pub rearm_minion: ItemRearmMinionInfo,
+    pub rearm_minion: RearmMinion,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub rearm_minion_override: Option<RearmMinion>,
     pub coordinates: Coordinates,
     pub movement: Movement,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
@@ -108,6 +110,7 @@ impl FighterInfo {
                         .map(|v| (v.get_id(), AbilityInfo::from_core(v)))
                         .collect(),
                     rearm_minion: core_fighter.get_rearm_minion(),
+                    rearm_minion_override: core_fighter.get_rearm_minion_override(),
                     coordinates: core_fighter.get_coordinates(),
                     movement: core_fighter.get_movement(),
                     projs: core_fighter.iter_projs().map(RangedProjInfo::from_core).collect(),

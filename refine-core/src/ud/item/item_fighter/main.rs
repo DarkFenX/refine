@@ -18,7 +18,7 @@ pub(crate) struct UFighter {
     physics: UPhysics,
     projs: UProjs,
     // Optional settings related to cycling
-    rearm_minion: Option<RearmMinion>,
+    rearm_minion_override: Option<RearmMinion>,
 }
 impl UFighter {
     pub(crate) fn new(
@@ -36,7 +36,7 @@ impl UFighter {
             autocharges: UAutocharges::new(),
             physics,
             projs: UProjs::new(),
-            rearm_minion: None,
+            rearm_minion_override: None,
         }
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
@@ -170,10 +170,10 @@ impl UFighter {
     pub(crate) fn get_projs_mut(&mut self) -> &mut UProjs {
         &mut self.projs
     }
-    pub(crate) fn get_rearm_minion(&self) -> Option<RearmMinion> {
-        self.rearm_minion
+    pub(crate) fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
+        self.rearm_minion_override
     }
-    pub(crate) fn set_rearm_minion(&mut self, rearm_minion: Option<RearmMinion>) {
-        self.rearm_minion = rearm_minion
+    pub(crate) fn set_rearm_minion_override(&mut self, rearm_minion_override: Option<RearmMinion>) {
+        self.rearm_minion_override = rearm_minion_override
     }
 }

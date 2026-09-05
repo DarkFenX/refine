@@ -20,7 +20,7 @@ pub struct FighterAddCmdGen<I> {
     type_id: ItemTypeId,
     state: MinionState,
     count_override: Option<CountNz> = None,
-    rearm_minion: Option<RearmMinion> = None,
+    rearm_minion_override: Option<RearmMinion> = None,
     coordinates: Option<Coordinates> = None,
     movement: Option<Movement> = None,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -62,8 +62,8 @@ impl<I> FighterAddCmdGen<I> {
         self.abilities.extend(abilities);
         self
     }
-    pub fn with_rearm_minion(mut self, rearm_minion: RearmMinion) -> Self {
-        self.rearm_minion = Some(rearm_minion);
+    pub fn with_rearm_minion_override(mut self, rearm_minion_override: RearmMinion) -> Self {
+        self.rearm_minion_override = Some(rearm_minion_override);
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
@@ -112,7 +112,7 @@ impl FighterAddCmdBr {
             state: self.state,
             count_override: self.count_override,
             abilities: self.abilities,
-            rearm_minion: self.rearm_minion,
+            rearm_minion_override: self.rearm_minion_override,
             coordinates: self.coordinates,
             movement: self.movement,
             effect_modes: self.effect_modes,
@@ -156,8 +156,8 @@ impl FighterAddCmd {
             core_fighter.set_count_override(Some(count_override));
         }
         self.abilities.apply(&mut core_fighter);
-        if let Some(rearm_minion) = self.rearm_minion {
-            core_fighter.set_rearm_minion(Some(rearm_minion));
+        if let Some(rearm_minion_override) = self.rearm_minion_override {
+            core_fighter.set_rearm_minion_override(Some(rearm_minion_override));
         }
         self.effect_modes.apply(&mut core_fighter);
         for projectee_item_id in self.proj_item_ids.iter() {

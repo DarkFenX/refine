@@ -1,6 +1,6 @@
 use crate::{
-    Coordinates, CountNz, FighterCountInfo, Fit, FitMut, ItemCommon, ItemMutCommon, ItemRearmMinionInfo, MinionState,
-    Movement, SolarSystem,
+    Coordinates, CountNz, FighterCountInfo, Fit, FitMut, ItemCommon, ItemMutCommon, MinionState, Movement, RearmMinion,
+    SolarSystem,
     api::ItemSealed,
     ud::{UFighter, UItemId},
 };
@@ -31,8 +31,11 @@ impl<'s> Fighter<'s> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
     }
-    pub fn get_rearm_minion(&self) -> ItemRearmMinionInfo {
+    pub fn get_rearm_minion(&self) -> RearmMinion {
         get_rearm_minion(self.sol, self.uid)
+    }
+    pub fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
+        get_rearm_minion_override(self.sol, self.uid)
     }
 }
 impl<'s> ItemSealed for Fighter<'s> {
@@ -76,8 +79,11 @@ impl<'s> FighterMut<'s> {
     pub fn get_movement(&self) -> Movement {
         get_movement(self.sol, self.uid)
     }
-    pub fn get_rearm_minion(&self) -> ItemRearmMinionInfo {
+    pub fn get_rearm_minion(&self) -> RearmMinion {
         get_rearm_minion(self.sol, self.uid)
+    }
+    pub fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
+        get_rearm_minion_override(self.sol, self.uid)
     }
 }
 impl<'s> ItemSealed for FighterMut<'s> {
@@ -115,10 +121,11 @@ fn get_coordinates(sol: &SolarSystem, fighter_uid: UItemId) -> Coordinates {
 fn get_movement(sol: &SolarSystem, fighter_uid: UItemId) -> Movement {
     Movement::from_u_physics(get_u_fighter(sol, fighter_uid).get_physics())
 }
-fn get_rearm_minion(sol: &SolarSystem, fighter_uid: UItemId) -> ItemRearmMinionInfo {
-    let value = sol.u_data.get_item_rearm_minion(fighter_uid, None);
-    let overridden = get_u_fighter(sol, fighter_uid).get_rearm_minion().is_some();
-    ItemRearmMinionInfo { value, overridden }
+fn get_rearm_minion(sol: &SolarSystem, fighter_uid: UItemId) -> RearmMinion {
+    sol.u_data.get_item_rearm_minion(fighter_uid, None)
+}
+fn get_rearm_minion_override(sol: &SolarSystem, fighter_uid: UItemId) -> Option<RearmMinion> {
+    get_u_fighter(sol, fighter_uid).get_rearm_minion_override()
 }
 fn get_u_fighter(sol: &SolarSystem, fighter_uid: UItemId) -> &UFighter {
     sol.u_data.items.get(fighter_uid).dc_fighter().unwrap()

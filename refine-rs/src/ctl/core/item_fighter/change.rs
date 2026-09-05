@@ -22,7 +22,7 @@ pub struct FighterChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     count_override: TriStateField<CountNz>,
     #[cfg_attr(feature = "serde", serde(default))]
-    rearm_minion: TriStateField<RearmMinion>,
+    rearm_minion_override: TriStateField<RearmMinion>,
     coordinates: Option<Coordinates>,
     movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -40,7 +40,7 @@ impl<I> Default for FighterChangeCmdGen<I> {
             type_id: Default::default(),
             state: Default::default(),
             count_override: Default::default(),
-            rearm_minion: Default::default(),
+            rearm_minion_override: Default::default(),
             coordinates: Default::default(),
             movement: Default::default(),
             add_proj_item_ids: Default::default(),
@@ -90,8 +90,8 @@ impl<I> FighterChangeCmdGen<I> {
         self.abilities.extend(abilities);
         self
     }
-    pub fn with_rearm_minion(mut self, rearm_minion: Option<RearmMinion>) -> Self {
-        self.rearm_minion = rearm_minion.into();
+    pub fn with_rearm_minion_override(mut self, rearm_minion_override: Option<RearmMinion>) -> Self {
+        self.rearm_minion_override = rearm_minion_override.into();
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
@@ -145,7 +145,7 @@ impl FighterChangeCmdBr {
             state: self.state,
             count_override: self.count_override,
             abilities: self.abilities,
-            rearm_minion: self.rearm_minion,
+            rearm_minion_override: self.rearm_minion_override,
             coordinates: self.coordinates,
             movement: self.movement,
             effect_modes: self.effect_modes,
@@ -198,9 +198,11 @@ impl FighterChangeCmd {
             TriStateField::Absent => (),
         }
         self.abilities.apply(core_fighter);
-        match self.rearm_minion {
-            TriStateField::Value(rearm_minion) => core_fighter.set_rearm_minion(Some(rearm_minion)),
-            TriStateField::None => core_fighter.set_rearm_minion(None),
+        match self.rearm_minion_override {
+            TriStateField::Value(rearm_minion_override) => {
+                core_fighter.set_rearm_minion_override(Some(rearm_minion_override))
+            }
+            TriStateField::None => core_fighter.set_rearm_minion_override(None),
             TriStateField::Absent => (),
         }
         if let Some(coordinates) = self.coordinates {

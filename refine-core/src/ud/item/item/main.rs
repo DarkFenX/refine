@@ -505,7 +505,7 @@ impl UItem {
     }
     pub(crate) fn get_rearm_minion(&self) -> Option<RearmMinion> {
         match self {
-            Self::Fighter(fighter) => fighter.get_rearm_minion(),
+            Self::Fighter(fighter) => fighter.get_rearm_minion_override(),
             _ => None,
         }
     }
