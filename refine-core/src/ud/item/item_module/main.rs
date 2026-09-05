@@ -21,7 +21,7 @@ pub(crate) struct UModule {
     projs: UProjs,
     // Optional settings related to cycling
     spool: Option<Spool>,
-    optional_reload: Option<OptionalReload>,
+    optional_reload_override: Option<OptionalReload>,
 }
 impl UModule {
     pub(crate) fn new(
@@ -43,7 +43,7 @@ impl UModule {
             charge_uid,
             projs: UProjs::new(),
             spool: None,
-            optional_reload: None,
+            optional_reload_override: None,
         }
     }
     pub(in crate::ud::item) fn get_item_kind() -> ItemKind {
@@ -203,10 +203,10 @@ impl UModule {
     pub(crate) fn set_spool(&mut self, spool: Option<Spool>) {
         self.spool = spool
     }
-    pub(crate) fn get_optional_reload(&self) -> Option<OptionalReload> {
-        self.optional_reload
+    pub(crate) fn get_optional_reload_override(&self) -> Option<OptionalReload> {
+        self.optional_reload_override
     }
-    pub(crate) fn set_optional_reload(&mut self, optional_reload: Option<OptionalReload>) {
-        self.optional_reload = optional_reload
+    pub(crate) fn set_optional_reload_override(&mut self, optional_reload_override: Option<OptionalReload>) {
+        self.optional_reload_override = optional_reload_override
     }
 }

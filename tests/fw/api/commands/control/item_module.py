@@ -17,7 +17,7 @@ class BaseCtlModuleCmd(BaseCommand):
     state: ApiModuleState | type[Absent]
     charge_type_id: int | type[Absent] | None
     spool: str | type[Absent] | None
-    optional_reload: ApiOptionalReload | type[Absent] | None
+    optional_reload_override: ApiOptionalReload | type[Absent] | None
     effect_modes: dict[int | str, ApiEffMode] | type[Absent]
 
     def serialize(self) -> dict:
@@ -26,7 +26,7 @@ class BaseCtlModuleCmd(BaseCommand):
         conditional_insert(container=body, path=['state'], value=self.state)
         conditional_insert(container=body, path=['charge_type_id'], value=self.charge_type_id)
         conditional_insert(container=body, path=['spool'], value=self.spool)
-        conditional_insert(container=body, path=['optional_reload'], value=self.optional_reload)
+        conditional_insert(container=body, path=['optional_reload_override'], value=self.optional_reload_override)
         conditional_insert(
             container=body,
             path=['effect_modes'],

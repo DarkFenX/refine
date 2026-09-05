@@ -10,7 +10,7 @@ pub use mod_rack::ModRack;
 pub use npc_behavior::NpcProp;
 pub use option::OptionExt;
 pub(crate) use option::{DefOption, DefOptionExt};
-pub use optional_reload::{ItemOptionalReloadInfo, OptionalReload};
+pub use optional_reload::OptionalReload;
 pub use rearm_minion::RearmMinion;
 pub use sec_zone::{SecZone, SecZoneCorruption};
 pub use spool::{ItemSpoolInfo, Spool};

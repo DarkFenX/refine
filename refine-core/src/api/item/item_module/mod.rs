@@ -8,7 +8,7 @@ mod module;
 mod module_move;
 mod module_remove;
 mod module_set_charge;
-mod module_set_optional_reload;
+mod module_set_optional_reload_override;
 mod module_set_spool;
 mod module_set_state;
 mod module_set_type_id;

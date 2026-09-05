@@ -484,7 +484,7 @@ class Fit(AttrDict):
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
             spool: str | type[Absent] = Absent,
-            optional_reload: ApiOptionalReload | type[Absent] = Absent,
+            optional_reload_override: ApiOptionalReload | type[Absent] = Absent,
             proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
             item_info_mode: ApiItemInfoMode | type[Absent] = ApiItemInfoMode.id,
@@ -500,7 +500,7 @@ class Fit(AttrDict):
             mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
-            optional_reload=optional_reload,
+            optional_reload_override=optional_reload_override,
             proj_item_ids=proj_item_ids,
             effect_modes=effect_modes)
         resp = self._client.item_command_add_request(

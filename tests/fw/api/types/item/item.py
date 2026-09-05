@@ -32,7 +32,6 @@ from .fighter_count import FighterCountInfo
 from .mod_info import AttrModInfoMap
 from .movement import Movement
 from .mutation import ItemMutation
-from .optional_reload import ItemOptionalReloadInfo
 from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo
 
@@ -64,7 +63,6 @@ class Item(AttrDict):
                 for k, v in d.items()}),
             'spool_cycles': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
             'count': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
-            'optional_reload': AttrHookDef(func=lambda d: ItemOptionalReloadInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
                 effect_http_to_fw(effect_id=k): SideEffectInfo(data=v) for k, v in ses.items()}),
@@ -355,7 +353,7 @@ class Item(AttrDict):
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,
             spool: str | type[Absent] | None = Absent,
-            optional_reload: ApiOptionalReload | type[Absent] | None = Absent,
+            optional_reload_override: ApiOptionalReload | type[Absent] | None = Absent,
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
@@ -370,7 +368,7 @@ class Item(AttrDict):
             mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
-            optional_reload=optional_reload,
+            optional_reload_override=optional_reload_override,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             effect_modes=effect_modes)

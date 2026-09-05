@@ -28,7 +28,7 @@ pub struct ModuleChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     spool: TriStateField<Spool>,
     #[cfg_attr(feature = "serde", serde(default))]
-    optional_reload: TriStateField<OptionalReload>,
+    optional_reload_override: TriStateField<OptionalReload>,
     #[cfg_attr(feature = "serde", serde(default))]
     add_proj_item_ids: Vec<I>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -45,7 +45,7 @@ impl<I> Default for ModuleChangeCmdGen<I> {
             mutation: Default::default(),
             charge_type_id: Default::default(),
             spool: Default::default(),
-            optional_reload: Default::default(),
+            optional_reload_override: Default::default(),
             add_proj_item_ids: Default::default(),
             rm_proj_item_ids: Default::default(),
             effect_modes: Default::default(),
@@ -100,8 +100,8 @@ impl<I> ModuleChangeCmdGen<I> {
         self.spool = spool.into();
         self
     }
-    pub fn with_optional_reload(mut self, optional_reload: Option<OptionalReload>) -> Self {
-        self.optional_reload = optional_reload.into();
+    pub fn with_optional_reload_override(mut self, optional_reload_override: Option<OptionalReload>) -> Self {
+        self.optional_reload_override = optional_reload_override.into();
         self
     }
     pub fn with_add_proj_item_ids(mut self, add_proj_item_ids: impl IntoIterator<Item = I>) -> Self {
@@ -149,7 +149,7 @@ impl ModuleChangeCmdBr {
             mutation: self.mutation,
             charge_type_id: self.charge_type_id,
             spool: self.spool,
-            optional_reload: self.optional_reload,
+            optional_reload_override: self.optional_reload_override,
             effect_modes: self.effect_modes,
         })
     }
@@ -246,9 +246,11 @@ impl ModuleChangeCmd {
             TriStateField::None => core_module.set_spool(None),
             TriStateField::Absent => (),
         }
-        match self.optional_reload {
-            TriStateField::Value(optional_reload) => core_module.set_optional_reload(Some(optional_reload)),
-            TriStateField::None => core_module.set_optional_reload(None),
+        match self.optional_reload_override {
+            TriStateField::Value(optional_reload_override) => {
+                core_module.set_optional_reload_override(Some(optional_reload_override))
+            }
+            TriStateField::None => core_module.set_optional_reload_override(None),
             TriStateField::Absent => (),
         }
         self.effect_modes.apply(core_module);

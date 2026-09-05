@@ -22,7 +22,7 @@ pub struct ModuleAddCmdGen<I> {
     mutation: Option<AddMutation> = None,
     charge_type_id: Option<ItemTypeId> = None,
     spool: Option<Spool> = None,
-    optional_reload: Option<OptionalReload> = None,
+    optional_reload_override: Option<OptionalReload> = None,
     #[cfg_attr(feature = "serde", serde(default))]
     proj_item_ids: Vec<I> = Vec::new(),
     #[cfg_attr(feature = "serde", serde(default))]
@@ -70,8 +70,8 @@ impl<I> ModuleAddCmdGen<I> {
         self.spool = Some(spool);
         self
     }
-    pub fn with_optional_reload(mut self, optional_reload: OptionalReload) -> Self {
-        self.optional_reload = Some(optional_reload);
+    pub fn with_optional_reload_override(mut self, optional_reload_override: OptionalReload) -> Self {
+        self.optional_reload_override = Some(optional_reload_override);
         self
     }
     pub fn with_proj_item_ids(mut self, proj_item_ids: impl IntoIterator<Item = I>) -> Self {
@@ -115,7 +115,7 @@ impl ModuleAddCmdBr {
             mutation: self.mutation,
             charge_type_id: self.charge_type_id,
             spool: self.spool,
-            optional_reload: self.optional_reload,
+            optional_reload_override: self.optional_reload_override,
             effect_modes: self.effect_modes,
         })
     }
@@ -163,8 +163,8 @@ impl ModuleAddCmd {
         if let Some(spool) = self.spool {
             core_module.set_spool(Some(spool));
         }
-        if let Some(optional_reload) = self.optional_reload {
-            core_module.set_optional_reload(Some(optional_reload));
+        if let Some(optional_reload_override) = self.optional_reload_override {
+            core_module.set_optional_reload_override(Some(optional_reload_override));
         }
         self.effect_modes.apply(&mut core_module);
         for projectee_item_id in self.proj_item_ids.iter() {

@@ -1,7 +1,7 @@
 use crate::{api::FighterMut, num::CountNz, sol::SolarSystem, ud::UItemId};
 
 impl SolarSystem {
-    pub(in crate::api) fn internal_set_fighter_count_override(
+    fn internal_set_fighter_count_override(
         &mut self,
         fighter_uid: UItemId,
         count_override: Option<CountNz>,

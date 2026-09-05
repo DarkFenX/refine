@@ -1,6 +1,6 @@
 use crate::{
-    Charge, ChargeMut, Count, Fit, FitMut, Index, ItemCommon, ItemMutCommon, ItemOptionalReloadInfo, ItemSpoolInfo,
-    ModRack, ModuleState, SolarSystem,
+    Charge, ChargeMut, Count, Fit, FitMut, Index, ItemCommon, ItemMutCommon, ItemSpoolInfo, ModRack, ModuleState,
+    OptionalReload, SolarSystem,
     api::{ItemSealed, active_stat_prepare, active_stat_rollback},
     misc::InfCount,
     stats::{StatItemChargeOptions, StatItemStateOptions},
@@ -34,8 +34,11 @@ impl<'s> Module<'s> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.uid)
     }
-    pub fn get_optional_reload(&self) -> ItemOptionalReloadInfo {
+    pub fn get_optional_reload(&self) -> OptionalReload {
         get_optional_reload(self.sol, self.uid)
+    }
+    pub fn get_optional_reload_override(&self) -> Option<OptionalReload> {
+        get_optional_reload_override(self.sol, self.uid)
     }
 }
 impl<'s> ItemSealed for Module<'s> {
@@ -84,8 +87,11 @@ impl<'s> ModuleMut<'s> {
     pub fn get_charge_count(&self) -> Option<Count> {
         get_charge_count(self.sol, self.uid)
     }
-    pub fn get_optional_reload(&self) -> ItemOptionalReloadInfo {
+    pub fn get_optional_reload(&self) -> OptionalReload {
         get_optional_reload(self.sol, self.uid)
+    }
+    pub fn get_optional_reload_override(&self) -> Option<OptionalReload> {
+        get_optional_reload_override(self.sol, self.uid)
     }
     pub fn get_charged_cycle_count(&mut self) -> Option<Count> {
         let mut reuse_eupdates = UEffectUpdates::new();
@@ -147,10 +153,11 @@ fn get_charge(sol: &SolarSystem, module_uid: UItemId) -> Option<Charge<'_>> {
 fn get_charge_count(sol: &SolarSystem, module_uid: UItemId) -> Option<Count> {
     get_u_module(sol, module_uid).get_charge_count(&sol.u_data)
 }
-fn get_optional_reload(sol: &SolarSystem, module_uid: UItemId) -> ItemOptionalReloadInfo {
-    let value = sol.u_data.get_item_optional_reload(module_uid, None);
-    let overridden = get_u_module(sol, module_uid).get_optional_reload().is_some();
-    ItemOptionalReloadInfo { value, overridden }
+fn get_optional_reload(sol: &SolarSystem, module_uid: UItemId) -> OptionalReload {
+    sol.u_data.get_item_optional_reload(module_uid, None)
+}
+fn get_optional_reload_override(sol: &SolarSystem, module_uid: UItemId) -> Option<OptionalReload> {
+    get_u_module(sol, module_uid).get_optional_reload_override()
 }
 fn get_u_module(sol: &SolarSystem, module_uid: UItemId) -> &UModule {
     sol.u_data.items.get(module_uid).dc_module().unwrap()

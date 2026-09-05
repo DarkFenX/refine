@@ -499,7 +499,7 @@ impl UItem {
     }
     pub(crate) fn get_optional_reload_override(&self) -> Option<OptionalReload> {
         match self {
-            Self::Module(module) => module.get_optional_reload(),
+            Self::Module(module) => module.get_optional_reload_override(),
             _ => None,
         }
     }

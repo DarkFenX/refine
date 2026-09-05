@@ -5,8 +5,8 @@ use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods}
 use crate::ItemKind;
 use crate::{
     AttrId, ChargeInfo, Count, EffectId, EffectMode, FitId, Index, ItemAttrValues, ItemEffectInfo, ItemId,
-    ItemInfoMode, ItemMutationInfo, ItemOptionalReloadInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification,
-    ModuleState, RangedProjInfo, TriStateField, shared::OvrdMapLight,
+    ItemInfoMode, ItemMutationInfo, ItemSpoolInfo, ItemTypeId, ModRack, Modification, ModuleState, OptionalReload,
+    RangedProjInfo, TriStateField, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -37,7 +37,9 @@ pub struct ModuleInfoExt {
     pub charged_cycles: TriStateField<Count>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub spool_cycles: Option<ItemSpoolInfo>,
-    pub optional_reload: ItemOptionalReloadInfo,
+    pub optional_reload: OptionalReload,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub optional_reload_override: Option<OptionalReload>,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
     pub projs: Vec<RangedProjInfo>,
     #[cfg_attr(
@@ -113,6 +115,7 @@ impl ModuleInfo {
                         charged_cycles: charged_cycle_count,
                         spool_cycles: core_module.get_spool_cycle_count(),
                         optional_reload: core_module.get_optional_reload(),
+                        optional_reload_override: core_module.get_optional_reload_override(),
                         projs: core_module.iter_projs().map(RangedProjInfo::from_core).collect(),
                         effect_mode_overrides: get_effect_mode_overrides(core_module, module_info_mode),
                         attrs: get_attrs(core_module, module_info_mode),

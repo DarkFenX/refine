@@ -531,7 +531,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             mutation: MutaAdd | type[Absent] = Absent,
             charge_type_id: int | type[Absent] = Absent,
             spool: str | type[Absent] = Absent,
-            optional_reload: ApiOptionalReload | type[Absent] = Absent,
+            optional_reload_override: ApiOptionalReload | type[Absent] = Absent,
             proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
     ) -> Item:
@@ -544,7 +544,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
-            optional_reload=optional_reload,
+            optional_reload_override=optional_reload_override,
             proj_item_ids=proj_item_ids,
             effect_modes=effect_modes)
         self._commands.append(command)
@@ -559,7 +559,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
             charge_type_id: int | type[Absent] | None = Absent,
             spool: str | type[Absent] | None = Absent,
-            optional_reload: ApiOptionalReload | type[Absent] | None = Absent,
+            optional_reload_override: ApiOptionalReload | type[Absent] | None = Absent,
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             effect_modes: dict[int | str, ApiEffMode] | type[Absent] = Absent,
@@ -572,7 +572,7 @@ class SolCmdBatchCtx(BaseCmdBatchCtx):
             mutation=mutation,
             charge_type_id=charge_type_id,
             spool=spool,
-            optional_reload=optional_reload,
+            optional_reload_override=optional_reload_override,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             effect_modes=effect_modes)

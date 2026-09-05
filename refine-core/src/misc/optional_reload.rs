@@ -13,12 +13,3 @@ pub enum OptionalReload {
     /// Go into reload when charges completely run out.
     OnEmpty,
 }
-
-#[cfg_attr(feature = "serde", derive(serde_tuple::Serialize_tuple))]
-#[derive(Copy, Clone)]
-pub struct ItemOptionalReloadInfo {
-    /// Effective value of item's "optional reload" setting.
-    pub value: OptionalReload,
-    /// True if setting is defined directly on item, false if inherited from sol.
-    pub overridden: bool,
-}
