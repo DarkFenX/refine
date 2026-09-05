@@ -32,7 +32,6 @@ from .fighter_count import FighterCountInfo
 from .mod_info import AttrModInfoMap
 from .movement import Movement
 from .mutation import ItemMutation
-from .npc_prop import ItemNpcPropInfo
 from .optional_reload import ItemOptionalReloadInfo
 from .proj_range import ProjRangeInfo
 from .side_effect_info import SideEffectInfo
@@ -66,7 +65,6 @@ class Item(AttrDict):
             'spool_cycles': AttrHookDef(func=lambda d: ItemCountInfo(data=d)),
             'count': AttrHookDef(func=lambda d: FighterCountInfo(data=d)),
             'optional_reload': AttrHookDef(func=lambda d: ItemOptionalReloadInfo(data=d)),
-            'npc_prop': AttrHookDef(func=lambda d: ItemNpcPropInfo(data=d)),
             'abilities': AttrHookDef(func=lambda a: {int(k): AbilityInfo(data=v) for k, v in a.items()}),
             'side_effects': AttrHookDef(func=lambda ses: {
                 effect_http_to_fw(effect_id=k): SideEffectInfo(data=v) for k, v in ses.items()}),
@@ -228,7 +226,7 @@ class Item(AttrDict):
             type_id: int | type[Absent] = Absent,
             state: ApiMinionState | type[Absent] = Absent,
             mutation: MutaAdd | MutaChange | type[Absent] | None = Absent,
-            npc_prop: ApiNpcProp | type[Absent] | None = Absent,
+            npc_prop_override: ApiNpcProp | type[Absent] | None = Absent,
             add_proj_item_ids: list[str] | type[Absent] = Absent,
             rm_proj_item_ids: list[str] | type[Absent] = Absent,
             coordinates: tuple[float, float, float] | type[Absent] = Absent,
@@ -242,7 +240,7 @@ class Item(AttrDict):
             type_id=type_id,
             state=state,
             mutation=mutation,
-            npc_prop=npc_prop,
+            npc_prop_override=npc_prop_override,
             add_proj_item_ids=add_proj_item_ids,
             rm_proj_item_ids=rm_proj_item_ids,
             coordinates=coordinates,

@@ -27,7 +27,7 @@ def test_sig_radius_stacking(client, consts):
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
     api_fit.add_fw_effect(type_id=eve_fw_effect_id)
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcProp.chase)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop_override=consts.ApiNpcProp.chase)
     # Verification - multiplication happens in sig getter, no on dogma level, so non-MWD-blown attr
     # value is exposed in attributes
     assert api_drone.update().attrs[eve_sig_radius_attr_id].modified == approx(39.5)

@@ -15,7 +15,7 @@ class BaseCtlDroneCmd(BaseCommand):
 
     type_id: int | type[Absent]
     state: ApiMinionState | type[Absent]
-    npc_prop: ApiNpcProp | type[Absent] | None
+    npc_prop_override: ApiNpcProp | type[Absent] | None
     coordinates: tuple[float, float, float] | type[Absent]
     movement: tuple[float, float, float] | type[Absent]
     effect_modes: dict[int | str, ApiEffMode] | type[Absent]
@@ -24,7 +24,7 @@ class BaseCtlDroneCmd(BaseCommand):
         body = super().serialize()
         conditional_insert(container=body, path=['type_id'], value=self.type_id)
         conditional_insert(container=body, path=['state'], value=self.state)
-        conditional_insert(container=body, path=['npc_prop'], value=self.npc_prop)
+        conditional_insert(container=body, path=['npc_prop_override'], value=self.npc_prop_override)
         conditional_insert(container=body, path=['coordinates'], value=self.coordinates)
         conditional_insert(container=body, path=['movement'], value=self.movement)
         conditional_insert(

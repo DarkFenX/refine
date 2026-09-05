@@ -7,7 +7,7 @@ pub use fighter_count::FighterCountInfo;
 pub(crate) use inf_count::InfCount;
 pub use item_kind::{DetectedItemKind, ItemKind};
 pub use mod_rack::ModRack;
-pub use npc_behavior::{ItemNpcPropInfo, NpcProp};
+pub use npc_behavior::NpcProp;
 pub use option::OptionExt;
 pub(crate) use option::{DefOption, DefOptionExt};
 pub use optional_reload::{ItemOptionalReloadInfo, OptionalReload};

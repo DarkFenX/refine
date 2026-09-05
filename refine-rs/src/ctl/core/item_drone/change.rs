@@ -22,7 +22,7 @@ pub struct DroneChangeCmdGen<I> {
     #[cfg_attr(feature = "serde", serde(default))]
     mutation: TriStateField<ChangeMutation>,
     #[cfg_attr(feature = "serde", serde(default))]
-    npc_prop: TriStateField<NpcProp>,
+    npc_prop_override: TriStateField<NpcProp>,
     coordinates: Option<Coordinates>,
     movement: Option<Movement>,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -38,7 +38,7 @@ impl<I> Default for DroneChangeCmdGen<I> {
             type_id: Default::default(),
             state: Default::default(),
             mutation: Default::default(),
-            npc_prop: Default::default(),
+            npc_prop_override: Default::default(),
             coordinates: Default::default(),
             movement: Default::default(),
             add_proj_item_ids: Default::default(),
@@ -83,8 +83,8 @@ impl<I> DroneChangeCmdGen<I> {
         self.mutation = mutation.into();
         self
     }
-    pub fn with_npc_prop(mut self, npc_prop: Option<NpcProp>) -> Self {
-        self.npc_prop = npc_prop.into();
+    pub fn with_npc_prop_override(mut self, npc_prop_override: Option<NpcProp>) -> Self {
+        self.npc_prop_override = npc_prop_override.into();
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
@@ -137,7 +137,7 @@ impl DroneChangeCmdBr {
             type_id: self.type_id,
             state: self.state,
             mutation: self.mutation,
-            npc_prop: self.npc_prop,
+            npc_prop_override: self.npc_prop_override,
             coordinates: self.coordinates,
             movement: self.movement,
             effect_modes: self.effect_modes,
@@ -213,9 +213,9 @@ impl DroneChangeCmd {
             }
             TriStateField::Absent => (),
         }
-        match self.npc_prop {
-            TriStateField::Value(npc_prop) => core_drone.set_npc_prop(Some(npc_prop)),
-            TriStateField::None => core_drone.set_npc_prop(None),
+        match self.npc_prop_override {
+            TriStateField::Value(npc_prop_override) => core_drone.set_npc_prop_override(Some(npc_prop_override)),
+            TriStateField::None => core_drone.set_npc_prop_override(None),
             TriStateField::Absent => (),
         }
         if let Some(coordinates) = self.coordinates {

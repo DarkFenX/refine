@@ -5,8 +5,7 @@ use super::shared::{get_attrs, get_effect_mode_overrides, get_effects, get_mods}
 use crate::ItemKind;
 use crate::{
     AttrId, Coordinates, EffectId, EffectMode, FitId, ItemAttrValues, ItemEffectInfo, ItemId, ItemInfoMode,
-    ItemMutationInfo, ItemNpcPropInfo, ItemTypeId, MinionState, Modification, Movement, RangedProjInfo,
-    shared::OvrdMapLight,
+    ItemMutationInfo, ItemTypeId, MinionState, Modification, Movement, NpcProp, RangedProjInfo, shared::OvrdMapLight,
 };
 
 #[cfg_attr(feature = "serde", derive(serde::Serialize))]
@@ -27,7 +26,9 @@ pub struct DroneInfoExt {
     pub state: MinionState,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
     pub mutation: Option<ItemMutationInfo>,
-    pub npc_prop: ItemNpcPropInfo,
+    pub npc_prop: NpcProp,
+    #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Option::is_none"))]
+    pub npc_prop_override: Option<NpcProp>,
     pub coordinates: Coordinates,
     pub movement: Movement,
     #[cfg_attr(feature = "serde", serde(skip_serializing_if = "Vec::is_empty"))]
@@ -80,6 +81,7 @@ impl DroneInfo {
                     state: core_drone.get_state(),
                     mutation: core_drone.get_mutation().map(ItemMutationInfo::try_from_core),
                     npc_prop: core_drone.get_npc_prop(),
+                    npc_prop_override: core_drone.get_npc_prop_override(),
                     coordinates: core_drone.get_coordinates(),
                     movement: core_drone.get_movement(),
                     projs: core_drone.iter_projs().map(RangedProjInfo::from_core).collect(),

@@ -100,17 +100,17 @@ def test_drone_single_prop(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcProp.cruise)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(1350)
     # Action
-    api_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    api_drone.change_drone(npc_prop_override=consts.ApiNpcProp.chase)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(1350)
     # Action
-    api_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    api_drone.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(1350)
@@ -135,12 +135,12 @@ def test_drone_dual_prop_modified(client, consts):
     client.create_sources()
     api_sol = client.create_sol()
     api_fit = api_sol.create_fit()
-    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop=consts.ApiNpcProp.cruise)
+    api_drone = api_fit.add_drone(type_id=eve_drone_id, npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(500)
     # Action
-    api_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    api_drone.change_drone(npc_prop_override=consts.ApiNpcProp.chase)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(1350)
@@ -150,7 +150,7 @@ def test_drone_dual_prop_modified(client, consts):
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(5400)
     # Action
-    api_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    api_drone.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_stats = api_drone.get_stats(options=ItemStatsOptions(speed=True))
     assert api_drone_stats.speed.one() == approx(2000)

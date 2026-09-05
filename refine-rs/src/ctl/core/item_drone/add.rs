@@ -18,7 +18,7 @@ pub struct DroneAddCmdGen<I> {
     type_id: ItemTypeId,
     state: MinionState,
     mutation: Option<AddMutation> = None,
-    npc_prop: Option<NpcProp> = None,
+    npc_prop_override: Option<NpcProp> = None,
     coordinates: Option<Coordinates> = None,
     movement: Option<Movement> = None,
     #[cfg_attr(feature = "serde", serde(default))]
@@ -54,8 +54,8 @@ impl<I> DroneAddCmdGen<I> {
         self.mutation = Some(mutation);
         self
     }
-    pub fn with_npc_prop(mut self, npc_prop: NpcProp) -> Self {
-        self.npc_prop = Some(npc_prop);
+    pub fn with_npc_prop_override(mut self, npc_prop_override: NpcProp) -> Self {
+        self.npc_prop_override = Some(npc_prop_override);
         self
     }
     pub fn with_coordinates(mut self, coordinates: Coordinates) -> Self {
@@ -103,7 +103,7 @@ impl DroneAddCmdBr {
             type_id: self.type_id,
             state: self.state,
             mutation: self.mutation,
-            npc_prop: self.npc_prop,
+            npc_prop_override: self.npc_prop_override,
             coordinates: self.coordinates,
             movement: self.movement,
             effect_modes: self.effect_modes,
@@ -147,8 +147,8 @@ impl DroneAddCmd {
             let mut core_mutation = core_drone.mutate(mutation.mutator_id).unwrap();
             mutation.apply_attrs(&mut core_mutation);
         }
-        if let Some(npc_prop) = self.npc_prop {
-            core_drone.set_npc_prop(Some(npc_prop))
+        if let Some(npc_prop_override) = self.npc_prop_override {
+            core_drone.set_npc_prop_override(Some(npc_prop_override))
         }
         self.effect_modes.apply(&mut core_drone);
         for projectee_item_id in self.proj_item_ids.iter() {

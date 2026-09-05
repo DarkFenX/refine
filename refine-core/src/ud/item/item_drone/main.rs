@@ -17,7 +17,7 @@ pub(crate) struct UDrone {
     pub(super) base: UItemBaseMutable,
     fit_uid: UFitId,
     physics: UPhysics,
-    npc_prop: Option<NpcProp>,
+    npc_prop_override: Option<NpcProp>,
     projs: UProjs,
 }
 impl UDrone {
@@ -34,7 +34,7 @@ impl UDrone {
             base: UItemBaseMutable::new(item_id, type_aid, drone_state.into_r_state(), mutation, r_data),
             fit_uid,
             physics,
-            npc_prop: None,
+            npc_prop_override: None,
             projs: UProjs::new(),
         }
     }
@@ -159,11 +159,11 @@ impl UDrone {
     pub(crate) fn get_physics_mut(&mut self) -> &mut UPhysics {
         &mut self.physics
     }
-    pub(crate) fn get_npc_prop(&self) -> Option<NpcProp> {
-        self.npc_prop
+    pub(crate) fn get_npc_prop_override(&self) -> Option<NpcProp> {
+        self.npc_prop_override
     }
-    pub(crate) fn set_npc_prop(&mut self, npc_prop: Option<NpcProp>) {
-        self.npc_prop = npc_prop
+    pub(crate) fn set_npc_prop_override(&mut self, npc_prop_override: Option<NpcProp>) {
+        self.npc_prop_override = npc_prop_override
     }
     pub(crate) fn get_projs(&self) -> &UProjs {
         &self.projs

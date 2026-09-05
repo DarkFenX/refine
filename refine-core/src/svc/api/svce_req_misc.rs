@@ -73,7 +73,7 @@ impl Svc {
         // TODO: limit by non-interrupted spool cycle count
         let ctx = SvcCtx::new(u_data, &self.eff_projs);
         let resolved_spool = ResolvedSpool::try_build(ctx, &mut self.calc, item_uid, defeff, None, spool_attrs)?;
-        let overridden = u_item.get_spool().is_some();
+        let overridden = u_item.get_spool_override().is_some();
         Some(ItemSpoolInfo {
             current: resolved_spool.cycles,
             max: resolved_spool.cycles_max,

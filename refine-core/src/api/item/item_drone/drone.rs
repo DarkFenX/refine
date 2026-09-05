@@ -1,6 +1,6 @@
 use crate::{
     api::{Coordinates, Fit, FitMut, ItemCommon, ItemMutCommon, ItemSealed, MinionState, Movement},
-    misc::ItemNpcPropInfo,
+    misc::NpcProp,
     sol::SolarSystem,
     ud::{UDrone, UItemId},
 };
@@ -19,8 +19,11 @@ impl<'s> Drone<'s> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
-    pub fn get_npc_prop(&self) -> ItemNpcPropInfo {
+    pub fn get_npc_prop(&self) -> NpcProp {
         get_npc_prop(self.sol, self.uid)
+    }
+    pub fn get_npc_prop_override(&self) -> Option<NpcProp> {
+        get_npc_prop_override(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
         get_coordinates(self.sol, self.uid)
@@ -58,8 +61,11 @@ impl<'s> DroneMut<'s> {
     pub fn get_state(&self) -> MinionState {
         get_state(self.sol, self.uid)
     }
-    pub fn get_npc_prop(&self) -> ItemNpcPropInfo {
+    pub fn get_npc_prop(&self) -> NpcProp {
         get_npc_prop(self.sol, self.uid)
+    }
+    pub fn get_npc_prop_override(&self) -> Option<NpcProp> {
+        get_npc_prop_override(self.sol, self.uid)
     }
     pub fn get_coordinates(&self) -> Coordinates {
         get_coordinates(self.sol, self.uid)
@@ -91,11 +97,12 @@ fn get_fit(sol: &SolarSystem, drone_uid: UItemId) -> Fit<'_> {
 fn get_state(sol: &SolarSystem, drone_uid: UItemId) -> MinionState {
     get_u_drone(sol, drone_uid).get_drone_state()
 }
-fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> ItemNpcPropInfo {
+fn get_npc_prop(sol: &SolarSystem, drone_uid: UItemId) -> NpcProp {
     let u_item = sol.u_data.items.get(drone_uid);
-    let value = sol.u_data.get_item_npc_prop(u_item).unwrap();
-    let overridden = get_u_drone(sol, drone_uid).get_npc_prop().is_some();
-    ItemNpcPropInfo { value, overridden }
+    sol.u_data.get_item_npc_prop(u_item).unwrap()
+}
+fn get_npc_prop_override(sol: &SolarSystem, drone_uid: UItemId) -> Option<NpcProp> {
+    get_u_drone(sol, drone_uid).get_npc_prop_override()
 }
 fn get_coordinates(sol: &SolarSystem, drone_uid: UItemId) -> Coordinates {
     Coordinates::from_xyz(get_u_drone(sol, drone_uid).get_physics().coordinates)

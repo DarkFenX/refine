@@ -485,25 +485,25 @@ impl UItem {
             _ => None,
         }
     }
-    pub(crate) fn get_spool(&self) -> Option<Spool> {
+    pub(crate) fn get_spool_override(&self) -> Option<Spool> {
         match self {
             Self::Module(module) => module.get_spool(),
             _ => None,
         }
     }
-    pub(crate) fn get_npc_prop(&self) -> Option<Option<NpcProp>> {
+    pub(crate) fn get_npc_prop_override(&self) -> Option<Option<NpcProp>> {
         match self {
-            Self::Drone(drone) => Some(drone.get_npc_prop()),
+            Self::Drone(drone) => Some(drone.get_npc_prop_override()),
             _ => None,
         }
     }
-    pub(crate) fn get_optional_reload(&self) -> Option<OptionalReload> {
+    pub(crate) fn get_optional_reload_override(&self) -> Option<OptionalReload> {
         match self {
             Self::Module(module) => module.get_optional_reload(),
             _ => None,
         }
     }
-    pub(crate) fn get_rearm_minion(&self) -> Option<RearmMinion> {
+    pub(crate) fn get_rearm_minion_override(&self) -> Option<RearmMinion> {
         match self {
             Self::Fighter(fighter) => fighter.get_rearm_minion_override(),
             _ => None,

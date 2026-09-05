@@ -111,13 +111,13 @@ def test_application(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_fleet = api_sol.create_fleet(fit_ids=[api_src_fit.id])
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0.2))
@@ -236,8 +236,8 @@ def test_application(client, consts):
     assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(137.339087), 0]
     assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(549.356348), 0]
     # Action
-    api_src_drone_proj.change_drone(npc_prop=consts.ApiNpcProp.chase)
-    api_src_drone_nonproj.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    api_src_drone_proj.change_drone(npc_prop_override=consts.ApiNpcProp.chase)
+    api_src_drone_nonproj.change_drone(npc_prop_override=consts.ApiNpcProp.chase)
     # Verification - drone speed becomes too high, but still easier to hit target due to lower speed
     # difference, and lower angular velocity
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
@@ -277,8 +277,8 @@ def test_application(client, consts):
     assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(133.103712), 0]
     assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(532.414847), 0]
     # Action
-    api_src_drone_proj.change_drone(npc_prop=consts.ApiNpcProp.cruise)
-    api_src_drone_nonproj.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    api_src_drone_proj.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
+    api_src_drone_nonproj.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification - with drones getting slower, speed difference becomes higher again
     api_fleet_dmg_stats = api_fleet.get_stats(options=FleetStatsOptions(
         dmg=[StatsOptionFitDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
@@ -380,19 +380,19 @@ def test_tgt_npc_prop_mode(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_src_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_drone = api_tgt_fit.add_drone(
         type_id=eve_tgt_drone_id,
         coordinates=(0, 1070, 0),
         movement=(0, 0, 0.5),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_drone.id])
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
@@ -404,7 +404,7 @@ def test_tgt_npc_prop_mode(client, consts):
     assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(57.874072), 0]
     assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(231.496286), 0]
     # Action
-    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    api_tgt_drone.change_drone(npc_prop_override=consts.ApiNpcProp.chase)
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)])).dmg.one()
@@ -415,7 +415,7 @@ def test_tgt_npc_prop_mode(client, consts):
     assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(120.271915), 0]
     assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(481.08766), 0]
     # Action
-    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    api_tgt_drone.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)])).dmg.one()
@@ -521,13 +521,13 @@ def test_drone_effect_tracking_absent(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
@@ -636,13 +636,13 @@ def test_drone_attr_tracking_absent(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
@@ -673,13 +673,13 @@ def test_drone_attr_sig_res_absent(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
@@ -720,13 +720,13 @@ def test_drone_attr_speed_chase_absent(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 1),
-        npc_prop=consts.ApiNpcProp.chase)
+        npc_prop_override=consts.ApiNpcProp.chase)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 1),
-        npc_prop=consts.ApiNpcProp.chase)
+        npc_prop_override=consts.ApiNpcProp.chase)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 6178, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
@@ -740,8 +740,8 @@ def test_drone_attr_speed_chase_absent(client, consts):
     assert api_drone_nonproj_dmg_stats.dps == [0, 0, approx(139.67088), 0]
     assert api_drone_nonproj_dmg_stats.volley == [0, 0, approx(558.68352), 0]
     # Action
-    api_src_drone_proj.change_drone(npc_prop=consts.ApiNpcProp.cruise)
-    api_src_drone_nonproj.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    api_src_drone_proj.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
+    api_src_drone_nonproj.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_drone_proj_dmg_stats = api_src_drone_proj.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_ship.id)])).dmg.one()
@@ -768,13 +768,13 @@ def test_tgt_attr_speed_absent(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
@@ -815,13 +815,13 @@ def test_tgt_attr_sig_radius_absent(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])
@@ -851,13 +851,13 @@ def test_tgt_not_loaded(client, consts):
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_drone_nonproj = api_src_fit.add_drone(
         type_id=eve_drone_id,
         state=consts.ApiMinionState.engaging,
         coordinates=(0, 0, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_tgt_fit = api_sol.create_fit()
     api_tgt_ship = api_tgt_fit.set_ship(type_id=eve_tgt_ship_id, coordinates=(0, 678, 0), movement=(0, 0, 0))
     api_src_drone_proj.change_drone(add_proj_item_ids=[api_tgt_ship.id])

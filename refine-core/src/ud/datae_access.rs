@@ -70,7 +70,7 @@ impl UData {
             Some(spool) => spool,
             None => {
                 let u_item = self.items.get(item_uid);
-                match u_item.get_spool() {
+                match u_item.get_spool_override() {
                     Some(spool) => spool,
                     None => self.default_spool,
                 }
@@ -78,7 +78,7 @@ impl UData {
         }
     }
     pub(crate) fn get_item_npc_prop(&self, u_item: &UItem) -> Option<NpcProp> {
-        u_item.get_npc_prop().map(|npc_prop| match npc_prop {
+        u_item.get_npc_prop_override().map(|npc_prop| match npc_prop {
             Some(npc_prop) => npc_prop,
             None => self.default_npc_prop,
         })
@@ -92,7 +92,7 @@ impl UData {
             Some(optional_reload) => optional_reload,
             None => {
                 let u_item = self.items.get(item_uid);
-                match u_item.get_optional_reload() {
+                match u_item.get_optional_reload_override() {
                     Some(optional_reload) => optional_reload,
                     None => self.default_optional_reloads,
                 }
@@ -108,7 +108,7 @@ impl UData {
             Some(rearm_minion) => rearm_minion,
             None => {
                 let u_item = self.items.get(item_uid);
-                match u_item.get_rearm_minion() {
+                match u_item.get_rearm_minion_override() {
                     Some(rearm_minion) => rearm_minion,
                     None => self.default_rearm_minions,
                 }

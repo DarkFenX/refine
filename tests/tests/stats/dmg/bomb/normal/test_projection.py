@@ -423,7 +423,7 @@ def test_npc_prop_mode(client, consts):
         type_id=eve_tgt_drone_id,
         coordinates=(0, 30000, 0),
         movement=(0, 0, 0),
-        npc_prop=consts.ApiNpcProp.cruise)
+        npc_prop_override=consts.ApiNpcProp.cruise)
     api_src_module_proj.change_module(add_proj_item_ids=[api_tgt_drone.id])
     # Verification
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
@@ -435,7 +435,7 @@ def test_npc_prop_mode(client, consts):
     assert api_charge_nonproj_dmg_stats.dps == [approx(23.387097), 0, 0, 0]
     assert api_charge_nonproj_dmg_stats.volley == [approx(1812.5), 0, 0, 0]
     # Action
-    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.chase)
+    api_tgt_drone.change_drone(npc_prop_override=consts.ApiNpcProp.chase)
     # Verification - drone is in chase mode and has its sig blown, so bomb applies fully
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)])).dmg.one()
@@ -446,7 +446,7 @@ def test_npc_prop_mode(client, consts):
     assert api_charge_nonproj_dmg_stats.dps == [approx(93.548387), 0, 0, 0]
     assert api_charge_nonproj_dmg_stats.volley == [approx(7250), 0, 0, 0]
     # Action
-    api_tgt_drone.change_drone(npc_prop=consts.ApiNpcProp.cruise)
+    api_tgt_drone.change_drone(npc_prop_override=consts.ApiNpcProp.cruise)
     # Verification
     api_charge_proj_dmg_stats = api_src_module_proj.charge.get_stats(options=ItemStatsOptions(
         dmg=[StatsOptionItemDmg(projectee_item_id=api_tgt_drone.id)])).dmg.one()
