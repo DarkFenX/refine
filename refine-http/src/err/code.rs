@@ -80,10 +80,10 @@ impl ApiError {
                 }
             },
             Self::SolRemove(err) => match err {
-                rs::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-004"),
+                rs::err::SolRemoveError::SolNotFound(..) => (StatusCode::NOT_FOUND, "SOL-001"),
             },
             Self::SolSrcSwitch(err) => match err {
-                rs::err::SolSwitchSrcError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-005"),
+                rs::err::SolSwitchSrcError::SrcGet(..) => (StatusCode::BAD_REQUEST, "SOL-003"),
             },
             ////////////////////////////////////////////////////////////////////////////////////////
             // Fleet-related
@@ -129,24 +129,15 @@ impl ApiError {
                 rs::err::ItemAddEnumError::Character(rs::err::FitGetCharacterSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddEnumError::Drone(err_l2) => match err_l2 {
-                    rs::err::FitGetDroneAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::FitGetDroneAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
-                },
-                rs::err::ItemAddEnumError::Fighter(err_l2) => match err_l2 {
-                    rs::err::FitGetFighterAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::FitGetFighterAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
-                },
+                rs::err::ItemAddEnumError::Drone(err_l2) => drone_add(err_l2),
+                rs::err::ItemAddEnumError::Fighter(err_l2) => fighter_add(err_l2),
                 rs::err::ItemAddEnumError::FwEffect(rs::err::FitGetFwEffectAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
                 rs::err::ItemAddEnumError::Implant(rs::err::FitGetImplantAddError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddEnumError::Module(err_l2) => match err_l2 {
-                    rs::err::FitGetModuleAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::FitGetModuleAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
-                },
+                rs::err::ItemAddEnumError::Module(err_l2) => module_add(err_l2),
                 rs::err::ItemAddEnumError::ProjEffect(rs::err::ProjEffectAddError::ProjAdd(..)) => {
                     (StatusCode::BAD_REQUEST, "PJE-002")
                 }
@@ -159,12 +150,7 @@ impl ApiError {
                 rs::err::ItemAddEnumError::Ship(rs::err::FitGetShipSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
-                rs::err::ItemAddEnumError::Skill(err_l2) => match err_l2 {
-                    rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-                    rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::SkillAddError::SkillIdCollision(..)) => {
-                        (StatusCode::BAD_REQUEST, "SKL-002")
-                    }
-                },
+                rs::err::ItemAddEnumError::Skill(err_l2) => skill_add(err_l2),
                 rs::err::ItemAddEnumError::Stance(rs::err::FitGetStanceSetError::FitGet(..)) => {
                     (StatusCode::BAD_REQUEST, "FIT-001")
                 }
@@ -214,7 +200,7 @@ impl ApiError {
                     rs::err::ProjEffectChangeError::ProjRemove(..) => (StatusCode::BAD_REQUEST, "PJE-004"),
                 },
                 rs::err::ItemChangeEnumError::Rig(rs::err::RigChangeError::ItemIsNotRig(..)) => {
-                    (StatusCode::BAD_REQUEST, "ITM-001")
+                    (StatusCode::BAD_REQUEST, "RIG-001")
                 }
                 rs::err::ItemChangeEnumError::Service(rs::err::ServiceChangeError::ItemIsNotService(..)) => {
                     (StatusCode::BAD_REQUEST, "SVC-001")
@@ -232,7 +218,7 @@ impl ApiError {
                     (StatusCode::BAD_REQUEST, "STC-001")
                 }
                 rs::err::ItemChangeEnumError::Subsystem(rs::err::SubsystemChangeError::ItemIsNotSubsystem(..)) => {
-                    (StatusCode::BAD_REQUEST, "ITM-001")
+                    (StatusCode::BAD_REQUEST, "SUB-001")
                 }
                 rs::err::ItemChangeEnumError::SwEffect(rs::err::SwEffectChangeError::ItemIsNotSwEffect(..)) => {
                     (StatusCode::BAD_REQUEST, "SWE-001")
@@ -314,16 +300,10 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
         // Item - charge
         rs::err::SolChangeEnumError::ChargeChange(err_l2) => charge_change(err_l2),
         // Item - drone
-        rs::err::SolChangeEnumError::DroneAdd(err_l2) => match err_l2 {
-            rs::err::FitGetDroneAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-            rs::err::FitGetDroneAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
-        },
+        rs::err::SolChangeEnumError::DroneAdd(err_l2) => drone_add(err_l2),
         rs::err::SolChangeEnumError::DroneChange(err_l2) => drone_change(err_l2),
         // Item - fighter
-        rs::err::SolChangeEnumError::FighterAdd(err_l2) => match err_l2 {
-            rs::err::FitGetFighterAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-            rs::err::FitGetFighterAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
-        },
+        rs::err::SolChangeEnumError::FighterAdd(err_l2) => fighter_add(err_l2),
         rs::err::SolChangeEnumError::FighterChange(err_l2) => fighter_change(err_l2),
         // Item - fit-wide effect
         rs::err::SolChangeEnumError::FwEffectAdd(rs::err::FitGetFwEffectAddError::FitGet(..)) => {
@@ -336,10 +316,7 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
         }
         rs::err::SolChangeEnumError::ImplantChange(err_l2) => implant_change(err_l2),
         // Item - module
-        rs::err::SolChangeEnumError::ModuleAdd(err_l2) => match err_l2 {
-            rs::err::FitGetModuleAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-            rs::err::FitGetModuleAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
-        },
+        rs::err::SolChangeEnumError::ModuleAdd(err_l2) => module_add(err_l2),
         rs::err::SolChangeEnumError::ModuleChange(err_l2) => module_change(err_l2),
         // Item - projected effect
         rs::err::SolChangeEnumError::ProjEffectAdd(rs::err::ProjEffectAddError::ProjAdd(..)) => {
@@ -379,12 +356,7 @@ fn sol_change_enum(err: &rs::err::SolChangeEnumError) -> (StatusCode, &'static s
             (StatusCode::BAD_REQUEST, "FIT-001")
         }
         // Item - skill
-        rs::err::SolChangeEnumError::SkillAdd(err_l2) => match err_l2 {
-            rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
-            rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::SkillAddError::SkillIdCollision(..)) => {
-                (StatusCode::BAD_REQUEST, "SKL-002")
-            }
-        },
+        rs::err::SolChangeEnumError::SkillAdd(err_l2) => skill_add(err_l2),
         rs::err::SolChangeEnumError::SkillChange(err_l2) => skill_change(err_l2),
         // Item - stance
         rs::err::SolChangeEnumError::StanceSet(rs::err::FitGetStanceSetError::FitGet(..)) => {
@@ -485,7 +457,6 @@ fn item_add_auto(err: &rs::err::core::FitAddItemAutoError) -> (StatusCode, &'sta
         rs::err::core::FitAddItemAutoError::KindInvalid(..) => (StatusCode::BAD_REQUEST, "ITM-005"),
     }
 }
-
 fn item_remove(err: &rs::err::ItemGetItemRemoveError) -> (StatusCode, &'static str) {
     match err {
         rs::err::ItemGetItemRemoveError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
@@ -516,6 +487,12 @@ fn charge_change(err: &rs::err::ItemGetChargeChangeError) -> (StatusCode, &'stat
     }
 }
 
+fn drone_add(err: &rs::err::FitGetDroneAddError) -> (StatusCode, &'static str) {
+    match err {
+        rs::err::FitGetDroneAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+        rs::err::FitGetDroneAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "DRN-002"),
+    }
+}
 fn drone_change(err: &rs::err::ItemGetDroneChangeError) -> (StatusCode, &'static str) {
     match err {
         rs::err::ItemGetDroneChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
@@ -526,6 +503,12 @@ fn drone_change(err: &rs::err::ItemGetDroneChangeError) -> (StatusCode, &'static
     }
 }
 
+fn fighter_add(err: &rs::err::FitGetFighterAddError) -> (StatusCode, &'static str) {
+    match err {
+        rs::err::FitGetFighterAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+        rs::err::FitGetFighterAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "FTR-002"),
+    }
+}
 fn fighter_change(err: &rs::err::ItemGetFighterChangeError) -> (StatusCode, &'static str) {
     match err {
         rs::err::ItemGetFighterChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
@@ -549,6 +532,12 @@ fn implant_change(err: &rs::err::ItemGetImplantChangeError) -> (StatusCode, &'st
     }
 }
 
+fn module_add(err: &rs::err::FitGetModuleAddError) -> (StatusCode, &'static str) {
+    match err {
+        rs::err::FitGetModuleAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+        rs::err::FitGetModuleAddError::ProjAdd(..) => (StatusCode::BAD_REQUEST, "MOD-002"),
+    }
+}
 fn module_change(err: &rs::err::ItemGetModuleChangeError) -> (StatusCode, &'static str) {
     match err {
         rs::err::ItemGetModuleChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
@@ -573,6 +562,14 @@ fn service_change(err: &rs::err::ItemGetServiceChangeError) -> (StatusCode, &'st
     }
 }
 
+fn skill_add(err: &rs::err::FitGetSkillAddError) -> (StatusCode, &'static str) {
+    match err {
+        rs::err::FitGetSkillAddError::FitGet(..) => (StatusCode::BAD_REQUEST, "FIT-001"),
+        rs::err::FitGetSkillAddError::SkillAdd(rs::err::core::SkillAddError::SkillIdCollision(..)) => {
+            (StatusCode::BAD_REQUEST, "SKL-002")
+        }
+    }
+}
 fn skill_change(err: &rs::err::ItemGetSkillChangeError) -> (StatusCode, &'static str) {
     match err {
         rs::err::ItemGetSkillChangeError::ItemGet(..) => (StatusCode::BAD_REQUEST, "ITM-001"),
