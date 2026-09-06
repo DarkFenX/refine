@@ -1,6 +1,6 @@
 pub use fit::{
-    Fit, FitFleetSetError, FitFleetUnsetError, FitGetError, FitMut, FitRahIncomingDpsRemoveError, StatFitAppliedError,
-    StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
+    Fit, FitFleetSetError, FitFleetUnsetError, FitGetError, FitMut, FitRahIncomingDpsRemoveError, FitTryAddItemError,
+    StatFitAppliedError, StatFitCharacterError, StatFitShipAppliedError, StatFitShipError,
 };
 pub use fleet::{Fleet, FleetFitAddError, FleetFitRemoveError, FleetGetError, FleetMut, StatFleetAppliedError};
 pub use item::{

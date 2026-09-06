@@ -35,6 +35,20 @@ impl SolarSystem {
                     }
                     self.internal_remove_booster(booster_uid, reuse_eupdates);
                 }
+                // TODO: setting charge is a destructive action (since it removes old charge with
+                // TODO: all its settings), rework it to be non-destructive, unless it is too
+                // TODO: expensive - HTTP module copies solar system before trying to fit anyway
+                DetectedItemKind::Charge => {
+                    for &module_uid in chargeable_module_uids.iter() {
+                        let charge_uid = self.internal_set_module_charge(module_uid, *type_aid, reuse_eupdates);
+                        if self.internal_validate_fit_fast(fit_uid, val_options) {
+                            valid.push(*type_aid);
+                            self.internal_remove_charge(charge_uid, reuse_eupdates);
+                            break;
+                        }
+                        self.internal_remove_charge(charge_uid, reuse_eupdates);
+                    }
+                }
                 DetectedItemKind::Drone => {
                     let drone_uid = self.internal_add_drone(
                         fit_uid,
@@ -111,20 +125,6 @@ impl SolarSystem {
                         valid.push(*type_aid)
                     }
                     self.internal_remove_module(module_uid, RemoveMode::Free, reuse_eupdates);
-                }
-                // TODO: setting charge is a destructive action (since it removes old charge with
-                // TODO: all its settings), rework it to be non-destructive, unless it is too
-                // TODO: expensive - HTTP module copies solar system before trying to fit anyway
-                DetectedItemKind::Charge => {
-                    for &module_uid in chargeable_module_uids.iter() {
-                        let charge_uid = self.internal_set_module_charge(module_uid, *type_aid, reuse_eupdates);
-                        if self.internal_validate_fit_fast(fit_uid, val_options) {
-                            valid.push(*type_aid);
-                            self.internal_remove_charge(charge_uid, reuse_eupdates);
-                            break;
-                        }
-                        self.internal_remove_charge(charge_uid, reuse_eupdates);
-                    }
                 }
                 DetectedItemKind::Rig => {
                     let rig_uid = self.internal_add_rig(fit_uid, *type_aid, reuse_eupdates);
